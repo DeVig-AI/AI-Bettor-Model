@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "CHA202610070"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "ATL202610070"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "NYA202610070"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -414,7 +414,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-12T06:25:09.672021Z"
+    "synced_at": "2026-10-12T14:49:48.987422Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -460,9 +460,185 @@
     "teaser_signal": null
    },
    "doc_id": "MIL202610110"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "LAD",
+    "export_hash": "3736c3b5c0f64f5aec9bfe5a65b44ee69c2b11aaef03e92b344468ed11ac3c2e",
+    "game_date": "2026-10-12",
+    "game_id": "MIL202610120",
+    "home_team": "MIL",
+    "kickoff_time": "2026-10-12T21:10:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": -127,
+     "moneyline_home": 122,
+     "spread_away_odds": 144.0,
+     "spread_home": 1.5,
+     "spread_home_odds": -150.0
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Yoshinobu Yamamoto vs Logan Henderson. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 0,
+      "description": "NL Championship Series",
+      "fair_price_favored": -286,
+      "favored": "MIL",
+      "favored_prob": 0.7413,
+      "games_in_series": 7,
+      "home_wins": 1,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.7413,
+      "series_game_number": 2
+     },
+     "source_snapshot_time": "2026-10-12T14:49:42.057752+00:00",
+     "spread_prob": 0.6303207335180516,
+     "spread_side": "LAD +1.5",
+     "spread_side_team": "LAD",
+     "status": "locked",
+     "winner_prob": 0.5479051311959389,
+     "winner_side": "MIL"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-12T14:49:48.987422Z"
+   },
+   "doc_id": "MIL202610120"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "LAD",
+    "decision": {
+     "action": "PASS",
+     "prob": 0.5479051311959389,
+     "side": null,
+     "tier": null
+    },
+    "export_hash": "12b92edcd82f311f8a72e9a65ead96e33fa72b3e419e7ff181966f21433d92c9",
+    "game_date": "2026-10-12",
+    "game_id": "MIL202610120",
+    "home_team": "MIL",
+    "kickoff_time": "2026-10-12T21:10:00Z",
+    "locked_at": "2026-10-12T14:49:42.057752+00:00",
+    "market_snapshot": {
+     "moneyline_away": -127,
+     "moneyline_home": 122
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "PASS",
+     "prob": null,
+     "side": null,
+     "tier": null
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "MIL202610120"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "CLE",
+    "export_hash": "14057315c8fc926b8b7adf1b1527e9525abe0270383930369f02352eb44d3a73",
+    "game_date": "2026-10-12",
+    "game_id": "TBA202610120",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-13T00:00:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": 144,
+     "moneyline_home": -150,
+     "spread_away_odds": -150.0,
+     "spread_home": -1.5,
+     "spread_home_odds": 144.0
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Foster Griffin vs Drew Rasmussen. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 0,
+      "description": "AL Championship Series",
+      "fair_price_favored": -180,
+      "favored": "TB",
+      "favored_prob": 0.6425,
+      "games_in_series": 7,
+      "home_wins": 0,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.6425,
+      "series_game_number": 1
+     },
+     "source_snapshot_time": "2026-10-12T14:49:42.057752+00:00",
+     "spread_prob": 0.6068189629801349,
+     "spread_side": "CLE +1.5",
+     "spread_side_team": "CLE",
+     "status": "locked",
+     "winner_prob": 0.5663086281755416,
+     "winner_side": "TB"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-12T14:49:48.987422Z"
+   },
+   "doc_id": "TBA202610120"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "CLE",
+    "decision": {
+     "action": "ML",
+     "prob": 0.5663086281755416,
+     "side": "TB",
+     "tier": "top50"
+    },
+    "export_hash": "73b66dd0ca0c03a743ea435e21ea82ca15c939782fd354fa54a5f797ecbd67ef",
+    "game_date": "2026-10-12",
+    "game_id": "TBA202610120",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-13T00:00:00Z",
+    "locked_at": "2026-10-12T14:49:42.057752+00:00",
+    "market_snapshot": {
+     "moneyline_away": 144,
+     "moneyline_home": -150
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "PASS",
+     "prob": null,
+     "side": null,
+     "tier": null
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "TBA202610120"
   }
  ],
- "generated_at": "2026-10-12T06:25:09.672021Z",
- "n_docs": 12,
+ "generated_at": "2026-10-12T14:49:48.987422Z",
+ "n_docs": 16,
  "sport": "MLB"
 }
