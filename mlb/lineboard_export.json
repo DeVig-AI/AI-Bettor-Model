@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -79,160 +79,6 @@
   {
    "collection": "slate",
    "data": {
-    "away_team": "LAD",
-    "export_hash": "97e1faea9005cf32f467d03dff9cd3c9b5b2508d361792b3b00cce3b6a277c74",
-    "game_date": "2026-10-06",
-    "game_id": "ATL202610060",
-    "home_team": "ATL",
-    "kickoff_time": "2026-10-06T22:00:00Z",
-    "market": {
-     "book": "Kalshi",
-     "moneyline_away": -104,
-     "moneyline_home": 100,
-     "spread_away_odds": 178.0,
-     "spread_home": 1.5,
-     "spread_home_odds": -186.0
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Yoshinobu Yamamoto vs Chris Sale. Odds from Kalshi (n_books_used=1).",
-     "source_snapshot_time": "2026-10-06T14:41:24.442919+00:00",
-     "spread_prob": 0.6597368729670313,
-     "spread_side": "LAD +1.5",
-     "spread_side_team": "LAD",
-     "status": "locked",
-     "winner_prob": 0.5177380451089558,
-     "winner_side": "ATL"
-    },
-    "season": 2026,
-    "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
-   },
-   "doc_id": "ATL202610060"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "LAD",
-    "decision": {
-     "action": "PASS",
-     "prob": 0.5177380451089558,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "1c1627acd9828f2f0fd311836bcb11547e763c93f2f171b2b9d2b423c4e3be7e",
-    "game_date": "2026-10-06",
-    "game_id": "ATL202610060",
-    "home_team": "ATL",
-    "kickoff_time": "2026-10-06T22:00:00Z",
-    "locked_at": "2026-10-06T14:41:24.442919+00:00",
-    "market_snapshot": {
-     "moneyline_away": -104,
-     "moneyline_home": 100
-    },
-    "outcome": {
-     "away_score": 3,
-     "decision_correct": null,
-     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
-     "home_score": 1,
-     "resolved": true,
-     "spread_correct": null,
-     "spread_decision_correct": true,
-     "teaser_correct": null
-    },
-    "season": 2026,
-    "sport": "MLB",
-    "spread_decision": {
-     "action": "COVER",
-     "prob": 0.6597368729670313,
-     "side": "LAD +1.5",
-     "tier": "top50"
-    },
-    "spread_read": null,
-    "teaser_signal": null
-   },
-   "doc_id": "ATL202610060"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "MIL",
-    "export_hash": "cb2441cbacb452a907a89152b3934542be54f45889db4b68bda3e71d004051d3",
-    "game_date": "2026-10-06",
-    "game_id": "SDN202610060",
-    "home_team": "SD",
-    "kickoff_time": "2026-10-07T01:30:00Z",
-    "market": {
-     "book": "Kalshi",
-     "moneyline_away": 122,
-     "moneyline_home": -127,
-     "spread_away_odds": -178.0,
-     "spread_home": -1.5,
-     "spread_home_odds": 170.0
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Dustin May vs Nick Pivetta. Odds from Kalshi (n_books_used=1).",
-     "source_snapshot_time": "2026-10-06T14:41:24.442919+00:00",
-     "spread_prob": 0.6469577205224972,
-     "spread_side": "MIL +1.5",
-     "spread_side_team": "MIL",
-     "status": "locked",
-     "winner_prob": 0.5113363265072136,
-     "winner_side": "SD"
-    },
-    "season": 2026,
-    "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
-   },
-   "doc_id": "SDN202610060"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "MIL",
-    "decision": {
-     "action": "PASS",
-     "prob": 0.5113363265072136,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "8435ea09ff5c8788766d656de209cb9abd65538ea33609c8cfd4d8bf411f9c78",
-    "game_date": "2026-10-06",
-    "game_id": "SDN202610060",
-    "home_team": "SD",
-    "kickoff_time": "2026-10-07T01:30:00Z",
-    "locked_at": "2026-10-06T14:41:24.442919+00:00",
-    "market_snapshot": {
-     "moneyline_away": 122,
-     "moneyline_home": -127
-    },
-    "outcome": {
-     "away_score": 3,
-     "decision_correct": null,
-     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
-     "home_score": 4,
-     "resolved": true,
-     "spread_correct": null,
-     "spread_decision_correct": true,
-     "teaser_correct": null
-    },
-    "season": 2026,
-    "sport": "MLB",
-    "spread_decision": {
-     "action": "COVER",
-     "prob": 0.6469577205224972,
-     "side": "MIL +1.5",
-     "tier": "top50"
-    },
-    "spread_read": null,
-    "teaser_signal": null
-   },
-   "doc_id": "SDN202610060"
-  },
-  {
-   "collection": "slate",
-   "data": {
     "away_team": "CLE",
     "export_hash": "93209e34dbc0bf49912da1201c87ac2fd5c017d4e87f29f30cf5745acbbd871a",
     "game_date": "2026-10-07",
@@ -260,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "CHA202610070"
   },
@@ -337,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "ATL202610070"
   },
@@ -414,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "NYA202610070"
   },
@@ -491,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -580,7 +426,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-11T14:41:45.812842Z"
+    "synced_at": "2026-10-12T00:25:54.251296Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -627,7 +473,7 @@
    "doc_id": "MIL202610110"
   }
  ],
- "generated_at": "2026-10-11T14:41:45.812842Z",
- "n_docs": 16,
+ "generated_at": "2026-10-12T00:25:54.251296Z",
+ "n_docs": 12,
  "sport": "MLB"
 }
