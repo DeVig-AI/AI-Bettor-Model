@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T03:17:26.351413Z"
+    "synced_at": "2026-10-13T14:48:30.879869Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T03:17:26.351413Z"
+    "synced_at": "2026-10-13T14:48:30.879869Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T03:17:26.351413Z"
+    "synced_at": "2026-10-13T14:48:30.879869Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T03:17:26.351413Z"
+    "synced_at": "2026-10-13T14:48:30.879869Z"
    },
    "doc_id": "MIL202610120"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T03:17:26.351413Z"
+    "synced_at": "2026-10-13T14:48:30.879869Z"
    },
    "doc_id": "TBA202610120"
   },
@@ -383,9 +383,97 @@
     "teaser_signal": null
    },
    "doc_id": "TBA202610120"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "CLE",
+    "export_hash": "9fe40069ace4c962a716a30e6b95dca0e265480a2e44cd242fe39d68d263b59d",
+    "game_date": "2026-10-13",
+    "game_id": "TBA202610130",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-14T00:00:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": 127,
+     "moneyline_home": -133,
+     "spread_away_odds": -178.0,
+     "spread_home": -1.5,
+     "spread_home_odds": 170.0
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Parker Messick vs Freddy Peralta. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 1,
+      "description": "AL Championship Series",
+      "fair_price_favored": -185,
+      "favored": "CLE",
+      "favored_prob": 0.6489,
+      "games_in_series": 7,
+      "home_wins": 0,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.3511,
+      "series_game_number": 2
+     },
+     "source_snapshot_time": "2026-10-13T14:48:25.167266+00:00",
+     "spread_prob": 0.6735470755210988,
+     "spread_side": "CLE +1.5",
+     "spread_side_team": "CLE",
+     "status": "locked",
+     "winner_prob": 0.5039018333808424,
+     "winner_side": "TB"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-13T14:48:30.879869Z"
+   },
+   "doc_id": "TBA202610130"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "CLE",
+    "decision": {
+     "action": "PASS",
+     "prob": 0.5039018333808424,
+     "side": null,
+     "tier": null
+    },
+    "export_hash": "a2e52f9110e310bbbd088d0a7d8ca17c2e213e56c81e4dc1c094577dca17ff94",
+    "game_date": "2026-10-13",
+    "game_id": "TBA202610130",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-14T00:00:00Z",
+    "locked_at": "2026-10-13T14:48:25.167266+00:00",
+    "market_snapshot": {
+     "moneyline_away": 127,
+     "moneyline_home": -133
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "COVER",
+     "prob": 0.6735470755210988,
+     "side": "CLE +1.5",
+     "tier": "top50"
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "TBA202610130"
   }
  ],
- "generated_at": "2026-10-13T03:17:26.351413Z",
- "n_docs": 10,
+ "generated_at": "2026-10-13T14:48:30.879869Z",
+ "n_docs": 12,
  "sport": "MLB"
 }
