@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T00:26:54.259406Z"
+    "synced_at": "2026-10-13T03:17:26.351413Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T00:26:54.259406Z"
+    "synced_at": "2026-10-13T03:17:26.351413Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T00:26:54.259406Z"
+    "synced_at": "2026-10-13T03:17:26.351413Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T00:26:54.259406Z"
+    "synced_at": "2026-10-13T03:17:26.351413Z"
    },
    "doc_id": "MIL202610120"
   },
@@ -274,7 +274,7 @@
      "side": null,
      "tier": null
     },
-    "export_hash": "12b92edcd82f311f8a72e9a65ead96e33fa72b3e419e7ff181966f21433d92c9",
+    "export_hash": "9e87bee727df7191f204b935fc7205e5463d835af6f9955dd482ced410ebc921",
     "game_date": "2026-10-12",
     "game_id": "MIL202610120",
     "home_team": "MIL",
@@ -285,10 +285,11 @@
      "moneyline_home": 122
     },
     "outcome": {
-     "away_score": null,
+     "away_score": 4,
      "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 7,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -310,7 +311,7 @@
    "collection": "slate",
    "data": {
     "away_team": "CLE",
-    "export_hash": "14057315c8fc926b8b7adf1b1527e9525abe0270383930369f02352eb44d3a73",
+    "export_hash": "86c72a620003ffcf7c6400b83b7f7e9ab4aa627318ef528da8753ccb48c14b71",
     "game_date": "2026-10-12",
     "game_id": "TBA202610120",
     "home_team": "TB",
@@ -326,18 +327,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Foster Griffin vs Drew Rasmussen. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 0,
-      "description": "AL Championship Series",
-      "fair_price_favored": -180,
-      "favored": "TB",
-      "favored_prob": 0.6425,
-      "games_in_series": 7,
-      "home_wins": 0,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.6425,
-      "series_game_number": 1
-     },
      "source_snapshot_time": "2026-10-12T14:49:42.057752+00:00",
      "spread_prob": 0.6068189629801349,
      "spread_side": "CLE +1.5",
@@ -348,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-13T00:26:54.259406Z"
+    "synced_at": "2026-10-13T03:17:26.351413Z"
    },
    "doc_id": "TBA202610120"
   },
@@ -362,7 +351,7 @@
      "side": "TB",
      "tier": "top50"
     },
-    "export_hash": "73b66dd0ca0c03a743ea435e21ea82ca15c939782fd354fa54a5f797ecbd67ef",
+    "export_hash": "d151f4a42bea08f775e8c93d6a1fac828ca95c15266fddca0e854c43b00d3800",
     "game_date": "2026-10-12",
     "game_id": "TBA202610120",
     "home_team": "TB",
@@ -373,10 +362,11 @@
      "moneyline_home": -150
     },
     "outcome": {
-     "away_score": null,
-     "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "away_score": 7,
+     "decision_correct": false,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 3,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -395,7 +385,7 @@
    "doc_id": "TBA202610120"
   }
  ],
- "generated_at": "2026-10-13T00:26:54.259406Z",
+ "generated_at": "2026-10-13T03:17:26.351413Z",
  "n_docs": 10,
  "sport": "MLB"
 }
