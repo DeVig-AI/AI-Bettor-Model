@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-13T00:07:32.791178Z",
+ "generated_at": "2026-10-13T06:07:34.827948Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -37,7 +37,7 @@
   ],
   "ATL": [
    {
-    "espn_updated": "2026-10-12T19:17Z",
+    "espn_updated": "2026-10-12T13:22Z",
     "injury": "Ribs",
     "name": "Michael Penix Jr.",
     "pos": "QB",
@@ -89,7 +89,18 @@
     "status": "Out"
    }
   ],
-  "BUF": [],
+  "BUF": [
+   {
+    "espn_updated": "2026-10-13T02:54Z",
+    "injury": "Back",
+    "name": "Spencer Brown",
+    "pos": "OT",
+    "return_date": "2026-10-18",
+    "share_basis": "this season",
+    "snap_share": 1.0,
+    "status": "Questionable"
+   }
+  ],
   "CAR": [
    {
     "espn_updated": "2026-10-06T01:04Z",
@@ -688,7 +699,7 @@
   ],
   "NYG": [
    {
-    "espn_updated": "2026-10-12T23:48Z",
+    "espn_updated": "2026-10-13T05:01Z",
     "injury": "Calf",
     "name": "Jermaine Eluemunor",
     "pos": "OT",
