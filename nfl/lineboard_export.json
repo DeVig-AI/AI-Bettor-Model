@@ -3,750 +3,6 @@
   {
    "collection": "slate",
    "data": {
-    "away_team": "MIA",
-    "export_hash": "d8d2329d62d5992653708c10ca5ef5a9e767207b7b9577e96d7a0b9f08affb70",
-    "game_id": "2026_04_MIA_MIN",
-    "home_team": "MIN",
-    "injury_report": {
-     "as_of": "2026-10-03T14:52:18.286567Z",
-     "away": [
-      {
-       "espn_updated": "2026-10-02T15:08Z",
-       "injury": "Ankle",
-       "name": "Caleb Douglas",
-       "pos": "WR",
-       "return_date": "2026-10-11",
-       "share_basis": "this season",
-       "snap_share": 0.89,
-       "status": "Out"
-      }
-     ],
-     "home": [
-      {
-       "espn_updated": "2026-10-03T13:33Z",
-       "injury": "Ankle",
-       "name": "Justin Jefferson",
-       "pos": "WR",
-       "return_date": "2026-10-11",
-       "share_basis": "this season",
-       "snap_share": 0.68,
-       "status": "Out"
-      }
-     ],
-     "note": "Information only -- the pick was made by the frozen model and does not account for injuries.",
-     "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
-     "source": "ESPN injury feed + nflverse snap counts"
-    },
-    "key_ladder": {
-     "main_home_point": -10.0,
-     "rungs": [
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "",
-       "ev": 0.0238,
-       "ev_low": -0.0517,
-       "n": 588,
-       "odds": -115,
-       "official": false,
-       "p_cover": 0.5476,
-       "p_high": 0.5874,
-       "p_low": 0.5072,
-       "pin_agree": false,
-       "point": 10.5,
-       "result": "WIN",
-       "team": "MIA",
-       "tier": "LEAN"
-      },
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "",
-       "ev": 0.0227,
-       "ev_low": -0.0507,
-       "n": 588,
-       "odds": -120,
-       "official": false,
-       "p_cover": 0.5581,
-       "p_high": 0.5981,
-       "p_low": 0.5173,
-       "pin_agree": false,
-       "point": 11.0,
-       "result": "WIN",
-       "team": "MIA",
-       "tier": "LEAN"
-      },
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "",
-       "ev": 0.0212,
-       "ev_low": -0.04,
-       "n": 588,
-       "odds": -180,
-       "official": false,
-       "p_cover": 0.6565,
-       "p_high": 0.6937,
-       "p_low": 0.6172,
-       "pin_agree": null,
-       "point": 14.5,
-       "result": "WIN",
-       "team": "MIA",
-       "tier": "LEAN"
-      },
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "",
-       "ev": 0.0194,
-       "ev_low": -0.0533,
-       "n": 588,
-       "odds": -125,
-       "official": false,
-       "p_cover": 0.5663,
-       "p_high": 0.6058,
-       "p_low": 0.526,
-       "pin_agree": true,
-       "point": 11.5,
-       "result": "WIN",
-       "team": "MIA",
-       "tier": "LEAN"
-      }
-     ],
-     "snapshot_utc": "2026-10-03T21:35:39Z",
-     "test": "KEY_LADDER_LIVE_V1"
-    },
-    "kickoff_time": "2026-10-04T20:05:00Z",
-    "market": {
-     "moneyline_away": 450,
-     "moneyline_home": -650,
-     "spread_away_odds": -110,
-     "spread_home": -11.0,
-     "spread_home_odds": -110
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the NFL tracker on GitHub (Model 1.0, frozen). Line shown is the one the tracker locked. Spread read is information only -- no demonstrated edge.",
-     "pred_home_margin": -13.085180229430886,
-     "source_snapshot_time": "2026-09-30T17:18:00.960250+00:00",
-     "spread_side": "MIN",
-     "status": "locked",
-     "winner_prob": 0.7873689133157993,
-     "winner_side": "MIN"
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
-    "weather_total": {
-     "book": "Pinnacle",
-     "ev": 0.081,
-     "forecast_temp_f": null,
-     "forecast_wind_mph": null,
-     "indoor": true,
-     "line": 38.5,
-     "odds": -104,
-     "result": "LOSS",
-     "side": "over",
-     "test": "NFL_WEATHER_TOTALS_LIVE_V1"
-    },
-    "week": 4
-   },
-   "doc_id": "2026_04_MIA_MIN"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "MIA",
-    "decision": {
-     "action": "ML",
-     "prob": 0.7873689133157993,
-     "side": "MIN",
-     "tier": "top25"
-    },
-    "export_hash": "836586be1c913020523906603a9a6dff05516a69197bcf0f4c0ba303d9086006",
-    "game_id": "2026_04_MIA_MIN",
-    "home_team": "MIN",
-    "kickoff_time": "2026-10-04T20:05:00Z",
-    "locked_at": "2026-09-30T17:18:00.960250+00:00",
-    "market_snapshot": {
-     "moneyline_away": 450,
-     "moneyline_home": -650,
-     "spread_away_odds": -110,
-     "spread_home": -11.0,
-     "spread_home_odds": -110
-    },
-    "outcome": {
-     "away_score": 10,
-     "decision_correct": true,
-     "graded_source": "nflverse final score via the GitHub Actions grader",
-     "home_score": 15,
-     "resolved": true,
-     "spread_correct": false,
-     "teaser_correct": null,
-     "weather_total_correct": false
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "spread_read": {
-     "pred_home_margin": -13.085180229430886,
-     "side": "MIN"
-    },
-    "teaser_signal": null,
-    "tracker_deciders": {
-     "NEW_V2_1_CORRECTED_THRESHOLDS": {
-      "action": "SPREAD",
-      "side": "HOME"
-     },
-     "OLD_LAB28_43_HYBRID": {
-      "action": "SPREAD",
-      "side": "HOME"
-     },
-     "V3_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     },
-     "V4_BEST_PRICE_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     }
-    },
-    "weather_total": {
-     "book": "Pinnacle",
-     "ev": 0.081,
-     "forecast_temp_f": null,
-     "forecast_wind_mph": null,
-     "indoor": true,
-     "line": 38.5,
-     "odds": -104,
-     "result": "LOSS",
-     "side": "over",
-     "test": "NFL_WEATHER_TOTALS_LIVE_V1"
-    },
-    "week": 4
-   },
-   "doc_id": "2026_04_MIA_MIN"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "DEN",
-    "export_hash": "83682c21435203df30920207a86b9c2e6b03cd54f86c34f1a5205f3f8b020e64",
-    "game_id": "2026_04_DEN_SF",
-    "home_team": "SF",
-    "injury_report": {
-     "as_of": "2026-10-04T18:08:55.309034Z",
-     "away": [],
-     "home": [
-      {
-       "espn_updated": "2026-09-30T23:11Z",
-       "injury": "Knee - ACL",
-       "name": "Mykel Williams",
-       "pos": "DE",
-       "return_date": "2026-10-11",
-       "share_basis": "last season",
-       "snap_share": 0.67,
-       "status": "Out"
-      },
-      {
-       "espn_updated": "2026-09-28T21:16Z",
-       "injury": "Calf",
-       "name": "Nick Bosa",
-       "pos": "DE",
-       "return_date": "2026-10-11",
-       "share_basis": "this season",
-       "snap_share": 0.64,
-       "status": "Out"
-      },
-      {
-       "espn_updated": "2026-10-04T14:15Z",
-       "injury": "Quadriceps",
-       "name": "Dre Greenlaw",
-       "pos": "LB",
-       "return_date": "2026-10-04",
-       "share_basis": "this season",
-       "snap_share": 0.69,
-       "status": "Questionable"
-      }
-     ],
-     "note": "Information only -- the pick was made by the frozen model and does not account for injuries.",
-     "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
-     "source": "ESPN injury feed + nflverse snap counts"
-    },
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "market": {
-     "moneyline_away": 125,
-     "moneyline_home": -145,
-     "spread_away_odds": -120,
-     "spread_home": -3.0,
-     "spread_home_odds": 100
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the NFL tracker on GitHub (Model 1.0, frozen). Line shown is the one the tracker locked. Spread read is information only -- no demonstrated edge.",
-     "pred_home_margin": -4.9234538717407945,
-     "source_snapshot_time": "2026-09-30T17:18:00.960250+00:00",
-     "spread_side": "SF",
-     "status": "locked",
-     "winner_prob": 0.6845390996188004,
-     "winner_side": "SF"
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
-    "week": 4
-   },
-   "doc_id": "2026_04_DEN_SF"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "DEN",
-    "decision": {
-     "action": "ML",
-     "prob": 0.6845390996188004,
-     "side": "SF",
-     "tier": "top50"
-    },
-    "export_hash": "54cc965a3ae2d2f6ad37028337b5a453e962b610f8403427c77ac03410c0efd0",
-    "game_id": "2026_04_DEN_SF",
-    "home_team": "SF",
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "locked_at": "2026-09-30T17:18:00.960250+00:00",
-    "market_snapshot": {
-     "moneyline_away": 125,
-     "moneyline_home": -145,
-     "spread_away_odds": -120,
-     "spread_home": -3.0,
-     "spread_home_odds": 100
-    },
-    "outcome": {
-     "away_score": 14,
-     "decision_correct": true,
-     "graded_source": "nflverse final score via the GitHub Actions grader",
-     "home_score": 24,
-     "resolved": true,
-     "spread_correct": true,
-     "teaser_correct": null
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "spread_read": {
-     "pred_home_margin": -4.9234538717407945,
-     "side": "SF"
-    },
-    "teaser_signal": null,
-    "tracker_deciders": {
-     "NEW_V2_1_CORRECTED_THRESHOLDS": {
-      "action": "PASS",
-      "side": null
-     },
-     "OLD_LAB28_43_HYBRID": {
-      "action": "ML",
-      "side": "HOME"
-     },
-     "V3_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     },
-     "V4_BEST_PRICE_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     }
-    },
-    "week": 4
-   },
-   "doc_id": "2026_04_DEN_SF"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "KC",
-    "export_hash": "b2384f1b64a61da320f5c59905e4a8276092df633d362825c79a48f16e0a3127",
-    "game_id": "2026_04_KC_LV",
-    "home_team": "LV",
-    "injury_report": {
-     "as_of": "2026-10-04T11:12:41.109029Z",
-     "away": [
-      {
-       "espn_updated": "2026-10-03T01:08Z",
-       "injury": "Back",
-       "name": "Josh Simmons",
-       "pos": "OT",
-       "return_date": "2026-10-11",
-       "share_basis": "last season",
-       "snap_share": 0.93,
-       "status": "Out"
-      }
-     ],
-     "home": [
-      {
-       "espn_updated": "2026-10-02T19:51Z",
-       "injury": "Groin",
-       "name": "Jackson Powers-Johnson",
-       "pos": "G",
-       "return_date": "2026-10-11",
-       "share_basis": "this season",
-       "snap_share": 0.98,
-       "status": "Out"
-      }
-     ],
-     "note": "Information only -- the pick was made by the frozen model and does not account for injuries.",
-     "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
-     "source": "ESPN injury feed + nflverse snap counts"
-    },
-    "key_ladder": {
-     "main_home_point": 4.5,
-     "rungs": [
-      {
-       "book": "draftkings",
-       "crosses": "3",
-       "ev": 0.0113,
-       "ev_low": -0.0499,
-       "n": 619,
-       "odds": -171,
-       "official": false,
-       "p_cover": 0.6381,
-       "p_high": 0.675,
-       "p_low": 0.5995,
-       "pin_agree": false,
-       "point": -2.5,
-       "result": "WIN",
-       "team": "KC",
-       "tier": "LEAN"
-      }
-     ],
-     "snapshot_utc": "2026-10-03T21:35:39Z",
-     "test": "KEY_LADDER_LIVE_V1"
-    },
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "market": {
-     "moneyline_away": -220,
-     "moneyline_home": 185,
-     "spread_away_odds": -115,
-     "spread_home": 4.5,
-     "spread_home_odds": -105
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the NFL tracker on GitHub (Model 1.0, frozen). Line shown is the one the tracker locked. Spread read is information only -- no demonstrated edge.",
-     "pred_home_margin": 3.5051324825127206,
-     "source_snapshot_time": "2026-09-30T17:18:00.960250+00:00",
-     "spread_side": "LV",
-     "status": "locked",
-     "winner_prob": 0.5920147370413724,
-     "winner_side": "KC"
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
-    "week": 4
-   },
-   "doc_id": "2026_04_KC_LV"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "KC",
-    "decision": {
-     "action": "PASS",
-     "prob": 0.5920147370413724,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "a5e650e6c810c200bbb62086c1b53ad9d7a6a8e3c1e38428ec0a2fed2fbd0ddb",
-    "game_id": "2026_04_KC_LV",
-    "home_team": "LV",
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "locked_at": "2026-09-30T17:18:00.960250+00:00",
-    "market_snapshot": {
-     "moneyline_away": -220,
-     "moneyline_home": 185,
-     "spread_away_odds": -115,
-     "spread_home": 4.5,
-     "spread_home_odds": -105
-    },
-    "outcome": {
-     "away_score": 30,
-     "decision_correct": null,
-     "graded_source": "nflverse final score via the GitHub Actions grader",
-     "home_score": 27,
-     "resolved": true,
-     "spread_correct": true,
-     "teaser_correct": null
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "spread_read": {
-     "pred_home_margin": 3.5051324825127206,
-     "side": "LV"
-    },
-    "teaser_signal": null,
-    "tracker_deciders": {
-     "NEW_V2_1_CORRECTED_THRESHOLDS": {
-      "action": "PASS",
-      "side": null
-     },
-     "OLD_LAB28_43_HYBRID": {
-      "action": "SPREAD",
-      "side": "HOME"
-     },
-     "V3_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     },
-     "V4_BEST_PRICE_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     }
-    },
-    "week": 4
-   },
-   "doc_id": "2026_04_KC_LV"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "LAC",
-    "export_hash": "1d8fc81d41cb42ab730125ba57276d7ba82af63753d67e5b7e3c91b5c6477ab1",
-    "game_id": "2026_04_LAC_SEA",
-    "home_team": "SEA",
-    "injury_report": {
-     "as_of": "2026-10-04T18:08:55.309034Z",
-     "away": [
-      {
-       "espn_updated": "2026-10-02T20:37Z",
-       "injury": "Lower Leg",
-       "name": "Kayode Awosika",
-       "pos": "G",
-       "return_date": "2026-10-11",
-       "share_basis": "this season",
-       "snap_share": 0.69,
-       "status": "Out"
-      },
-      {
-       "espn_updated": "2026-10-02T22:55Z",
-       "injury": "Hamstring",
-       "name": "Derwin James Jr.",
-       "pos": "S",
-       "return_date": "2026-10-04",
-       "share_basis": "this season",
-       "snap_share": 0.94,
-       "status": "Questionable"
-      },
-      {
-       "espn_updated": "2026-10-02T23:03Z",
-       "injury": "Hamstring",
-       "name": "Elijah Molden",
-       "pos": "CB",
-       "return_date": "2026-10-04",
-       "share_basis": "this season",
-       "snap_share": 0.71,
-       "status": "Questionable"
-      },
-      {
-       "espn_updated": "2026-10-04T11:12Z",
-       "injury": "Foot",
-       "name": "Ladd McConkey",
-       "pos": "WR",
-       "return_date": "2026-10-04",
-       "share_basis": "this season",
-       "snap_share": 0.61,
-       "status": "Questionable"
-      }
-     ],
-     "home": [
-      {
-       "espn_updated": "2026-10-03T00:32Z",
-       "injury": "Hamstring",
-       "name": "Ty Okada",
-       "pos": "S",
-       "return_date": "2026-10-04",
-       "share_basis": "last season",
-       "snap_share": 0.68,
-       "status": "Questionable"
-      }
-     ],
-     "note": "Information only -- the pick was made by the frozen model and does not account for injuries.",
-     "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
-     "source": "ESPN injury feed + nflverse snap counts"
-    },
-    "key_ladder": {
-     "main_home_point": -7.5,
-     "rungs": [
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "10",
-       "ev": 0.0466,
-       "ev_low": -0.081,
-       "n": 938,
-       "odds": 425,
-       "official": true,
-       "p_cover": 0.1994,
-       "p_high": 0.2261,
-       "p_low": 0.175,
-       "pin_agree": null,
-       "point": -20.5,
-       "result": "LOSS",
-       "team": "SEA",
-       "tier": "MEDIUM"
-      },
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "10",
-       "ev": 0.0416,
-       "ev_low": -0.0936,
-       "n": 938,
-       "odds": 500,
-       "official": false,
-       "p_cover": 0.1738,
-       "p_high": 0.1998,
-       "p_low": 0.1506,
-       "pin_agree": null,
-       "point": -21.0,
-       "result": "LOSS",
-       "team": "SEA",
-       "tier": "MEDIUM"
-      },
-      {
-       "book": "hardrockbet_fl",
-       "crosses": "10",
-       "ev": 0.033,
-       "ev_low": -0.0867,
-       "n": 938,
-       "odds": 375,
-       "official": false,
-       "p_cover": 0.2175,
-       "p_high": 0.245,
-       "p_low": 0.1923,
-       "pin_agree": null,
-       "point": -19.5,
-       "result": "LOSS",
-       "team": "SEA",
-       "tier": "MEDIUM"
-      },
-      {
-       "book": "draftkings",
-       "crosses": "10",
-       "ev": 0.0167,
-       "ev_low": -0.1073,
-       "n": 938,
-       "odds": 410,
-       "official": false,
-       "p_cover": 0.1994,
-       "p_high": 0.2261,
-       "p_low": 0.175,
-       "pin_agree": null,
-       "point": -20.5,
-       "result": "LOSS",
-       "team": "SEA",
-       "tier": "LEAN"
-      }
-     ],
-     "snapshot_utc": "2026-10-03T21:35:39Z",
-     "test": "KEY_LADDER_LIVE_V1"
-    },
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "market": {
-     "moneyline_away": 275,
-     "moneyline_home": -350,
-     "spread_away_odds": -105,
-     "spread_home": -7.0,
-     "spread_home_odds": -115
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the NFL tracker on GitHub (Model 1.0, frozen). Line shown is the one the tracker locked. Spread read is information only -- no demonstrated edge.",
-     "pred_home_margin": -8.86537239794283,
-     "source_snapshot_time": "2026-09-30T17:18:00.960250+00:00",
-     "spread_side": "SEA",
-     "status": "locked",
-     "winner_prob": 0.8415878903615093,
-     "winner_side": "SEA"
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
-    "week": 4
-   },
-   "doc_id": "2026_04_LAC_SEA"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "LAC",
-    "decision": {
-     "action": "ML",
-     "prob": 0.8415878903615093,
-     "side": "SEA",
-     "tier": "top25"
-    },
-    "export_hash": "197e815ba99ed0673e4623ef073f4c86fc791d2cf705c3b6704c188ec18ae94d",
-    "game_id": "2026_04_LAC_SEA",
-    "home_team": "SEA",
-    "key_ladder": {
-     "book": "hardrockbet_fl",
-     "crosses": "10",
-     "ev": 0.0466,
-     "ev_low": -0.081,
-     "n": 938,
-     "odds": 425,
-     "official": true,
-     "p_cover": 0.1994,
-     "p_high": 0.2261,
-     "p_low": 0.175,
-     "pin_agree": null,
-     "point": -20.5,
-     "result": "LOSS",
-     "team": "SEA",
-     "tier": "MEDIUM"
-    },
-    "kickoff_time": "2026-10-04T20:25:00Z",
-    "locked_at": "2026-09-30T17:18:00.960250+00:00",
-    "market_snapshot": {
-     "moneyline_away": 275,
-     "moneyline_home": -350,
-     "spread_away_odds": -105,
-     "spread_home": -7.0,
-     "spread_home_odds": -115
-    },
-    "outcome": {
-     "away_score": 23,
-     "decision_correct": true,
-     "graded_source": "nflverse final score via the GitHub Actions grader",
-     "home_score": 30,
-     "key_ladder_correct": false,
-     "resolved": true,
-     "spread_correct": null,
-     "teaser_correct": null
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "spread_read": {
-     "pred_home_margin": -8.86537239794283,
-     "side": "SEA"
-    },
-    "teaser_signal": null,
-    "tracker_deciders": {
-     "NEW_V2_1_CORRECTED_THRESHOLDS": {
-      "action": "PASS",
-      "side": null
-     },
-     "OLD_LAB28_43_HYBRID": {
-      "action": "SPREAD",
-      "side": "HOME"
-     },
-     "V3_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     },
-     "V4_BEST_PRICE_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     }
-    },
-    "week": 4
-   },
-   "doc_id": "2026_04_LAC_SEA"
-  },
-  {
-   "collection": "slate",
-   "data": {
     "away_team": "DET",
     "export_hash": "c0002842b6bf7dffc4cb4732fe3d08d46cb0d4a4716e14b1566c0e7349817c96",
     "game_id": "2026_04_DET_CAR",
@@ -926,7 +182,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.0259,
@@ -1111,7 +367,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 4
    },
    "doc_id": "2026_04_ATL_NO"
@@ -1292,7 +548,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_TB_DAL"
@@ -1452,7 +708,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_PHI_JAX"
@@ -1604,7 +860,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_CHI_GB"
@@ -1765,7 +1021,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_CIN_MIA"
@@ -1921,7 +1177,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_CLE_NYJ"
@@ -2131,7 +1387,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_HOU_TEN"
@@ -2361,7 +1617,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_IND_PIT"
@@ -2583,7 +1839,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.043,
@@ -2778,7 +2034,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.0766,
@@ -3014,7 +2270,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_NYG_WAS"
@@ -3279,7 +2535,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_DEN_LAC"
@@ -3536,7 +2792,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_DET_ARI"
@@ -3675,7 +2931,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 5
    },
    "doc_id": "2026_05_SF_SEA"
@@ -3892,7 +3148,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.0366,
@@ -4103,7 +3359,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.0661,
@@ -4215,7 +3471,7 @@
    "collection": "slate",
    "data": {
     "away_team": "SEA",
-    "export_hash": "94dbf54bd93e1d24485ac6131a173cad7bd0500316bd4f75b633b6e3ff9fc449",
+    "export_hash": "1a8fb2374eb11f517693581f6191bba748983b9bdcf6114728046a2a3c57d264",
     "game_id": "2026_06_SEA_DEN",
     "home_team": "DEN",
     "injury_report": {
@@ -4308,7 +3564,20 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
+    "weather_total": {
+     "book": "Pinnacle",
+     "ev": -0.0248,
+     "forecast_temp_f": 45.4,
+     "forecast_wind_mph": 3.9,
+     "indoor": false,
+     "line": 40.5,
+     "odds": null,
+     "preview": true,
+     "preview_generated_utc": "2026-10-14T22:59:32Z",
+     "side": "pass",
+     "test": "PREVIEW (not counted)"
+    },
     "week": 6
    },
    "doc_id": "2026_06_SEA_DEN"
@@ -4444,7 +3713,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_HOU_JAX"
@@ -4630,7 +3899,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_BAL_CLE"
@@ -4841,7 +4110,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_CAR_PHI"
@@ -5017,7 +4286,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_CHI_ATL"
@@ -5163,7 +4432,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_NO_NYG"
@@ -5324,7 +4593,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_NYJ_NE"
@@ -5475,7 +4744,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_PIT_TB"
@@ -5641,7 +4910,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_TEN_IND"
@@ -5792,7 +5061,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_ARI_LA"
@@ -5902,7 +5171,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_BUF_LV"
@@ -6083,7 +5352,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_LAC_KC"
@@ -6254,7 +5523,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_DAL_GB"
@@ -6420,7 +5689,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-14T18:18:58.597938Z",
+    "synced_at": "2026-10-14T22:59:34.680474Z",
     "week": 6
    },
    "doc_id": "2026_06_WAS_SF"
@@ -6485,7 +5754,7 @@
    "doc_id": "2026_06_WAS_SF"
   }
  ],
- "generated_at": "2026-10-14T18:18:58.597938Z",
- "n_docs": 70,
+ "generated_at": "2026-10-14T22:59:34.680474Z",
+ "n_docs": 62,
  "sport": "NFL"
 }
