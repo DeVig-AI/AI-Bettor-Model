@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "MIL202610120"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "TBA202610120"
   },
@@ -414,7 +414,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T03:26:34.688869Z"
+    "synced_at": "2026-10-14T14:58:44.511563Z"
    },
    "doc_id": "TBA202610130"
   },
@@ -460,9 +460,97 @@
     "teaser_signal": null
    },
    "doc_id": "TBA202610130"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "MIL",
+    "export_hash": "6e70066780b3464f8ac14712e5dd6cfe22c0bc4dc298613a9150c824e3fb150e",
+    "game_date": "2026-10-14",
+    "game_id": "LAN202610140",
+    "home_team": "LAD",
+    "kickoff_time": "2026-10-15T00:00:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": 156,
+     "moneyline_home": -163,
+     "spread_away_odds": -138.0,
+     "spread_home": -1.5,
+     "spread_home_odds": 133.0
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Robert Gasser vs Blake Snell. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 2,
+      "description": "NL Championship Series",
+      "fair_price_favored": -269,
+      "favored": "MIL",
+      "favored_prob": 0.7291,
+      "games_in_series": 7,
+      "home_wins": 0,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.2709,
+      "series_game_number": 3
+     },
+     "source_snapshot_time": "2026-10-14T14:58:39.814884+00:00",
+     "spread_prob": 0.6186154836112819,
+     "spread_side": "MIL +1.5",
+     "spread_side_team": "MIL",
+     "status": "locked",
+     "winner_prob": 0.559667151418079,
+     "winner_side": "LAD"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-14T14:58:44.511563Z"
+   },
+   "doc_id": "LAN202610140"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "MIL",
+    "decision": {
+     "action": "ML",
+     "prob": 0.559667151418079,
+     "side": "LAD",
+     "tier": "top50"
+    },
+    "export_hash": "276416d0520af77377d88c255bd525ef41dd51596286b06cac1750844394d82b",
+    "game_date": "2026-10-14",
+    "game_id": "LAN202610140",
+    "home_team": "LAD",
+    "kickoff_time": "2026-10-15T00:00:00Z",
+    "locked_at": "2026-10-14T14:58:39.814884+00:00",
+    "market_snapshot": {
+     "moneyline_away": 156,
+     "moneyline_home": -163
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "PASS",
+     "prob": null,
+     "side": null,
+     "tier": null
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "LAN202610140"
   }
  ],
- "generated_at": "2026-10-14T03:26:34.688869Z",
- "n_docs": 12,
+ "generated_at": "2026-10-14T14:58:44.511563Z",
+ "n_docs": 14,
  "sport": "MLB"
 }
