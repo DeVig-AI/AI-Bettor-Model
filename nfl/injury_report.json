@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14T12:18:52.633653Z",
+ "generated_at": "2026-10-14T17:30:18.865359Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -37,7 +37,7 @@
   ],
   "ATL": [
    {
-    "espn_updated": "2026-10-12T13:22Z",
+    "espn_updated": "2026-10-14T16:21Z",
     "injury": "Ribs",
     "name": "Michael Penix Jr.",
     "pos": "QB",
@@ -59,7 +59,7 @@
   ],
   "BAL": [
    {
-    "espn_updated": "2026-10-13T17:10Z",
+    "espn_updated": "2026-10-14T13:40Z",
     "injury": "Ankle",
     "name": "Lamar Jackson",
     "pos": "QB",
@@ -165,7 +165,7 @@
   ],
   "CHI": [
    {
-    "espn_updated": "2026-10-13T17:10Z",
+    "espn_updated": "2026-10-14T16:30Z",
     "injury": "Hamstring",
     "name": "Caleb Williams",
     "pos": "QB",
@@ -173,6 +173,16 @@
     "share_basis": "this season",
     "snap_share": 0.93,
     "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-14T17:23Z",
+    "injury": "Hamstring",
+    "name": "T.J. Edwards",
+    "pos": "LB",
+    "return_date": "2026-10-18",
+    "share_basis": "this season",
+    "snap_share": 0.88,
+    "status": "Doubtful"
    },
    {
     "espn_updated": "2026-10-13T20:16Z",
@@ -193,16 +203,6 @@
     "share_basis": "last season",
     "snap_share": 0.67,
     "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-11T18:44Z",
-    "injury": "Hamstring",
-    "name": "T.J. Edwards",
-    "pos": "LB",
-    "return_date": "2026-10-18",
-    "share_basis": "this season",
-    "snap_share": 0.88,
-    "status": "Questionable"
    },
    {
     "espn_updated": "2026-10-11T19:00Z",
@@ -248,7 +248,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-11T20:48Z",
+    "espn_updated": "2026-10-14T16:02Z",
     "injury": "Concussion",
     "name": "KC Concepcion",
     "pos": "WR",
@@ -258,7 +258,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-12T18:16Z",
+    "espn_updated": "2026-10-14T16:07Z",
     "injury": "Foot",
     "name": "Quinshon Judkins",
     "pos": "RB",
@@ -398,16 +398,6 @@
   ],
   "HOU": [
    {
-    "espn_updated": "2026-10-11T03:19Z",
-    "injury": "Foot",
-    "name": "Braden Smith",
-    "pos": "OT",
-    "return_date": "2026-10-18",
-    "share_basis": "last season",
-    "snap_share": 0.93,
-    "status": "Injured Reserve"
-   },
-   {
     "espn_updated": "2026-10-14T00:45Z",
     "injury": "Shoulder - AC Joint",
     "name": "Jalen Pitre",
@@ -452,7 +442,7 @@
   ],
   "JAX": [
    {
-    "espn_updated": "2026-10-14T01:36Z",
+    "espn_updated": "2026-10-13T19:12Z",
     "injury": "Knee",
     "name": "Anton Harrison",
     "pos": "OT",
@@ -719,7 +709,7 @@
   ],
   "NYG": [
    {
-    "espn_updated": "2026-10-14T12:01Z",
+    "espn_updated": "2026-10-14T17:19Z",
     "injury": "Calf",
     "name": "Jermaine Eluemunor",
     "pos": "OT",
@@ -741,6 +731,16 @@
   ],
   "NYJ": [
    {
+    "espn_updated": "2026-10-14T16:40Z",
+    "injury": "Finger",
+    "name": "Adonai Mitchell",
+    "pos": "WR",
+    "return_date": "2026-10-18",
+    "share_basis": "this season",
+    "snap_share": 0.75,
+    "status": "Doubtful"
+   },
+   {
     "espn_updated": "2026-10-13T17:10Z",
     "injury": "Knee",
     "name": "Dylan Parham",
@@ -748,16 +748,6 @@
     "return_date": "2026-10-18",
     "share_basis": "this season",
     "snap_share": 0.86,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-10-13T17:10Z",
-    "injury": "Finger",
-    "name": "Adonai Mitchell",
-    "pos": "WR",
-    "return_date": "2026-10-18",
-    "share_basis": "this season",
-    "snap_share": 0.75,
     "status": "Questionable"
    }
   ],
@@ -921,14 +911,14 @@
   ],
   "TB": [
    {
-    "espn_updated": "2026-10-12T19:43Z",
+    "espn_updated": "2026-10-14T15:56Z",
     "injury": "Thumb",
     "name": "Baker Mayfield",
     "pos": "QB",
-    "return_date": "2026-10-25",
+    "return_date": "2026-10-18",
     "share_basis": "this season",
     "snap_share": 0.98,
-    "status": "Out"
+    "status": "Doubtful"
    },
    {
     "espn_updated": "2026-10-13T17:10Z",
@@ -943,14 +933,14 @@
   ],
   "TEN": [
    {
-    "espn_updated": "2026-10-11T20:20Z",
+    "espn_updated": "2026-10-14T17:11Z",
     "injury": "Quadriceps",
     "name": "Kevin Winston Jr.",
     "pos": "S",
     "return_date": "2026-10-18",
     "share_basis": "this season",
     "snap_share": 1.0,
-    "status": "Questionable"
+    "status": "Doubtful"
    },
    {
     "espn_updated": "2026-10-13T17:10Z",
