@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-15T12:18:11.403561Z",
+ "generated_at": "2026-10-15T18:17:09.343684Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -49,7 +49,7 @@
   ],
   "BAL": [
    {
-    "espn_updated": "2026-10-14T22:01Z",
+    "espn_updated": "2026-10-15T17:24Z",
     "injury": "Ankle",
     "name": "Lamar Jackson",
     "pos": "QB",
@@ -930,7 +930,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-15T12:01Z",
+    "espn_updated": "2026-10-15T18:10Z",
     "injury": "Calf",
     "name": "Jermaine Eluemunor",
     "pos": "OT",
@@ -984,6 +984,16 @@
   ],
   "PHI": [
    {
+    "espn_updated": "2026-10-15T17:11Z",
+    "injury": "Calf",
+    "name": "Jalen Hurts",
+    "pos": "QB",
+    "return_date": "2026-10-26",
+    "share_basis": "this season",
+    "snap_share": 0.98,
+    "status": "Out"
+   },
+   {
     "espn_updated": "2026-10-15T01:09Z",
     "injury": "Knee",
     "name": "Landon Dickerson",
@@ -1031,16 +1041,6 @@
     "return_date": "2026-10-18",
     "share_basis": "this season",
     "snap_share": 0.83,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-10-13T17:10Z",
-    "injury": "Knee",
-    "name": "Drew Kendall",
-    "pos": "C",
-    "return_date": "2026-10-18",
-    "share_basis": "this season",
-    "snap_share": 0.75,
     "status": "Questionable"
    }
   ],
@@ -1142,7 +1142,7 @@
   ],
   "TB": [
    {
-    "espn_updated": "2026-10-14T20:25Z",
+    "espn_updated": "2026-10-15T15:54Z",
     "injury": "Thumb",
     "name": "Baker Mayfield",
     "pos": "QB",
@@ -1159,7 +1159,7 @@
     "return_date": "2026-10-18",
     "share_basis": "this season",
     "snap_share": 0.97,
-    "status": "Questionable"
+    "status": "Doubtful"
    }
   ],
   "TEN": [
@@ -1204,16 +1204,6 @@
     "share_basis": "last season",
     "snap_share": 0.78,
     "status": "Injured Reserve"
-   },
-   {
-    "espn_updated": "2026-10-13T17:10Z",
-    "injury": "Illness",
-    "name": "Nick Cross",
-    "pos": "S",
-    "return_date": "2026-10-19",
-    "share_basis": "this season",
-    "snap_share": 0.99,
-    "status": "Questionable"
    }
   ]
  }
