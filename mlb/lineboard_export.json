@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "CLE202610100"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "MIL202610120"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "TBA202610120"
   },
@@ -414,7 +414,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "TBA202610130"
   },
@@ -465,7 +465,7 @@
    "collection": "slate",
    "data": {
     "away_team": "MIL",
-    "export_hash": "6e70066780b3464f8ac14712e5dd6cfe22c0bc4dc298613a9150c824e3fb150e",
+    "export_hash": "f04dd2be9cc8f0508a784fc279c8c0627a76cc79e0e019a6dc6a436ed88efda9",
     "game_date": "2026-10-14",
     "game_id": "LAN202610140",
     "home_team": "LAD",
@@ -481,18 +481,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Robert Gasser vs Blake Snell. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 2,
-      "description": "NL Championship Series",
-      "fair_price_favored": -269,
-      "favored": "MIL",
-      "favored_prob": 0.7291,
-      "games_in_series": 7,
-      "home_wins": 0,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.2709,
-      "series_game_number": 3
-     },
      "source_snapshot_time": "2026-10-14T14:58:39.814884+00:00",
      "spread_prob": 0.6186154836112819,
      "spread_side": "MIL +1.5",
@@ -503,7 +491,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-14T14:58:44.511563Z"
+    "synced_at": "2026-10-15T03:26:49.987826Z"
    },
    "doc_id": "LAN202610140"
   },
@@ -517,7 +505,7 @@
      "side": "LAD",
      "tier": "top50"
     },
-    "export_hash": "276416d0520af77377d88c255bd525ef41dd51596286b06cac1750844394d82b",
+    "export_hash": "7adf2cf5040f2af154ca4e128e315344cb6e5647cce456e5f2556b7dce43b1cd",
     "game_date": "2026-10-14",
     "game_id": "LAN202610140",
     "home_team": "LAD",
@@ -528,10 +516,11 @@
      "moneyline_home": -163
     },
     "outcome": {
-     "away_score": null,
-     "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "away_score": 6,
+     "decision_correct": false,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 2,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -550,7 +539,7 @@
    "doc_id": "LAN202610140"
   }
  ],
- "generated_at": "2026-10-14T14:58:44.511563Z",
+ "generated_at": "2026-10-15T03:26:49.987826Z",
  "n_docs": 14,
  "sport": "MLB"
 }
