@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -106,7 +106,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "MIL202610110"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "MIL202610120"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "TBA202610120"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "TBA202610130"
   },
@@ -414,7 +414,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "LAN202610140"
   },
@@ -491,7 +491,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "CLE202610150"
   },
@@ -542,7 +542,7 @@
    "collection": "slate",
    "data": {
     "away_team": "MIL",
-    "export_hash": "0c545d954a440003eb4164ef459fd552fa5118ee7abb96b827f1f1e37e8cb890",
+    "export_hash": "4ca8ee51656ec45972be676378e990d9aceb4986b0a2292ceb9002248945e41f",
     "game_date": "2026-10-15",
     "game_id": "LAN202610150",
     "home_team": "LAD",
@@ -558,18 +558,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Shane Drohan vs Tyler Glasnow. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 3,
-      "description": "NL Championship Series",
-      "fair_price_favored": -888,
-      "favored": "MIL",
-      "favored_prob": 0.8988,
-      "games_in_series": 7,
-      "home_wins": 0,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.1012,
-      "series_game_number": 4
-     },
      "source_snapshot_time": "2026-10-15T20:23:44.808324+00:00",
      "spread_prob": 0.6016228195975482,
      "spread_side": "MIL +1.5",
@@ -580,7 +568,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-16T00:31:56.975482Z"
+    "synced_at": "2026-10-16T03:26:50.342133Z"
    },
    "doc_id": "LAN202610150"
   },
@@ -594,7 +582,7 @@
      "side": "LAD",
      "tier": "top50"
     },
-    "export_hash": "217ca715afae80ff63ebe7a59f19723397c022e7b56059525082b10f987fa70e",
+    "export_hash": "fbc9fa1f5603d927690967ff5fba17f532c33efc947dc016862ef8e70d0680f7",
     "game_date": "2026-10-15",
     "game_id": "LAN202610150",
     "home_team": "LAD",
@@ -605,10 +593,11 @@
      "moneyline_home": -144
     },
     "outcome": {
-     "away_score": null,
-     "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "away_score": 6,
+     "decision_correct": false,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 4,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -627,7 +616,7 @@
    "doc_id": "LAN202610150"
   }
  ],
- "generated_at": "2026-10-16T00:31:56.975482Z",
+ "generated_at": "2026-10-16T03:26:50.342133Z",
  "n_docs": 16,
  "sport": "MLB"
 }
