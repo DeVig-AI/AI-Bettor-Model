@@ -1,0 +1,4 @@
+# How a stock left, when the automatic SEC check can't tell or got it wrong.
+# outcome: acquired | bankrupt | other.  deal_price: per share, in the stock's own (unadjusted) dollars.
+# last_day: the last trading day (YYYY-MM-DD), or blank to match any.  A row here beats the automatic check.
+ticker,last_day,outcome,deal_price,note

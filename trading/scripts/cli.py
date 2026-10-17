@@ -1,6 +1,6 @@
 """One entry point, so you never have to remember script paths.
 
-    trader probe                  check what the free FMP plan gives (about 8 requests)
+    trader probe [--quick]        check every free data source; writes data/PROBE.md
     trader download [--status]    today's data batch (or just show progress)
     trader test-signals           run the four signals through the chamber
     trader chamber ...            e.g. trader chamber test momentum | vault momentum | count
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = {"probe": "probe_fmp.py", "download": "download.py", "chamber": "chamber.py",
+SCRIPTS = {"probe": "probe.py", "download": "download.py", "chamber": "chamber.py",
            "owner": "owner.py", "autostart": "install_autostart.py"}
 
 

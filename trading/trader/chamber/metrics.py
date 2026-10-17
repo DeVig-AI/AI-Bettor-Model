@@ -102,3 +102,36 @@ def deflated_sharpe(r: pd.Series, n_trials: int, trial_sharpes: list[float] | No
     if trial_sharpes and len(trial_sharpes) >= 2:
         var = max(var, float(np.var(trial_sharpes, ddof=1)))
     return probabilistic_sharpe(r, expected_max_sharpe(n_trials, var))
+
+
+# --- kill-switch versions (owner decision pending, DATA_HANDOFF section 5) ------
+
+def _exit_after(r: pd.Series, day, cost: float) -> pd.Series:
+    """Sell everything the day after `day` (paying one side of costs), then hold cash."""
+    out = r.copy()
+    after = out.index > day
+    if after.any():
+        first = out.index[after][0]
+        out[after] = 0.0
+        out[first] = -cost
+    return out
+
+
+def kill_switch_a(r: pd.Series, cost: float, dd: float) -> tuple[pd.Series, str | None]:
+    """A: as written. A 15% drop from the bot's own peak sells everything; it stays in cash
+    (in a backtest nobody restarts it)."""
+    eq = (1 + r.fillna(0)).cumprod()
+    hit = eq.index[(eq / eq.cummax() - 1) <= -dd]
+    if not len(hit):
+        return r, None
+    return _exit_after(r, hit[0], cost), str(hit[0].date())
+
+
+def kill_switch_b(r: pd.Series, bench: pd.Series, cost: float, dd: float) -> tuple[pd.Series, str | None]:
+    """B: fires only when the bot has fallen 15% behind buy-and-hold (relative drawdown)."""
+    b = bench.reindex(r.index).fillna(0)
+    rel = (1 + r.fillna(0)).cumprod() / (1 + b).cumprod()
+    hit = rel.index[(rel / rel.cummax() - 1) <= -dd]
+    if not len(hit):
+        return r, None
+    return _exit_after(r, hit[0], cost), str(hit[0].date())

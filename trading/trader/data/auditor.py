@@ -172,3 +172,63 @@ def write_report(res: AuditResult, path: Path = REPORT, title_extra: str = "") -
         "Full list: data/cache/tables/exclusions.parquet"]
     path.write_text("\n".join(body) + "\n")
     return path
+
+
+def audit_fundamentals_sec(fd: pd.DataFrame, today: date, res: AuditResult) -> pd.DataFrame:
+    """SEC 10-K facts in long form (sec_facts.parse_facts)."""
+    if fd.empty:
+        res.say("- Fundamentals (SEC): none downloaded yet.")
+        return fd
+    n0 = len(fd)
+    bad = (fd["filed"] > pd.Timestamp(today)) | (fd["filed"] < fd["period_end"])
+    fd = fd[~bad]
+    switched = fd.groupby(["symbol", "field"])["tag"].nunique()
+    res.say(f"- Fundamentals (SEC 10-K): {len(fd):,} of {n0:,} facts usable for {fd['symbol'].nunique()} stocks; "
+            f"{int(bad.sum())} dropped (filed before period end or in the future); "
+            f"{int(fd['restated'].sum())} restatements kept as separate, later-dated rows; "
+            f"{int((switched > 1).sum())} stock-fields switched XBRL tags over time (synonyms used). "
+            f"Earliest filing used: {fd['filed'].min().date()}.")
+    return fd
+
+
+def report_stack(res: AuditResult, prices: pd.DataFrame, conflicts: pd.DataFrame, seam_notes: list[str],
+                 resolved: pd.DataFrame, gaps: pd.DataFrame, cov: dict | None, wiki_mismatches: list[str],
+                 notes: list[str]) -> None:
+    """Plain-English summary of the stitched free stack (DATA_HANDOFF sections 2-3)."""
+    if len(prices):
+        src = prices["source"].value_counts(normalize=True)
+        res.say("- Price rows by source: " + ", ".join(f"{k} {v:.1%}" for k, v in src.items()))
+    if len(conflicts):
+        worst = conflicts.groupby("symbol").size().sort_values(ascending=False).head(10)
+        res.say(f"- Source disagreements over 1% on the same day: {len(conflicts):,} stock-days in "
+                f"{conflicts['symbol'].nunique()} stocks. Most: " + ", ".join(f"{s} ({n})" for s, n in worst.items())
+                + ". Full list: tables/conflicts.parquet")
+    else:
+        res.say("- Source disagreements over 1%: none found (or no overlapping sources yet).")
+    if seam_notes:
+        res.say(f"- {len(seam_notes)} places where a stock switched source with no overlapping day; return across "
+                "the seam is unknown, so those days are excluded.")
+    if len(gaps):
+        res.say(f"- {len(gaps)} stocks stop only because a frozen source stops (e.g. WIKI in March 2018) and no "
+                "other source picks them up. Those member-days are missing, not delisted.")
+    if len(resolved):
+        by = resolved["rule"].value_counts()
+        res.say(f"- Delisted while possibly held: {len(resolved)} stocks. " +
+                "; ".join(f"{k}: {v}" for k, v in by.items()) +
+                ". Each backtest report shows how much these moved its result. List: tables/delistings.parquet;"
+                " fill known deal prices in data/reference/delisting_outcomes.csv")
+    if cov is not None:
+        res.say(f"- COVERAGE GATE: {cov['missing']:.1%} of {cov['member_days']:,} S&P 500 member-days have no "
+                f"usable price (limit {0.05:.0%}).")
+        worst = cov["by_year"].sort_values("missing", ascending=False).head(5)
+        res.say("  - Worst years: " + ", ".join(f"{y} {m:.1%}" for y, m in worst["missing"].items()))
+        if not cov["passes"]:
+            res.fatal = True
+            res.say("  - **FAILED. The free data isn't trustworthy enough. Owner decision needed: one month of "
+                    "EODHD (~$20-40)? Nothing will be bought without your OK.**")
+    if wiki_mismatches:
+        res.say(f"- Wikipedia cross-check: {len(wiki_mismatches)} changes don't match the membership file within "
+                "7 days (neither side was picked). First few: " + "; ".join(wiki_mismatches[:5]))
+        (DATA / "WIKIPEDIA_MISMATCHES.txt").write_text("\n".join(wiki_mismatches) + "\n")
+    for n in notes:
+        res.say(f"- Note: {n}")

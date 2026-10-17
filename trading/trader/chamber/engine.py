@@ -88,8 +88,11 @@ def ensure_bundle(prices: pd.DataFrame) -> str:
 
 
 def run(prices: pd.DataFrame, schedule: dict[pd.Timestamp, dict[str, float]], start, end,
-        cost_per_side: float, stop_loss: float | None, capital: float = CAPITAL) -> RunResult:
-    """Trade toward each schedule entry the session after its date. Returns daily returns."""
+        cost_per_side: float, stop_loss: float | None, capital: float = CAPITAL,
+        freeze_after=None) -> RunResult:
+    """Trade toward each schedule entry the session after its date. Returns daily returns.
+    freeze_after: from the next day on, place no orders at all (kill-switch version C: pause,
+    keep positions). Delisted stocks are still closed out by Zipline at their final price."""
     from zipline import run_algorithm
     from zipline.api import (
         commission,
@@ -116,6 +119,8 @@ def run(prices: pd.DataFrame, schedule: dict[pd.Timestamp, dict[str, float]], st
 
     def handle_data(ctx, data):
         today = ctx.get_datetime().tz_localize(None).normalize()
+        if freeze_after is not None and today > pd.Timestamp(freeze_after):
+            return
         # latest decision made at or before today's close; orders placed now fill
         # at the next session's close
         i = pd.Index(keys).searchsorted(today, side="right") - 1

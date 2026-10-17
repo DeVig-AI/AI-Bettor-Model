@@ -28,10 +28,10 @@ never seen. Nothing else gets built until that happens.
 | trader/logbook.py | append-only hash-chained decision log |
 | trader/signals.py | momentum, value, insider, low-vol |
 | trader/portfolio.py | top 20%, equal weight, stock/sector caps |
-| trader/data/ | FMP client, SEC insider sets, membership, auditor, table builder |
+| trader/data/ | sources (WIKI, Tiingo, Alpaca, Stooq, FMP), merge, sec_facts, sec_insider, delistings, coverage, wikipedia, auditor |
 | trader/chamber/ | Zipline engine, metrics (deflated Sharpe), registry + vault lock, Chamber |
-| scripts/ | download, probe_fmp, chamber, owner, install_autostart, pre-commit |
-| data/reference/ | S&P 500 historical membership (fja05680/sp500, MIT) |
+| scripts/ | cli, probe, download, chamber, owner, install_autostart, pre-commit |
+| data/reference/ | membership file + delisting_outcomes.csv + ticker_cik_overrides.csv (hand-filled) |
 | data/cache/, logs/, state/, reports/ | local only, gitignored |
 
 ## Commands
@@ -39,14 +39,20 @@ Local setup: `setup.ps1` (Windows) or `setup.sh` (Mac/Linux), Python 3.12, venv 
 Everything goes through `trader.bat` / `trader.sh` -> scripts/cli.py:
 ```
 trader selftest [--all]                   # fast tests; --all adds slow chamber tests (~5 min)
-trader probe                              # once, after FMP key is in .env
-trader download [--status]                # daily batch: FMP budget, SEC, rebuild tables, audit
+trader probe [--quick]                    # checks every free source, writes data/PROBE.md
+trader download [--status|--fmp|--no-wait]  # free stack -> merge -> audit -> coverage gate
 trader chamber test momentum | test-all | vault NAME | count
 trader owner status | stop | restart
 trader amend status | propose | approve | approve-initial
 trader autostart [--yes]
 .venv/bin/ruff check .
 ```
+
+## Current orders (DATA_HANDOFF v2 wins over HANDOFF)
+No live machinery until a signal passes validation. Order: probe at home -> download -> coverage gate
+(<=5% member-days missing, else ask owner about paid fallback) -> momentum -> other three -> STOP and report.
+No combinations until the owner has seen single-signal results. Kill switch A/B/C shown in every report;
+don't change the constitution until the owner picks.
 
 ## Build order (HANDOFF section 5)
 1 data + auditor (built) 2 chamber (built) 3 single signals (waiting on data)

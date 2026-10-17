@@ -92,6 +92,7 @@ class Hunt(_Strict):
 class PassBar(_Strict):
     costs: Costs
     splits: Splits
+    signal_start: dict[str, str] = {}
     periods: dict[str, tuple[str, str]]
     rules: Rules
     hunt: Hunt

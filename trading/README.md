@@ -23,14 +23,15 @@ This makes a private Python environment in `trading/.venv`, installs everything,
 and runs a quick self-test. It should end with "Ready".
 
 ## 3. Paste your keys
-Open `trading/.env` in any text editor and fill in the Alpaca paper keys, FMP key and your email for the SEC.
+Open `trading/.env` in any text editor. Needed: Alpaca paper keys, your email for the SEC, a free
+Nasdaq Data Link key (WIKI prices to 2018) and a free Tiingo key. Stooq and FMP are optional.
 
 ## 4. Run
 Windows uses `.\trader.bat`, Mac/Linux uses `./trader.sh`. Same commands:
 
 | command | what it does |
 |---|---|
-| `trader probe` | checks what free FMP gives you (~8 requests). Read `data/FMP_PROBE.md` |
+| `trader probe` | checks every free source + times a backtest (first run downloads ~0.5 GB). Read `data/PROBE.md` |
 | `trader amend approve-initial` | locks the constitution (once) |
 | `trader download` | today's data batch + audit. Read `data/AUDIT_REPORT.md` |
 | `trader download --status` | how far along the download is |

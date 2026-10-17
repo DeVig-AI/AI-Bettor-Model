@@ -83,3 +83,12 @@ def test_turnover_reported(prices):
                      DAYS[0], DAYS[-1], 0.0015, None)
     assert res.rebalances == 2
     assert res.turnover == pytest.approx(0.5, abs=0.01)  # cash->100%: 0.5; swap half: 0.5
+
+
+def test_freeze_keeps_positions_and_stops_trading(prices):
+    # kill-switch version C: after the freeze, the day-60 switch into JMP never happens
+    sched = {DAYS[0]: {"GRW": 1.0}, DAYS[60]: {"JMP": 1.0}}
+    frozen = engine.run(prices, sched, DAYS[0], DAYS[-1], 0.0015, 0.15, freeze_after=DAYS[30])
+    held = (1 + frozen.returns).prod() - 1
+    assert frozen.rebalances == 1
+    assert held == pytest.approx((1 - 0.0015) * 1.001 ** (len(DAYS) - 2) - 1, abs=2e-3)   # still holding GRW

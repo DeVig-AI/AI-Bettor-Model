@@ -14,7 +14,7 @@ N = 40
 
 @pytest.fixture(scope="module")
 def data():
-    days = mcal.get_calendar("XNYS").valid_days("2001-01-02", "2022-06-30").tz_localize(None)
+    days = mcal.get_calendar("XNYS").valid_days("2001-01-02", "2023-03-31").tz_localize(None)
     rng = np.random.default_rng(11)
     rows = []
     syms = [f"S{chr(65 + i // 26)}{chr(65 + i % 26)}" for i in range(N)]
@@ -83,7 +83,10 @@ def test_full_evaluation_and_one_vault_run(chamber):
     runs = chamber.reg.runs()
     assert len(runs) == 8                              # 2 splits x (SPY, EW, base, stress)
     assert (chamber.reports / "momentum_validation.md").exists()
-    assert "SYNTHETIC" in (chamber.reports / "momentum_validation.md").read_text()
+    text = (chamber.reports / "momentum_validation.md").read_text()
+    assert "SYNTHETIC" in text and "Kill-switch versions" in text and "C: pause, keep positions" in text
+    assert "Delisting rule:" in text
+    assert v["periods"]["bull_2009_2019"] is not None      # spans train + validation
 
     # force the gate open to test the vault mechanics: one run, then locked forever
     chamber.reg.mark_passed_validation("momentum", {"forced": "test"})

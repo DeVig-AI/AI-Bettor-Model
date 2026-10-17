@@ -1,66 +1,55 @@
-"""The daily download batch end to end, with a fake FMP and no network."""
+"""The daily download batch end to end on sample files, no network."""
 import importlib.util
 import json
+from pathlib import Path
 
 import pandas as pd
-import pandas_market_calendars as mcal
 
 from trader.config import ROOT
-from trader.data import auditor, fmp, sec_insider, store
+from trader.data import auditor, sec_facts, sec_insider, store
 from trader.logbook import Logbook
 
-DAYS = [d.strftime("%Y-%m-%d") for d in mcal.get_calendar("XNYS").valid_days("2001-01-02", "2001-03-30")]
+FIX = Path(__file__).parent / "fixtures"
 
 
-class FakeFMP:
-    def __init__(self):
-        self.calls = 0
-
-    def get(self, url, params=None, timeout=None):
-        self.calls += 1
-        ep = url.split("/stable/")[1]
-        sym = params.get("symbol", "")
-        if ep == "delisted-companies":
-            body = [{"symbol": "OLDCO"}] if params["page"] == 0 else []
-        elif ep == "profile":
-            body = [{"symbol": sym, "sector": "Tech", "cik": "1"}]
-        elif ep.startswith("historical-price-eod"):
-            body = [] if sym == "GONE" else [{"date": d, "adjOpen": 10, "adjHigh": 10, "adjLow": 10, "adjClose": 10,
-                                               "close": 10, "volume": 5} for d in DAYS]
-        else:
-            body = []
-        r = type("R", (), {})()
-        r.status_code, r.content, r.text = 200, json.dumps(body).encode(), json.dumps(body)
-        r.json = lambda: body
-        return r
-
-
-def test_download_batch(tmp_path, monkeypatch):
+def test_download_batch_on_sample_files(tmp_path, monkeypatch):
     spec = importlib.util.spec_from_file_location("download", ROOT / "scripts" / "download.py")
     dl = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(dl)
 
-    fake = FakeFMP()
-    real_init = fmp.FMP.__init__
-
-    def init(self, key, *a, **k):
-        real_init(self, "test-key", tmp_path / "fmp", fake, daily_budget=12)
-    monkeypatch.setattr(fmp.FMP, "__init__", init)
-    monkeypatch.setattr(dl, "universe", lambda: ["SPY", "AAA", "GONE"])
-    monkeypatch.setattr(sec_insider, "download", lambda ua: ["SEC skipped in test"])
-    monkeypatch.setattr(sec_insider, "build_table", lambda: (pd.DataFrame(), []))
+    monkeypatch.setenv("WIKI_PRICES_FILE", str(FIX / "wiki_sample.csv"))
+    for k in ("ALPACA_API_KEY", "TIINGO_API_KEY", "STOOQ_API_KEY", "STOOQ_BULK_FILE", "NASDAQ_DATA_LINK_API_KEY"):
+        monkeypatch.setenv(k, "")
+    monkeypatch.setattr(dl, "load_dotenv", lambda *a, **k: None)
+    monkeypatch.setattr(dl, "universe", lambda: ["SPY", "AAA", "BRK.B"])
     monkeypatch.setattr(store, "TABLES", tmp_path / "tables")
-    monkeypatch.setattr(auditor, "REPORT", tmp_path / "AUDIT.md")
-    monkeypatch.setattr(dl, "write_table", lambda n, df: df.to_parquet(tmp_path / f"{n}.parquet"))
+    monkeypatch.setattr(dl, "TABLES", tmp_path / "tables")
+    tables = {}
+
+    def write(name, df):
+        tables[name] = df
+        (tmp_path / "tables").mkdir(exist_ok=True)
+        df.to_parquet(tmp_path / "tables" / f"{name}.parquet")
+    monkeypatch.setattr(dl, "write_table", write)
+    monkeypatch.setattr(dl, "has_table", lambda n: (tmp_path / "tables" / f"{n}.parquet").exists())
+    monkeypatch.setattr(dl, "read_table", lambda n: pd.read_parquet(tmp_path / "tables" / f"{n}.parquet"))
+    monkeypatch.setattr(sec_insider, "download", lambda ua: ["SEC insider skipped in test"])
+    monkeypatch.setattr(sec_insider, "build_table", lambda: (pd.DataFrame(), []))
+    facts = sec_facts.parse_facts(json.loads((FIX / "companyfacts_sample.json").read_text()), "AAA")
+    monkeypatch.setattr(dl, "get_sec", lambda t, i, n: (
+        pd.DataFrame({"symbol": t, "cik": [None, 1, None], "sector": [None, "Shops", None], "name": None}), facts, {}))
+    monkeypatch.setattr(dl, "wiki_check", lambda n: ["2009-03-01 added X: membership file starts it never"])
     original_write = auditor.write_report
     monkeypatch.setattr(auditor, "write_report", lambda res: original_write(res, tmp_path / "AUDIT.md"))
+    monkeypatch.setattr(auditor, "DATA", tmp_path)
     monkeypatch.setattr(dl, "Logbook", lambda: Logbook(tmp_path / "l"))
     monkeypatch.setattr(dl.sys, "argv", ["download.py"])
 
     assert dl.run() == 0
-    assert fake.calls == 12                      # stopped at the daily budget
-    px = pd.read_parquet(tmp_path / "prices.parquet")
-    assert set(px["symbol"]) == {"SPY", "AAA"}   # GONE had no prices: skipped, not invented
+    px = tables["prices"]
+    assert set(px["symbol"]) == {"AAA", "BRK.B"} and set(px["source"]) == {"wiki"}
+    assert set(tables["fundamentals"]["field"]) == {"net_income", "equity", "shares"}
     text = (tmp_path / "AUDIT.md").read_text()
-    assert "budget" in text.lower() or "requests today" in text
-    assert "SEC skipped in test" in text
+    assert "COVERAGE GATE" in text and "FAILED" in text        # 2 stocks can't cover the S&P 500
+    assert "Owner decision needed" in text
+    assert "Alpaca: no keys" in text and "Wikipedia cross-check" in text

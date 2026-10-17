@@ -214,20 +214,35 @@ def test_value_uses_only_filed_data_and_split_adjusts():
     idx = pd.bdate_range("2019-01-01", periods=300)
     adj = pd.DataFrame({"CHP": 10.0, "EXP": 10.0}, index=idx)
     raw = adj.copy()
-    raw.loc[:idx[289], "CHP"] = 20.0       # 2:1 split on day 290, after the last filing
+    raw.loc[:idx[289], "CHP"] = 20.0       # 2:1 split on day 290, after the filing
     rows = []
-    for sym, ni, eq in (("CHP", 10.0, 100.0), ("EXP", 1.0, 50.0)):
-        for pe in pd.date_range("2019-03-31", periods=4, freq="QE"):
-            rows.append({"symbol": sym, "period_end": pe, "available_date": pe + pd.Timedelta(days=30),
-                         "net_income": ni, "shares": 10.0, "equity": eq})
+    filed = pd.Timestamp("2019-03-01")
+    for sym, ni, eq in (("CHP", 40.0, 100.0), ("EXP", 4.0, 50.0)):
+        for fld, val in (("net_income", ni), ("equity", eq), ("shares", 10.0)):
+            rows.append({"symbol": sym, "field": fld, "tag": "t", "period_start": pd.NaT,
+                         "period_end": pd.Timestamp("2018-12-31"), "value": val, "filed": filed,
+                         "available_date": filed + pd.Timedelta(days=1), "form": "10-K", "accn": "x",
+                         "restated": False})
     fund = pd.DataFrame(rows)
-    assert fund["available_date"].max() < idx[290]
     v = S.value(panel(adj, close=raw, fund=fund).upto(idx[-1]), ["CHP", "EXP"], {})
     # CHP truly has 20 shares x $10 = $200 cap -> B/M 0.5, same as EXP (50/100): tied B/M rank.
     # Without the split fix CHP's cap would be $100 and its B/M would rank alone at the top (score 1.0).
     assert v["CHP"] == pytest.approx(0.875) and v["EXP"] == pytest.approx(0.625)
-    early = panel(adj, close=raw, fund=fund).upto(pd.Timestamp("2019-06-01"))
-    assert S.value(early, ["CHP", "EXP"], {}).empty   # 4 quarters not yet filed
+    early = panel(adj, close=raw, fund=fund).upto(pd.Timestamp("2019-02-15"))
+    assert S.value(early, ["CHP", "EXP"], {}).empty   # 10-K not yet filed
+
+
+def test_value_skips_stale_reports():
+    idx = pd.bdate_range("2019-01-01", "2021-06-30")
+    adj = pd.DataFrame({"OLD": 10.0}, index=idx)
+    filed = pd.Timestamp("2019-03-01")
+    fund = pd.DataFrame([{"symbol": "OLD", "field": f, "tag": "t", "period_start": pd.NaT,
+                          "period_end": pd.Timestamp("2018-12-31"), "value": 10.0, "filed": filed,
+                          "available_date": filed, "form": "10-K", "accn": "x", "restated": False}
+                         for f in ("net_income", "equity", "shares")])
+    sk = {}
+    assert S.value(panel(adj, fund=fund).upto(idx[-1]), ["OLD"], sk).empty
+    assert "18 months" in sk["value"][0][1]
 
 
 def test_insider_counts_distinct_buyers_last_90_days():

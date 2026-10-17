@@ -14,6 +14,7 @@ import pandas as pd
 MOM_LOOKBACK, MOM_SKIP = 252, 21     # 12 months, skipping the most recent month
 VOL_LOOKBACK, VOL_MIN_OBS = 252, 240
 INSIDER_DAYS = 90
+STALE_DAYS = 548   # 18 months
 
 
 @dataclass
@@ -61,10 +62,13 @@ def low_volatility(p: Panel, members, skipped: dict) -> pd.Series:
 
 
 def value(p: Panel, members, skipped: dict) -> pd.Series:
-    """Average rank of earnings yield (TTM net income / market cap) and book-to-market.
+    """Average rank of earnings yield (annual net income / market cap) and book-to-market.
 
-    Market cap uses shares from the latest filing, carried to today with the
-    adjustment-factor ratio so a later stock split doesn't distort it.
+    Fundamentals are SEC 10-K facts in long form (field, period_end, value, available_date),
+    already cut to what was filed by `day`. For each field the latest period is used, in its
+    latest version filed by then (a restatement counts only from its own filing date).
+    Market cap = shares from the filing x today's price, carried forward with the
+    price-adjustment factor so a split after the filing doesn't distort it.
     """
     f = p.fundamentals
     if f.empty:
@@ -73,25 +77,33 @@ def value(p: Panel, members, skipped: dict) -> pd.Series:
     day = p.adj_close.index[-1]
     ep, bm = {}, {}
     for sym, g in f[f["symbol"].isin(members)].groupby("symbol"):
-        g = g.sort_values("available_date").drop_duplicates("period_end", keep="last").sort_values("period_end")
-        last4 = g.tail(4)
-        if len(last4) < 4 or last4["net_income"].isna().any() or \
-                (last4["period_end"].diff().dt.days.iloc[1:] > 100).any():
-            _skip(skipped, "value", [sym], "fewer than 4 consecutive quarters known")
+        latest = {}
+        for fld in ("net_income", "equity", "shares"):
+            gf = g[g["field"] == fld]
+            if gf.empty:
+                continue
+            last = gf[gf["period_end"] == gf["period_end"].max()].sort_values("available_date").iloc[-1]
+            latest[fld] = last
+        if "net_income" not in latest or "shares" not in latest:
+            _skip(skipped, "value", [sym], "no annual earnings or share count filed yet")
             continue
-        latest = g.iloc[-1]
+        if (day - latest["net_income"]["period_end"]).days > STALE_DAYS:
+            _skip(skipped, "value", [sym], "latest annual report is over 18 months old")
+            continue
+        sh = latest["shares"]
         try:
-            filed = p.adj_close.index[p.adj_close.index.searchsorted(latest["available_date"]) - 1]
+            filed = p.adj_close.index[p.adj_close.index.searchsorted(sh["available_date"]) - 1]
             f_then = p.adj_close.at[filed, sym] / p.close.at[filed, sym]
-            mcap = p.adj_close.at[day, sym] * latest["shares"] / f_then
+            mcap = p.adj_close.at[day, sym] * sh["value"] / f_then
         except (KeyError, IndexError, ZeroDivisionError):
             mcap = np.nan
         if not np.isfinite(mcap) or mcap <= 0 or p.excluded.get(sym, pd.Series(dtype=bool)).iloc[-1:].any():
             _skip(skipped, "value", [sym], "no market cap (missing raw price or shares)")
             continue
-        ep[sym] = last4["net_income"].sum() / mcap
-        if pd.notna(latest["equity"]) and latest["equity"] > 0:
-            bm[sym] = latest["equity"] / mcap
+        ep[sym] = latest["net_income"]["value"] / mcap
+        eq = latest.get("equity")
+        if eq is not None and eq["value"] > 0:
+            bm[sym] = eq["value"] / mcap
         else:
             _skip(skipped, "value", [sym], "book equity missing or negative")
     both = pd.DataFrame({"ep": pd.Series(ep, dtype=float), "bm": pd.Series(bm, dtype=float)}).dropna()

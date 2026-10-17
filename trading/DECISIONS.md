@@ -81,3 +81,33 @@ One line each: what, and why. Newest at the bottom. Dates are when decided.
 - .gitattributes forces LF line endings so a Windows checkout can't change the constitution's hash and lock trading out.
 - Decision log always written with LF so its hash chain is the same on every OS.
 - Not tested on real Windows or Mac hardware from here; setup.ps1 is untested PowerShell.
+
+## 2026-10-17: DATA_HANDOFF v2 (free stack)
+- Live machinery (daily run, heartbeat, watchdog, alerts, HTML report) NOT built, per DATA_HANDOFF section 0.
+- Sources, one job each: WIKI (to 2018-03-27), Alpaca (2016+), Tiingo (only names still missing, post-2018 gaps first), Stooq (backup), SEC (CIKs, sectors, fundamentals, filing history, insider). FMP only with `--fmp`.
+- Merge priority when sources overlap: WIKI > Tiingo > Alpaca > FMP > Stooq ("most complete adjustment history": WIKI has explicit split and dividend columns; Stooq has no raw prices).
+- Adjusted prices are spliced by daily returns, not levels: each source anchors adjustments at a different date, so pasting levels would fake a jump at every seam.
+- Overlap check: raw closes compared directly when both sources have them; otherwise adjusted closes compared after removing the 20-day rolling median ratio (so different anchors aren't "conflicts"). Over 1% is logged.
+- A source switch with no overlapping day (unknown return across the seam): logged, return set to 0, and 7 days either side excluded.
+- Alpaca: history to the last month-end only, so every page is cacheable and never re-downloaded; backtests don't need the last few days.
+- Tiingo budget kept under the reported limits: 480 symbols/month, 45/hour, 950/day. Tiingo's free ticker list is checked first so the monthly symbol cap isn't spent on names it doesn't have. The download sleeps through the hourly cap (up to 8 hours) unless `--no-wait`.
+- Stooq needs an API key from a captcha page since 2026 (found when checking); supported via STOOQ_API_KEY or a manually downloaded bulk zip. Backup only.
+- Delisting rule: bankrupt (8-K item 1.03) and unexplained = -100%. Acquired (8-K item 2.01 or merger proxy/tender filings) with a deal price in data/reference/delisting_outcomes.csv = deal price.
+- DEVIATION: acquired with NO deal price on file = last traded price, flagged "deal price not checked", instead of -100%. Reason: we can't parse deal prices out of filings automatically, a cash-deal target trades at about the deal price, and booking real acquisitions at -100% would wreck the results for a reason that has nothing to do with the signal. Every such case is listed; fill the CSV to replace it.
+- "Prices stop" vs "stock stopped": if the last price falls within 10 days of a frozen source's end (WIKI, 2018-03-27), it's a coverage gap, not a delisting. Only stocks whose prices stop while in the index (or within 35 days of leaving) get the delisting rule.
+- The final-price row is dated the next trading session and tagged source=delisting_rule; a -100% is stored as $0.001 (Zipline can't store 0).
+- Each report shows how many delisting events hit a held stock and their total effect on the portfolio.
+- Sectors: SEC SIC codes mapped to the 12 Fama-French industries (a published, fixed mapping), replacing FMP profiles. Still today's code, not historical.
+- In backtests, stocks with no known sector go into one "Unknown" bucket under the 25% cap instead of being skipped: skipping them would drop mostly old delisted names, i.e. survivorship bias. Live trading still drops unknown-sector stocks.
+- Ticker -> CIK: SEC's current ticker list, then tickers seen on Form 4 filings (2006+), then data/reference/ticker_cik_overrides.csv. Older departed names often have no CIK: no sector, no fundamentals, and "unexplained" (-100%) if they delisted while held. Counted in the audit.
+- Fundamentals: SEC companyfacts, 10-K/10-K/A only, flows 350-380 days, ordered tag synonyms (no mixing tags within one period), value stamped with first filing date, usable the day after. A restated value is kept as its own row and used only from its own filing date; the original is never overwritten. Same value re-reported later (prior-year comparative) is dropped.
+- Value signal now uses annual 10-K data (latest annual earnings, latest book equity, cover-page share count) instead of 4 quarters; skipped if the latest annual report is over 18 months old.
+- Value runs from 2010-01-01, insider from 2006-07-01; their SPY and equal-weight benchmarks start on the same date. Reports say plainly when a signal has no 2008 test.
+- Rule 3 (market periods) counts only periods a run covers at least 80% of, and needs more than zero tested; untested periods are named in the report. Before the vault, the 2022 bear can't be tested.
+- BUG FIXED: market periods were judged inside one split, so the 2009-2019 bull (which spans train and validation) was never tested. Runs are now joined across splits before judging periods.
+- Coverage gate: share of S&P 500 member-days (2001 onward) with a usable price; excluded days count as missing. Over 5% missing = RED and the report asks the owner about the paid fallback.
+- Wikipedia cross-check: changes more than 7 days off from the membership file are listed in data/WIKIPEDIA_MISMATCHES.txt. Neither side is picked.
+- Kill switch (owner deciding): constitution unchanged. Reports show A (sell and stop), B (fire only if 15% behind SPY, relative drawdown), C (no new orders, keep positions; engine rerun frozen from the trigger day). In backtests nobody restarts after A or C. The pass bar is judged with none of them.
+- Probe speed test runs on a synthetic universe the same size as the real one (the real data isn't downloaded when the probe runs); every real chamber run also records its own time.
+- Checked against the web, not tested: Tiingo 500 symbols/month and 50/hour agree across sources; 1,000/day comes from one older article. Alpaca free history from 2016 with SIP bars confirmed in Alpaca's docs. WIKI's current export status could not be confirmed; the probe checks it, and a Kaggle copy works via WIKI_PRICES_FILE.
+- Added lxml (needed by pandas to read the Wikipedia table).

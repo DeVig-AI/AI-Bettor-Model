@@ -13,7 +13,14 @@ validate_start = "2015-01-01"
 validate_end = "2020-12-31"
 vault_start = "2021-01-01"  # locked: one run per candidate, result is final
 
-# Market periods for rule 3. Fixed now.
+# Signals whose free data starts later (DATA_HANDOFF section 3). Their benchmarks start
+# on the same date. Value has no 2008 test; every value report says so.
+[signal_start]
+value = "2010-01-01"     # free point-in-time fundamentals (SEC XBRL) start ~2009
+insider = "2006-07-01"   # SEC insider data sets start 2006 Q1; 90-day lookback
+
+# Market periods for rule 3. Fixed now. A period counts only if a run covers 80%+ of it;
+# untested periods are left out of the count and the report says so.
 [periods]
 crash_2008 = ["2007-10-01", "2009-03-31"]
 bull_2009_2019 = ["2009-04-01", "2019-12-31"]
