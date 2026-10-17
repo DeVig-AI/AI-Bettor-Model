@@ -35,16 +35,17 @@ never seen. Nothing else gets built until that happens.
 | data/cache/, logs/, state/, reports/ | local only, gitignored |
 
 ## Commands
+Local setup: `setup.ps1` (Windows) or `setup.sh` (Mac/Linux), Python 3.12, venv in `.venv/`.
+Everything goes through `trader.bat` / `trader.sh` -> scripts/cli.py:
 ```
-pip install -r requirements.txt
-python -m pytest -q                       # all tests (~6 min; chamber tests are slow)
-python -m pytest -q --ignore=tests/test_chamber.py   # fast
-ruff check .
-python scripts/probe_fmp.py               # once, after FMP key is in .env
-python scripts/download.py [--status]     # daily batch: FMP budget, SEC, rebuild tables, audit
-python scripts/chamber.py test momentum | test-all | vault NAME | count
-python scripts/owner.py status | stop | restart
-python -m trader.amend status | propose | approve | approve-initial
+trader selftest [--all]                   # fast tests; --all adds slow chamber tests (~5 min)
+trader probe                              # once, after FMP key is in .env
+trader download [--status]                # daily batch: FMP budget, SEC, rebuild tables, audit
+trader chamber test momentum | test-all | vault NAME | count
+trader owner status | stop | restart
+trader amend status | propose | approve | approve-initial
+trader autostart [--yes]
+.venv/bin/ruff check .
 ```
 
 ## Build order (HANDOFF section 5)

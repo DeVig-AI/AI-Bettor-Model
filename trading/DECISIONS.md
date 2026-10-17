@@ -72,3 +72,12 @@ One line each: what, and why. Newest at the bottom. Dates are when decided.
 - rtk, claude-token-optimizer, claude-context-optimizer, code-review-graph: names exist on PyPI/npm but not verified to be the tools described; optional, skipped.
 - Later-phase tools (VectorBT, PyPortfolioOpt, APScheduler, Streamlit, OpenRouter, LiteLLM): not installed, per phasing.
 - Reference backtester rebuilding membership via the Internet Archive: couldn't find it by search. Not needed: fja05680/sp500 gives membership; delisted prices are the real gap.
+
+## 2026-10-17: running on the owner's computer
+- Python 3.12 required: bcolz-zipline (needed by Zipline) has no ready-made Windows/Mac package for 3.13, and numpy 2.5 needs 3.12+.
+- Checked by a clean install on 3.12 using only ready-made packages (no compiler): all 121 tests pass.
+- Pinned empyrical-reloaded 0.5.12: without it pip picked 0.5.9, which crashes on numpy 2. peewee 3.17.3 pinned with it; installs without a compiler.
+- Private environment in trading/.venv; `trader.bat` / `trader.sh` wrap every command so nothing needs activating.
+- .gitattributes forces LF line endings so a Windows checkout can't change the constitution's hash and lock trading out.
+- Decision log always written with LF so its hash chain is the same on every OS.
+- Not tested on real Windows or Mac hardware from here; setup.ps1 is untested PowerShell.

@@ -57,7 +57,7 @@ class Logbook:
         }
         line = json.dumps(entry, sort_keys=True, default=str)
         # "a" mode: the log is only ever appended to
-        with self.path.open("a") as f:
+        with self.path.open("a", newline="\n") as f:
             f.write(line + "\n")
             f.flush()
             os.fsync(f.fileno())

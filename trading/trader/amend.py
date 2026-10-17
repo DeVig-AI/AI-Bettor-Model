@@ -50,7 +50,7 @@ def load_verified(path: Path = CONSTITUTION_PATH, lock: Path = LOCK_PATH) -> tup
     c = parse_constitution(Path(path).read_text())
     sha = file_sha256(path)
     if not Path(lock).exists():
-        raise ConstitutionError("No approved constitution lock. Owner: run `python -m trader.amend approve-initial`.")
+        raise ConstitutionError("No approved constitution lock. Owner: run `trader amend approve-initial`.")
     if json.loads(Path(lock).read_text())["sha256"] != sha:
         raise ConstitutionError("Constitution file changed without an approved amendment. Trading refused.")
     return c, sha
