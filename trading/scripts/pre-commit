@@ -1,0 +1,8 @@
+#!/bin/sh
+# Lint + test gate for trading/. Install: sh trading/scripts/install_hooks.sh
+# Blocks the commit if ruff or the fast tests fail. Only runs when trading/ files are staged,
+# so the automated sports commits in this repo are untouched.
+git diff --cached --name-only | grep -q '^trading/' || exit 0
+cd "$(git rev-parse --show-toplevel)/trading" || exit 1
+ruff check . || { echo "ruff failed: commit blocked"; exit 1; }
+python -m pytest -q -x --ignore=tests/test_chamber.py || { echo "tests failed: commit blocked"; exit 1; }

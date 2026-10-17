@@ -1,0 +1,31 @@
+# THE CONSTITUTION. The risk officer enforces this file. It overrides every
+# agent, vote and strategy. Hard limits live here and in code, never in AI judgment.
+#
+# Changing this file: only the owner, with a 24-hour wait, never loosening during
+# a drawdown. Run `python -m trader.amend propose` after editing; the risk
+# officer refuses to start until the change has waited 24h and been approved.
+# See trader/amend.py.
+
+purpose = "Grow capital steadily; protecting capital comes first."
+
+[mode]
+paper_only = true           # paper until 3-6 months of paper results match the backtest
+min_paper_months = 3
+
+[limits]
+max_weight_per_stock = 0.05      # 5% of equity per stock
+max_weight_per_sector = 0.25     # 25% per sector
+max_weight_per_strategy = 0.30   # 30% per strategy
+daily_loss_pause = 0.02          # 2% daily loss pauses trading until the next day
+drawdown_kill = 0.15             # 15% drawdown from peak: kill switch until owner restarts
+stop_loss = 0.15                 # each position exits if it falls 15% below entry
+max_days_without_reapproval = 45 # time limit: a position must be re-approved within 45 calendar days
+
+[forbidden]
+leverage = true
+shorting = true
+options = true
+
+[amendments]
+wait_hours = 24
+no_loosening_during_drawdown = true

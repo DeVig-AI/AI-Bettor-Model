@@ -1,0 +1,34 @@
+# PASS BAR. Written 2026-10-17, before any result was seen. Never move it after
+# seeing results. Its sha256 is recorded in every chamber run, so a change shows.
+
+[costs]
+base_per_side = 0.0015     # 0.15% per side: commission + spread + slippage
+stress_per_side = 0.0030   # 0.30% per side stress test
+
+[splits]
+data_start = "2001-01-01"  # fja05680 membership is thin before 2001 (see its README)
+train_start = "2002-01-01" # first date with 12 months of history for momentum / low-vol
+train_end = "2014-12-31"
+validate_start = "2015-01-01"
+validate_end = "2020-12-31"
+vault_start = "2021-01-01"  # locked: one run per candidate, result is final
+
+# Market periods for rule 3. Fixed now.
+[periods]
+crash_2008 = ["2007-10-01", "2009-03-31"]
+bull_2009_2019 = ["2009-04-01", "2019-12-31"]
+crash_2020 = ["2020-02-01", "2020-04-30"]
+bear_2022 = ["2022-01-01", "2022-12-31"]
+
+[rules]
+# 1. beat SPY total return after base costs in BOTH validation and vault
+# 2. Sharpe > SPY Sharpe AND max drawdown no worse than SPY's, in both
+# 3. lose to SPY in no more than half of the market periods above
+# 4. beat SPY at stress costs, or the report says plainly that it doesn't
+# 5. deflated Sharpe probability (all trials counted) at least this:
+min_deflated_sharpe_prob = 0.95
+max_period_losses_fraction = 0.5
+
+[hunt]
+deadline_months = 3         # counted from the first real chamber run (logged in the registry)
+max_combinations = 25
