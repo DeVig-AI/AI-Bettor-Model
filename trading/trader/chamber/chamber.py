@@ -109,6 +109,18 @@ class Chamber:
                 excl.loc[pd.Timestamp(a):pd.Timestamp(b), s] = True
         return Panel(adj, close, excl, self.fund, self.ins).upto(cutoff)
 
+    def engine_prices(self, cutoff) -> pd.DataFrame:
+        """Prices the engine trades and values on. Days the auditor flagged as bad prints
+        (spikes that reversed) are removed, so a held stock keeps its last good price that
+        day instead of being valued, stopped out or traded at a bogus number."""
+        px = self.prices[self.prices["date"] <= pd.Timestamp(cutoff)]
+        bad = self.excl[self.excl["reason"].astype(str).str.contains("spike", na=False)]
+        if len(bad):
+            key = pd.DataFrame({"symbol": bad["symbol"], "date": pd.to_datetime(bad["start"]), "_bad": True})
+            px = px.merge(key, on=["symbol", "date"], how="left")
+            px = px[px["_bad"].isna()].drop(columns="_bad")
+        return px
+
     def _members(self, day) -> frozenset[str]:
         return membership.members_on(day, self.members)
 
@@ -167,7 +179,7 @@ class Chamber:
     def _run_uncached(self, cand, split, cost, start, end, cutoff, freeze_after=None) -> dict:
         t0 = time.monotonic()
         panel = self.panel(cutoff)
-        px = self.prices[self.prices["date"] <= pd.Timestamp(cutoff)]
+        px = self.engine_prices(cutoff)
         name = cand if isinstance(cand, str) else cand.name
         if name == "SPY":
             first = month_ends(panel.adj_close.index, start, end)[0]

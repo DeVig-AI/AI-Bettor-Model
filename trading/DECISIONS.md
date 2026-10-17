@@ -111,3 +111,4 @@ One line each: what, and why. Newest at the bottom. Dates are when decided.
 - Probe speed test runs on a synthetic universe the same size as the real one (the real data isn't downloaded when the probe runs); every real chamber run also records its own time.
 - Checked against the web, not tested: Tiingo 500 symbols/month and 50/hour agree across sources; 1,000/day comes from one older article. Alpaca free history from 2016 with SIP bars confirmed in Alpaca's docs. WIKI's current export status could not be confirmed; the probe checks it, and a Kaggle copy works via WIKI_PRICES_FILE.
 - Added lxml (needed by pandas to read the Wikipedia table).
+- BUG FIXED: days the auditor flags as bad prints (spikes that reverse) were skipped for stock picking but still fed to the backtest engine, so a held stock could be valued, stopped out or traded at the bogus price. They're now removed from engine prices too; the stock keeps its last good price that day.

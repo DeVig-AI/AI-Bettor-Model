@@ -114,3 +114,14 @@ def test_portfolio_respects_limits(chamber):
         assert len(w) == 8                       # top 20% of 40
         assert max(w.values()) <= 0.05 + 1e-12   # 1/8 = 12.5% clipped to 5%
         assert sum(w.values()) <= 1
+
+
+def test_bad_print_days_never_reach_the_engine(data, tmp_path):
+    prices, prof, members = data
+    day = prices["date"].iloc[3000]
+    excl = pd.DataFrame({"symbol": ["SAA"], "start": [day], "end": [day], "reason": ["price spike of over 50%"]})
+    ch = Chamber(prices, prof, exclusions=excl, member_table=members, registry=Registry(tmp_path / "r.jsonl"),
+                 synthetic=True, reports=tmp_path)
+    px = ch.engine_prices("2022-12-31")
+    assert len(px) == (prices["date"] <= "2022-12-31").sum() - 1
+    assert not ((px["symbol"] == "SAA") & (px["date"] == day)).any()
