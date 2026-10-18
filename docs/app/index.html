@@ -375,6 +375,12 @@
   .lv-chart .top{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; color:var(--ink-soft);}
   .lv-chart .top b{font-family:var(--font-mono); color:var(--ink); font-variant-numeric:tabular-nums;}
   .lv-chart svg{display:block; width:100%; height:64px; margin-top:4px; overflow:visible;}
+  .trk{display:inline-flex; align-items:center; gap:4px; font-family:var(--font-sans); font-size:12px; font-weight:700; color:var(--ink-faint);
+    border:1px solid var(--line); border-radius:999px; padding:1px 9px; cursor:pointer; white-space:nowrap; user-select:none;}
+  .trk.on{color:var(--accent-strong); border-color:var(--accent); background:var(--accent-wash);}
+  .trk:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
+    background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
   .lv-chart .ax{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-faint); margin-top:2px;}
 </style>
 
@@ -411,6 +417,7 @@
         <button class="pill-tab active" data-conf="all">All games</button>
         <button class="pill-tab" data-conf="top50">Top 50% confident</button>
         <button class="pill-tab" data-conf="top25">Top 25% confident</button>
+        <button class="pill-tab" data-conf="tracked">★ Tracked</button>
       </div>
       <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
       <div class="status" id="homeStatus">Loading…</div>
@@ -548,6 +555,11 @@
   </section>
 
   <section class="panel about" id="panel-about" hidden>
+    <div class="card" id="donateCard" hidden>
+      <h3>Keep DeVig free</h3>
+      <p>DeVig is free and runs on free public data: Kalshi prices, ESPN scores and stats, and open game histories. Paid data would let it test more ideas and fix known gaps: real sportsbook odds history to check every model against the actual price, live injury and lineup feeds, and player tracking stats. If it's useful to you, a donation goes straight to that data. Nothing changes for anyone who doesn't donate, and DeVig never takes or places bets.</p>
+      <a class="donate" id="donateLink" href="#" target="_blank" rel="noopener">Support DeVig</a>
+    </div>
     <div class="card">
       <h3>What this actually does</h3>
       <p>DeVig.AI reads a photo of any sportsbook odds screen and does the honest math on it: the implied probability baked into a price, the fair (de-vigged) probability once you give it both sides of a market, and which of several prices is actually the better number, regardless of the plus/minus sign.</p>
@@ -648,6 +660,13 @@
     if(cls) e.className = cls;
     if(html != null) e.innerHTML = html;
     return e;
+  }
+
+  // ---------- donation link: set DONATE_URL to show the "Keep DeVig free" card on About ----------
+  var DONATE_URL = "";
+  if(DONATE_URL){
+    document.getElementById("donateLink").href = DONATE_URL;
+    document.getElementById("donateCard").hidden = false;
   }
 
   // ---------- tabs ----------
@@ -864,7 +883,10 @@
 
     var confTh = CONF_THRESHOLDS[currentSport] || CONF_THRESHOLDS.NFL;
     var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
-    if(currentConfThreshold > 0){
+    if(currentConfKey === "tracked"){
+      forSport = forSport.filter(function(g){ return isTracked("g", gameKey(g)); });
+      noteEl.textContent = "Only the games you track. Tap ☆ Track on any game card to add it; your list stays on this device.";
+    } else if(currentConfThreshold > 0){
       forSport = forSport.filter(function(g){
         return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
       });
@@ -877,8 +899,11 @@
     if(!forSport.length){
       statusEl.textContent = "";
       syncedEl.textContent = "";
-      wrap.innerHTML = '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
-        '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
+      wrap.innerHTML = currentConfKey === "tracked"
+        ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
+          '<span class="faint">Switch to All games and tap ☆ Track on the ones you want to follow.</span></div></div>'
+        : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
+          '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
       return;
     }
     statusEl.textContent = finishedNote;
@@ -887,6 +912,8 @@
     syncedEl.textContent = latest.synced_at ? "synced " + new Date(latest.synced_at).toLocaleString() : "";
 
     var allOnBoard = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
+    var myCard = renderTrackedCard(allOnBoard);
+    if(myCard) wrap.appendChild(myCard);
     wrap.appendChild(renderBestBetsCard(allOnBoard));
     var gamesHead = el("div", "bb-sec", "All games · tap one for the full breakdown");
     wrap.appendChild(gamesHead);
@@ -1034,6 +1061,69 @@
       '<span class="pill ' + b.cls + '">' + escapeHtml(b.chip) + '</span></div>';
     row.addEventListener("click", function(){ openGame(b.g); });
     return row;
+  }
+  // ---------- Tracking: games and paper picks the user follows (saved on this device only) ----------
+  var TRACK_KEY = "devig.tracked.v1", tracked = {g: {}, p: {}};
+  try{ var tj = JSON.parse(localStorage.getItem(TRACK_KEY) || "null"); if(tj && tj.g && tj.p) tracked = tj; }catch(e){}
+  function isTracked(kind, key){ return !!tracked[kind][key]; }
+  function toggleTracked(kind, key){
+    if(tracked[kind][key]) delete tracked[kind][key]; else tracked[kind][key] = Date.now();
+    try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+  }
+  function trkBtn(kind, key){
+    var on = isTracked(kind, key);
+    return '<span class="trk' + (on ? ' on' : '') + '" role="button" tabindex="0" aria-pressed="' + on + '" data-trk="' + kind + '" data-trk-key="' + escapeHtml(key) + '">' +
+      (on ? '★ Tracking' : '☆ Track') + '</span>';
+  }
+  function pickTrackKey(d, p){ return propGameLabel(d) + "|" + String(d.kickoff_time || d.game_date || "").slice(0, 10) + "|" + p.player + "|" + p.stat + "|" + p.line + "|" + p.side; }
+  // One capture-phase listener so a Track tap never also opens/closes the game card it sits in.
+  function onTrk(ev){
+    var t = ev.target.closest && ev.target.closest("[data-trk]");
+    if(!t) return;
+    if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+    ev.preventDefault(); ev.stopPropagation();
+    toggleTracked(t.getAttribute("data-trk"), t.getAttribute("data-trk-key"));
+    renderHome();
+  }
+  document.addEventListener("click", onTrk, true);
+  document.addEventListener("keydown", onTrk, true);
+  function renderTrackedCard(games){
+    var tg = games.filter(function(g){ return isTracked("g", gameKey(g)); });
+    var tp = [];
+    propsDocs.forEach(function(d){
+      if(docSport(d) !== currentSport) return;
+      (d.paper_picks || []).forEach(function(p){ if(isTracked("p", pickTrackKey(d, p))) tp.push({d: d, p: p}); });
+    });
+    if(!tg.length && !tp.length) return null;
+    var card = el("div", "card");
+    card.innerHTML = '<div class="bb-head"><h3>My tracking</h3><span class="faint">' + escapeHtml(currentSport) + ' · saved on this device</span></div>';
+    if(tg.length){
+      card.appendChild(el("div", "bb-sec", "Games"));
+      tg.sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); }).forEach(function(g){
+        var lg = liveFor(g), st = liveStarted(lg), d = computeDecision(g), mm = g.model || {};
+        var row = el("button", "bb-row"); row.type = "button";
+        var score = st ? g.away_team + " " + Math.round(lg.away_score) + " – " + g.home_team + " " + Math.round(lg.home_score) : (g.away_team + " @ " + g.home_team);
+        var lt = lg && lg.picks && lg.picks.length ? livePickTally(lg) : null;
+        row.innerHTML = '<div style="min-width:0"><div class="bb-bet">' + escapeHtml(score) + '</div><div class="bb-meta">' +
+          escapeHtml((st ? (lg.state === "in" ? "Live · " + (lg.detail || "") : "Final") : shortTime(g)) +
+            (d.action === "ML" ? " · pick " + mm.winner_side : "") +
+            (lt && st ? " · paper picks " + lt.won + " won, " + lt.lost + " lost" + (lt.live ? ", " + lt.live + " live" : "") : "")) + '</div></div>' +
+          '<div class="bb-right">' + (st && lg.state === "in" ? '<span class="pill live">LIVE</span>' : '') + trkBtn("g", gameKey(g)) + '</div>';
+        row.addEventListener("click", function(){ openGame(g); });
+        card.appendChild(row);
+      });
+    }
+    if(tp.length){
+      card.appendChild(el("div", "bb-sec", "Paper picks"));
+      tp.forEach(function(x){
+        var p = x.p, lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
+        card.appendChild(el("div", "pr-pick", '<div style="min-width:0"><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' +
+          escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
+          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · locked at ' + exOddsTxt(p.price, true) + (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
+          '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '') + trkBtn("p", pickTrackKey(x.d, p)) + '</div>'));
+      });
+    }
+    return card;
   }
   function renderBestBetsCard(games){
     var card = el("div", "card");
@@ -1420,7 +1510,7 @@
     var when = !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
       : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
       : '<span><span class="pill neutral">FINAL</span></span>';
-    head.innerHTML = '<div class="sb-top">' + when + (tags && !started ? '<span>' + tags + '</span>' : '') + '</div>' +
+    head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started ? tags + ' ' : '') + trkBtn("g", k) + '</span></div>' +
       sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + liveOddsEl(g, lg) : '') +
       '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
     head.setAttribute("aria-expanded", String(isOpen));
@@ -2414,7 +2504,8 @@
           html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
             '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%' +
             (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
-            (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '<span class="pill neutral">PAPER</span>') + '</div>';
+            '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '<span class="pill neutral">PAPER</span>') +
+            trkBtn("p", pickTrackKey(x.d, p)) + '</div></div>';
         });
       });
       html += '</details>';
