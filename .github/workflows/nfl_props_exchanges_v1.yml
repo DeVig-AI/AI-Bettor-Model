@@ -1,0 +1,28 @@
+name: NFL props -- Kalshi + Polymarket prices (read-only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */3 * * *'   # every 3 hours; public market data only, no keys
+permissions:
+  contents: write
+concurrency:
+  group: nfl-props-exchanges
+  cancel-in-progress: false
+jobs:
+  props:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pull NFL player-prop prices from the public Kalshi and Polymarket APIs (no keys, nothing bet)
+        run: python3 nfl/nfl_props_exchanges_v1.py
+      - name: Save the export
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/props_exchanges_export.json
+          git diff --cached --quiet || git commit -m "NFL props exchange prices $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase -q && git push
