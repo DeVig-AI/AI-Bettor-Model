@@ -374,14 +374,22 @@
   .lv-chart{margin-top:10px; padding:8px 10px 6px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px;}
   .lv-chart .top{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; color:var(--ink-soft);}
   .lv-chart .top b{font-family:var(--font-mono); color:var(--ink); font-variant-numeric:tabular-nums;}
-  .lv-chart svg{display:block; width:100%; height:64px; margin-top:4px; overflow:visible;}
+  .lv-chart .keys{display:flex; flex-wrap:wrap; gap:2px 14px; margin-top:4px; font-size:12.5px;}
+  .lv-chart .k{display:inline-flex; align-items:center; gap:5px;}
+  .lv-chart .k i{width:12px; height:3px; border-radius:2px; display:inline-block;}
+  .lv-chart .k b{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .lv-chart .plot{display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px; margin-top:8px;}
+  .lv-chart .yl{display:flex; flex-direction:column; justify-content:space-between; height:120px; font-size:10px; color:var(--ink-faint);
+    font-family:var(--font-mono); text-align:right; line-height:1; margin:-5px 0;}
+  .lv-chart svg{display:block; width:100%; height:120px; overflow:visible;}
+  .lv-chart .xl{position:relative; height:14px; margin-top:4px; font-size:10px; color:var(--ink-faint);}
+  .lv-chart .xl span{position:absolute; top:0; white-space:nowrap;}
   .trk{display:inline-flex; align-items:center; gap:4px; font-family:var(--font-sans); font-size:12px; font-weight:700; color:var(--ink-faint);
     border:1px solid var(--line); border-radius:999px; padding:1px 9px; cursor:pointer; white-space:nowrap; user-select:none;}
   .trk.on{color:var(--accent-strong); border-color:var(--accent); background:var(--accent-wash);}
   .trk:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
   .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
     background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
-  .lv-chart .ax{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-faint); margin-top:2px;}
 </style>
 
 <div class="wrap">
@@ -2589,30 +2597,57 @@
       rows.map(function(r){ return '<div class="m">' + escapeHtml(r[0]) + '</div><div class="n">' + escapeHtml(r[1]) +
         '</div><div class="n now">' + escapeHtml(r[2]) + '</div>'; }).join("") + '</div>';
   }
-  // Win-chance line from Kalshi's price history (2 h before kickoff to now), for the model's side (or the home team).
+  // Win-chance chart from Kalshi's price history (2 h before kickoff to now): one line per team,
+  // y = win chance (0-100%), x = clock time, with the kickoff marked and a dotted line where the locked odds stood.
+  function chartColor(code, fallback){
+    var c = (TEAM_COLORS.NFL || {})[code];
+    if(!c) return fallback;
+    var r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16);
+    var lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    return (lum < 70 || lum > 200) ? fallback : c;    // near-black or near-white team colors vanish on one of the themes
+  }
   function liveChartEl(g, lg){
     var kl = lg && lg.kalshi_line, pts = kl && kl.points;
     if(!pts || pts.length < 2) return "";
-    var mm = g.model || {}, team = mm.winner_side === g.away_team ? g.away_team : (mm.winner_side === g.home_team ? g.home_team : kl.team);
-    var flip = team !== kl.team;
-    var t0 = pts[0][0], t1 = pts[pts.length - 1][0], W = 300, H = 64;
+    var homeIsLine = kl.team === g.home_team;
+    function homeP(q){ return homeIsLine ? q[1] : 1 - q[1]; }
+    var t0 = pts[0][0], t1 = pts[pts.length - 1][0], W = 300, H = 120;
     function x(t){ return t1 > t0 ? (t - t0) / (t1 - t0) * W : 0; }
     function y(v){ return (1 - v) * H; }
-    var path = pts.map(function(q, i){ return (i ? "L" : "M") + x(q[0]).toFixed(1) + " " + y(flip ? 1 - q[1] : q[1]).toFixed(1); }).join(" ");
+    function line(fn){ return pts.map(function(q, i){ return (i ? "L" : "M") + x(q[0]).toFixed(1) + " " + y(fn(q)).toFixed(1); }).join(" "); }
+    var cHome = chartColor(g.home_team, "var(--accent)"), cAway = chartColor(g.away_team, "var(--ink-soft)");
+    if(cHome === cAway) cAway = "var(--ink-soft)";
     var dv = devigTwoWay((g.market || {}).moneyline_home, (g.market || {}).moneyline_away);
-    var locked = dv ? (team === g.home_team ? dv.a : dv.b) : null;
     var ko = g.kickoff_time ? new Date(g.kickoff_time).getTime() / 1000 : null;
-    var now = flip ? 1 - pts[pts.length - 1][1] : pts[pts.length - 1][1];
-    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + escapeHtml(team) + ' win chance over time">' +
-      '<line x1="0" x2="' + W + '" y1="' + y(0.5) + '" y2="' + y(0.5) + '" stroke="var(--line-strong)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' +
-      (locked != null ? '<line x1="0" x2="' + W + '" y1="' + y(locked).toFixed(1) + '" y2="' + y(locked).toFixed(1) + '" stroke="var(--ink-faint)" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' : '') +
-      (ko && ko > t0 && ko < t1 ? '<line x1="' + x(ko).toFixed(1) + '" x2="' + x(ko).toFixed(1) + '" y1="0" y2="' + H + '" stroke="var(--line-strong)" vector-effect="non-scaling-stroke"/>' : '') +
-      '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
-    return '<div class="lv-chart"><div class="top"><span>' + escapeHtml(team) + ' win chance · Kalshi</span><span>now <b>' + Math.round(now * 100) + '%</b>' +
-      (locked != null ? ' · at lock <b>' + Math.round(locked * 100) + '%</b>' : '') + '</span></div>' + svg +
-      '<div class="ax"><span>' + escapeHtml(new Date(t0 * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"})) + '</span>' +
-      (ko && ko > t0 && ko < t1 ? '<span>kickoff ' + escapeHtml(new Date(ko * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"})) + '</span>' : '') +
-      '<span>' + (lg.state === "in" ? "now" : "final") + '</span></div></div>';
+    var koIn = ko && ko > t0 && ko < t1;
+    var grid = [0.25, 0.5, 0.75].map(function(v){
+      return '<line x1="0" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)" ' + (v === 0.5 ? '' : 'stroke-dasharray="2 4" ') + 'vector-effect="non-scaling-stroke"/>';
+    }).join("");
+    var lockLine = dv ? '<line x1="0" x2="' + W + '" y1="' + y(dv.a).toFixed(1) + '" y2="' + y(dv.a).toFixed(1) + '" stroke="' + cHome + '" stroke-opacity=".55" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' +
+      '<line x1="0" x2="' + W + '" y1="' + y(dv.b).toFixed(1) + '" y2="' + y(dv.b).toFixed(1) + '" stroke="' + cAway + '" stroke-opacity=".55" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' : '';
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Win chance over time for ' + escapeHtml(g.away_team) + ' and ' + escapeHtml(g.home_team) + '">' +
+      grid + lockLine +
+      (koIn ? '<line x1="' + x(ko).toFixed(1) + '" x2="' + x(ko).toFixed(1) + '" y1="0" y2="' + H + '" stroke="var(--line-strong)" vector-effect="non-scaling-stroke"/>' : '') +
+      '<path d="' + line(function(q){ return 1 - homeP(q); }) + '" fill="none" stroke="' + cAway + '" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>' +
+      '<path d="' + line(homeP) + '" fill="none" stroke="' + cHome + '" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
+    // x axis: 4 evenly spaced clock times
+    function hm(t){ return new Date(t * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}); }
+    var xl = "";
+    for(var i = 0; i < 4; i++){
+      var t = t0 + (t1 - t0) * i / 3, pos = i / 3 * 100;
+      xl += '<span style="left:' + pos.toFixed(1) + '%; transform:translateX(' + (i === 0 ? '0' : (i === 3 ? '-100%' : '-50%')) + ')">' +
+        escapeHtml(i === 3 && lg.state === "in" ? "now" : hm(t)) + '</span>';
+    }
+    var yl = ["100%", "75%", "50%", "25%", "0%"].map(function(v){ return '<span>' + v + '</span>'; }).join("");
+    var hNow = homeP(pts[pts.length - 1]);
+    function key(team, col, now, lock){
+      return '<span class="k"><i style="background:' + col + '"></i>' + escapeHtml(team) + ' <b>' + Math.round(now * 100) + '%</b>' +
+        (lock != null ? ' <span class="faint">(lock ' + Math.round(lock * 100) + '%)</span>' : '') + '</span>';
+    }
+    return '<div class="lv-chart"><div class="top"><span>Win chance · Kalshi</span>' +
+      (koIn ? '<span class="faint">line = kickoff ' + escapeHtml(hm(ko)) + '</span>' : '') + '</div>' +
+      '<div class="keys">' + key(g.away_team, cAway, 1 - hNow, dv ? dv.b : null) + key(g.home_team, cHome, hNow, dv ? dv.a : null) + '</div>' +
+      '<div class="plot"><div class="yl">' + yl + '</div><div class="area">' + svg + '<div class="xl">' + xl + '</div></div></div></div>';
   }
   function livePickTally(lg){
     var t = {won: 0, lost: 0, live: 0, pending: 0};
