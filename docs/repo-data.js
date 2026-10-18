@@ -12,6 +12,7 @@
   // every: minutes between refreshes while the app is open (raw.githubusercontent.com caches up to ~5 minutes)
   var SOURCES = [
     {path: "nfl/live/props_live.json", every: 2, live: true},
+    {path: "live/game_lines.json", every: 10, live: "GAME_LINES"},
     {path: "nfl/lineboard_export.json", every: 10},
     {path: "mlb/lineboard_export.json", every: 10},
     {path: "nba/lineboard_export.json", every: 10},
@@ -79,7 +80,8 @@
         if (!json) return [];                       // missing file (e.g. a sport not in season) = no docs
         var touched = {};
         if (src.live) {
-          var doc = Object.assign({doc: "NFL_PROPS_LIVE", __id: "NFL"}, json);
+          var name = src.live === true ? "NFL_PROPS_LIVE" : src.live;
+          var doc = Object.assign({doc: name, __id: name === "NFL_PROPS_LIVE" ? "NFL" : name}, json);
           (store.live = store.live || {})[src.path] = [doc];
           touched.live = true;
         } else {
