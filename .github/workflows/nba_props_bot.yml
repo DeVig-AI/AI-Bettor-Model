@@ -1,0 +1,36 @@
+name: NBA props bot -- prices + model (paper only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */2 * * *'   # every 2 hours; public market data only, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: nba-props-bot
+  cancel-in-progress: false
+jobs:
+  props:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas + numpy
+        run: pip install pandas numpy
+      - name: Pull NBA player-prop prices from Kalshi's public API
+        run: python3 nba/nba_props_exchanges_v1.py
+      - name: Score props with the frozen model, paper-lock, grade
+        continue-on-error: true
+        run: python3 nba/nba_props_model_v1_live.py
+      - name: Save the exports and the paper log
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          [ -f nba/props_exchanges_export.json ] && git add nba/props_exchanges_export.json
+          [ -f nba/props_model_export.json ] && git add nba/props_model_export.json
+          [ -f nba/NBA_PROPS_MODEL_V1_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V1_LOG.sqlite3
+          git diff --cached --quiet || git commit -m "NBA props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase -q && git push
