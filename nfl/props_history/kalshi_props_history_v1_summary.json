@@ -1,15 +1,18 @@
 {
- "generated_at": "2026-10-18T05:25:07Z",
+ "generated_at": "2026-10-18T06:01:42Z",
  "stats": {
   "events_seen": 1808,
-  "events_done_now": 1760,
-  "markets_written_now": 29219,
-  "no_candle": 2847,
+  "events_done_now": 0,
+  "markets_written_now": 0,
+  "no_candle": 0,
   "no_kickoff": 48,
   "after_cutoff": 0,
-  "candle_endpoint": "batch",
+  "candle_endpoint": null,
   "market_list_endpoint": "/events",
-  "minutes": 8.6,
+  "events_by_endpoint": {
+   "/events": 1808
+  },
+  "minutes": 0.2,
   "complete": true
  },
  "errors": [
@@ -39,32 +42,39 @@
   "no kickoff KXNFLPASSYDS-26AUG13GBPIT 'Green Bay vs Pittsburgh: Passing Yards'",
   "no kickoff KXNFLPASSYDS-26AUG13DETCIN 'Detroit vs Cincinnati: Passing Yards'",
   "no kickoff KXNFLPASSYDS-26AUG06CARARI 'Carolina vs Arizona: Passing Yards'",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLPASSYDS&status=settled&with_nested_markets=true&limit=200",
   "no kickoff KXNFLPASSTDS-26AUG27SFLV 'San Francisco vs Las Vegas: Passing Touchdowns'",
   "no kickoff KXNFLPASSTDS-26AUG23SEATEN 'Seattle vs Tennessee: Passing Touchdowns'",
   "no kickoff KXNFLPASSTDS-26AUG13ARILV 'Arizona vs Las Vegas: Passing Touchdowns'",
   "no kickoff KXNFLPASSTDS-26AUG06CARARI 'Carolina vs Arizona: Passing Touchdowns'",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLPASSTDS&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLPASSATT&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLPASSCOMP&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLPASSINT&status=settled&with_nested_markets=true&limit=200",
   "no kickoff KXNFLRSHYDS-26AUG27PITBUF 'Pittsburgh vs Buffalo: Rushing Yards'",
   "no kickoff KXNFLRSHYDS-26AUG14TBNYJ 'Tampa Bay vs New York J: Rushing Yards'",
   "no kickoff KXNFLRSHYDS-26AUG13ARILV 'Arizona vs Las Vegas: Rushing Yards'",
   "no kickoff KXNFLRSHYDS-26AUG13INDNE 'Indianapolis vs New England: Rushing Yards'",
   "no kickoff KXNFLRSHYDS-26AUG13GBPIT 'Green Bay vs Pittsburgh: Rushing Yards'",
   "no kickoff KXNFLRSHYDS-26AUG06CARARI 'Carolina vs Arizona: Rushing Yards'",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLRSHYDS&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLRSHATT&status=settled&with_nested_markets=true&limit=200",
   "no kickoff KXNFLRECYDS-26AUG27PITBUF 'Pittsburgh vs Buffalo: Receiving Yards'",
   "no kickoff KXNFLRECYDS-26AUG23SEATEN 'Seattle vs Tennessee: Receiving Yards'",
   "no kickoff KXNFLRECYDS-26AUG21NYJPIT 'New York vs Pittsburgh: Receiving Yards'",
   "no kickoff KXNFLRECYDS-26AUG14TBNYJ 'Tampa Bay vs New York J: Receiving Yards'",
   "no kickoff KXNFLRECYDS-26AUG13TENSF 'Tennessee vs San Francisco: Receiving Yards'",
   "no kickoff KXNFLRECYDS-26AUG13DETCIN 'Detroit vs Cincinnati: Receiving Yards'",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLRECYDS&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLREC&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLRRYDS&status=settled&with_nested_markets=true&limit=200",
   "no kickoff KXNFLTD-26AUG14TBNYJ 'Tampa Bay vs New York J: Touchdowns'",
   "no kickoff KXNFLTD-26AUG13ARILV 'Arizona vs Las Vegas: Touchdowns'",
   "no kickoff KXNFLTD-26AUG13INDNE 'Indianapolis vs New England: Touchdowns'",
   "no kickoff KXNFLTD-26AUG13GBPIT 'Green Bay vs Pittsburgh: Touchdowns'",
   "no kickoff KXNFLTD-26AUG13DETCIN 'Detroit vs Cincinnati: Touchdowns'",
-  "no kickoff KXNFLTD-26AUG06CARARI 'Carolina vs Arizona: Touchdowns'"
+  "no kickoff KXNFLTD-26AUG06CARARI 'Carolina vs Arizona: Touchdowns'",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLTD&status=settled&with_nested_markets=true&limit=200"
  ],
- "raw_candle_samples": {
-  "batch": {
-   "truncated": true
-  }
- }
+ "raw_candle_samples": {}
 }

@@ -1,0 +1,396 @@
+{
+ "doc": "NFL_PROPS_KALSHI_BACKTEST_V1",
+ "prereg_sha256": "c805828e904031fead5b73c50fd3ce62a6fdec707f56fac1ee2453ac15db2306",
+ "script_sha256": "5d3f02b3f0e7f89e05538af89c956dd62691b0dc9c30fead525cf57503f517cc",
+ "data_sha256": "241e13150f89f604576bbf2ff0029f3cd3114a84064b935c026dca8eb3dc553a",
+ "tables_sha256": "d566c111331235218182c708c7e353a4c0983e65e7ba10fd7b48aaaa3e3a1743",
+ "funnel": {
+  "collected": 29219,
+  "settled_yes_no_modeled_stat": 28767,
+  "player_unmatched": 207,
+  "model_chance_exists": 27054,
+  "main_set": 11233
+ },
+ "seasons": [
+  2026
+ ],
+ "refit_reproduces_frozen_2026_tables": true,
+ "test1": {
+  "rows": 11233,
+  "games": 80,
+  "model_logloss": 0.56739,
+  "kalshi_logloss": 0.53627,
+  "diff_model_minus_kalshi": 0.03112,
+  "diff_95ci": [
+   0.01856,
+   0.04434
+  ],
+  "verdict": "KALSHI MORE RIGHT",
+  "by_season": {
+   "2026": {
+    "rows": 11233,
+    "games": 80,
+    "model_logloss": 0.56739,
+    "kalshi_logloss": 0.53627,
+    "diff_model_minus_kalshi": 0.03112,
+    "diff_95ci": [
+     0.01856,
+     0.04434
+    ]
+   }
+  },
+  "by_stat": {
+   "passing_yards": {
+    "rows": 983,
+    "games": 77,
+    "model_logloss": 0.53213,
+    "kalshi_logloss": 0.52179,
+    "diff_model_minus_kalshi": 0.01034,
+    "diff_95ci": [
+     -0.00976,
+     0.03012
+    ]
+   },
+   "passing_tds": {
+    "rows": 450,
+    "games": 77,
+    "model_logloss": 0.49418,
+    "kalshi_logloss": 0.47759,
+    "diff_model_minus_kalshi": 0.0166,
+    "diff_95ci": [
+     -0.00695,
+     0.0404
+    ]
+   },
+   "passing_attempts": {
+    "rows": 206,
+    "games": 75,
+    "model_logloss": 0.70289,
+    "kalshi_logloss": 0.65321,
+    "diff_model_minus_kalshi": 0.04968,
+    "diff_95ci": [
+     0.01696,
+     0.08321
+    ]
+   },
+   "passing_completions": {
+    "rows": 203,
+    "games": 76,
+    "model_logloss": 0.63843,
+    "kalshi_logloss": 0.63184,
+    "diff_model_minus_kalshi": 0.00658,
+    "diff_95ci": [
+     -0.02739,
+     0.03712
+    ]
+   },
+   "interceptions": {
+    "rows": 204,
+    "games": 74,
+    "model_logloss": 0.55691,
+    "kalshi_logloss": 0.55587,
+    "diff_model_minus_kalshi": 0.00104,
+    "diff_95ci": [
+     -0.01645,
+     0.01731
+    ]
+   },
+   "rushing_yards": {
+    "rows": 2117,
+    "games": 80,
+    "model_logloss": 0.5552,
+    "kalshi_logloss": 0.52045,
+    "diff_model_minus_kalshi": 0.03475,
+    "diff_95ci": [
+     0.00672,
+     0.06453
+    ]
+   },
+   "rushing_attempts": {
+    "rows": 428,
+    "games": 77,
+    "model_logloss": 0.68645,
+    "kalshi_logloss": 0.64469,
+    "diff_model_minus_kalshi": 0.04175,
+    "diff_95ci": [
+     -0.00142,
+     0.09327
+    ]
+   },
+   "receiving_yards": {
+    "rows": 3689,
+    "games": 80,
+    "model_logloss": 0.5643,
+    "kalshi_logloss": 0.53038,
+    "diff_model_minus_kalshi": 0.03393,
+    "diff_95ci": [
+     0.01584,
+     0.05265
+    ]
+   },
+   "receptions": {
+    "rows": 2615,
+    "games": 80,
+    "model_logloss": 0.56797,
+    "kalshi_logloss": 0.53132,
+    "diff_model_minus_kalshi": 0.03665,
+    "diff_95ci": [
+     0.01526,
+     0.05965
+    ]
+   },
+   "rush_rec_yards": {
+    "rows": 338,
+    "games": 73,
+    "model_logloss": 0.60328,
+    "kalshi_logloss": 0.58028,
+    "diff_model_minus_kalshi": 0.023,
+    "diff_95ci": [
+     -0.02157,
+     0.069
+    ]
+   }
+  }
+ },
+ "touchdowns_info_only": {
+  "rows": 1787,
+  "games": 80,
+  "model_logloss": 0.41951,
+  "kalshi_logloss": 0.38223,
+  "diff_model_minus_kalshi": 0.03728,
+  "diff_95ci": [
+   0.02382,
+   0.05033
+  ]
+ },
+ "test2": {
+  "medium_plus_high": {
+   "count": 1598,
+   "games": 80,
+   "win_rate": 0.3974,
+   "avg_needs_pct": 40.91,
+   "profit_sum": -18.677,
+   "cost_sum": 653.677,
+   "roi": -0.0286,
+   "roi_95ci": [
+    -0.0973,
+    0.0402
+   ]
+  },
+  "HIGH": {
+   "count": 936,
+   "games": 80,
+   "win_rate": 0.4188,
+   "avg_needs_pct": 42.98,
+   "profit_sum": -10.328,
+   "cost_sum": 402.328,
+   "roi": -0.0257,
+   "roi_95ci": [
+    -0.1029,
+    0.0527
+   ]
+  },
+  "MEDIUM": {
+   "count": 662,
+   "games": 80,
+   "win_rate": 0.3671,
+   "avg_needs_pct": 37.97,
+   "profit_sum": -8.348,
+   "cost_sum": 251.348,
+   "roi": -0.0332,
+   "roi_95ci": [
+    -0.1477,
+    0.0786
+   ]
+  },
+  "LEAN": {
+   "count": 482,
+   "games": 79,
+   "win_rate": 0.3672,
+   "avg_needs_pct": 37.9,
+   "profit_sum": -5.669,
+   "cost_sum": 182.669,
+   "roi": -0.031,
+   "roi_95ci": [
+    -0.1377,
+    0.0779
+   ]
+  },
+  "verdict": "NOT SHOWN PROFITABLE",
+  "mh_by_season": {
+   "2026": {
+    "count": 1598,
+    "games": 80,
+    "win_rate": 0.3974,
+    "avg_needs_pct": 40.91,
+    "profit_sum": -18.677,
+    "cost_sum": 653.677,
+    "roi": -0.0286,
+    "roi_95ci": [
+     -0.0973,
+     0.0402
+    ]
+   }
+  },
+  "mh_by_stat": {
+   "passing_yards": {
+    "count": 82,
+    "games": 64,
+    "win_rate": 0.2805,
+    "avg_needs_pct": 29.76,
+    "profit_sum": -1.403,
+    "cost_sum": 24.403,
+    "roi": -0.0575,
+    "roi_95ci": [
+     -0.3763,
+     0.2747
+    ]
+   },
+   "passing_tds": {
+    "count": 64,
+    "games": 56,
+    "win_rate": 0.4531,
+    "avg_needs_pct": 40.86,
+    "profit_sum": 2.848,
+    "cost_sum": 26.152,
+    "roi": 0.1089,
+    "roi_95ci": [
+     -0.1621,
+     0.382
+    ]
+   },
+   "passing_attempts": {
+    "count": 70,
+    "games": 54,
+    "win_rate": 0.3714,
+    "avg_needs_pct": 41.93,
+    "profit_sum": -3.349,
+    "cost_sum": 29.349,
+    "roi": -0.1141,
+    "roi_95ci": [
+     -0.386,
+     0.1648
+    ]
+   },
+   "passing_completions": {
+    "count": 50,
+    "games": 41,
+    "win_rate": 0.4,
+    "avg_needs_pct": 42.11,
+    "profit_sum": -1.057,
+    "cost_sum": 21.057,
+    "roi": -0.0502,
+    "roi_95ci": [
+     -0.3545,
+     0.2381
+    ]
+   },
+   "interceptions": {
+    "count": 23,
+    "games": 23,
+    "win_rate": 0.5217,
+    "avg_needs_pct": 41.02,
+    "profit_sum": 2.566,
+    "cost_sum": 9.434,
+    "roi": 0.272,
+    "roi_95ci": [
+     -0.1821,
+     0.7486
+    ]
+   },
+   "rushing_yards": {
+    "count": 226,
+    "games": 77,
+    "win_rate": 0.3938,
+    "avg_needs_pct": 39.18,
+    "profit_sum": 0.454,
+    "cost_sum": 88.546,
+    "roi": 0.0051,
+    "roi_95ci": [
+     -0.1309,
+     0.1394
+    ]
+   },
+   "rushing_attempts": {
+    "count": 112,
+    "games": 62,
+    "win_rate": 0.4286,
+    "avg_needs_pct": 43.91,
+    "profit_sum": -1.185,
+    "cost_sum": 49.185,
+    "roi": -0.0241,
+    "roi_95ci": [
+     -0.228,
+     0.1913
+    ]
+   },
+   "receiving_yards": {
+    "count": 455,
+    "games": 80,
+    "win_rate": 0.3802,
+    "avg_needs_pct": 39.86,
+    "profit_sum": -8.364,
+    "cost_sum": 181.364,
+    "roi": -0.0461,
+    "roi_95ci": [
+     -0.1472,
+     0.0561
+    ]
+   },
+   "receptions": {
+    "count": 418,
+    "games": 80,
+    "win_rate": 0.3876,
+    "avg_needs_pct": 41.39,
+    "profit_sum": -11.018,
+    "cost_sum": 173.018,
+    "roi": -0.0637,
+    "roi_95ci": [
+     -0.1716,
+     0.049
+    ]
+   },
+   "rush_rec_yards": {
+    "count": 98,
+    "games": 66,
+    "win_rate": 0.5408,
+    "avg_needs_pct": 52.21,
+    "profit_sum": 1.831,
+    "cost_sum": 51.169,
+    "roi": 0.0358,
+    "roi_95ci": [
+     -0.1416,
+     0.2041
+    ]
+   }
+  },
+  "mh_by_side": {
+   "OVER": {
+    "count": 666,
+    "games": 77,
+    "win_rate": 0.2883,
+    "avg_needs_pct": 30.48,
+    "profit_sum": -10.997,
+    "cost_sum": 202.997,
+    "roi": -0.0542,
+    "roi_95ci": [
+     -0.2026,
+     0.0952
+    ]
+   },
+   "UNDER": {
+    "count": 932,
+    "games": 80,
+    "win_rate": 0.4753,
+    "avg_needs_pct": 48.36,
+    "profit_sum": -7.679,
+    "cost_sum": 450.679,
+    "roi": -0.017,
+    "roi_95ci": [
+     -0.0816,
+     0.0469
+    ]
+   }
+  }
+ }
+}
