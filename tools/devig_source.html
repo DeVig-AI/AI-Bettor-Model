@@ -366,6 +366,26 @@
   .lv-bar.won i{background:var(--good);} .lv-bar.lost i{background:var(--bad);}
   /* Over: the bar filling is good (green). Under: filling is bad (amber, red once it's close to the limit). */
   .lv-bar.up i{background:var(--good);} .lv-bar.warn i{background:#d9a03b;} .lv-bar.danger i{background:var(--bad);}
+  /* Spread wheel: every Kalshi spread for each team, one scroll wheel per team */
+  .sw{border-top:1px solid var(--line); margin-top:12px; padding-top:10px;}
+  .sw-head{display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:700; margin-bottom:6px;}
+  .sw-cols{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .sw-team{font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--ink-faint); text-align:center; margin-bottom:4px;}
+  .sw-box{position:relative; border:1px solid var(--line); border-radius:12px; background:var(--surface-2); overflow:hidden;}
+  .sw-box::after{content:""; position:absolute; left:6px; right:6px; top:44px; height:44px; border-radius:9px;
+    border:1px solid var(--accent); background:var(--accent-wash); pointer-events:none; z-index:0;}
+  .sw-wheel{position:relative; z-index:1; height:132px; overflow-y:auto; scroll-snap-type:y mandatory; overscroll-behavior:contain;
+    -ms-overflow-style:none; scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(transparent, #000 30%, #000 70%, transparent); mask-image:linear-gradient(transparent, #000 30%, #000 70%, transparent);}
+  .sw-wheel::-webkit-scrollbar{display:none;}
+  .sw-pad{height:44px;}
+  .sw-row{height:44px; scroll-snap-align:center; display:flex; align-items:center; justify-content:space-between; padding:0 14px;
+    font-family:var(--font-mono); font-variant-numeric:tabular-nums; color:var(--ink-faint); font-size:14px; cursor:pointer;}
+  .sw-row b{font-weight:700;}
+  .sw-row.on{color:var(--ink); font-size:16px;}
+  .sw-row.on b{color:var(--accent-strong);}
+  .sw-sel{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:8px; font-size:13px;}
+  .sw-sel b{font-family:var(--font-mono);}
   /* Live prop progress: the bar with a ball at the player's count (count above it), the line on the right */
   .lv-track{grid-column:1 / -1; display:flex; align-items:center; gap:12px; padding:18px 4px 2px 6px;}
   .lv-track .lv-bar{flex:1; overflow:visible;}
@@ -1038,6 +1058,86 @@
 
   }
 
+  // ---------- Spread wheel: every Kalshi spread line for both teams (tools/game_lines.py, display only) ----------
+  var linesDoc = null, wheelSel = {};
+  function linesFor(g){
+    if(!linesDoc || !g.kickoff_time) return null;
+    var kt = new Date(g.kickoff_time).getTime();
+    return (linesDoc.games || []).filter(function(x){
+      return x.sport === (g.sport || "NFL") && x.away === g.away_team && x.home === g.home_team && x.date &&
+        Math.abs(Date.parse(x.date + "T12:00:00Z") - kt) < 36 * 3600 * 1000;
+    })[0] || null;
+  }
+  function spreadPt(p){ return (p > 0 ? "+" : "") + p; }
+  function spreadKey(g, team, point){
+    return "SPREAD|" + (g.sport || "NFL") + "|" + g.away_team + " @ " + g.home_team + "|" + String(g.kickoff_time || "").slice(0, 10) + "|" + team + "|" + point;
+  }
+  function impliedP(o){ return o < 0 ? -o / (-o + 100) : 100 / (o + 100); }
+  function spreadWheelEl(g){
+    var gl = linesFor(g);
+    if(!gl || !gl.spreads) return null;
+    var teams = [g.away_team, g.home_team].filter(function(t){ return (gl.spreads[t] || []).length; });
+    if(!teams.length) return null;
+    var box = el("div", "sw");
+    box.innerHTML = '<div class="sw-head"><span>All spreads</span><span class="faint" style="font-weight:500">Kalshi · scroll to pick a line</span></div>';
+    var cols = el("div", "sw-cols"), sel = el("div");
+    teams.forEach(function(t){
+      var lines = gl.spreads[t], wk = gameKey(g) + "|" + t;
+      if(wheelSel[wk] == null){                           // start on the line closest to even money
+        var best = lines[0];
+        lines.forEach(function(l){ if(Math.abs(impliedP(l[1]) - 0.5) < Math.abs(impliedP(best[1]) - 0.5)) best = l; });
+        wheelSel[wk] = best[0];
+      }
+      var col = el("div");
+      col.innerHTML = '<div class="sw-team">' + escapeHtml(t) + '</div><div class="sw-box"><div class="sw-wheel" tabindex="0" aria-label="' + escapeHtml(t) + ' spreads" data-wk="' + escapeHtml(wk) + '">' +
+        '<div class="sw-pad"></div>' + lines.map(function(l){
+          return '<div class="sw-row" data-pt="' + l[0] + '" data-odds="' + l[1] + '"><b>' + spreadPt(l[0]) + '</b><span>' + fmtOdds(l[1]) + '</span></div>';
+        }).join("") + '<div class="sw-pad"></div></div></div>';
+      cols.appendChild(col);
+      var row = el("div", "sw-sel");
+      row.setAttribute("data-wk", wk);
+      sel.appendChild(row);
+    });
+    box.appendChild(cols); box.appendChild(sel);
+    function showSel(wk){
+      var row = sel.querySelector('.sw-sel[data-wk="' + CSS.escape(wk) + '"]'), t = wk.split("|").pop();
+      var pt = wheelSel[wk], l = (gl.spreads[t] || []).filter(function(x){ return x[0] === pt; })[0];
+      if(!row || !l) return;
+      row.innerHTML = '<span><b>' + escapeHtml(t) + ' ' + spreadPt(l[0]) + '</b> <span class="faint">' + fmtOdds(l[1]) + '</span></span>' + trkBtn("p", spreadKey(g, t, l[0]));
+    }
+    teams.forEach(function(t){ showSel(gameKey(g) + "|" + t); });
+    box.querySelectorAll(".sw-wheel").forEach(function(w){
+      var tick = null;
+      w.addEventListener("scroll", function(){
+        if(tick) return;
+        tick = requestAnimationFrame(function(){
+          tick = null;
+          if(!w.hasAttribute("data-ready")) return;
+          var i = Math.round(w.scrollTop / 44), rows = w.querySelectorAll(".sw-row"), r = rows[Math.max(0, Math.min(rows.length - 1, i))];
+          rows.forEach(function(x){ x.classList.toggle("on", x === r); });
+          var wk = w.getAttribute("data-wk"), pt = Number(r.getAttribute("data-pt"));
+          if(wheelSel[wk] !== pt){ wheelSel[wk] = pt; showSel(wk); }
+        });
+      });
+      w.addEventListener("click", function(ev){
+        var r = ev.target.closest(".sw-row");
+        if(r) w.scrollTo({top: Array.prototype.indexOf.call(w.querySelectorAll(".sw-row"), r) * 44, behavior: "smooth"});
+      });
+    });
+    return box;
+  }
+  // Put each visible wheel on its chosen line (a hidden wheel can't scroll, so this runs when one is shown).
+  function initWheels(){
+    document.querySelectorAll(".sw-wheel:not([data-ready])").forEach(function(w){
+      if(!w.offsetParent) return;
+      var rows = w.querySelectorAll(".sw-row"), pt = wheelSel[w.getAttribute("data-wk")], i = 0;
+      rows.forEach(function(r, j){ if(Number(r.getAttribute("data-pt")) === pt) i = j; });
+      w.scrollTop = i * 44;
+      rows.forEach(function(r, j){ r.classList.toggle("on", j === i); });
+      w.setAttribute("data-ready", "");
+    });
+  }
+
   // ---------- History: finished games as Home-style cards, by sport, then by day (newest first) ----------
   var pastSport = null;
   function gameResult(g){
@@ -1253,7 +1353,7 @@
     });
     var ng = Object.keys(tracked.g || {}).length, np = Object.keys(tracked.p || {}).length;
     document.getElementById("meTracking").innerHTML = '<div class="stat-row"><span class="muted">Games you track</span><span class="v tabular">' + ng + '</span></div>' +
-      '<div class="stat-row"><span class="muted">Prop picks you track</span><span class="v tabular">' + np + '</span></div>' +
+      '<div class="stat-row"><span class="muted">Props and spreads you track</span><span class="v tabular">' + np + '</span></div>' +
       ((ng || np) ? '<button type="button" class="ghost" id="meClear" style="margin-top:6px">Clear tracking</button>' : '');
   }
   (function(){
@@ -1324,7 +1424,15 @@
         tp.push({d: d, p: {player: r.player, stat: r.stat, line: r.line, side: f[3], price: price, model_p: r.mp}, now: true});
       });
     });
-    if(!tg.length && !tp.length) return null;
+    // Tracked spreads (from the spread wheel) on games still on the board
+    var ts = [];
+    Object.keys(tracked.p || {}).forEach(function(k){
+      var f = k.split("|");
+      if(f.length !== 6 || f[0] !== "SPREAD" || f[1] !== currentSport) return;
+      var g = games.filter(function(x){ return x.away_team + " @ " + x.home_team === f[2] && String(x.kickoff_time || "").slice(0, 10) === f[3]; })[0];
+      if(g) ts.push({g: g, team: f[4], point: Number(f[5]), key: k});
+    });
+    if(!tg.length && !tp.length && !ts.length) return null;
     var card = el("div", "card");
     card.innerHTML = '<div class="bb-head"><h3>' + (prefs.name ? escapeHtml(prefs.name) + '\'s tracking' : 'My tracking') + '</h3><span class="faint">' + escapeHtml(currentSport) + ' · ' + escapeHtml(syncStatusTxt) + '</span></div>';
     if(tg.length){
@@ -1352,6 +1460,22 @@
         var row = livePickEl(lv ? Object.assign({}, p, lv, {now: p.now}) : Object.assign({}, p, {status: "pending"}), pickTrackKey(x.d, x.p));
         row.querySelector(".who").insertAdjacentHTML("beforeend", ' <span class="faint" style="font-weight:500">' + escapeHtml(propGameLabel(x.d)) + '</span>');
         card.appendChild(row);
+      });
+    }
+    if(ts.length){
+      card.appendChild(el("div", "bb-sec", "Spreads"));
+      ts.forEach(function(x){
+        var g = x.g, gl = linesFor(g), l = gl && (gl.spreads[x.team] || []).filter(function(q){ return q[0] === x.point; })[0];
+        var lg = liveFor(g), pill = "";
+        if(liveStarted(lg)){
+          var mine = x.team === g.home_team ? lg.home_score - lg.away_score : lg.away_score - lg.home_score, by = mine + x.point;
+          var done = lg.state === "post";
+          pill = by > 0 ? ['good', done ? 'WON' : 'COVERING'] : by < 0 ? ['bad', done ? 'LOST' : 'NOT COVERING'] : ['neutral', 'PUSH'];
+          pill = '<span class="pill ' + pill[0] + '">' + pill[1] + '</span>';
+        }
+        card.appendChild(el("div", "pr-pick", '<div style="min-width:0"><div style="font-weight:700">' + escapeHtml(x.team + " " + spreadPt(x.point)) + '</div>' +
+          '<div class="faint">' + escapeHtml(g.away_team + " @ " + g.home_team) + (l ? ' · now ' + fmtOdds(l[1]) : '') + '</div></div>' +
+          '<div class="bb-right">' + pill + trkBtn("p", x.key) + '</div>'));
       });
     }
     return card;
@@ -1762,11 +1886,15 @@
       var read = gamePane.querySelector(".model-read");
       if(read) read.parentNode.insertBefore(lpb, read.nextSibling); else gamePane.insertBefore(lpb, gamePane.firstChild);
     }
+    var swEl = !over ? spreadWheelEl(g) : null;
+    if(swEl) gamePane.appendChild(swEl);
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
     else det.appendChild(gamePane);
     det.hidden = !isOpen;
+    if(isOpen) requestAnimationFrame(initWheels);
     head.addEventListener("click", function(){
       det.hidden = !det.hidden;
+      if(!det.hidden) setTimeout(initWheels, 0);
       openGames[k] = !det.hidden;
       head.setAttribute("aria-expanded", String(!det.hidden));
       head.querySelector(".game-more").textContent = det.hidden ? (pdoc ? "Lines & props" : "Details") : "Hide";
@@ -1895,7 +2023,7 @@
       openTabs[k] = key;
       Array.prototype.forEach.call(bar.children, function(b){ b.classList.toggle("active", b.dataset.k === key); });
       pane.innerHTML = "";
-      if(key === "game"){ pane.appendChild(gamePane); return; }
+      if(key === "game"){ pane.appendChild(gamePane); setTimeout(initWheels, 0); return; }
       if(propStarted(doc)) pane.appendChild(el("div", "faint", "This game has started, so these prop prices are from before kickoff."));
       if(key === "top") renderTopProps(pane, doc, g);
       else renderPropCat(pane, doc, propCats(doc).filter(function(c){ return c.key === key; })[0], g);
@@ -2437,7 +2565,11 @@
     try{
       dbApi.collection("live").onSnapshot(function(snap){
         liveDoc = null;
-        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x; });
+        snap.docs.forEach(function(d){
+          var x = d.data();
+          if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
+          if(x && x.doc === "GAME_LINES") linesDoc = x;
+        });
         liveLoaded = true; renderLive();
       });
     }catch(e){ liveLoaded = true; renderLive(); }
