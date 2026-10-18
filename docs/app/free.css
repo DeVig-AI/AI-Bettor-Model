@@ -1,0 +1,10 @@
+/* DeVig (free version): hide the features that need Claude (photo reading, Ask chat, AI parlay pick, saved scans). */
+nav.tabs button[data-tab="ask"],
+#panel-scan > .card:first-child,
+#scanResult,
+#panel-scan > .card:last-child,
+#aiParlayBtn, #aiParlayBtn + p, #aiParlayStatus, #aiParlayReasoning,
+#pickFromHistoryBtn, #historyPickerWrap { display: none !important; }
+
+.free-foot { max-width: 640px; margin: 0 auto; padding: 0 0 28px; font-size: 12px; color: var(--ink-faint); text-align: center; }
+.free-foot a { color: var(--accent-strong); }
