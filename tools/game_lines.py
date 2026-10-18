@@ -7,7 +7,8 @@ Kalshi lists "TEAM wins by over X" markets. Buying YES is TEAM -X; buying NO is 
 as fee-included American odds, so each team gets its whole ladder of lines.
 
 Output: live/game_lines.json
-  {generated_at, games: [{sport, date, away, home, event, spreads: {TEAM: [[point, odds], ...]}}]}
+  {generated_at, games: [{sport, date, away, home, event, home_ticker, spreads: {TEAM: [[point, odds], ...]}}]}
+home_ticker is the home team's Kalshi win market, which the app's win-chance graph reads (functions/api/winline.js).
 """
 import json
 import os
@@ -51,10 +52,9 @@ def main():
             continue
         for g in kg.values():
             lad = ladders(g)
-            if not lad:
-                continue
             a, h = g["away_code"], g["home_code"]
             games.append({"sport": sport, "date": g["date"], "event": g.get("event"),
+                          "home_ticker": (g["teams"].get(h) or {}).get("ticker"),
                           "away": KG.canon(sport, a), "home": KG.canon(sport, h),
                           "spreads": {KG.canon(sport, t): v for t, v in lad.items()}})
     games.sort(key=lambda x: (x["sport"], x["date"] or "", x["away"]))
