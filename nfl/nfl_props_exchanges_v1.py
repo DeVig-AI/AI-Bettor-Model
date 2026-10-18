@@ -13,12 +13,15 @@ Polymarket market-data APIs and write one app-ready export file.
 Each game doc holds rows keyed by (player, stat, line). A row can have a Kalshi quote, a Polymarket
 quote, or both. "line" is an Over line: Kalshi "15+ receiving yards" (floor_strike 14.5) == Over 14.5.
 """
-import hashlib, json, os, re, sys, time, unicodedata, urllib.parse, urllib.request, urllib.error
+import csv, hashlib, io, json, os, re, sys, time, unicodedata, urllib.parse, urllib.request, urllib.error
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 POLY = "https://gamma-api.polymarket.com"
 POLY_NFL_SERIES = "12185"            # from GET /sports (sport "nfl"), seen 2026-10-18
+SCHEDULE = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"   # kickoffs, US Eastern
+ET = ZoneInfo("America/New_York")
 UA = "nfl-props-exchanges/1.0 (personal research; read-only)"
 PAUSE = 0.3
 OUT = os.path.join("nfl", "props_exchanges_export.json")
@@ -160,10 +163,10 @@ def pull_kalshi():
                     player = title.split(":")[0].strip() if ":" in title else None
                     if line is None or not player:
                         continue
-                    # kickoff only from occurrence_datetime (expiration fields are settlement times, not kickoff);
-                    # a missing kickoff means the game is skipped rather than locked late
-                    kick = m.get("occurrence_datetime")
-                    date = str(kick or "")[:10]
+                    # no kickoff from Kalshi: occurrence_datetime runs ~3 h after kickoff (SNF 2026-10-18 showed
+                    # 03:20Z for an 00:20Z kick). Kickoff comes from the nflverse schedule or Polymarket in main().
+                    kick = None
+                    date = str(m.get("occurrence_datetime") or "")[:10]
                     # Kalshi event date is the local game date; night games roll past midnight UTC. Use the ticker date.
                     mt = re.search(r"-(\d{2})([A-Z]{3})(\d{2})", str(m.get("event_ticker") or ""))
                     if mt:
@@ -196,8 +199,14 @@ def pull_poly():
             gm = poly_game(slug)
             if not gm:
                 continue
-            # startTime is kickoff; endDate is resolution time, never a kickoff
-            g = game_slot(gm[2], gm[0], gm[1], ev.get("startTime"))
+            # startTime is kickoff; endDate is resolution time, never a kickoff. The slug date is the UTC date,
+            # so night games carry the next day; key by the US Eastern date of kickoff to match Kalshi.
+            start, date = ev.get("startTime"), gm[2]
+            try:
+                date = datetime.fromisoformat(str(start).replace("Z", "+00:00")).astimezone(ET).date().isoformat()
+            except (TypeError, ValueError):
+                pass
+            g = game_slot(date, gm[0], gm[1], start)
             for m in ev.get("markets") or []:
                 if m.get("closed") is True:
                     continue
@@ -230,10 +239,43 @@ def pull_poly():
     return n
 
 
+def load_schedule():
+    """(Eastern game date, away, home) -> kickoff UTC, from the nflverse schedule. {} if it can't be read."""
+    try:
+        req = urllib.request.Request(SCHEDULE, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            text = r.read().decode("utf-8")
+    except Exception as e:
+        log.append(f"schedule ERR {type(e).__name__}"); return {}
+    out = {}
+    for row in csv.DictReader(io.StringIO(text)):
+        try:
+            t = datetime.strptime(f"{row['gameday']} {row['gametime']}", "%Y-%m-%d %H:%M").replace(tzinfo=ET)
+        except (KeyError, TypeError, ValueError):
+            continue
+        out[(row["gameday"], row["away_team"], row["home_team"])] = t.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return out
+
+
+def set_kickoffs(sched):
+    # the schedule is the kickoff of record; Polymarket startTime only fills games the schedule doesn't have
+    for key, g in games.items():
+        m = g["meta"]
+        k = sched.get((m["game_date"], m["away_team"], m["home_team"])) or \
+            sched.get((m["game_date"], m["home_team"], m["away_team"]))
+        if k:
+            if m["kickoff_time"] and m["kickoff_time"] != k:
+                log.append(f"kickoff {key}: schedule {k} vs polymarket {m['kickoff_time']}")
+            m["kickoff_time"], m["kickoff_source"] = k, "nflverse schedule"
+        else:
+            m["kickoff_source"] = "polymarket" if m["kickoff_time"] else None
+
+
 def main():
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     nk = pull_kalshi()
     npl = pull_poly()
+    set_kickoffs(load_schedule())
     docs = []
     for key, g in sorted(games.items()):
         rows = sorted(g["rows"].values(), key=lambda r: (r["stat"], r["player"], r["line"]))
