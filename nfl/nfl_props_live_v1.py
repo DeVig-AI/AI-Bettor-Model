@@ -240,7 +240,8 @@ def main():
         live = sb.get((g["game_date"], g["away_team"], g["home_team"])) or {}
         picks = g.get("paper_picks") or []
         tick = {(r["player"], r["stat"], r["line"]): (r.get("k") or {}).get("t") for r in g.get("rows") or []}
-        box = box_stats(live["espn_id"]) if picks and live.get("state") in ("in", "post") and live.get("espn_id") else {}
+        rows = g.get("rows") or []
+        box = box_stats(live["espn_id"]) if (picks or rows) and live.get("state") in ("in", "post") and live.get("espn_id") else {}
         out_picks = []
         for p in picks:
             st = {}
@@ -253,6 +254,14 @@ def main():
             t = tick.get((p["player"], p["stat"], p["line"]))
             out_picks.append(dict(p, ticker=t, current=cur, status=ps, to_go=need,
                                   kalshi_now=kalshi_now(t) if t and state != "post" else None))
+        # every priced player's stat so far, so the app can follow any prop someone tracks, not just the locked picks
+        stats = {}
+        if box:
+            for r in rows:
+                st = {}
+                for t in (g["away_team"], g["home_team"]):
+                    st = box.get((t, norm(r["player"]))) or st
+                stats.setdefault(r["player"], {})[r["stat"]] = st.get(r["stat"]) or 0.0
         n_picks += len(out_picks)
         out_games.append({"game_key": g["game_key"], "away": g["away_team"], "home": g["home_team"],
                           "kickoff": g.get("kickoff_time"), "locked": bool(g.get("locked")),
@@ -261,7 +270,7 @@ def main():
                           "possession": live.get("possession") or None, "espn_id": live.get("espn_id"),
                           "kalshi_game": public(odds.get((g["away_team"], g["home_team"]))) if live.get("state") != "post" else None,
                           "kalshi_line": line_for(g["game_key"], g["away_team"], g["home_team"], live.get("state", "pre"), g.get("kickoff_time")),
-                          "picks": out_picks})
+                          "picks": out_picks, "stats": stats or None})
     # games on ESPN's board with no prop prices still get a score line
     known = {(g["game_date"], g["away_team"], g["home_team"]) for g in games}
     for k, v in sorted(sb.items(), key=lambda kv: kv[1]["kickoff"]):

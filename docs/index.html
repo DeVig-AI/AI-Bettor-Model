@@ -364,6 +364,8 @@
   .lv-bar{grid-column:1 / -1; height:6px; border-radius:999px; background:var(--surface-2); position:relative; overflow:hidden;}
   .lv-bar i{position:absolute; top:0; bottom:0; left:0; background:var(--accent); border-radius:999px;}
   .lv-bar.won i{background:var(--good);} .lv-bar.lost i{background:var(--bad);}
+  /* Over: the bar filling is good (green). Under: filling is bad (amber, red once it's close to the limit). */
+  .lv-bar.up i{background:var(--good);} .lv-bar.warn i{background:#d9a03b;} .lv-bar.danger i{background:var(--bad);}
   .lv-pk .px{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:2px 14px; font-size:12.5px; color:var(--ink-soft);}
   .lv-pk .px b{font-family:var(--font-mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
   .pill.live{background:var(--accent-wash); color:var(--accent-strong);}
@@ -1261,7 +1263,7 @@
         var r = propRows(d).filter(function(r){ return r.player === f[0] && r.stat === f[1] && String(r.line) === f[2]; })[0];
         if(!r) return;
         var price = propKalshiTwoSided(r) ? (f[3] === "OVER" ? r.ka : Math.round((1 - r.kb) * 10000) / 10000) : null;
-        tp.push({d: d, p: {player: r.player, stat: r.stat, line: r.line, side: f[3], price: price}, now: true});
+        tp.push({d: d, p: {player: r.player, stat: r.stat, line: r.line, side: f[3], price: price, model_p: r.mp}, now: true});
       });
     });
     if(!tg.length && !tp.length) return null;
@@ -1287,11 +1289,11 @@
     if(tp.length){
       card.appendChild(el("div", "bb-sec", "Prop picks"));
       tp.forEach(function(x){
-        var p = x.p, lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
-        card.appendChild(el("div", "pr-pick", '<div style="min-width:0"><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' +
-          escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
-          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + (x.now ? (p.price != null ? ' · now ' + exOddsTxt(p.price, true) : '') : ' · locked at ' + exOddsTxt(p.price, true)) + (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
-          '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '') + trkBtn("p", pickTrackKey(x.d, p)) + '</div>'));
+        var p = x.now ? Object.assign({}, x.p, {now: true}) : x.p;
+        var lv = trackedPropLive(x.d, p);
+        var row = livePickEl(lv ? Object.assign({}, p, lv, {now: p.now}) : Object.assign({}, p, {status: "pending"}), pickTrackKey(x.d, x.p));
+        row.querySelector(".who").insertAdjacentHTML("beforeend", ' <span class="faint" style="font-weight:500">' + escapeHtml(propGameLabel(x.d)) + '</span>');
+        card.appendChild(row);
       });
     }
     return card;
@@ -2713,21 +2715,45 @@
     if(p.status === "won") return ["good", "WON"];
     if(p.status === "lost") return ["bad", "LOST"];
     if(p.status === "live") return ["live", p.side === "OVER" ? "NEEDS " + p.to_go + " MORE" : "LOSES AT " + (Math.floor(p.line) + 1)];
-    return ["neutral", "LOCKED"];
+    return ["neutral", p.now ? "NOT STARTED" : "LOCKED"];
+  }
+  // Live read of any prop from the stat so far (same rules as the bot's pick_state): Over can only be won early,
+  // Under can only be lost early.
+  function propLiveState(side, line, cur, state){
+    if(state === "pre" || cur == null) return {status: "pending", to_go: null};
+    var top = Math.floor(line);
+    if(side === "OVER"){
+      if(cur > line) return {status: "won", to_go: 0};
+      return {status: state === "post" ? "lost" : "live", to_go: Math.round((top + 1 - cur) * 10) / 10};
+    }
+    if(cur > line) return {status: "lost", to_go: 0};
+    return {status: state === "post" ? "won" : "live", to_go: Math.round((top - cur) * 10) / 10};
+  }
+  // Live progress for any tracked prop: the bot's own read for a locked pick, otherwise the game's stat line.
+  function trackedPropLive(d, p){
+    var lg = liveFor({away_team: d.away_team, home_team: d.home_team, kickoff_time: d.kickoff_time, sport: docSport(d)});
+    if(!lg) return null;
+    var q = (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line && q.side === p.side; })[0];
+    if(q) return q;
+    var cur = lg.stats && lg.stats[p.player] ? lg.stats[p.player][p.stat] : null;
+    if(cur == null) return null;
+    var st = propLiveState(p.side, p.line, cur, lg.state);
+    return Object.assign({}, p, {current: cur, status: st.status, to_go: st.to_go});
   }
   function livePickEl(p, trkKey){
     var b = liveBadge(p), cur = p.current, target = Math.floor(p.line) + 1;
     var k = p.kalshi_now, sideNow = null;
     if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
-    var row = el("div", "lv-pk");
+    var row = el("div", "lv-pk"), fill = cur != null ? cur / Math.max(target, 1) : 0;
+    var barCls = p.status === "won" || p.status === "lost" ? p.status : (p.side === "OVER" ? "up" : (fill >= 0.75 ? "danger" : "warn"));
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
       '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
-      (cur != null ? ' · has <b class="tabular">' + cur + '</b>' : '') + '</div></div>' +
+      (cur != null ? (p.side === "OVER" ? ' · <b class="tabular">' + cur + '</b> of <b class="tabular">' + target + '</b>'
+                                        : ' · <b class="tabular">' + cur + '</b>, loses at <b class="tabular">' + target + '</b>') : '') + '</div></div>' +
       '<div><span class="pill ' + b[0] + '">' + escapeHtml(b[1]) + '</span></div>' +
-      (cur != null ? '<div class="lv-bar ' + (p.status === "won" || p.status === "lost" ? p.status : "") + '"><i style="width:' +
-        Math.min(100, cur / Math.max(target, 1) * 100) + '%"></i></div>' : '') +
-      '<div class="px"><span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' +
-      '<span>Locked at <b>' + exOddsTxt(p.price, true) + '</b></span>' +
+      (cur != null ? '<div class="lv-bar ' + barCls + '"><i style="width:' + Math.min(100, fill * 100) + '%"></i></div>' : '') +
+      '<div class="px">' + (p.model_p != null ? '<span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' : '') +
+      (p.price != null ? '<span>' + (p.now ? 'Kalshi ' : 'Locked at ') + '<b>' + exOddsTxt(p.price, true) + '</b></span>' : '') +
       (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') +
       (trkKey ? '<span style="margin-left:auto">' + trkBtn("p", trkKey) + '</span>' : '') + '</div>';
     return row;
