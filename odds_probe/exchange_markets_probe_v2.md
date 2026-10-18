@@ -1,0 +1,446 @@
+# Exchange markets probe v2 -- NFL only (2026-10-18T02:07:48Z)
+
+Read-only, public APIs, no keys, nothing bet.
+
+## Kalshi: 4007 sports series scanned, 315 NFL series, 137 with open events
+
+- [PLAYER] **KXNFLRECYDS** Pro Football Receiving Yards: 13 events, 1109 markets
+  - e.g. Houston vs Jacksonville: Receiving Yards
+  - market: Nate Boerkircher: 15+ receiving yards | last_price_dollars=0.2600, no_ask_dollars=0.7500, no_bid_dollars=0.7400, open_interest_fp=224.84, previous_price_dollars=0.2600, previous_yes_ask_dollars=0.2800, previous_yes_bid_dollars=0.2500, price_level_structure=linear_cent
+- [PLAYER] **KXNFLREC** Pro Football Player Receptions: 13 events, 914 markets
+  - e.g. Houston vs Jacksonville: Receptions
+  - market: Josh Cameron: 2+ receptions | last_price_dollars=0.5000, no_ask_dollars=0.5100, no_bid_dollars=0.4900, open_interest_fp=613.56, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4900, previous_yes_bid_dollars=0.4800, price_level_structure=linear_cent
+- [PLAYER] **KXNFLRSHYDS** Pro Football Rushing Yards: 13 events, 652 markets
+  - e.g. Houston vs Jacksonville: Rushing Yards
+  - market: Trevor Lawrence: 10+ rushing yards | last_price_dollars=0.6000, no_ask_dollars=0.4000, no_bid_dollars=0.3900, open_interest_fp=1247.45, previous_price_dollars=0.6200, previous_yes_ask_dollars=0.6300, previous_yes_bid_dollars=0.6000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTD** Pro Football Touchdowns: 14 events, 626 markets
+  - e.g. Houston vs Jacksonville: Touchdowns
+  - market: Ameer Abdullah: 1+ touchdowns | last_price_dollars=0.0400, no_ask_dollars=0.9700, no_bid_dollars=0.9600, open_interest_fp=14933.10, previous_price_dollars=0.0600, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0300, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTDPROT** Pro Football Touchdowns Protected: 14 events, 626 markets
+  - e.g. Houston vs Jacksonville: Touchdowns (Protected)
+  - market: Ameer Abdullah: 1+ touchdowns (Protected) | last_price_dollars=0.0400, no_ask_dollars=1.0000, no_bid_dollars=0.9600, open_interest_fp=67.00, previous_price_dollars=0.0400, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFIRSTTD** Pro Football First Touchdown: 14 events, 347 markets
+  - e.g. Houston vs Jacksonville: 1st Touchdown
+  - market: Ameer Abdullah: 1st Touchdown | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTEAMFIRSTTD** Pro Football First Touchdown: 26 events, 342 markets
+  - e.g. Houston vs Jacksonville: 1st Houston Touchdown
+  - market: Kayshon Boutte: 1st Houston Touchdown | last_price_dollars=0.0000, no_ask_dollars=0.9900, no_bid_dollars=0.8100, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.2400, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPOTM** NFL Player of the Month: 4 events, 300 markets
+  - e.g. AFC Defensive Player of the Month in October
+  - market: AFC Defensive Player of the Month in October: T.J. Watt | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPASSYDS** Pro Football Passing Yards: 13 events, 241 markets
+  - e.g. Houston vs Jacksonville: Passing Yards
+  - market: Trevor Lawrence: 150+ passing yards | last_price_dollars=0.8700, no_ask_dollars=0.1400, no_bid_dollars=0.1200, open_interest_fp=292.89, previous_price_dollars=0.8900, previous_yes_ask_dollars=0.8800, previous_yes_bid_dollars=0.8600, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFFPTS** Pro Football Player Fantasy Points: 13 events, 150 markets
+  - e.g. Houston vs Jacksonville: Fantasy Points
+  - market: Trevor Lawrence: Over 18.4 fantasy points | last_price_dollars=0.3800, no_ask_dollars=0.6200, no_bid_dollars=0.6100, open_interest_fp=106.40, previous_price_dollars=0.3900, previous_yes_ask_dollars=0.3800, previous_yes_bid_dollars=0.3600, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTEAMYDS** Pro Football Team Yards: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: Team Total Yards
+  - market: Jacksonville: 250+ Total Yards | last_price_dollars=0.9500, no_ask_dollars=0.3100, no_bid_dollars=0.0600, open_interest_fp=9.27, previous_price_dollars=0.9500, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.5100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTEAMSACK** Pro Football Team Sacks: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: Team Sacks
+  - market: Jacksonville: 2+ sacks | last_price_dollars=0.7900, no_ask_dollars=0.3400, no_bid_dollars=0.2600, open_interest_fp=21.20, previous_price_dollars=0.7900, previous_yes_ask_dollars=0.7900, previous_yes_bid_dollars=0.1300, price_level_structure=linear_cent
+- [PLAYER] **KXNFLRSHATT** Pro Football Rushing Attempts: 13 events, 128 markets
+  - e.g. Houston vs Jacksonville: Rushing Attempts
+  - market: Trevor Lawrence: 1+ rushing attempts | last_price_dollars=0.9200, no_ask_dollars=0.0700, no_bid_dollars=0.0600, open_interest_fp=48.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9800, previous_yes_bid_dollars=0.8100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPASSTDS** Pro Football player Passing Touchdowns: 13 events, 112 markets
+  - e.g. Houston vs Jacksonville: Passing Touchdowns
+  - market: Trevor Lawrence: 1+ passing touchdowns | last_price_dollars=0.7800, no_ask_dollars=0.2300, no_bid_dollars=0.2200, open_interest_fp=397.04, previous_price_dollars=0.7400, previous_yes_ask_dollars=0.7600, previous_yes_bid_dollars=0.7400, price_level_structure=linear_cent
+- [PLAYER] **KXNFLMOSTRECYDS** Pro Football Most Receiving Yards: 13 events, 105 markets
+  - e.g. Houston vs Jacksonville: Most Receiving Yards
+  - market: Josh Cameron: most receiving yards in the HOU vs JAC game | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.9600, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0400, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFG** Pro Football Field Goals: 13 events, 104 markets
+  - e.g. Houston vs Jacksonville: Team Field Goals
+  - market: Jacksonville: 1+ Field Goals | last_price_dollars=0.0000, no_ask_dollars=0.4800, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.4700, price_level_structure=linear_cent
+- [PLAYER] **KXNFLRRYDS** Pro Football Rush and Receiving Yards: 13 events, 90 markets
+  - e.g. Houston vs Jacksonville: Rushing + Receiving Yards
+  - market: Bhayshul Tuten: 80+ rushing and receiving yards combined | last_price_dollars=0.4900, no_ask_dollars=0.5200, no_bid_dollars=0.5100, open_interest_fp=128.02, previous_price_dollars=0.4900, previous_yes_ask_dollars=0.4900, previous_yes_bid_dollars=0.4700, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPASSATT** Pro Football Passing Attempts: 13 events, 78 markets
+  - e.g. Houston vs Jacksonville: Passing Attempts
+  - market: Trevor Lawrence: 27+ passing attempts | last_price_dollars=0.0000, no_ask_dollars=0.2300, no_bid_dollars=0.2100, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.7800, previous_yes_bid_dollars=0.7500, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPASSINT** Pro Football Passing Interceptions: 13 events, 78 markets
+  - e.g. Houston vs Jacksonville: Passing Interceptions
+  - market: Trevor Lawrence: 1+ passing interceptions | last_price_dollars=0.5200, no_ask_dollars=0.4900, no_bid_dollars=0.4800, open_interest_fp=457.72, previous_price_dollars=0.5200, previous_yes_ask_dollars=0.5200, previous_yes_bid_dollars=0.5100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLPASSCOMP** Pro Football Passing Completions: 13 events, 78 markets
+  - e.g. Houston vs Jacksonville: Passing Completions
+  - market: Trevor Lawrence: 15+ passing completions | last_price_dollars=0.8700, no_ask_dollars=0.1300, no_bid_dollars=0.1200, open_interest_fp=32.00, previous_price_dollars=0.8700, previous_yes_ask_dollars=0.8900, previous_yes_bid_dollars=0.8300, price_level_structure=linear_cent
+- [PLAYER] **KXNFLDPOTY** AP Pro Football Defensive Player Of The Year: 1 events, 69 markets
+  - e.g. Defensive Player of the Year Winner?
+  - market: Will Devin Lloyd win the Defensive Player of the Year? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=18200.52, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLOPOTY** AP Pro Football Offensive Player Of The Year: 1 events, 69 markets
+  - e.g. Offensive Player of the Year Winner?
+  - market: Will Saquon Barkley win the Offensive Player of the Year? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=59642.74, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLTRADE** Pro Football Players Traded: 1 events, 57 markets
+  - e.g. NFL Players Traded
+  - market: Will Kyler Murray be traded before Dec 1, 2026? | last_price_dollars=0.0400, no_ask_dollars=1.0000, no_bid_dollars=0.9600, open_interest_fp=5097.67, previous_price_dollars=0.0400, previous_yes_ask_dollars=0.0400, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLMOSTRSHYDS** Pro Football Most Rushing Yards: 13 events, 52 markets
+  - e.g. Houston vs Jacksonville: Most Rushing Yards
+  - market: Trevor Lawrence: most rushing yards in the HOU vs JAC game | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.9500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFIRSTTDTEAM** Pro Football First Team to Score a Touchdown: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: First Team to Score a TD
+  - market: Jacksonville scores first TD | last_price_dollars=0.5300, no_ask_dollars=0.5800, no_bid_dollars=0.4700, open_interest_fp=19.86, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.5500, previous_yes_bid_dollars=0.4100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFFPLAYERHIGH** Pro Football Player's Highest Scoring Fantasy Performance: 1 events, 36 markets
+  - e.g. Player's Highest Scoring Game this Season
+  - market: Jahmyr Gibbs to score at least 44 fantasy points in any game in the 2026-27 regular season | last_price_dollars=0.0000, no_ask_dollars=0.9400, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.0600, price_level_structure=linear_cent
+- [PLAYER] **KXNFLFFSEASONTOTAL** Pro Football Player's Fantasy Season Total: 1 events, 36 markets
+  - e.g. Player's Season Total Fantasy Points
+  - market: Jahmyr Gibbs to score at least 365 total fantasy points in the 2026-27 regular season | last_price_dollars=0.5000, no_ask_dollars=1.0000, no_bid_dollars=0.3600, open_interest_fp=0.00, previous_price_dollars=0.5000, previous_yes_ask_dollars=0.6400, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLAPYDS** Pro Football All-Purpose Yards Leader: 1 events, 30 markets
+  - e.g. Pro Football All-Purpose Yards Leader
+  - market: Will Bijan Robinson lead Pro Football in all-purpose yards for the 2026-27 regular season? | last_price_dollars=0.4500, no_ask_dollars=0.7200, no_bid_dollars=0.6500, open_interest_fp=41.86, previous_price_dollars=0.4500, previous_yes_ask_dollars=0.3700, previous_yes_bid_dollars=0.3000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLDEBUT** Pro Football Player to Make Debut: 4 events, 29 markets
+  - e.g. When will Carson Beck start his first Pro Football game?
+  - market: Carson Beck first start: Week 1 to Week 2 | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLPTDS** NFL leader passing TDs: 1 events, 28 markets
+  - e.g. Pro Football Passing Touchdowns Leader
+  - market: Will Matthew Stafford lead Pro Football in Passing Touchdowns for the 2026-2027 Regular Season? | last_price_dollars=0.1300, no_ask_dollars=0.9000, no_bid_dollars=0.8900, open_interest_fp=6387.22, previous_price_dollars=0.1300, previous_yes_ask_dollars=0.1300, previous_yes_bid_dollars=0.1000, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLPYDS** NFL leader passing yards: 1 events, 28 markets
+  - e.g. Pro Football Passing Yards Leader
+  - market: Will Matthew Stafford lead Pro Football in Passing Yards for the 2026-2027 Regular Season? | last_price_dollars=0.2800, no_ask_dollars=0.7300, no_bid_dollars=0.7200, open_interest_fp=12445.83, previous_price_dollars=0.2800, previous_yes_ask_dollars=0.2900, previous_yes_bid_dollars=0.2500, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLRYDS** NFL leader receiving yards: 1 events, 27 markets
+  - e.g. Pro Football Receiving Yards Leader
+  - market: Will Jaxon Smith-Njigba lead Pro Football in Receiving Yards for the 2026-2027 regular season? | last_price_dollars=0.3500, no_ask_dollars=0.5400, no_bid_dollars=0.5200, open_interest_fp=13664.54, previous_price_dollars=0.5700, previous_yes_ask_dollars=0.5700, previous_yes_bid_dollars=0.4500, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLRTDS** NFL leader receiving TDs: 1 events, 26 markets
+  - e.g. Pro Football Receiving Touchdowns Leader
+  - market: Will Jaxon Smith-Njigba lead Pro Football in Receiving Touchdowns for the 2026-2027 regular season? | last_price_dollars=0.4000, no_ask_dollars=0.6300, no_bid_dollars=0.6000, open_interest_fp=4456.76, previous_price_dollars=0.3300, previous_yes_ask_dollars=0.4000, previous_yes_bid_dollars=0.3600, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLRUSHTDS** NFL leader rushing TDs: 1 events, 25 markets
+  - e.g. Pro Football Rushing Touchdowns Leader
+  - market: Will Alvin Kamara lead Pro Football in rushing touchdowns for the 2026-2027 regular season? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=154.92, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLRUSHYDS** NFL leader rushing yards: 1 events, 25 markets
+  - e.g. Pro Football Rushing Yards Leader
+  - market: Will Alvin Kamara lead Pro Football in rushing yards for the 2026-2027 regular season? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=2316.94, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLSACKS** NFL Sacks Leader: 1 events, 24 markets
+  - e.g. Pro Football Sacks Leader
+  - market: Will T.J. Watt lead Pro Football in Sacks for the 2026-2027 Regular Season? | last_price_dollars=0.0700, no_ask_dollars=0.9300, no_bid_dollars=0.8900, open_interest_fp=2312.08, previous_price_dollars=0.1200, previous_yes_ask_dollars=0.1200, previous_yes_bid_dollars=0.0700, price_level_structure=linear_cent
+- [PLAYER] **KXLEADERNFLINT** NFL leader interceptions: 1 events, 24 markets
+  - e.g. Pro Football Interceptions Leader
+  - market: Will Kevin Byard III lead Pro Football in Interceptions for the 2026-2027 Regular Season? | last_price_dollars=0.0900, no_ask_dollars=0.9900, no_bid_dollars=0.7000, open_interest_fp=102.79, previous_price_dollars=0.0900, previous_yes_ask_dollars=0.3300, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLCPOTY** AP Pro Football Comeback Player of the Year: 1 events, 21 markets
+  - e.g. Comeback Player of the Year Winner?
+  - market: Will Patrick Mahomes win the Comeback Player of the Year? | last_price_dollars=0.6800, no_ask_dollars=0.3300, no_bid_dollars=0.3200, open_interest_fp=129635.40, previous_price_dollars=0.6800, previous_yes_ask_dollars=0.6800, previous_yes_bid_dollars=0.6700, price_level_structure=linear_cent
+- [PLAYER] **KXNFLCAREERPASSYDS** NFL Career Passing Yards: 2 events, 13 markets
+  - e.g. Josh Allen Career Regular Season Passing Yards
+  - market: Josh Allen: 35,000+ Passing Yards | last_price_dollars=0.0000, no_ask_dollars=0.0600, no_bid_dollars=0.0000, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.9400, price_level_structure=linear_cent
+- [PLAYER] **KXNFLDSTTD** Pro Football D/ST Touchdown: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: D/ST Touchdown
+  - market: D/ST touchdown in the game? | last_price_dollars=0.2400, no_ask_dollars=0.7700, no_bid_dollars=0.7600, open_interest_fp=275.47, previous_price_dollars=0.2800, previous_yes_ask_dollars=0.2800, previous_yes_bid_dollars=0.1300, price_level_structure=linear_cent
+- [PLAYER] **KXNFLCAREERRECYDS** NFL Career Receiving Yards: 1 events, 10 markets
+  - e.g. Mike Evans Career Regular Season Receiving Yards
+  - market: Mike Evans: 14,000+ Receiving Yards | last_price_dollars=0.4900, no_ask_dollars=0.5900, no_bid_dollars=0.5000, open_interest_fp=69.95, previous_price_dollars=0.4900, previous_yes_ask_dollars=0.5000, previous_yes_bid_dollars=0.4100, price_level_structure=linear_cent
+- [PLAYER] **KXNCAAFDRAFTDECLARE** Players to Declare for the NFL Draft: 7 events, 7 markets
+  - e.g. Will Drew Mestemaker declare for the 2027 Pro Football Draft?
+  - market: Drew Mestemaker to declare for the 2027 Pro Football Draft | last_price_dollars=0.6200, no_ask_dollars=1.0000, no_bid_dollars=0.3200, open_interest_fp=432.41, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.6800, previous_yes_bid_dollars=0.6600, price_level_structure=linear_cent
+- [PLAYER] **KXNFL60YARDFGS** Pro Football 60+ Yard Field Goals: 1 events, 6 markets
+  - e.g. Number of 60+ Yard Field Goals this Season
+  - market: Number of 60+ yard made field goals in 2026-27 regular season: 6+ | last_price_dollars=0.0000, no_ask_dollars=0.0900, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.9100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLCAREERRSHYDS** NFL Career Rushing Yards: 1 events, 6 markets
+  - e.g. Derrick Henry Career Regular Season Rushing Yards
+  - market: Derrick Henry: 14,000+ Rushing Yards | last_price_dollars=0.9200, no_ask_dollars=0.1300, no_bid_dollars=0.0700, open_interest_fp=200.00, previous_price_dollars=0.9200, previous_yes_ask_dollars=0.9400, previous_yes_bid_dollars=0.8700, price_level_structure=linear_cent
+- [PLAYER] **KXNFLLONGESTFG** Pro Football Longest Field Goal: 1 events, 5 markets
+  - e.g. Longest Field Goal in the Regular Season
+  - market: Longest field goal in 2026-27 regular season: 64+ yards | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLLONGESTPLAY** NFL Longest Touchdown: 1 events, 5 markets
+  - e.g. Pro Football Longest Play This Season
+  - market: Longest Play From Scrimmage This Season: 85+ yards | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [PLAYER] **KXNFLDPOYSPECIALS** NFL Defensive Player of the Year Specials: 1 events, 2 markets
+  - e.g. Conference of Defensive Player of the Year Winner
+  - market: 2026-27 Defensive Player of the Year Conference: AFC | last_price_dollars=0.6400, no_ask_dollars=0.4200, no_bid_dollars=0.3500, open_interest_fp=228.72, previous_price_dollars=0.6400, previous_yes_ask_dollars=0.6500, previous_yes_bid_dollars=0.5800, price_level_structure=linear_cent
+- [PLAYER] **KXNFLOPOYSPECIALS** NFL Offensive Player of the Year Specials: 1 events, 2 markets
+  - e.g. Conference of Offensive Player of the Year Winner
+  - market: 2026-27 Offensive Player of the Year Conference: AFC | last_price_dollars=0.4000, no_ask_dollars=0.6900, no_bid_dollars=0.6000, open_interest_fp=200.00, previous_price_dollars=0.4000, previous_yes_ask_dollars=0.4000, previous_yes_bid_dollars=0.3100, price_level_structure=linear_cent
+- [PLAYER] **KXNFLCOMPETE** Will an NFL Player Compete in game: 1 events, 1 markets
+  - e.g. Jake Paul to Play in a Pro Football Game This Season
+  - market: Jake Paul to compete in a Pro Football game in the 2026-27 season? | last_price_dollars=0.0100, no_ask_dollars=0.9900, no_bid_dollars=0.9700, open_interest_fp=1246.99, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0300, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [game/other] **KXNFLDRAFTSELECT** NFL Draft Exact Selection: 31 events, 992 markets
+  - e.g. Team to Make the 10th Overall Pick in the 2027 Pro Football Draft
+  - market: Will Arizona make the 10th Overall Pick in the 2027 Pro Football Draft? | last_price_dollars=0.0000, no_ask_dollars=0.9900, no_bid_dollars=0.9300, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0700, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [game/other] **KXNFLWINSWEEK** NFL wins by week: 2 events, 600 markets
+  - e.g. Pro Football: Team Wins in First 8 Weeks
+  - market: Will Arizona win at least 1 game in the first 8 weeks? | last_price_dollars=0.9900, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=637.04, previous_price_dollars=0.9900, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLWINS** Pro Football Wins: 32 events, 544 markets
+  - e.g. Pro Football: Arizona Total Wins
+  - market: Will the Arizona pro football team win at least 1 games this season? | last_price_dollars=0.9600, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=5347.48, previous_price_dollars=0.9600, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLSBOUTCOME** NFL Championship Outcome: 1 events, 512 markets
+  - e.g. Pro Football Championship Outcome
+  - market: Pro Football Championship: Arizona beats Baltimore | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0100, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9900, previous_yes_bid_dollars=0.0000, price_level_structure=tapered_deci_cent
+- [game/other] **KXNFLMATCHUP** Pro Football Matchups: 3 events, 496 markets
+  - e.g. AFC Championship Matchup
+  - market: 2026-27 AFC Championship Matchup: Baltimore vs Buffalo | last_price_dollars=0.0200, no_ask_dollars=0.9800, no_bid_dollars=0.8600, open_interest_fp=1011.10, previous_price_dollars=0.0200, previous_yes_ask_dollars=0.1400, previous_yes_bid_dollars=0.0200, price_level_structure=linear_cent
+- [game/other] **KXNFLWEEKHIGHSCORE** NFL Highest Scoring Team of the Week: 13 events, 386 markets
+  - e.g. Highest scoring team in Week 6?
+  - market: Highest Scoring Team in Week 6: Arizona | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.9600, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0400, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLSPREAD** Pro Football Spread: 14 events, 359 markets
+  - e.g. Houston vs Jacksonville: Spread
+  - market: Jacksonville wins by over 20.5 points? | last_price_dollars=0.0800, no_ask_dollars=0.9300, no_bid_dollars=0.9200, open_interest_fp=386.27, previous_price_dollars=0.0800, previous_yes_ask_dollars=0.0800, previous_yes_bid_dollars=0.0700, price_level_structure=linear_cent
+- [game/other] **KXNFLTEAMTOTAL** Pro Football Team Total Points: 13 events, 344 markets
+  - e.g. Houston vs Jacksonville: Team Total
+  - market: Jacksonville over 3.5 points scored | last_price_dollars=0.9900, no_ask_dollars=0.0300, no_bid_dollars=0.0100, open_interest_fp=101.00, previous_price_dollars=0.9700, previous_yes_ask_dollars=0.9900, previous_yes_bid_dollars=0.9700, price_level_structure=linear_cent
+- [game/other] **KXNFLTSPEC** NFL Team Specials: 32 events, 307 markets
+  - e.g. Arizona: Team Specials
+  - market: The Arizona Pro Football Team allow 0 points in a single game? | last_price_dollars=0.1200, no_ask_dollars=0.9400, no_bid_dollars=0.8900, open_interest_fp=0.00, previous_price_dollars=0.1200, previous_yes_ask_dollars=0.1100, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFL1HTEAMTOTAL** Pro Football 1st Half Team Total: 14 events, 304 markets
+  - e.g. Houston vs Jacksonville: 1st Half Team Total
+  - market: Jacksonville over 2.5 1H points scored | last_price_dollars=0.9200, no_ask_dollars=0.0700, no_bid_dollars=0.0600, open_interest_fp=181.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9700, previous_yes_bid_dollars=0.9300, price_level_structure=linear_cent
+- [game/other] **KXNFLTOTAL** Pro Football Total Points: 14 events, 266 markets
+  - e.g. Houston vs Jacksonville: Total Points
+  - market: Full Game: over 21.5 points scored? | last_price_dollars=0.9600, no_ask_dollars=0.0400, no_bid_dollars=0.0300, open_interest_fp=232.66, previous_price_dollars=0.9600, previous_yes_ask_dollars=0.9700, previous_yes_bid_dollars=0.9600, price_level_structure=linear_cent
+- [game/other] **KXNFLALLPRO** Pro Football All-Pro Teams: 4 events, 239 markets
+  - e.g. Pro Football: All-Pro First-Team Defense
+  - market: Will Myles Garrett be selected to the Pro Football All-Pro First-Team Defense in the 2026-27 season? | last_price_dollars=0.0800, no_ask_dollars=1.0000, no_bid_dollars=0.8000, open_interest_fp=10.80, previous_price_dollars=0.0800, previous_yes_ask_dollars=0.2000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLAWARDFIN** Pro Football Award Finalists: 6 events, 206 markets
+  - e.g. Coach of the Year Finalists
+  - market: Will Mike LaFleur be selected as a finalist for the Pro Football Coach of the Year award in the 2026-27 season? | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFL1HSPREAD** Pro Football 1st Half Spread: 13 events, 204 markets
+  - e.g. Houston vs Jacksonville: 1st Half Spread
+  - market: Jacksonville wins 1H by over 13.5 points? | last_price_dollars=0.1300, no_ask_dollars=0.9000, no_bid_dollars=0.8800, open_interest_fp=36.25, previous_price_dollars=0.1300, previous_yes_ask_dollars=0.1300, previous_yes_bid_dollars=0.1000, price_level_structure=linear_cent
+- [game/other] **KXNFL2HSPREAD** Pro Football 2nd Half Spread: 13 events, 204 markets
+  - e.g. Houston vs Jacksonville: 2nd Half Spread
+  - market: Jacksonville wins 2H by over 13.5 points? | last_price_dollars=0.1000, no_ask_dollars=0.9400, no_bid_dollars=0.9100, open_interest_fp=51.97, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0900, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFLRACE** Pro Football Race to Points: 65 events, 195 markets
+  - e.g. Houston vs Jacksonville: Race to 10 Points
+  - market: Will Jacksonville reach 10 points first? | last_price_dollars=0.5600, no_ask_dollars=0.7200, no_bid_dollars=0.4400, open_interest_fp=10.85, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.6600, previous_yes_bid_dollars=0.2700, price_level_structure=linear_cent
+- [game/other] **KXNFLSEED** NFL Playoff Seed: 12 events, 192 markets
+  - e.g. Pro Football Playoffs: AFC #2 Seed
+  - market: Will Baltimore be the #2 seed in the American Football Conference in the 2026-27 Pro Football playoffs? | last_price_dollars=0.2200, no_ask_dollars=0.8800, no_bid_dollars=0.7800, open_interest_fp=154.28, previous_price_dollars=0.2200, previous_yes_ask_dollars=0.2100, previous_yes_bid_dollars=0.1300, price_level_structure=linear_cent
+- [game/other] **KXNFLSTAGEOFELIM** Pro Football Stage of Elimination: 32 events, 192 markets
+  - e.g. Arizona: Stage of Elimination
+  - market: Will Arizona be eliminated in the Regular Season in the 2026-27 Pro Football season? | last_price_dollars=0.9700, no_ask_dollars=0.0500, no_bid_dollars=0.0300, open_interest_fp=710.08, previous_price_dollars=0.9700, previous_yes_ask_dollars=0.9700, previous_yes_bid_dollars=0.9500, price_level_structure=linear_cent
+- [game/other] **KXNFLDIVISIONORDER** Pro Football Division Exact Order: 8 events, 192 markets
+  - e.g. AFC East: Exact Order
+  - market: What will be the exact order of standings for the AFC East at the conclusion of the 2026-27 Pro Football regular season? | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.9500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFL2HTOTAL** Pro Football 2nd Half Total: 13 events, 173 markets
+  - e.g. Houston vs Jacksonville: 2nd Half Total
+  - market: Will there be over 3.5 2H points scored? | last_price_dollars=0.9700, no_ask_dollars=0.0300, no_bid_dollars=0.0100, open_interest_fp=30.00, previous_price_dollars=0.9700, previous_yes_ask_dollars=0.9900, previous_yes_bid_dollars=0.9700, price_level_structure=linear_cent
+- [game/other] **KXNFL1HTOTAL** Pro Football 1st  Half Total Points: 13 events, 173 markets
+  - e.g. Houston vs Jacksonville: 1st Half Total
+  - market: Will there be over 3.5 1H points scored? | last_price_dollars=0.0000, no_ask_dollars=0.0300, no_bid_dollars=0.0200, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9800, previous_yes_bid_dollars=0.9700, price_level_structure=linear_cent
+- [game/other] **KXNFLROTM** NFL Rookie of the Month: 2 events, 150 markets
+  - e.g. Defensive Rookie of the Month in October
+  - market: Defensive Rookie of the Month in October: Arvell Reese | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFL4QSPREAD** Pro Football 4th Quarter Spread: 13 events, 141 markets
+  - e.g. Houston vs Jacksonville: 4th Quarter Spread 
+  - market: Jacksonville wins 4Q by over 10.5 points? | last_price_dollars=0.1000, no_ask_dollars=0.9500, no_bid_dollars=0.9200, open_interest_fp=51.97, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0900, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFL3QSPREAD** Pro Football 3rd Quarter Spread: 13 events, 140 markets
+  - e.g. Houston vs Jacksonville: 3rd Quarter Spread 
+  - market: Jacksonville wins 3Q by over 10.5 points? | last_price_dollars=0.0700, no_ask_dollars=0.9700, no_bid_dollars=0.9500, open_interest_fp=74.14, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0600, previous_yes_bid_dollars=0.0200, price_level_structure=linear_cent
+- [game/other] **KXNFL2QSPREAD** Pro Football 2nd Quarter Spread: 13 events, 139 markets
+  - e.g. Houston vs Jacksonville: 2nd Quarter Spread 
+  - market: Jacksonville wins 2Q by over 10.5 points? | last_price_dollars=0.1100, no_ask_dollars=0.9200, no_bid_dollars=0.9000, open_interest_fp=42.78, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.1100, previous_yes_bid_dollars=0.0700, price_level_structure=linear_cent
+- [game/other] **KXNFL1QSPREAD** Pro Football 1st Quarter Spread: 13 events, 133 markets
+  - e.g. Houston vs Jacksonville: 1st Quarter Spread 
+  - market: Jacksonville wins 1Q by over 10.5 points? | last_price_dollars=0.0700, no_ask_dollars=0.9500, no_bid_dollars=0.9400, open_interest_fp=67.06, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.0700, previous_yes_bid_dollars=0.0300, price_level_structure=linear_cent
+- [game/other] **KXNFL3QTOTAL** Pro Football 3rd Quarter Total: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: 3rd Quarter Total 
+  - market: Will there be over 3.5 3Q points scored? | last_price_dollars=0.0000, no_ask_dollars=0.2700, no_bid_dollars=0.2300, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.8000, previous_yes_bid_dollars=0.7300, price_level_structure=linear_cent
+- [game/other] **KXNFL4QTOTAL** Pro Football 4th Quarter Total: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: 4th Quarter Total 
+  - market: Will there be over 3.5 4Q points scored? | last_price_dollars=0.0000, no_ask_dollars=0.2100, no_bid_dollars=0.0200, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9800, previous_yes_bid_dollars=0.6600, price_level_structure=linear_cent
+- [game/other] **KXNFL1QTOTAL** Pro Football 1st Quarter Total: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: 1st Quarter Total 
+  - market: Will there be over 3.5 1Q points scored? | last_price_dollars=0.7500, no_ask_dollars=0.2800, no_bid_dollars=0.2600, open_interest_fp=28.10, previous_price_dollars=0.7500, previous_yes_ask_dollars=0.7500, previous_yes_bid_dollars=0.7200, price_level_structure=linear_cent
+- [game/other] **KXNFL2QTOTAL** Pro Football 2nd Quarter Total: 13 events, 130 markets
+  - e.g. Houston vs Jacksonville: 2nd Quarter Total 
+  - market: Will there be over 3.5 2Q points scored? | last_price_dollars=0.8900, no_ask_dollars=0.1000, no_bid_dollars=0.0600, open_interest_fp=1.00, previous_price_dollars=0.8900, previous_yes_ask_dollars=0.9400, previous_yes_bid_dollars=0.9000, price_level_structure=linear_cent
+- [game/other] **KXNFLWINMARGIN** Pro Football Win Margin: 13 events, 91 markets
+  - e.g. Houston vs Jacksonville: Winning Margin
+  - market: Will Houston vs Jacksonville end in a tie? | last_price_dollars=0.0200, no_ask_dollars=1.0000, no_bid_dollars=0.9800, open_interest_fp=569.98, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLDIVISIONWINS** Pro Football Division Total Wins: 8 events, 64 markets
+  - e.g. AFC East: Total Wins
+  - market: Will the teams in the AFC East record at least 28 total wins in the 2026-27 Pro Football regular season? | last_price_dollars=0.7600, no_ask_dollars=0.1400, no_bid_dollars=0.0500, open_interest_fp=122.21, previous_price_dollars=0.7600, previous_yes_ask_dollars=0.9500, previous_yes_bid_dollars=0.8600, price_level_structure=linear_cent
+- [game/other] **KXNFLROUNDQUAL** Pro Football Round Qualifier: 2 events, 64 markets
+  - e.g. NFL Divisional Round Qualifiers
+  - market: Arizona qualifies for the divisional round in the 2026-27 season | last_price_dollars=0.0600, no_ask_dollars=1.0000, no_bid_dollars=0.9500, open_interest_fp=246.91, previous_price_dollars=0.0600, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLGAME** NFL Game: 27 events, 54 markets
+  - e.g. HOU Texans vs JAC Jaguars
+  - market: Jacksonville wins | last_price_dollars=0.5700, no_ask_dollars=0.4400, no_bid_dollars=0.4300, open_interest_fp=394046.63, previous_price_dollars=0.5700, previous_yes_ask_dollars=0.5700, previous_yes_bid_dollars=0.5600, price_level_structure=linear_cent
+- [game/other] **KXNFLBOTH** Pro Football Both Teams to Score Points: 13 events, 52 markets
+  - e.g. Houston vs Jacksonville: Both Teams to Score
+  - market: Both teams score at least 14 points | last_price_dollars=0.0000, no_ask_dollars=0.4300, no_bid_dollars=0.3500, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.7600, previous_yes_bid_dollars=0.3000, price_level_structure=linear_cent
+- [game/other] **KXNFLMVP** AP Pro Football Regular Season MVP: 1 events, 49 markets
+  - e.g. MVP Winner?
+  - market: Will Ashton Jeanty win the MVP? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=20629.17, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLDRAFTQB** Pro Football Quarterback Drafted: 3 events, 45 markets
+  - e.g. Pro Football 1st Quarterback Drafted in 2027
+  - market: Will Drew Mestemaker be the 1st Quarterback drafted? | last_price_dollars=0.9500, no_ask_dollars=0.8500, no_bid_dollars=0.0500, open_interest_fp=205.32, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4400, previous_yes_bid_dollars=0.3500, price_level_structure=linear_cent
+- [game/other] **KXNFLPROOTY** Pro Football Protector of the Year: 1 events, 40 markets
+  - e.g. Protector of the Year Winner?
+  - market: Will Penei Sewell win the Protector of the Year? | last_price_dollars=0.2400, no_ask_dollars=0.8200, no_bid_dollars=0.7800, open_interest_fp=7809.11, previous_price_dollars=0.2400, previous_yes_ask_dollars=0.2300, previous_yes_bid_dollars=0.1700, price_level_structure=linear_cent
+- [game/other] **KXNFLOROTY** AP Pro Football Offensive Rookie of the Year: 1 events, 40 markets
+  - e.g. Offensive Rookie of the Year Winner?
+  - market: Will Fernando Mendoza win the Offensive Rookie of the Year? | last_price_dollars=0.0500, no_ask_dollars=0.9500, no_bid_dollars=0.9400, open_interest_fp=202223.13, previous_price_dollars=0.0500, previous_yes_ask_dollars=0.0600, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFL2Q** Pro Football 2nd Quarter Winner: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 2nd Quarter Winner
+  - market: Will Jacksonville win the 2nd Quarter? | last_price_dollars=0.4800, no_ask_dollars=0.5400, no_bid_dollars=0.5100, open_interest_fp=70.35, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4800, previous_yes_bid_dollars=0.4500, price_level_structure=linear_cent
+- [game/other] **KXNFL1Q** Pro Football 1st Quarter Winner: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 1st Quarter Winner
+  - market: Will Jacksonville win the 1st Quarter? | last_price_dollars=0.4300, no_ask_dollars=0.5800, no_bid_dollars=0.5700, open_interest_fp=315.62, previous_price_dollars=0.4300, previous_yes_ask_dollars=0.4300, previous_yes_bid_dollars=0.4100, price_level_structure=linear_cent
+- [game/other] **KXNFL4Q** Pro Football 4th Quarter Winner: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 4th Quarter Winner
+  - market: Will Jacksonville win the 4th Quarter? | last_price_dollars=0.4600, no_ask_dollars=0.5700, no_bid_dollars=0.5300, open_interest_fp=10.47, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4600, previous_yes_bid_dollars=0.3900, price_level_structure=linear_cent
+- [game/other] **KXNFL1H** Pro Football 1st Half Winner: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 1st Half Winner
+  - market: Will Jacksonville win the 1st Half? | last_price_dollars=0.5100, no_ask_dollars=0.5000, no_bid_dollars=0.4900, open_interest_fp=2748.98, previous_price_dollars=0.5000, previous_yes_ask_dollars=0.5100, previous_yes_bid_dollars=0.5000, price_level_structure=linear_cent
+- [game/other] **KXNFL2H** Pro Football 2nd Half: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 2nd Half Winner
+  - market: Will Jacksonville win the 2nd Half? | last_price_dollars=0.4900, no_ask_dollars=0.5200, no_bid_dollars=0.4900, open_interest_fp=19.85, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4800, previous_yes_bid_dollars=0.4700, price_level_structure=linear_cent
+- [game/other] **KXNFL3Q** Pro Football 3rd Quarter Winner: 13 events, 39 markets
+  - e.g. Houston vs Jacksonville: 3rd Quarter Winner
+  - market: Will Jacksonville win the 3rd Quarter? | last_price_dollars=0.4200, no_ask_dollars=0.6000, no_bid_dollars=0.5700, open_interest_fp=11.44, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.4200, previous_yes_bid_dollars=0.3900, price_level_structure=linear_cent
+- [game/other] **KXNFLCOTY** AP Pro Football Coach Of The Year: 1 events, 33 markets
+  - e.g. Coach of the Year Winner?
+  - market: Will Mike LaFleur win the Coach of the Year? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.9900, open_interest_fp=82342.33, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0100, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLDRAFT1ST** Make the 1st pick in NFL Draft: 1 events, 32 markets
+  - e.g. Team to make the 1st Overall Pick in the 2027 Pro Football Draft
+  - market: Will Arizona make the 1st Overall Pick in the 2027 Pro Football Draft? | last_price_dollars=0.0800, no_ask_dollars=0.9600, no_bid_dollars=0.9100, open_interest_fp=9055.84, previous_price_dollars=0.0800, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0400, price_level_structure=linear_cent
+- [game/other] **KXNFLNEXTCOACHOUT** Next NFL Coach Out: 1 events, 32 markets
+  - e.g. Pro Football Next Coach Out
+  - market: Will Brian Schottenheimer be the next coach out in Pro Football? | last_price_dollars=0.0300, no_ask_dollars=0.9800, no_bid_dollars=0.9400, open_interest_fp=2782.15, previous_price_dollars=0.1500, previous_yes_ask_dollars=0.1100, previous_yes_bid_dollars=0.0400, price_level_structure=linear_cent
+- [game/other] **KXNFLEXECOTY** Pro Football Executive of the Year: 1 events, 32 markets
+  - e.g. Executive of the Year Winner?
+  - market: Will Dan Morgan win the Executive of the Year? | last_price_dollars=0.0200, no_ask_dollars=0.9900, no_bid_dollars=0.9800, open_interest_fp=2107.85, previous_price_dollars=0.0200, previous_yes_ask_dollars=0.0200, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [game/other] **KXNFLCOACHOUT** NFL Coaches Fired: 1 events, 32 markets
+  - e.g. Pro Football Coaches Out Before March
+  - market: Brian Schottenheimer out before Mar 1, 2027 | last_price_dollars=0.2800, no_ask_dollars=0.7600, no_bid_dollars=0.6800, open_interest_fp=582.51, previous_price_dollars=0.2800, previous_yes_ask_dollars=0.3200, previous_yes_bid_dollars=0.2500, price_level_structure=linear_cent
+- [game/other] **KXNFLPRIMETIME** Pro Football Primetime Games: 1 events, 32 markets
+  - e.g. Pro Football: Teams with 5+ Primetime Games
+  - market: Pro Football: Teams with 5+ Primetime Games | last_price_dollars=0.0300, no_ask_dollars=1.0000, no_bid_dollars=0.9600, open_interest_fp=60.00, previous_price_dollars=0.0300, previous_yes_ask_dollars=0.0400, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLSEEDOU** NFL Playoffs Seed Over/Unders: 1 events, 32 markets
+  - e.g. Pro Football Playoff Seed Over/Unders
+  - market: Buffalo: #2 seed or better | last_price_dollars=0.0000, no_ask_dollars=1.0000, no_bid_dollars=0.0100, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9900, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLPLAYOFF** Pro Football Playoff Qualifiers: 1 events, 32 markets
+  - e.g. Pro Football Playoff Qualifiers
+  - market: Will Arizona be one of the 2026-27 Pro Football playoff qualifiers? | last_price_dollars=0.0200, no_ask_dollars=0.9900, no_bid_dollars=0.9800, open_interest_fp=48705.75, previous_price_dollars=0.0100, previous_yes_ask_dollars=0.0200, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [game/other] **KXNFLDROTY** AP Pro Football Defensive Rookie of the Year: 1 events, 32 markets
+  - e.g. Defensive Rookie of the Year Winner?
+  - market: Will Arvell Reese win the Defensive Rookie of the Year? | last_price_dollars=0.2200, no_ask_dollars=0.7900, no_bid_dollars=0.7800, open_interest_fp=156214.43, previous_price_dollars=0.2200, previous_yes_ask_dollars=0.2200, previous_yes_bid_dollars=0.2100, price_level_structure=linear_cent
+- [game/other] **KXNFLLASTTOLOSE** Pro Football Last Undefeated Team: 1 events, 32 markets
+  - e.g. Pro Football Last Undefeated Team
+  - market: Will Arizona be the last undefeated team in the 2026-27 Pro Football regular season? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=6289.40, previous_price_dollars=0.0100, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXLEADERNFLPINT** Pro Football Pass INT : 1 events, 30 markets
+  - e.g. Pro Football Passing Interceptions Leader
+  - market: Will Matthew Stafford lead Pro Football in Passing Interceptions for the 2026-2027 Regular Season? | last_price_dollars=0.1500, no_ask_dollars=1.0000, no_bid_dollars=0.8400, open_interest_fp=45.92, previous_price_dollars=0.1500, previous_yes_ask_dollars=0.1700, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLHALLOFFAME** Pro Football Hall of Fame: 1 events, 28 markets
+  - e.g. 2027 Pro Football Hall of Fame Inductees
+  - market: Will Rob Gronkowski be announced as a inductee for the 2027 Pro Football Hall of Fame class? | last_price_dollars=0.6600, no_ask_dollars=0.3400, no_bid_dollars=0.0700, open_interest_fp=213.98, previous_price_dollars=0.9400, previous_yes_ask_dollars=0.9400, previous_yes_bid_dollars=0.6600, price_level_structure=linear_cent
+- [game/other] **KXSBHOST** Pro Football Championship Host: 1 events, 26 markets
+  - e.g. Who will host the 2031 Pro Football Championship?
+  - market: Will the Buffalo Pro Football team be announced as the host for the 2031 Pro Football Championship? | last_price_dollars=0.0600, no_ask_dollars=1.0000, no_bid_dollars=0.9400, open_interest_fp=214.77, previous_price_dollars=0.0600, previous_yes_ask_dollars=0.0600, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLGAMESPECIALS** Pro Football Game Specials: 1 events, 26 markets
+  - e.g. Pro Football Single Game Specials
+  - market: Will any player record 475+ passing yards in any individual game during the 2026-27 Pro Football regular season? | last_price_dollars=0.4800, no_ask_dollars=0.9700, no_bid_dollars=0.0600, open_interest_fp=93.11, previous_price_dollars=0.4800, previous_yes_ask_dollars=0.9400, previous_yes_bid_dollars=0.0300, price_level_structure=linear_cent
+- [game/other] **KXNFLRETIRE** NFL Retirement: 7 events, 26 markets
+  - e.g. Davante Adams: Retirement
+  - market: Will Davante Adams announce his retirement before the 2026-27 NFL season? | last_price_dollars=0.0200, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=59.55, previous_price_dollars=0.0200, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLH2HWINS** Pro Football Head-to-Head Win Totals: 11 events, 22 markets
+  - e.g. Atlanta vs New York G: Head-to-Head Win Total
+  - market: Will Atlanta record more wins than New York G in the 2026-27 Pro Football regular season? | last_price_dollars=0.5800, no_ask_dollars=0.5100, no_bid_dollars=0.4200, open_interest_fp=202.10, previous_price_dollars=0.6700, previous_yes_ask_dollars=0.5800, previous_yes_bid_dollars=0.4800, price_level_structure=linear_cent
+- [game/other] **KXNFLDRAFTPICK** NFL Draft Pick: 1 events, 22 markets
+  - e.g. Pro Football #1 Overall Pick in 2027
+  - market: Who will be picked 1st in the Pro Football Draft? | last_price_dollars=0.0700, no_ask_dollars=0.9500, no_bid_dollars=0.9400, open_interest_fp=83913.15, previous_price_dollars=0.0800, previous_yes_ask_dollars=0.0900, previous_yes_bid_dollars=0.0800, price_level_structure=linear_cent
+- [game/other] **KXNFLDRAFTTOP** Pro Football Top Draft: 1 events, 19 markets
+  - e.g. Pro Football Players Drafted Top 5
+  - market: Will Arch Manning be a top 5 draft pick in 2027? | last_price_dollars=0.2400, no_ask_dollars=0.8500, no_bid_dollars=0.7900, open_interest_fp=6393.85, previous_price_dollars=0.3100, previous_yes_ask_dollars=0.3100, previous_yes_bid_dollars=0.3000, price_level_structure=linear_cent
+- [game/other] **KXNFLMVPSPECIALS** NFL MVP Award Specials: 3 events, 14 markets
+  - e.g. Age of Pro Football MVP Winner
+  - market: 2026-27 Pro Football MVP Age: 25 years old or younger | last_price_dollars=0.0900, no_ask_dollars=0.9000, no_bid_dollars=0.8200, open_interest_fp=56.96, previous_price_dollars=0.0900, previous_yes_ask_dollars=0.1800, previous_yes_bid_dollars=0.1000, price_level_structure=linear_cent
+- [game/other] **KXNFLTIE** NFL Game to Tie: 14 events, 14 markets
+  - e.g. Houston vs Jacksonville: Tie
+  - market: Game to end in a tie | last_price_dollars=0.0200, no_ask_dollars=1.0000, no_bid_dollars=0.9800, open_interest_fp=1940.95, previous_price_dollars=0.0200, previous_yes_ask_dollars=0.0200, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLOT** Pro Football Overtime: 14 events, 14 markets
+  - e.g. Houston vs Jacksonville: Overtime
+  - market: Houston vs Jacksonville goes to overtime? | last_price_dollars=0.0700, no_ask_dollars=0.9400, no_bid_dollars=0.9300, open_interest_fp=10049.84, previous_price_dollars=0.0700, previous_yes_ask_dollars=0.0700, previous_yes_bid_dollars=0.0600, price_level_structure=linear_cent
+- [game/other] **KXNFL3QBTTS** Pro Football Both Teams to Score in 3rd Quarter: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: 3rd Quarter Both Teams to Score
+  - market: Both teams to score in the 3rd quarter | last_price_dollars=0.0000, no_ask_dollars=0.6400, no_bid_dollars=0.6000, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.5200, previous_yes_bid_dollars=0.2900, price_level_structure=linear_cent
+- [game/other] **KXNFLEQBTTS** Pro Football Both Teams to Score in Every Quarter: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: Both Teams to Score in Every Quarter
+  - market: Both teams to score in every quarter | last_price_dollars=0.1000, no_ask_dollars=0.9500, no_bid_dollars=0.9100, open_interest_fp=26.64, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.1300, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFL4QBTTS** Pro Football Both Teams to Score in 4th Quarter: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: 4th Quarter Both Teams to Score
+  - market: Both teams to score in the 4th quarter | last_price_dollars=0.0000, no_ask_dollars=0.4800, no_bid_dollars=0.4200, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.7000, previous_yes_bid_dollars=0.4700, price_level_structure=linear_cent
+- [game/other] **KXNFL1QBTTS** Pro Football Both Teams to Score in 1st Quarter: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: 1st Quarter Both Teams to Score
+  - market: Both teams to score in the 1st quarter | last_price_dollars=0.3800, no_ask_dollars=0.6600, no_bid_dollars=0.6200, open_interest_fp=91.06, previous_price_dollars=0.4400, previous_yes_ask_dollars=0.4100, previous_yes_bid_dollars=0.3100, price_level_structure=linear_cent
+- [game/other] **KXNFLSFTY** Pro Football Safety: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: Safety
+  - market: Will a safety occur in the game? | last_price_dollars=0.0900, no_ask_dollars=0.9200, no_bid_dollars=0.9100, open_interest_fp=5264.31, previous_price_dollars=0.0900, previous_yes_ask_dollars=0.0900, previous_yes_bid_dollars=0.0800, price_level_structure=linear_cent
+- [game/other] **KXNFL2QBTTS** Pro Football Both Teams to Score in 2nd Quarter: 13 events, 13 markets
+  - e.g. Houston vs Jacksonville: 2nd Quarter Both Teams to Score
+  - market: Both teams to score in the 2nd quarter | last_price_dollars=0.7600, no_ask_dollars=0.3900, no_bid_dollars=0.3500, open_interest_fp=5.76, previous_price_dollars=0.7600, previous_yes_ask_dollars=0.7100, previous_yes_bid_dollars=0.5900, price_level_structure=linear_cent
+- [game/other] **KXNFLHIGHSCORE** Pro Football Highest Scoring Game: 1 events, 12 markets
+  - e.g. Pro Football Highest Scoring Game
+  - market: Will there be a game with over 74.5 total points scored in the 2026-27 Pro Football regular season? | last_price_dollars=0.9500, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=260.17, previous_price_dollars=0.9500, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLWINSTREAK** Pro Football Win Streak: 1 events, 9 markets
+  - e.g. Pro Football Longest Win Streak
+  - market: Will any team win at least 5 consecutive games in the 2026-27 Pro Football regular season? | last_price_dollars=0.8500, no_ask_dollars=0.0800, no_bid_dollars=0.0000, open_interest_fp=307.37, previous_price_dollars=0.8500, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.9200, price_level_structure=linear_cent
+- [game/other] **KXNFLDIVLEASTWINS** Pro Football Division with the Most Wins: 1 events, 8 markets
+  - e.g. Division with the Least Total Wins
+  - market: Will the teams in the AFC East have the least total wins out of any division in the 2026-27 Pro Football regular season? | last_price_dollars=0.1600, no_ask_dollars=0.9600, no_bid_dollars=0.8600, open_interest_fp=815.02, previous_price_dollars=0.1600, previous_yes_ask_dollars=0.1400, previous_yes_bid_dollars=0.0400, price_level_structure=linear_cent
+- [game/other] **KXNFLDIVMOSTWINS** Pro Football Division with the Least Wins: 1 events, 8 markets
+  - e.g. Division with the Most Total Wins
+  - market: Will the teams in the AFC East have the most total wins out of any division in the 2026-27 Pro Football regular season? | last_price_dollars=0.0500, no_ask_dollars=1.0000, no_bid_dollars=0.9500, open_interest_fp=74.12, previous_price_dollars=0.0500, previous_yes_ask_dollars=0.0500, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLFIRSTSTART** Pro Football First Start: 1 events, 7 markets
+  - e.g. Shedeur Sanders: First Start This Season
+  - market: Shedeur Sanders first start: Week 1 to Week 2 | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=1860.11, previous_price_dollars=0.0100, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLBLOWOUT** Pro Football Biggest Blowout: 1 events, 7 markets
+  - e.g. Pro Football Biggest Blowout
+  - market: Will there be a game with a point differential of over 30.5 points in the 2026-27 Pro Football regular season? | last_price_dollars=0.9900, no_ask_dollars=0.9500, no_bid_dollars=0.0000, open_interest_fp=89.00, previous_price_dollars=0.9900, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0500, price_level_structure=linear_cent
+- [game/other] **KXNFLLASTTOWIN** Pro Football last team to win a game: 1 events, 7 markets
+  - e.g. Pro Football last team to win a game
+  - market: Will Houston be the last team to win a game in the 2026-27 Pro Football regular season? | last_price_dollars=0.0100, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=8002.76, previous_price_dollars=0.0100, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLTIES** Pro Football Ties: 1 events, 4 markets
+  - e.g. Pro Football: Number of Ties this Season
+  - market: Will there be at least 1 tie in the 2026-27 Pro Football regular season? | last_price_dollars=0.9900, no_ask_dollars=1.0000, no_bid_dollars=0.0000, open_interest_fp=325.48, previous_price_dollars=0.9900, previous_yes_ask_dollars=1.0000, previous_yes_bid_dollars=0.0000, price_level_structure=linear_cent
+- [game/other] **KXNFLWINS-ANY** Pro football wins any team: 1 events, 3 markets
+  - e.g. Any Pro Football Team with 15+/16+/17 Wins
+  - market: Will any Pro Football team win at least 15 games this regular season? | last_price_dollars=0.4200, no_ask_dollars=0.6400, no_bid_dollars=0.4500, open_interest_fp=12404.69, previous_price_dollars=0.4800, previous_yes_ask_dollars=0.3900, previous_yes_bid_dollars=0.3600, price_level_structure=linear_cent
+- [game/other] **KXNFLSTADIUM** Will NFL Stadium Project be complete by date: 2 events, 2 markets
+  - e.g. Will Tennessee complete the New Nissan Stadium before Mar 1, 2027?
+  - market: Will Tennessee complete the New Nissan Stadium before Mar 1, 2027? | last_price_dollars=0.5300, no_ask_dollars=0.4700, no_bid_dollars=0.4600, open_interest_fp=1448.95, previous_price_dollars=0.5600, previous_yes_ask_dollars=0.5400, previous_yes_bid_dollars=0.5300, price_level_structure=linear_cent
+- [game/other] **KXNFLWORSTTOFIRST** Pro Football Worst in Division to First: 1 events, 1 markets
+  - e.g. Worst to First Division Winner
+  - market: Will any team that finished in 4th place within their division during the 2025-26 Pro Football regular season finish in 1st place within their division during the 2026-27 regular season? | last_price_dollars=0.5000, no_ask_dollars=0.4200, no_bid_dollars=0.3600, open_interest_fp=1467.62, previous_price_dollars=0.5000, previous_yes_ask_dollars=0.6400, previous_yes_bid_dollars=0.5800, price_level_structure=linear_cent
+- [game/other] **KXNFLPLAYOFFC** Will both teams make the NFL Playoffs: 1 events, 1 markets
+  - e.g. New York J and New York G: Both Make the Playoffs
+  - market: Will New York J and New York G both make the playoffs in the 2026-27 Pro Football season? | last_price_dollars=0.0300, no_ask_dollars=0.9800, no_bid_dollars=0.9700, open_interest_fp=27923.08, previous_price_dollars=0.0300, previous_yes_ask_dollars=0.0300, previous_yes_bid_dollars=0.0200, price_level_structure=linear_cent
+- [game/other] **KXNFLHKANE** Harry Kane Pro Football signing: 1 events, 1 markets
+  - e.g. Harry Kane to sign with a Pro Football team before 2030?
+  - market: Harry Kane to sign with a Pro Football team before 2030? | last_price_dollars=0.0000, no_ask_dollars=0.9900, no_bid_dollars=0.0200, open_interest_fp=0.00, previous_price_dollars=0.0000, previous_yes_ask_dollars=0.9800, previous_yes_bid_dollars=0.0100, price_level_structure=linear_cent
+- [game/other] **KXNFLSELLOUT** Pro Football Sellouts: 1 events, 1 markets
+  - e.g. Buffalo Pro Football Team: Reported attendance of at least 60,108 in all regular season home games
+  - market: Will the Buffalo Pro Football Team have a reported attendance of at least 60,108 in all home games in the 2026-27 regular season? | last_price_dollars=0.8800, no_ask_dollars=0.1200, no_bid_dollars=0.0900, open_interest_fp=1046.10, previous_price_dollars=0.8800, previous_yes_ask_dollars=0.8800, previous_yes_bid_dollars=0.8700, price_level_structure=linear_cent
+- [game/other] **KXSUPERBOWLWHITEHOUSE** WILL THE WINNERS OF THE PRO FOOTBALL CHAMPIONSHIP GO TO THE WHITE HOUSE? : 1 events, 1 markets
+  - e.g. Will the 2026 Pro Football champs visit the White House?
+  - market: Will The winning team of the 2026 Pro football Championship visit The White House before Dec 31, 2026? | last_price_dollars=0.0780, no_ask_dollars=0.9660, no_bid_dollars=0.9210, open_interest_fp=90843.71, previous_price_dollars=0.0790, previous_yes_ask_dollars=0.0780, previous_yes_bid_dollars=0.0400, price_level_structure=tapered_deci_cent
+- [game/other] **KXNFLROLE** Pro Football Role at Event: 1 events, 1 markets
+  - e.g. Will Tony Romo return to CBS's NFL coverage this season?
+  - market: Tony Romo to perform as an on-air analyst in a CBS NFL broadcast before Feb 15, 2027 | last_price_dollars=0.0600, no_ask_dollars=0.9800, no_bid_dollars=0.9300, open_interest_fp=2723.40, previous_price_dollars=0.0600, previous_yes_ask_dollars=0.0700, previous_yes_bid_dollars=0.0200, price_level_structure=linear_cent
+
+## Polymarket NFL: tag 450, series 12185
+
+- events 187, game events 72, player-prop events 13
+- market types: {'moneyline': 187, 'spreads': 1434, 'totals': 1017, 'first_half_spreads': 1344, 'second_half_spreads': 1344, 'q1_spreads': 756, 'q2_spreads': 756, 'q3_spreads': 756, 'q4_spreads': 756, 'first_half_totals': 210, 'second_half_totals': 210, 'q1_totals': 252, 'q2_totals': 252, 'q3_totals': 252, 'q4_totals': 252, 'team_totals': 924, 'first_half_team_totals': 672, 'second_half_team_totals': 672, 'second_half_moneyline': 15, 'exact_margin': 150, 'safety': 15, 'q1_both_teams_to_score_points': 15, 'q2_both_teams_to_score_points': 15, 'q3_both_teams_to_score_points': 15, 'q4_both_teams_to_score_points': 15, 'team_offensive_yards': 30, 'two_point_conversions': 15, 'first_half_moneyline': 14, 'q1_moneyline': 14, 'q2_moneyline': 14, 'q3_moneyline': 14, 'q4_moneyline': 14, 'team_touchdowns': 34, 'highest_scoring_quarter': 70, 'passing_yards': 216, 'passing_touchdowns': 96, 'rushing_yards': 289, 'receiving_yards': 623, 'receptions': 394, 'anytime_touchdowns': 254, 'two_plus_touchdowns': 202, 'longest_reception': 44, 'passing_attempts': 72, 'passing_completions': 72, 'team_first_touchdowns': 254, 'first_touchdowns': 170, 'untyped': 332}
+- Seahawks vs. Broncos (nfl-sea-den-2026-10-16, 309 markets)
+  - Seahawks vs. Broncos | ["Seahawks", "Broncos"] ["0", "1"] | type moneyline line None
+  - Spread: Seahawks (-0.5) | ["Seahawks", "Broncos"] ["0", "1"] | type spreads line -0.5
+- Texans vs. Jaguars (nfl-hou-jax-2026-10-18, 309 markets)
+  - Texans vs. Jaguars | ["Texans", "Jaguars"] ["0.435", "0.565"] | type moneyline line None
+  - Spread: Texans (-0.5) | ["Texans", "Jaguars"] ["0.43", "0.57"] | type spreads line -0.5
+- Bears vs. Falcons (nfl-chi-atl-2026-10-18, 328 markets)
+  - Bears vs. Falcons | ["Bears", "Falcons"] ["0.505", "0.495"] | type moneyline line None
+  - Spread: Bears (-1.5) | ["Bears", "Falcons"] ["0.475", "0.525"] | type spreads line -1.5
+- Ravens vs. Browns (nfl-bal-cle-2026-10-18, 308 markets)
+  - Ravens vs. Browns | ["Ravens", "Browns"] ["0.615", "0.385"] | type moneyline line None
+  - Spread: Ravens (-3.5) | ["Ravens", "Browns"] ["0.475", "0.525"] | type spreads line -3.5
+- Texans vs. Jaguars - Player Props (nfl-hou-jax-2026-10-18-player-props, 264 markets)
+  - C.J. Stroud: Passing Yards O/U 149.5 | ["Over", "Under"] ["0.505", "0.495"] | type passing_yards line 149.5
+  - C.J. Stroud: Passing Yards O/U 174.5 | ["Over", "Under"] ["0.445", "0.555"] | type passing_yards line 174.5
+- Steelers vs. Buccaneers - Player Props (nfl-pit-tb-2026-10-18-player-props, 163 markets)
+  - Aaron Rodgers: Passing Touchdowns O/U 0.5 | ["Over", "Under"] ["0.46", "0.54"] | type passing_touchdowns line 0.5
+  - Aaron Rodgers: Passing Touchdowns O/U 1.5 | ["Over", "Under"] ["0.22", "0.78"] | type passing_touchdowns line 1.5
+- Panthers vs. Eagles - Player Props (nfl-car-phi-2026-10-18-player-props, 173 markets)
+  - Bryce Young: Passing Touchdowns O/U 0.5 | ["Over", "Under"] ["0.45", "0.55"] | type passing_touchdowns line 0.5
+  - Bryce Young: Passing Touchdowns O/U 1.5 | ["Over", "Under"] ["0.21", "0.79"] | type passing_touchdowns line 1.5
+- Saints vs. Giants - Player Props (nfl-no-nyg-2026-10-18-player-props, 199 markets)
+  - Jameis Winston: Passing Yards O/U 124.5 | ["Over", "Under"] ["0.5", "0.5"] | type passing_yards line 124.5
+  - Jameis Winston: Passing Yards O/U 149.5 | ["Over", "Under"] ["0.5", "0.5"] | type passing_yards line 149.5
