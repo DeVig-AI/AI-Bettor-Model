@@ -259,6 +259,15 @@
   .pr-row .px b{font-family:var(--font-mono); color:var(--ink); font-weight:600;}
   .pr-pick{display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-top:1px solid var(--line); align-items:baseline;}
   .pr-pick:first-of-type{border-top:none;}
+  .pr-locked{margin-top:14px; border-top:1px solid var(--line); padding-top:4px;}
+  .pr-locked > summary{display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 0; list-style:none;
+    font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);}
+  .pr-locked > summary::-webkit-details-marker{display:none;}
+  .pr-locked > summary::after{content:"Open"; margin-left:auto; font-size:12.5px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--accent-strong);}
+  .pr-locked[open] > summary::after{content:"Close";}
+  .pr-locked > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+  .pr-locked-tabs{padding-top:4px;}
+  .pr-locked .pp-stat + .pr-pick{border-top:none;}
   .pr-more{margin-top:10px; width:100%;}
   .pr-tier{font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.05em; padding:2px 7px; border-radius:999px; white-space:nowrap;}
   .pr-tier.high{background:var(--good-wash); color:var(--good);}
@@ -2363,16 +2372,50 @@
     var open = [];
     games.forEach(function(d){ (d.paper_picks || []).forEach(function(p){ open.push({d:d, p:p}); }); });
     if(open.length){
-      html += '<div class="bb-sec">Locked paper picks</div>';
-      open.forEach(function(x){
-        var p = x.p;
-        html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
-          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</div></div>' +
-          '<span class="pill neutral">PAPER</span></div>';
+      // Collapsed by default; one tab per prop type (All shows every type under its own heading).
+      var byStat = {};
+      open.forEach(function(x){ (byStat[x.p.stat] = byStat[x.p.stat] || []).push(x); });
+      var stats = Object.keys(byStat).sort(function(a, b){
+        var ia = PROP_ORDER.indexOf(a), ib = PROP_ORDER.indexOf(b);
+        return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.localeCompare(b);
       });
+      if(lockedStat !== "all" && !byStat[lockedStat]) lockedStat = "all";
+      html += '<details class="pr-locked"' + (lockedOpen ? ' open' : '') + '><summary><span>Locked paper picks</span>' +
+        '<span class="pill neutral">' + open.length + '</span></summary>';
+      html += '<div class="sb-tabs pr-locked-tabs"><button class="pill-tab' + (lockedStat === "all" ? ' active' : '') + '" data-lstat="all">All · ' + open.length + '</button>';
+      stats.forEach(function(st){
+        html += '<button class="pill-tab' + (lockedStat === st ? ' active' : '') + '" data-lstat="' + escapeHtml(st) + '">' +
+          escapeHtml(propStat(st)) + ' · ' + byStat[st].length + '</button>';
+      });
+      html += '</div>';
+      stats.forEach(function(st){
+        if(lockedStat !== "all" && lockedStat !== st) return;
+        html += '<div class="pp-stat">' + escapeHtml(propStat(st)) + '</div>';
+        byStat[st].forEach(function(x){
+          var p = x.p;
+          html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
+            '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</div></div>' +
+            '<span class="pill neutral">PAPER</span></div>';
+        });
+      });
+      html += '</details>';
     }
     box.innerHTML = html;
+    lastPropsTest = [games, sport];
+    if(!box.dataset.lockedBound){
+      box.dataset.lockedBound = "1";
+      box.addEventListener("click", function(e){
+        var b = e.target.closest("[data-lstat]");
+        if(!b) return;
+        lockedStat = b.getAttribute("data-lstat");
+        renderPropsTest(lastPropsTest[0], lastPropsTest[1]);
+      });
+      box.addEventListener("toggle", function(e){
+        if(e.target.classList && e.target.classList.contains("pr-locked")) lockedOpen = e.target.open;
+      }, true);
+    }
   }
+  var lockedOpen = false, lockedStat = "all", lastPropsTest = [[], "NFL"];
 
   // ---------- Live: scores + locked paper-pick progress (read-only, synced by Claude hourly on game days) ----------
   // Written by the GitHub bot nfl/nfl_props_live_v1.py (ESPN scores and box scores, Kalshi prices) and copied into
