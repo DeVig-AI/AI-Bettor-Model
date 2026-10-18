@@ -8,10 +8,8 @@ Share → Add to Home Screen.
 `python3 tools/build_free_app.py tools/devig_source.html`) and push to `main`. GitHub Pages redeploys in about a
 minute, and the web, Mac and Windows apps all show the new version on their next open.
 
-**Mac and Windows downloads:** Actions → "DeVig desktop apps -- build Mac and Windows downloads" → Run workflow.
-It builds `DeVig-mac.dmg` and `DeVig-Setup-windows.exe` and posts them on the Releases page. The desktop app is a
-window onto the web app, so it only needs rebuilding when this `desktop/` folder changes.
-
-**Later: Android (APK) and iPhone (IPA).** Same idea with Capacitor. The APK can be built by GitHub Actions and
-installed directly. An IPA that installs on a real iPhone needs an Apple Developer account ($99/year) to sign it;
-until then the home-screen web app is the iPhone version.
+**Downloads (Mac, Windows, Android, iPhone):** Actions → "DeVig apps -- build Mac, Windows, Android and iPhone
+downloads" → Run workflow. It builds `DeVig-mac.dmg`, `DeVig-Setup-windows.exe`, `DeVig-android.apk` and
+`DeVig-iphone.ipa` and posts them on the Releases page. Every app is a window onto the web app, so it only needs
+rebuilding when `desktop/` or `mobile/` changes. None are signed with paid certificates: the APK installs directly
+(debug-signed), and the IPA is sideloaded with AltStore or Sideloadly, which re-sign it with your Apple ID.
