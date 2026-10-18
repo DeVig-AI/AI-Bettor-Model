@@ -1278,6 +1278,12 @@
       return (lg.home_score > lg.away_score ? g.home_team : g.away_team) === mm.winner_side;   // until the official grade lands
     return null;
   }
+  // The model's prop picks in one game: how many won and lost (live/archived results, before the official grade).
+  function gamePropTally(g){
+    var lg = liveFor(g), t = {w: 0, l: 0};
+    ((lg && lg.picks) || []).forEach(function(p){ if(p.status === "won") t.w++; else if(p.status === "lost") t.l++; });
+    return t;
+  }
   function dayKey(iso){
     var d = iso ? new Date(iso) : null;
     return d && !isNaN(d) ? d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") : "0000";
@@ -1308,8 +1314,19 @@
       if(r === true) tr.ml.w++; else if(r === false) tr.ml.l++;
     });
     var n = tr.ml.w + tr.ml.l;
+    var pw = 0, pl = 0, seen = {};
+    past.filter(function(g){ return (g.sport || "NFL") === pastSport; }).forEach(function(g){ var t = gamePropTally(g); pw += t.w; pl += t.l; seen[gameKey(g)] = true; });
+    if(propsArchive && pastSport === "NFL"){                      // archived games older than the app's game list
+      var ag = propsArchive.games || {};
+      Object.keys(ag).forEach(function(k){
+        var a = ag[k];
+        if(past.some(function(g){ return sameGame(g, a.away, a.home, a.kickoff); })) return;
+        (a.picks || []).forEach(function(p){ if(p.status === "won") pw++; else if(p.status === "lost") pl++; });
+      });
+    }
     recEl.innerHTML = '<div class="rec-big"><b>' + tr.ml.w + '–' + tr.ml.l + '</b><span>' + (n ? Math.round(tr.ml.w / n * 100) + '% of ' + escapeHtml(pastSport) + ' picks won' : 'no graded ' + escapeHtml(pastSport) + ' picks yet') + '</span></div>' +
-      '<div class="faint">The model\'s winner picks this season. Winning picks isn\'t the same as making money: favorites pay little.</div>';
+      (pw + pl ? '<div class="rec-big" style="margin-top:4px"><b style="font-size:22px">' + pw + '–' + pl + '</b><span>' + Math.round(pw / (pw + pl) * 100) + '% of prop picks won</span></div>' : '') +
+      '<div class="faint">The model\'s winner picks' + (pw + pl ? ' and player-prop picks' : '') + ' this season. Winning picks isn\'t the same as making money: favorites pay little, and prop prices include a fee.</div>';
     // one tab per day, oldest to newest, the newest selected first
     var byDay = {};
     past.filter(function(g){ return (g.sport || "NFL") === pastSport; }).forEach(function(g){ (byDay[dayKey(g.kickoff_time)] = byDay[dayKey(g.kickoff_time)] || []).push(g); });
@@ -1326,7 +1343,9 @@
       return '<button type="button" class="day-tab" role="tab" aria-selected="' + (k === pastDay) + '" data-day="' + k + '">' +
         '<span class="d1">' + (dt ? dt.toLocaleDateString([], {weekday: "short"}) : "?") + '</span>' +
         '<span class="d2">' + (dt ? dt.toLocaleDateString([], {month: "short", day: "numeric"}) : "Unknown") + '</span>' +
-        '<span class="d3" style="color:' + (w + l ? (w >= l ? 'var(--good)' : 'var(--bad)') : 'var(--ink-faint)') + '">' + (w + l ? w + '–' + l : '—') + '</span></button>';
+        '<span class="d3" style="color:' + (w + l ? (w >= l ? 'var(--good)' : 'var(--bad)') : 'var(--ink-faint)') + '">' + (w + l ? w + '–' + l : '—') + '</span>' +
+        (function(){ var pw2 = 0, pl2 = 0; byDay[k].forEach(function(g){ var t = gamePropTally(g); pw2 += t.w; pl2 += t.l; });
+          return pw2 + pl2 ? '<span class="d3" style="color:var(--ink-faint)">props ' + pw2 + '–' + pl2 + '</span>' : ''; })() + '</button>';
     }).join("");
     var sel = strip.querySelector('[aria-selected="true"]');
     if(sel) strip.scrollLeft = sel.offsetLeft - strip.clientWidth / 2 + sel.offsetWidth / 2;
@@ -1336,7 +1355,10 @@
     games.forEach(function(g){ var r = gamePickWon(g); if(r === true) w++; else if(r === false) l++; else none++; });
     var label = pastDay === "0000" ? "Date unknown" : new Date(games[0].kickoff_time).toLocaleDateString([], {weekday: "long", month: "long", day: "numeric"});
     wrap.appendChild(el("div", "bb-sec", escapeHtml(label)));
-    wrap.appendChild(el("div", "day-sum", '<span>Picks won <b>' + w + '</b></span><span>lost <b>' + l + '</b></span>' + (none ? '<span>no pick or not graded <b>' + none + '</b></span>' : '')));
+    var dpw = 0, dpl = 0;
+    games.forEach(function(g){ var t = gamePropTally(g); dpw += t.w; dpl += t.l; });
+    wrap.appendChild(el("div", "day-sum", '<span>Picks won <b>' + w + '</b></span><span>lost <b>' + l + '</b></span>' + (none ? '<span>no pick or not graded <b>' + none + '</b></span>' : '') +
+      (dpw + dpl ? '<span>Prop picks won <b>' + dpw + '</b> lost <b>' + dpl + '</b></span>' : '')));
     games.forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
   }
   document.getElementById("pastDays").addEventListener("click", function(ev){
@@ -2773,6 +2795,7 @@
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
           if(x && x.doc === "GAME_LINES") linesDoc = x;
+          if(x && x.doc === "PROPS_ARCHIVE") propsArchive = x;
         });
         liveLoaded = true; renderLive();
       });
@@ -3169,10 +3192,22 @@
   }
   // The bot's live file (scores, locked-pick progress, Kalshi prices; lands every 5-15 minutes), with the score,
   // clock and player stats replaced by the fast feed (/api/live, ~20 seconds) when the website has it.
+  // Finished NFL games kept for good by the live bot (nfl/live/props_results.json): final score, prop picks, stats, graph.
+  var propsArchive = null;
+  function archiveFor(g){
+    if(!propsArchive || (g.sport || "NFL") !== "NFL") return null;
+    var games = propsArchive.games || {};
+    for(var k in games){
+      var a = games[k];
+      if(sameGame(g, a.away, a.home, a.kickoff)) return Object.assign({state: "post", detail: "Final"}, a);
+    }
+    return null;
+  }
   function liveFor(g){
     if(g.trial) return null;
     var sport = g.sport || "NFL";
     var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : null;
+    if(!base || (base.state === "pre" && !base.away_score)) base = archiveFor(g) || base;
     var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
     if(!f || (base && base.state === "post" && f.state !== "post")) return base;      // never step back from a final
     var o = Object.assign({}, base || {picks: []}, {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score,
@@ -3359,6 +3394,7 @@
   // A matchup's prop picks, under the model's game read: grouped by prop type, with live progress once it starts.
   function propPicksBox(g, lg){
     var doc = propsDocFor(g), picks = (doc && doc.paper_picks) || [];
+    if(!picks.length && lg && lg.picks && lg.picks.length) picks = lg.picks;       // an archived game: its picks with results
     if(!picks.length) return null;
     var box = el("div", "lv-picks");
     box.style.cssText = "border-top:1px solid var(--line); padding:4px 0 0; margin-top:12px";
@@ -3369,7 +3405,7 @@
       box.appendChild(el("div", "pp-stat", escapeHtml(propStat(st))));
       byStat[st].forEach(function(p){
         var lv = lg && (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line; })[0];
-        box.appendChild(livePickEl(lv || Object.assign({}, p, {status: "pending"}), pickTrackKey(doc, p)));
+        box.appendChild(livePickEl(lv || Object.assign({}, p, {status: "pending"}), doc ? pickTrackKey(doc, p) : null));
       });
     });
     if(liveStarted(lg)) box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the final grade uses official play-by-play after the game."));
