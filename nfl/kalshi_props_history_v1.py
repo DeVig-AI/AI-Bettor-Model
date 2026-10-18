@@ -135,7 +135,9 @@ def date_from_ticker(event_ticker):
 
 
 def settled_events(series):
-    """Yield settled events (with nested markets) for one series; tries the live and the historical endpoints."""
+    """Yield settled events (with nested markets) for one series from BOTH the live and the historical endpoints:
+    Kalshi moves older settled markets to /historical, so stopping at the first endpoint with data would miss them.
+    An event seen on both is processed once (done_events)."""
     for base_path in ("/events", "/historical/events"):
         cursor, pages, n = None, 0, 0
         while pages < 50:
@@ -152,8 +154,9 @@ def settled_events(series):
             if not cursor or not evs:
                 break
         if n:
+            ebe = stats.setdefault("events_by_endpoint", {})
+            ebe[base_path] = ebe.get(base_path, 0) + n
             stats["market_list_endpoint"] = stats["market_list_endpoint"] or base_path
-            return
 
 
 def markets_for_event(ev, base_path):
@@ -178,9 +181,10 @@ def candles(series, tickers, start_ts, end_ts):
             for m in d.get("markets") or []:
                 out[m.get("market_ticker") or m.get("ticker")] = m.get("candlesticks") or []
             raw_samples.setdefault("batch", d if len(json.dumps(d)) < 20000 else {"truncated": True})
-        if out:
+        if any(out.values()):         # empty candle lists (e.g. archived markets) fall through to per-market
             stats["candle_endpoint"] = "batch"
             return out
+        out = {}
     for t in tickers:
         got = None
         for path, name in ((f"/series/{series}/markets/{t}/candlesticks", "per_market"),
