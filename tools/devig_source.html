@@ -481,7 +481,7 @@
   <section class="panel" id="panel-ask" hidden>
     <div class="card">
       <h3 style="margin-bottom:6px">Ask about the picks</h3>
-      <p class="faint" style="margin:0">Ask in plain words, like "what are the best bets today?" or "why are we skipping the Bears?". Answers come only from the picks, odds, injury reports and track record synced into this app. It won't make up odds, and it's a guide, not a guarantee. The first question asks you to allow Claude, on your own account.</p>
+      <p class="faint" style="margin:0">Ask in plain words, like "what are the best bets today?" or "why are we skipping the Bears?". Answers are written by an AI from the picks, odds, injury reports and track record synced into this app, plus general betting know-how. It's told never to make up odds, but AI can still get things wrong: it's a guide, not a guarantee.</p>
       <div class="chips" id="askChips">
         <button class="pill-tab" data-q="What are the best bets right now, across every sport?">Best bets now</button>
         <button class="pill-tab" data-q="Which picks should I skip or be careful with, and why?">What to avoid</button>
@@ -4333,14 +4333,15 @@
   }
   function propsAskContext(){
     var r = propsReport, picks = [], nba = propsReports.NBA_PROPS_MODEL_V1;
-    propsDocs.forEach(function(d){ (d.paper_picks || []).forEach(function(p){
+    // The free chat (smaller AI, shared daily allowance) gets the upcoming games' picks only.
+    propsDocs.filter(function(d){ return !window.devigAskCompact || !propStarted(d); }).forEach(function(d){ (d.paper_picks || []).forEach(function(p){
       picks.push(docSport(d) + " " + propGameLabel(d) + ": " + p.player + " " + p.side + " " + p.line + " " + propStat(p.stat) + ", at " + exOddsTxt(p.price, true) + " (fee included), model " + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + "% for that side");
     }); });
     return {what: "NFL and NBA player-prop models, paper tests only (pre-registered). Kalshi exchange prices; not proven to beat them.",
       nba_graded: nba ? (nba.paper_picks_graded || 0) : 0, nba_wins: nba ? (nba.wins || 0) : 0,
       games_with_prices: propsDocs.length,
       graded: r ? (r.paper_picks_graded || 0) : 0, wins: r ? (r.wins || 0) : 0,
-      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null, locked_paper_picks: picks};
+      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null, locked_paper_picks: window.devigAskCompact ? picks.slice(0, 40) : picks};
   }
   function whenTxt(iso){
     var t = new Date(iso);
@@ -4351,7 +4352,7 @@
     var leanBy = {};
     homeDocs.forEach(function(g){ if(g.game_id && g.model && g.model.winner_side) leanBy[g.game_id] = g.model.winner_side; });
     return decisionsDocs.slice().sort(function(a, b){ return String(b.kickoff_time || "").localeCompare(String(a.kickoff_time || "")); })
-      .slice(0, 400).map(function(d){
+      .slice(0, window.devigAskCompact ? 60 : 400).map(function(d){
         var dec = d.decision || {}, o = d.outcome || {}, ms = d.market_snapshot || {};
         var side = dec.side || null, res = "pending";
         if(o.resolved){
@@ -4456,6 +4457,11 @@
   function askErrorText(code){
     if(code === "not_granted") return "You'll need to allow Claude to use this chat.";
     if(code === "rate_limited") return "Too many questions at once -- wait a moment and try again.";
+    if(code === "account"){ if(window.devigShowProfile) window.devigShowProfile(); return "Chat needs a free account: sign in from the profile button (top right) and enter the invite code."; }
+    if(code === "limit") return "That's today's questions for your account. More tomorrow.";
+    if(code === "quota") return "The free AI has used up today's answers for everyone. Try again tomorrow.";
+    if(code === "off") return "Chat isn't switched on for this site yet.";
+    if(code === "offline") return "You're offline. Try again when you're connected.";
     if(code === "cancelled") return "";
     return "Something went wrong getting an answer. You can try again.";
   }

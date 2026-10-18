@@ -58,6 +58,18 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
   the free function allowance, "Fail open" keeps the site itself loading for everyone.
 - **Safety headers:** `docs/_headers` stops other sites from framing DeVig to trick people into clicking things.
 
+## Chat (Ask tab)
+
+The Ask tab answers questions about the picks with **Cloudflare Workers AI** (free daily allowance, no key), through
+`functions/api/ask.js`. It only answers signed-in people with an open account (the invite code), up to 25 questions
+each per day, so the shared free allowance lasts.
+
+- Turn it on: Workers & Pages → devigai → Settings → **Bindings** → Add → **Workers AI**, variable name `AI`.
+  Then retry the deployment.
+- It uses Llama 3.3 70B by default (roughly a few dozen answers a day on the free allowance, shared by everyone).
+  For more answers with a smaller, less careful AI, add a variable `AI_MODEL` = `@cf/meta/llama-3.1-8b-instruct-fast`.
+- When the free allowance is used up, the chat says so and works again the next day.
+
 ## Check it
 
 Open the site, tap the profile button (top right) → **Sign in or create account**, enter the email code, then type the
