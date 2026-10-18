@@ -388,6 +388,9 @@
     border:1px solid var(--line); border-radius:999px; padding:1px 9px; cursor:pointer; white-space:nowrap; user-select:none;}
   .trk.on{color:var(--accent-strong); border-color:var(--accent); background:var(--accent-wash);}
   .trk:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .me-sport{padding:4px 0 8px; border-top:1px solid var(--line);}
+  .me-sport:first-child{border-top:none;}
+  .me-add{font-family:var(--font-sans); font-size:12.5px; color:var(--ink); background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:999px; padding:5px 10px;}
   .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
     background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
 </style>
@@ -405,6 +408,7 @@
       <button role="tab" aria-selected="false" data-tab="scan">History</button>
       <button role="tab" aria-selected="false" data-tab="parlay">Parlay</button>
       <button role="tab" aria-selected="false" data-tab="lab">Testing</button>
+      <button role="tab" aria-selected="false" data-tab="me">Me</button>
       <button role="tab" aria-selected="false" data-tab="about">About</button>
     </nav>
   </header>
@@ -412,7 +416,7 @@
   <section class="panel" id="panel-home">
     <div class="card" id="homeStatusCard">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap">
-        <h3>Today's board</h3>
+        <h3>Today's board<span class="faint" id="homeHi" style="font-family:var(--font-sans); font-weight:500; margin-left:8px"></span></h3>
         <span class="faint" id="homeSyncedAt"></span>
       </div>
       <div id="sportPills" style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; align-items:center">
@@ -568,6 +572,23 @@
     </div>
   </section>
 
+  <section class="panel" id="panel-me" hidden>
+    <div class="card">
+      <h3 style="margin-bottom:4px">You</h3>
+      <p class="faint" style="margin:0 0 10px" id="meSync">Saved on this device.</p>
+      <div class="field"><label for="meName">Name tag</label><input id="meName" maxlength="24" autocomplete="nickname" placeholder="What DeVig calls you"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:4px">Favorite teams</h3>
+      <p class="faint" style="margin:0 0 6px">Their games show up in My tracking and under ★ Tracked on Home, every week, without tapping Track.</p>
+      <div id="meTeams"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:4px">Tracking</h3>
+      <div id="meTracking"></div>
+    </div>
+  </section>
+
   <section class="panel about" id="panel-about" hidden>
     <div class="card">
       <h3>Plainly</h3>
@@ -635,6 +656,7 @@
 <link rel="stylesheet" href="free.css">
 <script src="repo-data.js"></script>
 <script src="install.js" defer></script>
+<script src="account.js" defer></script>
 <script>
 (function(){
   "use strict";
@@ -702,6 +724,7 @@
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
     lab: document.getElementById("panel-lab"),
+    me: document.getElementById("panel-me"),
     about: document.getElementById("panel-about")
   };
   tabs.forEach(function(btn){
@@ -709,6 +732,7 @@
       tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b === btn)); });
       Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== btn.dataset.tab); });
       if(btn.dataset.tab === "scan") loadHistory();
+      if(btn.dataset.tab === "me") renderMe();
     });
   });
 
@@ -874,6 +898,8 @@
       return;
     }
 
+    var hiEl = document.getElementById("homeHi");
+    if(hiEl) hiEl.textContent = prefs.name ? "Hi, " + prefs.name : "";
     var allSynced = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
@@ -908,8 +934,8 @@
     var confTh = CONF_THRESHOLDS[currentSport] || CONF_THRESHOLDS.NFL;
     var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
     if(currentConfKey === "tracked"){
-      forSport = forSport.filter(function(g){ return isTracked("g", gameKey(g)); });
-      noteEl.textContent = "Only the games you track. Tap ☆ Track on any game card to add it; your list stays on this device.";
+      forSport = forSport.filter(followsGame);
+      noteEl.textContent = "Games you track plus your favorite teams' games. Tap ☆ Track on a game card, or pick teams in the Me tab.";
     } else if(currentConfThreshold > 0){
       forSport = forSport.filter(function(g){
         return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
@@ -925,7 +951,7 @@
       syncedEl.textContent = "";
       wrap.innerHTML = currentConfKey === "tracked"
         ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
-          '<span class="faint">Switch to All games and tap ☆ Track on the ones you want to follow.</span></div></div>'
+          '<span class="faint">Switch to All games and tap ☆ Track, or add favorite teams in the Me tab.</span></div></div>'
         : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
           '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
       return;
@@ -1078,14 +1104,96 @@
     row.addEventListener("click", function(){ openGame(b.g); });
     return row;
   }
-  // ---------- Tracking: games and paper picks the user follows (saved on this device only) ----------
-  var TRACK_KEY = "devig.tracked.v1", tracked = {g: {}, p: {}};
-  try{ var tj = JSON.parse(localStorage.getItem(TRACK_KEY) || "null"); if(tj && tj.g && tj.p) tracked = tj; }catch(e){}
+  // ---------- Tracking, name tag and favorite teams ----------
+  // Saved in this browser (localStorage). On the website with a login, docs/account.js keeps the same two keys
+  // in the person's account and calls window.devigReloadPrefs() when it loads them.
+  var TRACK_KEY = "devig.tracked.v1", PREFS_KEY = "devig.prefs.v1";
+  var tracked = {g: {}, p: {}}, prefs = {name: "", teams: {}};
+  var syncStatusTxt = "saved on this device";
+  function loadPrefs(){
+    tracked = {g: {}, p: {}}; prefs = {name: "", teams: {}};
+    try{ var tj = JSON.parse(localStorage.getItem(TRACK_KEY) || "null"); if(tj && tj.g && tj.p) tracked = tj; }catch(e){}
+    try{ var pj = JSON.parse(localStorage.getItem(PREFS_KEY) || "null"); if(pj && typeof pj === "object"){ prefs.name = String(pj.name || ""); prefs.teams = pj.teams || {}; } }catch(e){}
+  }
+  loadPrefs();
+  function prefsChanged(){ try{ window.dispatchEvent(new Event("devig:prefs-changed")); }catch(e){} }
+  function savePrefs(){
+    prefs.updated = Date.now();
+    try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){}
+    prefsChanged();
+  }
   function isTracked(kind, key){ return !!tracked[kind][key]; }
   function toggleTracked(kind, key){
     if(tracked[kind][key]) delete tracked[kind][key]; else tracked[kind][key] = Date.now();
+    tracked.updated = Date.now();
     try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+    prefsChanged();
   }
+  function favTeams(sport){ return (prefs.teams && prefs.teams[sport]) || []; }
+  function isFavGame(g){ var f = favTeams(g.sport || "NFL"); return f.indexOf(g.away_team) >= 0 || f.indexOf(g.home_team) >= 0; }
+  function followsGame(g){ return isTracked("g", gameKey(g)) || isFavGame(g); }
+  window.devigReloadPrefs = function(){ loadPrefs(); renderHome(); renderMe(); };
+  window.devigSyncStatus = function(txt){ syncStatusTxt = txt; var e = document.getElementById("meSync"); if(e) e.textContent = txt.charAt(0).toUpperCase() + txt.slice(1) + "."; renderHome(); };
+  // Every team the synced data mentions, per sport, so new sports show up here on their own.
+  function teamsBySport(){
+    var out = {};
+    function add(sp, t){ if(!t) return; (out[sp] = out[sp] || {})[t] = true; }
+    homeDocs.concat(decisionsDocs).forEach(function(g){ add(g.sport || "NFL", g.away_team); add(g.sport || "NFL", g.home_team); });
+    propsDocs.forEach(function(d){ add(docSport(d), d.away_team); add(docSport(d), d.home_team); });
+    Object.keys(prefs.teams || {}).forEach(function(sp){ favTeams(sp).forEach(function(t){ add(sp, t); }); });
+    var res = {};
+    Object.keys(out).forEach(function(sp){ res[sp] = Object.keys(out[sp]).sort(); });
+    return res;
+  }
+  function renderMe(){
+    var nameEl = document.getElementById("meName");
+    if(!nameEl) return;
+    if(document.activeElement !== nameEl) nameEl.value = prefs.name || "";
+    var box = document.getElementById("meTeams"), all = teamsBySport();
+    var sports = Object.keys(all).sort(function(a, b){ return historySportRank(a) - historySportRank(b) || a.localeCompare(b); });
+    box.innerHTML = sports.length ? "" : '<div class="bb-empty">Teams show up here once games are synced.</div>';
+    sports.forEach(function(sp){
+      var fav = favTeams(sp);
+      var row = el("div", "me-sport");
+      row.innerHTML = '<div class="pp-stat">' + escapeHtml(sp) + '</div><div class="chips" style="margin-top:4px">' +
+        fav.map(function(t){ return '<button type="button" class="pill-tab active" data-unfav="' + escapeHtml(sp + "|" + t) + '">' + escapeHtml(t) + ' ✕</button>'; }).join("") +
+        '<select class="me-add" data-sport="' + escapeHtml(sp) + '"><option value="">+ Add team</option>' +
+        all[sp].filter(function(t){ return fav.indexOf(t) < 0; }).map(function(t){ return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>'; }).join("") +
+        '</select></div>';
+      box.appendChild(row);
+    });
+    var ng = Object.keys(tracked.g || {}).length, np = Object.keys(tracked.p || {}).length;
+    document.getElementById("meTracking").innerHTML = '<div class="stat-row"><span class="muted">Games you track</span><span class="v tabular">' + ng + '</span></div>' +
+      '<div class="stat-row"><span class="muted">Prop picks you track</span><span class="v tabular">' + np + '</span></div>' +
+      ((ng || np) ? '<button type="button" class="ghost" id="meClear" style="margin-top:6px">Clear tracking</button>' : '');
+  }
+  (function(){
+    var nameEl = document.getElementById("meName"), t = null;
+    nameEl.addEventListener("input", function(){
+      clearTimeout(t);
+      t = setTimeout(function(){ prefs.name = nameEl.value.trim().slice(0, 24); savePrefs(); renderHome(); }, 500);
+    });
+    document.getElementById("panel-me").addEventListener("change", function(ev){
+      var sel = ev.target.closest && ev.target.closest(".me-add");
+      if(!sel || !sel.value) return;
+      var sp = sel.getAttribute("data-sport");
+      prefs.teams[sp] = favTeams(sp).concat([sel.value]);
+      savePrefs(); renderMe(); renderHome();
+    });
+    document.getElementById("panel-me").addEventListener("click", function(ev){
+      var b = ev.target.closest && ev.target.closest("[data-unfav]");
+      if(b){
+        var parts = b.getAttribute("data-unfav").split("|");
+        prefs.teams[parts[0]] = favTeams(parts[0]).filter(function(x){ return x !== parts[1]; });
+        savePrefs(); renderMe(); renderHome(); return;
+      }
+      if(ev.target.id === "meClear" && confirm("Stop tracking every game and pick?")){
+        tracked = {g: {}, p: {}, updated: Date.now()};
+        try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+        prefsChanged(); renderMe(); renderHome();
+      }
+    });
+  })();
   function trkBtn(kind, key){
     var on = isTracked(kind, key);
     return '<span class="trk' + (on ? ' on' : '') + '" role="button" tabindex="0" aria-pressed="' + on + '" data-trk="' + kind + '" data-trk-key="' + escapeHtml(key) + '">' +
@@ -1104,7 +1212,7 @@
   document.addEventListener("click", onTrk, true);
   document.addEventListener("keydown", onTrk, true);
   function renderTrackedCard(games){
-    var tg = games.filter(function(g){ return isTracked("g", gameKey(g)); });
+    var tg = games.filter(followsGame);
     var tp = [];
     propsDocs.forEach(function(d){
       if(docSport(d) !== currentSport) return;
@@ -1112,7 +1220,7 @@
     });
     if(!tg.length && !tp.length) return null;
     var card = el("div", "card");
-    card.innerHTML = '<div class="bb-head"><h3>My tracking</h3><span class="faint">' + escapeHtml(currentSport) + ' · saved on this device</span></div>';
+    card.innerHTML = '<div class="bb-head"><h3>' + (prefs.name ? escapeHtml(prefs.name) + '\'s tracking' : 'My tracking') + '</h3><span class="faint">' + escapeHtml(currentSport) + ' · ' + escapeHtml(syncStatusTxt) + '</span></div>';
     if(tg.length){
       card.appendChild(el("div", "bb-sec", "Games"));
       tg.sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); }).forEach(function(g){
@@ -1124,7 +1232,8 @@
           escapeHtml((st ? (lg.state === "in" ? "Live · " + (lg.detail || "") : "Final") : shortTime(g)) +
             (d.action === "ML" ? " · pick " + mm.winner_side : "") +
             (lt && st ? " · prop picks " + lt.won + " won, " + lt.lost + " lost" + (lt.live ? ", " + lt.live + " live" : "") : "")) + '</div></div>' +
-          '<div class="bb-right">' + (st && lg.state === "in" ? '<span class="pill live">LIVE</span>' : '') + trkBtn("g", gameKey(g)) + '</div>';
+          '<div class="bb-right">' + (st && lg.state === "in" ? '<span class="pill live">LIVE</span>' : '') +
+          (isFavGame(g) && !isTracked("g", gameKey(g)) ? '<span class="pill neutral">★ team</span>' : trkBtn("g", gameKey(g))) + '</div>';
         row.addEventListener("click", function(){ openGame(g); });
         card.appendChild(row);
       });
