@@ -4,8 +4,8 @@
 <p align="center"><b>Odds, read straight.</b> NFL, MLB and NBA models, tested in public against real prices.</p>
 
 <p align="center">
-  <a href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/">Open the app</a> ·
-  <a href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/">Live board</a> ·
+  <a href="https://devigai.pages.dev/app/">Open the app</a> ·
+  <a href="https://devigai.pages.dev/">Live board</a> ·
   <a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest">Mac, Windows, Android and iPhone downloads</a>
 </p>
 

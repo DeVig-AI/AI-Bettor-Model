@@ -1,6 +1,6 @@
 # DeVig apps
 
-**Web app (free, no Claude):** https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/
+**Web app (free, no Claude):** https://devigai.pages.dev/app/
 It is DeVig.AI reading the repo's export files directly (`docs/app/repo-data.js`). On a phone, open it and use
 Share → Add to Home Screen.
 
