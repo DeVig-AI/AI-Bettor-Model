@@ -26,9 +26,6 @@ EDITS = [
     ('<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">',
      '<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">' + HEAD, True),
     ("\n<script>\n(function(){", "\n" + FREE + "<script>\n(function(){", True),
-    ("Refreshes about once an hour on game days. For updates every 30 seconds, open the live board.",
-     "Refreshes every few minutes on game days. For scores every 30 seconds, open the live board.", False),
-    ('id="liveFastLink" href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/"', 'id="liveFastLink" href="../"', False),
     ("</body></html>", FOOT + "</body></html>", True),
 ]
 

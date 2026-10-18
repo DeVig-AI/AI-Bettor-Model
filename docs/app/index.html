@@ -358,6 +358,19 @@
   .lv-pk .px{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:2px 14px; font-size:12.5px; color:var(--ink-soft);}
   .lv-pk .px b{font-family:var(--font-mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
   .pill.live{background:var(--accent-wash); color:var(--accent-strong);}
+  /* Live game on a Home card: score, locked vs live odds, paper-pick progress */
+  .card.game.is-live{border-color:var(--accent);}
+  .sb-team .lv-sc{margin-left:auto; font-family:var(--font-mono); font-weight:700; font-size:18px; font-variant-numeric:tabular-nums; padding-left:6px;}
+  .sb-team.has-badge.with-sc{grid-template-columns:30px minmax(0,1fr) auto;}
+  .sb-team.has-badge.with-sc > .lv-sc{grid-row:1 / span 2; grid-column:3;}
+  .sb-team.trail b, .sb-team.trail .lv-sc{color:var(--ink-soft);}
+  .lv-odds{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:2px 14px; margin-top:10px; padding:8px 10px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:10px; font-size:13px; align-items:baseline;}
+  .lv-odds .h{font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); text-align:right;}
+  .lv-odds .h:first-child{text-align:left;}
+  .lv-odds .n{font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;}
+  .lv-odds .n.now{font-weight:700;}
+  .lv-odds .m{color:var(--ink-soft); min-width:0;}
 </style>
 
 <div class="wrap">
@@ -388,12 +401,6 @@
         <button class="pill-tab" data-sport="MLB">MLB</button>
         <button class="pill-tab" data-sport="NBA">NBA</button>
       </div>
-      <div class="faint" style="margin-top:10px">Show:</div>
-      <div id="viewPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
-        <button class="pill-tab active" data-view="board">Picks &amp; lines</button>
-        <button class="pill-tab" data-view="live">Live scores</button>
-      </div>
-      <div id="confWrap">
       <div class="faint" style="margin-top:10px">Show games:</div>
       <div id="confFilterPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
         <button class="pill-tab active" data-conf="all">All games</button>
@@ -402,25 +409,8 @@
       </div>
       <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
       <div class="status" id="homeStatus">Loading…</div>
-      </div>
     </div>
     <div id="homeSlate"></div>
-    <div id="homeLive" hidden>
-      <div class="card">
-        <div class="lv-head"><h3>Live · NFL</h3><span class="faint" id="liveAsOf"></span></div>
-        <p class="faint" style="margin:6px 0 0">Scores and how each locked paper pick is doing. Refreshes every few minutes on game days. For scores every 30 seconds, open the live board.</p>
-        <a class="lv-fast" id="liveFastLink" href="../" target="_blank" rel="noopener">Watch live (updates every 30 s)</a>
-        <div class="lv-record">
-          <div class="lv-stat"><b id="lvToday">–</b><span>Locked picks</span></div>
-          <div class="lv-stat"><b id="lvNow">–</b><span>Won · lost</span></div>
-          <div class="lv-stat"><b id="lvGraded">–</b><span>Graded (W-L)</span></div>
-          <div class="lv-stat"><b id="lvRoi">–</b><span>Paper ROI</span></div>
-        </div>
-        <div class="status" id="liveStatus">Loading…</div>
-      </div>
-      <div id="liveGames"></div>
-      <p class="faint">Paper test only, nothing is bet. Stats during a game are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game, so a close call can flip.</p>
-    </div>
   </section>
 
   <section class="panel" id="panel-ask" hidden>
@@ -808,32 +798,9 @@
       currentSport = btn.dataset.sport;
       document.querySelectorAll("#sportPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
       renderHome();
-      syncViewPills();
       // renderDecisionHistoryCard is intentionally NOT re-run here -- it shows
       // every sport at once now, so switching the Home sport pill doesn't
       // change what it displays.
-    });
-  });
-
-  // Home view: the board (picks & lines) or live scores with each locked paper pick's progress (NFL props only).
-  var currentView = "board";
-  function syncViewPills(){
-    var liveBtn = document.querySelector('#viewPills [data-view="live"]');
-    liveBtn.disabled = currentSport !== "NFL";
-    liveBtn.title = liveBtn.disabled ? "Live scores cover the NFL props test for now" : "";
-    if(liveBtn.disabled && currentView === "live") currentView = "board";
-    document.querySelectorAll("#viewPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b.dataset.view === currentView); });
-    var live = currentView === "live";
-    document.getElementById("homeSlate").hidden = live;
-    document.getElementById("confWrap").hidden = live;
-    document.getElementById("homeLive").hidden = !live;
-    if(live) renderLive();
-  }
-  document.querySelectorAll("#viewPills .pill-tab").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      if(btn.disabled) return;
-      currentView = btn.dataset.view;
-      syncViewPills();
     });
   });
 
@@ -1430,6 +1397,13 @@
     if(d.action === "ML" && injBad && injBad.others.length) chips.push('<span class="pill bad">Injury caution</span>');
     var pcS = priceCheck(g);
     if(pcS && pcS.steep) chips.push('<span class="pill bad">Price too steep</span>');
+    var lg = liveFor(g), started = liveStarted(lg);
+    if(lg && lg.picks && lg.picks.length){
+      var lt = livePickTally(lg);
+      chips.push('<span class="pill ' + (started ? "live" : "neutral") + '">Paper picks · ' + lg.picks.length +
+        (started ? ' · ' + lt.won + ' won · ' + lt.lost + ' lost' + (lt.live ? ' · ' + lt.live + ' live' : '') : ' locked') + '</span>');
+    }
+    if(lg && lg.state === "in") card.classList.add("is-live");
     var isOpen = !!openGames[k];
     var tags = (g.trial ? ' <span class="pill neutral">Preseason trial</span>' : '') +
       (isPreviewGame(g) ? ' <span class="pill neutral">Preview</span>' : '');
@@ -1438,14 +1412,19 @@
       var nLab = propLabeledCount(pdoc);
       chips.push('<span class="pill neutral">Props' + (nLab ? ' · ' + nLab + ' labeled' : '') + '</span>');
     }
-    head.innerHTML = '<div class="sb-top"><span class="faint">' + escapeHtml(kickoff) + '</span>' + (tags ? '<span>' + tags + '</span>' : '') + '</div>' +
-      sbGrid(g, d) +
+    var when = !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
+      : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
+      : '<span><span class="pill neutral">FINAL</span></span>';
+    head.innerHTML = '<div class="sb-top">' + when + (tags && !started ? '<span>' + tags + '</span>' : '') + '</div>' +
+      sbGrid(g, d, started ? lg : null) + (started ? liveOddsEl(g, lg) : '') +
       '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
     head.setAttribute("aria-expanded", String(isOpen));
     var det = el("div", "game-details");
     if(full.firstChild) full.removeChild(full.firstChild); // the matchup header is already in the summary
     var gamePane = el("div", "sb-game");
     while(full.childNodes.length) gamePane.appendChild(full.firstChild);
+    var lpb = livePicksBox(lg);
+    if(lpb) gamePane.insertBefore(lpb, gamePane.firstChild);
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
     else det.appendChild(gamePane);
     det.hidden = !isOpen;
@@ -1485,7 +1464,7 @@
     var light = (0.299 * r + 0.587 * gg + 0.114 * b) > 160;
     return '<span class="tm-badge" style="background:' + c + '; color:' + (light ? "#111" : "#fff") + '" aria-hidden="true">' + escapeHtml(code) + '</span>';
   }
-  function sbGrid(g, d){
+  function sbGrid(g, d, lg){
     var m = g.market || {}, mm = g.model || {};
     var cols = [];
     if(m.spread_home != null) cols.push("Spread");
@@ -1497,7 +1476,11 @@
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
-      html += '<div class="sb-team has-badge">' + teamBadge(g.sport || "NFL", team) + '<b>' + escapeHtml(team) + '</b>' + (pct != null ? '<small>model ' + Math.round(pct * 100) + '%</small>' : '<small></small>') + '</div>';
+      var sc = lg ? (side === "home" ? lg.home_score : lg.away_score) : null, osc = lg ? (side === "home" ? lg.away_score : lg.home_score) : null;
+      html += '<div class="sb-team has-badge' + (sc != null ? ' with-sc' + (sc < osc ? ' trail' : '') : '') + '">' + teamBadge(g.sport || "NFL", team) +
+        '<b>' + escapeHtml(team) + (lg && lg.state === "in" && lg.possession === team ? ' <span class="lv-poss" title="Has the ball" style="display:inline-block; vertical-align:middle"></span>' : '') + '</b>' +
+        (pct != null ? '<small>model ' + Math.round(pct * 100) + '%' + (lg ? ' · locked lines' : '') + '</small>' : '<small></small>') +
+        (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
       cols.forEach(function(c){
         if(c === "Spread"){
           var pt = side === "home" ? m.spread_home : -m.spread_home;
@@ -2422,9 +2405,11 @@
         html += '<div class="pp-stat">' + escapeHtml(propStat(st)) + '</div>';
         byStat[st].forEach(function(x){
           var p = x.p;
+          var lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
           html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
-            '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</div></div>' +
-            '<span class="pill neutral">PAPER</span></div>';
+            '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%' +
+            (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
+            (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '<span class="pill neutral">PAPER</span>') + '</div>';
         });
       });
       html += '</details>';
@@ -2445,6 +2430,11 @@
     }
   }
   var lockedOpen = false, lockedStat = "all", lastPropsTest = [[], "NFL"];
+  function livePickFor(d, p){
+    if(!liveDoc || docSport(d) !== "NFL") return null;
+    var lg = (liveDoc.games || []).filter(function(x){ return x.away === d.away_team && x.home === d.home_team; })[0];
+    return lg ? (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line; })[0] || null : null;
+  }
 
   // ---------- Live: scores + locked paper-pick progress (read-only, synced by Claude hourly on game days) ----------
   // Written by the GitHub bot nfl/nfl_props_live_v1.py (ESPN scores and box scores, Kalshi prices) and copied into
@@ -2458,7 +2448,8 @@
   }
   function livePickEl(p){
     var b = liveBadge(p), cur = p.current, target = Math.floor(p.line) + 1;
-    var k = p.kalshi_now, sideNow = (k && k.mid != null) ? (p.side === "OVER" ? k.mid : 1 - k.mid) : null;
+    var k = p.kalshi_now, sideNow = null;
+    if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
     var row = el("div", "lv-pk");
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
       '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
@@ -2468,67 +2459,59 @@
         Math.min(100, cur / Math.max(target, 1) * 100) + '%"></i></div>' : '') +
       '<div class="px"><span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' +
       '<span>Locked at <b>' + exOddsTxt(p.price, true) + '</b></span>' +
-      (sideNow != null ? '<span>Kalshi now <b>' + Math.round(sideNow * 100) + '%</b></span>' : '') + '</div>';
+      (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') + '</div>';
     return row;
   }
-  function liveGameEl(g){
-    var live = g.state === "in", fin = g.state === "post", hasScore = g.state !== "pre" && g.away_score != null;
-    var card = el("div", "card lv-game" + (live ? " is-live" : ""));
-    function tm(team, sc, other, prefix){
-      var cls = hasScore && sc < other ? " trail" : "";
-      return '<div class="lv-tm' + cls + '">' + (live && g.possession === team ? '<span class="lv-poss" title="Has the ball"></span>' : '') +
-        prefix + escapeHtml(team) + '<span class="sc">' + (hasScore ? sc : '') + '</span></div>';
-    }
-    var when = live ? '<span class="pill live">LIVE</span><div style="margin-top:4px">' + escapeHtml(g.detail || "") + '</div>'
-      : fin ? '<span class="pill neutral">FINAL</span>'
-      : '<span class="pill neutral">' + escapeHtml(g.kickoff ? shortTime({kickoff_time: g.kickoff}) : "") + '</span>' +
-        (g.locked ? '<div style="margin-top:4px"><span class="pill live">LOCKED</span></div>' : '');
-    card.innerHTML = '<div class="lv-gh"><div>' + tm(g.away, g.away_score, g.home_score, "") + tm(g.home, g.home_score, g.away_score, "@ ") +
-      '</div><div class="lv-when">' + when + '</div></div>';
-    if(g.picks && g.picks.length){
-      var pw = el("div", "lv-picks");
-      g.picks.forEach(function(p){ pw.appendChild(livePickEl(p)); });
-      card.appendChild(pw);
-    }
-    return card;
+  function liveFor(g){
+    if(!liveDoc || (g.sport || "NFL") !== "NFL" || g.trial) return null;
+    var kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
+    return (liveDoc.games || []).filter(function(x){
+      if(x.away !== g.away_team || x.home !== g.home_team) return false;
+      var xk = x.kickoff ? new Date(x.kickoff).getTime() : NaN;
+      return !isFinite(kt) || !isFinite(xk) || Math.abs(kt - xk) < 12 * 3600 * 1000;
+    })[0] || null;
   }
-  function renderLive(){
-    var st = document.getElementById("liveStatus"), wrap = document.getElementById("liveGames");
-    if(!st) return;
-    if(!dbApi){ st.textContent = "Live sync isn't available in this view."; return; }
-    if(!liveLoaded){ st.textContent = "Loading…"; return; }
-    wrap.innerHTML = "";
-    var r = propsReport || {};
-    document.getElementById("lvGraded").textContent = r.paper_picks_graded ? (r.wins || 0) + "-" + (r.paper_picks_graded - (r.wins || 0)) : "0";
-    document.getElementById("lvRoi").textContent = r.roi == null ? "–" : (r.roi > 0 ? "+" : "") + (r.roi * 100).toFixed(1) + "%";
-    if(!liveDoc){
-      st.textContent = "Nothing synced yet. Scores show up here on game days, about once an hour.";
-      document.getElementById("liveAsOf").textContent = "";
-      document.getElementById("lvToday").textContent = "–"; document.getElementById("lvNow").textContent = "–";
-      return;
+  function liveStarted(lg){ return !!lg && (lg.state === "in" || lg.state === "post") && lg.away_score != null; }
+  // Locked line (what the pick was made at) next to Kalshi's live price, while the game is on.
+  function liveOddsEl(g, lg){
+    var kg = lg && lg.kalshi_game, m = g.market || {};
+    if(!kg || lg.state !== "in") return "";
+    var rows = [];
+    function sgn(x){ return (Number(x) > 0 ? "+" : "") + x; }
+    if(kg.moneyline){
+      rows.push([g.away_team + " to win", fmtOdds(m.moneyline_away), fmtOdds(kg.moneyline.away)]);
+      rows.push([g.home_team + " to win", fmtOdds(m.moneyline_home), fmtOdds(kg.moneyline.home)]);
     }
-    var games = (liveDoc.games || []).slice(), order = {"in": 0, pre: 1, post: 2};
-    games.sort(function(a, b){ return ((order[a.state] != null ? order[a.state] : 1) - (order[b.state] != null ? order[b.state] : 1)) ||
-      String(a.kickoff || "").localeCompare(String(b.kickoff || "")); });
-    var picks = [];
-    games.forEach(function(g){ (g.picks || []).forEach(function(p){ picks.push(p); }); });
-    var won = picks.filter(function(p){ return p.status === "won"; }).length, lost = picks.filter(function(p){ return p.status === "lost"; }).length;
-    document.getElementById("lvToday").textContent = String(picks.length);
-    document.getElementById("lvNow").textContent = picks.length ? won + " · " + lost : "–";
-    var age = (Date.now() - new Date(liveDoc.generated_at).getTime()) / 60000;
-    document.getElementById("liveAsOf").textContent = "As of " + whenTxt(liveDoc.generated_at);
-    var anyLive = games.some(function(g){ return g.state === "in"; });
-    var nLive = games.filter(function(g){ return g.state === "in"; }).length;
-    document.querySelector('#viewPills [data-view="live"]').textContent = "Live scores" + (nLive ? " · " + nLive + " on now" : "");
-    st.textContent = anyLive && age > 20 ? "Games in progress. This view is about " + Math.round(age) + " minutes behind; tap Watch live for the current score." : "";
-    [["Live now", "in"], ["Upcoming", "pre"], ["Final", "post"]].forEach(function(sec){
-      var gs = games.filter(function(g){ return (g.state || "pre") === sec[1]; });
-      if(!gs.length) return;
-      wrap.appendChild(el("div", "bb-sec", sec[0]));
-      gs.forEach(function(g){ wrap.appendChild(liveGameEl(g)); });
-    });
-    if(!games.length) wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No games on the board right now.</div>'));
+    if(kg.spread){
+      rows.push(["Spread", m.spread_home != null ? g.home_team + " " + sgn(m.spread_home) : "—",
+        g.home_team + " " + sgn(kg.spread.home_point) + " (" + fmtOdds(kg.spread.home) + ")"]);
+    }
+    if(kg.total){
+      rows.push(["Total", m.total_line != null ? String(m.total_line) : "—",
+        kg.total.line + " (o " + fmtOdds(kg.total.over) + ")"]);
+    }
+    if(!rows.length) return "";
+    return '<div class="lv-odds"><div class="h">Odds</div><div class="h">Locked</div><div class="h">Live · Kalshi</div>' +
+      rows.map(function(r){ return '<div class="m">' + escapeHtml(r[0]) + '</div><div class="n">' + escapeHtml(r[1]) +
+        '</div><div class="n now">' + escapeHtml(r[2]) + '</div>'; }).join("") + '</div>';
   }
+  function livePickTally(lg){
+    var t = {won: 0, lost: 0, live: 0, pending: 0};
+    ((lg && lg.picks) || []).forEach(function(p){ t[p.status] = (t[p.status] || 0) + 1; });
+    return t;
+  }
+  function livePicksBox(lg){
+    if(!lg || !lg.picks || !lg.picks.length) return null;
+    var box = el("div", "lv-picks");
+    box.style.cssText = "border:1px solid var(--line); border-radius:10px; padding:4px 12px 8px; margin-top:12px";
+    box.appendChild(el("div", "pp-stat", "Paper picks in this game" + (liveStarted(lg) ? "" : " · locked")));
+    lg.picks.forEach(function(p){ box.appendChild(livePickEl(p)); });
+    box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game."));
+    return box;
+  }
+
+  function renderLive(){ if(homeDocs.length) renderHome(); }
+
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
   var labReport = null, labLive = [], labLoaded = {report:false, live:false};
