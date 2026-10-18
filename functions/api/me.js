@@ -93,7 +93,7 @@ export async function userKey(email) {
 
 // Keep only the shapes the app writes: tracked {g:{key:time}, p:{key:time}, updated}, prefs {name, teams, updated}.
 export function clean(body) {
-  const out = {tracked: {g: {}, p: {}, updated: 0}, prefs: {name: "", teams: {}, updated: 0}};
+  const out = {tracked: {g: {}, p: {}, updated: 0}, prefs: {name: "", teams: {}, mode: "simple", updated: 0}};
   const t = body && body.tracked;
   if (t && typeof t === "object") {
     for (const kind of ["g", "p"]) {
@@ -107,6 +107,7 @@ export function clean(body) {
   const p = body && body.prefs;
   if (p && typeof p === "object") {
     out.prefs.name = String(p.name || "").slice(0, 24);
+    out.prefs.mode = p.mode === "advanced" ? "advanced" : "simple";
     const teams = p.teams && typeof p.teams === "object" ? p.teams : {};
     for (const sp of Object.keys(teams).slice(0, 20)) {
       if (!/^[A-Za-z0-9_-]{1,12}$/.test(sp) || !Array.isArray(teams[sp])) continue;

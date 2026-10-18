@@ -66,6 +66,7 @@
   function start(data) {
     joined = true;
     setLocked(false);
+    window.devigLogos = true;                  // team logos (trademarks) show to signed-in accounts only
     var local = {tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {}};
     var m = data ? merge(local, data) : local;
     write(TRACK_KEY, m.tracked);
