@@ -58,6 +58,23 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
   the free function allowance, "Fail open" keeps the site itself loading for everyone.
 - **Safety headers:** `docs/_headers` stops other sites from framing DeVig to trick people into clicking things.
 
+## Chat (Ask tab)
+
+The Ask tab answers questions about the picks with a free AI, through `functions/api/ask.js`. It answers from the
+app's data plus a general betting guide, and every answer reminds people that AI can make mistakes. Only signed-in
+people with an open account (the invite code) can use it, up to 50 questions each per day.
+
+It uses the first of these that's set up:
+
+1. **Google Gemini** (most free answers, about 1,000 a day): get a free key at https://aistudio.google.com (Get API
+   key), then in devigai → Settings → Variables and secrets → Add, type **Secret**, name `GEMINI_API_KEY`.
+   On the free tier Google may use the questions to improve its products; no names or emails are sent.
+2. **Cloudflare Workers AI** (no sign-up, a few hundred answers a day): devigai → Settings → **Bindings** → Add →
+   **Workers AI**, variable name `AI`. It uses a small Llama model; `AI_MODEL` picks another.
+
+Set up both and Gemini answers first, with Cloudflare as the backup when Gemini's daily allowance runs out.
+Retry the deployment after adding either. When everything is used up, the chat says so and works again the next day.
+
 ## Check it
 
 Open the site, tap the profile button (top right) → **Sign in or create account**, enter the email code, then type the

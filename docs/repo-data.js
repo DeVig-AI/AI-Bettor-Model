@@ -156,5 +156,41 @@
   setInterval(function () { if (!document.hidden) refreshAll(false); }, 60000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) refreshAll(false); });
 
-  window.claude = {use: function (name) { return Promise.resolve(name === "db" ? db : null); }};
+  // Chat: the app's Ask tab calls sample(messages, {signal, onText}); here it goes to /api/ask (Cloudflare Workers AI,
+  // free, signed-in accounts only) and streams the answer back. Errors carry a code the Ask tab turns into words.
+  function sample(input, opts) {
+    opts = opts || {};
+    function fail(code, text) { var e = new Error(code); e.code = code; e.text = text || ""; throw e; }
+    return fetch("/api/ask", {method: "POST", credentials: "same-origin", signal: opts.signal,
+                              headers: {"content-type": "application/json"}, body: JSON.stringify({messages: input})})
+      .catch(function (e) { fail(e && e.name === "AbortError" ? "cancelled" : "offline"); })
+      .then(function (r) {
+        if (!r.ok) return r.json().catch(function () { return {}; }).then(function (e) { fail(e.code || (r.status === 404 ? "off" : "ai"), ""); });
+        var reader = r.body.getReader(), dec = new TextDecoder(), buf = "", text = "";
+        function pump() {
+          return reader.read().then(function (x) {
+            if (x.done) return {text: text.trim()};
+            buf += dec.decode(x.value, {stream: true});
+            var lines = buf.split("\n");
+            buf = lines.pop();
+            lines.forEach(function (line) {
+              if (line.indexOf("data:") !== 0) return;
+              var d = line.slice(5).trim();
+              if (!d || d === "[DONE]") return;
+              try {
+                var j = JSON.parse(d);                 // Workers AI {response} or OpenAI-style {choices:[{delta:{content}}]}
+                var piece = j.response != null ? j.response : (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content);
+                if (piece) text += piece;
+              } catch (e) {}
+            });
+            if (opts.onText) opts.onText({text: text});
+            return pump();
+          });
+        }
+        return pump().catch(function (e) { fail(e && e.name === "AbortError" ? "cancelled" : "ai", text); });
+      });
+  }
+
+  window.devigAskCompact = true;           // the free chat gets a shorter pick history (see the app's askContext)
+  window.claude = {use: function (name) { return Promise.resolve(name === "db" ? db : name === "sample" ? sample : null); }};
 })();
