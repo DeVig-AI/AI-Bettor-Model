@@ -369,7 +369,6 @@
     </div>
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="home">Home</button>
-      <button role="tab" aria-selected="false" data-tab="live">Live</button>
       <button role="tab" aria-selected="false" data-tab="ask">Ask</button>
       <button role="tab" aria-selected="false" data-tab="scan">History</button>
       <button role="tab" aria-selected="false" data-tab="parlay">Parlay</button>
@@ -389,6 +388,12 @@
         <button class="pill-tab" data-sport="MLB">MLB</button>
         <button class="pill-tab" data-sport="NBA">NBA</button>
       </div>
+      <div class="faint" style="margin-top:10px">Show:</div>
+      <div id="viewPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
+        <button class="pill-tab active" data-view="board">Picks &amp; lines</button>
+        <button class="pill-tab" data-view="live">Live scores</button>
+      </div>
+      <div id="confWrap">
       <div class="faint" style="margin-top:10px">Show games:</div>
       <div id="confFilterPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
         <button class="pill-tab active" data-conf="all">All games</button>
@@ -397,25 +402,25 @@
       </div>
       <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
       <div class="status" id="homeStatus">Loading…</div>
+      </div>
     </div>
     <div id="homeSlate"></div>
-  </section>
-
-  <section class="panel" id="panel-live" hidden>
-    <div class="card">
-      <div class="lv-head"><h3>Live · NFL</h3><span class="faint" id="liveAsOf"></span></div>
-      <p class="faint" style="margin:6px 0 0">Scores and how each locked paper pick is doing. This tab refreshes about once an hour on game days. For updates every 30 seconds, open the live board.</p>
-      <a class="lv-fast" id="liveFastLink" href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/" target="_blank" rel="noopener">Watch live (updates every 30 s)</a>
-      <div class="lv-record">
-        <div class="lv-stat"><b id="lvToday">–</b><span>Locked picks</span></div>
-        <div class="lv-stat"><b id="lvNow">–</b><span>Won · lost</span></div>
-        <div class="lv-stat"><b id="lvGraded">–</b><span>Graded (W-L)</span></div>
-        <div class="lv-stat"><b id="lvRoi">–</b><span>Paper ROI</span></div>
+    <div id="homeLive" hidden>
+      <div class="card">
+        <div class="lv-head"><h3>Live · NFL</h3><span class="faint" id="liveAsOf"></span></div>
+        <p class="faint" style="margin:6px 0 0">Scores and how each locked paper pick is doing. Refreshes about once an hour on game days. For updates every 30 seconds, open the live board.</p>
+        <a class="lv-fast" id="liveFastLink" href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/" target="_blank" rel="noopener">Watch live (updates every 30 s)</a>
+        <div class="lv-record">
+          <div class="lv-stat"><b id="lvToday">–</b><span>Locked picks</span></div>
+          <div class="lv-stat"><b id="lvNow">–</b><span>Won · lost</span></div>
+          <div class="lv-stat"><b id="lvGraded">–</b><span>Graded (W-L)</span></div>
+          <div class="lv-stat"><b id="lvRoi">–</b><span>Paper ROI</span></div>
+        </div>
+        <div class="status" id="liveStatus">Loading…</div>
       </div>
-      <div class="status" id="liveStatus">Loading…</div>
+      <div id="liveGames"></div>
+      <p class="faint">Paper test only, nothing is bet. Stats during a game are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game, so a close call can flip.</p>
     </div>
-    <div id="liveGames"></div>
-    <p class="faint">Paper test only, nothing is bet. Stats during a game are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game, so a close call can flip.</p>
   </section>
 
   <section class="panel" id="panel-ask" hidden>
@@ -652,7 +657,6 @@
   var tabs = document.querySelectorAll("nav.tabs button");
   var panels = {
     home: document.getElementById("panel-home"),
-    live: document.getElementById("panel-live"),
     scan: document.getElementById("panel-scan"),
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
@@ -802,9 +806,32 @@
       currentSport = btn.dataset.sport;
       document.querySelectorAll("#sportPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
       renderHome();
+      syncViewPills();
       // renderDecisionHistoryCard is intentionally NOT re-run here -- it shows
       // every sport at once now, so switching the Home sport pill doesn't
       // change what it displays.
+    });
+  });
+
+  // Home view: the board (picks & lines) or live scores with each locked paper pick's progress (NFL props only).
+  var currentView = "board";
+  function syncViewPills(){
+    var liveBtn = document.querySelector('#viewPills [data-view="live"]');
+    liveBtn.disabled = currentSport !== "NFL";
+    liveBtn.title = liveBtn.disabled ? "Live scores cover the NFL props test for now" : "";
+    if(liveBtn.disabled && currentView === "live") currentView = "board";
+    document.querySelectorAll("#viewPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b.dataset.view === currentView); });
+    var live = currentView === "live";
+    document.getElementById("homeSlate").hidden = live;
+    document.getElementById("confWrap").hidden = live;
+    document.getElementById("homeLive").hidden = !live;
+    if(live) renderLive();
+  }
+  document.querySelectorAll("#viewPills .pill-tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      if(btn.disabled) return;
+      currentView = btn.dataset.view;
+      syncViewPills();
     });
   });
 
@@ -2489,7 +2516,9 @@
     var age = (Date.now() - new Date(liveDoc.generated_at).getTime()) / 60000;
     document.getElementById("liveAsOf").textContent = "As of " + whenTxt(liveDoc.generated_at);
     var anyLive = games.some(function(g){ return g.state === "in"; });
-    st.textContent = anyLive && age > 20 ? "Games in progress. This tab is about " + Math.round(age) + " minutes behind; tap Watch live for the current score." : "";
+    var nLive = games.filter(function(g){ return g.state === "in"; }).length;
+    document.querySelector('#viewPills [data-view="live"]').textContent = "Live scores" + (nLive ? " · " + nLive + " on now" : "");
+    st.textContent = anyLive && age > 20 ? "Games in progress. This view is about " + Math.round(age) + " minutes behind; tap Watch live for the current score." : "";
     [["Live now", "in"], ["Upcoming", "pre"], ["Final", "post"]].forEach(function(sec){
       var gs = games.filter(function(g){ return (g.state || "pre") === sec[1]; });
       if(!gs.length) return;
