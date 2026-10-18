@@ -497,6 +497,13 @@
     </div>
     <div id="scanResult"></div>
 
+    <div class="card" id="pastCard">
+      <h3 style="margin-bottom:4px">Past games</h3>
+      <p class="faint" style="margin:0">Finished games, newest first: the final score, what the model picked and how it went.</p>
+      <div id="pastSportPills" style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap"></div>
+    </div>
+    <div id="pastGames"></div>
+
     <div class="card" id="decisionHistoryCard" hidden></div>
 
     <div class="card">
@@ -753,7 +760,7 @@
     tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === name)); });
     meBtn.setAttribute("aria-pressed", String(name === "me"));
     Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
-    if(name === "scan") loadHistory();
+    if(name === "scan"){ loadHistory(); renderPast(); }
     if(name === "me") renderMe();
   }
   tabs.forEach(function(btn){
@@ -886,6 +893,8 @@
   function isOnBoard(g){
     // A game with a final score is off the board, whatever the clock says.
     if(g.game_id && typeof decisionsDocs !== "undefined" && decisionsDocs.some(function(d){ return d.game_id === g.game_id && d.outcome && d.outcome.resolved; })) return false;
+    var lg = typeof liveDoc !== "undefined" && liveDoc ? liveFor(g) : null;
+    if(lg && lg.state === "post") return false;                       // ESPN says it's over
     if(!g.kickoff_time) return true;
     var k = new Date(g.kickoff_time).getTime();
     if(!isFinite(k)) return true;
@@ -967,7 +976,7 @@
     var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
     if(currentConfKey === "tracked"){
       forSport = forSport.filter(followsGame);
-      noteEl.textContent = "Games you track plus your favorite teams' games. Tap ☆ Track on a game card, or pick teams in the Me tab.";
+      noteEl.textContent = "Games you track plus your favorite teams' games. Tap ☆ Track on a game card, or pick favorite teams in your profile (top right).";
     } else if(currentConfThreshold > 0){
       forSport = forSport.filter(function(g){
         return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
@@ -983,7 +992,7 @@
       syncedEl.textContent = "";
       wrap.innerHTML = currentConfKey === "tracked"
         ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
-          '<span class="faint">Switch to All games and tap ☆ Track, or add favorite teams in the Me tab.</span></div></div>'
+          '<span class="faint">Switch to All games and tap ☆ Track, or add favorite teams in your profile (top right).</span></div></div>'
         : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
           '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
       return;
@@ -1032,6 +1041,49 @@
     }
 
   }
+
+  // ---------- History: finished games as Home-style cards, by sport, then by day (newest first) ----------
+  var pastSport = null;
+  function gameResult(g){
+    var d = g.game_id ? decisionsDocs.filter(function(x){ return x.game_id === g.game_id && x.outcome && x.outcome.resolved; })[0] : null;
+    return d ? d.outcome : null;
+  }
+  function renderPast(){
+    var wrap = document.getElementById("pastGames"), pills = document.getElementById("pastSportPills");
+    if(!wrap || !pills || panels.scan.hidden) return;
+    var past = homeDocs.filter(function(g){ return !isOnBoard(g); });
+    var sports = [];
+    past.forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
+    sports.sort(function(a, b){ return historySportRank(a) - historySportRank(b); });
+    if(sports.indexOf(pastSport) < 0) pastSport = sports[0] || null;
+    pills.innerHTML = sports.map(function(sp){
+      return '<button type="button" class="pill-tab' + (sp === pastSport ? ' active' : '') + '" data-past-sport="' + escapeHtml(sp) + '">' + escapeHtml(sp) + '</button>';
+    }).join("");
+    wrap.innerHTML = "";
+    if(!pastSport){
+      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished games yet.<br><span class="faint">Games move here from Home once they end.</span></div>'));
+      return;
+    }
+    var byDay = {};
+    past.filter(function(g){ return (g.sport || "NFL") === pastSport; }).forEach(function(g){
+      var day = g.kickoff_time ? new Date(g.kickoff_time) : null;
+      var key = day && !isNaN(day) ? day.getFullYear() + "-" + String(day.getMonth() + 1).padStart(2, "0") + "-" + String(day.getDate()).padStart(2, "0") : "0000";
+      (byDay[key] = byDay[key] || []).push(g);
+    });
+    Object.keys(byDay).sort().reverse().forEach(function(key){
+      var first = byDay[key][0];
+      var label = key === "0000" ? "Date unknown" : new Date(first.kickoff_time).toLocaleDateString([], {weekday: "long", month: "short", day: "numeric"});
+      wrap.appendChild(el("div", "bb-sec", escapeHtml(label)));
+      byDay[key].sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); })
+        .forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
+    });
+  }
+  document.getElementById("pastSportPills").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-past-sport]");
+    if(!b) return;
+    pastSport = b.getAttribute("data-past-sport");
+    renderPast();
+  });
 
   // ---------- Best bets: one clean list at the top of Home ----------
   // Pulls only what the app already shows on each card -- nothing new is computed here:
@@ -1690,10 +1742,18 @@
       var nLab = propLabeledCount(pdoc);
       chips.push('<span class="pill neutral">Props' + (nLab ? ' · ' + nLab + ' labeled' : '') + '</span>');
     }
-    var when = !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
+    var res = !started ? gameResult(g) : null, over = !isOnBoard(g);
+    var pickWon = res && res.decision_correct != null ? res.decision_correct : null;
+    if(pickWon == null && lg && lg.state === "post" && lg.away_score != null && lg.away_score !== lg.home_score)
+      pickWon = (lg.home_score > lg.away_score ? g.home_team : g.away_team) === mm.winner_side;   // until the official grade lands
+    if(d.action === "ML" && pickWon != null)
+      chips.unshift('<span class="pill ' + (pickWon ? 'good">Pick won' : 'bad">Pick lost') + '</span>');
+    var when = res && res.home_score != null ? '<span><span class="pill neutral">FINAL</span> <span class="faint">' + escapeHtml(g.away_team) + ' ' +
+        res.away_score + ' – ' + escapeHtml(g.home_team) + ' ' + res.home_score + '</span></span>'
+      : !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
       : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
       : '<span><span class="pill neutral">FINAL</span></span>';
-    head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started ? tags + ' ' : '') + trkBtn("g", k) + '</span></div>' +
+    head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
       sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + liveOddsEl(g, lg) : '') +
       '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
     head.setAttribute("aria-expanded", String(isOpen));
@@ -2341,12 +2401,14 @@
       dbApi.collection("slate").orderBy("kickoff_time").onSnapshot(function(snap){
         homeDocs = snap.docs.map(function(d){ return d.data(); });
         renderHome();
+        renderPast();
       });
     }catch(e){ renderHome(); }
     try{
       dbApi.collection("decisions").orderBy("kickoff_time", "desc").onSnapshot(function(snap){
         decisionsDocs = snap.docs.map(function(d){ return d.data(); });
         renderHome();
+        renderPast();
         renderDecisionHistoryCard();
       });
     }catch(e){}
@@ -2879,7 +2941,7 @@
   }
 
 
-  function renderLive(){ if(homeDocs.length) renderHome(); }
+  function renderLive(){ if(homeDocs.length){ renderHome(); renderPast(); } }
 
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
