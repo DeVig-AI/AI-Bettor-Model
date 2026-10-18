@@ -42,15 +42,13 @@ jobs:
             echo "lock=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Fetch live odds
+      - name: Fetch live odds (Kalshi public prices, free, no key)
         id: odds
         if: steps.mode.outputs.lock == 'true'
         working-directory: nba
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           set +e
-          python3 nba_fetch_odds.py --out live/NBA_ODDS_LIVE.csv --hours-ahead 72 > "$RUNNER_TEMP/odds.log" 2>&1
+          python3 nba_fetch_odds_kalshi.py --out live/NBA_ODDS_LIVE.csv --hours-ahead 72 > "$RUNNER_TEMP/odds.log" 2>&1
           rc=$?
           set -e
           cat "$RUNNER_TEMP/odds.log"
