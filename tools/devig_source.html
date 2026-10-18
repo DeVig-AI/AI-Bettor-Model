@@ -940,13 +940,6 @@
     wrap.appendChild(gamesHead);
     var sortedGames = forSport.slice().sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
     sortedGames.forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
-    var spDocs = propsDocs.filter(function(d){ return d && d.rows && d.rows.length && docSport(d) === currentSport; });
-    if((currentSport === "NFL" || currentSport === "NBA") && spDocs.some(function(d){ return (d.paper_picks || []).length; })){
-      var ptCard = el("div", "card");
-      ptCard.innerHTML = '<h3>' + currentSport + ' prop picks</h3><div id="propsTest" style="margin-top:4px"></div>';
-      wrap.appendChild(ptCard);
-      renderPropsTest(spDocs, currentSport);
-    }
     renderTesting();
 
     // Teaser candidates are independent of the moneyline confidence filter above --
@@ -1538,8 +1531,11 @@
     if(full.firstChild) full.removeChild(full.firstChild); // the matchup header is already in the summary
     var gamePane = el("div", "sb-game");
     while(full.childNodes.length) gamePane.appendChild(full.firstChild);
-    var lpb = livePicksBox(lg);
-    if(lpb) gamePane.insertBefore(lpb, gamePane.firstChild);
+    var lpb = propPicksBox(g, lg);
+    if(lpb){
+      var read = gamePane.querySelector(".model-read");
+      if(read) read.parentNode.insertBefore(lpb, read.nextSibling); else gamePane.insertBefore(lpb, gamePane.firstChild);
+    }
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
     else det.appendChild(gamePane);
     det.hidden = !isOpen;
@@ -1961,7 +1957,7 @@
 
     if(g.model && g.model.available){
       var mm = g.model;
-      var modelWrap = el("div", null);
+      var modelWrap = el("div", "model-read");
       modelWrap.style.marginTop = "14px";
       modelWrap.style.borderTop = "1px solid var(--line)";
       modelWrap.style.paddingTop = "10px";
@@ -2010,7 +2006,7 @@
         modelWrap.appendChild(warn);
       }
       if(mm.note){
-        var noteEl = el("div", "faint", escapeHtml(mm.note));
+        var noteEl = el("div", "faint", escapeHtml(String(mm.note).replace(/\s*Spread read is information only[^.]*\.?/i, "")));
         noteEl.style.marginTop = "6px";
         modelWrap.appendChild(noteEl);
       }
@@ -2559,9 +2555,9 @@
     if(p.status === "won") return ["good", "WON"];
     if(p.status === "lost") return ["bad", "LOST"];
     if(p.status === "live") return ["live", p.side === "OVER" ? "NEEDS " + p.to_go + " MORE" : "LOSES AT " + (Math.floor(p.line) + 1)];
-    return ["neutral", "NOT STARTED"];
+    return ["neutral", "LOCKED"];
   }
-  function livePickEl(p){
+  function livePickEl(p, trkKey){
     var b = liveBadge(p), cur = p.current, target = Math.floor(p.line) + 1;
     var k = p.kalshi_now, sideNow = null;
     if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
@@ -2574,7 +2570,8 @@
         Math.min(100, cur / Math.max(target, 1) * 100) + '%"></i></div>' : '') +
       '<div class="px"><span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' +
       '<span>Locked at <b>' + exOddsTxt(p.price, true) + '</b></span>' +
-      (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') + '</div>';
+      (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') +
+      (trkKey ? '<span style="margin-left:auto">' + trkBtn("p", trkKey) + '</span>' : '') + '</div>';
     return row;
   }
   function liveFor(g){
@@ -2667,15 +2664,26 @@
     ((lg && lg.picks) || []).forEach(function(p){ t[p.status] = (t[p.status] || 0) + 1; });
     return t;
   }
-  function livePicksBox(lg){
-    if(!lg || !lg.picks || !lg.picks.length) return null;
+  // A matchup's prop picks, under the model's game read: grouped by prop type, with live progress once it starts.
+  function propPicksBox(g, lg){
+    var doc = propsDocFor(g), picks = (doc && doc.paper_picks) || [];
+    if(!picks.length) return null;
     var box = el("div", "lv-picks");
-    box.style.cssText = "border:1px solid var(--line); border-radius:10px; padding:4px 12px 8px; margin-top:12px";
-    box.appendChild(el("div", "pp-stat", "Prop picks in this game" + (liveStarted(lg) ? "" : " · locked")));
-    lg.picks.forEach(function(p){ box.appendChild(livePickEl(p)); });
-    box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game."));
+    box.style.cssText = "border-top:1px solid var(--line); padding:4px 0 0; margin-top:12px";
+    box.appendChild(el("div", "stat-row", '<span class="muted">Prop picks</span><span class="v tabular">' + picks.length + '</span>'));
+    var byStat = {};
+    picks.forEach(function(p){ (byStat[p.stat] = byStat[p.stat] || []).push(p); });
+    Object.keys(byStat).sort(function(a, b){ return PROP_ORDER.indexOf(a) - PROP_ORDER.indexOf(b); }).forEach(function(st){
+      box.appendChild(el("div", "pp-stat", escapeHtml(propStat(st))));
+      byStat[st].forEach(function(p){
+        var lv = lg && (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line; })[0];
+        box.appendChild(livePickEl(lv || Object.assign({}, p, {status: "pending"}), pickTrackKey(doc, p)));
+      });
+    });
+    if(liveStarted(lg)) box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the final grade uses official play-by-play after the game."));
     return box;
   }
+
 
   function renderLive(){ if(homeDocs.length) renderHome(); }
 
