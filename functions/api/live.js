@@ -1,5 +1,5 @@
 // DeVig live scores: GET /api/live?sport=nfl|nba|mlb returns ESPN's scoreboard in a small form; adding &event=<ESPN id>
-// (NFL) returns that game's box score as {players: {name: {stat: value}}}. Display only, unofficial.
+// (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
 
@@ -81,6 +81,32 @@ export function nflBox(d) {
   return out;
 }
 
+// NBA box score -> {display name: {stat: value}}, with the NBA props model's stat names
+export function nbaBox(d) {
+  const out = {};
+  const made = x => num(String(x == null ? "" : x).split("-")[0]);
+  ((d.boxscore || {}).players || []).forEach(tm => {
+    (tm.statistics || []).forEach(grp => {
+      const keys = grp.keys || grp.names || [];
+      (grp.athletes || []).forEach(a => {
+        const who = (a.athlete || {}).displayName;
+        if (!who || !(a.stats || []).length) return;
+        const v = {};
+        keys.forEach((k, i) => { v[k] = a.stats[i]; });
+        const pick = (...names) => { for (const n of names) if (v[n] != null) return v[n]; return null; };
+        const s = {points: num(pick("points", "PTS")), rebounds: num(pick("rebounds", "REB")), assists: num(pick("assists", "AST")),
+                   steals: num(pick("steals", "STL")), blocks: num(pick("blocks", "BLK")),
+                   threes: made(pick("threePointFieldGoalsMade-threePointFieldGoalsAttempted", "3PT"))};
+        Object.keys(s).forEach(k => { if (s[k] == null) s[k] = 0; });
+        s.pts_reb_ast = s.points + s.rebounds + s.assists;
+        s.stl_blk = s.steals + s.blocks;
+        out[who] = s;
+      });
+    });
+  });
+  return out;
+}
+
 export async function handle(request, fetcher = fetch) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
   const q = new URL(request.url).searchParams;
@@ -88,9 +114,9 @@ export async function handle(request, fetcher = fetch) {
   if (!SPORTS[sport]) return json({error: "unknown sport"}, 400);
   try {
     if (event) {
-      if (sport !== "nfl" || !/^\d{1,12}$/.test(event)) return json({error: "box scores are NFL only"}, 400);
+      if ((sport !== "nfl" && sport !== "nba") || !/^\d{1,12}$/.test(event)) return json({error: "box scores are NFL and NBA only"}, 400);
       const d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
-      return json({sport, event, at: new Date().toISOString(), players: nflBox(d)}, 200, 10);
+      return json({sport, event, at: new Date().toISOString(), players: sport === "nba" ? nbaBox(d) : nflBox(d)}, 200, 10);
     }
     const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard`, SCORE_TTL, fetcher);
     return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, 10);
