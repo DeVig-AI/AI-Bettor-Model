@@ -1,4 +1,4 @@
-name: Exchange markets probe (one-off)
+name: Exchange markets probe (Kalshi + Polymarket, one-off)
 on:
   workflow_dispatch:
 permissions:
@@ -6,12 +6,13 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Check what Kalshi and Polymarket list for NFL/NBA/MLB (read-only, no keys)
+      - name: Read open NFL/NBA/MLB markets from the public Kalshi and Polymarket APIs (no keys, read-only)
         run: python3 exchange_markets_probe_v1.py
       - name: Save the result
         run: |
