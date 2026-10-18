@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-build_free_app.py -- turns a saved copy of the DeVig.AI artifact page into the free version at docs/app/index.html:
-the same app, reading the repo's export files (docs/app/repo-data.js) instead of the claude.ai database, with the
-Claude-only features hidden (docs/app/free.css).
+build_free_app.py -- turns a saved copy of the DeVig.AI artifact page into the free version at docs/index.html (the site's main page):
+the same app, reading the repo's export files (docs/repo-data.js) instead of the claude.ai database, with the
+Claude-only features hidden (docs/free.css).
 
 Usage:  python3 tools/build_free_app.py path/to/devig.html
 Re-run it whenever DeVig itself changes; repo-data.js and free.css stay as they are.
@@ -10,14 +10,13 @@ Re-run it whenever DeVig itself changes; repo-data.js and free.css stay as they 
 import os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "..", "docs", "app", "index.html")
+OUT = os.path.join(HERE, "..", "docs", "index.html")
 
 HEAD = ('<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0c0f14">'
         '<link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png">'
         '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DeVig">')
 FREE = '<link rel="stylesheet" href="free.css">\n<script src="repo-data.js"></script>\n'
 FOOT = ('<div class="free-foot">Free version · data straight from the project\'s GitHub, no Claude needed · '
-        '<a href="../">Live board</a> · '
         '<a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest" target="_blank" rel="noopener">'
         'Mac &amp; Windows app</a></div>\n')
 

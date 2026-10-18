@@ -3,7 +3,7 @@
 const { app, BrowserWindow, shell } = require("electron");
 const path = require("path");
 
-const APP_URL = "https://devigai.pages.dev/app/";
+const APP_URL = "https://devigai.pages.dev/";
 const SITE = "https://devigai.pages.dev/";
 
 function onSite(url) {
@@ -16,7 +16,7 @@ function createWindow(url) {
     title: "DeVig", backgroundColor: "#0c0f14", autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, sandbox: true },
   });
-  // pages of the site (the app, the live board) open in an app window; anything else in the normal browser
+  // pages of the site open in an app window; anything else in the normal browser
   win.webContents.setWindowOpenHandler(({ url: target }) => {
     if (onSite(target)) {
       createWindow(target);

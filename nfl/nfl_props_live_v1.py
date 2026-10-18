@@ -2,7 +2,7 @@
 """
 nfl_props_live_v1.py -- live game-day view of the NFL props paper test: scores, each locked paper pick's stat so far,
 Kalshi's current price for that pick, and Kalshi's live game odds (moneyline, main spread and total) for games not yet
-final, plus a win-chance line (Kalshi price history) for games under way. Writes nfl/live/props_live.json for the live page (docs/index.html) and the app's Home game cards.
+final, plus a win-chance line (Kalshi price history) for games under way. Writes nfl/live/props_live.json for the app (live game cards on Home) and the app's Home game cards.
 
 Display only. It never changes a pick, a lock or a grade: official grading stays in nfl/nfl_props_model_v1_live.py
 (from nflverse play-by-play). Live stats here come from ESPN's public box score and are unofficial.
