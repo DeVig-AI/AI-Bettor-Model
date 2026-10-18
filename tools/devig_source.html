@@ -909,7 +909,7 @@
   function isOnBoard(g){
     // A game with a final score is off the board, whatever the clock says.
     if(g.game_id && typeof decisionsDocs !== "undefined" && decisionsDocs.some(function(d){ return d.game_id === g.game_id && d.outcome && d.outcome.resolved; })) return false;
-    var lg = typeof liveDoc !== "undefined" && liveDoc ? liveFor(g) : null;
+    var lg = typeof liveFor === "function" && typeof fastBox !== "undefined" ? liveFor(g) : null;
     if(lg && lg.state === "post") return false;                       // ESPN says it's over
     if(!g.kickoff_time) return true;
     var k = new Date(g.kickoff_time).getTime();
@@ -2935,7 +2935,7 @@
     if(!lg) return null;
     var q = (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line && q.side === p.side; })[0];
     if(q) return q;
-    var cur = lg.stats && lg.stats[p.player] ? lg.stats[p.player][p.stat] : null;
+    var cur = boxStat(lg, p.player, p.stat);
     if(cur == null) return null;
     var st = propLiveState(p.side, p.line, cur, lg.state);
     return Object.assign({}, p, {current: cur, status: st.status, to_go: st.to_go});
@@ -2958,15 +2958,93 @@
       (trkKey ? '<span style="margin-left:auto">' + trkBtn("p", trkKey) + '</span>' : '') + '</div>';
     return row;
   }
-  function liveFor(g){
-    if(!liveDoc || (g.sport || "NFL") !== "NFL" || g.trial) return null;
-    var kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
-    return (liveDoc.games || []).filter(function(x){
-      if(x.away !== g.away_team || x.home !== g.home_team) return false;
-      var xk = x.kickoff ? new Date(x.kickoff).getTime() : NaN;
-      return !isFinite(kt) || !isFinite(xk) || Math.abs(kt - xk) < 12 * 3600 * 1000;
-    })[0] || null;
+  function sameGame(g, away, home, kickoff){
+    if(away !== g.away_team || home !== g.home_team) return false;
+    var kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN, xk = kickoff ? new Date(kickoff).getTime() : NaN;
+    return !isFinite(kt) || !isFinite(xk) || Math.abs(kt - xk) < 12 * 3600 * 1000;
   }
+  // The bot's live file (scores, locked-pick progress, Kalshi prices; lands every 5-15 minutes), with the score,
+  // clock and player stats replaced by the fast feed (/api/live, ~20 seconds) when the website has it.
+  function liveFor(g){
+    if(g.trial) return null;
+    var sport = g.sport || "NFL";
+    var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : null;
+    var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
+    if(!f || (base && base.state === "post" && f.state !== "post")) return base;      // never step back from a final
+    var o = Object.assign({}, base || {picks: []}, {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score,
+      possession: f.possession, espn_id: f.id, fast: true});
+    if(fastBox[f.id]) o._box = fastBox[f.id];
+    if(o._box && (o.state === "in" || o.state === "post")){
+      o.picks = (o.picks || []).map(function(q){
+        var cur = boxStat(o, q.player, q.stat), st = propLiveState(q.side, q.line, cur, o.state);
+        return Object.assign({}, q, {current: cur, status: st.status, to_go: st.to_go});
+      });
+    }
+    return o;
+  }
+  // A player's stat so far: the fast box score (by normalized name; in the box but no line for it = 0), else the bot's.
+  function normName(n){
+    return String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[-.]/g, " ")
+      .replace(/[^a-z ]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
+  }
+  function boxStat(lg, player, stat){
+    if(lg._box){ var s = lg._box[normName(player)]; return s ? (s[stat] || 0) : 0; }
+    return lg.stats && lg.stats[player] ? lg.stats[player][stat] : null;
+  }
+
+  // ---------- Fast live feed (website only): /api/live, a Cloudflare function reading ESPN ----------
+  var fastScores = {}, fastBox = {}, fastOff = false, fastTimer = null;
+  function fastSportsNow(){
+    var now = Date.now(), want = {};
+    homeDocs.forEach(function(g){
+      var k = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
+      if(!g.trial && isFinite(k) && now > k - 15 * 60e3 && now < k + 6 * 3600e3) want[g.sport || "NFL"] = true;
+    });
+    return Object.keys(want);
+  }
+  function fastGet(q){
+    return fetch("/api/live?" + q, {headers: {accept: "application/json"}})
+      .then(function(r){ if(r.status === 404){ fastOff = true; return null; } return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+  // NFL games on now that someone here follows (a tracked prop, or the model's picks): those get box scores.
+  function boxGamesNow(){
+    var ids = {};
+    (fastScores.NFL || []).forEach(function(f){
+      if(f.state !== "in") return;
+      var d = propsDocs.filter(function(x){ return docSport(x) === "NFL" && x.away_team === f.away && x.home_team === f.home; })[0];
+      if(!d) return;
+      var pre = propGameLabel(d) + "|";
+      var follows = (d.paper_picks || []).length || Object.keys(tracked.p || {}).some(function(k){ return k.indexOf(pre) === 0; });
+      if(follows) ids[f.id] = true;
+    });
+    return Object.keys(ids);
+  }
+  function pollFast(){
+    clearTimeout(fastTimer);
+    if(fastOff || !dbApi) return;
+    var sports = document.hidden ? [] : fastSportsNow();
+    if(!sports.length){ fastTimer = setTimeout(pollFast, 60e3); return; }
+    Promise.all(sports.map(function(sp){
+      return fastGet("sport=" + sp.toLowerCase()).then(function(d){ if(d && d.games) fastScores[sp] = d.games; });
+    })).then(function(){
+      return Promise.all(boxGamesNow().map(function(id){
+        return fastGet("sport=nfl&event=" + id).then(function(d){
+          if(!d || !d.players) return;
+          var m = {};
+          Object.keys(d.players).forEach(function(n){ m[normName(n)] = d.players[n]; });
+          fastBox[id] = m;
+        });
+      }));
+    }).then(function(){
+      if(fastOff) return;
+      renderLive();
+      var anyLive = Object.keys(fastScores).some(function(sp){ return fastScores[sp].some(function(x){ return x.state === "in"; }); });
+      fastTimer = setTimeout(pollFast, anyLive ? 20e3 : 60e3);
+    });
+  }
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) pollFast(); });
+  setTimeout(pollFast, 3000);
   function liveStarted(lg){ return !!lg && (lg.state === "in" || lg.state === "post") && lg.away_score != null; }
   // Locked line (what the pick was made at) next to Kalshi's live price, while the game is on.
   function liveOddsEl(g, lg){
