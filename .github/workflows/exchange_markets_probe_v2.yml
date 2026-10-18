@@ -1,0 +1,23 @@
+name: Exchange markets probe v2 (NFL only, Kalshi + Polymarket)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read all open NFL markets from the public Kalshi and Polymarket APIs (no keys, read-only)
+        run: python3 exchange_markets_probe_v2.py
+      - name: Save the result
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add odds_probe/exchange_markets_probe_v2.json odds_probe/exchange_markets_probe_v2.md
+          git diff --cached --quiet || git commit -m "Exchange markets probe v2 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase -q && git push
