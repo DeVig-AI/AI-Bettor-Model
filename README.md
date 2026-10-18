@@ -17,3 +17,10 @@ Nothing is bet.
 - `docs/`: the web app (`docs/app/`) and live board, served by GitHub Pages
 - `desktop/`, `mobile/`: the app shells; see `desktop/README.md` for building and updating them
 - `branding/`: the icon (`devig-icon.svg`) and the repo's social preview image
+
+## Locked test files
+`FROZEN.sha256` lists the fingerprint of every frozen model, table, pre-registration, pick and grading script and
+training file, and the results databases. The **Frozen guard** workflow checks it on every pull request, every push to
+main and once a day. It goes red if a locked file changes or a recorded pick or result is rewritten or deleted.
+Intended fixes are allowed when logged with a date in `FROZEN_CHANGES.md`; then run
+`python3 tools/frozen_guard.py rehash <file>`. App files are not locked.

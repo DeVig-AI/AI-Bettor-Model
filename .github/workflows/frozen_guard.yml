@@ -1,0 +1,43 @@
+name: Frozen guard -- test files and results stay locked
+
+# Fails (red X) when a change touches a file listed in FROZEN.sha256 or rewrites a recorded result, unless the
+# change is logged in FROZEN_CHANGES.md. App files are not locked. See tools/frozen_guard.py.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 9 * * *"   # daily: also checks the bots' own commits from the last day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Pick the commit to compare with
+        id: base
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          case "$EVENT" in
+            pull_request) BASE="$PR_BASE" ;;
+            push) BASE="$BEFORE" ;;
+            *) BASE=$(git rev-list -1 --before="26 hours ago" HEAD) ;;
+          esac
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then BASE=""; fi
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          echo "Comparing with: ${BASE:-nothing (fingerprints only)}"
+      - name: Check locked files and results
+        env:
+          BASE: ${{ steps.base.outputs.base }}
+        run: |
+          if [ -n "$BASE" ]; then python3 tools/frozen_guard.py check --base "$BASE"; else python3 tools/frozen_guard.py check; fi
