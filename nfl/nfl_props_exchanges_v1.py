@@ -106,10 +106,23 @@ def poly_game(slug):
 games = {}   # key "YYYY-MM-DD_AWAY_HOME" -> {"meta":..., "rows": {(player_norm, stat, line): row}}
 
 
+def kickoff_ok(kickoff, date):
+    # a kickoff must fall on the game's local date or, for night games, the next UTC day; anything else is a
+    # close/expiration time or junk, and a late kickoff would let the model lock after the game has started
+    try:
+        k = datetime.fromisoformat(str(kickoff).replace("Z", "+00:00")).astimezone(timezone.utc)
+        d = datetime.fromisoformat(date).date()
+    except (TypeError, ValueError):
+        return False
+    return 0 <= (k.date() - d).days <= 1
+
+
 def game_slot(date, away, home, kickoff=None):
     key = f"{date}_{away}_{home}"
     g = games.setdefault(key, {"meta": {"game_key": key, "game_date": date, "away_team": away, "home_team": home,
                                         "kickoff_time": None}, "rows": {}})
+    if kickoff and not kickoff_ok(kickoff, date):
+        log.append(f"bad kickoff {kickoff} for {key}"); kickoff = None
     if kickoff and (not g["meta"]["kickoff_time"] or kickoff < g["meta"]["kickoff_time"]):
         g["meta"]["kickoff_time"] = kickoff
     return g
@@ -147,7 +160,9 @@ def pull_kalshi():
                     player = title.split(":")[0].strip() if ":" in title else None
                     if line is None or not player:
                         continue
-                    kick = m.get("occurrence_datetime") or m.get("expected_expiration_time")
+                    # kickoff only from occurrence_datetime (expiration fields are settlement times, not kickoff);
+                    # a missing kickoff means the game is skipped rather than locked late
+                    kick = m.get("occurrence_datetime")
                     date = str(kick or "")[:10]
                     # Kalshi event date is the local game date; night games roll past midnight UTC. Use the ticker date.
                     mt = re.search(r"-(\d{2})([A-Z]{3})(\d{2})", str(m.get("event_ticker") or ""))
@@ -181,7 +196,8 @@ def pull_poly():
             gm = poly_game(slug)
             if not gm:
                 continue
-            g = game_slot(gm[2], gm[0], gm[1], ev.get("startTime") or ev.get("endDate"))
+            # startTime is kickoff; endDate is resolution time, never a kickoff
+            g = game_slot(gm[2], gm[0], gm[1], ev.get("startTime"))
             for m in ev.get("markets") or []:
                 if m.get("closed") is True:
                     continue
