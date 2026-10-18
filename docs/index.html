@@ -452,6 +452,32 @@
   .me-add{font-family:var(--font-sans); font-size:12.5px; color:var(--ink); background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:999px; padding:5px 10px;}
   .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
     background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
+  /* Best parlay pages: swipe sideways, dots below */
+  .bp-track{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -ms-overflow-style:none; scrollbar-width:none;
+    margin:0 -4px; padding:2px 4px; overscroll-behavior-x:contain; align-items:flex-start;}
+  .bp-track::-webkit-scrollbar{display:none;}
+  .bp-page{flex:0 0 100%; scroll-snap-align:center; box-sizing:border-box; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:16px; padding:18px 16px; display:flex; flex-direction:column; gap:14px;}
+  .bp-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .bp-top .t{font-weight:600; font-size:16px;}
+  .bp-top .o{font-family:var(--font-mono); font-size:26px; font-weight:600; color:var(--accent-strong);}
+  .bp-leg{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line);}
+  .bp-leg:first-child{border-top:none; padding-top:0;}
+  .bp-leg .who{font-weight:600;}
+  .bp-leg .meta{font-size:12.5px; color:var(--ink-faint); margin-top:3px;}
+  .bp-leg .odds{font-family:var(--font-mono); font-weight:600;}
+  .bp-money{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px;}
+  .bp-money div{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 4px; text-align:center;}
+  .bp-money small{display:block; font-size:11px; color:var(--ink-faint); margin-bottom:2px; white-space:nowrap;}
+  .bp-money b{font-family:var(--font-mono); font-size:16px; font-weight:600;}
+  .bp-money .win b{color:var(--good);}
+  .bp-chance{display:flex; justify-content:space-between; font-size:13px; color:var(--ink-soft);}
+  .bp-chance b{font-family:var(--font-mono); color:var(--ink);}
+  .bp-dots{display:flex; justify-content:center; gap:4px; margin-top:12px;}
+  .bp-dots button{width:24px; height:24px; padding:0; border:none; background:none; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .bp-dots button::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--line-strong); transition:all .2s;}
+  .bp-dots button[aria-current="true"]::before{width:20px; border-radius:4px; background:var(--accent);}
+
   /* ---------- Design B layer ---------- */
   h1,h2,h3{font-family:var(--font-sans); font-weight:600; letter-spacing:-.01em;}
   .card{background:var(--surface); border-color:var(--line); border-radius:16px;}
@@ -592,14 +618,9 @@
   <section class="panel" id="panel-parlay" hidden>
     <div class="card" id="bestParlayCard">
       <h3 style="margin-bottom:6px">Best parlay</h3>
-      <p class="faint" style="margin:0 0 10px">Builds the parlay from the model's own picks: one leg per game, only games that haven't started, fairly priced picks first and the most confident first. More legs pay more and hit less.</p>
-      <div class="faint" style="margin-bottom:4px">Legs</div>
-      <div class="chips" id="bpLegs" style="margin:0 0 8px">
-        <button type="button" class="pill-tab active" data-legs="2">2</button>
-        <button type="button" class="pill-tab" data-legs="3">3</button>
-        <button type="button" class="pill-tab" data-legs="4">4</button>
-      </div>
-      <div class="chips" id="bpSport" style="margin:0 0 10px">
+      <p class="faint" style="margin:0 0 14px">Built from the model's own picks: one leg per game, games that haven't started, fairly priced picks first and the most confident first. Swipe for bigger parlays: more legs pay more and hit less.</p>
+      <div class="field" style="max-width:180px"><label for="bpStake">Your bet ($)</label><input id="bpStake" inputmode="decimal" value="10"></div>
+      <div class="chips" id="bpSport" style="margin:0 0 14px">
         <button type="button" class="pill-tab active" data-sp="ALL">All sports</button>
         <button type="button" class="pill-tab" data-sp="NFL">NFL</button>
         <button type="button" class="pill-tab" data-sp="MLB">MLB</button>
@@ -4029,7 +4050,7 @@
   });
 
   // ---------- best parlay: the model's most confident fairly-priced picks, one per game ----------
-  var bpLegs = 2, bpSport = "ALL";
+  var bpSport = "ALL";
   function bestParlayCandidates(sport){
     var now = Date.now(), out = [];
     homeDocs.forEach(function(g){
@@ -4047,47 +4068,84 @@
     // fairly priced picks first (most confident first), then the ones the model thinks cost too much
     return out.sort(function(a, b){ return (a.steep ? 1 : 0) - (b.steep ? 1 : 0) || b.p - a.p; });
   }
+  var bpPage = 0;
+  function bpStake(){ var v = parseFloat(String((document.getElementById("bpStake") || {}).value || "").replace(/[$,]/g, "")); return isFinite(v) && v > 0 ? v : 10; }
+  function money(v){ return "$" + (v >= 1000 ? Math.round(v).toLocaleString() : v.toFixed(2)); }
+  // One page per parlay size (2 legs up to 5), swiped sideways; dots show where you are.
   function renderBestParlay(){
     var box = document.getElementById("bpResult");
     if(!box) return;
-    var c = bestParlayCandidates(bpSport), legs = c.slice(0, bpLegs);
-    if(legs.length < bpLegs){
-      box.innerHTML = '<div class="faint">' + (c.length ? "Only " + c.length + " model pick" + (c.length === 1 ? "" : "s") + " on games that haven't started" : "No model picks on games that haven't started") +
-        (bpSport === "ALL" ? "" : " in " + escapeHtml(bpSport)) + '. Try fewer legs' + (bpSport === "ALL" ? "" : " or All sports") + '.</div>';
+    var c = bestParlayCandidates(bpSport), stake = bpStake();
+    if(c.length < 2){
+      box.innerHTML = '<div class="faint">' + (c.length ? "Only 1 model pick" : "No model picks") + " on games that haven't started" +
+        (bpSport === "ALL" ? "" : " in " + escapeHtml(bpSport)) + ", so there's no parlay to build yet." + (bpSport === "ALL" ? "" : " Try All sports.") + '</div>';
       return;
     }
-    var dec = 1, pModel = 1, pFair = 1;
-    legs.forEach(function(x){ dec *= x.dec; pModel *= x.p; pFair = pFair != null && x.fair != null ? pFair * x.fair : null; });
-    var american = dec >= 2 ? Math.round((dec - 1) * 100) : Math.round(-100 / (dec - 1));
-    box.innerHTML = legs.map(function(x){
-      return '<div class="pick-row" style="cursor:default"><div style="min-width:0"><div style="font-weight:600">' + escapeHtml(x.team + " to win") +
-        (x.steep ? ' <span class="pill bad">Price too steep</span>' : '') + '</div><div class="meta">' + escapeHtml(x.game + " · " + lsWhen(x.g.kickoff_time)) +
-        ' · model ' + Math.round(x.p * 100) + '%</div></div><div class="odds tabular" style="font-weight:700">' + fmtOdds(x.odds) + '</div></div>';
-    }).join("") +
-      '<div class="stat-row" style="margin-top:8px"><span class="muted">Parlay odds</span><span class="v tabular">' + fmtOdds(american) + '</span></div>' +
-      '<div class="stat-row"><span class="muted">$10 pays</span><span class="v tabular">$' + (10 * dec).toFixed(2) + '</span></div>' +
-      '<div class="stat-row"><span class="muted">Chance it hits (model)</span><span class="v tabular">' + Math.round(pModel * 100) + '%</span></div>' +
-      (pFair != null ? '<div class="stat-row"><span class="muted">Chance it hits (betting market)</span><span class="v tabular">' + Math.round(pFair * 100) + '%</span></div>' : '') +
-      '<button type="button" class="primary" id="bpAdd" style="margin-top:10px">Add to my parlay</button>' +
-      '<p class="faint" style="margin:8px 0 0">Every leg has to win. The model\'s picks haven\'t been proven to beat the betting odds, so treat this as its best guess, not a sure thing.</p>';
-    document.getElementById("bpAdd").addEventListener("click", function(){
-      legs.forEach(function(x){
-        var desc = x.team + " to win";
-        if(parlayLegs.some(function(l){ return l.desc === desc && l.game === x.game; })) return;
-        addParlayLeg({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)});
+    var pages = [];
+    for(var n = 2; n <= Math.min(5, c.length); n++){
+      var legs = c.slice(0, n), dec = 1, pModel = 1, pFair = 1;
+      legs.forEach(function(x){ dec *= x.dec; pModel *= x.p; pFair = pFair != null && x.fair != null ? pFair * x.fair : null; });
+      pages.push({legs: legs, dec: dec, pModel: pModel, pFair: pFair, american: dec >= 2 ? Math.round((dec - 1) * 100) : Math.round(-100 / (dec - 1))});
+    }
+    bpPage = Math.min(bpPage, pages.length - 1);
+    box.innerHTML = '<div class="bp-track" id="bpTrack">' + pages.map(function(pg, i){
+      return '<div class="bp-page" aria-label="' + pg.legs.length + '-leg parlay, ' + (i + 1) + ' of ' + pages.length + '">' +
+        '<div class="bp-top"><span class="t">' + pg.legs.length + '-leg parlay</span><span class="o">' + fmtOdds(pg.american) + '</span></div>' +
+        '<div>' + pg.legs.map(function(x){
+          return '<div class="bp-leg"><div style="min-width:0"><div class="who">' + escapeHtml(x.team + " to win") +
+            (x.steep ? ' <span class="pill bad">Price too steep</span>' : '') + '</div><div class="meta">' + escapeHtml(x.game + " · " + lsWhen(x.g.kickoff_time)) +
+            ' · model ' + Math.round(x.p * 100) + '%</div></div><span class="odds">' + fmtOdds(x.odds) + '</span></div>';
+        }).join("") + '</div>' +
+        '<div class="bp-money"><div><small>You bet</small><b>' + money(stake) + '</b></div>' +
+        '<div class="win"><small>Profit if it wins</small><b>' + money(stake * (pg.dec - 1)) + '</b></div>' +
+        '<div><small>Total back</small><b>' + money(stake * pg.dec) + '</b></div></div>' +
+        '<div class="bp-chance"><span>Chance it hits: model <b>' + Math.round(pg.pModel * 100) + '%</b></span>' +
+        (pg.pFair != null ? '<span>market <b>' + Math.round(pg.pFair * 100) + '%</b></span>' : '') + '</div>' +
+        '<button type="button" class="primary" data-bp-add="' + i + '">Add to my parlay</button></div>';
+    }).join("") + '</div>' +
+      (pages.length > 1 ? '<div class="bp-dots" role="tablist" aria-label="Parlay pages">' + pages.map(function(pg, i){
+        return '<button type="button" role="tab" aria-label="' + pg.legs.length + '-leg parlay" aria-current="' + (i === bpPage) + '" data-bp-dot="' + i + '"></button>';
+      }).join("") + '</div>' : '') +
+      '<p class="faint" style="margin:12px 0 0">Every leg has to win. The model\'s picks haven\'t been proven to beat the betting odds, so treat this as its best guess, not a sure thing.</p>';
+    var track = document.getElementById("bpTrack"), dots = box.querySelectorAll("[data-bp-dot]");
+    if(bpPage) track.scrollLeft = bpPage * (track.clientWidth + 12);
+    var tick = null;
+    track.addEventListener("scroll", function(){
+      if(tick) return;
+      tick = requestAnimationFrame(function(){
+        tick = null;
+        bpPage = Math.round(track.scrollLeft / (track.clientWidth + 12));
+        dots.forEach(function(d, i){ d.setAttribute("aria-current", String(i === bpPage)); });
       });
-      parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+    });
+    dots.forEach(function(d){
+      d.addEventListener("click", function(){ track.scrollTo({left: Number(d.getAttribute("data-bp-dot")) * (track.clientWidth + 12), behavior: "smooth"}); });
+    });
+    box.querySelectorAll("[data-bp-add]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var pg = pages[Number(b.getAttribute("data-bp-add"))];
+        pg.legs.forEach(function(x){
+          var desc = x.team + " to win";
+          if(parlayLegs.some(function(l){ return l.desc === desc && l.game === x.game; })) return;
+          addParlayLeg({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)});
+        });
+        var ps = document.getElementById("p-stake");
+        if(ps && !ps.value) ps.value = String(bpStake());
+        parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+      });
     });
   }
-  ["bpLegs", "bpSport"].forEach(function(id){
-    document.getElementById(id).addEventListener("click", function(ev){
-      var b = ev.target.closest(".pill-tab");
-      if(!b) return;
-      this.querySelectorAll(".pill-tab").forEach(function(x){ x.classList.toggle("active", x === b); });
-      if(id === "bpLegs") bpLegs = Number(b.getAttribute("data-legs")); else bpSport = b.getAttribute("data-sp");
-      renderBestParlay();
-    });
+  document.getElementById("bpSport").addEventListener("click", function(ev){
+    var b = ev.target.closest(".pill-tab");
+    if(!b) return;
+    this.querySelectorAll(".pill-tab").forEach(function(x){ x.classList.toggle("active", x === b); });
+    bpSport = b.getAttribute("data-sp"); bpPage = 0;
+    renderBestParlay();
   });
+  (function(){
+    var t = null;
+    document.getElementById("bpStake").addEventListener("input", function(){ clearTimeout(t); t = setTimeout(renderBestParlay, 250); });
+  })();
 
   // ---------- long-shot builder ----------
   // Uses only synced moneylines on games still on the board. Each side's real chance = the market's
