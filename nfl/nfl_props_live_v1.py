@@ -18,6 +18,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL = os.path.join(HERE, "props_model_export.json")
 PRICES = os.path.join(HERE, "props_exchanges_export.json")
 OUT = os.path.join(HERE, "live", "props_live.json")
+# Finished games are also kept here for good (the live file only holds the current week), so the app's History can
+# show how each day's prop picks did. Display only: official grading still happens from play-by-play.
+ARCHIVE = os.path.join(HERE, "live", "props_results.json")
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl"
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 UA = "nfl-props-live/1.0 (personal research; read-only)"
@@ -211,6 +214,30 @@ def win_line(ticker, kickoff, now, max_points=150):
     return pts or None
 
 
+def archive_finished(out_games):
+    """Add every finished game with prop picks or player stats to ARCHIVE (kept across weeks)."""
+    try:
+        arch = json.load(open(ARCHIVE))
+    except Exception:
+        arch = {"games": {}}
+    games = arch.setdefault("games", {})
+    added = 0
+    for g in out_games:
+        if g.get("state") != "post" or not (g.get("picks") or g.get("stats")):
+            continue
+        games[g["game_key"]] = {
+            "kickoff": g.get("kickoff"), "away": g["away"], "home": g["home"],
+            "away_score": g.get("away_score"), "home_score": g.get("home_score"),
+            "picks": [{k: p.get(k) for k in ("player", "stat", "line", "side", "price", "model_p", "current", "status")}
+                      for p in g.get("picks") or []],
+            "stats": g.get("stats"), "kalshi_line": g.get("kalshi_line")}
+        added += 1
+    if added:
+        arch["updated"] = iso(datetime.now(timezone.utc))
+        with open(ARCHIVE, "w") as f:
+            json.dump(arch, f, separators=(",", ":"), allow_nan=False)
+
+
 def main():
     now = datetime.now(timezone.utc)
     model = json.load(open(MODEL))
@@ -287,6 +314,7 @@ def main():
            "report": {k: report.get(k) for k in ("paper_picks_graded", "wins", "profit_per_1_contract_sum", "cost_sum", "roi")},
            "n_picks": n_picks, "errors": log[:30], "games": out_games}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    archive_finished(out_games)
     with open(OUT, "w") as f:
         json.dump(out, f, separators=(",", ":"), allow_nan=False)
     print(json.dumps({k: v for k, v in out.items() if k != "games"}, indent=1))
