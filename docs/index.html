@@ -366,6 +366,16 @@
   .lv-bar.won i{background:var(--good);} .lv-bar.lost i{background:var(--bad);}
   /* Over: the bar filling is good (green). Under: filling is bad (amber, red once it's close to the limit). */
   .lv-bar.up i{background:var(--good);} .lv-bar.warn i{background:#d9a03b;} .lv-bar.danger i{background:var(--bad);}
+  /* Live prop progress: the bar with a ball at the player's count (count above it), the line on the right */
+  .lv-track{grid-column:1 / -1; display:flex; align-items:center; gap:12px; padding:18px 4px 2px 6px;}
+  .lv-track .lv-bar{flex:1; overflow:visible;}
+  .lv-dot{position:absolute; top:50%; width:13px; height:13px; border-radius:50%; transform:translate(-50%,-50%);
+    background:var(--accent); border:2px solid var(--surface);}
+  .lv-dot span{position:absolute; bottom:13px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:12px;
+    font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .lv-bar.up .lv-dot, .lv-bar.won .lv-dot{background:var(--good);} .lv-bar.warn .lv-dot{background:#d9a03b;}
+  .lv-bar.danger .lv-dot, .lv-bar.lost .lv-dot{background:var(--bad);}
+  .lv-total{font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
   .lv-pk .px{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:2px 14px; font-size:12.5px; color:var(--ink-soft);}
   .lv-pk .px b{font-family:var(--font-mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
   .pill.live{background:var(--accent-wash); color:var(--accent-strong);}
@@ -2741,17 +2751,17 @@
     return Object.assign({}, p, {current: cur, status: st.status, to_go: st.to_go});
   }
   function livePickEl(p, trkKey){
-    var b = liveBadge(p), cur = p.current, target = Math.floor(p.line) + 1;
+    var b = liveBadge(p), cur = p.current;
     var k = p.kalshi_now, sideNow = null;
     if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
-    var row = el("div", "lv-pk"), fill = cur != null ? cur / Math.max(target, 1) : 0;
+    var row = el("div", "lv-pk"), fill = cur != null ? Math.min(1, cur / Math.max(p.line, 0.5)) : 0;
     var barCls = p.status === "won" || p.status === "lost" ? p.status : (p.side === "OVER" ? "up" : (fill >= 0.75 ? "danger" : "warn"));
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
       '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
-      (cur != null ? (p.side === "OVER" ? ' · <b class="tabular">' + cur + '</b> of <b class="tabular">' + target + '</b>'
-                                        : ' · <b class="tabular">' + cur + '</b>, loses at <b class="tabular">' + target + '</b>') : '') + '</div></div>' +
+      '</div></div>' +
       '<div><span class="pill ' + b[0] + '">' + escapeHtml(b[1]) + '</span></div>' +
-      (cur != null ? '<div class="lv-bar ' + barCls + '"><i style="width:' + Math.min(100, fill * 100) + '%"></i></div>' : '') +
+      (cur != null ? '<div class="lv-track"><div class="lv-bar ' + barCls + '"><i style="width:' + fill * 100 + '%"></i>' +
+        '<b class="lv-dot" style="left:' + fill * 100 + '%"><span>' + cur + '</span></b></div><span class="lv-total">' + p.line + '</span></div>' : '') +
       '<div class="px">' + (p.model_p != null ? '<span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' : '') +
       (p.price != null ? '<span>' + (p.now ? 'Kalshi ' : 'Locked at ') + '<b>' + exOddsTxt(p.price, true) + '</b></span>' : '') +
       (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') +
