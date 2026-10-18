@@ -1,16 +1,24 @@
-// DeVig accounts: GET/PUT /api/me saves one person's tracking, name tag and favorite teams.
+// DeVig accounts: GET/POST/PUT /api/me saves one person's tracking, name tag and favorite teams.
 // Runs as a Cloudflare Pages Function next to the site (devigai.pages.dev). Who the person is comes from
 // Cloudflare Access (the email one-time-code login); the Access token is verified here before anything is read
 // or written, so a request without a valid login gets 401 and the app falls back to saving on the device.
+// Signing in is not enough to save: an account is opened only with the invite code (POST {invite}), so strangers
+// who find the site can look around but can't use up the free storage everyone shares. Saves are also throttled.
 //
 // Needs, in the Pages project settings (see ACCOUNTS.md):
 //   USERS               KV namespace binding (where the settings are stored)
 //   ACCESS_TEAM_DOMAIN  e.g. devigai.cloudflareaccess.com
 //   ACCESS_AUD          the Access application's "Application Audience (AUD) Tag"
+//   INVITE_CODE         secret; the code friends type once to open an account (several allowed, comma-separated)
 
 const MAX_BODY = 20000;            // bytes; a full season of tracking is far smaller
 const MAX_TRACKED = 2000;          // per kind (games, picks)
 const MAX_TEAMS = 60;              // per sport
+const SAVE_GAP_MS = 2000;          // at most one save every 2 seconds per person
+const SAVES_PER_DAY = 300;         // per person; the free plan has 1,000 writes a day for everyone together
+const MAX_TRIES = 5;               // wrong invite codes per person ...
+const TRIES_WINDOW = 900;          // ... per 15 minutes
+const memTries = new Map();        // fallback when the Cache API isn't there (local tests)
 let certCache = {at: 0, keys: null, domain: null};
 
 function json(body, status = 200) {
@@ -107,21 +115,85 @@ export function clean(body) {
   return out;
 }
 
+async function digest(text) {
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+}
+
+// Compares hashes, so the time taken doesn't hint at how much of a guess was right.
+async function inviteOk(code, env) {
+  const want = String(env.INVITE_CODE || "").split(",").map(c => c.trim().toLowerCase()).filter(Boolean);
+  const got = await digest(String(code || "").trim().toLowerCase());
+  let ok = false;
+  for (const w of want) {
+    const h = await digest(w);
+    let diff = 0;
+    for (let i = 0; i < h.length; i++) diff |= h[i] ^ got[i];
+    ok = ok || diff === 0;
+  }
+  return ok;
+}
+
+// Wrong-code counter, kept in Cloudflare's cache (not KV) so guessing can't use up the shared write allowance.
+async function tries(key, bump) {
+  const url = "https://devig-invite-tries.invalid/" + key.slice(5);
+  const cache = typeof caches !== "undefined" && caches.default;
+  let n;
+  if (cache) {
+    const hit = await cache.match(url);
+    n = hit ? Number(await hit.text()) || 0 : 0;
+  } else {
+    const m = memTries.get(url);
+    n = m && m.until > Date.now() ? m.n : 0;
+  }
+  if (!bump) return n;
+  n += 1;
+  if (cache) await cache.put(url, new Response(String(n), {headers: {"cache-control": `max-age=${TRIES_WINDOW}`}}));
+  else memTries.set(url, {n, until: Date.now() + TRIES_WINDOW * 1000});
+  return n;
+}
+
+async function readJson(request) {
+  const text = await request.text();
+  if (text.length > MAX_BODY) return {error: json({error: "too large"}, 413)};
+  try { return {body: JSON.parse(text)}; } catch (e) { return {error: json({error: "not JSON"}, 400)}; }
+}
+
 export async function handle(request, env, fetcher = fetch) {
   if (!env.USERS) return json({error: "accounts are not set up yet"}, 503);
   const email = await accessUser(request, env, fetcher);
   if (!email) return json({error: "not signed in"}, 401);
   const key = await userKey(email);
+  const rec = await env.USERS.get(key, "json");
+  const joined = !!(rec && rec.joined_at);
   if (request.method === "GET") {
-    return json({email, data: await env.USERS.get(key, "json")});
+    return json({email, joined, data: joined ? {tracked: rec.tracked, prefs: rec.prefs} : null});
+  }
+  if (request.method === "POST") {                      // open the account with the invite code
+    if (joined) return json({ok: true, email, joined});
+    if (!env.INVITE_CODE) return json({error: "invite codes are not set up yet"}, 503);
+    if (await tries(key, false) >= MAX_TRIES) return json({error: "too many wrong codes, try again in 15 minutes"}, 429);
+    const {body, error} = await readJson(request);
+    if (error) return error;
+    if (!(await inviteOk(body && body.invite, env))) {
+      const n = await tries(key, true);
+      return json({error: "wrong invite code", tries_left: Math.max(0, MAX_TRIES - n)}, 403);
+    }
+    const data = clean({});
+    data.joined_at = data.saved_at = new Date().toISOString();
+    await env.USERS.put(key, JSON.stringify(data));
+    return json({ok: true, email, joined: true});
   }
   if (request.method === "PUT") {
-    const text = await request.text();
-    if (text.length > MAX_BODY) return json({error: "too large"}, 413);
-    let body;
-    try { body = JSON.parse(text); } catch (e) { return json({error: "not JSON"}, 400); }
+    if (!joined) return json({error: "invite code needed"}, 403);
+    const now = Date.now(), day = new Date(now).toISOString().slice(0, 10);
+    const wait = SAVE_GAP_MS - (now - (Date.parse(rec.saved_at) || 0));
+    if (wait > 0) return json({error: "slow down", retry_ms: wait}, 429);
+    const writes = rec.day === day ? rec.writes || 0 : 0;
+    if (writes >= SAVES_PER_DAY) return json({error: "daily save limit reached"}, 429);
+    const {body, error} = await readJson(request);
+    if (error) return error;
     const data = clean(body);
-    data.saved_at = new Date().toISOString();
+    Object.assign(data, {joined_at: rec.joined_at, saved_at: new Date(now).toISOString(), day, writes: writes + 1});
     await env.USERS.put(key, JSON.stringify(data));
     return json({ok: true, email, saved_at: data.saved_at});
   }
