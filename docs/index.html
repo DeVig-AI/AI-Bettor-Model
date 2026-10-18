@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DeVig Live</title>
+<meta name="description" content="Live NFL scores and how each locked paper pick is doing. Display only, nothing is bet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one phone-width column; sticky header with the paper-test record, then games live > upcoming > final. */
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#f5f7f9;
+    --ink:#131a26; --ink-soft:#57637a; --ink-faint:#8892a3;
+    --accent:#9a6a26; --accent-strong:#7e5417; --accent-wash:#f2e6d2;
+    --line:#d8dde4; --line-strong:#c1c9d3;
+    --good:#1f7a4d; --good-wash:#e2f2e9;
+    --bad:#a5393e; --bad-wash:#fbe6e6;
+    --live:#c2410c; --live-wash:#fdeee4;
+    --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --font-sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0c0f14; --surface:#151a22; --surface-2:#1b212b;
+      --ink:#e9ecf2; --ink-soft:#9aa4b6; --ink-faint:#69728a;
+      --accent:#e0a656; --accent-strong:#f2bd78; --accent-wash:#2c2214;
+      --line:#2a313d; --line-strong:#38414f;
+      --good:#57c98c; --good-wash:#132a20;
+      --bad:#e2807f; --bad-wash:#301818;
+      --live:#fb8a4c; --live-wash:#33190c;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c0f14; --surface:#151a22; --surface-2:#1b212b;
+    --ink:#e9ecf2; --ink-soft:#9aa4b6; --ink-faint:#69728a;
+    --accent:#e0a656; --accent-strong:#f2bd78; --accent-wash:#2c2214;
+    --line:#2a313d; --line-strong:#38414f;
+    --good:#57c98c; --good-wash:#132a20;
+    --bad:#e2807f; --bad-wash:#301818;
+    --live:#fb8a4c; --live-wash:#33190c;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-sans); font-size:15px; line-height:1.45;
+    padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px))}
+  body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg)}
+  .wrap{max-width:640px; margin:0 auto; padding-block:0 40px}
+  .num{font-family:var(--font-mono); font-variant-numeric:tabular-nums}
+  header{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); padding-block:12px 10px;
+    border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:10px}
+  .brand{display:flex; align-items:center; gap:8px}
+  .mark{width:22px; height:22px; border-radius:6px; background:var(--accent); color:var(--bg); display:flex; align-items:center;
+    justify-content:center; font:700 12px var(--font-mono); flex:none}
+  .brand h1{margin:0; font:600 19px var(--font-mono); white-space:nowrap}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--ink-faint); flex:none}
+  .dot.on{background:var(--live); animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){.dot.on{animation:none}}
+  .fresh{margin-left:auto; font-size:11.5px; color:var(--ink-faint); text-align:right; min-width:0}
+  .record{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px}
+  .stat{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:7px 9px; min-width:0}
+  .stat b{display:block; font:700 16px var(--font-mono); font-variant-numeric:tabular-nums}
+  .stat span{font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em}
+  .sec{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:20px 0 8px}
+  .game{background:var(--surface); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; overflow:hidden}
+  .game.is-live{border-color:var(--live)}
+  .gh{display:grid; grid-template-columns:1fr auto; gap:4px 12px; padding:12px 14px; align-items:center}
+  .teams{display:flex; flex-direction:column; gap:2px; min-width:0}
+  .tm{display:flex; align-items:center; gap:8px; font:600 16px var(--font-mono)}
+  .tm .sc{margin-left:auto; font-variant-numeric:tabular-nums; min-width:2ch; text-align:right}
+  .tm.lead{color:var(--ink)} .tm.trail{color:var(--ink-soft)}
+  .poss{width:6px; height:6px; border-radius:50%; background:var(--accent)}
+  .when{text-align:right; font-size:12.5px; color:var(--ink-soft); min-width:84px}
+  .when .chip{display:inline-block; font:700 10.5px var(--font-sans); letter-spacing:.05em; padding:2px 7px; border-radius:999px;
+    background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line)}
+  .chip.live{background:var(--live-wash); color:var(--live); border-color:transparent}
+  .chip.final{background:var(--surface-2); color:var(--ink-soft)}
+  .chip.lock{background:var(--accent-wash); color:var(--accent-strong); border-color:transparent}
+  .picks{border-top:1px solid var(--line); padding:4px 14px 10px}
+  .pk{display:grid; grid-template-columns:1fr auto; gap:3px 10px; padding:9px 0; border-top:1px dashed var(--line)}
+  .pk:first-child{border-top:none}
+  .pk .who{font-weight:700; font-size:14.5px; min-width:0}
+  .pk .what{font-size:13px; color:var(--ink-soft)}
+  .pk .st{text-align:right; align-self:start}
+  .badge{font:700 10.5px var(--font-sans); letter-spacing:.05em; padding:2px 8px; border-radius:999px; white-space:nowrap}
+  .badge.won{background:var(--good-wash); color:var(--good)}
+  .badge.lost{background:var(--bad-wash); color:var(--bad)}
+  .badge.live{background:var(--live-wash); color:var(--live)}
+  .badge.pending{background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line)}
+  .bar{grid-column:1/-1; height:6px; border-radius:999px; background:var(--surface-2); position:relative; overflow:hidden}
+  .bar i{position:absolute; inset:0 auto 0 0; background:var(--accent); border-radius:999px}
+  .bar.won i{background:var(--good)} .bar.lost i{background:var(--bad)}
+  .bar u{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--ink-soft); text-decoration:none}
+  .pk .px{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:2px 14px; font-size:12.5px; color:var(--ink-soft)}
+  .pk .px b{font-family:var(--font-mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .empty{color:var(--ink-soft); font-size:14px; padding:14px; background:var(--surface); border:1px solid var(--line); border-radius:14px}
+  .note{font-size:12.5px; color:var(--ink-faint); margin-top:18px}
+  .note p{margin:0 0 6px}
+  a{color:var(--accent-strong)}
+  @media (max-width:420px){ .record{grid-template-columns:repeat(2,minmax(0,1fr))} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">DV</div><h1>DeVig Live</h1><span class="dot" id="liveDot" title="Live"></span>
+      <div class="fresh" id="fresh">Loading…</div>
+    </div>
+    <div class="record">
+      <div class="stat"><b id="rToday">–</b><span>Today's picks</span></div>
+      <div class="stat"><b id="rNow">–</b><span>Won · lost now</span></div>
+      <div class="stat"><b id="rGraded">–</b><span>Graded (W-L)</span></div>
+      <div class="stat"><b id="rRoi">–</b><span>Paper ROI</span></div>
+    </div>
+  </header>
+  <main id="board"><div class="empty" style="margin-top:16px">Loading games…</div></main>
+  <div class="note">
+    <p><b>Paper test only. Nothing is bet.</b> Picks lock once, 6 h to 40 min before kickoff, and never change.</p>
+    <p>Stats during the game come from ESPN's box score and are unofficial. The official grade uses NFL play-by-play after the game, so a close call can flip.</p>
+    <p>"Kalshi now" is the current market chance for the side we picked, refreshed about every 5 minutes. "Locked at" is what the pick cost at lock.</p>
+  </div>
+</div>
+<script>
+(() => {
+  const REPO = "perezreynaldo1226-afk/AI-Bettor-Model", PATH = "nfl/live/props_live.json";
+  const ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl";
+  const ABBR = {WSH: "WAS", LAR: "LA", JAC: "JAX"};
+  const STAT = {passing_yards: "pass yds", passing_tds: "pass TD", passing_attempts: "pass att", passing_completions: "completions",
+    interceptions: "INT", rushing_yards: "rush yds", rushing_attempts: "rush att", receiving_yards: "rec yds", receptions: "catches",
+    rush_rec_yards: "rush+rec yds", touchdowns: "TD"};
+  let file = null, fileAt = null, espn = null, espnAt = null, espnOk = null;
+  const box = {};                                   // espn id -> {team|name: stats}
+  const $ = id => document.getElementById(id);
+  const ab = a => ABBR[String(a || "").toUpperCase()] || String(a || "").toUpperCase();
+  const norm = s => String(s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[-.]/g, " ")
+    .replace(/[^a-z ]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim();
+  const etDate = t => new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York"}).format(new Date(t));
+  const clock = t => new Date(t).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+  const day = t => new Date(t).toLocaleDateString([], {weekday: "short"});
+  const pct = x => x == null ? "–" : Math.round(x * 100) + "%";
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+  function pickState(side, line, cur, state) {           // same rules as nfl_props_live_v1.py
+    if (state === "pre" || cur == null) return ["pending", null];
+    const top = Math.floor(line);
+    if (side === "OVER") return cur > line ? ["won", 0] : [state === "post" ? "lost" : "live", top + 1 - cur];
+    return cur > line ? ["lost", 0] : [state === "post" ? "won" : "live", top - cur];
+  }
+
+  async function loadFile() {
+    const urls = [
+      [`https://api.github.com/repos/${REPO}/contents/${PATH}?ref=main`, {headers: {Accept: "application/vnd.github.raw+json"}, cache: "no-cache"}],
+      [`https://raw.githubusercontent.com/${REPO}/main/${PATH}?t=${Date.now()}`, {cache: "no-store"}]];
+    for (const [u, o] of urls) {
+      try { const r = await fetch(u, o); if (r.ok) { file = await r.json(); fileAt = new Date(); return; } } catch (e) {}
+    }
+  }
+
+  async function loadEspn() {
+    try {
+      const r = await fetch(`${ESPN}/scoreboard`, {cache: "no-store"});
+      if (!r.ok) throw 0;
+      const d = await r.json(), out = {};
+      for (const ev of d.events || []) {
+        const c = (ev.competitions || [{}])[0], t = {};
+        for (const x of c.competitors || []) t[x.homeAway] = x;
+        if (!t.away || !t.home) continue;
+        const ty = (ev.status || c.status || {}).type || {}, pos = (c.situation || {}).possession;
+        const g = {espn_id: ev.id, kickoff: ev.date, away: ab(t.away.team.abbreviation), home: ab(t.home.team.abbreviation),
+          away_score: +t.away.score, home_score: +t.home.score, state: ty.state || "pre", detail: ty.shortDetail || "",
+          possession: pos ? [t.away, t.home].filter(x => x.team.id === pos).map(x => ab(x.team.abbreviation))[0] || null : null};
+        out[`${etDate(ev.date)}_${g.away}_${g.home}`] = g;
+      }
+      espn = out; espnAt = new Date(); espnOk = true;
+    } catch (e) { espnOk = false; }
+  }
+
+  async function loadBox(id) {
+    try {
+      const r = await fetch(`${ESPN}/summary?event=${encodeURIComponent(id)}`, {cache: "no-store"});
+      if (!r.ok) return;
+      const d = await r.json(), out = {};
+      for (const tm of (d.boxscore || {}).players || []) {
+        const team = ab((tm.team || {}).abbreviation);
+        for (const g of tm.statistics || []) for (const a of g.athletes || []) {
+          const v = {}; (g.keys || []).forEach((k, i) => v[k] = (a.stats || [])[i]);
+          const s = out[team + "|" + norm((a.athlete || {}).displayName)] ||= {};
+          const n = x => { const f = parseFloat(x); return isNaN(f) ? 0 : f; };
+          if (g.name === "passing") {
+            const [c, at] = String(v["completions/passingAttempts"] || "").split("/");
+            s.passing_completions = n(c); s.passing_attempts = n(at); s.passing_yards = n(v.passingYards);
+            s.passing_tds = n(v.passingTouchdowns); s.interceptions = n(v.interceptions);
+          } else if (g.name === "rushing") { s.rushing_attempts = n(v.rushingAttempts); s.rushing_yards = n(v.rushingYards); s._rtd = n(v.rushingTouchdowns); }
+          else if (g.name === "receiving") { s.receptions = n(v.receptions); s.receiving_yards = n(v.receivingYards); s._ctd = n(v.receivingTouchdowns); }
+        }
+      }
+      for (const s of Object.values(out)) { s.rush_rec_yards = (s.rushing_yards || 0) + (s.receiving_yards || 0); s.touchdowns = (s._rtd || 0) + (s._ctd || 0); }
+      box[id] = out;
+    } catch (e) {}
+  }
+
+  function merged() {
+    const games = (file?.games || []).map(g => ({...g, picks: (g.picks || []).map(p => ({...p}))}));
+    const seen = new Set(games.map(g => g.game_key));
+    if (espn) {
+      for (const g of games) {
+        const e = espn[g.game_key]; if (!e) continue;
+        Object.assign(g, {state: e.state, detail: e.detail, away_score: e.away_score, home_score: e.home_score, possession: e.possession, espn_id: e.espn_id});
+        const b = box[e.espn_id];
+        if (b && e.state !== "pre") for (const p of g.picks) {
+          let s = {}; for (const t of [g.away, g.home]) s = b[t + "|" + norm(p.player)] || s;
+          p.current = s[p.stat] || 0; [p.status, p.to_go] = pickState(p.side, p.line, p.current, e.state);
+        }
+      }
+      for (const [k, e] of Object.entries(espn)) if (!seen.has(k)) games.push({game_key: k, ...e, picks: []});
+    }
+    return games;
+  }
+
+  function pickHtml(p, g) {
+    const [cls, label] = p.status === "won" ? ["won", "WON"] : p.status === "lost" ? ["lost", "LOST"]
+      : p.status === "live" ? ["live", p.side === "OVER" ? `NEEDS ${p.to_go} MORE` : `LOSES AT ${Math.floor(p.line) + 1}`] : ["pending", "NOT STARTED"];
+    const target = Math.floor(p.line) + 1, cur = p.current;
+    const w = cur == null ? 0 : Math.min(100, cur / Math.max(target, 1) * 100);
+    const k = p.kalshi_now, side = k && k.mid != null ? (p.side === "OVER" ? k.mid : 1 - k.mid) : null;
+    return `<div class="pk">
+      <div><div class="who">${esc(p.player)}</div>
+        <div class="what">${p.side === "OVER" ? "Over" : "Under"} <span class="num">${p.line}</span> ${esc(STAT[p.stat] || p.stat)}${cur != null ? ` · has <b class="num">${cur}</b>` : ""}</div></div>
+      <div class="st"><span class="badge ${cls}">${label}</span></div>
+      ${cur != null ? `<div class="bar ${cls}"><i style="width:${w}%"></i><u style="left:calc(${Math.min(100, (p.line) / Math.max(target, 1) * 100)}% - 1px)"></u></div>` : ""}
+      <div class="px"><span>Model <b>${pct(p.model_p)}</b></span><span>Locked at <b>${pct(p.price)}</b></span>
+        ${side != null ? `<span>Kalshi now <b>${pct(side)}</b></span>` : ""}<span>Edge at lock <b>${p.ev != null ? "+" + Math.round(p.ev * 100) + "¢" : "–"}</b></span></div>
+    </div>`;
+  }
+
+  function gameHtml(g) {
+    const live = g.state === "in", fin = g.state === "post", sc = g.away_score != null && g.state !== "pre";
+    const lead = (a, b) => !sc ? "" : a > b ? "lead" : a < b ? "trail" : "";
+    const chip = live ? `<span class="chip live">LIVE</span>` : fin ? `<span class="chip final">FINAL</span>`
+      : g.kickoff ? `<span class="chip">${day(g.kickoff)} ${clock(g.kickoff)}</span>` : "";
+    const sub = live ? esc(g.detail) : g.locked && !fin ? `<span class="chip lock">LOCKED</span>` : "";
+    return `<article class="game${live ? " is-live" : ""}">
+      <div class="gh"><div class="teams">
+        <div class="tm ${lead(g.away_score, g.home_score)}">${g.possession === g.away && live ? '<span class="poss" title="Ball"></span>' : ""}${esc(g.away)}<span class="sc">${sc ? g.away_score : ""}</span></div>
+        <div class="tm ${lead(g.home_score, g.away_score)}">${g.possession === g.home && live ? '<span class="poss" title="Ball"></span>' : ""}@ ${esc(g.home)}<span class="sc">${sc ? g.home_score : ""}</span></div>
+      </div><div class="when">${chip}<div style="margin-top:4px">${sub}</div></div></div>
+      ${g.picks.length ? `<div class="picks">${g.picks.map(p => pickHtml(p, g)).join("")}</div>` : ""}
+    </article>`;
+  }
+
+  function render() {
+    const games = merged(), order = {in: 0, pre: 1, post: 2};
+    games.sort((a, b) => (order[a.state] ?? 1) - (order[b.state] ?? 1) || String(a.kickoff).localeCompare(String(b.kickoff)));
+    const groups = [["Live now", g => g.state === "in"], ["Upcoming", g => g.state === "pre"], ["Final", g => g.state === "post"]];
+    let html = "";
+    for (const [name, f] of groups) {
+      const gs = games.filter(f); if (!gs.length) continue;
+      html += `<div class="sec">${name}</div>` + gs.map(gameHtml).join("");
+    }
+    $("board").innerHTML = html || `<div class="empty" style="margin-top:16px">No games found yet. The bot writes this board during game windows; ESPN scores also load here when your browser can reach them.</div>`;
+    const picks = games.flatMap(g => g.picks), won = picks.filter(p => p.status === "won").length, lost = picks.filter(p => p.status === "lost").length;
+    $("rToday").textContent = picks.length || "0";
+    $("rNow").textContent = picks.length ? `${won} · ${lost}` : "–";
+    const r = file?.report || {};
+    $("rGraded").textContent = r.paper_picks_graded ? `${r.wins}-${r.paper_picks_graded - r.wins}` : "0";
+    $("rRoi").textContent = r.roi == null ? "–" : (r.roi > 0 ? "+" : "") + (r.roi * 100).toFixed(1) + "%";
+    $("liveDot").classList.toggle("on", games.some(g => g.state === "in"));
+    const bits = [];
+    if (espnOk) bits.push(`Scores ${clock(espnAt)}`); else if (espnOk === false) bits.push("Scores via bot");
+    if (file) bits.push(`Picks & prices ${clock(file.generated_at)}`); else bits.push("Bot file not found yet");
+    $("fresh").textContent = bits.join(" · ");
+  }
+
+  async function tick(full) {
+    if (full) await loadFile();
+    await loadEspn();
+    if (espn) {
+      const ids = Object.values(espn).filter(e => e.state !== "pre" &&
+        (file?.games || []).some(g => g.game_key === `${etDate(e.kickoff)}_${e.away}_${e.home}` && (g.picks || []).length)).map(e => e.espn_id);
+      await Promise.all(ids.map(loadBox));
+    }
+    render();
+  }
+  let n = 0;
+  tick(true);
+  setInterval(() => { if (!document.hidden) tick(++n % 4 === 0); }, 30000);   // scores every 30 s, bot file every 2 min
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(true); });
+})();
+</script>
+</body>
+</html>
