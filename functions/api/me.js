@@ -8,7 +8,9 @@
 // Needs, in the Pages project settings (see ACCOUNTS.md):
 //   USERS               KV namespace binding (where the settings are stored)
 //   ACCESS_TEAM_DOMAIN  e.g. devigai.cloudflareaccess.com
-//   ACCESS_AUD          the Access application's "Application Audience (AUD) Tag"
+//   ACCESS_AUD          optional: the Access application's "Application Audience (AUD) Tag". Without it any login
+//                       from this team's own Access apps is accepted (DeVig is the only one), checked by signature
+//                       and issuer; with it, only logins for this exact app.
 //   INVITE_CODE         secret; the code friends type once to open an account (several allowed, comma-separated)
 
 const MAX_BODY = 20000;            // bytes; a full season of tracking is far smaller
@@ -59,7 +61,7 @@ function tokenFrom(request) {
 // The signed-in person's email, or null when the request has no valid Access login.
 export async function accessUser(request, env, fetcher = fetch) {
   const token = tokenFrom(request);
-  if (!token || !env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) return null;
+  if (!token || !env.ACCESS_TEAM_DOMAIN) return null;
   const parts = token.split(".");
   if (parts.length !== 3) return null;
   let header, payload;
@@ -76,10 +78,10 @@ export async function accessUser(request, env, fetcher = fetch) {
   if (!ok) return null;
   const now = Math.floor(Date.now() / 1000);
   const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-  if (!aud.includes(env.ACCESS_AUD)) return null;
+  if (env.ACCESS_AUD && !aud.includes(env.ACCESS_AUD)) return null;
   if (typeof payload.exp !== "number" || payload.exp < now) return null;
   if (payload.nbf && payload.nbf > now + 60) return null;
-  if (payload.iss && payload.iss !== `https://${domain}`) return null;
+  if (payload.iss !== `https://${domain}`) return null;
   if (!payload.email) return null;
   return String(payload.email).toLowerCase();
 }

@@ -19,7 +19,8 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
    - Domain: `devigai.pages.dev`, with the path left empty. Session duration: 1 month.
    - Policy: Allow. Include either *Emails* (a list) or *Everyone* (anyone with an email can sign in).
    - Login method: One-time PIN.
-   - After saving, open the application and copy its **Application Audience (AUD) Tag**.
+   - Optional: copy the application's **Application Audience (AUD) Tag** if the dashboard shows it. Without it, logins
+     from any Access app on your own team are accepted, and DeVig is the only one.
    - Note your **team domain**, for example `devigai.cloudflareaccess.com`. It's under Zero Trust → Settings → Custom Pages, or shown on the login page.
 2. **Storage (KV)**
    - Go to Storage & Databases → KV → Create a namespace, named `devig-users`.
@@ -28,7 +29,7 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
    - Variable name `USERS`, namespace `devig-users`, for Production.
    - Under **Variables and secrets** → Add (Production):
      - `ACCESS_TEAM_DOMAIN` = your team domain, for example `devigai.cloudflareaccess.com`
-     - `ACCESS_AUD` = the AUD tag from step 1
+     - `ACCESS_AUD` = the AUD tag from step 1 (optional)
    - Under **Build watch paths**, add `functions/*` next to `docs/*`.
 4. **Redeploy**
    - Go to Deployments → latest → ⋯ → Retry deployment, so the function and the bindings go live.
