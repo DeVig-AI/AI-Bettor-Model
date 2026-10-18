@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0c0f14"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DeVig"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#08090B"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DeVig"><style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#08090B;color:#F4F4F5}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>DeVig.AI</title>
 <meta name="description" content="Snap a photo of any odds screen and get the honest math: implied probability, de-vigged fair price, and the best number across books.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6,19 +6,21 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
+  /* Design B ("minimal dark"): near-black, quiet lines, the logo's amber as the one accent. Dark for everyone. */
   :root{
-    --bg:#eef1f5; --surface:#ffffff; --surface-2:#f5f7f9;
-    --ink:#131a26; --ink-soft:#57637a; --ink-faint:#8892a3;
-    --accent:#9a6a26; --accent-strong:#7e5417; --accent-ink:#ffffff; --accent-wash:#f2e6d2;
-    --line:#d8dde4; --line-strong:#c1c9d3;
-    --good:#1f7a4d; --good-wash:#e2f2e9;
-    --bad:#a5393e; --bad-wash:#fbe6e6;
+    color-scheme:dark;
+    --bg:#08090B; --surface:#111214; --surface-2:#18191D;
+    --ink:#F4F4F5; --ink-soft:#A1A1AA; --ink-faint:#80808A;
+    --accent:#E8A64E; --accent-strong:#F2BD78; --accent-ink:#1A1206; --accent-wash:#2A2013;
+    --line:#1E1F24; --line-strong:#2C2D33;
+    --good:#6EDC9A; --good-wash:#11261A;
+    --bad:#F08A8A; --bad-wash:#2E1515;
     --radius:14px;
     --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --font-sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
   }
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
+    :root[data-theme="old-dark"]{
       --bg:#0c0f14; --surface:#151a22; --surface-2:#1b212b;
       --ink:#e9ecf2; --ink-soft:#9aa4b6; --ink-faint:#69728a;
       --accent:#e0a656; --accent-strong:#f2bd78; --accent-ink:#1a1206; --accent-wash:#2c2214;
@@ -27,7 +29,7 @@
       --bad:#e2807f; --bad-wash:#301818;
     }
   }
-  :root[data-theme="dark"]{
+  :root[data-theme="old-dark"]{
     --bg:#0c0f14; --surface:#151a22; --surface-2:#1b212b;
     --ink:#e9ecf2; --ink-soft:#9aa4b6; --ink-faint:#69728a;
     --accent:#e0a656; --accent-strong:#f2bd78; --accent-ink:#1a1206; --accent-wash:#2c2214;
@@ -450,23 +452,57 @@
   .me-add{font-family:var(--font-sans); font-size:12.5px; color:var(--ink); background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:999px; padding:5px 10px;}
   .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
     background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
+  /* ---------- Design B layer ---------- */
+  h1,h2,h3{font-family:var(--font-sans); font-weight:600; letter-spacing:-.01em;}
+  .card{background:var(--surface); border-color:var(--line); border-radius:16px;}
+  header.top{border-bottom:none; padding-block:16px 6px;}
+  .brand{align-items:center; gap:12px; margin-bottom:4px;}
+  .brand .dv-logo{width:36px; height:36px; flex:none; display:block;}
+  .brand-txt{display:flex; flex-direction:column; min-width:0;}
+  .brand-date{font-size:12.5px; color:var(--ink-faint);}
+  .brand h1{font-size:21px; letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .me-btn{width:36px; height:36px; border:none; background:var(--surface-2); color:var(--ink);}
+  /* bottom tab bar with icons */
+  nav.tabs{position:fixed; left:0; right:0; bottom:0; z-index:30; justify-content:space-around; gap:0; overflow:visible;
+    background:rgba(8,9,11,.94); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));}
+  nav.tabs button{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; border-radius:10px;
+    font-size:11px; font-weight:500; color:var(--ink-faint); min-width:0;}
+  nav.tabs button svg{width:22px; height:22px;}
+  nav.tabs button[aria-selected="true"]{background:none; color:var(--accent);}
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px));}
+  /* sport choice as underlined tabs */
+  #sportPills .pill-tab, #pastSportPills .pill-tab{background:none; border:none; border-bottom:2px solid transparent; border-radius:0;
+    padding:4px 2px 8px; margin-right:14px; font-size:15px; color:var(--ink-faint);}
+  #sportPills .pill-tab.active, #pastSportPills .pill-tab.active{color:var(--ink); border-bottom-color:var(--accent); background:none;}
+  .pill-tab{background:var(--surface-2); border-color:var(--line);}
+  /* loading screen with the logo */
+  #splash{position:fixed; inset:0; z-index:100; background:#08090B; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:18px; transition:opacity .35s ease;}
+  #splash .dv-logo{width:84px; height:84px; animation:dvpulse 1.4s ease-in-out infinite;}
+  #splash .word{font-family:var(--font-sans); font-weight:600; font-size:20px; letter-spacing:-.01em; color:#F4F4F5;}
+  #splash.out{opacity:0; pointer-events:none;}
+  @keyframes dvpulse{0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(.94); opacity:.75;}}
+  @media (prefers-reduced-motion: reduce){ #splash .dv-logo{animation:none;} }
+  .about-logo{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
+  .about-logo .dv-logo{width:44px; height:44px;}
 </style>
 
+<div id="splash" role="status" aria-label="Loading DeVig"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div class="word">DeVig</div></div>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="mark">DV</div>
-      <h1>DeVig.AI</h1>
-      <span class="tag">odds, read straight</span>
+      <svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg>
+      <div class="brand-txt"><span class="brand-date" id="brandDate"></span><h1 id="brandHi">DeVig</h1></div>
       <button type="button" class="me-btn" id="meBtn" aria-pressed="false" aria-label="Your profile and settings" title="Profile and settings"></button>
     </div>
     <nav class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="home">Home</button>
-      <button role="tab" aria-selected="false" data-tab="ask">Ask</button>
-      <button role="tab" aria-selected="false" data-tab="scan">History</button>
-      <button role="tab" aria-selected="false" data-tab="parlay">Parlay</button>
-      <button role="tab" aria-selected="false" data-tab="lab">Testing</button>
-      <button role="tab" aria-selected="false" data-tab="about">About</button>
+      <button role="tab" aria-selected="true" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+      <button role="tab" aria-selected="false" data-tab="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask</button>
+      <button role="tab" aria-selected="false" data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
+      <button role="tab" aria-selected="false" data-tab="parlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Parlay</button>
+      <button role="tab" aria-selected="false" data-tab="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Testing</button>
+      <button role="tab" aria-selected="false" data-tab="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>About</button>
     </nav>
   </header>
 
@@ -658,6 +694,7 @@
 
   <section class="panel about" id="panel-about" hidden>
     <div class="card">
+      <div class="about-logo"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div><b style="font-size:18px">DeVig</b><div class="faint">odds, read straight</div></div></div>
       <h3>Plainly</h3>
       <p>Every pick in this app is what a model thinks, built from past games and free public data. <strong>None of the models has been proven to beat the betting odds.</strong> When their picks were checked against real prices on past seasons, the market's own odds were more accurate, so treat a pick as one more opinion, not a sure thing. Nothing here places bets.</p>
       <h3>What testing has found so far</h3>
@@ -964,8 +1001,17 @@
     });
   });
 
+  var splashGone = false;
+  function hideSplash(){
+    if(splashGone) return;
+    splashGone = true;
+    var sp = document.getElementById("splash");
+    if(sp){ sp.classList.add("out"); setTimeout(function(){ sp.remove(); }, 400); }
+  }
+  setTimeout(hideSplash, 6000);
   function renderHome(){
     updateMeBtn();
+    if(homeDocs.length || !dbApi) hideSplash();
     var statusEl = document.getElementById("homeStatus");
     var syncedEl = document.getElementById("homeSyncedAt");
     var wrap = document.getElementById("homeSlate");
@@ -979,7 +1025,7 @@
     }
 
     var hiEl = document.getElementById("homeHi");
-    if(hiEl) hiEl.textContent = prefs.name ? "Hi, " + prefs.name : "";
+    if(hiEl) hiEl.textContent = "";                    // the greeting lives in the header now
     var allSynced = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
@@ -1352,6 +1398,9 @@
   }
   // The top-right profile button shows the first letter of the name tag, or a person outline before one is set.
   function updateMeBtn(){
+    var bd = document.getElementById("brandDate"), bh = document.getElementById("brandHi"), now = new Date(), h = now.getHours();
+    if(bd) bd.textContent = now.toLocaleDateString([], {weekday: "long", month: "short", day: "numeric"});
+    if(bh) bh.textContent = (h < 5 ? "Good night" : h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening") + (prefs.name ? ", " + prefs.name : "");
     var b = document.getElementById("meBtn");
     if(!b) return;
     var initial = (prefs.name || "").trim().charAt(0).toUpperCase();

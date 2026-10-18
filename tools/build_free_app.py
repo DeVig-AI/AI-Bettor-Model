@@ -12,7 +12,7 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "docs", "index.html")
 
-HEAD = ('<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0c0f14">'
+HEAD = ('<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#08090B">'
         '<link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png">'
         '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DeVig">')
 FREE = '<link rel="stylesheet" href="free.css">\n<script src="repo-data.js"></script>\n<script src="install.js" defer></script>\n<script src="account.js" defer></script>\n'
