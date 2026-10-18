@@ -177,7 +177,11 @@
               if (line.indexOf("data:") !== 0) return;
               var d = line.slice(5).trim();
               if (!d || d === "[DONE]") return;
-              try { var j = JSON.parse(d); if (j.response) text += j.response; } catch (e) {}
+              try {
+                var j = JSON.parse(d);                 // Workers AI {response} or OpenAI-style {choices:[{delta:{content}}]}
+                var piece = j.response != null ? j.response : (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content);
+                if (piece) text += piece;
+              } catch (e) {}
             });
             if (opts.onText) opts.onText({text: text});
             return pump();

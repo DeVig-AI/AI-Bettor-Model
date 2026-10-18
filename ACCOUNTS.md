@@ -60,15 +60,20 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
 
 ## Chat (Ask tab)
 
-The Ask tab answers questions about the picks with **Cloudflare Workers AI** (free daily allowance, no key), through
-`functions/api/ask.js`. It only answers signed-in people with an open account (the invite code), up to 25 questions
-each per day, so the shared free allowance lasts.
+The Ask tab answers questions about the picks with a free AI, through `functions/api/ask.js`. It answers from the
+app's data plus a general betting guide, and every answer reminds people that AI can make mistakes. Only signed-in
+people with an open account (the invite code) can use it, up to 50 questions each per day.
 
-- Turn it on: Workers & Pages → devigai → Settings → **Bindings** → Add → **Workers AI**, variable name `AI`.
-  Then retry the deployment.
-- It uses Llama 3.3 70B by default (roughly a few dozen answers a day on the free allowance, shared by everyone).
-  For more answers with a smaller, less careful AI, add a variable `AI_MODEL` = `@cf/meta/llama-3.1-8b-instruct-fast`.
-- When the free allowance is used up, the chat says so and works again the next day.
+It uses the first of these that's set up:
+
+1. **Google Gemini** (most free answers, about 1,000 a day): get a free key at https://aistudio.google.com (Get API
+   key), then in devigai → Settings → Variables and secrets → Add, type **Secret**, name `GEMINI_API_KEY`.
+   On the free tier Google may use the questions to improve its products; no names or emails are sent.
+2. **Cloudflare Workers AI** (no sign-up, a few hundred answers a day): devigai → Settings → **Bindings** → Add →
+   **Workers AI**, variable name `AI`. It uses a small Llama model; `AI_MODEL` picks another.
+
+Set up both and Gemini answers first, with Cloudflare as the backup when Gemini's daily allowance runs out.
+Retry the deployment after adding either. When everything is used up, the chat says so and works again the next day.
 
 ## Check it
 

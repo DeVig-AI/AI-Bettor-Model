@@ -1,14 +1,24 @@
-// DeVig chat: POST /api/ask {messages} answers questions about the picks with Cloudflare Workers AI (free daily
-// allowance on the Cloudflare account; no key). The app sends its rules and the synced picks/odds/track record
-// with the question (askContext in the app), and this adds a general sports-betting guide on top. Signed-in
-// accounts only (the invite code), and a daily cap per person, so the shared free allowance lasts.
+// DeVig chat: POST /api/ask {messages} answers questions about the picks with a free AI. The app sends its rules and
+// the synced picks/odds/track record with the question (askContext in the app), and this adds a general
+// sports-betting guide on top. Signed-in accounts only (the invite code), with a daily cap per person.
+//
+// Which AI, first that works:
+//   1. Google Gemini, if GEMINI_API_KEY is set (free key from Google AI Studio; about 1,000 answers a day free)
+//   2. Cloudflare Workers AI through the AI binding: a small, cheap model so the free daily allowance covers a few
+//      hundred answers (AI_MODEL picks another one)
+// Accuracy is "good enough": the AI answers from what it's given, and every answer ends with a reminder that AI can
+// make mistakes.
 //
 // Needs, in the Pages project settings (see ACCOUNTS.md): the USERS KV binding and Access variables (as for /api/me)
-// and a Workers AI binding named AI. Optional: AI_MODEL to pick another Workers AI chat model.
+// and either a Workers AI binding named AI or a GEMINI_API_KEY secret (or both).
 import { accessUser, userKey } from "./me.js";
 
-const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
-const PER_DAY = 25;                // questions per person per day
+// Workers AI models to try in order (names change over time; a missing one is skipped)
+const CF_MODELS = ["@cf/meta/llama-3.1-8b-instruct-fast", "@cf/meta/llama-3.1-8b-instruct-fp8", "@cf/meta/llama-3.1-8b-instruct",
+                   "@cf/meta/llama-3.2-3b-instruct"];
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+const GEMINI_MODEL = "gemini-2.5-flash-lite";
+const PER_DAY = 50;                // questions per person per day
 const MAX_BODY = 60000;            // bytes of question + app data
 const MAX_TOKENS = 700;
 
@@ -26,6 +36,8 @@ export const BETTING_GUIDE = [
   "- Common traps: chasing losses, betting more after wins, trusting 'locks', and stories about trends that weren't tested.",
   "- Betting is entertainment with an expected loss. If it stops being fun or someone can't stop, the US helpline is 1-800-GAMBLER.",
   "Never tell anyone how much to bet or that something is guaranteed. Keep answers short; the user is on a phone.",
+  "Answer with what you have, even if it's incomplete, and say what's missing. End every answer with this line on its own: " +
+  "\"AI can make mistakes, so double-check before betting.\"",
 ].join("\n");
 
 function json(body, status = 200) {
@@ -34,7 +46,7 @@ function json(body, status = 200) {
 
 export async function handle(request, env, fetcher = fetch) {
   if (request.method !== "POST") return json({error: "method not allowed"}, 405);
-  if (!env.AI) return json({error: "chat isn't switched on yet", code: "off"}, 503);
+  if (!env.AI && !env.GEMINI_API_KEY) return json({error: "chat isn't switched on yet", code: "off"}, 503);
   if (!env.USERS) return json({error: "accounts aren't switched on yet", code: "off"}, 503);
   const email = await accessUser(request, env, fetcher);
   if (!email) return json({error: "sign in to chat", code: "account"}, 401);
@@ -56,16 +68,32 @@ export async function handle(request, env, fetcher = fetch) {
   if (used >= PER_DAY) return json({error: `that's today's ${PER_DAY} questions; more tomorrow`, code: "limit"}, 429);
   await env.USERS.put(countKey, String(used + 1), {expirationTtl: 2 * 86400});
 
-  try {
-    const stream = await env.AI.run(env.AI_MODEL || MODEL, {
-      messages: [{role: "system", content: BETTING_GUIDE}, ...msgs], max_tokens: MAX_TOKENS, temperature: 0.3, stream: true});
-    return new Response(stream, {headers: {"content-type": "text/event-stream", "cache-control": "no-store"}});
-  } catch (e) {
-    const msg = String(e && e.message || e);
-    const quota = /limit|quota|neuron|429|capacity/i.test(msg);
-    return json({error: quota ? "the free AI has used up today's answers; try again tomorrow" : "the AI couldn't answer right now",
-                 code: quota ? "quota" : "ai"}, quota ? 429 : 502);
+  const messages = [{role: "system", content: BETTING_GUIDE}, ...msgs];
+  const sse = body => new Response(body, {headers: {"content-type": "text/event-stream", "cache-control": "no-store"}});
+  let quota = false;
+
+  if (env.GEMINI_API_KEY) {                       // OpenAI-style stream: data: {"choices":[{"delta":{"content":...}}]}
+    try {
+      const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
+        body: JSON.stringify({model: env.GEMINI_MODEL || GEMINI_MODEL, messages, max_tokens: MAX_TOKENS, temperature: 0.4, stream: true})});
+      if (r.ok && r.body) return sse(r.body);
+      if (r.status === 429) quota = true;
+    } catch (e) {}
   }
+  if (env.AI) {                                   // Workers AI stream: data: {"response":...}
+    const models = env.AI_MODEL ? [env.AI_MODEL, ...CF_MODELS] : CF_MODELS;
+    for (const model of models) {
+      try {
+        return sse(await env.AI.run(model, {messages, max_tokens: MAX_TOKENS, temperature: 0.4, stream: true}));
+      } catch (e) {
+        const msg = String(e && e.message || e);
+        if (/limit|quota|neuron|429|capacity/i.test(msg)) { quota = true; break; }
+        // anything else (e.g. a model that no longer exists): try the next one
+      }
+    }
+  }
+  return json({error: quota ? "the free AI has used up today's answers; try again tomorrow" : "the AI couldn't answer right now",
+               code: quota ? "quota" : "ai"}, quota ? 429 : 502);
 }
 
 export async function onRequest(context) {
