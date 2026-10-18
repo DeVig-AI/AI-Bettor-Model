@@ -259,6 +259,15 @@
   .pr-row .px b{font-family:var(--font-mono); color:var(--ink); font-weight:600;}
   .pr-pick{display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-top:1px solid var(--line); align-items:baseline;}
   .pr-pick:first-of-type{border-top:none;}
+  .pr-locked{margin-top:14px; border-top:1px solid var(--line); padding-top:4px;}
+  .pr-locked > summary{display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 0; list-style:none;
+    font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);}
+  .pr-locked > summary::-webkit-details-marker{display:none;}
+  .pr-locked > summary::after{content:"Open"; margin-left:auto; font-size:12.5px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--accent-strong);}
+  .pr-locked[open] > summary::after{content:"Close";}
+  .pr-locked > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+  .pr-locked-tabs{padding-top:4px;}
+  .pr-locked .pp-stat + .pr-pick{border-top:none;}
   .pr-more{margin-top:10px; width:100%;}
   .pr-tier{font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.05em; padding:2px 7px; border-radius:999px; white-space:nowrap;}
   .pr-tier.high{background:var(--good-wash); color:var(--good);}
@@ -349,6 +358,38 @@
   .lv-pk .px{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:2px 14px; font-size:12.5px; color:var(--ink-soft);}
   .lv-pk .px b{font-family:var(--font-mono); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
   .pill.live{background:var(--accent-wash); color:var(--accent-strong);}
+  /* Live game on a Home card: score, locked vs live odds, paper-pick progress */
+  .card.game.is-live{border-color:var(--accent);}
+  .sb-team .lv-sc{margin-left:auto; font-family:var(--font-mono); font-weight:700; font-size:18px; font-variant-numeric:tabular-nums; padding-left:6px;}
+  .sb-team.has-badge.with-sc{grid-template-columns:30px minmax(0,1fr) auto;}
+  .sb-team.has-badge.with-sc > .lv-sc{grid-row:1 / span 2; grid-column:3;}
+  .sb-team.trail b, .sb-team.trail .lv-sc{color:var(--ink-soft);}
+  .lv-odds{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:2px 14px; margin-top:10px; padding:8px 10px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:10px; font-size:13px; align-items:baseline;}
+  .lv-odds .h{font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); text-align:right;}
+  .lv-odds .h:first-child{text-align:left;}
+  .lv-odds .n{font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;}
+  .lv-odds .n.now{font-weight:700;}
+  .lv-odds .m{color:var(--ink-soft); min-width:0;}
+  .lv-chart{margin-top:10px; padding:8px 10px 6px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px;}
+  .lv-chart .top{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; color:var(--ink-soft);}
+  .lv-chart .top b{font-family:var(--font-mono); color:var(--ink); font-variant-numeric:tabular-nums;}
+  .lv-chart .keys{display:flex; flex-wrap:wrap; gap:2px 14px; margin-top:4px; font-size:12.5px;}
+  .lv-chart .k{display:inline-flex; align-items:center; gap:5px;}
+  .lv-chart .k i{width:12px; height:3px; border-radius:2px; display:inline-block;}
+  .lv-chart .k b{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .lv-chart .plot{display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px; margin-top:8px;}
+  .lv-chart .yl{display:flex; flex-direction:column; justify-content:space-between; height:120px; font-size:10px; color:var(--ink-faint);
+    font-family:var(--font-mono); text-align:right; line-height:1; margin:-5px 0;}
+  .lv-chart svg{display:block; width:100%; height:120px; overflow:visible;}
+  .lv-chart .xl{position:relative; height:14px; margin-top:4px; font-size:10px; color:var(--ink-faint);}
+  .lv-chart .xl span{position:absolute; top:0; white-space:nowrap;}
+  .trk{display:inline-flex; align-items:center; gap:4px; font-family:var(--font-sans); font-size:12px; font-weight:700; color:var(--ink-faint);
+    border:1px solid var(--line); border-radius:999px; padding:1px 9px; cursor:pointer; white-space:nowrap; user-select:none;}
+  .trk.on{color:var(--accent-strong); border-color:var(--accent); background:var(--accent-wash);}
+  .trk:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
+    background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
 </style>
 
 <div class="wrap">
@@ -360,7 +401,6 @@
     </div>
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="home">Home</button>
-      <button role="tab" aria-selected="false" data-tab="live">Live</button>
       <button role="tab" aria-selected="false" data-tab="ask">Ask</button>
       <button role="tab" aria-selected="false" data-tab="scan">History</button>
       <button role="tab" aria-selected="false" data-tab="parlay">Parlay</button>
@@ -385,28 +425,12 @@
         <button class="pill-tab active" data-conf="all">All games</button>
         <button class="pill-tab" data-conf="top50">Top 50% confident</button>
         <button class="pill-tab" data-conf="top25">Top 25% confident</button>
+        <button class="pill-tab" data-conf="tracked">★ Tracked</button>
       </div>
       <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
       <div class="status" id="homeStatus">Loading…</div>
     </div>
     <div id="homeSlate"></div>
-  </section>
-
-  <section class="panel" id="panel-live" hidden>
-    <div class="card">
-      <div class="lv-head"><h3>Live · NFL</h3><span class="faint" id="liveAsOf"></span></div>
-      <p class="faint" style="margin:6px 0 0">Scores and how each locked paper pick is doing. This tab refreshes about once an hour on game days. For updates every 30 seconds, open the live board.</p>
-      <a class="lv-fast" id="liveFastLink" href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/" target="_blank" rel="noopener">Watch live (updates every 30 s)</a>
-      <div class="lv-record">
-        <div class="lv-stat"><b id="lvToday">–</b><span>Locked picks</span></div>
-        <div class="lv-stat"><b id="lvNow">–</b><span>Won · lost</span></div>
-        <div class="lv-stat"><b id="lvGraded">–</b><span>Graded (W-L)</span></div>
-        <div class="lv-stat"><b id="lvRoi">–</b><span>Paper ROI</span></div>
-      </div>
-      <div class="status" id="liveStatus">Loading…</div>
-    </div>
-    <div id="liveGames"></div>
-    <p class="faint">Paper test only, nothing is bet. Stats during a game are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game, so a close call can flip.</p>
   </section>
 
   <section class="panel" id="panel-ask" hidden>
@@ -539,6 +563,11 @@
   </section>
 
   <section class="panel about" id="panel-about" hidden>
+    <div class="card" id="donateCard" hidden>
+      <h3>Keep DeVig free</h3>
+      <p>DeVig is free and runs on free public data: Kalshi prices, ESPN scores and stats, and open game histories. Paid data would let it test more ideas and fix known gaps: real sportsbook odds history to check every model against the actual price, live injury and lineup feeds, and player tracking stats. If it's useful to you, a donation goes straight to that data. Nothing changes for anyone who doesn't donate, and DeVig never takes or places bets.</p>
+      <a class="donate" id="donateLink" href="#" target="_blank" rel="noopener">Support DeVig</a>
+    </div>
     <div class="card">
       <h3>What this actually does</h3>
       <p>DeVig.AI reads a photo of any sportsbook odds screen and does the honest math on it: the implied probability baked into a price, the fair (de-vigged) probability once you give it both sides of a market, and which of several prices is actually the better number, regardless of the plus/minus sign.</p>
@@ -639,11 +668,17 @@
     return e;
   }
 
+  // ---------- donation link: set DONATE_URL to show the "Keep DeVig free" card on About ----------
+  var DONATE_URL = "";
+  if(DONATE_URL){
+    document.getElementById("donateLink").href = DONATE_URL;
+    document.getElementById("donateCard").hidden = false;
+  }
+
   // ---------- tabs ----------
   var tabs = document.querySelectorAll("nav.tabs button");
   var panels = {
     home: document.getElementById("panel-home"),
-    live: document.getElementById("panel-live"),
     scan: document.getElementById("panel-scan"),
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
@@ -854,7 +889,10 @@
 
     var confTh = CONF_THRESHOLDS[currentSport] || CONF_THRESHOLDS.NFL;
     var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
-    if(currentConfThreshold > 0){
+    if(currentConfKey === "tracked"){
+      forSport = forSport.filter(function(g){ return isTracked("g", gameKey(g)); });
+      noteEl.textContent = "Only the games you track. Tap ☆ Track on any game card to add it; your list stays on this device.";
+    } else if(currentConfThreshold > 0){
       forSport = forSport.filter(function(g){
         return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
       });
@@ -867,8 +905,11 @@
     if(!forSport.length){
       statusEl.textContent = "";
       syncedEl.textContent = "";
-      wrap.innerHTML = '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
-        '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
+      wrap.innerHTML = currentConfKey === "tracked"
+        ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
+          '<span class="faint">Switch to All games and tap ☆ Track on the ones you want to follow.</span></div></div>'
+        : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
+          '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
       return;
     }
     statusEl.textContent = finishedNote;
@@ -877,6 +918,8 @@
     syncedEl.textContent = latest.synced_at ? "synced " + new Date(latest.synced_at).toLocaleString() : "";
 
     var allOnBoard = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
+    var myCard = renderTrackedCard(allOnBoard);
+    if(myCard) wrap.appendChild(myCard);
     wrap.appendChild(renderBestBetsCard(allOnBoard));
     var gamesHead = el("div", "bb-sec", "All games · tap one for the full breakdown");
     wrap.appendChild(gamesHead);
@@ -1024,6 +1067,69 @@
       '<span class="pill ' + b.cls + '">' + escapeHtml(b.chip) + '</span></div>';
     row.addEventListener("click", function(){ openGame(b.g); });
     return row;
+  }
+  // ---------- Tracking: games and paper picks the user follows (saved on this device only) ----------
+  var TRACK_KEY = "devig.tracked.v1", tracked = {g: {}, p: {}};
+  try{ var tj = JSON.parse(localStorage.getItem(TRACK_KEY) || "null"); if(tj && tj.g && tj.p) tracked = tj; }catch(e){}
+  function isTracked(kind, key){ return !!tracked[kind][key]; }
+  function toggleTracked(kind, key){
+    if(tracked[kind][key]) delete tracked[kind][key]; else tracked[kind][key] = Date.now();
+    try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+  }
+  function trkBtn(kind, key){
+    var on = isTracked(kind, key);
+    return '<span class="trk' + (on ? ' on' : '') + '" role="button" tabindex="0" aria-pressed="' + on + '" data-trk="' + kind + '" data-trk-key="' + escapeHtml(key) + '">' +
+      (on ? '★ Tracking' : '☆ Track') + '</span>';
+  }
+  function pickTrackKey(d, p){ return propGameLabel(d) + "|" + String(d.kickoff_time || d.game_date || "").slice(0, 10) + "|" + p.player + "|" + p.stat + "|" + p.line + "|" + p.side; }
+  // One capture-phase listener so a Track tap never also opens/closes the game card it sits in.
+  function onTrk(ev){
+    var t = ev.target.closest && ev.target.closest("[data-trk]");
+    if(!t) return;
+    if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+    ev.preventDefault(); ev.stopPropagation();
+    toggleTracked(t.getAttribute("data-trk"), t.getAttribute("data-trk-key"));
+    renderHome();
+  }
+  document.addEventListener("click", onTrk, true);
+  document.addEventListener("keydown", onTrk, true);
+  function renderTrackedCard(games){
+    var tg = games.filter(function(g){ return isTracked("g", gameKey(g)); });
+    var tp = [];
+    propsDocs.forEach(function(d){
+      if(docSport(d) !== currentSport) return;
+      (d.paper_picks || []).forEach(function(p){ if(isTracked("p", pickTrackKey(d, p))) tp.push({d: d, p: p}); });
+    });
+    if(!tg.length && !tp.length) return null;
+    var card = el("div", "card");
+    card.innerHTML = '<div class="bb-head"><h3>My tracking</h3><span class="faint">' + escapeHtml(currentSport) + ' · saved on this device</span></div>';
+    if(tg.length){
+      card.appendChild(el("div", "bb-sec", "Games"));
+      tg.sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); }).forEach(function(g){
+        var lg = liveFor(g), st = liveStarted(lg), d = computeDecision(g), mm = g.model || {};
+        var row = el("button", "bb-row"); row.type = "button";
+        var score = st ? g.away_team + " " + Math.round(lg.away_score) + " – " + g.home_team + " " + Math.round(lg.home_score) : (g.away_team + " @ " + g.home_team);
+        var lt = lg && lg.picks && lg.picks.length ? livePickTally(lg) : null;
+        row.innerHTML = '<div style="min-width:0"><div class="bb-bet">' + escapeHtml(score) + '</div><div class="bb-meta">' +
+          escapeHtml((st ? (lg.state === "in" ? "Live · " + (lg.detail || "") : "Final") : shortTime(g)) +
+            (d.action === "ML" ? " · pick " + mm.winner_side : "") +
+            (lt && st ? " · paper picks " + lt.won + " won, " + lt.lost + " lost" + (lt.live ? ", " + lt.live + " live" : "") : "")) + '</div></div>' +
+          '<div class="bb-right">' + (st && lg.state === "in" ? '<span class="pill live">LIVE</span>' : '') + trkBtn("g", gameKey(g)) + '</div>';
+        row.addEventListener("click", function(){ openGame(g); });
+        card.appendChild(row);
+      });
+    }
+    if(tp.length){
+      card.appendChild(el("div", "bb-sec", "Paper picks"));
+      tp.forEach(function(x){
+        var p = x.p, lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
+        card.appendChild(el("div", "pr-pick", '<div style="min-width:0"><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' +
+          escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
+          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · locked at ' + exOddsTxt(p.price, true) + (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
+          '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '') + trkBtn("p", pickTrackKey(x.d, p)) + '</div>'));
+      });
+    }
+    return card;
   }
   function renderBestBetsCard(games){
     var card = el("div", "card");
@@ -1392,6 +1498,13 @@
     if(d.action === "ML" && injBad && injBad.others.length) chips.push('<span class="pill bad">Injury caution</span>');
     var pcS = priceCheck(g);
     if(pcS && pcS.steep) chips.push('<span class="pill bad">Price too steep</span>');
+    var lg = liveFor(g), started = liveStarted(lg);
+    if(lg && lg.picks && lg.picks.length){
+      var lt = livePickTally(lg);
+      chips.push('<span class="pill ' + (started ? "live" : "neutral") + '">Paper picks · ' + lg.picks.length +
+        (started ? ' · ' + lt.won + ' won · ' + lt.lost + ' lost' + (lt.live ? ' · ' + lt.live + ' live' : '') : ' locked') + '</span>');
+    }
+    if(lg && lg.state === "in") card.classList.add("is-live");
     var isOpen = !!openGames[k];
     var tags = (g.trial ? ' <span class="pill neutral">Preseason trial</span>' : '') +
       (isPreviewGame(g) ? ' <span class="pill neutral">Preview</span>' : '');
@@ -1400,14 +1513,19 @@
       var nLab = propLabeledCount(pdoc);
       chips.push('<span class="pill neutral">Props' + (nLab ? ' · ' + nLab + ' labeled' : '') + '</span>');
     }
-    head.innerHTML = '<div class="sb-top"><span class="faint">' + escapeHtml(kickoff) + '</span>' + (tags ? '<span>' + tags + '</span>' : '') + '</div>' +
-      sbGrid(g, d) +
+    var when = !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
+      : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
+      : '<span><span class="pill neutral">FINAL</span></span>';
+    head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started ? tags + ' ' : '') + trkBtn("g", k) + '</span></div>' +
+      sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + liveOddsEl(g, lg) : '') +
       '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
     head.setAttribute("aria-expanded", String(isOpen));
     var det = el("div", "game-details");
     if(full.firstChild) full.removeChild(full.firstChild); // the matchup header is already in the summary
     var gamePane = el("div", "sb-game");
     while(full.childNodes.length) gamePane.appendChild(full.firstChild);
+    var lpb = livePicksBox(lg);
+    if(lpb) gamePane.insertBefore(lpb, gamePane.firstChild);
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
     else det.appendChild(gamePane);
     det.hidden = !isOpen;
@@ -1447,7 +1565,7 @@
     var light = (0.299 * r + 0.587 * gg + 0.114 * b) > 160;
     return '<span class="tm-badge" style="background:' + c + '; color:' + (light ? "#111" : "#fff") + '" aria-hidden="true">' + escapeHtml(code) + '</span>';
   }
-  function sbGrid(g, d){
+  function sbGrid(g, d, lg){
     var m = g.market || {}, mm = g.model || {};
     var cols = [];
     if(m.spread_home != null) cols.push("Spread");
@@ -1459,7 +1577,11 @@
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
-      html += '<div class="sb-team has-badge">' + teamBadge(g.sport || "NFL", team) + '<b>' + escapeHtml(team) + '</b>' + (pct != null ? '<small>model ' + Math.round(pct * 100) + '%</small>' : '<small></small>') + '</div>';
+      var sc = lg ? (side === "home" ? lg.home_score : lg.away_score) : null, osc = lg ? (side === "home" ? lg.away_score : lg.home_score) : null;
+      html += '<div class="sb-team has-badge' + (sc != null ? ' with-sc' + (sc < osc ? ' trail' : '') : '') + '">' + teamBadge(g.sport || "NFL", team) +
+        '<b>' + escapeHtml(team) + (lg && lg.state === "in" && lg.possession === team ? ' <span class="lv-poss" title="Has the ball" style="display:inline-block; vertical-align:middle"></span>' : '') + '</b>' +
+        (pct != null ? '<small>model ' + Math.round(pct * 100) + '%' + (lg ? ' · locked lines' : '') + '</small>' : '<small></small>') +
+        (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
       cols.forEach(function(c){
         if(c === "Spread"){
           var pt = side === "home" ? m.spread_home : -m.spread_home;
@@ -2363,15 +2485,57 @@
     var open = [];
     games.forEach(function(d){ (d.paper_picks || []).forEach(function(p){ open.push({d:d, p:p}); }); });
     if(open.length){
-      html += '<div class="bb-sec">Locked paper picks</div>';
-      open.forEach(function(x){
-        var p = x.p;
-        html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
-          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</div></div>' +
-          '<span class="pill neutral">PAPER</span></div>';
+      // Collapsed by default; one tab per prop type (All shows every type under its own heading).
+      var byStat = {};
+      open.forEach(function(x){ (byStat[x.p.stat] = byStat[x.p.stat] || []).push(x); });
+      var stats = Object.keys(byStat).sort(function(a, b){
+        var ia = PROP_ORDER.indexOf(a), ib = PROP_ORDER.indexOf(b);
+        return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.localeCompare(b);
       });
+      if(lockedStat !== "all" && !byStat[lockedStat]) lockedStat = "all";
+      html += '<details class="pr-locked"' + (lockedOpen ? ' open' : '') + '><summary><span>Locked paper picks</span>' +
+        '<span class="pill neutral">' + open.length + '</span></summary>';
+      html += '<div class="sb-tabs pr-locked-tabs"><button class="pill-tab' + (lockedStat === "all" ? ' active' : '') + '" data-lstat="all">All · ' + open.length + '</button>';
+      stats.forEach(function(st){
+        html += '<button class="pill-tab' + (lockedStat === st ? ' active' : '') + '" data-lstat="' + escapeHtml(st) + '">' +
+          escapeHtml(propStat(st)) + ' · ' + byStat[st].length + '</button>';
+      });
+      html += '</div>';
+      stats.forEach(function(st){
+        if(lockedStat !== "all" && lockedStat !== st) return;
+        html += '<div class="pp-stat">' + escapeHtml(propStat(st)) + '</div>';
+        byStat[st].forEach(function(x){
+          var p = x.p;
+          var lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
+          html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
+            '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%' +
+            (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
+            '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '<span class="pill neutral">PAPER</span>') +
+            trkBtn("p", pickTrackKey(x.d, p)) + '</div></div>';
+        });
+      });
+      html += '</details>';
     }
     box.innerHTML = html;
+    lastPropsTest = [games, sport];
+    if(!box.dataset.lockedBound){
+      box.dataset.lockedBound = "1";
+      box.addEventListener("click", function(e){
+        var b = e.target.closest("[data-lstat]");
+        if(!b) return;
+        lockedStat = b.getAttribute("data-lstat");
+        renderPropsTest(lastPropsTest[0], lastPropsTest[1]);
+      });
+      box.addEventListener("toggle", function(e){
+        if(e.target.classList && e.target.classList.contains("pr-locked")) lockedOpen = e.target.open;
+      }, true);
+    }
+  }
+  var lockedOpen = false, lockedStat = "all", lastPropsTest = [[], "NFL"];
+  function livePickFor(d, p){
+    if(!liveDoc || docSport(d) !== "NFL") return null;
+    var lg = (liveDoc.games || []).filter(function(x){ return x.away === d.away_team && x.home === d.home_team; })[0];
+    return lg ? (lg.picks || []).filter(function(q){ return q.player === p.player && q.stat === p.stat && q.line === p.line; })[0] || null : null;
   }
 
   // ---------- Live: scores + locked paper-pick progress (read-only, synced by Claude hourly on game days) ----------
@@ -2386,7 +2550,8 @@
   }
   function livePickEl(p){
     var b = liveBadge(p), cur = p.current, target = Math.floor(p.line) + 1;
-    var k = p.kalshi_now, sideNow = (k && k.mid != null) ? (p.side === "OVER" ? k.mid : 1 - k.mid) : null;
+    var k = p.kalshi_now, sideNow = null;
+    if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
     var row = el("div", "lv-pk");
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
       '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
@@ -2396,65 +2561,111 @@
         Math.min(100, cur / Math.max(target, 1) * 100) + '%"></i></div>' : '') +
       '<div class="px"><span>Model <b>' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%</b></span>' +
       '<span>Locked at <b>' + exOddsTxt(p.price, true) + '</b></span>' +
-      (sideNow != null ? '<span>Kalshi now <b>' + Math.round(sideNow * 100) + '%</b></span>' : '') + '</div>';
+      (sideNow != null && p.status !== "won" && p.status !== "lost" ? '<span>Live <b>' + exOddsTxt(sideNow, true) + '</b></span>' : '') + '</div>';
     return row;
   }
-  function liveGameEl(g){
-    var live = g.state === "in", fin = g.state === "post", hasScore = g.state !== "pre" && g.away_score != null;
-    var card = el("div", "card lv-game" + (live ? " is-live" : ""));
-    function tm(team, sc, other, prefix){
-      var cls = hasScore && sc < other ? " trail" : "";
-      return '<div class="lv-tm' + cls + '">' + (live && g.possession === team ? '<span class="lv-poss" title="Has the ball"></span>' : '') +
-        prefix + escapeHtml(team) + '<span class="sc">' + (hasScore ? sc : '') + '</span></div>';
-    }
-    var when = live ? '<span class="pill live">LIVE</span><div style="margin-top:4px">' + escapeHtml(g.detail || "") + '</div>'
-      : fin ? '<span class="pill neutral">FINAL</span>'
-      : '<span class="pill neutral">' + escapeHtml(g.kickoff ? shortTime({kickoff_time: g.kickoff}) : "") + '</span>' +
-        (g.locked ? '<div style="margin-top:4px"><span class="pill live">LOCKED</span></div>' : '');
-    card.innerHTML = '<div class="lv-gh"><div>' + tm(g.away, g.away_score, g.home_score, "") + tm(g.home, g.home_score, g.away_score, "@ ") +
-      '</div><div class="lv-when">' + when + '</div></div>';
-    if(g.picks && g.picks.length){
-      var pw = el("div", "lv-picks");
-      g.picks.forEach(function(p){ pw.appendChild(livePickEl(p)); });
-      card.appendChild(pw);
-    }
-    return card;
+  function liveFor(g){
+    if(!liveDoc || (g.sport || "NFL") !== "NFL" || g.trial) return null;
+    var kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
+    return (liveDoc.games || []).filter(function(x){
+      if(x.away !== g.away_team || x.home !== g.home_team) return false;
+      var xk = x.kickoff ? new Date(x.kickoff).getTime() : NaN;
+      return !isFinite(kt) || !isFinite(xk) || Math.abs(kt - xk) < 12 * 3600 * 1000;
+    })[0] || null;
   }
-  function renderLive(){
-    var st = document.getElementById("liveStatus"), wrap = document.getElementById("liveGames");
-    if(!st) return;
-    if(!dbApi){ st.textContent = "Live sync isn't available in this view."; return; }
-    if(!liveLoaded){ st.textContent = "Loading…"; return; }
-    wrap.innerHTML = "";
-    var r = propsReport || {};
-    document.getElementById("lvGraded").textContent = r.paper_picks_graded ? (r.wins || 0) + "-" + (r.paper_picks_graded - (r.wins || 0)) : "0";
-    document.getElementById("lvRoi").textContent = r.roi == null ? "–" : (r.roi > 0 ? "+" : "") + (r.roi * 100).toFixed(1) + "%";
-    if(!liveDoc){
-      st.textContent = "Nothing synced yet. Scores show up here on game days, about once an hour.";
-      document.getElementById("liveAsOf").textContent = "";
-      document.getElementById("lvToday").textContent = "–"; document.getElementById("lvNow").textContent = "–";
-      return;
+  function liveStarted(lg){ return !!lg && (lg.state === "in" || lg.state === "post") && lg.away_score != null; }
+  // Locked line (what the pick was made at) next to Kalshi's live price, while the game is on.
+  function liveOddsEl(g, lg){
+    var kg = lg && lg.kalshi_game, m = g.market || {};
+    if(!kg || lg.state !== "in") return "";
+    var rows = [];
+    function sgn(x){ return (Number(x) > 0 ? "+" : "") + x; }
+    if(kg.moneyline){
+      rows.push([g.away_team + " to win", fmtOdds(m.moneyline_away), fmtOdds(kg.moneyline.away)]);
+      rows.push([g.home_team + " to win", fmtOdds(m.moneyline_home), fmtOdds(kg.moneyline.home)]);
     }
-    var games = (liveDoc.games || []).slice(), order = {"in": 0, pre: 1, post: 2};
-    games.sort(function(a, b){ return ((order[a.state] != null ? order[a.state] : 1) - (order[b.state] != null ? order[b.state] : 1)) ||
-      String(a.kickoff || "").localeCompare(String(b.kickoff || "")); });
-    var picks = [];
-    games.forEach(function(g){ (g.picks || []).forEach(function(p){ picks.push(p); }); });
-    var won = picks.filter(function(p){ return p.status === "won"; }).length, lost = picks.filter(function(p){ return p.status === "lost"; }).length;
-    document.getElementById("lvToday").textContent = String(picks.length);
-    document.getElementById("lvNow").textContent = picks.length ? won + " · " + lost : "–";
-    var age = (Date.now() - new Date(liveDoc.generated_at).getTime()) / 60000;
-    document.getElementById("liveAsOf").textContent = "As of " + whenTxt(liveDoc.generated_at);
-    var anyLive = games.some(function(g){ return g.state === "in"; });
-    st.textContent = anyLive && age > 20 ? "Games in progress. This tab is about " + Math.round(age) + " minutes behind; tap Watch live for the current score." : "";
-    [["Live now", "in"], ["Upcoming", "pre"], ["Final", "post"]].forEach(function(sec){
-      var gs = games.filter(function(g){ return (g.state || "pre") === sec[1]; });
-      if(!gs.length) return;
-      wrap.appendChild(el("div", "bb-sec", sec[0]));
-      gs.forEach(function(g){ wrap.appendChild(liveGameEl(g)); });
-    });
-    if(!games.length) wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No games on the board right now.</div>'));
+    if(kg.spread){
+      rows.push(["Spread", m.spread_home != null ? g.home_team + " " + sgn(m.spread_home) : "—",
+        g.home_team + " " + sgn(kg.spread.home_point) + " (" + fmtOdds(kg.spread.home) + ")"]);
+    }
+    if(kg.total){
+      rows.push(["Total", m.total_line != null ? String(m.total_line) : "—",
+        kg.total.line + " (o " + fmtOdds(kg.total.over) + ")"]);
+    }
+    if(!rows.length) return "";
+    return '<div class="lv-odds"><div class="h">Odds</div><div class="h">Locked</div><div class="h">Live · Kalshi</div>' +
+      rows.map(function(r){ return '<div class="m">' + escapeHtml(r[0]) + '</div><div class="n">' + escapeHtml(r[1]) +
+        '</div><div class="n now">' + escapeHtml(r[2]) + '</div>'; }).join("") + '</div>';
   }
+  // Win-chance chart from Kalshi's price history (2 h before kickoff to now): one line per team,
+  // y = win chance (0-100%), x = clock time, with the kickoff marked and a dotted line where the locked odds stood.
+  function chartColor(code, fallback){
+    var c = (TEAM_COLORS.NFL || {})[code];
+    if(!c) return fallback;
+    var r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16);
+    var lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    return (lum < 70 || lum > 200) ? fallback : c;    // near-black or near-white team colors vanish on one of the themes
+  }
+  function liveChartEl(g, lg){
+    var kl = lg && lg.kalshi_line, pts = kl && kl.points;
+    if(!pts || pts.length < 2) return "";
+    var homeIsLine = kl.team === g.home_team;
+    function homeP(q){ return homeIsLine ? q[1] : 1 - q[1]; }
+    var t0 = pts[0][0], t1 = pts[pts.length - 1][0], W = 300, H = 120;
+    function x(t){ return t1 > t0 ? (t - t0) / (t1 - t0) * W : 0; }
+    function y(v){ return (1 - v) * H; }
+    function line(fn){ return pts.map(function(q, i){ return (i ? "L" : "M") + x(q[0]).toFixed(1) + " " + y(fn(q)).toFixed(1); }).join(" "); }
+    var cHome = chartColor(g.home_team, "var(--accent)"), cAway = chartColor(g.away_team, "var(--ink-soft)");
+    if(cHome === cAway) cAway = "var(--ink-soft)";
+    var dv = devigTwoWay((g.market || {}).moneyline_home, (g.market || {}).moneyline_away);
+    var ko = g.kickoff_time ? new Date(g.kickoff_time).getTime() / 1000 : null;
+    var koIn = ko && ko > t0 && ko < t1;
+    var grid = [0.25, 0.5, 0.75].map(function(v){
+      return '<line x1="0" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)" ' + (v === 0.5 ? '' : 'stroke-dasharray="2 4" ') + 'vector-effect="non-scaling-stroke"/>';
+    }).join("");
+    var lockLine = dv ? '<line x1="0" x2="' + W + '" y1="' + y(dv.a).toFixed(1) + '" y2="' + y(dv.a).toFixed(1) + '" stroke="' + cHome + '" stroke-opacity=".55" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' +
+      '<line x1="0" x2="' + W + '" y1="' + y(dv.b).toFixed(1) + '" y2="' + y(dv.b).toFixed(1) + '" stroke="' + cAway + '" stroke-opacity=".55" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' : '';
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Win chance over time for ' + escapeHtml(g.away_team) + ' and ' + escapeHtml(g.home_team) + '">' +
+      grid + lockLine +
+      (koIn ? '<line x1="' + x(ko).toFixed(1) + '" x2="' + x(ko).toFixed(1) + '" y1="0" y2="' + H + '" stroke="var(--line-strong)" vector-effect="non-scaling-stroke"/>' : '') +
+      '<path d="' + line(function(q){ return 1 - homeP(q); }) + '" fill="none" stroke="' + cAway + '" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>' +
+      '<path d="' + line(homeP) + '" fill="none" stroke="' + cHome + '" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
+    // x axis: 4 evenly spaced clock times
+    function hm(t){ return new Date(t * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}); }
+    var xl = "";
+    for(var i = 0; i < 4; i++){
+      var t = t0 + (t1 - t0) * i / 3, pos = i / 3 * 100;
+      xl += '<span style="left:' + pos.toFixed(1) + '%; transform:translateX(' + (i === 0 ? '0' : (i === 3 ? '-100%' : '-50%')) + ')">' +
+        escapeHtml(i === 3 && lg.state === "in" ? "now" : hm(t)) + '</span>';
+    }
+    var yl = ["100%", "75%", "50%", "25%", "0%"].map(function(v){ return '<span>' + v + '</span>'; }).join("");
+    var hNow = homeP(pts[pts.length - 1]);
+    function key(team, col, now, lock){
+      return '<span class="k"><i style="background:' + col + '"></i>' + escapeHtml(team) + ' <b>' + Math.round(now * 100) + '%</b>' +
+        (lock != null ? ' <span class="faint">(lock ' + Math.round(lock * 100) + '%)</span>' : '') + '</span>';
+    }
+    return '<div class="lv-chart"><div class="top"><span>Win chance · Kalshi</span>' +
+      (koIn ? '<span class="faint">line = kickoff ' + escapeHtml(hm(ko)) + '</span>' : '') + '</div>' +
+      '<div class="keys">' + key(g.away_team, cAway, 1 - hNow, dv ? dv.b : null) + key(g.home_team, cHome, hNow, dv ? dv.a : null) + '</div>' +
+      '<div class="plot"><div class="yl">' + yl + '</div><div class="area">' + svg + '<div class="xl">' + xl + '</div></div></div></div>';
+  }
+  function livePickTally(lg){
+    var t = {won: 0, lost: 0, live: 0, pending: 0};
+    ((lg && lg.picks) || []).forEach(function(p){ t[p.status] = (t[p.status] || 0) + 1; });
+    return t;
+  }
+  function livePicksBox(lg){
+    if(!lg || !lg.picks || !lg.picks.length) return null;
+    var box = el("div", "lv-picks");
+    box.style.cssText = "border:1px solid var(--line); border-radius:10px; padding:4px 12px 8px; margin-top:12px";
+    box.appendChild(el("div", "pp-stat", "Paper picks in this game" + (liveStarted(lg) ? "" : " · locked")));
+    lg.picks.forEach(function(p){ box.appendChild(livePickEl(p)); });
+    box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the official grade uses NFL play-by-play after the game."));
+    return box;
+  }
+
+  function renderLive(){ if(homeDocs.length) renderHome(); }
+
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
   var labReport = null, labLive = [], labLoaded = {report:false, live:false};

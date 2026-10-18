@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 nfl_props_live_v1.py -- live game-day view of the NFL props paper test: scores, each locked paper pick's stat so far,
-and Kalshi's current price for that pick. Writes nfl/live/props_live.json for the live page (docs/index.html).
+Kalshi's current price for that pick, and Kalshi's live game odds (moneyline, main spread and total) for games not yet
+final, plus a win-chance line (Kalshi price history) for games under way. Writes nfl/live/props_live.json for the live page (docs/index.html) and the app's Home game cards.
 
 Display only. It never changes a pick, a lock or a grade: official grading stays in nfl/nfl_props_model_v1_live.py
 (from nflverse play-by-play). Live stats here come from ESPN's public box score and are unofficial.
@@ -22,6 +23,8 @@ KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 UA = "nfl-props-live/1.0 (personal research; read-only)"
 ET = ZoneInfo("America/New_York")
 ESPN_ABBR = {"WSH": "WAS", "LAR": "LA", "JAC": "JAX"}
+sys.path.insert(0, os.path.dirname(HERE))
+import kalshi_games_v1 as KG  # noqa: E402  live game odds (moneyline / spread / total), keyless
 WINDOW_BEFORE, WINDOW_AFTER = timedelta(minutes=30), timedelta(hours=5)
 log = []
 
@@ -153,6 +156,61 @@ def pick_state(side, line, cur, game_state):
     return ("won" if game_state == "post" else "live"), round(top - cur, 1)            # room left
 
 
+def public(o):
+    return {k: v for k, v in o.items() if not k.startswith("_")} if o else None
+
+
+def live_game_odds():
+    """{(away, home): {moneyline, spread, total}} from Kalshi's open NFL game markets, as fee-included American odds."""
+    out = {}
+    try:
+        games = KG.kalshi_games("NFL")
+    except Exception as e:                         # display only: a Kalshi hiccup must not stop the scores
+        log.append(f"kalshi game odds: {type(e).__name__}: {e}")
+        return out
+    for g in games.values():
+        a, h = g["away_code"], g["home_code"]
+        ml = KG.moneylines(g, a, h)
+        sp, tot = KG.main_spread(g, a, h), KG.main_total(g)
+        out[(KG.canon("NFL", a), KG.canon("NFL", h))] = {
+            "_home_ticker": g["teams"][h].get("ticker"),
+            "moneyline": {"home": ml[0], "away": ml[1]} if None not in ml else None,
+            "spread": {"home_point": sp[0], "home": sp[1], "away": sp[2]} if sp and None not in sp else None,
+            "total": {"line": tot[0], "over": tot[1], "under": tot[2]} if tot and None not in tot else None}
+    log.extend(KG.log[:10])
+    return out
+
+
+def _close(c, key):
+    """A candle's closing value in dollars; Kalshi sends {close_dollars} or whole-cent {close}."""
+    v = c.get(key)
+    if isinstance(v, dict):
+        if v.get("close_dollars") not in (None, ""):
+            return fnum(v["close_dollars"])
+        x = fnum(v.get("close"))
+        return x / 100.0 if x is not None and x > 1 else x
+    return fnum(c.get(key + "_close_dollars"))
+
+
+def win_line(ticker, kickoff, now, max_points=150):
+    """[[unix_ts, home win chance]] from 2 hours before kickoff to now (1-minute candles, bid/ask midpoint)."""
+    if not ticker or not kickoff:
+        return None
+    start = int((kickoff - timedelta(hours=2)).timestamp())
+    d = get(f"{KALSHI}/series/KXNFLGAME/markets/{urllib.parse.quote(ticker)}/candlesticks",
+            {"start_ts": start, "end_ts": int(now.timestamp()), "period_interval": 1}) or {}
+    pts = []
+    for c in d.get("candlesticks") or []:
+        b, a = _close(c, "yes_bid"), _close(c, "yes_ask")
+        v = (b + a) / 2 if b is not None and a is not None and 0 < b <= a < 1 else _close(c, "price")
+        if v is not None and 0 <= v <= 1 and c.get("end_period_ts"):
+            pts.append([int(c["end_period_ts"]), round(v, 3)])
+    if len(pts) > max_points:                      # keep the shape, drop the bulk; always keep the latest point
+        step = len(pts) / max_points
+        pts = [pts[int(i * step)] for i in range(max_points - 1)] + [pts[-1]]
+    return pts or None
+
+
 def main():
     now = datetime.now(timezone.utc)
     model = json.load(open(MODEL))
@@ -163,7 +221,21 @@ def main():
     if not active and os.getenv("FORCE") != "1" and os.path.exists(OUT):
         print("no game window now; nothing to do"); return 0
     sb = scoreboard()
+    odds = live_game_odds()
     out_games, n_picks = [], 0
+    try:                                           # keep a finished game's line after Kalshi closes its market
+        prev_lines = {g["game_key"]: g.get("kalshi_line") for g in json.load(open(OUT)).get("games", [])}
+    except Exception:
+        prev_lines = {}
+
+    def line_for(key, away, home, state, kickoff):
+        kg = odds.get((away, home)) or {}
+        if state == "in":
+            pts = win_line(kg.get("_home_ticker"), parse_t(kickoff), now)
+            if pts:
+                return {"team": home, "points": pts}
+        return prev_lines.get(key) if state in ("in", "post") else None
+
     for g in sorted(games, key=lambda x: (x.get("kickoff_time") or "", x["game_key"])):
         live = sb.get((g["game_date"], g["away_team"], g["home_team"])) or {}
         picks = g.get("paper_picks") or []
@@ -187,6 +259,8 @@ def main():
                           "state": live.get("state", "pre"), "detail": live.get("detail", ""),
                           "away_score": live.get("away_score"), "home_score": live.get("home_score"),
                           "possession": live.get("possession") or None, "espn_id": live.get("espn_id"),
+                          "kalshi_game": public(odds.get((g["away_team"], g["home_team"]))) if live.get("state") != "post" else None,
+                          "kalshi_line": line_for(g["game_key"], g["away_team"], g["home_team"], live.get("state", "pre"), g.get("kickoff_time")),
                           "picks": out_picks})
     # games on ESPN's board with no prop prices still get a score line
     known = {(g["game_date"], g["away_team"], g["home_team"]) for g in games}
@@ -195,7 +269,10 @@ def main():
             out_games.append({"game_key": f"{k[0]}_{k[1]}_{k[2]}", "away": v["away"], "home": v["home"],
                               "kickoff": v["kickoff"], "locked": False, "state": v["state"], "detail": v["detail"],
                               "away_score": v["away_score"], "home_score": v["home_score"],
-                              "possession": v.get("possession") or None, "espn_id": v["espn_id"], "picks": []})
+                              "possession": v.get("possession") or None, "espn_id": v["espn_id"],
+                              "kalshi_game": public(odds.get((v["away"], v["home"]))) if v["state"] != "post" else None,
+                              "kalshi_line": line_for(f"{k[0]}_{k[1]}_{k[2]}", v["away"], v["home"], v["state"], v["kickoff"]),
+                              "picks": []})
     out = {"generated_at": iso(now), "model_scored_utc": model.get("generated_at"), "active": active,
            "note": "Live stats are ESPN's unofficial box score. Official grading uses nflverse play-by-play after the game.",
            "report": {k: report.get(k) for k in ("paper_picks_graded", "wins", "profit_per_1_contract_sum", "cost_sum", "roi")},
