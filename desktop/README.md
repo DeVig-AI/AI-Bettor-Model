@@ -1,10 +1,10 @@
 # DeVig apps
 
-**Web app (free, no Claude):** https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/
-It is DeVig.AI reading the repo's export files directly (`docs/app/repo-data.js`). On a phone, open it and use
+**Web app (free, no Claude):** https://devigai.pages.dev/
+It is DeVig.AI reading the repo's export files directly (`docs/repo-data.js`). On a phone, open it and use
 Share → Add to Home Screen.
 
-**Updating the app:** change `docs/app/` (or rebuild it from a new copy of DeVig with
+**Updating the app:** change `docs/` (or rebuild it from a new copy of DeVig with
 `python3 tools/build_free_app.py tools/devig_source.html`) and push to `main`. GitHub Pages redeploys in about a
 minute, and the web, Mac and Windows apps all show the new version on their next open.
 

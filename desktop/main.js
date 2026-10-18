@@ -1,10 +1,10 @@
-// DeVig desktop: a window onto the hosted DeVig app (GitHub Pages). The app's code and data live on the site,
+// DeVig desktop: a window onto the hosted DeVig app (devigai.pages.dev, deployed from the repo by Cloudflare Pages). The app's code and data live on the site,
 // so pushing to the repo updates every installed copy -- no reinstall needed.
 const { app, BrowserWindow, shell } = require("electron");
 const path = require("path");
 
-const APP_URL = "https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/";
-const SITE = "https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/";
+const APP_URL = "https://devigai.pages.dev/";
+const SITE = "https://devigai.pages.dev/";
 
 function onSite(url) {
   return url.startsWith(SITE);
@@ -16,7 +16,7 @@ function createWindow(url) {
     title: "DeVig", backgroundColor: "#0c0f14", autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, sandbox: true },
   });
-  // pages of the site (the app, the live board) open in an app window; anything else in the normal browser
+  // pages of the site open in an app window; anything else in the normal browser
   win.webContents.setWindowOpenHandler(({ url: target }) => {
     if (onSite(target)) {
       createWindow(target);
