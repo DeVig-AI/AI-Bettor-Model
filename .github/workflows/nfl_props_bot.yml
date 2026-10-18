@@ -1,0 +1,36 @@
+name: NFL props bot -- prices + model (paper only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */3 * * *'   # every 3 hours; public market data only, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: nfl-props-exchanges
+  cancel-in-progress: false
+jobs:
+  props:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas + numpy
+        run: pip install pandas numpy
+      - name: Pull NFL player-prop prices from the public Kalshi and Polymarket APIs
+        run: python3 nfl/nfl_props_exchanges_v1.py
+      - name: Score props with the frozen model, paper-lock, grade
+        continue-on-error: true
+        run: python3 nfl/nfl_props_model_v1_live.py
+      - name: Save the exports and the paper log
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/props_exchanges_export.json
+          [ -f nfl/props_model_export.json ] && git add nfl/props_model_export.json
+          [ -f nfl/PROPS_MODEL_V1_LOG.sqlite3 ] && git add nfl/PROPS_MODEL_V1_LOG.sqlite3
+          git diff --cached --quiet || git commit -m "NFL props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase -q && git push
