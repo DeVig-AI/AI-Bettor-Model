@@ -40,7 +40,7 @@ jobs:
         if: steps.on.outputs.go == 'true'
         run: ln -sfn "$GITHUB_WORKSPACE/nba" "$GITHUB_WORKSPACE/data"
 
-      - name: Grade the trial (no new locks: its odds came from The Odds API, dropped 2026-10-18)
+      - name: Grade the trial (no new locks, its odds came from The Odds API, dropped 2026-10-18)
         if: steps.on.outputs.go == 'true'
         working-directory: nba
         run: python3 nba_preseason_trial_v1.py --grade-only
