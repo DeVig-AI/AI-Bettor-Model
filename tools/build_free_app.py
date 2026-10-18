@@ -15,10 +15,11 @@ OUT = os.path.join(HERE, "..", "docs", "index.html")
 HEAD = ('<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0c0f14">'
         '<link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-180.png">'
         '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DeVig">')
-FREE = '<link rel="stylesheet" href="free.css">\n<script src="repo-data.js"></script>\n'
-FOOT = ('<div class="free-foot">Free version · data straight from the project\'s GitHub, no Claude needed · '
+FREE = '<link rel="stylesheet" href="free.css">\n<script src="repo-data.js"></script>\n<script src="install.js" defer></script>\n<script src="account.js" defer></script>\n'
+FOOT = ('<div class="free-foot">Free · no account needed · '
+        '<a href="#" onclick="return window.devigInstallTip ? devigInstallTip() : false">Add to home screen</a> · '
         '<a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest" target="_blank" rel="noopener">'
-        'Mac &amp; Windows app</a></div>\n')
+        'Desktop &amp; phone downloads</a></div>\n')
 
 # (old, new, required)
 EDITS = [

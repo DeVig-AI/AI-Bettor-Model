@@ -122,7 +122,7 @@ def kalshi_games(sport):
                 teams[code] = dict(_quote(m), name=m.get("yes_sub_title") or "")
         if len(teams) != 2:
             log.append(f"{et}: {len(teams)} team markets"); continue
-        suffix = key[7:]                       # after YYMONDD
+        suffix = re.sub(r"^\d+", "", key[7:])  # after YYMONDD and, for MLB, the HHMM start time
         order = next(((a, h) for a in teams for h in teams if a != h and a + h == suffix), None)
         if not order:
             log.append(f"{et}: could not tell away from home in {suffix!r}"); continue
