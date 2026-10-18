@@ -1,12 +1,13 @@
 # DeVig accounts (login + saved settings)
 
 DeVig saves three things per person: what they track, their name tag and their favorite teams.
-Without an account these stay in the browser on that device. With an account they follow the person to every device.
-Opening an account takes the **invite code**: someone who finds the site can sign in and look around, but can't save
-anything to the shared storage without the code you give your friends.
+Anyone can open https://devigai.pages.dev and use the app without signing in. Tracking, the name tag and favorite
+teams need a free account, and they follow the person to every device. Opening an account takes the **invite code**
+you give your friends, so a stranger can look around but can't save anything to the shared storage.
 
 How it works:
-- **Cloudflare Access** puts an email login in front of https://devigai.pages.dev. Visitors type their email, get a 6-digit code, and they're in. There are no passwords.
+- **Cloudflare Access** guards only https://devigai.pages.dev/login. The profile button's "Sign in or create account" goes
+  there: people type their email, get a 6-digit code, and come back to the app signed in. There are no passwords.
 - **`functions/api/me.js`** is a Cloudflare Pages Function. It checks the Access login token and reads or writes that person's settings in a **KV** store. The key is a hash of the email, and nothing else about the person is stored.
 - **`docs/account.js`** is in the website. It loads the settings after login and saves every change.
 
@@ -16,7 +17,7 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
 
 1. **Login (Access)**
    - Go to Zero Trust → Access → Applications → Add an application → Self-hosted.
-   - Domain: `devigai.pages.dev`, with the path left empty. Session duration: 1 month.
+   - Domain: `devigai.pages.dev`, path `login` (only the sign-in page; the rest of the site stays public). Session duration: 1 month.
    - Policy: Allow. Include either *Emails* (a list) or *Everyone* (anyone with an email can sign in).
    - Login method: One-time PIN.
    - Optional: copy the application's **Application Audience (AUD) Tag** if the dashboard shows it. Without it, logins
@@ -50,18 +51,19 @@ All of it runs on Cloudflare's free plans: Access is free for up to 50 people, a
 - **Someone leaked the code?** Change `INVITE_CODE` and retry the deployment. People who already opened an account keep it.
 - **Ban someone:** in Zero Trust → Access → Applications → DeVig → Policies, add an **Exclude** rule with their email.
   They can't sign in at all after that.
-- **Friends only:** to stop strangers even seeing the site, change the policy's *Include* from *Everyone* to a list of
-  your friends' emails.
-- **Floods (DDoS):** Cloudflare absorbs attack traffic in front of every Pages site for free. The site is plain files,
-  and only signed-in requests reach `/api/me`, so a flood can't run up anything.
+- **Friends only:** to stop strangers from even signing in, change the policy's *Include* from *Everyone* to a list of
+  your friends' emails (the app itself stays viewable).
+- **Floods (DDoS):** Cloudflare absorbs attack traffic in front of every Pages site for free. The site is plain files.
+  A request to `/api/me` without a valid login is turned away before storage is touched, and if a flood ever used up
+  the free function allowance, "Fail open" keeps the site itself loading for everyone.
 - **Safety headers:** `docs/_headers` stops other sites from framing DeVig to trick people into clicking things.
 
 ## Check it
 
-Open the site, sign in, go to the **Me** tab, type the invite code and tap **Open my account**.
+Open the site, tap the profile button (top right) → **Sign in or create account**, enter the email code, then type the
+invite code and tap **Open my account**.
 It should then say "Saved to your account (your email)".
 Pick a favorite team, then open the site on another device and sign in with the same email: the team is there.
 
-If the Me tab says "Saved on this device", either the login isn't in front of the site yet or step 3 isn't
-done. `/api/me` returns 401 without a valid login and 503 before the `USERS` binding exists.
+If the profile says "Saved on this device (…)", the words in brackets say what's missing. `/api/me` returns 401 without a valid login and 503 before the `USERS` binding exists.
 "Invite codes are not set up yet" means `INVITE_CODE` is missing.

@@ -25,3 +25,11 @@ nav.tabs button[data-tab="ask"],
 .itip-go, .itip-ok { background: var(--accent); color: var(--accent-ink); border: none; flex: 1; }
 .itip-go + .itip-ok { background: none; color: var(--accent-strong); border: 1px solid var(--line-strong); flex: none; }
 .itip-later { background: none; color: var(--ink-soft); border: 1px solid var(--line); }
+
+/* Accounts (account.js): without one, the profile shows only how to sign in; name, teams and tracking need it */
+#panel-me.locked > .card + .card,
+#panel-me.locked .field:has(#meName) { display: none; }
+.me-join-btn { display: inline-block; padding: 10px 16px; border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+               font-weight: 700; text-decoration: none; }
+#meJoin.flash { animation: meflash 1.2s ease-out; border-radius: 10px; }
+@keyframes meflash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }

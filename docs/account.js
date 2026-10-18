@@ -1,12 +1,31 @@
-/* DeVig accounts (website only): keeps a signed-in person's tracking, name tag and favorite teams in their
-   account through /api/me, so they follow them to every device. Without a login (or before accounts are set
-   up) nothing changes: the app keeps saving in this browser. The app stores both in localStorage; this file
-   copies them to and from the account and calls window.devigReloadPrefs() after loading.
-   A new account needs the invite code once (asked for in the Me tab); until then it saves on the device. */
+/* DeVig accounts (website only). Anyone can use the app without signing in; tracking games and props, the name
+   tag and favorite teams need a free account. Signing in happens at /login (Cloudflare Access, email code), and a
+   new account needs the invite code once. The account's copy is kept through /api/me, so it follows the person
+   to every device. The app stores everything in localStorage; this file copies it to and from the account and
+   calls window.devigReloadPrefs() after loading. If accounts aren't available on this site at all (not set up,
+   another host, offline), tracking simply stays on the device. */
 (function () {
   "use strict";
   var TRACK_KEY = "devig.tracked.v1", PREFS_KEY = "devig.prefs.v1";
   var email = null, joined = false, pushTimer = null;
+  var locked = true;                           // until /api/me says otherwise: tracking and settings need an account
+
+  function setLocked(on) {
+    locked = on;
+    var panel = document.getElementById("panel-me");
+    if (panel) panel.classList.toggle("locked", on);
+    else window.addEventListener("load", function () { setLocked(locked); });
+  }
+  setLocked(true);
+
+  // The app asks before every Track tap; without an account it opens the profile, which explains how to get one.
+  window.devigCanTrack = function () {
+    if (!locked) return true;
+    if (window.devigShowProfile) window.devigShowProfile();
+    var j = document.getElementById("meJoin");
+    if (j) { j.classList.remove("flash"); void j.offsetWidth; j.classList.add("flash"); }
+    return false;
+  };
 
   function read(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } }
   function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -46,6 +65,7 @@
 
   function start(data) {
     joined = true;
+    setLocked(false);
     var local = {tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {}};
     var m = data ? merge(local, data) : local;
     write(TRACK_KEY, m.tracked);
@@ -66,9 +86,24 @@
     at.parentNode.insertBefore(a, at.nextSibling);
   }
 
-  // Signed in but no account yet: one box in the Me tab for the invite code.
+  // Not signed in: what an account is for, and the button to sign in or create one.
+  function askSignIn() {
+    status("you're using DeVig as a guest");
+    var at = document.getElementById("meSync");
+    if (!at) { window.addEventListener("load", askSignIn); return; }
+    if (document.getElementById("meJoin")) return;
+    var box = document.createElement("div");
+    box.id = "meJoin";
+    box.innerHTML = '<p style="margin:0 0 10px">Create a free account to track games and props, and to save your name tag and ' +
+      'favorite teams on every device. Sign in with your email (you get a 6-digit code, no password). A new account ' +
+      'needs the invite code from the person who shared DeVig.</p>' +
+      '<a class="me-join-btn" href="/login">Sign in or create account</a>';
+    at.parentNode.insertBefore(box, at.nextSibling);
+  }
+
+  // Signed in but no account yet: one box for the invite code.
   function askInvite() {
-    status("signed in as " + email + ". Saved on this device until you enter the invite code");
+    status("signed in as " + email + ". Enter the invite code to open your account");
     var at = document.getElementById("meSync");
     if (!at) { window.addEventListener("load", askInvite); return; }
     if (document.getElementById("meInvite")) return;
@@ -99,19 +134,21 @@
   window.addEventListener("devig:prefs-changed", function () { push(); });
 
   // Why there's no account, in plain words, so a setup problem shows up in the profile page.
-  var WHY = {401: "you're not signed in", 503: "accounts aren't switched on yet", 404: "accounts only work on devigai.pages.dev"};
+  var WHY = {503: "accounts aren't switched on yet", 404: "accounts only work on devigai.pages.dev"};
+  function deviceOnly(why) { setLocked(false); status("saved on this device" + (why ? " (" + why + ")" : "")); }
 
   fetch("/api/me", {credentials: "same-origin", headers: {accept: "application/json"}})
     .then(function (r) {
+      if (r.status === 401) { askSignIn(); return "done"; }
       if (r.ok) return r.json();
-      status("saved on this device (" + (WHY[r.status] || "account error " + r.status) + ")");
+      deviceOnly(WHY[r.status] || "account error " + r.status);
       return "done";
     })
     .then(function (d) {
       if (d === "done") return;
-      if (!d || !d.email) { status("saved on this device"); return; }
+      if (!d || !d.email) { deviceOnly(); return; }
       email = d.email;
       if (d.joined) start(d.data); else askInvite();
     })
-    .catch(function () { status("saved on this device"); });
+    .catch(function () { deviceOnly(); });
 })();

@@ -745,6 +745,11 @@
   });
   // The profile button (top right) opens profile and settings; tapping it again goes back Home.
   meBtn.addEventListener("click", function(){ showPanel(panels.me.hidden ? "me" : "home"); });
+  window.devigShowProfile = function(){ showPanel("me"); window.scrollTo(0, 0); };
+  if(location.hash === "#profile"){
+    setTimeout(function(){ showPanel("me"); }, 0);           // after the rest of the page has set up
+    try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  }
 
   // ---------- rendering a "lines" result (from a photo scan) ----------
   function renderLinesCard(container, entry, opts){
@@ -1226,6 +1231,7 @@
     if(!t) return;
     if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
     ev.preventDefault(); ev.stopPropagation();
+    if(window.devigCanTrack && !window.devigCanTrack()) return;
     toggleTracked(t.getAttribute("data-trk"), t.getAttribute("data-trk-key"));
     renderHome();
   }
@@ -1236,7 +1242,23 @@
     var tp = [];
     propsDocs.forEach(function(d){
       if(docSport(d) !== currentSport) return;
-      (d.paper_picks || []).forEach(function(p){ if(isTracked("p", pickTrackKey(d, p))) tp.push({d: d, p: p}); });
+      var seen = {};
+      (d.paper_picks || []).forEach(function(p){
+        var k = pickTrackKey(d, p);
+        seen[k] = true;
+        if(isTracked("p", k)) tp.push({d: d, p: p});
+      });
+      // Tracked from Top props: find the line in this game's prices and show what it costs now.
+      var pre = propGameLabel(d) + "|" + String(d.kickoff_time || d.game_date || "").slice(0, 10) + "|";
+      Object.keys(tracked.p || {}).forEach(function(k){
+        if(seen[k] || k.indexOf(pre) !== 0) return;
+        var f = k.slice(pre.length).split("|");
+        if(f.length !== 4) return;
+        var r = propRows(d).filter(function(r){ return r.player === f[0] && r.stat === f[1] && String(r.line) === f[2]; })[0];
+        if(!r) return;
+        var price = propKalshiTwoSided(r) ? (f[3] === "OVER" ? r.ka : Math.round((1 - r.kb) * 10000) / 10000) : null;
+        tp.push({d: d, p: {player: r.player, stat: r.stat, line: r.line, side: f[3], price: price}, now: true});
+      });
     });
     if(!tg.length && !tp.length) return null;
     var card = el("div", "card");
@@ -1264,7 +1286,7 @@
         var p = x.p, lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
         card.appendChild(el("div", "pr-pick", '<div style="min-width:0"><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' +
           escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
-          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · locked at ' + exOddsTxt(p.price, true) + (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
+          '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + (x.now ? (p.price != null ? ' · now ' + exOddsTxt(p.price, true) : '') : ' · locked at ' + exOddsTxt(p.price, true)) + (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
           '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '') + trkBtn("p", pickTrackKey(x.d, p)) + '</div>'));
       });
     }
@@ -1840,7 +1862,7 @@
         row.innerHTML = '<div class="rk">' + (i + 1) + '</div>' +
           '<div style="min-width:0"><div class="bet">' + escapeHtml(x.r.player) + ' · ' + escapeHtml(propBetTxt(x.r, x.e.side)) + '</div>' +
           '<div class="sub">' + propTierPill(x.e.tier) + ' needs ' + needsPct(x.e.price, true) + '% · model ' + Math.round(x.e.chance * 100) + '%' +
-          (x.e.injury ? ' · ' + escapeHtml(x.e.injury) : '') + '</div></div>' +
+          (x.e.injury ? ' · ' + escapeHtml(x.e.injury) : '') + ' ' + trkBtn("p", pickTrackKey(doc, {player: x.r.player, stat: x.r.stat, line: x.r.line, side: x.e.side})) + '</div></div>' +
           '<div class="edge">' + exOddsTxt(x.e.price, true) + '<small>Kalshi</small></div>';
         if(g){
           var leg = propLeg(x.r, x.e.side, exOdds(x.e.price, true), "Kalshi", g, x.e);
