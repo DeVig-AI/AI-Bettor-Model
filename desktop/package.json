@@ -1,0 +1,45 @@
+{
+  "name": "devig-desktop",
+  "productName": "DeVig",
+  "version": "1.0.0",
+  "description": "DeVig desktop app: opens the hosted DeVig app, so every update to the site reaches the app without reinstalling.",
+  "author": "perezreynaldo1226-afk",
+  "homepage": "https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/",
+  "repository": "github:perezreynaldo1226-afk/AI-Bettor-Model",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac dir --universal --publish never",
+    "dist:win": "electron-builder --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "io.github.perezreynaldo1226-afk.devig",
+    "productName": "DeVig",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "offline.html"
+    ],
+    "mac": {
+      "category": "public.app-category.sports",
+      "icon": "build/icon.png",
+      "identity": null
+    },
+    "win": {
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "DeVig-Setup-${version}.${ext}"
+    }
+  }
+}
