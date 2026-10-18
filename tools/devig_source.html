@@ -59,6 +59,15 @@
   }
   .brand h1{font-size:19px; letter-spacing:.01em;}
   .brand .tag{color:var(--ink-faint); font-size:12px; font-family:var(--font-sans);}
+  .me-btn{
+    margin-left:auto; align-self:center; flex:none; width:32px; height:32px; border-radius:50%;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    font-family:var(--font-mono); font-weight:700; font-size:14px;
+  }
+  .me-btn[aria-pressed="true"]{background:var(--accent-wash); color:var(--accent-strong); border-color:var(--accent);}
+  .me-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .me-btn svg{width:18px; height:18px;}
 
   nav.tabs{display:flex; gap:4px; overflow-x:auto; -ms-overflow-style:none; scrollbar-width:none;}
   nav.tabs::-webkit-scrollbar{display:none;}
@@ -401,6 +410,7 @@
       <div class="mark">DV</div>
       <h1>DeVig.AI</h1>
       <span class="tag">odds, read straight</span>
+      <button type="button" class="me-btn" id="meBtn" aria-pressed="false" aria-label="Your profile and settings" title="Profile and settings"></button>
     </div>
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="home">Home</button>
@@ -408,7 +418,6 @@
       <button role="tab" aria-selected="false" data-tab="scan">History</button>
       <button role="tab" aria-selected="false" data-tab="parlay">Parlay</button>
       <button role="tab" aria-selected="false" data-tab="lab">Testing</button>
-      <button role="tab" aria-selected="false" data-tab="me">Me</button>
       <button role="tab" aria-selected="false" data-tab="about">About</button>
     </nav>
   </header>
@@ -574,7 +583,7 @@
 
   <section class="panel" id="panel-me" hidden>
     <div class="card">
-      <h3 style="margin-bottom:4px">You</h3>
+      <h3 style="margin-bottom:4px">Profile</h3>
       <p class="faint" style="margin:0 0 10px" id="meSync">Saved on this device.</p>
       <div class="field"><label for="meName">Name tag</label><input id="meName" maxlength="24" autocomplete="nickname" placeholder="What DeVig calls you"></div>
     </div>
@@ -723,14 +732,19 @@
     me: document.getElementById("panel-me"),
     about: document.getElementById("panel-about")
   };
+  var meBtn = document.getElementById("meBtn");
+  function showPanel(name){
+    tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === name)); });
+    meBtn.setAttribute("aria-pressed", String(name === "me"));
+    Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
+    if(name === "scan") loadHistory();
+    if(name === "me") renderMe();
+  }
   tabs.forEach(function(btn){
-    btn.addEventListener("click", function(){
-      tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b === btn)); });
-      Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== btn.dataset.tab); });
-      if(btn.dataset.tab === "scan") loadHistory();
-      if(btn.dataset.tab === "me") renderMe();
-    });
+    btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); });
   });
+  // The profile button (top right) opens profile and settings; tapping it again goes back Home.
+  meBtn.addEventListener("click", function(){ showPanel(panels.me.hidden ? "me" : "home"); });
 
   // ---------- rendering a "lines" result (from a photo scan) ----------
   function renderLinesCard(container, entry, opts){
@@ -882,6 +896,7 @@
   });
 
   function renderHome(){
+    updateMeBtn();
     var statusEl = document.getElementById("homeStatus");
     var syncedEl = document.getElementById("homeSyncedAt");
     var wrap = document.getElementById("homeSlate");
@@ -1112,6 +1127,7 @@
     try{ var pj = JSON.parse(localStorage.getItem(PREFS_KEY) || "null"); if(pj && typeof pj === "object"){ prefs.name = String(pj.name || ""); prefs.teams = pj.teams || {}; } }catch(e){}
   }
   loadPrefs();
+  updateMeBtn();
   function prefsChanged(){ try{ window.dispatchEvent(new Event("devig:prefs-changed")); }catch(e){} }
   function savePrefs(){
     prefs.updated = Date.now();
@@ -1124,6 +1140,14 @@
     tracked.updated = Date.now();
     try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
     prefsChanged();
+  }
+  // The top-right profile button shows the first letter of the name tag, or a person outline before one is set.
+  function updateMeBtn(){
+    var b = document.getElementById("meBtn");
+    if(!b) return;
+    var initial = (prefs.name || "").trim().charAt(0).toUpperCase();
+    if(initial){ b.textContent = initial; return; }
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
   }
   function favTeams(sport){ return (prefs.teams && prefs.teams[sport]) || []; }
   function isFavGame(g){ var f = favTeams(g.sport || "NFL"); return f.indexOf(g.away_team) >= 0 || f.indexOf(g.home_team) >= 0; }

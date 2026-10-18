@@ -52,7 +52,18 @@
     write(PREFS_KEY, m.prefs);
     if (window.devigReloadPrefs) window.devigReloadPrefs();
     status("saved to your account (" + email + ")");
+    signOutLink();
     push();                                     // store the combined copy (first sign-in uploads this device's list)
+  }
+
+  // Cloudflare Access signs people out at this address.
+  function signOutLink() {
+    var at = document.getElementById("meSync");
+    if (!at || document.getElementById("meSignOut")) return;
+    var a = document.createElement("a");
+    a.id = "meSignOut"; a.href = "/cdn-cgi/access/logout"; a.textContent = "Sign out";
+    a.style.cssText = "display:inline-block; margin:0 0 12px; font-size:13px; color:var(--accent-strong)";
+    at.parentNode.insertBefore(a, at.nextSibling);
   }
 
   // Signed in but no account yet: one box in the Me tab for the invite code.
@@ -61,6 +72,7 @@
     var at = document.getElementById("meSync");
     if (!at) { window.addEventListener("load", askInvite); return; }
     if (document.getElementById("meInvite")) return;
+    signOutLink();
     var box = document.createElement("form");
     box.id = "meInvite";
     box.style.marginBottom = "14px";
@@ -86,9 +98,17 @@
 
   window.addEventListener("devig:prefs-changed", function () { push(); });
 
+  // Why there's no account, in plain words, so a setup problem shows up in the profile page.
+  var WHY = {401: "you're not signed in", 503: "accounts aren't switched on yet", 404: "accounts only work on devigai.pages.dev"};
+
   fetch("/api/me", {credentials: "same-origin", headers: {accept: "application/json"}})
-    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (r) {
+      if (r.ok) return r.json();
+      status("saved on this device (" + (WHY[r.status] || "account error " + r.status) + ")");
+      return "done";
+    })
     .then(function (d) {
+      if (d === "done") return;
       if (!d || !d.email) { status("saved on this device"); return; }
       email = d.email;
       if (d.joined) start(d.data); else askInvite();
