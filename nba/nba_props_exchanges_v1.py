@@ -37,6 +37,11 @@ NICK = {"hawks": "ATL", "celtics": "BOS", "nets": "BKN", "hornets": "CHA", "bull
         "trail blazers": "POR", "blazers": "POR", "kings": "SAC", "spurs": "SAS", "raptors": "TOR", "jazz": "UTA",
         "wizards": "WAS"}
 MONTHS = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+# Seen 2026-10-18: Kalshi also lists WNBA ("Women's Pro Basketball ..."), "Protected" copies of the player props (same
+# player/stat/line, different payout -- they would overwrite the real market's price), head-to-head, team bench,
+# race-to, every-game, summer-league and contest series. Only single-game NBA player props are wanted.
+NOT_PLAYER_PROP = re.compile(r"women|wnba|protected|head[- ]to[- ]head|\bh2h\b|bench|\brace\b|every game|all games|"
+                             r"summer|contest|celebrity", re.I)
 SKIP_SERIES = re.compile(r"\b(most|leader|leaders|mvp|season|first|team|champion|championship|series|award|draft|"
                          r"total|spread|win|wins|winner|double|triple|rookie|coach|all-?star|trade|career|record|"
                          r"quarter|half|margin|longest|dunk|exact|range)\b", re.I)
@@ -73,6 +78,8 @@ def stat_of(title):
     """Map a Kalshi series title to a canonical stat, or None."""
     t = str(title or "").lower()
     if not re.search(r"(pro basketball|\bnba\b)", t) or SKIP_SERIES.search(t):
+        return None
+    if not re.search(r"\bplayer\b", t) or NOT_PLAYER_PROP.search(t):
         return None
     has = {k: bool(re.search(p, t)) for k, p in {
         "pts": r"\bpoints?\b|\bpts\b", "reb": r"\brebounds?\b|\breb\b", "ast": r"\bassists?\b|\bast\b",
