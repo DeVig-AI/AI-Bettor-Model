@@ -452,6 +452,22 @@
   .me-add{font-family:var(--font-sans); font-size:12.5px; color:var(--ink); background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:999px; padding:5px 10px;}
   .donate{display:block; text-align:center; text-decoration:none; margin-top:10px; font-family:var(--font-sans); font-weight:700; font-size:14px;
     background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:10px 14px;}
+  /* History: the model's record, then one tab per day (swipe sideways) */
+  .rec-big{display:flex; align-items:baseline; gap:10px; margin:12px 0 2px;}
+  .rec-big b{font-family:var(--font-mono); font-size:30px; font-weight:600;}
+  .rec-big span{color:var(--ink-soft); font-size:14px;}
+  .day-strip{display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x proximity; -ms-overflow-style:none; scrollbar-width:none;
+    margin:14px -16px 0; padding:2px 16px;}
+  .day-strip::-webkit-scrollbar{display:none;}
+  .day-tab{flex:none; scroll-snap-align:center; min-width:64px; padding:8px 10px; border-radius:12px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--ink-soft); font:inherit; cursor:pointer; text-align:center; line-height:1.25;}
+  .day-tab .d1{display:block; font-size:11.5px; color:var(--ink-faint);}
+  .day-tab .d2{display:block; font-weight:600; font-size:14px; color:var(--ink);}
+  .day-tab .d3{display:block; font-family:var(--font-mono); font-size:11.5px; margin-top:2px;}
+  .day-tab[aria-selected="true"]{border-color:var(--accent); background:var(--accent-wash);}
+  .day-sum{display:flex; gap:14px; flex-wrap:wrap; font-size:13.5px; color:var(--ink-soft); margin:2px 0 12px;}
+  .day-sum b{font-family:var(--font-mono); color:var(--ink);}
+
   /* Best parlay pages: swipe sideways, dots below */
   .bp-track{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -ms-overflow-style:none; scrollbar-width:none;
     margin:0 -4px; padding:2px 4px; overscroll-behavior-x:contain; align-items:flex-start;}
@@ -598,13 +614,11 @@
     <div id="scanResult"></div>
 
     <div class="card" id="pastCard">
-      <h3 style="margin-bottom:4px">Past games</h3>
-      <p class="faint" style="margin:0">Finished games, newest first: the final score, what the model picked and how it went.</p>
-      <div id="pastSportPills" style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap"></div>
+      <div id="pastSportPills" style="display:flex; gap:6px; flex-wrap:wrap"></div>
+      <div id="pastRecord"></div>
+      <div class="day-strip" id="pastDays" role="tablist" aria-label="Pick a day"></div>
     </div>
     <div id="pastGames"></div>
-
-    <div class="card" id="decisionHistoryCard" hidden></div>
 
     <div class="card">
       <h3 style="margin-bottom:6px">Saved lines</h3>
@@ -1253,40 +1267,88 @@
     var d = g.game_id ? decisionsDocs.filter(function(x){ return x.game_id === g.game_id && x.outcome && x.outcome.resolved; })[0] : null;
     return d ? d.outcome : null;
   }
+  // How the model's pick did in one finished game: null when it made no pick (or the result isn't in yet).
+  function gamePickWon(g){
+    var d = computeDecision(g), mm = g.model || {};
+    if(d.action !== "ML") return null;
+    var res = gameResult(g);
+    if(res && res.decision_correct != null) return res.decision_correct;
+    var lg = liveFor(g);
+    if(lg && lg.state === "post" && lg.away_score != null && lg.away_score !== lg.home_score)
+      return (lg.home_score > lg.away_score ? g.home_team : g.away_team) === mm.winner_side;   // until the official grade lands
+    return null;
+  }
+  function dayKey(iso){
+    var d = iso ? new Date(iso) : null;
+    return d && !isNaN(d) ? d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") : "0000";
+  }
+  var pastDay = null;
   function renderPast(){
     var wrap = document.getElementById("pastGames"), pills = document.getElementById("pastSportPills");
+    var recEl = document.getElementById("pastRecord"), strip = document.getElementById("pastDays");
     if(!wrap || !pills || panels.scan.hidden) return;
     var past = homeDocs.filter(function(g){ return !isOnBoard(g); });
     var sports = [];
-    past.forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
+    past.concat(decisionsDocs).forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
     sports.sort(function(a, b){ return historySportRank(a) - historySportRank(b); });
     if(sports.indexOf(pastSport) < 0) pastSport = sports[0] || null;
     pills.innerHTML = sports.map(function(sp){
       return '<button type="button" class="pill-tab' + (sp === pastSport ? ' active' : '') + '" data-past-sport="' + escapeHtml(sp) + '">' + escapeHtml(sp) + '</button>';
     }).join("");
-    wrap.innerHTML = "";
+    wrap.innerHTML = ""; recEl.innerHTML = ""; strip.innerHTML = "";
     if(!pastSport){
       wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished games yet.<br><span class="faint">Games move here from Home once they end.</span></div>'));
       return;
     }
+    // the model's record in this sport, all season
+    var tr = computeTrackRecord(decisionsDocs.filter(function(d){ return (d.sport || "NFL") === pastSport; }));
+    past.forEach(function(g){                            // games already final but not graded yet count too, like the day tabs
+      if((g.sport || "NFL") !== pastSport || gameResult(g)) return;
+      var r = gamePickWon(g);
+      if(r === true) tr.ml.w++; else if(r === false) tr.ml.l++;
+    });
+    var n = tr.ml.w + tr.ml.l;
+    recEl.innerHTML = '<div class="rec-big"><b>' + tr.ml.w + '–' + tr.ml.l + '</b><span>' + (n ? Math.round(tr.ml.w / n * 100) + '% of ' + escapeHtml(pastSport) + ' picks won' : 'no graded ' + escapeHtml(pastSport) + ' picks yet') + '</span></div>' +
+      '<div class="faint">The model\'s winner picks this season. Winning picks isn\'t the same as making money: favorites pay little.</div>';
+    // one tab per day, oldest to newest, the newest selected first
     var byDay = {};
-    past.filter(function(g){ return (g.sport || "NFL") === pastSport; }).forEach(function(g){
-      var day = g.kickoff_time ? new Date(g.kickoff_time) : null;
-      var key = day && !isNaN(day) ? day.getFullYear() + "-" + String(day.getMonth() + 1).padStart(2, "0") + "-" + String(day.getDate()).padStart(2, "0") : "0000";
-      (byDay[key] = byDay[key] || []).push(g);
-    });
-    Object.keys(byDay).sort().reverse().forEach(function(key){
-      var first = byDay[key][0];
-      var label = key === "0000" ? "Date unknown" : new Date(first.kickoff_time).toLocaleDateString([], {weekday: "long", month: "short", day: "numeric"});
-      wrap.appendChild(el("div", "bb-sec", escapeHtml(label)));
-      byDay[key].sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); })
-        .forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
-    });
+    past.filter(function(g){ return (g.sport || "NFL") === pastSport; }).forEach(function(g){ (byDay[dayKey(g.kickoff_time)] = byDay[dayKey(g.kickoff_time)] || []).push(g); });
+    var days = Object.keys(byDay).sort();
+    if(!days.length){
+      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished ' + escapeHtml(pastSport) + ' games to show.</div>'));
+      return;
+    }
+    if(days.indexOf(pastDay) < 0) pastDay = days[days.length - 1];
+    strip.innerHTML = days.map(function(k){
+      var w = 0, l = 0, first = byDay[k][0];
+      byDay[k].forEach(function(g){ var r = gamePickWon(g); if(r === true) w++; else if(r === false) l++; });
+      var dt = k === "0000" ? null : new Date(first.kickoff_time);
+      return '<button type="button" class="day-tab" role="tab" aria-selected="' + (k === pastDay) + '" data-day="' + k + '">' +
+        '<span class="d1">' + (dt ? dt.toLocaleDateString([], {weekday: "short"}) : "?") + '</span>' +
+        '<span class="d2">' + (dt ? dt.toLocaleDateString([], {month: "short", day: "numeric"}) : "Unknown") + '</span>' +
+        '<span class="d3" style="color:' + (w + l ? (w >= l ? 'var(--good)' : 'var(--bad)') : 'var(--ink-faint)') + '">' + (w + l ? w + '–' + l : '—') + '</span></button>';
+    }).join("");
+    var sel = strip.querySelector('[aria-selected="true"]');
+    if(sel) strip.scrollLeft = sel.offsetLeft - strip.clientWidth / 2 + sel.offsetWidth / 2;
+    // the chosen day: its record, then its games as Home-style cards
+    var games = byDay[pastDay].slice().sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
+    var w = 0, l = 0, none = 0;
+    games.forEach(function(g){ var r = gamePickWon(g); if(r === true) w++; else if(r === false) l++; else none++; });
+    var label = pastDay === "0000" ? "Date unknown" : new Date(games[0].kickoff_time).toLocaleDateString([], {weekday: "long", month: "long", day: "numeric"});
+    wrap.appendChild(el("div", "bb-sec", escapeHtml(label)));
+    wrap.appendChild(el("div", "day-sum", '<span>Picks won <b>' + w + '</b></span><span>lost <b>' + l + '</b></span>' + (none ? '<span>no pick or not graded <b>' + none + '</b></span>' : '')));
+    games.forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
   }
+  document.getElementById("pastDays").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-day]");
+    if(!b) return;
+    pastDay = b.getAttribute("data-day");
+    renderPast();
+  });
   document.getElementById("pastSportPills").addEventListener("click", function(ev){
     var b = ev.target.closest && ev.target.closest("[data-past-sport]");
     if(!b) return;
-    pastSport = b.getAttribute("data-past-sport");
+    pastSport = b.getAttribute("data-past-sport"); pastDay = null;
     renderPast();
   });
 
@@ -1992,10 +2054,8 @@
       chips.push('<span class="pill neutral">Props' + (nLab ? ' · ' + nLab + ' labeled' : '') + '</span>');
     }
     var res = !started ? gameResult(g) : null, over = !isOnBoard(g);
-    var pickWon = res && res.decision_correct != null ? res.decision_correct : null;
-    if(pickWon == null && lg && lg.state === "post" && lg.away_score != null && lg.away_score !== lg.home_score)
-      pickWon = (lg.home_score > lg.away_score ? g.home_team : g.away_team) === mm.winner_side;   // until the official grade lands
-    if(d.action === "ML" && pickWon != null)
+    var pickWon = gamePickWon(g);
+    if(pickWon != null)
       chips.unshift('<span class="pill ' + (pickWon ? 'good">Pick won' : 'bad">Pick lost') + '</span>');
     var when = res && res.home_score != null ? '<span><span class="pill neutral">FINAL</span> <span class="faint">' + escapeHtml(g.away_team) + ' ' +
         res.away_score + ' – ' + escapeHtml(g.home_team) + ' ' + res.home_score + '</span></span>'
