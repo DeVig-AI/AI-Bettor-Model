@@ -1,8 +1,9 @@
-name: NFL weather totals live test (V1)
+name: NFL weather totals live test (V2, Kalshi prices)
 
 # Monitoring only -- no bets. Times are UTC and chosen to cover every NFL kickoff
-# window in both EDT and EST with the 3.5h look-ahead. Runs with no game in the
-# window make no Odds API call (ESPN and open-meteo are free).
+# window in both EDT and EST with the 3.5h look-ahead. Every source is free and keyless:
+# Kalshi public prices, ESPN, open-meteo. V1 (Pinnacle via The Odds API) ended 2026-10-18;
+# its leftover picks are still graded here, but it takes no new snapshots.
 on:
   schedule:
     - cron: "37 11 * * *"   # London games
@@ -39,31 +40,29 @@ jobs:
             echo "Model present; not refitting."
           fi
 
-      - name: Grade finished games
-        run: python nfl_weather_totals_live_v1.py grade
+      - name: Grade finished games (V1 leftovers, then V2)
+        run: |
+          python nfl_weather_totals_live_v1.py grade
+          python nfl_weather_totals_live_v2.py grade
 
       - name: Snapshot games in the next 3.5h
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python nfl_weather_totals_live_v1.py snapshot
+        run: python nfl_weather_totals_live_v2.py snapshot
 
       - name: Preview upcoming games (not counted)
-        # Evening run previews the next ~36h; manual runs always preview. 1 credit only if games exist.
+        # Evening run previews the next ~36h; manual runs always preview.
         if: github.event_name == 'workflow_dispatch' || github.event.schedule == '37 22 * * *'
         continue-on-error: true
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python nfl_weather_totals_preview_v1.py --hours 36
+        run: python nfl_weather_totals_preview_v2.py --hours 36
 
       - name: Commit results and refresh the app export
         if: always()
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          for f in nfl_weather_totals_model_v1.json WEATHER_TOTALS_LIVE_V1.sqlite3 WEATHER_TOTALS_PREVIEW_V1.json; do [ -f "$f" ] && git add "$f"; done; true
-          git diff --cached --quiet || git commit -m "weather totals live v1: $(date -u +%FT%TZ)"
+          for f in nfl_weather_totals_model_v1.json WEATHER_TOTALS_LIVE_V1.sqlite3 WEATHER_TOTALS_LIVE_V2.sqlite3 WEATHER_TOTALS_PREVIEW_V2.json; do [ -f "$f" ] && git add "$f"; done; true
+          git diff --cached --quiet || git commit -m "weather totals live v2: $(date -u +%FT%TZ)"
           git pull --rebase -q || true
-          (cd nfl && python3 export_lineboard_nfl_v6.py) || echo "export failed; picks are still saved"
+          (cd nfl && python3 export_lineboard_nfl_v7.py) || echo "export failed; picks are still saved"
           git add nfl/lineboard_export.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "NFL app export with weather picks $(date -u +%FT%TZ)"
           for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done

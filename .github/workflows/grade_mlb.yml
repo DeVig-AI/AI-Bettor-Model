@@ -51,15 +51,13 @@ jobs:
           ln -sfn "$GITHUB_WORKSPACE/mlb" ../MLB_AI_MODEL/data/retrosheet_basic
           ls -la ../MLB_AI_MODEL/data/retrosheet_basic/teamstats.csv ../MLB_AI_MODEL/data/retrosheet_basic/pitching.csv
 
-      - name: Fetch live odds
+      - name: Fetch live odds (Kalshi public prices, free, no key)
         id: odds
         if: steps.mode.outputs.lock == 'true'
         working-directory: mlb
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           set +e
-          python3 fetch_mlb_odds_v3.py --out live/MLB_ODDS_LIVE.csv --markets h2h,spreads --hours-ahead 16 > "$RUNNER_TEMP/odds.log" 2>&1
+          python3 fetch_mlb_odds_kalshi.py --out live/MLB_ODDS_LIVE.csv --markets h2h,spreads --hours-ahead 16 > "$RUNNER_TEMP/odds.log" 2>&1
           rc=$?
           set -e
           cat "$RUNNER_TEMP/odds.log"

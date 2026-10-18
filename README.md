@@ -1,0 +1,19 @@
+<p align="center"><img src="branding/devig-icon-1024.png" width="128" alt="DeVig icon"></p>
+
+<h1 align="center">DeVig</h1>
+<p align="center"><b>Odds, read straight.</b> NFL, MLB and NBA models, tested in public against real prices.</p>
+
+<p align="center">
+  <a href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/app/">Open the app</a> ·
+  <a href="https://perezreynaldo1226-afk.github.io/AI-Bettor-Model/">Live board</a> ·
+  <a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest">Mac, Windows, Android and iPhone downloads</a>
+</p>
+
+GitHub Actions in this repo pull public odds and exchange prices, run frozen models, lock paper picks before each
+game under pre-registered rules, and grade them afterward. Every pick and result is committed here, append-only.
+Nothing is bet.
+
+- `nfl/`, `mlb/`, `nba/`: models, live tests, pre-registrations (`*_PREREG.md`) and their logs
+- `docs/`: the web app (`docs/app/`) and live board, served by GitHub Pages
+- `desktop/`, `mobile/`: the app shells; see `desktop/README.md` for building and updating them
+- `branding/`: the icon (`devig-icon.svg`) and the repo's social preview image

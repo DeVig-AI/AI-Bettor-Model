@@ -40,17 +40,10 @@ jobs:
         if: steps.on.outputs.go == 'true'
         run: ln -sfn "$GITHUB_WORKSPACE/nba" "$GITHUB_WORKSPACE/data"
 
-      - name: Run the trial
+      - name: Grade the trial (no new locks: its odds came from The Odds API, dropped 2026-10-18)
         if: steps.on.outputs.go == 'true'
         working-directory: nba
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "30 15 * * *" ]; then
-            python3 nba_preseason_trial_v1.py
-          else
-            python3 nba_preseason_trial_v1.py --grade-only
-          fi
+        run: python3 nba_preseason_trial_v1.py --grade-only
 
       - name: Commit and push
         if: always() && steps.on.outputs.go == 'true'

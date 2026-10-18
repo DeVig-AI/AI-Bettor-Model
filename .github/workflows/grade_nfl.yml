@@ -76,14 +76,12 @@ jobs:
           python3 -c "import pandas as pd; d=pd.read_csv('../NFL_AI_MODEL_1_0/live/pregame/MODEL_1_0_UPCOMING_WINNER_63_V62_3.csv'); print(f'season={int(d.season.iloc[0])}'); print(f'week={int(d.week.iloc[0])}')" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
 
-      - name: Fetch live odds for that week
+      - name: Fetch live odds (Kalshi public prices, free, no key) for that week
         if: steps.mode.outputs.lock == 'true'
         working-directory: nfl
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
           mkdir -p ../NFL_AI_MODEL_1_0/live/sportsbook   # the model bundle doesn't ship this folder
-          python3 fetch_week_odds_v2.py --season ${{ steps.feat.outputs.season }} --week ${{ steps.feat.outputs.week }} --out ../NFL_AI_MODEL_1_0/live/sportsbook/WEEK_ODDS_LIVE.csv
+          python3 fetch_week_odds_kalshi.py --season ${{ steps.feat.outputs.season }} --week ${{ steps.feat.outputs.week }} --out ../NFL_AI_MODEL_1_0/live/sportsbook/WEEK_ODDS_LIVE.csv
 
       - name: Lock picks (all four deciders)
         if: steps.mode.outputs.lock == 'true'
@@ -103,7 +101,7 @@ jobs:
       - name: Export app data for Lineboard
         if: always()
         working-directory: nfl
-        run: python3 export_lineboard_nfl_v6.py
+        run: python3 export_lineboard_nfl_v7.py
 
       - name: Commit and push if the database changed
         if: always()           # keep any grading/locking that succeeded even if a later step failed
