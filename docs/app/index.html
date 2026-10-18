@@ -371,6 +371,11 @@
   .lv-odds .n{font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;}
   .lv-odds .n.now{font-weight:700;}
   .lv-odds .m{color:var(--ink-soft); min-width:0;}
+  .lv-chart{margin-top:10px; padding:8px 10px 6px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px;}
+  .lv-chart .top{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; color:var(--ink-soft);}
+  .lv-chart .top b{font-family:var(--font-mono); color:var(--ink); font-variant-numeric:tabular-nums;}
+  .lv-chart svg{display:block; width:100%; height:64px; margin-top:4px; overflow:visible;}
+  .lv-chart .ax{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-faint); margin-top:2px;}
 </style>
 
 <div class="wrap">
@@ -1416,7 +1421,7 @@
       : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
       : '<span><span class="pill neutral">FINAL</span></span>';
     head.innerHTML = '<div class="sb-top">' + when + (tags && !started ? '<span>' + tags + '</span>' : '') + '</div>' +
-      sbGrid(g, d, started ? lg : null) + (started ? liveOddsEl(g, lg) : '') +
+      sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + liveOddsEl(g, lg) : '') +
       '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
     head.setAttribute("aria-expanded", String(isOpen));
     var det = el("div", "game-details");
@@ -2494,6 +2499,31 @@
     return '<div class="lv-odds"><div class="h">Odds</div><div class="h">Locked</div><div class="h">Live · Kalshi</div>' +
       rows.map(function(r){ return '<div class="m">' + escapeHtml(r[0]) + '</div><div class="n">' + escapeHtml(r[1]) +
         '</div><div class="n now">' + escapeHtml(r[2]) + '</div>'; }).join("") + '</div>';
+  }
+  // Win-chance line from Kalshi's price history (2 h before kickoff to now), for the model's side (or the home team).
+  function liveChartEl(g, lg){
+    var kl = lg && lg.kalshi_line, pts = kl && kl.points;
+    if(!pts || pts.length < 2) return "";
+    var mm = g.model || {}, team = mm.winner_side === g.away_team ? g.away_team : (mm.winner_side === g.home_team ? g.home_team : kl.team);
+    var flip = team !== kl.team;
+    var t0 = pts[0][0], t1 = pts[pts.length - 1][0], W = 300, H = 64;
+    function x(t){ return t1 > t0 ? (t - t0) / (t1 - t0) * W : 0; }
+    function y(v){ return (1 - v) * H; }
+    var path = pts.map(function(q, i){ return (i ? "L" : "M") + x(q[0]).toFixed(1) + " " + y(flip ? 1 - q[1] : q[1]).toFixed(1); }).join(" ");
+    var dv = devigTwoWay((g.market || {}).moneyline_home, (g.market || {}).moneyline_away);
+    var locked = dv ? (team === g.home_team ? dv.a : dv.b) : null;
+    var ko = g.kickoff_time ? new Date(g.kickoff_time).getTime() / 1000 : null;
+    var now = flip ? 1 - pts[pts.length - 1][1] : pts[pts.length - 1][1];
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + escapeHtml(team) + ' win chance over time">' +
+      '<line x1="0" x2="' + W + '" y1="' + y(0.5) + '" y2="' + y(0.5) + '" stroke="var(--line-strong)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>' +
+      (locked != null ? '<line x1="0" x2="' + W + '" y1="' + y(locked).toFixed(1) + '" y2="' + y(locked).toFixed(1) + '" stroke="var(--ink-faint)" stroke-dasharray="1 3" vector-effect="non-scaling-stroke"/>' : '') +
+      (ko && ko > t0 && ko < t1 ? '<line x1="' + x(ko).toFixed(1) + '" x2="' + x(ko).toFixed(1) + '" y1="0" y2="' + H + '" stroke="var(--line-strong)" vector-effect="non-scaling-stroke"/>' : '') +
+      '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
+    return '<div class="lv-chart"><div class="top"><span>' + escapeHtml(team) + ' win chance · Kalshi</span><span>now <b>' + Math.round(now * 100) + '%</b>' +
+      (locked != null ? ' · at lock <b>' + Math.round(locked * 100) + '%</b>' : '') + '</span></div>' + svg +
+      '<div class="ax"><span>' + escapeHtml(new Date(t0 * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"})) + '</span>' +
+      (ko && ko > t0 && ko < t1 ? '<span>kickoff ' + escapeHtml(new Date(ko * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"})) + '</span>' : '') +
+      '<span>' + (lg.state === "in" ? "now" : "final") + '</span></div></div>';
   }
   function livePickTally(lg){
     var t = {won: 0, lost: 0, live: 0, pending: 0};
