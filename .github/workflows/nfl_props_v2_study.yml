@@ -1,0 +1,31 @@
+name: NFL props -- v2 study (pre-registered, run on demand)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kalshi-props-history      # never overlaps the history collector or the v1 back-test
+  cancel-in-progress: false
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas + numpy
+        run: pip install pandas numpy
+      - name: Run the pre-registered study (NFL_PROPS_V2_STUDY)
+        run: python3 nfl/kalshi_props_v2_study.py
+      - name: Save results
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/props_history/v2_study_results.json nfl/props_history/v2_study_results.md nfl/props_history/v2_study_rows.csv 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NFL props v2 study $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1
