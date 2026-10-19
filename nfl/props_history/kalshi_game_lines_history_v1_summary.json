@@ -1,0 +1,51 @@
+{
+ "stats": {
+  "events": 1354,
+  "matched": 240,
+  "markets": 3957,
+  "no_candle": 235,
+  "unmatched_events": [
+   "KXNFLGAME-26OCT18LACKC 'LA Chargers vs KC Chiefs'",
+   "KXNFLGAME-26OCT18BUFLV 'BUF Bills vs LV Raiders'",
+   "KXNFLGAME-26OCT18ARILAR 'ARI Cardinals vs LA Rams'",
+   "KXNFLGAME-26OCT18TENIND 'TEN Titans vs IND Colts'",
+   "KXNFLGAME-26OCT18PITTB 'PIT Steelers vs TB Buccaneers'",
+   "KXNFLGAME-26OCT18NYJNE 'NY Jets vs NE Patriots'",
+   "KXNFLGAME-26OCT18NONYG 'NOLA Saints vs NY Giants'",
+   "KXNFLGAME-26OCT18CHIATL 'CHI Bears vs ATL Falcons'",
+   "KXNFLGAME-26OCT18CARPHI 'CAR Panthers vs PHI Eagles'",
+   "KXNFLGAME-26OCT18BALCLE 'BAL Ravens vs CLE Browns'",
+   "KXNFLGAME-26OCT18HOUJAC 'HOU Texans vs JAC Jaguars'",
+   "KXNFLSPREAD-26OCT18LACKC 'Los Angeles C vs Kansas City: Spread'",
+   "KXNFLSPREAD-26OCT18BUFLV 'Buffalo vs Las Vegas: Spread'",
+   "KXNFLSPREAD-26OCT18ARILAR 'Arizona vs Los Angeles R: Spread'",
+   "KXNFLSPREAD-26OCT18TENIND 'Tennessee vs Indianapolis: Spread'",
+   "KXNFLSPREAD-26OCT18PITTB 'Pittsburgh vs Tampa Bay: Spread'",
+   "KXNFLSPREAD-26OCT18NYJNE 'New York J vs New England: Spread'",
+   "KXNFLSPREAD-26OCT18NONYG 'New Orleans vs New York G: Spread'",
+   "KXNFLSPREAD-26OCT18CHIATL 'Chicago vs Atlanta: Spread'",
+   "KXNFLSPREAD-26OCT18CARPHI 'Carolina vs Philadelphia: Spread'",
+   "KXNFLSPREAD-26OCT18BALCLE 'Baltimore vs Cleveland: Spread'",
+   "KXNFLSPREAD-26OCT18HOUJAC 'Houston vs Jacksonville: Spread'",
+   "KXNFLTOTAL-26OCT18LACKC 'Los Angeles C vs Kansas City: Total Points'",
+   "KXNFLTOTAL-26OCT18BUFLV 'Buffalo vs Las Vegas: Total Points'",
+   "KXNFLTOTAL-26OCT18ARILAR 'Arizona vs Los Angeles R: Total Points'",
+   "KXNFLTOTAL-26OCT18TENIND 'Tennessee vs Indianapolis: Total Points'",
+   "KXNFLTOTAL-26OCT18PITTB 'Pittsburgh vs Tampa Bay: Total Points'",
+   "KXNFLTOTAL-26OCT18NYJNE 'New York J vs New England: Total Points'",
+   "KXNFLTOTAL-26OCT18NONYG 'New Orleans vs New York G: Total Points'",
+   "KXNFLTOTAL-26OCT18CHIATL 'Chicago vs Atlanta: Total Points'",
+   "KXNFLTOTAL-26OCT18CARPHI 'Carolina vs Philadelphia: Total Points'",
+   "KXNFLTOTAL-26OCT18BALCLE 'Baltimore vs Cleveland: Total Points'",
+   "KXNFLTOTAL-26OCT18HOUJAC 'Houston vs Jacksonville: Total Points'"
+  ],
+  "games_with_any": 80,
+  "props_games": 80
+ },
+ "errors": [
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLGAME&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLSPREAD&status=settled&with_nested_markets=true&limit=200",
+  "HTTP 404 https://api.elections.kalshi.com/trade-api/v2/historical/events?series_ticker=KXNFLTOTAL&status=settled&with_nested_markets=true&limit=200"
+ ],
+ "candle_endpoint": "batch"
+}
