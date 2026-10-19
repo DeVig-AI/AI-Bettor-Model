@@ -1,6 +1,9 @@
 # DeVig Research Lab -- Constitution v1
 
-Version: **v1** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL)
+Version: **v2** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football)
+
+v2 adds Part C (college football). It changes nothing in Part A or Part B (Constitution A1.3); NFL ledger rows keep
+the version they ran under. Part C was written and hash-locked before any college football data was downloaded.
 
 This file sets the rules the Research Lab runs by. It was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**. The lab code checks the lock before every run, writes
@@ -167,6 +170,97 @@ boost, regression toward the market line; (d) a few small pre-declared variants.
 
 ---
 
-## Part C -- reserved
+## Part C -- College football (CFB), added in v2
 
-Reserved for another sport (college football is planned). Until a later version adds it, Part A applies only to NFL.
+Part C was written and hash-locked before any college football data was downloaded. Part A applies to CFB unchanged
+except where this Part says so explicitly. Everything for CFB lives under `research/cfb/` (candidates, data cache,
+results, ledger, exams, paper logs).
+
+**Expected result, stated up front:** college football is noisier than the NFL (130+ FBS teams, 12-13 games each, huge
+mismatches, rosters that turn over every year), and its closing lines are still very good forecasts. The most likely
+outcome is again that **no CFB candidate passes the sealed exam**. Small samples are not read as findings (C7).
+
+### C1. Data
+- **Source:** CollegeFootballData (`api.collegefootballdata.com`, CFBD), with the owner's API key (`CFB_API_KEY`).
+  The key is used **only** inside GitHub Actions data/research workflows; it is never printed, committed, or used by
+  the app or the website's functions. If the key turns out to belong to a different provider, a new version adapts
+  this Part before that provider's data is used.
+- **What is cached** (season-level requests wherever the API allows): games (season, week, season type, start time,
+  teams, each team's classification, neutral site, final scores); closing lines (spread and total); team-game advanced
+  stats (offensive plays and points per play / PPA, with and without garbage time, for offense and defense); and each
+  team's returning production before the season. Columns that encode known angles or other prices are dropped:
+  moneylines, opening lines, weather, attendance, excitement index, and CFBD's own pregame Elo / win probabilities.
+- **Closing line:** for each game, the line from the provider named `consensus` when present, otherwise the median
+  over every provider listed for that game. CFBD's `spread` is the home team's line, so the expected home margin is
+  `−spread`; the total is `overUnder`.
+- **Eligible games:** **both teams FBS** that season, regular season and postseason (bowls, playoff), with final
+  scores and a closing line for that market. **FBS-vs-FCS (and any non-FBS) games are excluded entirely**: never
+  scored, and never used to update any rating or average. Reason, fixed before data: non-FBS teams play only one or two
+  FBS games a year so their strength cannot be learned, the lines are often 30-50 points, and these markets are thin.
+- **Line coverage gate:** if, in any training or gate season, fewer than 70% of eligible-team games have a closing line
+  for a market, the lab refuses to run that market (it does not shrink or move the seasons); only a new version may
+  change the split.
+- **Cache:** `research/cfb/data/`, seasons **2009-2024 only**; the lab refuses any row from 2025 or later. A season
+  already cached is **never fetched again**. Every workflow run logs the API calls it used
+  (`research/cfb/data/CALLS.csv`), uses at most 150 calls, and stops early when the provider reports fewer than 100
+  calls left in the month.
+- In season, a weekly data run may refresh only the **current** season (2026), into memory or into files outside the
+  lab's cache that the lab never reads. The sealed season is never stored anywhere in the repo.
+
+### C2. Season split
+| Use | Seasons | Notes |
+|---|---|---|
+| Warm-up | 2009-2013 | ratings and rolling stats only; never scored, never fit on |
+| Training | 2014-2017 | the only seasons coefficients may be fit on; also sets the line-only baseline |
+| Gate 1 | 2018-2019 | exploration |
+| (played through) | 2020 | COVID season (conference-only schedules, opt-outs, empty stadiums): ratings update through it, never scored, never fit on |
+| Gate 2 | 2021-2022 | exploration |
+| Gate 3 | 2023-2024 | exploration |
+| Pooled | 2018-2019 + 2021-2024 | the pooled test of A7 (2020 excluded) |
+| **Sealed** | **2025** | the exam (A8); not in the lab |
+
+Splits reported, never used to pass: **2018-19** (before free transfers and NIL), **2021-22** (one-time free
+transfer and NIL from 2021), **2023-24** (clock keeps running after first downs from 2023: fewer plays; 12-team
+playoff and larger conferences from 2024); **lines of 14 points or less vs more than 14** (mismatches); **regular
+season vs postseason**.
+
+### C3. Markets
+Same as B3: `spread` (forecast = expected home margin, `r = home margin − closing expected home margin`) and `total`
+(`r = combined points − closing total`). "Home" is the home team CFBD lists; at a neutral site a candidate may give no
+home edge (its file says so).
+
+### C4. Multiple testing across sports
+- The A6 correction for CFB is Holm-Bonferroni over **every CFB attempt** in `research/cfb/LEDGER.csv`.
+- Reported alongside it, never used to pass: the **global attempt count across all sports** (every NFL and CFB ledger
+  row) and each CFB attempt's Holm-adjusted p over that global set.
+
+### C5. Season, budget and mid-season
+- v2 covers the **2026 CFB research season**: sealed exam season 2025, budget **3 exams** (A8, recorded in
+  `research/cfb/exam/EXAMS.csv`), ending when the 2026 season's national championship game is played (January 2027).
+- A new version never resets an exam budget: exams are counted per sport and sealed season, across versions. So
+  v2 leaves the NFL's 2025 budget (B4) exactly as it was under v1.
+- An exam needs at least 400 scored games in the sealed season, or it is recorded as an error (still spent).
+- Paper-season mid-season point for the stop rule: after week 7 of the regular season.
+- Kalshi markets: the NCAA football series (game winner, spread ladder, total ladder) as confirmed by the first
+  test call; main line = the rung priced closest to 50¢. A game without a two-sided Kalshi price is logged with no pick.
+
+### C6. Seed candidates (registered separately in `research/cfb/candidates/`)
+(a) a plain team rating (Elo-style) spread model, the baseline every rating idea is measured against; (b) a plain
+points-for/against totals model; (c) ideas taken from public, open college football rating methods (FiveThirtyEight's
+Elo rules, Simple Rating System / least-squares margins as in cfbfastR and sports-reference, opponent-adjusted
+EPA/PPA as in cfbfastR and CFBD), **each idea its own candidate** on top of the plain model: margin-of-victory
+multiplier, preseason regression toward the conference instead of the whole league, returning production as the
+preseason prior, home edge learned from recent seasons, regression toward the market line, a margin cap, the SRS
+family, PPA ratings, the garbage-time filter, and a pace × efficiency totals model; (d) a few small pre-declared
+variants. Each counts in the C4 correction. A3.5 applies: no rivalry, revenge, lookahead, letdown, bowl-motivation
+or opt-out spots.
+
+### C7. Small samples
+No result is read from one conference, one team, one week, or any slice smaller than 300 games, and no slice other
+than those named in C2 is reported. A lesson about CFB (A10) is exploratory like every other lesson.
+
+---
+
+## Part D -- reserved
+
+Reserved for another sport. Until a later version adds it, Part A applies only to NFL and CFB.

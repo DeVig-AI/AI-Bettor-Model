@@ -9,3 +9,4 @@ Format: `- YYYY-MM-DD <file>: <what changed and why>`
 
 - 2026-10-18 FROZEN.sha256: lock list created (145 files, 10 results databases). Nothing changed.
 - 2026-10-18 kalshi_games_v1.py: MLB event tickers carry the start time after the date (26OCT172000TBCLE), so no MLB game could be read and the first Kalshi MLB lock found 0 games. The time digits are now skipped before the team codes. NFL and NBA tickers have no time and read the same as before.
+- 2026-10-19 research/RESEARCH_LAB_CONSTITUTION.md: v2 adds Part C (college football), written and locked before any CFB data was downloaded. Part A and Part B (NFL) rules unchanged; see research/CONSTITUTION_LOG.md.
