@@ -1,8 +1,9 @@
 """Research Lab runner (Constitution A2-A7, Part B). Deterministic; no AI anywhere.
 
-    python3 -m research.lab.lab pending          # how many registered candidates have not run yet (prints a number)
-    python3 -m research.lab.lab start            # mark them running in research/status.json (pushed before the run)
-    python3 -m research.lab.lab run [--rerun ID] # run them all through the three gates
+    python3 -m research.lab.lab pending          # how many candidates this run will take (prints a number, <= 18)
+    python3 -m research.lab.lab start            # pull the next ones from research/queue/ and mark them running in
+                                                 # research/status.json (the workflow pushes both before the run)
+    python3 -m research.lab.lab run [--rerun ID] # run them (at most 18) through the three gates
 
 `run` writes research/results/<id>.json, appends one research/LEDGER.csv row per attempt (never edits one), and
 locks each candidate file that ran into FROZEN.sha256. The Inspector General's review (inspector.py) then judges.
@@ -141,6 +142,30 @@ def pending(cands, ledger, rerun=None):
     return ids
 
 
+def queued():
+    """[(order, id, path)] waiting in research/queue/, in order (Constitution v2 A3.3a)."""
+    out = []
+    if os.path.isdir(C.QUEUE):
+        for f in sorted(os.listdir(C.QUEUE)):
+            if f.endswith(".yaml") and "-" in f and f.split("-", 1)[0].isdigit():
+                out.append((int(f.split("-", 1)[0]), f.split("-", 1)[1][:-5], os.path.join(C.QUEUE, f)))
+    return out
+
+
+def take_from_queue(cands, ledger, log=print):
+    """Move the next queued ideas into research/candidates/ so this run has up to BATCH to run. Returns their ids."""
+    room = C.BATCH - len(pending(cands, ledger))
+    moved = []
+    for _, cid, path in queued()[:max(0, room)]:
+        dest = cand_path(cid)
+        if os.path.exists(dest):
+            raise SystemExit(f"queue: {cid} is already a registered candidate; give the queued idea a new id")
+        os.rename(path, dest)
+        moved.append(cid)
+        log(f"queue -> candidates: {cid}")
+    return moved
+
+
 def committed(path):
     """A3.1: the file is tracked and identical to the committed version (so it was committed before this run)."""
     rp = rel(path)
@@ -206,7 +231,7 @@ def run_all(rerun=None, log=print):
     csha = check_constitution()
     cands = load_candidates()
     ledger = read_ledger()
-    ids = pending(cands, ledger, rerun)
+    ids = pending(cands, ledger, rerun)[:C.BATCH]
     if not ids:
         log("nothing to run: every registered candidate has a ledger row")
         return []
@@ -264,12 +289,14 @@ def main(argv=None):
     ap.add_argument("--rerun", default=None, help="re-run one candidate whose last attempt crashed")
     a = ap.parse_args(argv)
     if a.cmd == "pending":
-        print(len(pending(load_candidates(), read_ledger(), a.rerun or None)))
+        print(min(C.BATCH, len(pending(load_candidates(), read_ledger(), a.rerun or None)) + len(queued())))
         return 0
     if a.cmd == "start":
         from . import report
         check_constitution()
-        ids = pending(load_candidates(), read_ledger(), a.rerun or None)
+        ledger = read_ledger()
+        take_from_queue(load_candidates(), ledger)
+        ids = pending(load_candidates(), ledger, a.rerun or None)[:C.BATCH]
         report.write_all(running=ids, started_at=now())
         return 0
     run_all(a.rerun or None)

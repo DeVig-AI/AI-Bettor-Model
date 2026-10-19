@@ -5,13 +5,15 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v1"
+CONSTITUTION_VERSION = "v2"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
 
 DATA_DIR = os.path.join(RESEARCH, "data", "nfl")
 CANDIDATES = os.path.join(RESEARCH, "candidates")
+QUEUE = os.path.join(RESEARCH, "queue")
+BATCH = 18                     # A3.3b: at most this many candidates per lab run
 RESULTS = os.path.join(RESEARCH, "results")
 LEDGER = os.path.join(RESEARCH, "LEDGER.csv")
 EXAMS = os.path.join(RESEARCH, "exam", "EXAMS.csv")
@@ -19,12 +21,12 @@ PAPER_DIR = os.path.join(RESEARCH, "paper")
 PROMOTED = os.path.join(RESEARCH, "promoted.json")
 STATUS_JSON = os.path.join(RESEARCH, "status.json")
 
-# B2. Season split
-FIRST_SEASON = 2002            # warm-up starts
-TRAIN = (2006, 2015)
-GATES = [("2016–18", 2016, 2018), ("2019–21", 2019, 2021), ("2022–24", 2022, 2024)]
-POOLED = ("Pooled 2016–24", 2016, 2024)
-RULE_SPLITS = [("2016–20", 2016, 2020, "before the 17-game season"),
+# B2. Season split (v2; v1 used training 2006-15 and gates 2016-18 / 2019-21 / 2022-24)
+FIRST_SEASON = 1999            # ratings start here, from average
+TRAIN = (1999, 2005)
+GATES = [("2006–12", 2006, 2012), ("2013–18", 2013, 2018), ("2019–24", 2019, 2024)]
+POOLED = ("Pooled 2006–24", 2006, 2024)
+RULE_SPLITS = [("2006–20", 2006, 2020, "before the 17-game season"),
                ("2021–23", 2021, 2023, "17 games, from 2021"),
                ("2024", 2024, 2024, "new kickoff rule")]
 LAB_MAX_SEASON = 2024          # the lab refuses anything later

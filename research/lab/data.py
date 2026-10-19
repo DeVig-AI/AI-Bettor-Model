@@ -29,8 +29,10 @@ GAME_COLS = ["game_id", "season", "game_type", "week", "gameday", "gametime", "a
              "away_qb_id", "home_qb_id", "away_qb_name", "home_qb_name", "stadium_id", "stadium"]
 PBP_COLS = ["game_id", "season", "posteam", "defteam", "play_type", "epa", "qb_kneel", "qb_spike", "two_point_attempt",
             "pass_attempt", "complete_pass", "passing_yards", "pass_touchdown", "interception", "sack",
-            "passer_player_id", "rusher_player_id", "rushing_yards", "rush_touchdown"]
-TEAM_COLS = ["season", "game_id", "team", "plays", "epa"]
+            "passer_player_id", "rusher_player_id", "rushing_yards", "rush_touchdown", "qb_dropback", "down", "wp",
+            "success", "fumble_lost", "fixed_drive", "drive_time_of_possession"]
+TEAM_COLS = ["season", "game_id", "team", "plays", "epa", "pass_plays", "pass_epa", "early_plays", "early_epa", "succ",
+             "noto_plays", "noto_epa", "comp_plays", "comp_epa", "top_seconds"]
 QB_COLS = ["season", "game_id", "team", "qb_id", "att", "cmp", "yds", "td", "int", "sacks", "ratt", "ryds", "rtd"]
 UA = "devig-research-lab/1.0 (personal research; read-only)"
 
@@ -60,12 +62,30 @@ def aggregate_pbp(pbp):
     """(team_games, qb_games) from one season of play-by-play."""
     p = pbp.copy()
     for c in ["qb_kneel", "qb_spike", "two_point_attempt", "pass_attempt", "complete_pass", "passing_yards",
-              "pass_touchdown", "interception", "sack", "rushing_yards", "rush_touchdown"]:
+              "pass_touchdown", "interception", "sack", "rushing_yards", "rush_touchdown", "qb_dropback", "success",
+              "fumble_lost"]:
         p[c] = pd.to_numeric(p[c], errors="coerce").fillna(0)
     p = p[p.posteam.notna() & (p.two_point_attempt == 0)]
     scrim = p[p.play_type.isin(["pass", "run"]) & (p.qb_kneel == 0) & (p.qb_spike == 0)]
-    team = (scrim.groupby(["season", "game_id", "posteam"])
-            .agg(plays=("play_type", "size"), epa=("epa", "sum")).reset_index().rename(columns={"posteam": "team"}))
+    sc = scrim.assign(
+        e=scrim.epa.fillna(0),
+        pp=scrim.qb_dropback == 1, ep=(scrim.down == 1) | (scrim.down == 2),
+        nt=(scrim.interception == 0) & (scrim.fumble_lost == 0), cp=scrim.wp.between(0.1, 0.9))
+    for k, m in (("pass", "pp"), ("early", "ep"), ("noto", "nt"), ("comp", "cp")):
+        sc[k + "_n"] = sc[m].astype(int)
+        sc[k + "_e"] = sc.e.where(sc[m], 0.0)
+    team = (sc.groupby(["season", "game_id", "posteam"])
+            .agg(plays=("play_type", "size"), epa=("e", "sum"), pass_plays=("pass_n", "sum"), pass_epa=("pass_e", "sum"),
+                 early_plays=("early_n", "sum"), early_epa=("early_e", "sum"), succ=("success", "sum"),
+                 noto_plays=("noto_n", "sum"), noto_epa=("noto_e", "sum"), comp_plays=("comp_n", "sum"),
+                 comp_epa=("comp_e", "sum"))
+            .reset_index().rename(columns={"posteam": "team"}))
+    drv = p[p.fixed_drive.notna()].drop_duplicates(["game_id", "posteam", "fixed_drive"])
+    mmss = drv.drive_time_of_possession.astype(str).str.extract(r"^(\d+):(\d+)$").astype(float)
+    drv = drv.assign(sec=(mmss[0] * 60 + mmss[1]).fillna(0))
+    top = drv.groupby(["season", "game_id", "posteam"]).sec.sum().rename("top_seconds").reset_index()
+    team = team.merge(top.rename(columns={"posteam": "team"}), on=["season", "game_id", "team"], how="left")
+    team["top_seconds"] = team.top_seconds.fillna(0).astype(int)
     drop = p[p.passer_player_id.notna() & (p.play_type == "pass")]
     pas = (drop.assign(att=((drop.pass_attempt == 1) & (drop.sack == 0)).astype(int))
            .groupby(["season", "game_id", "posteam", "passer_player_id"])
@@ -77,7 +97,10 @@ def aggregate_pbp(pbp):
            .agg(ratt=("play_type", "size"), ryds=("rushing_yards", "sum"), rtd=("rush_touchdown", "sum"))
            .reset_index().rename(columns={"posteam": "team", "rusher_player_id": "qb_id"}))
     qb = pas.merge(rus, on=["season", "game_id", "team", "qb_id"], how="left").fillna({"ratt": 0, "ryds": 0, "rtd": 0})
-    team["epa"] = team.epa.round(4)
+    for c in ("epa", "pass_epa", "early_epa", "noto_epa", "comp_epa"):
+        team[c] = team[c].round(4)
+    for c in ("succ",):
+        team[c] = team[c].astype(int)
     for c in ["att", "cmp", "yds", "td", "int", "sacks", "ratt", "ryds", "rtd"]:
         qb[c] = qb[c].astype(int)
     return team[TEAM_COLS], qb[QB_COLS]
@@ -122,12 +145,12 @@ def fetch_lab_cache(data_dir=None, log=print):
         changed = True
     team = pd.read_csv(P["team_games"]) if os.path.exists(P["team_games"]) else pd.DataFrame(columns=TEAM_COLS)
     qb = pd.read_csv(P["qb_games"]) if os.path.exists(P["qb_games"]) else pd.DataFrame(columns=QB_COLS)
-    have = set(team.season.unique()) & set(qb.season.unique())
+    have = set(team.season.unique()) & set(qb.season.unique()) if set(TEAM_COLS) <= set(team.columns) else set()
     for s in want:
         if s in have:
             continue
         t, q = _pbp_season(s)
-        team = pd.concat([team[team.season != s], t], ignore_index=True)
+        team = pd.concat([team[team.season != s].reindex(columns=TEAM_COLS), t], ignore_index=True)
         qb = pd.concat([qb[qb.season != s], q], ignore_index=True)
         log(f"play-by-play {s}: {len(t)} team-games, {len(q)} QB-games")
         changed = True

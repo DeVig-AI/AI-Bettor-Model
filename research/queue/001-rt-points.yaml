@@ -1,0 +1,17 @@
+# Research Lab queued idea rt-points (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: rt-points
+name: Points rating (SRS-style)
+market: spread
+family: Team rating
+parent: null
+reason: 'Opponent-adjusted points scored and allowed per game, updated game by game: the simple rating system idea, in contrast
+  to Elo''s win/loss updates.'
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: points
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: none
