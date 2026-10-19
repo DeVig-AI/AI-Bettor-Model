@@ -233,21 +233,23 @@ class Search(unittest.TestCase):
         from research.lab import search as SR
         self.SR = SR
         self.tmp = tempfile.mkdtemp()
-        self.saved = (SR.SCORES, SR.ROUNDS, SR.LEADERBOARD, SR.MENU, C.CANDIDATES, SR.D.load_lab)
-        SR.SCORES, SR.ROUNDS = os.path.join(self.tmp, "S.csv"), os.path.join(self.tmp, "R.csv")
-        SR.LEADERBOARD = os.path.join(self.tmp, "LB.md")
+        self.saved = (C.SEARCH_DIR, C.CANDIDATES, SR.D.load_lab)
+        self.real_menu = os.path.join(C.SEARCH_DIR, "MENU.yaml")
+        C.SEARCH_DIR = os.path.join(self.tmp, "search")
+        os.makedirs(C.SEARCH_DIR)
+        shutil.copy(self.real_menu, C.SEARCH_DIR)
         C.CANDIDATES = os.path.join(self.tmp, "cands")
-        shutil.copytree(self.saved[4], C.CANDIDATES)
+        shutil.copytree(self.saved[1], C.CANDIDATES)
         self.data = synthetic()
         SR.D.load_lab = lambda *a: {k: v.copy() for k, v in self.data.items()}
 
     def tearDown(self):
         SR = self.SR
-        SR.SCORES, SR.ROUNDS, SR.LEADERBOARD, SR.MENU, C.CANDIDATES, SR.D.load_lab = self.saved
+        C.SEARCH_DIR, C.CANDIDATES, SR.D.load_lab = self.saved
         shutil.rmtree(self.tmp)
 
     def small_menu(self):
-        m = self.SR.load_menu(self.saved[3])
+        m = self.SR.load_menu(self.real_menu)
         m["families"] = [
             {"name": "TR", "type": "team_rating", "market": "spread", "fixed": {"pace": "none", "def_weight": 1.0},
              "grid": {"metric": ["points", "epa"], "halflife": [4, 8], "season_carry": [0.6]}},
@@ -255,13 +257,11 @@ class Search(unittest.TestCase):
              "grid": {"metric": ["points", "epa"], "halflife": [8], "season_carry": [0.6], "pace": ["plays", "seconds"]},
              "rules": ["points_has_no_pace"]}]
         m["search"]["shortlist_min_t"] = -99          # synthetic data: let the shortlist rules be exercised
-        path = os.path.join(self.tmp, "MENU.yaml")
-        with open(path, "w") as f:
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
-        self.SR.MENU = path
 
     def test_real_menu(self):
-        g = self.SR.grid(self.SR.load_menu(self.saved[3]))
+        g = self.SR.grid(self.SR.load_menu(self.real_menu))
         ids = [self.SR.config_id(c) for c in g]
         self.assertEqual(len(ids), len(set(ids)))
         self.assertEqual(len(g), 576 + 126 + 117 + 18)
@@ -279,7 +279,7 @@ class Search(unittest.TestCase):
     def test_rounds_shortlist_and_refine(self):
         self.small_menu()
         picks = self.SR.run_round(force=True, log=lambda *_: None)
-        rows = self.SR.read_csv(self.SR.SCORES)
+        rows = self.SR.read_csv(self.SR.path("SCORES.csv"))
         singles = [r for r in rows if r["type"] != "blend"]
         self.assertEqual(len(singles), 4 + 3)
         self.assertTrue(any(r["type"] == "blend" for r in rows))
@@ -296,11 +296,11 @@ class Search(unittest.TestCase):
         self.assertTrue(all(v <= 2 for v in by_market.values()))
         self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within a week does nothing")
         self.SR.run_round(force=True, log=lambda *_: None)
-        rows2 = self.SR.read_csv(self.SR.SCORES)
+        rows2 = self.SR.read_csv(self.SR.path("SCORES.csv"))
         ids = [r["id"] for r in rows2]
         self.assertEqual(len(ids), len(set(ids)), "nothing scored twice")
         self.assertGreater(len(rows2), len(rows), "round 2 adds neighbours")
-        self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.ROUNDS)], ["1", "2"])
+        self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.path("ROUNDS.csv"))], ["1", "2"])
 
     def test_fit_weights_and_neighbours(self):
         rng = np.random.default_rng(3)
@@ -372,13 +372,13 @@ class Reports(unittest.TestCase):
         C.STATUS_JSON = os.path.join(self.tmp, "status.json")
         os.makedirs(C.RESULTS)
         from research.lab import search as SR
-        self.SR, self.sr_saved = SR, (SR.SCORES, SR.ROUNDS)
-        SR.SCORES, SR.ROUNDS = os.path.join(self.tmp, "S.csv"), os.path.join(self.tmp, "R.csv")
+        self.SR, self.sr_saved = SR, C.SEARCH_DIR
+        C.SEARCH_DIR = os.path.join(self.tmp, "search")
 
     def tearDown(self):
         for k, v in self.saved.items():
             setattr(C, k, v)
-        self.SR.SCORES, self.SR.ROUNDS = self.sr_saved
+        C.SEARCH_DIR = self.sr_saved
         shutil.rmtree(self.tmp)
 
     def row(self, cid, p, g, status="done"):

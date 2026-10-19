@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 import numpy as np
+import yaml
 import pandas as pd
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -81,13 +82,25 @@ def synthetic_tables(first=2009, last=2024, seed=11, n_teams=32):
             "advanced": adv, "advanced_ngt": adv.copy(), "returning": pd.DataFrame(RT)}
 
 
+def seeds():
+    """The 16 CFB seed ideas (v3), kept as reference copies since v5 made them points of the search menu."""
+    out = {}
+    folder = os.path.join(C.SEARCH_DIR, "seeds")
+    for f in sorted(os.listdir(folder)):
+        if f.endswith(".yaml"):
+            with open(os.path.join(folder, f)) as fh:
+                c = yaml.safe_load(fh)
+            out[c["id"]] = c
+    return out
+
+
 class CFB(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         C.use("CFB")
         cls.tables = synthetic_tables()
         cls.data = CD.assemble(cls.tables)
-        cls.cands = L.load_candidates()
+        cls.cands = seeds()
 
     @classmethod
     def tearDownClass(cls):
@@ -111,12 +124,47 @@ class CFB(unittest.TestCase):
     def test_every_candidate_runs_and_skips_2020(self):
         for cid, c in self.cands.items():
             res = L.evaluate_candidate(c, self.data)
-            self.assertEqual([g["name"] for g in res["gates"]], ["2018–19", "2021–22", "2023–24"], cid)
-            self.assertGreater(res["pooled"]["games"], 500, cid)
+            self.assertEqual([g["name"] for g in res["gates"]], ["2022", "2023", "2024"], cid)
+            self.assertGreater(res["pooled"]["games"], 300, cid)
             e = L.score(models.run(c, self.data)[0])
             self.assertNotIn(2020, set(e.season), cid)
             labels = [x["label"] for x in res["rule_split"]]
             self.assertIn("Lines > 14", labels, cid)
+
+    def test_search_round(self):
+        """CFB search (v5): its own files, data cut at 2021, 2020 never scored, the 16 seeds are grid points."""
+        from research.lab import search as SR
+        tmp = tempfile.mkdtemp()
+        saved = (C.SEARCH_DIR, C.CANDIDATES, CD.load_lab)
+        try:
+            real = SR.load_menu(os.path.join(C.SEARCH_DIR, "MENU.yaml"))
+            keys = {SR.config_key(c) for c in SR.grid(real)}
+            for c in self.cands.values():
+                self.assertIn(SR.config_key({"market": c["market"], "type": c["model"]["type"],
+                                             "params": c["model"]["params"]}), keys, c["id"])
+            C.SEARCH_DIR, C.CANDIDATES = os.path.join(tmp, "search"), os.path.join(tmp, "cands")
+            os.makedirs(C.SEARCH_DIR)
+            real["families"] = [f for f in real["families"] if f["type"] in ("srs", "pace_eff")]
+            real["families"][0]["grid"] = {"carry": [0.6], "prior_w": [3], "margin_cap": [None, 28]}
+            real["families"][1]["grid"] = {"halflife": [6], "season_carry": [0.5], "efficiency": ["points"],
+                                           "pace": [True, False]}
+            real["search"]["shortlist_min_t"] = -99
+            with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+                yaml.safe_dump(real, f)
+            CD.load_lab = lambda *a: {k: v.copy() for k, v in self.data.items()}
+            sd = SR.search_data()
+            self.assertEqual(int(sd["games"].season.max()), 2021)
+            out = SR.forecasts({"market": "spread", "type": "srs", "params": dict(hfa_pts=2.5, carry=0.6, prior_w=3,
+                                                                                    margin_cap=None)}, sd)
+            self.assertNotIn(2020, set(L.between(L.score(out), *C.SEARCH).season))
+            picks = SR.run_round(force=True, log=lambda *_: None)
+            self.assertTrue(os.path.exists(os.path.join(C.SEARCH_DIR, "SCORES.csv")))
+            self.assertLessEqual(len(picks), 4)
+            for cid in picks:
+                self.assertIn("search", L.load_candidates()[cid])
+        finally:
+            C.SEARCH_DIR, C.CANDIDATES, CD.load_lab = saved
+            shutil.rmtree(tmp)
 
     def test_no_lookahead(self):
         """Changing a later result must not change any earlier forecast (fits use training seasons only)."""

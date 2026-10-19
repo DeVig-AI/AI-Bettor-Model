@@ -1,6 +1,6 @@
-"""Research Lab search (Constitution v4 A3.3c): find candidates automatically, deterministically, with no AI.
+"""Research Lab search (Constitution v5 A3.3c): find candidates automatically, deterministically, with no AI.
 
-    python3 -m research.lab.search round [--force]   # one search round if a week has passed (or --force)
+    python3 -m research.lab.search round [--force] [--sport CFB]   # one round if a week has passed (or --force)
 
 A round scores configurations from research/search/MENU.yaml on the SEARCH seasons only -- this module is given data
 up to the last search season and nothing later -- then sends at most 2 per market to confirmation by writing them to
@@ -27,11 +27,10 @@ from . import lab as L
 from . import metrics as M
 from . import models
 
-SEARCH_DIR = os.path.join(C.ROOT, "research", "search")
-MENU = os.path.join(SEARCH_DIR, "MENU.yaml")
-SCORES = os.path.join(SEARCH_DIR, "SCORES.csv")
-ROUNDS = os.path.join(SEARCH_DIR, "ROUNDS.csv")
-LEADERBOARD = os.path.join(SEARCH_DIR, "LEADERBOARD.md")
+def path(name):
+    """One of the search's files for the sport in use: research/search/ (NFL), research/cfb/search/ (CFB)."""
+    return os.path.join(C.SEARCH_DIR, name)
+
 SCORE_COLS = ["round", "id", "market", "type", "label", "games", "effect", "t", "p1", "p2", "p3", "eligible",
               "config"]
 ROUND_COLS = ["round", "at", "data_through", "scored_new", "scored_total", "best_spread_id", "best_spread_t",
@@ -42,8 +41,8 @@ METRIC_NAMES = {"points": "Points", "epa": "EPA", "pass_epa": "Passing-EPA", "ea
 
 
 # ---- configurations ---------------------------------------------------------------------------------------------------
-def load_menu(path=None):
-    with open(path or MENU) as f:
+def load_menu(menu_path=None):
+    with open(menu_path or path("MENU.yaml")) as f:
         return yaml.safe_load(f)
 
 
@@ -95,9 +94,19 @@ def label(cfg):
         bits += {"538": ["538 margin"], "nfelo": ["nfelo margin"]}.get(p["mov"], [])
         bits.append(f"revert {p['revert']:.2f}")
         bits += (["QB"] if p["qb"] != "none" else []) + ([f"market-resist {p['market_resist']:g}"] if p["market_resist"] else [])
-        bits += ([f"bye {p['bye_elo']:g}"] if p["bye_elo"] else []) + \
-            ([f"travel {p['travel_elo_per_1000mi']:g}"] if p["travel_elo_per_1000mi"] else [])
+        bits += ([f"bye {p['bye_elo']:g}"] if p.get("bye_elo") else []) + \
+            ([f"travel {p['travel_elo_per_1000mi']:g}"] if p.get("travel_elo_per_1000mi") else [])
+        bits += (["revert to conference"] if p.get("revert_center") == "conference" else []) + \
+            ([f"returning {p['returning']}"] if p.get("returning", "none") != "none" else []) + \
+            ([f"margin cap {p['mov_cap']:g}"] if p.get("mov_cap") else []) + \
+            ([f"market blend {p['market_blend']:g}"] if p.get("market_blend") else [])
         return "Elo · " + " · ".join(bits)
+    if t == "srs":
+        return (f"SRS · carry {p['carry']:g} · prior {p['prior_w']:g}" +
+                (f" · margin cap {p['margin_cap']:g}" if p.get("margin_cap") else ""))
+    if t == "ppa":
+        return (f"PPA rating · carry {p['carry']:g} · prior {p['prior_w']:g}" +
+                (" · no garbage time" if p.get("garbage_time") == "exclude" else ""))
     if t == "team_rating":
         bits = [f"half-life {p['halflife']:g}", f"carry {p['season_carry']:g}"]
         if p.get("def_weight", 1.0) != 1.0:
@@ -106,7 +115,8 @@ def label(cfg):
             bits.append("pace: " + ("seconds/play" if p["pace"] == "seconds" else "plays"))
         return f"{METRIC_NAMES[p['metric']]} rating · " + " · ".join(bits)
     if t == "pace_eff":
-        return f"Pace × {p['efficiency']} · half-life {p['halflife']:g} · carry {p['season_carry']:g}"
+        return (f"{'Pace × ' if p.get('pace', True) else 'Points, no pace · '}{p['efficiency']} · half-life "
+                f"{p['halflife']:g} · carry {p['season_carry']:g}")
     if t == "blend":
         ws = p["weights"]
         same = len(set(round(w, 6) for w in ws)) == 1
@@ -124,7 +134,7 @@ def as_candidate(cfg):
 # ---- scoring on the search seasons only -------------------------------------------------------------------------------
 def search_data():
     """The lab's data cut at the last search season: the search cannot see confirmation or sealed seasons."""
-    d = D.load_lab()
+    d = L.dm().load_lab()
     return {k: v[v.season <= C.SEARCH[1]].reset_index(drop=True) for k, v in d.items()}
 
 
@@ -220,17 +230,16 @@ def sent_before():
 
 # ---- one round --------------------------------------------------------------------------------------------------------
 def run_round(force=False, log=print):
-    if C.SPORT != "NFL":
-        raise SystemExit("the search is NFL only (Constitution v4 A3.3c, Part B); college football has no search")
     L.check_constitution()
-    rounds = read_csv(ROUNDS)
+    os.makedirs(C.SEARCH_DIR, exist_ok=True)
+    rounds = read_csv(path("ROUNDS.csv"))
     if not round_due(rounds, force):
         log(f"search: last round {rounds[-1]['at']}; next one after {ROUND_EVERY_DAYS} days")
         return []
     menu = load_menu()
     S = menu["search"]
     n_round = len(rounds) + 1
-    scored = {r["id"]: r for r in read_csv(SCORES)}
+    scored = {r["id"]: r for r in read_csv(path("SCORES.csv"))}
     data = search_data()
     todo = []
     if n_round == 1:
@@ -284,10 +293,11 @@ def run_round(force=False, log=print):
         if len(pool) >= 5:
             F = np.column_stack([o.forecast.values for o in outs[:5]])
             y = outs[0].actual.values
-            fit = (outs[0].season >= C.TRAIN[0]).values & (outs[0].season <= C.SEARCH[1]).values & ~np.isnan(y)
+            fit = ((outs[0].season >= C.TRAIN[0]) & (outs[0].season <= C.SEARCH[1])
+                   & ~outs[0].season.isin(C.SKIP_SEASONS)).values & ~np.isnan(y)
             w = fit_weights(F[fit], y[fit])
             add(blend_cfg(pool[:5], w, market))
-    append_rows(SCORES, SCORE_COLS, rows)
+    append_rows(path("SCORES.csv"), SCORE_COLS, rows)
     allrows = list(scored.values()) + rows
     picks = shortlist(allrows, data, S, fc)
     for cfg, r in picks:
@@ -297,7 +307,7 @@ def run_round(force=False, log=print):
         b = max((r for r in allrows if r["market"] == market), key=lambda r: float(r["t"]), default=None)
         best[market] = b
     number, url = L.run_info()
-    append_rows(ROUNDS, ROUND_COLS, [{
+    append_rows(path("ROUNDS.csv"), ROUND_COLS, [{
         "round": n_round, "at": L.now(), "data_through": C.SEARCH[1], "scored_new": len(rows),
         "scored_total": len(allrows), "best_spread_id": best["spread"]["id"] if best["spread"] else "",
         "best_spread_t": best["spread"]["t"] if best["spread"] else "",
@@ -339,15 +349,16 @@ def write_candidate(cfg, r, n_round):
     cid = config_id(cfg)
     c = {"id": cid, "name": label(cfg), "market": cfg["market"],
          "family": {"elo": "Elo family", "team_rating": "Team rating", "pace_eff": "Pace × efficiency",
-                    "blend": "Blend"}[cfg["type"]] + " · search",
+                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend"}.get(cfg["type"], cfg["type"]) + " · search",
          "parent": None,
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
                     f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": "automatic search (Constitution v4 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution v5 A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
                     "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"])},
          "model": {"type": cfg["type"], "params": cfg["params"]}}
+    os.makedirs(C.CANDIDATES, exist_ok=True)
     with open(L.cand_path(cid), "w") as f:
         f.write(f"# Research Lab candidate {cid} -- written by the search; registered before it runs (A3). "
                 "Never edit after it has run.\n")
@@ -355,7 +366,7 @@ def write_candidate(cfg, r, n_round):
 
 
 def write_leaderboard(allrows):
-    lines = ["# Research Lab search -- leaderboard (EXPLORATORY)", "",
+    lines = [f"# Research Lab search ({C.SPORT}) -- leaderboard (EXPLORATORY)", "",
              f"_Generated {L.now()} by research/lab/search.py. Scores are on the search seasons {C.SEARCH[0]}–"
              f"{C.SEARCH[1]} only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its "
              "standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist "
@@ -364,13 +375,15 @@ def write_leaderboard(allrows):
     for market in ("spread", "total"):
         rs = sorted((r for r in allrows if r["market"] == market), key=lambda r: -float(r["t"]))
         lines += [f"## {market.title()} -- top 25 of {len(rs)}", "",
-                  "| # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |", "|---|---|---|---|---|---|---|---|"]
+                  "| # | id | model | effect | t | " + " | ".join(
+                      str(a) if a == b else f"{a}–{str(b)[2:]}" for a, b in C.SEARCH_PERIODS) + " |",
+                  "|---|---|---|---|---|---|---|---|"]
         for i, r in enumerate(rs[:25], 1):
             lines.append(f"| {i} | `{r['id']}` | {r['label']} | {float(r['effect']):+.2f} | {float(r['t']):.2f} | "
                          f"{float(r['p1']):+.2f} | {float(r['p2']):+.2f} | {float(r['p3']):+.2f} |")
         lines.append("")
     lines += ["## What the search learned (exploratory)", ""] + [f"- {x}" for x in learned(allrows)]
-    with open(LEADERBOARD, "w") as f:
+    with open(path("LEADERBOARD.md"), "w") as f:
         f.write("\n".join(lines) + "\n")
 
 
@@ -401,7 +414,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["round"])
     ap.add_argument("--force", action="store_true", help="run a round even if the last one was under a week ago")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
     a = ap.parse_args(argv)
+    C.use(a.sport)
     run_round(force=a.force)
     return 0
 

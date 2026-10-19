@@ -232,17 +232,21 @@ def runs(ledger, cands, v):
                     "run_number": None, "run_url": rows[-1]["run_url"] or None,
                     "summary": (f"{name}: " + ("passed" if done[0]["state"] == "exam_pass" else "failed")) if done
                     else f"{name}: being scored", "steps": steps})
-    if C.SPORT == "NFL":
-        out += search_runs(cands, v)
+    out += search_runs(cands, v)
     out.sort(key=lambda r: r["started_at"], reverse=True)
     return out[:MAX_RUNS]
+
+
+def SR_path(name):
+    from . import search as SR
+    return SR.path(name)
 
 
 def search_runs(cands, v):
     from . import search as SR
     out = []
-    scores = {r["id"]: r for r in SR.read_csv(SR.SCORES)}
-    for rd in SR.read_csv(SR.ROUNDS):
+    scores = {r["id"]: r for r in SR.read_csv(SR.path("SCORES.csv"))}
+    for rd in SR.read_csv(SR.path("ROUNDS.csv")):
         steps = []
         for cid in rd["shortlisted"].split():
             r = scores.get(cid, {})
@@ -339,7 +343,10 @@ def status_md(s, ledger):
         f"{c['exam_budget_left']} of {c['exam_budget_total']}", "",
         *(["Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search uses 2006–16); v1 candidates "
            "2016–18 / 2019–21 / 2022–24 (their ledger rows say which). Search leaderboard: "
-           "`research/search/LEADERBOARD.md`.", ""] if C.SPORT == "NFL" else [f"Gates: {' / '.join(gate_names())}.", ""]),
+           "`research/search/LEADERBOARD.md`.", ""] if C.SPORT == "NFL" else
+          [f"Gates: {' / '.join(gate_names())} (confirmation; the search uses "
+           f"{', '.join(str(a) for a, _ in C.SEARCH_PERIODS)}). Search leaderboard: "
+           f"`{L.rel(SR_path('LEADERBOARD.md'))}`.", ""]),
         "| Candidate | Market | State | Gate 1 | Gate 2 | Gate 3 | Pooled [95% CI] | Holm p | Picks win% / ROI |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
@@ -380,7 +387,7 @@ def lessons_md(s):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
     from . import search as SR
-    rows = SR.read_csv(SR.SCORES) if C.SPORT == "NFL" else []
+    rows = SR.read_csv(SR.path("SCORES.csv"))
     if rows:
         lines += [f"## What the search learned ({len(rows):,} configurations, {C.SEARCH[0]}–{C.SEARCH[1]} only)", ""]
         lines += [f"- {x}" for x in SR.learned(rows)] + [""]

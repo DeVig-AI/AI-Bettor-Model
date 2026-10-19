@@ -1,0 +1,183 @@
+# Research Lab search menu, college football (Constitution v5 A3.3c, Part C). Round 1 scores every combination;
+# later rounds move one setting of the best configurations one step along its ladder. The 16 hand-written CFB
+# seed candidates (none had run) are all in this grid. Adding a value here lets an idea compete in the search for
+# free. No known betting angles (A3.5, C6).
+families:
+- name: Elo
+  type: elo
+  market: spread
+  fixed:
+    hfa_elo: 70
+    revert: 0.3333333333333333
+    mean: 1500
+    elo_per_point: 25
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    returning_k: 0.5
+    returning_mid: 0.5
+  grid:
+    k:
+    - 15
+    - 25
+    - 35
+    revert_center:
+    - none
+    - conference
+    mov:
+    - none
+    - '538'
+    mov_cap:
+    - null
+    - 28
+    returning:
+    - none
+    - ppa
+    hfa_mode:
+    - fixed
+    - rolling
+    market_blend:
+    - 0.0
+    - 0.5
+- name: SRS
+  type: srs
+  market: spread
+  fixed:
+    hfa_pts: 2.5
+  grid:
+    carry:
+    - 0.4
+    - 0.6
+    - 0.8
+    prior_w:
+    - 1
+    - 3
+    - 6
+    margin_cap:
+    - null
+    - 28
+- name: PPA rating
+  type: ppa
+  market: spread
+  fixed: {}
+  grid:
+    carry:
+    - 0.4
+    - 0.6
+    - 0.8
+    prior_w:
+    - 1
+    - 3
+    - 6
+    garbage_time:
+    - include
+    - exclude
+- name: Pace × efficiency
+  type: pace_eff
+  market: total
+  fixed:
+    calibrate: true
+    league_window: 1600
+  grid:
+    halflife:
+    - 4
+    - 6
+    - 10
+    season_carry:
+    - 0.3
+    - 0.5
+    - 0.7
+    efficiency:
+    - points
+    - epa
+    pace:
+    - true
+    - false
+ladders:
+  k:
+  - 10
+  - 15
+  - 20
+  - 25
+  - 30
+  - 35
+  - 45
+  revert:
+  - 0.2
+  - 0.3333
+  - 0.4
+  - 0.5
+  - 0.6
+  hfa_elo:
+  - 40
+  - 55
+  - 70
+  - 85
+  - 100
+  market_blend:
+  - 0.0
+  - 0.25
+  - 0.5
+  - 0.75
+  halflife:
+  - 2
+  - 3
+  - 4
+  - 6
+  - 8
+  - 10
+  - 14
+  - 20
+  season_carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  prior_w:
+  - 0.5
+  - 1
+  - 2
+  - 3
+  - 4
+  - 6
+  - 9
+  hfa_pts:
+  - 1.5
+  - 2.0
+  - 2.5
+  - 3.0
+  - 3.5
+  mov_cap:
+  - 21
+  - 28
+  - 35
+  margin_cap:
+  - 21
+  - 28
+  - 35
+search:
+  neighbours_of_best: 10
+  blend_pool: 6
+  shortlist_per_market: 2
+  shortlist_min_t: 2.0
+  max_disagreement_corr: 0.95

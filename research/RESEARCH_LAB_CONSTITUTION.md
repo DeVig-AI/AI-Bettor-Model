@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v4
+# DeVig Research Lab -- Constitution v5
 
-Version: **v4** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v3 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v3.md`; v2 and v1 alongside it; what
-changed: sections "Changes from v1", "Changes from v2" and "Changes from v3" at the end)
+Version: **v5** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v4 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v4.md`; v3, v2 and v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v4" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -50,9 +50,11 @@ result, and it will be reported exactly like a success: every number, plainly.
    cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
-3c. **The search (NFL only, Part B).** Besides hand-written candidates, the lab finds NFL candidates itself, in rounds
-   (at most one round a week), deterministically, with no AI:
-   - **Menu:** `research/search/MENU.yaml` lists the model families and the values each setting may take. Round 1
+3c. **The search (every sport with a search split: NFL Part B, college football Part C).** Besides hand-written
+   candidates, the lab finds candidates itself, per sport, in rounds (at most one round a week per sport),
+   deterministically, with no AI. Each sport has its own menu and logs (NFL `research/search/`, CFB
+   `research/cfb/search/`):
+   - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Round 1
      scores every combination. Each later round adds the neighbours (one setting moved one step along its ladder in the
      menu) of the 10 best configurations per market, plus blends of the best performers: every pair of the 6 best,
      equal-weight blends of the best 3 and best 5, and a best-5 blend with non-negative weights summing to 1 fit on the
@@ -63,7 +65,7 @@ result, and it will be reported exactly like a success: every number, plainly.
    - **Shortlist:** after each round, at most **2 per market** become candidates, best search t first, and only if
      t ≥ **2.0**, the effect is positive in **each** search sub-period, and the model's disagreements with the line
      correlate at most **0.95** with any candidate the search sent before or in the same round. A shortlisted model is
-     written to `research/candidates/` with its search numbers, committed, and confirmed like any candidate.
+     written to the sport's candidates folder with its search numbers, committed, and confirmed like any candidate.
    - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
      (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
 4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
@@ -121,9 +123,9 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
   spent the moment it is recorded in `research/exam/EXAMS.csv`, which happens before the sealed data is downloaded,
   so a crash still spends it. **Every exam is final**: no retakes, no "fixed" re-runs.
 - Only the **best current lab pass** may sit an exam: smallest Holm-adjusted p, then the larger pooled effect, then the
-  earlier ledger row. NFL: the Inspector General's workflow starts the exam automatically after a lab run whose review
-  finds a lab pass (the owner may also start it by hand). College football: started only by the owner. Budget and
-  finality are the same either way.
+  earlier ledger row. Every sport: the Inspector General's workflow starts the exam automatically after a lab run whose
+  review finds a lab pass in that sport (the owner may also start it by hand). Budget and finality are the same either
+  way.
 - The candidate runs exactly as in the lab (same file, coefficients fit on the training seasons only), with ratings
   carried forward through the sealed season game by game.
 - **Exam pass:** sealed-season effect > 0 **and** one-sided p < 0.05 / 3 = **0.0167** (Bonferroni over the budget).
@@ -253,17 +255,21 @@ outcome is again that **no CFB candidate passes the sealed exam**. Small samples
 |---|---|---|
 | Warm-up | 2009-2013 | ratings and rolling stats only; never scored, never fit on |
 | Training | 2014-2017 | the only seasons coefficients may be fit on; also sets the line-only baseline |
-| Gate 1 | 2018-2019 | exploration |
-| (played through) | 2020 | COVID season (conference-only schedules, opt-outs, empty stadiums): ratings update through it, never scored, never fit on |
-| Gate 2 | 2021-2022 | exploration |
-| Gate 3 | 2023-2024 | exploration |
-| Pooled | 2018-2019 + 2021-2024 | the pooled test of A7 (2020 excluded) |
+| Search | 2018, 2019, 2021 | the search (A3.3c) scores configurations here; each season is a search sub-period |
+| (played through) | 2020 | COVID season (conference-only schedules, opt-outs, empty stadiums): ratings update through it, never scored, never fit on, never searched on |
+| Gate 1 | 2022 | confirmation |
+| Gate 2 | 2023 | confirmation |
+| Gate 3 | 2024 | confirmation |
+| Pooled | 2022-2024 | the pooled test of A7 |
 | **Sealed** | **2025** | the exam (A8); not in the lab |
 
-Splits reported, never used to pass: **2018-19** (before free transfers and NIL), **2021-22** (one-time free
-transfer and NIL from 2021), **2023-24** (clock keeps running after first downs from 2023: fewer plays; 12-team
-playoff and larger conferences from 2024); **lines of 14 points or less vs more than 14** (mismatches); **regular
-season vs postseason**.
+Splits reported, never used to pass: **2022** (free transfers and NIL), **2023-24** (clock keeps running after first
+downs from 2023: fewer plays; 12-team playoff and larger conferences from 2024); **lines of 14 points or less vs more
+than 14** (mismatches); **regular season vs postseason**.
+
+No college football candidate ran before v5 (the CFB ledger was empty), so no CFB season had been scored when this
+split was chosen. The 16 seed candidates of C6 were moved, unrun, into the CFB search menu
+(`research/cfb/search/MENU.yaml`), where every one of them is a grid point.
 
 ### C3. Markets
 Same as B3: `spread` (forecast = expected home margin, `r = home margin − closing expected home margin`) and `total`
@@ -285,7 +291,7 @@ home edge (its file says so).
 - Kalshi markets: the NCAA football series (game winner, spread ladder, total ladder) as confirmed by the first
   test call; main line = the rung priced closest to 50¢. A game without a two-sided Kalshi price is logged with no pick.
 
-### C6. Seed candidates (registered separately in `research/cfb/candidates/`)
+### C6. Seed ideas (since v5: points of the CFB search menu, not separate candidates)
 (a) a plain team rating (Elo-style) spread model, the baseline every rating idea is measured against; (b) a plain
 points-for/against totals model; (c) ideas taken from public, open college football rating methods (FiveThirtyEight's
 Elo rules, Simple Rating System / least-squares margins as in cfbfastR and sports-reference, opponent-adjusted
@@ -348,4 +354,17 @@ Unchanged: Part C (college football) entirely; the Holm correction over every at
 keep counting); the 0.05 bar; "positive in every gate"; the fade rule; the sealed 2025 exams and their budgets;
 promotion and the stop rule. Said plainly: v4 was written after the 18 v1 NFL results were seen; those used 2016–24, so
 the confirmation seasons 2017–24 are not untouched; the sealed 2025 exam and the paper season are the clean tests.
+
+---
+
+## Changes from v4 (2026-10-19)
+
+1. **College football gets the search → confirm loop (A3.3c, C2)**, the owner's decision: its own menu
+   (`research/cfb/search/MENU.yaml`: Elo, SRS, PPA ratings and pace × efficiency totals, 264 combinations covering all 16
+   seed ideas), searched on 2018, 2019 and 2021, confirmed on 2022, 2023 and 2024 (2020 still played through, never
+   scored). Training 2014–17, the sealed 2025 exam, its budget of 3, the line-coverage gate, the data rules (C1, C1a),
+   the CFB-only correction (C4) and the small-sample rule (C7) are unchanged. No CFB candidate had run, so nothing was
+   seen before the split was chosen.
+2. **The exam starts automatically in every sport** when a review finds a lab pass in that sport (A8; v4 did this for
+   the NFL only). Budgets and finality unchanged.
 
