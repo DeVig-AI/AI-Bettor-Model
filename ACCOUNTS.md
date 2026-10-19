@@ -84,3 +84,23 @@ Pick a favorite team, then open the site on another device and sign in with the 
 
 If the profile says "Saved on this device (…)", the words in brackets say what's missing. `/api/me` returns 401 without a valid login and 503 before the `USERS` binding exists.
 "Invite codes are not set up yet" means `INVITE_CODE` is missing.
+
+## Owner Lab (private)
+
+`/lab` is a private phone dashboard for the owner: the latest run of every GitHub Actions workflow and the Research
+Lab's progress (`research/status.json`, format in `research/STATUS_SCHEMA.md`). It's served only by
+`functions/lab.js` and `functions/api/lab.js`, never linked from the app, and marked noindex / no-store.
+Anyone who isn't the owner (signed out, another account, `OWNER_EMAIL` not set) gets the site's normal
+"Page not found" (`docs/404.html`).
+
+Setup, in devigai → Settings → Variables and secrets (Production), then retry the deployment:
+- `OWNER_EMAIL` = the email you sign in with (plain variable).
+- `GITHUB_TOKEN` (optional, type Secret) = a fine-grained token for this repo only, permission Actions: read-only.
+  Without it GitHub allows 60 requests an hour; the page caches for 3 minutes, which stays under that.
+
+To open it: go to **/login?next=/lab** (bookmark that), enter the email code, and you land on the Lab.
+The Access login cookie covers the whole site, so `/lab` sees it the same way `/api/me` does. When the login runs
+out, the page shows "Sign in again", which goes the same way.
+
+Tests: `node --test tests/lab/lab.test.mjs tests/lab/ui.test.mjs` (the second drives Chromium at 390px with mocked
+GitHub answers; screenshots land in `tests/lab/out/`).
