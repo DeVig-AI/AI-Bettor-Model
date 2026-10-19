@@ -1,0 +1,158 @@
+{
+ "doc": "NFL_PROPS_V2_STUDY",
+ "prereg_sha256": "2f110f3bed7e7ff263020f011eb5ef4679089f66c67bbb9258da42f6e68d4760",
+ "script_sha256": "08e15723ee5a2e0de08310e3719a4ac50752272aa91e9fc29e1f51a894ab40f5",
+ "data_sha256": "241e13150f89f604576bbf2ff0029f3cd3114a84064b935c026dca8eb3dc553a",
+ "tables_sha256": "d566c111331235218182c708c7e353a4c0983e65e7ba10fd7b48aaaa3e3a1743",
+ "split": "2026-09-24",
+ "rows": {
+  "main_set": 11233,
+  "learning": 4486,
+  "test": 6747,
+  "learning_games": 32,
+  "test_games": 48
+ },
+ "v2": {
+  "coef_a_b_c": [
+   0.00713,
+   0.87506,
+   0.04495
+  ],
+  "threshold": 0.02,
+  "learning_picks_by_threshold": {
+   "0.02": {
+    "count": 1,
+    "games": 1,
+    "win_rate": 0.0,
+    "avg_needs_pct": 17.99,
+    "profit_sum": -0.18,
+    "cost_sum": 0.18,
+    "roi": -1.0,
+    "roi_95ci": [
+     -1.0,
+     -1.0
+    ],
+    "avg_chance_given_pct": 20.31
+   },
+   "0.03": {
+    "count": 0
+   },
+   "0.04": {
+    "count": 0
+   },
+   "0.06": {
+    "count": 0
+   },
+   "0.08": {
+    "count": 0
+   }
+  }
+ },
+ "test_a_v2_vs_kalshi": {
+  "rows": 6747,
+  "games": 48,
+  "a_logloss": 0.53535,
+  "b_logloss": 0.53668,
+  "diff_a_minus_b": -0.00133,
+  "diff_95ci": [
+   -0.00345,
+   0.0007
+  ],
+  "verdict": "TOO CLOSE TO CALL"
+ },
+ "test_b_v2_vs_v1": {
+  "rows": 6747,
+  "games": 48,
+  "a_logloss": 0.53535,
+  "b_logloss": 0.56441,
+  "diff_a_minus_b": -0.02906,
+  "diff_95ci": [
+   -0.04514,
+   -0.01386
+  ],
+  "verdict": "V2 MORE RIGHT"
+ },
+ "test_c_picks": {
+  "v2_picks": {
+   "count": 2,
+   "games": 1,
+   "win_rate": 0.0,
+   "avg_needs_pct": 26.28,
+   "profit_sum": -0.526,
+   "cost_sum": 0.526,
+   "roi": -1.0,
+   "roi_95ci": [
+    -1.0,
+    -1.0
+   ],
+   "avg_chance_given_pct": 28.71
+  },
+  "v1_medium_high_picks": {
+   "count": 950,
+   "games": 48,
+   "win_rate": 0.3968,
+   "avg_needs_pct": 39.53,
+   "profit_sum": 1.475,
+   "cost_sum": 375.525,
+   "roi": 0.0039,
+   "roi_95ci": [
+    -0.0922,
+    0.1015
+   ],
+   "avg_chance_given_pct": 50.82
+  },
+  "v2_by_stat": {
+   "passing_yards": {
+    "count": 0
+   },
+   "passing_tds": {
+    "count": 0
+   },
+   "passing_attempts": {
+    "count": 0
+   },
+   "passing_completions": {
+    "count": 0
+   },
+   "interceptions": {
+    "count": 0
+   },
+   "rushing_yards": {
+    "count": 1,
+    "games": 1,
+    "win_rate": 0.0,
+    "avg_needs_pct": 19.03,
+    "profit_sum": -0.19,
+    "cost_sum": 0.19,
+    "roi": -1.0,
+    "roi_95ci": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "rushing_attempts": {
+    "count": 1,
+    "games": 1,
+    "win_rate": 0.0,
+    "avg_needs_pct": 33.52,
+    "profit_sum": -0.335,
+    "cost_sum": 0.335,
+    "roi": -1.0,
+    "roi_95ci": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "receiving_yards": {
+    "count": 0
+   },
+   "receptions": {
+    "count": 0
+   },
+   "rush_rec_yards": {
+    "count": 0
+   }
+  }
+ },
+ "decision": "KEEP V1"
+}
