@@ -222,6 +222,8 @@
   .game-top h3{font-size:16px;}
   .game-sum{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:8px;}
   .game-sum .odds{font-family:var(--font-mono); font-weight:600; font-size:14px;}
+  .om-line{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); margin-top:6px; line-height:1.45;}
+  .om-line b{color:var(--ink-soft); font-weight:600;}
   .game-more{font-size:12.5px; color:var(--accent-strong); font-weight:600; margin-left:auto; white-space:nowrap;}
   .game-details{padding:0 16px 16px; border-top:1px solid var(--line);}
   .game-details > :first-child{margin-top:12px;}
@@ -618,7 +620,14 @@
       <div id="pastRecord"></div>
       <div class="day-strip" id="pastDays" role="tablist" aria-label="Pick a day"></div>
     </div>
+    <div class="card" id="modelsCard" hidden>
+      <h3 style="margin-bottom:6px">Models</h3>
+      <p class="faint" style="margin:0 0 10px">DeVig's NFL picks next to open-source models other people publish, all graded here on the same games with the same rules. A comparison only, not a test and not a betting record.</p>
+      <div class="lab-scroll"><table class="lab-table" id="modelsTable"></table></div>
+      <div class="faint" id="modelsNote" style="margin-top:8px"></div>
+    </div>
     <div id="pastGames"></div>
+
 
     <div class="card">
       <h3 style="margin-bottom:6px">Saved lines</h3>
@@ -756,6 +765,14 @@
       <p><strong>Player props:</strong> the props model beat a simple player hit rate on past seasons but was less accurate than Kalshi's own prices.</p>
       <p><strong>NFL over/unders, key-number spreads and the low-total dog:</strong> each looked positive on past seasons without being confirmed, so each is being followed live on Kalshi prices.</p>
       <p>The Testing tab shows every model's live record, the rules each test was locked with before its first pick, and the experiments still running.</p>
+    </div>
+    <div class="card">
+      <h3>Models compared (NFL)</h3>
+      <p>NFL game cards and the History tab's Models table show DeVig's pick next to models other people have made public. Each one is graded here, on the same games with the same rules, from each model's last number published before kickoff; their own posted records are never used. Kalshi's price is the market baseline. Because every game counts, DeVig's row there differs from its Track record, which counts only its confident picks.</p>
+      <p><strong>nfelo</strong> -- by Robby Greer (@greerreNFL). <a href="https://github.com/greerreNFL/nfelo" target="_blank" rel="noopener">github.com/greerreNFL/nfelo</a>. License: none stated, so none of its code is copied or run here; DeVig only reads the weekly picks it publishes in that repo.</p>
+      <p><strong>538 Elo</strong> -- FiveThirtyEight's NFL Elo game model, by FiveThirtyEight (ABC News). <a href="https://github.com/fivethirtyeight/nfl-elo-game" target="_blank" rel="noopener">github.com/fivethirtyeight/nfl-elo-game</a>. License: MIT, Copyright (c) 2021 ABC News Internet Ventures (notice kept with the copied code). FiveThirtyEight stopped updating it, so DeVig re-runs their unchanged code on nflverse results from 2021 on. Spread = Elo gap ÷ 25, their own rule of thumb. This open version has no QB adjustment.</p>
+      <p><strong>Market</strong> -- Kalshi's main spread (the line closest to even money) and its win price.</p>
+      <p>Results come from nflverse final scores.</p>
     </div>
     <div class="card" id="donateCard" hidden>
       <h3>Keep DeVig free</h3>
@@ -1257,6 +1274,68 @@
     });
   }
 
+  // ---------- Open-source models next to DeVig (NFL; comparison only, never a pick) ----------
+  var openModels = {}, openModelsReport = null;
+  var OM_ORDER = [["devig", "DeVig"], ["nfelo", "nfelo"], ["elo538", "538 Elo"], ["kalshi", "Market"]];
+  function omSpread(g, line){
+    if(line == null) return null;
+    var h = Math.round(Number(line) * 2) / 2;
+    if(h === 0) return "PK";
+    return (h < 0 ? g.home_team : g.away_team) + " \u2212" + Math.abs(h);
+  }
+  function omFor(g){ return (g && g.game_id && (g.sport || "NFL") === "NFL") ? openModels[g.game_id] || null : null; }
+  // "DeVig: KC −3 · nfelo: KC −2.5 · 538 Elo: KC −4 · Market: KC −3" for the card summary
+  function openModelsLine(g){
+    var om = omFor(g);
+    if(!om) return "";
+    var bits = [];
+    OM_ORDER.forEach(function(m){
+      var p = om.picks && om.picks[m[0]], t = p ? omSpread(g, p.home_line) : null;
+      if(t) bits.push('<span style="white-space:nowrap"><b>' + escapeHtml(m[1]) + ':</b> ' + escapeHtml(t) + '</span>');
+    });
+    return bits.length ? '<div class="om-line">' + bits.join(" · ") + '</div>' : "";
+  }
+  // the breakdown inside the card: each model's line, win chance and (once final) how it did
+  function openModelsBox(g){
+    var om = omFor(g);
+    if(!om || !om.picks) return null;
+    var rows = "";
+    OM_ORDER.forEach(function(m){
+      var p = om.picks[m[0]];
+      if(!p) return;
+      var wp = p.home_wp == null ? "—" : (p.home_wp >= 0.5 ? escapeHtml(g.home_team) + " " + fmtPct(p.home_wp) : escapeHtml(g.away_team) + " " + fmtPct(1 - p.home_wp));
+      var res = !om.final ? "" : (p.su === true ? "won" : p.su === false ? "lost" : "—") +
+        (m[0] === "kalshi" ? "" : " / " + (p.ats === true ? "covered" : p.ats === false ? "missed" : p.ats_side ? "push" : "no spread pick"));
+      rows += '<tr><td>' + escapeHtml(m[1]) + '</td><td>' + escapeHtml(omSpread(g, p.home_line) || "—") + '</td><td>' + wp + '</td>' +
+        (om.final ? '<td>' + escapeHtml(res) + '</td>' : '') + '</tr>';
+    });
+    if(!rows) return null;
+    var box = el("div", null);
+    box.style.cssText = "margin-top:14px; border-top:1px solid var(--line); padding-top:10px";
+    box.innerHTML = '<div class="mkt-label">Other models</div><div class="lab-scroll"><table class="lab-table"><tr><th>Model</th><th>Line</th><th>Win chance</th>' +
+      (om.final ? '<th>Winner / spread</th>' : '') + '</tr>' + rows + '</table></div>' +
+      '<div class="faint" style="margin-top:6px">Each model\'s last number before kickoff. Spread picks are graded against the Market line. Comparison only -- see About for credits.</div>';
+    return box;
+  }
+  function renderModelsCard(){
+    var card = document.getElementById("modelsCard");
+    if(!card) return;
+    var r = openModelsReport;
+    if(!r || !r.models || pastSport !== "NFL"){ card.hidden = true; return; }
+    card.hidden = false;
+    function rec(w, l, pct){ return w + l ? w + "–" + l + " (" + Math.round(pct * 100) + "%)" : "—"; }
+    var html = '<tr><th>Model</th><th>Games</th><th>Winner</th><th>Spread</th><th>Brier</th></tr>';
+    r.models.forEach(function(m){
+      html += '<tr' + (m.key === "kalshi" ? ' class="bench"' : '') + '><td>' + escapeHtml(m.name) + '</td><td>' + (m.games || 0) + '</td><td>' + rec(m.su_w, m.su_l, m.su_pct) + '</td><td>' +
+        (m.key === "kalshi" ? "baseline" : rec(m.ats_w, m.ats_l, m.ats_pct) + (m.ats_push ? " · " + m.ats_push + " push" : "")) + '</td><td>' +
+        (m.brier == null ? "—" : Number(m.brier).toFixed(3)) + '</td></tr>';
+    });
+    document.getElementById("modelsTable").innerHTML = html;
+    var since = r.tracking_since ? new Date(r.tracking_since) : null;
+    document.getElementById("modelsNote").textContent = (r.rules || "") + (since && !isNaN(since) ? " Tracking since " + since.toLocaleDateString([], {month: "short", day: "numeric", year: "numeric"}) + "; earlier games aren't counted." : "") +
+      " DeVig's row grades every game, so it differs from its Track record, which counts only its confident picks.";
+  }
+
   // ---------- History: finished games as Home-style cards, by sport, then by day (newest first) ----------
   var pastSport = null;
   function gameResult(g){
@@ -1298,6 +1377,7 @@
       return '<button type="button" class="pill-tab' + (sp === pastSport ? ' active' : '') + '" data-past-sport="' + escapeHtml(sp) + '">' + escapeHtml(sp) + '</button>';
     }).join("");
     wrap.innerHTML = ""; recEl.innerHTML = ""; strip.innerHTML = "";
+    renderModelsCard();
     if(!pastSport){
       wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished games yet.<br><span class="faint">Games move here from Home once they end.</span></div>'));
       return;
@@ -2082,7 +2162,8 @@
       : '<span><span class="pill neutral">FINAL</span></span>';
     head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
       sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
-      '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
+      '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>' +
+      openModelsLine(g);
     head.setAttribute("aria-expanded", String(isOpen));
     var det = el("div", "game-details");
     if(full.firstChild) full.removeChild(full.firstChild); // the matchup header is already in the summary
@@ -2093,6 +2174,8 @@
       var read = gamePane.querySelector(".model-read");
       if(read) read.parentNode.insertBefore(lpb, read.nextSibling); else gamePane.insertBefore(lpb, gamePane.firstChild);
     }
+    var omb = openModelsBox(g);
+    if(omb) gamePane.appendChild(omb);
     var swEl = !over && !isSimple() ? spreadWheelEl(g) : null;
     if(swEl) gamePane.appendChild(swEl);
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
@@ -2771,6 +2854,20 @@
         labLoaded.live = true; renderLab();
       });
     }catch(e){ labLoaded.live = true; renderLab(); }
+    try{
+      dbApi.collection("open_models").onSnapshot(function(snap){
+        openModels = {};
+        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.game_id) openModels[x.game_id] = x; });
+        renderHome(); renderPast();
+      });
+    }catch(e){}
+    try{
+      dbApi.collection("open_models_report").onSnapshot(function(snap){
+        openModelsReport = null;
+        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.doc === "NFL_OPEN_MODELS_V1") openModelsReport = x; });
+        renderPast();
+      });
+    }catch(e){}
     try{
       dbApi.collection("props_model").onSnapshot(function(snap){
         propsDocs = snap.docs.map(function(d){ return d.data(); });
