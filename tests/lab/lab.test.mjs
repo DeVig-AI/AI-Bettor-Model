@@ -132,3 +132,15 @@ test("cleanStatus keeps contract fields only and coerces bad types", () => {
   assert.equal("junk" in s, false);
   assert.equal(api.cleanStatus(null), null);
 });
+
+test("cleanStatus keeps other sports under by_sport, one level deep", () => {
+  const s = api.cleanStatus({scope: "NFL", sport: "NFL", sports: [{key: "nfl", name: "NFL"}, {key: "CFB", name: "College football"}, {bad: 1}],
+    attempts: {this_sport: 3, all_sports: 5}, by_sport: {CFB: {scope: "CFB", candidates: [{id: "x", pooled: {adj_p: 0.5, adj_p_all_sports: 0.9}}],
+      by_sport: {DEEP: {}}}, "<b>": {scope: "x"}}});
+  assert.deepEqual(s.sports.map(x => x.key), ["NFL", "CFB"]);
+  assert.equal(s.attempts.all_sports, 5);
+  assert.deepEqual(Object.keys(s.by_sport), ["CFB", "B"]);
+  assert.equal(s.by_sport.CFB.candidates[0].pooled.adj_p_all_sports, 0.9);
+  assert.equal("by_sport" in s.by_sport.CFB, false);
+  assert.equal(api.cleanStatus({scope: "NFL"}).sports.length, 0);
+});

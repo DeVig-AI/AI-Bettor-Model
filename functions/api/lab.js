@@ -165,13 +165,26 @@ const arr = (v, n) => (Array.isArray(v) ? v.slice(0, n) : []);
 const iso = v => str(v, 40);
 const frac = v => (num(v) !== null ? v : null);
 
-// Keep only the contract's fields, with their types; anything else is dropped.
-export function cleanStatus(s) {
+const SPORT = v => str(v, 12).toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+// Keep only the contract's fields, with their types; anything else is dropped. The top level is one sport's block
+// (NFL); `by_sport` holds the other sports' blocks, each cleaned the same way (one level deep only).
+export function cleanStatus(s, nested = false) {
   if (!s || typeof s !== "object") return null;
+  const by = {};
+  if (!nested && s.by_sport && typeof s.by_sport === "object") {
+    Object.keys(s.by_sport).slice(0, 6).forEach(k => {
+      const b = cleanStatus(s.by_sport[k], true);
+      if (b && SPORT(k)) by[SPORT(k)] = b;
+    });
+  }
+  const at = s.attempts && typeof s.attempts === "object" ? s.attempts : null;
   const c = s.counts || {};
   const L = s.links && typeof s.links === "object" ? s.links : {};
   return {
     updated_at: iso(s.updated_at), scope: str(s.scope, 24), note: str(s.note, 300),
+    sport: SPORT(s.sport || s.scope), sport_name: str(s.sport_name, 40),
+    attempts: at ? {this_sport: num(at.this_sport), all_sports: num(at.all_sports), note: str(at.note, 300)} : null,
     effect_name: str(s.effect_name, 80), effect_unit: str(s.effect_unit, 12),
     constitution: s.constitution && typeof s.constitution === "object"
       ? {version: str(s.constitution.version, 20), sha256: str(s.constitution.sha256, 64)} : null,
@@ -191,10 +204,11 @@ export function cleanStatus(s) {
           name: str(g.name, 40), effect: num(g.effect), ci: ci(g.ci), games: num(g.games),
           passed: g.passed === true ? true : g.passed === false ? false : null})),
         pooled: x.pooled && typeof x.pooled === "object"
-          ? {name: str(x.pooled.name, 40), effect: num(x.pooled.effect), ci: ci(x.pooled.ci), adj_p: num(x.pooled.adj_p)} : null,
+          ? {name: str(x.pooled.name, 40), effect: num(x.pooled.effect), ci: ci(x.pooled.ci), adj_p: num(x.pooled.adj_p),
+             adj_p_all_sports: num(x.pooled.adj_p_all_sports)} : null,
         attempts: num(x.attempts), p_bar: num(x.p_bar), fade_ratio: frac(x.fade_ratio), fade_needed: frac(x.fade_needed),
         kalshi: k ? {picks: num(k.picks), win_rate: frac(k.win_rate), break_even: frac(k.break_even), roi: frac(k.roi)} : null,
-        rule_split: arr(x.rule_split, 6).filter(r => r && typeof r === "object").map(r => ({
+        rule_split: arr(x.rule_split, 10).filter(r => r && typeof r === "object").map(r => ({
           label: str(r.label, 60), effect: num(r.effect), note: str(r.note, 80)})),
         exam: ex ? {state: ["not_taken", "passed", "failed"].includes(ex.state) ? ex.state : "not_taken",
                     effect: num(ex.effect), ci: ci(ex.ci), note: str(ex.note, 300), taken_at: iso(ex.taken_at)} : null,
@@ -208,6 +222,9 @@ export function cleanStatus(s) {
     promoted: arr(s.promoted, 50).filter(x => x && typeof x === "object").map(x => ({
       name: str(x.name, 160), picks: num(x.picks), wins: num(x.wins), losses: num(x.losses), roi: num(x.roi),
       vs_kalshi_note: str(x.vs_kalshi_note, 400)})),
+    ...(nested ? {} : {by_sport: by,
+      sports: arr(s.sports, 6).filter(x => x && typeof x === "object" && SPORT(x.key))
+        .map(x => ({key: SPORT(x.key), name: str(x.name, 40) || SPORT(x.key)}))}),
   };
 }
 
