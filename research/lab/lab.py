@@ -100,7 +100,7 @@ def rel(path):
 
 def load_candidates():
     out = {}
-    for f in sorted(os.listdir(C.CANDIDATES)):
+    for f in sorted(os.listdir(C.CANDIDATES)) if os.path.isdir(C.CANDIDATES) else []:
         if not f.endswith(".yaml"):
             continue
         with open(os.path.join(C.CANDIDATES, f)) as fh:

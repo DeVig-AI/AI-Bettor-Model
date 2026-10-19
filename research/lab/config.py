@@ -1,4 +1,4 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v4: Part B NFL,
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v5: Part B NFL,
 Part C college football); the Constitution wins if they ever disagree.
 
 The module holds one sport's settings at a time: NFL by default, `use("CFB")` switches every constant below to
@@ -8,7 +8,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v4"
+CONSTITUTION_VERSION = "v5"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -28,6 +28,7 @@ STATUS_JSON = os.path.join(RESEARCH, "status.json")
 FIRST_SEASON = 1999            # ratings start here, from average
 TRAIN = (1999, 2005)
 SEARCH = (2006, 2016)          # the search (A3.3c) is given data up to SEARCH[1] and nothing later
+SEARCH_DIR = os.path.join(RESEARCH, "search")
 SEARCH_PERIODS = [(2006, 2009), (2010, 2013), (2014, 2016)]
 GATES = [("2017–19", 2017, 2019), ("2020–22", 2020, 2022), ("2023–24", 2023, 2024)]
 POOLED = ("Pooled 2017–24", 2017, 2024)
@@ -81,13 +82,15 @@ _CFB = dict(
     PROMOTED=os.path.join(CFB_DIR, "promoted.json"),
     STATUS_MD=os.path.join(CFB_DIR, "STATUS.md"),
     LESSONS_MD=os.path.join(CFB_DIR, "LESSONS.md"),
-    FIRST_SEASON=2009,                       # C2
+    FIRST_SEASON=2009,                       # C2 (v5: search 2018, 2019, 2021; confirmation 2022 / 2023 / 2024)
     TRAIN=(2014, 2017),
-    GATES=[("2018–19", 2018, 2019), ("2021–22", 2021, 2022), ("2023–24", 2023, 2024)],
-    POOLED=("Pooled 2018–24 (no 2020)", 2018, 2024),
+    SEARCH=(2018, 2021),
+    SEARCH_PERIODS=[(2018, 2018), (2019, 2019), (2021, 2021)],
+    SEARCH_DIR=os.path.join(CFB_DIR, "search"),
+    GATES=[("2022", 2022, 2022), ("2023", 2023, 2023), ("2024", 2024, 2024)],
+    POOLED=("Pooled 2022–24", 2022, 2024),
     SKIP_SEASONS=(2020,),
-    RULE_SPLITS=[("2018–19", 2018, 2019, "before free transfers and NIL"),
-                 ("2021–22", 2021, 2022, "free transfer + NIL, from 2021"),
+    RULE_SPLITS=[("2022", 2022, 2022, "free transfer + NIL era"),
                  ("2023–24", 2023, 2024, "running clock after first downs; 12-team playoff in 2024")],
     EXTRA_SPLITS=[("Lines ≤ 14", "line_small", "closing line of 14 points or less"),
                   ("Lines > 14", "line_big", "mismatches: closing line over 14 points"),

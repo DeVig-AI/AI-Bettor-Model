@@ -2,9 +2,10 @@ name: Research Lab -- nightly run
 
 # NFL, the loop (Constitution v4, Part B): once a week a search round scores model settings and blends on 2006-16 only
 # and sends at most 2 per market to research/candidates/; every night, NFL candidates without a ledger row (search
-# finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football
-# (Part C; research/cfb/candidates/; 2018-19, 2021-22, 2023-24). Each sport ends with the Inspector General's review.
-# When this finishes, "Research Lab -- Inspector General" starts and sits the NFL sealed exam if a lab pass exists.
+# finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
+# same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
+# Each sport ends with the Inspector General's review. When this finishes, "Research Lab -- Inspector General" starts
+# and sits a sport's sealed exam if that sport has a lab pass.
 # Deterministic; no AI in the loop. Nights with nothing to do stop after one quick check.
 on:
   schedule:
@@ -12,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       search:
-        description: 'Run a search round now, even if the last one was under a week ago'
+        description: 'Run a search round now (NFL and college football), even if the last one was under a week ago'
         type: boolean
         default: false
       rerun:
@@ -104,6 +105,7 @@ jobs:
     env:
       RERUN: ${{ inputs.rerun_cfb }}
       LAB_SPORT: CFB
+      FORCE_SEARCH: ${{ inputs.search }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -116,20 +118,14 @@ jobs:
       - name: Install
         run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
 
-      - name: Anything new to run?
-        id: pending
+      - name: CFB data cache listed? (filled by "Research CFB -- data")
+        id: data
         run: |
-          if [ ! -f research/cfb/data/MANIFEST.json ]; then echo "No CFB data cache yet: run 'Research CFB -- data' first."; echo "n=0" >> "$GITHUB_OUTPUT"; exit 0; fi
-          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
-          echo "Candidates to run: $n"
-          echo "n=$n" >> "$GITHUB_OUTPUT"
-
-      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
-        if: steps.pending.outputs.n != '0'
-        run: python3 tools/frozen_guard.py check
+          if [ -f research/cfb/data/MANIFEST.json ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else
+            echo "No CFB data cache yet: run 'Research CFB -- data' first."; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
 
       - name: Restore the CFB data cache (private Actions cache; never committed, Constitution C1a)
-        if: steps.pending.outputs.n != '0'
+        if: steps.data.outputs.ok == 'true'
         uses: actions/cache/restore@v4
         with:
           key: cfb-data-none
@@ -141,6 +137,29 @@ jobs:
             research/cfb/data/advanced_ngt.csv
             research/cfb/data/returning.csv
             research/cfb/current
+
+      - name: CFB search round (weekly; 2018, 2019, 2021 only)
+        if: steps.data.outputs.ok == 'true'
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.cfb_data check
+          python3 -m research.lab.search round --sport CFB $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain research/cfb/search)" ]; then
+            python3 -m research.lab.inspector review --sport CFB
+            research/lab/push.sh "Research Lab CFB search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          if [ "${{ steps.data.outputs.ok }}" != "true" ]; then echo "n=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
 
       - name: CFB data cache present? (filled by "Research CFB -- data"; the lab itself never calls the API)
         if: steps.pending.outputs.n != '0'
