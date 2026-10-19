@@ -1,0 +1,32 @@
+name: Research Lab -- data probe (MLB, NBA, WNBA, college basketball)
+
+# Run by hand. Checks which free sources of historical closing lines and final scores GitHub Actions can reach (Sportsbook
+# Reviews Online archives, a GitHub-hosted SBR scrape, ESPN's odds history, Retrosheet), for which seasons, with which
+# columns and terms, and commits research/probe/PROBE.md. Coverage only: no results are computed or shown, so it can
+# run before those sports' Constitution Parts are written. Nothing downloaded is committed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-lab
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 openpyxl==3.1.5 xlrd==2.0.1
+      - name: Probe the sources
+        run: python3 -m research.probe.data_probe
+      - name: Commit and push the report
+        if: always()
+        run: research/lab/push.sh "Research Lab data probe $(date -u +%Y-%m-%dT%H:%M:%SZ)"
