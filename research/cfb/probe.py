@@ -37,6 +37,39 @@ def shape(x):
     return x
 
 
+def raw(repo, path, n=None):
+    with urllib.request.urlopen(f"https://raw.githubusercontent.com/{repo}/main/{path}", timeout=60) as r:
+        return r.read(n).decode(errors="replace") if n else r.read().decode(errors="replace")
+
+
+if os.environ.get("PROBE", "detail") == "detail":    # third pass: how the two live CFB Elo repos publish (no CFBD calls)
+    import re
+    t = raw("brandon-keck/cfb-rankings", "README.md")
+    print("cfb-rankings README:", " ".join(t.split())[:4000])
+    st, tr, _ = get("https://api.github.com/repos/brandon-keck/cfb-rankings/git/trees/main?recursive=1")
+    print("files:", [x["path"] for x in tr.get("tree", []) if x["type"] == "blob"])
+    for f in [x["path"] for x in tr.get("tree", []) if x["path"].endswith(".py")][:12]:
+        src = raw("brandon-keck/cfb-rankings", f)
+        hits = [l.strip() for l in src.splitlines() if re.search(r"(?i)home|hfa|k_factor|K =|400|neutral|predict", l)]
+        print("  ", f, "->", hits[:14])
+    w = raw("brandon-keck/cfb-rankings", "data/elo_full_field_weekly.csv").splitlines()
+    print("weekly rows", len(w), "last:", w[-3:], "| 2026 rows:", sum(1 for l in w if l.startswith("2026,")))
+    print("weeks 2026:", sorted({int(l.split(",")[1]) for l in w if l.startswith("2026,")}))
+    hp = raw("schwill2018/college-football-elo", "historical_predictions.csv").splitlines()
+    print("schwill historical_predictions:", hp[0][:600])
+    print("   rows", len(hp), "last:", [l[:300] for l in hp[-2:]])
+    t = raw("schwill2018/college-football-elo", "README.md")
+    print("schwill README:", " ".join(t.split())[:2500])
+    for f in ["collegefootballdata.com/terms", "collegefootballdata.com/api-tiers"]:
+        try:
+            with urllib.request.urlopen(urllib.request.Request("https://" + f, headers={"User-Agent": "Mozilla/5.0"}), timeout=30) as r:
+                h = r.read().decode(errors="replace")
+            txt = re.sub(r"<[^>]+>", " ", re.sub(r"(?s)<(script|style).*?</\1>", " ", h))
+            print(f, ":", " ".join(txt.split())[:5000])
+        except Exception as e:
+            print(f, "error", e)
+    raise SystemExit(0)
+
 MODE = os.environ.get("PROBE", "repos")
 if MODE == "repos":                             # second pass: no CFBD calls, only what the open repos publish
     for repo in ["MellowMindedMateo/papers-pick-bot", "brandon-keck/cfb-rankings", "collierjc75/ncaaf-predictions",
