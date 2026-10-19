@@ -112,6 +112,8 @@ export const PAGE = `<!doctype html>
   .chips{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;margin-top:6px}
   .chip{border:1px solid var(--line-strong);color:var(--ink-soft);border-radius:6px;padding:2px 7px;white-space:nowrap}
   .chip.s{border:0;font-weight:600}
+  .sports{margin:0 0 10px}.sports .chip{background:none;font:inherit;font-size:13px;padding:6px 14px;cursor:pointer;min-height:44px}
+  .sports .chip.on{border-color:var(--accent);color:var(--accent)}
   .s-lab_pass,.s-exam_pass{background:var(--accent-wash);color:var(--accent-strong)}
   .s-promoted{background:var(--accent);color:var(--accent-ink)}
   .s-running{background:var(--surface-2);color:var(--ink)}
@@ -502,14 +504,36 @@ export const PAGE = `<!doctype html>
     if (problem.offline) h += '<div class="note" role="status">Couldn’t reach the server — showing what loaded ' + esc(ago(problem.offline)) + ' (stale).</div>';
     return h;
   }
+  // Sports: the top level of status.json is one sport (NFL); other sports sit in by_sport. The choice is kept per viewer.
+  var labSport = (function(){ try { return localStorage.getItem("labSport") || ""; } catch (e) { return ""; } })();
+  function sportStatus(top){
+    if (!top) return top;
+    var by = top.by_sport || {};
+    return labSport && labSport !== top.sport && by[labSport] ? by[labSport] : top;
+  }
+  function viewSports(top){
+    var list = (top && top.sports) || [];
+    if (list.length < 2) return "";
+    var cur = sportStatus(top).sport || top.sport;
+    return '<div class="chips sports" role="tablist" aria-label="Sport">' + list.map(function(x){
+      return '<button type="button" role="tab" class="chip' + (x.key === cur ? " on" : "") + '" aria-selected="' + (x.key === cur) +
+        '" data-sport="' + esc(x.key) + '">' + esc(x.name) + '</button>';
+    }).join("") + '</div>';
+  }
+  function viewAttempts(s){
+    var a = s.attempts;
+    if (!a || typeof a.all_sports !== "number") return "";
+    return '<div class="small faint">Correction counts this sport’s ' + n(a.this_sport) + ' attempt' + (a.this_sport === 1 ? "" : "s") +
+      ' · ' + a.all_sports + ' across all sports (reported only).</div>';
+  }
   function viewResearchBlock(r){
-    var s = r && r.status;
+    var top = r && r.status, s = sportStatus(top);
     if (!r || (!s && r.error && !r.fetched_at))
       return '<div class="card empty"><b>Couldn’t read research/status.json</b><p>' + esc((r && r.error) || "") + '</p></div>';
     if (!s) return '<section class="card empty" aria-label="Research"><div class="kicker">Research</div><b>Lab hasn’t run yet</b>' +
       '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
     return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
-      viewSummary(s) + viewRuns(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
+      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewRuns(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
   }
   function viewOverview(){
     var s = data && data.research && data.research.status;
@@ -524,8 +548,9 @@ export const PAGE = `<!doctype html>
     return '<div class="ck">' + g + '<div><div class="t">' + esc(title) + '</div>' + (detail ? '<div class="d">' + esc(detail) + '</div>' : "") + '</div></div>';
   }
   function viewDetail(id){
-    var s = data && data.research && data.research.status;
-    var c = s && (s.candidates || []).filter(function(x){ return (x.id || x.name) === id; })[0];
+    var top = data && data.research && data.research.status, s = null, c = null;
+    [sportStatus(top)].concat(top ? [top] : [], top && top.by_sport ? Object.keys(top.by_sport).map(function(k){ return top.by_sport[k]; }) : [])
+      .forEach(function(b){ if (!c && b) { c = (b.candidates || []).filter(function(x){ return (x.id || x.name) === id; })[0]; if (c) s = b; } });
     var back = '<a class="back" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Lab</a>';
     if (!c) return viewNotes() + back + '<div class="card empty"><b>Candidate not found</b><p>It may have been renamed in the latest status.</p></div>';
     var unit = s.effect_unit || "pts", scale = scaleOf([c], 4), d = decimals(scale);
@@ -633,6 +658,8 @@ export const PAGE = `<!doctype html>
   $("refresh").addEventListener("click", function(){ load(true); });
   $("main").addEventListener("click", function(e){
     if (e.target.closest("#morecands")){ showAllCands = true; render(); }
+    var sp = e.target.closest(".sports [data-sport]");
+    if (sp){ labSport = sp.getAttribute("data-sport"); try { localStorage.setItem("labSport", labSport); } catch (x) {} showAllCands = false; render(); }
     if (e.target.closest("#morewf")){ showAllWf = true; render(); }
     if (e.target.closest("#moresteps")){ showAllSteps = true; render(); }
   });

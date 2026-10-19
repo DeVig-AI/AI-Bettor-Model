@@ -1,0 +1,18 @@
+# Research Lab CFB candidate cfb-tot-pe -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-tot-pe
+name: + Pace (plays × points per play)
+market: total
+family: Pace × efficiency
+parent: cfb-tot-pts
+reason: 'Split points into plays per game and points per play for each offence and defence: tempo varies hugely between college
+  teams.'
+source: Standard pace × efficiency idea, as in public college totals models
+model:
+  type: pace_eff
+  params:
+    halflife: 6
+    season_carry: 0.5
+    calibrate: true
+    league_window: 1600
+    efficiency: points
+    pace: true

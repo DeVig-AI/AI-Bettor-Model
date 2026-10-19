@@ -69,6 +69,23 @@ export const STATUS = {
   promoted: [{name: "Rest-days edge on spreads", picks: 41, wins: 23, losses: 18, roi: 0.042, vs_kalshi_note: "Beat the Kalshi close on 26 of 41."}],
 };
 
+// Two sports: NFL at the top level, college football under by_sport (STATUS_SCHEMA.md)
+export const SPORTS_STATUS = {...STATUS, sport: "NFL", sport_name: "NFL",
+  attempts: {this_sport: 9, all_sports: 11, note: ""},
+  sports: [{key: "NFL", name: "NFL"}, {key: "CFB", name: "College football"}],
+  by_sport: {CFB: {updated_at: STATUS.updated_at, scope: "CFB", sport: "CFB", sport_name: "College football",
+    effect_name: "Edge beyond the closing line", effect_unit: "pts", exam_name: "Sealed 2025 exam",
+    constitution: {version: "v3", sha256: "abc"}, attempts: {this_sport: 2, all_sports: 11, note: ""},
+    counts: {tried: 2, running: 0, lab_pass: 0, exam_pass: 0, exam_budget_left: 3, exam_budget_total: 3},
+    candidates: [
+      {id: "cfb-elo-base", name: "Plain Elo", market: "spread", family: "Elo family", state: "failed", fail_reason: "gate_2",
+       gates: [{name: "2018–19", effect: 0.2, ci: [-0.3, 0.7], games: 1480, passed: true},
+               {name: "2021–22", effect: -0.1, ci: [-0.6, 0.4], games: 1450, passed: false},
+               {name: "2023–24", effect: 0.1, ci: [-0.4, 0.6], games: 1500, passed: true}],
+       pooled: {name: "Pooled 2018–24 (no 2020)", effect: 0.07, ci: [-0.2, 0.35], adj_p: 0.62, adj_p_all_sports: 1}},
+      {id: "cfb-tot-pts", name: "Points for / against totals", market: "total", family: "Pace × efficiency", state: "queued"}],
+    lessons: [], promoted: []}}};
+
 // fetch() stand-in. scenario: "mixed" (status.json present, one failed workflow) or "empty" (no status.json, all green)
 export function mockFetch(scenario, calls = []) {
   return async (url, init) => {
@@ -81,7 +98,8 @@ export function mockFetch(scenario, calls = []) {
       return j(RUNS);
     }
     if (/\/actions\/workflows\/\d+\/runs/.test(url)) return j({workflow_runs: []});
-    if (url.endsWith("/research/status.json") || url.includes("/contents/research/status.json")) return scenario === "empty" ? new Response("404: Not Found", {status: 404}) : j(STATUS);
+    if (url.endsWith("/research/status.json") || url.includes("/contents/research/status.json")) return scenario === "empty" ? new Response("404: Not Found", {status: 404})
+      : j(scenario === "sports" ? SPORTS_STATUS : STATUS);
     return new Response("nope", {status: 599});
   };
 }

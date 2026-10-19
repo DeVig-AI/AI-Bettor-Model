@@ -1,0 +1,16 @@
+# Research Lab CFB candidate cfb-srs -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-srs
+name: Simple Rating System
+market: spread
+family: Least-squares ratings
+parent: null
+reason: Least-squares margins (each team's rating = average margin adjusted for opponents), re-solved before every game date
+  from this season's games, shrunk toward 60% of last season's rating (3 games' worth). Home edge 2.5 points.
+source: Simple Rating System as published by sports-reference and computed in cfbfastR (MIT) / CFBD
+model:
+  type: srs
+  params:
+    hfa_pts: 2.5
+    carry: 0.6
+    prior_w: 3
+    margin_cap: null

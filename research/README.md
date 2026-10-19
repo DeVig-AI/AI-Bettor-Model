@@ -45,6 +45,17 @@ python3 -m research.lab.lab pending
 Running the lab itself is the workflow's job, so results are produced once, in public, in the order they were registered.
 
 ## Other sports
-The Constitution's Part A is shared; each sport gets its own Part (Part C is reserved; college football is planned).
-Ledger rows carry a `sport` column and the correction counts one sport's attempts. `status.json` holds one sport
-(`scope`); a second sport needs its own status file or a backward-compatible extension of `STATUS_SCHEMA.md`.
+The Constitution's Part A is shared; each sport has its own Part. **College football** is Part C (since v2; v3 adds
+where its data is kept): everything lives under `research/cfb/` (candidates, results, `LEDGER.csv`, `exam/`,
+`STATUS.md`, `LESSONS.md`). Its data comes from CollegeFootballData with the `CFB_API_KEY` secret, only in GitHub
+Actions (`Research CFB -- data`: history once, then weekly in season); by the provider's terms the data files are
+never committed and live in the private Actions cache, while `research/cfb/data/MANIFEST.json` (fingerprints) and
+`CALLS.csv` (every API call) are. The nightly lab runs NFL, then CFB; the Inspector General takes `sport: NFL|CFB`.
+Each sport's correction counts its own attempts; the count across all sports is reported next to it.
+`status.json` keeps NFL at the top level and other sports under `by_sport` (see `STATUS_SCHEMA.md`); /lab has a
+sport switch.
+
+```
+python3 -m research.lab.lab pending --sport CFB
+python3 -m research.lab.inspector review --sport CFB
+```

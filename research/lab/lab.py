@@ -4,6 +4,7 @@
     python3 -m research.lab.lab start            # pull the next ones from research/queue/ and mark them running in
                                                  # research/status.json (the workflow pushes both before the run)
     python3 -m research.lab.lab run [--rerun ID] # run them (at most 18) through the three gates
+    ... --sport CFB                              # college football (Part C; files under research/cfb/)
 
 `run` writes research/results/<id>.json, appends one research/LEDGER.csv row per attempt (never edits one), and
 locks each candidate file that ran into FROZEN.sha256. The Inspector General's review (inspector.py) then judges.
@@ -31,7 +32,15 @@ LEDGER_COLS = ["attempt", "sport", "candidate_id", "market", "run_at", "status",
                "run_url", "games_pooled", "effect_pooled", "ci_lo", "ci_hi", "p_one_sided", "g1_effect", "g2_effect",
                "g3_effect", "error"]
 REQUIRED = ["id", "name", "market", "family", "parent", "reason", "model"]
-CODE_FILES = ["config.py", "data.py", "models.py", "metrics.py", "lab.py"]
+CODE_FILES = ["config.py", "data.py", "cfb_data.py", "models.py", "metrics.py", "lab.py"]
+
+
+def dm():
+    """The data module for the sport in use (Part B1 nflverse, Part C1 CollegeFootballData)."""
+    if C.SPORT == "CFB":
+        from . import cfb_data
+        return cfb_data
+    return D
 
 
 def now():
@@ -181,7 +190,7 @@ def committed(path):
 # ---- one candidate through the gates --------------------------------------------------------------------------------
 def score(out, s0_from=None):
     """Eligible games (line and result known) with d = forecast - line, r = actual - line."""
-    e = out[out.line.notna() & out.actual.notna()].copy()
+    e = out[out.line.notna() & out.actual.notna() & ~out.season.isin(C.SKIP_SEASONS)].copy()
     if not np.isfinite(e.forecast).all():
         raise ValueError(f"{int((~np.isfinite(e.forecast)).sum())} eligible games have no forecast")
     e["d"] = e.forecast - e.line
@@ -193,11 +202,17 @@ def between(e, a, b):
     return e[(e.season >= a) & (e.season <= b)]
 
 
+def split_mask(e, kind):
+    """Rows of the extra reported splits (Part C2): line size, regular season vs postseason."""
+    return {"line_small": e.line.abs() <= 14, "line_big": e.line.abs() > 14,
+            "regular": e.game_type == "REG", "post": e.game_type != "REG"}[kind]
+
+
 def evaluate_candidate(c, data):
     out, fit = models.run(c, data)
     e = score(out)
     if int(e.season.max()) > C.LAB_MAX_SEASON:
-        raise D.SealedDataError("sealed season in the lab's results")
+        raise dm().SealedDataError("sealed season in the lab's results")
     tr = between(e, *C.TRAIN)
     s0 = M.baseline_side(tr.r.values)
     res = {"baseline": {"side": s0, "train_mean_cover": round(float(tr.r.mean()), 4), "train_games": len(tr),
@@ -212,6 +227,11 @@ def evaluate_candidate(c, data):
     for label, a, b, note in C.RULE_SPLITS:
         g = between(e, a, b)
         res["rule_split"].append(dict(label=label, seasons=[a, b], note=note, **M.evaluate(g.d, g.r, s0, with_ci=False)))
+    pooled = between(e, *C.POOLED[1:])
+    for label, kind, note in C.EXTRA_SPLITS:
+        g = pooled[split_mask(pooled, kind).values]
+        res["rule_split"].append(dict(label=label, seasons=list(C.POOLED[1:]), note=note,
+                                      **M.evaluate(g.d, g.r, s0, with_ci=False)))
     return res
 
 
@@ -235,8 +255,13 @@ def run_all(rerun=None, log=print):
     if not ids:
         log("nothing to run: every registered candidate has a ledger row")
         return []
-    data = D.load_lab()
-    dsha, ksha = D.data_fingerprint(), code_sha()
+    data = dm().load_lab()
+    blocked = dm().blocked_markets(data) if hasattr(dm(), "blocked_markets") else set()
+    if blocked:                                       # C1 line-coverage gate: refuse, never shrink the seasons
+        log(f"::warning title=Research Lab::line coverage under 70% in a training or gate season for "
+            f"{sorted(blocked)}: those candidates do not run (Constitution C1)")
+        ids = [cid for cid in ids if cands[cid]["market"] not in blocked]
+    dsha, ksha = dm().data_fingerprint(), code_sha()
     _, head = git("rev-parse", "HEAD")
     number, url = run_info()
     os.makedirs(C.RESULTS, exist_ok=True)
@@ -271,7 +296,7 @@ def run_all(rerun=None, log=print):
             log(f"{cid}: pooled {p['effect']:+.3f} pts [{p['ci'][0]:+.3f}, {p['ci'][1]:+.3f}] p={p['p']:.4f}; gates "
                 + " / ".join(f"{g['effect']:+.3f}" for g in res["gates"]))
         except Exception as ex:                       # a crash is still an attempt (A6): p = 1
-            if isinstance(ex, D.SealedDataError):
+            if isinstance(ex, (D.SealedDataError, dm().SealedDataError)):
                 raise
             row.update(status="error", error=f"{type(ex).__name__}: {ex}"[:300])
             log(f"{cid}: ERROR {row['error']}")
@@ -287,7 +312,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["pending", "start", "run"])
     ap.add_argument("--rerun", default=None, help="re-run one candidate whose last attempt crashed")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
     a = ap.parse_args(argv)
+    C.use(a.sport)
     if a.cmd == "pending":
         print(min(C.BATCH, len(pending(load_candidates(), read_ledger(), a.rerun or None)) + len(queued())))
         return 0

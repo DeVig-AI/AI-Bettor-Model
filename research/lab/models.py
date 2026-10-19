@@ -79,6 +79,25 @@ def home_bases(games):
     return {k: v.mode().iloc[0] for k, v in h}
 
 
+def conferences(games):
+    """{(team, season): conference} from the schedule (college football)."""
+    out = {}
+    for col_t, col_c in (("home_team", "home_conf"), ("away_team", "away_conf")):
+        if col_c in games.columns:
+            for t, s, c in zip(games[col_t], games.season, games[col_c]):
+                if isinstance(c, str):
+                    out[(t, s)] = c
+    return out
+
+
+def returning_share(data):
+    """{(team, season): share of last season's PPA that returns} (college football; missing = no adjustment)."""
+    r = data.get("returning")
+    if r is None or not len(r):
+        return {}
+    return {(t, int(s)): float(v) for t, s, v in zip(r.team, r.season, r.percent_ppa) if v == v}
+
+
 def _out(rows):
     return pd.DataFrame(rows, columns=["game_id", "season", "game_type", "week", "forecast", "line", "actual"])
 
@@ -87,8 +106,10 @@ def _out(rows):
 def run_elo(p, data):
     games = ordered(data["games"])
     qbg = {(r.game_id, r.qb_id): qb_value(r) for r in data["qb_games"].itertuples()} if p["qb"] != "none" else {}
-    bases = home_bases(games)
+    bases = home_bases(games) if p.get("travel_elo_per_1000mi") else {}
     epp = p["elo_per_point"]
+    conf = conferences(games) if p.get("revert_center") == "conference" else {}
+    ret = returning_share(data) if p.get("returning", "none") != "none" else {}
     R = defaultdict(lambda: float(p["mean"]))
     last_season = {}
     hfa_hist = defaultdict(list)                       # season -> home margins (non-neutral)
@@ -105,11 +126,25 @@ def run_elo(p, data):
                 prev = [m for s in range(cur - p["hfa_seasons"], cur) for m in hfa_hist.get(s, [])]
                 hfa_pts = float(np.mean(prev)) if prev else p["hfa_elo"] / epp
             median = float(np.median(list(R.values()))) if R else p["mean"]
+            conf_mean = {}
+            if conf:                                   # C6: each conference's average rating at the end of last season
+                by = defaultdict(list)
+                for t, r in R.items():
+                    c = conf.get((t, cur))
+                    if c:
+                        by[c].append(r)
+                conf_mean = {c: float(np.mean(v)) for c, v in by.items()}
         h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
         for t in (h, a):                               # offseason reversion, once per team per season
             if t in last_season and last_season[t] != g.season:
                 prev = R[t] - (median - p["mean"]) if p.get("revert_center") == "median" else R[t]
-                R[t] = p["mean"] * p["revert"] + prev * (1 - p["revert"])
+                center = conf_mean.get(conf.get((t, g.season)), p["mean"]) if conf else p["mean"]
+                rv = p["revert"]
+                if ret:                                # returning production: keep more of a team that returns more
+                    share = ret.get((t, g.season))
+                    if share is not None and np.isfinite(share):
+                        rv = min(1.0, max(0.0, rv + p["returning_k"] * (p["returning_mid"] - share)))
+                R[t] = center * rv + prev * (1 - rv)
             last_season[t] = g.season
         neutral = g.location == "Neutral"
         dh = R[h] - R[a] + (0 if neutral else hfa_pts * epp)
@@ -163,7 +198,8 @@ def run_elo(p, data):
             mult = 1.0
             if p["mov"] == "538":
                 lead = du if res == 1.0 else -du
-                mult = math.log(max(abs(m), 1) + 1) * (2.2 / (1.0 if res == 0.5 else lead * 0.001 + 2.2))
+                mm = min(abs(m), p["mov_cap"]) if p.get("mov_cap") else abs(m)
+                mult = math.log(max(mm, 1) + 1) * (2.2 / (1.0 if res == 0.5 else lead * 0.001 + 2.2))
             shift = k * mult * (res - pu)
         R[h] += shift
         R[a] -= shift
@@ -187,7 +223,7 @@ def run_pace_eff(p, data):
     tg = {(r.game_id, FRANCHISE.get(r.team, r.team)): (r.plays, r.epa) for r in data["team_games"].itertuples()}
     lam = 0.5 ** (1 / p["halflife"])
     carry = p["season_carry"]
-    league = deque(maxlen=544)                         # about one season of team-games: (plays, points, epa)
+    league = deque(maxlen=p.get("league_window", 544))  # about one season of team-games: (plays, points, epa)
     st = {}                                            # team -> dict of rolling means
     last_season = {}
     keys = ("op", "opts", "oepa", "dp", "dpts", "depa")
@@ -207,6 +243,8 @@ def run_pace_eff(p, data):
         L = lg()
 
         def side(o, d):
+            if not p.get("pace", True):                # plain points for / against, no plays at all
+                return L["pts"] * (st[o]["opts"] / L["pts"]) * (st[d]["dpts"] / L["pts"])
             plays = L["p"] * (st[o]["op"] / L["p"]) * (st[d]["dp"] / L["p"])
             if p["efficiency"] == "epa":
                 ppp = L["pts"] / L["p"] + (st[o]["oepa"] / st[o]["op"] - L["epa"] / L["p"]) \
@@ -234,7 +272,9 @@ def run_pace_eff(p, data):
             h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
             ph, pa = tg.get((g.game_id, h)), tg.get((g.game_id, a))   # play-by-play uses today's codes (LV, LAC, LA)
             if ph is None or pa is None:
-                continue
+                if p.get("pace", True):
+                    continue
+                ph = pa = (L["p"], L["epa"])           # points-only model: plays are not needed
             for o, d, po, pts_o in ((h, a, ph, g.home_score), (a, h, pa, g.away_score)):
                 st[o]["op"] = lam * st[o]["op"] + (1 - lam) * po[0]
                 st[o]["opts"] = lam * st[o]["opts"] + (1 - lam) * pts_o
@@ -379,9 +419,111 @@ def run_blend(p, data, market):
     return base.reset_index()[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fits
 
 
-FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff,
+# ---- Least-squares rating families (college football; market: spread) ------------------------------------------------
+def _ridge(idx, n, rows, prior, w):
+    """Ratings x (length n) minimising sum((y - x[i] + x[j] - h)^2) + w * sum((x - prior)^2) over rows (i, j, y, h)."""
+    A = np.zeros((n, n))
+    b = w * prior.copy()
+    A[np.diag_indices(n)] = w
+    for i, j, y, h in rows:
+        r = y - h
+        A[i, i] += 1; A[j, j] += 1; A[i, j] -= 1; A[j, i] -= 1
+        b[i] += r; b[j] -= r
+    return np.linalg.solve(A, b)
+
+
+def run_srs(p, data):
+    """Simple Rating System (least-squares margins, as in sports-reference / cfbfastR), re-solved before every game
+    date from this season's finished games, shrunk toward last season's final rating (prior_w games' worth, carry)."""
+    games = ordered(data["games"])
+    teams = sorted(set(games.home_team) | set(games.away_team))
+    ix = {t: i for i, t in enumerate(teams)}
+    n = len(teams)
+    prior = np.zeros(n)
+    rows_season, rows, cur, cur_day, x = [], [], None, None, np.zeros(n)
+    hfa = p["hfa_pts"]
+    for g in games.itertuples():
+        if g.season != cur:
+            if cur is not None:
+                prior = p["carry"] * _ridge(ix, n, rows_season, prior, p["prior_w"])
+                prior -= prior.mean()
+            cur, rows_season, cur_day = g.season, [], None
+            x = prior.copy()
+        if g.gameday != cur_day:                       # only games finished before this date
+            cur_day = g.gameday
+            x = _ridge(ix, n, rows_season, prior, p["prior_w"]) if rows_season else prior.copy()
+        i, j = ix[g.home_team], ix[g.away_team]
+        h = 0.0 if g.location == "Neutral" else hfa
+        rows.append((g.game_id, g.season, g.game_type, g.week, x[i] - x[j] + h, g.spread_line,
+                     (g.home_score - g.away_score) if played(g) else np.nan))
+        if played(g):
+            m = g.home_score - g.away_score
+            if p.get("margin_cap"):
+                m = max(-p["margin_cap"], min(p["margin_cap"], m))
+            rows_season.append((i, j, float(m), h))
+    return _out(rows), {}
+
+
+def run_ppa(p, data):
+    """Opponent-adjusted PPA (EPA) ratings, as in cfbfastR / CFBD: each offence's points added per play and each
+    defence's PPA allowed, least squares with last-season priors, re-solved before every game date. Spread =
+    b * (net home - net away) + c at a home site; b and c fit once on the training seasons (A3.4)."""
+    games = ordered(data["games"])
+    tg = data["team_games_ngt" if p.get("garbage_time") == "exclude" else "team_games"]
+    ppp = {(r.game_id, r.team): (r.epa / r.plays) for r in tg.itertuples() if r.plays and r.plays > 0}
+    teams = sorted(set(games.home_team) | set(games.away_team))
+    ix = {t: i for i, t in enumerate(teams)}
+    n = len(teams)
+    # unknowns: offence o_t (0..n-1), defence d_t (n..2n-1); observation y = mu + o_off - d_def (d = PPA prevented)
+    pri = np.zeros(2 * n)
+    obs, cur, cur_day, est, mu = [], None, None, np.zeros(2 * n), 0.0
+    w = p["prior_w"]
+
+    def solve(obs, pri):
+        if not obs:
+            return pri.copy(), 0.0
+        mu_ = float(np.mean([y for _, _, y in obs]))
+        A = np.eye(2 * n) * w
+        b = w * pri.copy()
+        for o, d, y in obs:
+            r = y - mu_
+            k = n + d
+            A[o, o] += 1; A[k, k] += 1; A[o, k] -= 1; A[k, o] -= 1
+            b[o] += r; b[k] -= r
+        return np.linalg.solve(A, b), mu_
+
+    feats = []
+    for g in games.itertuples():
+        if g.season != cur:
+            if cur is not None:
+                fin, _ = solve(obs, pri)
+                pri = p["carry"] * fin
+            cur, obs, cur_day = g.season, [], None
+            est = pri.copy()
+        if g.gameday != cur_day:
+            cur_day = g.gameday
+            est, mu = solve(obs, pri)
+        i, j = ix[g.home_team], ix[g.away_team]
+        net = (est[i] + est[n + i]) - (est[j] + est[n + j])
+        feats.append((g.game_id, g.season, g.game_type, g.week, net, 0.0 if g.location == "Neutral" else 1.0,
+                      g.spread_line, (g.home_score - g.away_score) if played(g) else np.nan))
+        for o, d in ((g.home_team, g.away_team), (g.away_team, g.home_team)):
+            v = ppp.get((g.game_id, o))
+            if v is not None and np.isfinite(v):
+                obs.append((ix[o], ix[d], float(v)))
+    f = pd.DataFrame(feats, columns=["game_id", "season", "game_type", "week", "net", "home", "line", "actual"])
+    tr = (f.season >= C.TRAIN[0]) & (f.season <= C.TRAIN[1]) & f.actual.notna()
+    X = np.column_stack([f.net[tr], f.home[tr]])
+    coef, *_ = np.linalg.lstsq(X, f.actual[tr].values, rcond=None)
+    f["forecast"] = coef[0] * f.net + coef[1] * f.home
+    fit = {"points_per_net_ppa": round(float(coef[0]), 4), "home_points": round(float(coef[1]), 4),
+           "fit_games": int(tr.sum()), "fit_seasons": f"{C.TRAIN[0]}-{C.TRAIN[1]}"}
+    return f[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
+
+
+FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa,
             "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m)}
-MARKET_OF = {"elo": "spread", "pace_eff": "total"}   # the other families take the candidate's market
+MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}   # the other families take the candidate's market
 
 
 def run(candidate, data):

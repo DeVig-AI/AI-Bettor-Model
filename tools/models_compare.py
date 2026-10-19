@@ -14,6 +14,12 @@ Models (credits and licenses are also on the app's Models and About pages):
           results from 2021 on. Their spread rule: Elo difference / 25.
   blotny  NBA, by Blotny (github.com/Blotny/nba-win-probability-predictor, MIT). The picks it publishes
           (data/processed/upcoming_predictions.csv, the "primary" model) are read; its code is not run.
+  cfbelo  CFB, College FBS Elo by schwill2018 (github.com/schwill2018/college-football-elo). NO license, so none of
+          its code is copied or run; only the predictions it publishes (historical_predictions.csv: home win chance
+          and spread, with the time each was made) are read, the last one made before kickoff.
+  cfbrank CFB, CFB Rankings by Brandon Keck (github.com/brandon-keck/cfb-rankings, MIT). Its published weekly Elo
+          ratings (data/elo_full_field_weekly.csv) turned into a home win chance with its own documented formula
+          (Elo 400 scale, +65 for the home team, none at a neutral site). Winner only: it publishes no spread.
   kalshi  the market baseline in every tab: Kalshi's win price, main spread, main total (MLB: the 1.5 run line).
 
 Every run (GitHub Actions, models_compare.yml):
@@ -54,6 +60,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 import kalshi_games_v1 as KG  # noqa: E402  (frozen; read-only use)
 
 DIR = ROOT / "live" / "models"
@@ -68,12 +75,14 @@ NBA_PROPS = ROOT / "nba" / "NBA_PROPS_MODEL_V1_LOG.sqlite3"
 NFL_DECIDER = "OLD_LAB28_43_HYBRID"                          # the decider the app shows (export_lineboard_nfl_v7.py)
 NFL_GAMES_URL = "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"  # as the grader
 NFELO_URL = "https://raw.githubusercontent.com/greerreNFL/nfelo/main/output_data/prediction_tracker.csv"
+CFBELO_URL = "https://raw.githubusercontent.com/schwill2018/college-football-elo/main/historical_predictions.csv"
+CFBRANK_URL = "https://raw.githubusercontent.com/brandon-keck/cfb-rankings/main/data/elo_full_field_weekly.csv"
 BLOTNY_URL = "https://raw.githubusercontent.com/Blotny/nba-win-probability-predictor/main/data/processed/upcoming_predictions.csv"
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/{}/scoreboard"
 UA = "devig-models-compare/1.0 (personal research; read-only)"
 ET = ZoneInfo("America/New_York")
-AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(hours=36)}
-SPORTS = ("NFL", "NBA", "MLB")
+AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(hours=36), "CFB": timedelta(days=8)}
+SPORTS = ("NFL", "NBA", "MLB", "CFB")
 RECENT = timedelta(days=4)                                    # finished games kept in the page's game list
 BREAKEVEN_110 = 110 / 210
 
@@ -90,14 +99,21 @@ MODELS = [
     {"key": "blotny", "name": "Blotny NBA", "sports": ["NBA"], "author": "Blotny",
      "url": "https://github.com/Blotny/nba-win-probability-predictor", "license": "MIT",
      "note": "Its published daily predictions (the primary model); a small hobby project."},
-    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB"], "author": "Kalshi prices",
+    {"key": "cfbelo", "name": "FBS Elo", "sports": ["CFB"], "author": "schwill2018",
+     "url": "https://github.com/schwill2018/college-football-elo", "license": "none stated: only its published picks are read, no code copied",
+     "note": "Its published predictions (historical_predictions.csv): the last one made before kickoff."},
+    {"key": "cfbrank", "name": "CFB Rankings", "sports": ["CFB"], "author": "Brandon Keck",
+     "url": "https://github.com/brandon-keck/cfb-rankings", "license": "MIT",
+     "note": "Its weekly Elo ratings, turned into a win chance with its own formula (+65 home, 400 scale). Winner only."},
+    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB", "CFB"], "author": "Kalshi prices",
      "url": "https://kalshi.com", "license": "public prices",
      "note": "The baseline: Kalshi's favourite (moneyline, spread) and the over (total), at Kalshi's price."},
 ]
 # which model makes which kind of pick, per sport (anything else shows "—" on the page)
 COVERS = {"NFL": {"ml": {"devig", "nfelo", "elo538", "kalshi"}, "spread": {"devig", "nfelo", "elo538", "kalshi"}, "total": {"kalshi"}},
           "NBA": {"ml": {"devig", "blotny", "kalshi"}, "spread": {"blotny", "kalshi"}, "total": {"kalshi"}},
-          "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}}}
+          "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
+          "CFB": {"ml": {"cfbelo", "cfbrank", "kalshi"}, "spread": {"cfbelo", "kalshi"}, "total": {"kalshi"}}}
 TO_538 = {"LV": "OAK", "WAS": "WSH", "LA": "LAR"}            # nflverse code -> 538 franchise code (2021 on)
 FROM_NFELO = {"LAR": "LA", "OAK": "LV", "WSH": "WAS", "JAC": "JAX"}
 errors = []
@@ -252,6 +268,69 @@ def read_blotny(upcoming):
     return best
 
 
+# ---- college football (keyless: ESPN's FBS scoreboard, Kalshi, the two open models' published files) ----
+def cfb_upcoming(now):
+    """ESPN's FBS games from 3 days ago to 9 days ahead, in this file's game shape (game_id = ESPN event id)."""
+    import game_lines as GL
+    out = []
+    for e in GL.espn_cfb(now).values():
+        out.append({"sport": "CFB", "game_id": e["espn_id"], "kickoff": parse_t(e["kickoff"]), "date": e["date"],
+                    "home": e["home"], "away": e["away"], "home_names": e["home_names"], "away_names": e["away_names"],
+                    "neutral": e["neutral"], "final": e["state"] == "post", "home_score": e["home_score"],
+                    "away_score": e["away_score"]})
+    return out
+
+
+def read_cfbelo(upcoming):
+    """schwill2018's published predictions: the last one made before each game's kickoff (no license: read only)."""
+    by_id = {g["game_id"]: g for g in upcoming}
+    best = {}
+    for r in csv.DictReader(io.StringIO(fetch(CFBELO_URL))):
+        g = by_id.get(str(r.get("game_id")))
+        at, wp, line = parse_t(r.get("prediction_timestamp")), num(r.get("p_home")), num(r.get("model_home_spread"))
+        if not g or not at or wp is None or at >= g["kickoff"]:
+            continue
+        if g["game_id"] not in best or at > parse_t(best[g["game_id"]]["at"]):
+            best[g["game_id"]] = {"home_wp": wp, "home_line": line, "at": iso(at)}
+    return best
+
+
+def read_cfbrank(upcoming, season):
+    """Brandon Keck's latest weekly Elo ratings (MIT) -> home win chance with its own formula."""
+    rows = [r for r in csv.DictReader(io.StringIO(fetch(CFBRANK_URL))) if r.get("season") == str(season)]
+    if not rows:
+        return {}
+    wk = max(int(r["week"]) for r in rows)
+    rating = {r["team"]: num(r["rating"]) for r in rows if int(r["week"]) == wk}
+    import cfb_teams
+    def find(names):
+        return next((v for t, v in rating.items() if v is not None and cfb_teams.matches_any(t, names)), None)
+    out = {}
+    for g in upcoming:
+        rh, ra = find(g["home_names"]), find(g["away_names"])
+        if rh is None or ra is None:
+            continue
+        d = rh - ra + (0 if g["neutral"] else 65.0)
+        out[g["game_id"]] = {"home_wp": 1 / (1 + 10 ** (-d / 400))}
+    return out
+
+
+def read_kalshi_cfb(now, upcoming):
+    import game_lines as GL
+    ids = {g["game_id"] for g in upcoming}
+    out = {}
+    for x in GL.cfb_games(now)[0]:
+        if x["espn_id"] not in ids:
+            continue
+        p = {"home_wp": x["home_wp"], "home_ml": x["ml"]["home"], "away_ml": x["ml"]["away"]}
+        if x["spread"]:
+            p.update(home_line=x["spread"]["home_point"], home_spread_odds=x["spread"]["home"], away_spread_odds=x["spread"]["away"])
+        if x["total"]:
+            p.update(total=x["total"]["line"], over_odds=x["total"]["over"], under_odds=x["total"]["under"])
+        out[x["espn_id"]] = p
+    return out
+
+
 def latest_lock(rows, key):
     out = {}
     for r in rows:
@@ -386,6 +465,13 @@ def update(now, nfl_csv=None, offline=False):
                 note(f"espn {sport} {d}", e)
         upcoming[sport] = [g for g in allg if g["kickoff"] and now < g["kickoff"] <= now + AHEAD[sport]]
         finals[sport] = {g["game_id"]: g for g in allg if g["final"]}
+    if not offline:
+        try:
+            allg = cfb_upcoming(now)
+            upcoming["CFB"] = [g for g in allg if g["kickoff"] and now < g["kickoff"] <= now + AHEAD["CFB"]]
+            finals["CFB"] = {g["game_id"]: g for g in allg if g["final"]}
+        except Exception as e:
+            note("espn CFB", e)
 
     # every model's current number for each game not started yet
     readings = []                                   # (sport, game, model, values)
@@ -401,10 +487,16 @@ def update(now, nfl_csv=None, offline=False):
                 sources.append(("nfelo", lambda: read_nfelo(ups)))
         elif sport == "NBA":
             sources = [("devig", lambda: devig_nba(by_id)), ("blotny", lambda: read_blotny(ups))]
+        elif sport == "CFB":
+            season = now.year if now.month >= 7 else now.year - 1
+            sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season))]
         else:
             sources = [("devig", lambda: devig_mlb(ups))]
         if not offline:
-            sources.append(("kalshi", lambda s=sport: read_kalshi(s, ups)))
+            if sport == "CFB":
+                sources.append(("kalshi", lambda u=ups: read_kalshi_cfb(now, u)))
+            else:
+                sources.append(("kalshi", lambda s=sport: read_kalshi(s, ups)))
         for model, fn in sources:
             try:
                 for gid, vals in fn().items():

@@ -1,0 +1,15 @@
+# Research Lab CFB candidate cfb-srs-cap -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-srs-cap
+name: + Margin cap at 28 (SRS)
+market: spread
+family: Least-squares ratings
+parent: cfb-srs
+reason: The same SRS with every margin capped at 28 points, so blowouts of overmatched teams count less.
+source: Margin-capped least-squares ratings (public BCS-era methods); SRS otherwise
+model:
+  type: srs
+  params:
+    hfa_pts: 2.5
+    carry: 0.6
+    prior_w: 3
+    margin_cap: 28

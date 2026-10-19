@@ -100,6 +100,31 @@ test("lab page on a phone", async (t) => {
       await pg.locator("#morecands").click();
       assert.equal(await pg.locator(".cand").count(), 6);
     });
+    await t.test("sport switch (college football)", async () => {
+      scenario = "sports";
+      await pg.getByRole("button", {name: "Refresh"}).click();
+      await pg.locator(".sports").waitFor();
+      assert.deepEqual(await pg.locator(".sports .chip").allInnerTexts(), ["NFL", "College football"]);
+      await pg.getByRole("tab", {name: "College football"}).click();
+      assert.match(await pg.locator(".sumcard .kicker").innerText(), /Research · CFB/i);
+      assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["2", "0", "0"]);
+      assert.match(await pg.locator("main").innerText(), /2 attempts · 11 across all sports \(reported only\)/);
+      assert.equal(await pg.locator(".cand").count(), 2);
+      assert.match(await pg.locator(".cand").first().innerText(), /Plain Elo/);
+      const box = await pg.locator(".sports .chip").first().boundingBox();
+      assert.ok(box.height >= 44, `sport chip is ${box.height}px tall`);
+      await pg.screenshot({path: OUT + "sports-cfb.png", fullPage: true});
+      await pg.locator(".cand").first().click();
+      await pg.locator(".dtitle").waitFor();
+      assert.match(await pg.locator(".dtitle").innerText(), /Plain Elo/);
+      assert.match(await pg.locator("main").innerText(), /2021–22/);
+      await pg.locator(".back").click();
+      await pg.getByRole("tab", {name: "NFL"}).click();
+      assert.match(await pg.locator(".sumcard .kicker").innerText(), /Research · NFL/i);
+      scenario = "mixed";
+      await pg.getByRole("button", {name: "Refresh"}).click();
+      await pg.locator(".alert").waitFor();
+    });
     await t.test("candidate detail", async () => {
       await pg.locator(".cand").first().click();
       await pg.locator(".ig").waitFor();

@@ -1,11 +1,11 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-19T05:07:19Z by research/lab/report.py. Constitution v2 (`8d8bad6e8c32`). Do not edit by hand._
+_Generated 2026-10-19T05:14:31Z by research/lab/report.py. Constitution v3 (`bf28f94ecc9f`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 36 registered, 18 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 18
+- Ledger attempts (all count in the Holm correction): 18 · across all sports: 18 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 Gates: v2 candidates 2006–12 / 2013–18 / 2019–24; v1 candidates 2016–18 / 2019–21 / 2022–24 (their ledger rows say which).

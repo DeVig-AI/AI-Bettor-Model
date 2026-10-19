@@ -1,0 +1,76 @@
+name: Research CFB -- data (CollegeFootballData, history once + weekly in season)
+
+# Fills the lab's college football cache, research/cfb/data/ (seasons 2009-2024 only; 2025 is sealed and never stored),
+# fetching only seasons it does not have yet, then -- in season (August-January) -- refreshes the current season into
+# research/cfb/current/ (the lab never reads it). Constitution Part C1: season-level requests, at most 150 calls per
+# run, stop early under 100 left this month; every call is logged in research/cfb/data/CALLS.csv. CFB_API_KEY is used
+# only here and by the Inspector General's CFB steps; it is never printed. The data itself is never committed (the
+# provider's terms forbid publishing stored raw responses): it lives in this repo's private Actions cache (C1a).
+on:
+  schedule:
+    - cron: '17 11 * * 1'    # Mondays 7:17am ET, after the weekend's games
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-lab        # never at the same time as the lab or the Inspector General
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CFB_API_KEY: ${{ secrets.CFB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Locked files unchanged (the Constitution must be locked before any CFB data is touched)
+        run: python3 tools/frozen_guard.py check
+
+      - name: Restore the CFB data cache (private Actions cache; never committed, Constitution C1a)
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+
+      - name: Lab cache -- fetch only missing seasons (2009-2024)
+        run: python3 -m research.lab.cfb_data fetch
+
+      - name: Current season -- weekly refresh, in season only
+        run: |
+          m=$(date -u +%-m)
+          if [ "$m" -ge 8 ] || [ "$m" -le 1 ]; then python3 -m research.lab.cfb_data refresh; else echo "Off season: no refresh."; fi
+
+      - name: Save the CFB data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          key: cfb-data-${{ github.run_id }}
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+
+      - name: Commit and push (MANIFEST.json and CALLS.csv only; the data files are git-ignored)
+        if: always()
+        run: research/lab/push.sh "Research CFB data $(date -u +%Y-%m-%dT%H:%M:%SZ)"

@@ -75,6 +75,21 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
 }
 ```
 
+### Sports (added with college football; backward compatible)
+The top level stays one sport's block, exactly as above (NFL), so a page that knows nothing about sports keeps working.
+Three optional fields add the others:
+```
+  "sport": "NFL", "sport_name": "NFL",            // which sport the top-level block is
+  "attempts": {"this_sport": 18, "all_sports": 34, "note": "..."},   // Constitution C4: the correction counts
+                                                  // this sport's attempts; the all-sports count is reported only
+  "sports": [{"key": "NFL", "name": "NFL"}, {"key": "CFB", "name": "College football"}],   // the page's sport switch
+  "by_sport": {"CFB": { ...a whole block with every field above (no by_sport inside)... }}
+```
+Each candidate's `pooled` may also carry `adj_p_all_sports`: its Holm-adjusted p over every attempt of every sport
+(reported only). Candidate ids are unique across sports (college football ids start with `cfb-`), so `/lab#c/<id>`
+finds a candidate in any sport. The page shows the switch only when `sports` lists two or more, and remembers the
+viewer's choice.
+
 Notes for the lab:
 - Keep `counts` consistent with `candidates`. The funnel bar counts candidates by state (failed / running / lab pass / queued).
 - `effect` and `ci` share one unit across gates, `pooled`, `rule_split` and `exam`. The bars are drawn around 0 on one shared scale.
