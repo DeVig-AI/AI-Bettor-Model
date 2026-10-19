@@ -62,6 +62,16 @@ test("lab page on a phone", async (t) => {
       await pg.locator(".alert").waitFor();
       assert.match(await pg.locator(".alert").innerText(), /Game lines -- every Kalshi spread failed[\s\S]*1 of 5 workflows red/);
       assert.equal(await pg.locator(".alert").getAttribute("href"), "#activity");
+      // the ✕ closes the banner; it stays closed after a refresh, and comes back for a failure in a run not seen before
+      await pg.locator("#alertx").click();
+      assert.equal(await pg.locator(".alert").count(), 0);
+      await pg.getByRole("button", {name: "Refresh"}).click();
+      await pg.waitForTimeout(300);
+      assert.equal(await pg.locator(".alert").count(), 0, "still closed after a refresh");
+      await pg.evaluate(() => localStorage.setItem("devig-lab-dismissed", JSON.stringify(["2:1"])));   // an older run
+      await pg.getByRole("button", {name: "Refresh"}).click();
+      await pg.locator(".alert").waitFor();
+      await pg.evaluate(() => localStorage.removeItem("devig-lab-dismissed"));
       assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["9", "1", "0"]);
       assert.match(await pg.locator(".exam").innerText(), /Sealed 2025 exam\s*3 of 3 left/);
       assert.equal(await pg.locator(".cand").count(), 4, "four shown before 'Show more'");

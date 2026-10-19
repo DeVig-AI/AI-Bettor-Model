@@ -88,6 +88,11 @@ export const PAGE = `<!doctype html>
   .alert b{display:block;font-size:14px;font-weight:600;overflow-wrap:anywhere}
   .alert small{font-size:12px;color:#D9B3B3}
   .alert .go{font-size:13px;font-weight:600;color:var(--bad)}
+  .alertwrap{position:relative}
+  .alertwrap .alert{padding-right:56px}
+  .alertx{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:44px;height:44px;border:0;background:transparent;
+          color:#D9B3B3;font-size:20px;line-height:1;cursor:pointer;border-radius:22px}
+  .alertx:hover{background:#2a1515;color:var(--ink)}
   .kicker{font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
   .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .sumcard{display:flex;flex-direction:column;gap:16px}
@@ -310,16 +315,25 @@ export const PAGE = `<!doctype html>
   }
 
   // ---- overview --------------------------------------------------------------------------------------------------
+  // The banner can be closed (✕). It stays closed on this phone until a workflow fails in a run not seen before.
+  var DISMISS = "devig-lab-dismissed";
+  function failKey(w){ return w.id + ":" + (w.last && w.last.id); }
+  function dismissed(){ try { return JSON.parse(localStorage.getItem(DISMISS) || "[]"); } catch (e) { return []; } }
+  function failingNow(g){
+    return (g && g.workflows || []).filter(function(w){ return (g.failing || []).indexOf(w.id) >= 0; });
+  }
   function viewAlert(g){
     if (!g || !g.workflows) return "";
-    var bad = g.workflows.filter(function(w){ return (g.failing || []).indexOf(w.id) >= 0; });
+    var gone = dismissed();
+    var bad = failingNow(g).filter(function(w){ return gone.indexOf(failKey(w)) < 0; });
     if (!bad.length) return "";
     var total = g.workflows.filter(function(w){ return !w.disabled; }).length;
-    return '<a class="alert" href="#activity" role="alert">' +
+    return '<div class="alertwrap"><a class="alert" href="#activity" role="alert">' +
       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F08A8A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18v.5"/></svg>' +
       '<span class="grow"><b>' + esc(shortName(bad[0].name)) + (bad.length > 1 ? " and " + (bad.length - 1) + " more" : "") + ' failed</b>' +
       '<small>' + esc(ago(bad[0].last && bad[0].last.started_at)) + " · " + bad.length + " of " + total + ' workflows red</small></span>' +
-      '<span class="go">View</span></a>';
+      '<span class="go">View</span></a>' +
+      '<button class="alertx" type="button" id="alertx" aria-label="Close this alert">✕</button></div>';
   }
 
   function counted(s){
@@ -672,6 +686,11 @@ export const PAGE = `<!doctype html>
     var sp = e.target.closest(".sports [data-sport]");
     if (sp){ labSport = sp.getAttribute("data-sport"); try { localStorage.setItem("labSport", labSport); } catch (x) {} showAllCands = false; render(); }
     if (e.target.closest("#morewf")){ showAllWf = true; render(); }
+    if (e.target.closest("#alertx")){
+      var keep = failingNow(data && data.github).map(failKey);   // only what is failing now: old keys drop off
+      try { localStorage.setItem(DISMISS, JSON.stringify(keep)); } catch (err) {}
+      render();
+    }
     if (e.target.closest("#moresteps")){ showAllSteps = true; render(); }
   });
   window.addEventListener("hashchange", function(){
