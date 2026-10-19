@@ -37,6 +37,43 @@ def shape(x):
     return x
 
 
+MODE = os.environ.get("PROBE", "repos")
+if MODE == "repos":                             # second pass: no CFBD calls, only what the open repos publish
+    for repo in ["MellowMindedMateo/papers-pick-bot", "brandon-keck/cfb-rankings", "collierjc75/ncaaf-predictions",
+                 "sdisorbo/samalytics-ncaaf", "Engy-22/CFB-Point-Spread-Model", "JasonDoug/SaturdaySlate",
+                 "schwill2018/college-football-elo", "sportsdataverse/cfbfastR"]:
+        st, d, _ = get(f"https://api.github.com/repos/{repo}")
+        if st != 200:
+            print(repo, st); continue
+        br = d.get("default_branch")
+        st, t, _ = get(f"https://api.github.com/repos/{repo}/git/trees/{br}?recursive=1")
+        files = [x["path"] for x in (t.get("tree") or []) if x["type"] == "blob"] if st == 200 else []
+        lic = [f for f in files if f.upper().startswith(("LICENSE", "LICENCE", "COPYING"))]
+        data = [f for f in files if f.lower().endswith((".csv", ".json", ".parquet")) and
+                any(w in f.lower() for w in ("pred", "pick", "rating", "elo", "forecast", "spread", "rank"))]
+        print(f"== {repo} branch={br} license={(d.get('license') or {}).get('spdx_id')} files={len(files)} "
+              f"pushed={d.get('pushed_at')} stars={d.get('stargazers_count')}")
+        print("   license files:", lic, "| workflows:", [f for f in files if f.startswith(".github/workflows")][:6])
+        print("   data files:", data[:25])
+        for f in lic[:1]:
+            st, raw, _ = get(f"https://raw.githubusercontent.com/{repo}/{br}/{f}") if False else (None, None, None)
+        readme = next((f for f in files if f.lower() == "readme.md"), None)
+        if readme:
+            try:
+                with urllib.request.urlopen(f"https://raw.githubusercontent.com/{repo}/{br}/{readme}", timeout=30) as r:
+                    txt = r.read().decode(errors="replace")
+                print("   README:", " ".join(txt.split())[:700])
+            except Exception as e:
+                print("   README error", e)
+        for f in data[:3]:
+            try:
+                with urllib.request.urlopen(f"https://raw.githubusercontent.com/{repo}/{br}/{f}", timeout=30) as r:
+                    head = r.read(600).decode(errors="replace")
+                print(f"   head {f}:", head.replace(chr(10), " / ")[:500])
+            except Exception as e:
+                print("   head error", f, e)
+    raise SystemExit(0)
+
 print("== CFBD ==  key present:", bool(KEY), "length:", len(KEY))
 B = "https://api.collegefootballdata.com"
 st, d, h = get(B + "/info", auth=True)
