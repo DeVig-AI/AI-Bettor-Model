@@ -264,7 +264,7 @@ class Search(unittest.TestCase):
         g = self.SR.grid(self.SR.load_menu(self.real_menu))
         ids = [self.SR.config_id(c) for c in g]
         self.assertEqual(len(ids), len(set(ids)))
-        self.assertEqual(len(g), 576 + 126 + 117 + 18)
+        self.assertEqual(len(g), 2880 + 756 + 144 + 468 + 48)
         self.assertTrue(all(self.SR.label(c) for c in g))
 
     def test_search_never_sees_later_seasons(self):
@@ -294,13 +294,33 @@ class Search(unittest.TestCase):
         for cid in picks:
             by_market[L.load_candidates()[cid]["market"]] = by_market.get(L.load_candidates()[cid]["market"], 0) + 1
         self.assertTrue(all(v <= 2 for v in by_market.values()))
-        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within a week does nothing")
+        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within 20 hours does nothing")
         self.SR.run_round(force=True, log=lambda *_: None)
         rows2 = self.SR.read_csv(self.SR.path("SCORES.csv"))
         ids = [r["id"] for r in rows2]
         self.assertEqual(len(ids), len(set(ids)), "nothing scored twice")
         self.assertGreater(len(rows2), len(rows), "round 2 adds neighbours")
         self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.path("ROUNDS.csv"))], ["1", "2"])
+
+    def test_cap_resumes_and_window(self):
+        self.small_menu()
+        m = self.SR.load_menu()
+        m["search"]["max_new_per_round"] = 3
+        m["search"]["shortlist_per_market"] = 1
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        p1 = self.SR.run_round(force=True, log=lambda *_: None)
+        r1 = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        self.assertEqual(len(r1), 3, "the cap holds")
+        p2 = self.SR.run_round(force=True, log=lambda *_: None)
+        r2 = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        grid_ids = [self.SR.config_id(c) for c in self.SR.grid(m)]
+        self.assertEqual([r["id"] for r in r2][:len(grid_ids)], grid_ids[:len(r2)], "the grid resumes in order")
+        by = {}
+        for cid in p1 + p2:
+            mk = L.load_candidates()[cid]["market"]
+            by[mk] = by.get(mk, 0) + 1
+        self.assertTrue(all(v <= 1 for v in by.values()), "at most shortlist_per_market per 7 days")
 
     def test_fit_weights_and_neighbours(self):
         rng = np.random.default_rng(3)

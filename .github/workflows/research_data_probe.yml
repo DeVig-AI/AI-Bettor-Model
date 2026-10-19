@@ -10,9 +10,7 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: research-lab
-  cancel-in-progress: false
+# No concurrency group: the probe only writes research/probe/, so it never holds up the lab (push.sh rebases).
 
 jobs:
   probe:
