@@ -87,6 +87,33 @@ def neighbours(cfg, ladders):
     return out
 
 
+def focus(menu, scored_rows, top=2, min_n=3):
+    """What the search learned, used: for each family, every combination of the `top` best values of each setting
+    (by median search t over the configurations already scored with that value; values seen fewer than `min_n` times
+    are not judged). Uses search-season scores only."""
+    out = []
+    for fam in menu["families"]:
+        rows = [r for r in scored_rows if r["market"] == fam["market"] and r["type"] == fam["type"] and r["t"] != "-inf"]
+        if not rows:
+            continue
+        cfgs = [(json.loads(r["config"]), float(r["t"])) for r in rows]
+        choices = []
+        for name in fam["grid"]:
+            by = {}
+            for c, t in cfgs:
+                by.setdefault(json.dumps(c["params"].get(name)), []).append(t)
+            judged = {v: float(np.median(ts)) for v, ts in by.items() if len(ts) >= min_n}
+            best = sorted(judged, key=lambda v: (-judged[v], v))[:top] or [json.dumps(fam["grid"][name][0])]
+            choices.append([json.loads(v) for v in best])
+        for values in itertools.product(*choices):
+            p = dict(fam.get("fixed") or {})
+            p.update(dict(zip(fam["grid"], values)))
+            if "points_has_no_pace" in (fam.get("rules") or []) and p.get("metric") == "points":
+                p["pace"] = "none"
+            out.append({"market": fam["market"], "type": fam["type"], "params": p})
+    return out
+
+
 def label(cfg):
     p, t = cfg["params"], cfg["type"]
     if t == "elo":
@@ -242,8 +269,10 @@ def run_round(force=False, log=print):
     n_round = len(rounds) + 1
     scored = {r["id"]: r for r in read_csv(path("SCORES.csv"))}
     data = search_data()
-    # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) neighbours
+    # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
+    # step: every combination of the best values of each setting so far, 3) neighbours of the best
     todo = [c for c in grid(menu) if config_id(c) not in scored]
+    todo += focus(menu, list(scored.values()))
     for market in ("spread", "total"):
         singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
                          key=lambda r: (-float(r["t"]), r["id"]))

@@ -59,8 +59,12 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
     "name": "Research Lab #12", "run_number": 12, "run_url": "https://github.com/...",
     "started_at": "...", "finished_at": "...", // finished_at null = still running (the page then checks every 15 s)
     "duration_s": 11,
-    "summary": "18 tested · 0 passed the lab · failed: 15 gate 2, 3 gate 1",
-    "steps": [{                                // up to 60, in order; each links to the candidate's screen
+    "summary": "18 tested → 9 past gate 1 → 4 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
+    "funnel": [{"label": "tested", "count": 18}, {"label": "past gate 1", "count": 9}],   // the history card shows
+                                               // only these counts (owner's choice); search rounds: models scored →
+                                               // consistent → strong (t ≥ bar) → sent to confirmation
+    "steps": [{                                // optional, up to 60 (the lab writes none since the funnel;
+                                               // the page still draws them if present)
       "at": "...", "id": "elo-base", "name": "Plain Elo",
       "text": "pooled +0.10 pts [-0.66, +0.85] · gates +0.25 / -0.87 / +0.89",
       "state": "failed", "fail_reason": "gate_2",  // a candidate state, or "info"

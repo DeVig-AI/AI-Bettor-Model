@@ -139,14 +139,13 @@ test("cleanStatus keeps run timelines, safely", () => {
   const c = api.cleanStatus(STATUS);
   assert.equal(c.runs.length, 2);
   const [a, b] = c.runs;
-  assert.equal(a.steps.length, 8);
   assert.equal(a.duration_s, 11);
-  assert.equal(a.steps[0].state, "lab_pass");
-  assert.equal(a.steps[1].fail_reason, "gate_2");
-  assert.deepEqual(a.steps[1].gates, [true, false, true]);
-  assert.deepEqual(b.steps[0].gates, []);
+  assert.deepEqual(a.funnel.slice(0, 2), [{label: "tested", count: 18}, {label: "past gate 1", count: 9}]);
+  assert.equal(a.funnel[6].count, null, "a bad count becomes null");
+  assert.equal(a.steps.length, 0);
   assert.equal(b.run_url, null, "non-GitHub links dropped");
   assert.equal(b.steps[0].state, "info", "unknown step state falls back");
+  assert.deepEqual(b.funnel, []);
   assert.equal(api.cleanStatus({runs: "x"}).runs.length, 0);
 });
 

@@ -56,8 +56,10 @@ result, and it will be reported exactly like a success: every number, plainly.
    (NFL `research/search/`, CFB `research/cfb/search/`):
    - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
      scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
-     grid combination not yet scored (a large grid spreads over several rounds), then the neighbours (one setting moved
-     one step along its ladder in the menu) of the **30** best configurations per market. Then, every round, blends of
+     grid combination not yet scored (a large grid spreads over several rounds), then the **focus** combinations (for each
+     family, every combination of the 2 best values of each setting, ranked by the median search t of the configurations
+     already scored with that value), then the neighbours (one setting moved one step along its ladder in the menu) of
+     the **30** best configurations per market. Then, every round, blends of
      the best performers: every pair of the 10 best, every trio of the 6 best, equal-weight blends of the best 3, 5, 7
      and 10, and blends of the best 5 and best 8 with non-negative weights summing to 1 fit on the training and search
      seasons. Nothing already scored is scored again.
@@ -71,6 +73,8 @@ result, and it will be reported exactly like a success: every number, plainly.
      committed, and confirmed like any candidate.
    - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
      (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
+   - **What the search learns from:** only its own search-season scores. Confirmation, exam and paper-season results
+     are never read by the search (feeding them back would turn the confirmation seasons into training data).
 4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
    the training and search seasons), and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
@@ -379,7 +383,9 @@ The owner asked for a much bigger search:
 1. **Bigger menus:** NFL about 4,300 configurations (finer Elo, team-rating and pace settings, and the SRS family
    added), college football about 1,000 (finer settings, team ratings on points and PPA added). Menus are data files
    the search reads; A3.3c already allowed adding to them.
-2. **Wider refinement and more blends:** neighbours of the 30 best (was 10); pairs of the best 10, trios of the best 6,
+2. **Wider refinement, learning, and more blends:** a focus step that combines the best values of every setting
+   found so far (search seasons only; confirmation, exam and paper results are never read by the search); neighbours
+   of the 30 best (was 10); pairs of the best 10, trios of the best 6,
    equal blends of 3/5/7/10, fitted blends of 5 and 8 (was pairs of 6, equal 3/5, fitted 5).
 3. **Rounds at most daily** (was weekly), each scoring at most a fixed number of new configurations, in a fixed order,
    so a round stays deterministic and inside the workflow's time limit; a large grid finishes over several rounds.
