@@ -63,7 +63,8 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
     "steps": [{                                // up to 60, in order; each links to the candidate's screen
       "at": "...", "id": "elo-base", "name": "Plain Elo",
       "text": "pooled +0.10 pts [-0.66, +0.85] · gates +0.25 / -0.87 / +0.89",
-      "state": "failed", "fail_reason": "gate_2"   // a candidate state, or "info" (no chip)
+      "state": "failed", "fail_reason": "gate_2",  // a candidate state, or "info"
+      "gates": [true, false, true]                // each gate positive? drawn as the three circles (null = not run)
     }]
   }],
   "promoted": [{                               // shown as "Promoted, not proven"

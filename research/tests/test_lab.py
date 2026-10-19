@@ -248,6 +248,7 @@ class Reports(unittest.TestCase):
         self.assertEqual((r["name"], r["duration_s"], len(r["steps"])), ("Research Lab #7", 1, 2))
         self.assertEqual(r["summary"], "2 tested · 0 passed the lab · failed: 2 gate 2")
         self.assertEqual((r["steps"][0]["state"], r["steps"][0]["fail_reason"]), ("failed", "gate_2"))
+        self.assertEqual(r["steps"][0]["gates"], [True, False, True])
         self.assertIn("pooled +0.10 pts [-0.60, +0.80]", r["steps"][0]["text"])
         live = report.write_all(running=["elo-k10"], started_at="2026-10-20T08:00:00Z")["runs"][0]
         self.assertIsNone(live["finished_at"])

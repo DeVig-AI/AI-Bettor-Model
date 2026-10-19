@@ -156,7 +156,9 @@ def runs(ledger, cands, v):
             fr = ver.get("fail_reason", "") if latest else ""
             if latest:
                 reasons[fr or state] = reasons.get(fr or state, 0) + 1
-            steps.append({"at": r["run_at"], "id": cid, "name": name, "text": text, "state": state, "fail_reason": fr})
+            gates = [None if IG.fnum(r[f"g{k}_effect"]) is None else IG.fnum(r[f"g{k}_effect"]) > 0 for k in (1, 2, 3)]
+            steps.append({"at": r["run_at"], "id": cid, "name": name, "text": text, "state": state, "fail_reason": fr,
+                          "gates": gates})
         passes = sum(1 for s_ in steps if s_["state"] in PASSED_LAB)
         why = ", ".join(f"{n} {k.replace('_', ' ')}" for k, n in sorted(reasons.items(), key=lambda x: -x[1])
                         if k not in PASSED_LAB)

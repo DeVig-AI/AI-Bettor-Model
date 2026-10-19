@@ -83,8 +83,10 @@ test("lab page on a phone", async (t) => {
       const runs = pg.locator(".runs");
       assert.match(await runs.innerText(), /LAST RUN[\s\S]*40 min ago · took 11s[\s\S]*Research Lab #12 on GitHub[\s\S]*8 tested · 1 passed the lab/i);
       assert.equal(await runs.locator(".step").count(), 6, "six steps before 'Show all'");
-      assert.match(await runs.locator(".step").first().innerText(), /\d\d:\d\d:\d\d[\s\S]*\+ QB adjustment[\s\S]*pooled \+0\.10 pts[\s\S]*Lab pass/);
-      assert.match(await runs.locator(".step").nth(1).innerText(), /Step <b>2[\s\S]*Failed · gate_2/);
+      assert.match(await runs.locator(".step").first().innerText(), /\d\d:\d\d:\d\d[\s\S]*\+ QB adjustment[\s\S]*pooled \+0\.10 pts/);
+      assert.match(await runs.locator(".step").nth(1).innerText(), /Step <b>2/);
+      assert.equal(await runs.locator(".step").first().locator(".pips").getAttribute("aria-label"), "Gates: passed, passed, passed");
+      assert.equal(await runs.locator(".step").nth(1).locator(".pips").getAttribute("aria-label"), "Gates: passed, failed, passed");
       assert.equal(await runs.locator(".step").first().getAttribute("href"), "#c/qb-adj");
       await pg.click("#moresteps");
       assert.equal(await pg.locator(".runs .step").count(), 8);

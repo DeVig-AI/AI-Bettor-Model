@@ -143,6 +143,8 @@ test("cleanStatus keeps run timelines, safely", () => {
   assert.equal(a.duration_s, 11);
   assert.equal(a.steps[0].state, "lab_pass");
   assert.equal(a.steps[1].fail_reason, "gate_2");
+  assert.deepEqual(a.steps[1].gates, [true, false, true]);
+  assert.deepEqual(b.steps[0].gates, []);
   assert.equal(b.run_url, null, "non-GitHub links dropped");
   assert.equal(b.steps[0].state, "info", "unknown step state falls back");
   assert.equal(api.cleanStatus({runs: "x"}).runs.length, 0);

@@ -220,7 +220,8 @@ export function cleanStatus(s) {
       run_number: num(x.run_number), run_url: link(x.run_url), summary: str(x.summary, 300),
       steps: arr(x.steps, 60).filter(t => t && typeof t === "object").map(t => ({
         at: iso(t.at), id: str(t.id, 80), name: str(t.name, 160), text: str(t.text, 300),
-        state: STEP_STATES.includes(t.state) ? t.state : "info", fail_reason: str(t.fail_reason, 40)}))})),
+        state: STEP_STATES.includes(t.state) ? t.state : "info", fail_reason: str(t.fail_reason, 40),
+        gates: arr(t.gates, 3).map(g => (g === true ? true : g === false ? false : null))}))})),
     promoted: arr(s.promoted, 50).filter(x => x && typeof x === "object").map(x => ({
       name: str(x.name, 160), picks: num(x.picks), wins: num(x.wins), losses: num(x.losses), roi: num(x.roi),
       vs_kalshi_note: str(x.vs_kalshi_note, 400)})),

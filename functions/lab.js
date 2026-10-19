@@ -156,7 +156,7 @@ export const PAGE = `<!doctype html>
   .step .bd{flex:1;min-width:0}
   .step .nm{font-size:14px;font-weight:600;overflow-wrap:anywhere}
   .step .tx{font-family:var(--mono);font-size:11px;color:var(--ink-soft);overflow-wrap:anywhere;margin-top:2px}
-  .step .chip{flex:none;margin-top:1px}
+  .step .chip,.step .pips{flex:none;margin-top:1px}
   .runs .more{border:0;border-top:1px solid var(--line);border-radius:0;color:var(--ink-soft);font-size:13px;min-height:48px}
   .older{display:flex;flex-direction:column;gap:2px;padding:0 4px}
   .older a,.older span{font-size:12px;color:var(--ink-soft);text-decoration:none;min-height:32px;display:flex;align-items:center}
@@ -405,7 +405,8 @@ export const PAGE = `<!doctype html>
       '<div class="sum">' + esc(r.summary) + '</div></div>';
     var list = (showAllSteps ? steps : steps.slice(0, SHOWN)).map(function(t){
       return '<a class="step" href="#c/' + encodeURIComponent(t.id) + '"><span class="tm">' + esc(clock(t.at)) + '</span>' +
-        '<span class="bd"><span class="nm">' + esc(t.name || t.id) + '</span><div class="tx">' + esc(t.text) + '</div></span>' + stepChip(t) + '</a>';
+        '<span class="bd"><span class="nm">' + esc(t.name || t.id) + '</span><div class="tx">' + esc(t.text) + '</div></span>' +
+        (t.gates && t.gates.length ? pips({state: t.state, gates: t.gates.map(function(g){ return {passed: g}; })}) : stepChip(t)) + '</a>';
     }).join("");
     var more = steps.length > SHOWN && !showAllSteps ? '<button class="btn more" type="button" id="moresteps">Show all ' + steps.length + ' steps</button>' : "";
     var older = runs.slice(1, 6).map(function(o){
