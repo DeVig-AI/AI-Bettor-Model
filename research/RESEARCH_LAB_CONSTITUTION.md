@@ -51,8 +51,8 @@ result, and it will be reported exactly like a success: every number, plainly.
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
 3c. **The search (every sport with a search split: NFL Part B, college football Part C).** Besides hand-written
-   candidates, the lab finds candidates itself, per sport, in rounds (at most one round every 2 hours per sport: at
-   least the menu's `round_every_hours`, 2, between rounds), deterministically, with no AI. Each sport has its own menu and logs
+   candidates, the lab finds candidates itself, per sport, in rounds, back to back (each run of the research loop does
+   one round per sport; the menu's `round_every_hours` is 0), deterministically, with no AI. Each sport has its own menu and logs
    (NFL `research/search/`, CFB `research/cfb/search/`):
    - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
      scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
@@ -134,6 +134,8 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
 - **Budget: at most 3 sealed exams per research season** (per Constitution season, see the sport's Part). An exam is
   spent the moment it is recorded in `research/exam/EXAMS.csv`, which happens before the sealed data is downloaded,
   so a crash still spends it. **Every exam is final**: no retakes, no "fixed" re-runs.
+- The research loop runs **back to back**: when a run finishes, it queues the next one, or first the Inspector
+  General's exam for a sport that has a lab pass and an exam left (the exam then queues the loop again).
 - Only the **best current lab pass** may sit an exam: smallest Holm-adjusted p, then the larger pooled effect, then the
   earlier ledger row. Every sport: the Inspector General's workflow starts the exam automatically after a lab run whose
   review finds a lab pass in that sport (the owner may also start it by hand). Budget and finality are the same either
@@ -418,7 +420,8 @@ Nothing had run under v6 (no search round, no attempt) when v7 was adopted. Ever
 ## Changes from v7 (2026-10-19)
 
 The owner asked for the loop to run around the clock, never retest the same model, and learn from every past run:
-1. **Rounds at most every 2 hours** (was daily); the lab workflow runs every 2 hours.
+1. **Back to back** (was at most daily): each run of the loop does a search round and, when it finishes, queues the
+   next run (or a sealed exam first when a sport has a lab pass and an exam left). An hourly start is only a safety net.
 2. **Learned and random samples** each round (A3.3c), seeded by sport and round, so every round has new models to try
    and the search draws more often from settings that scored well before (search seasons only, as always).
 3. **Look-alikes:** a configuration with forecasts identical to one already scored is logged as the same model and

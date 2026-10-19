@@ -549,7 +549,7 @@ class Progress:
     """Posts a running search round to /lab: once at the start, then at most every `every` seconds (status.json only
     changes; the scores are written when the round ends). A failed push never stops the search."""
 
-    def __init__(self, every=300):
+    def __init__(self, every=600):
         self.every, self.last, self.started = every, 0.0, L.now()
 
     def __call__(self, n_round, done, planned):

@@ -295,7 +295,10 @@ class Search(unittest.TestCase):
         for cid in picks:
             by_market[L.load_candidates()[cid]["market"]] = by_market.get(L.load_candidates()[cid]["market"], 0) + 1
         self.assertTrue(all(v <= 2 for v in by_market.values()))
-        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within 20 hours does nothing")
+        m = self.SR.load_menu(); m["search"]["round_every_hours"] = 20
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a menu gap between rounds is respected")
         self.SR.run_round(force=True, log=lambda *_: None)
         rows2 = self.SR.read_csv(self.SR.path("SCORES.csv"))
         ids = [r["id"] for r in rows2]
@@ -572,6 +575,18 @@ class Visibility(unittest.TestCase):
                 text = fh.read()
             for bad in ("research/", "status.json", "/api/lab", 'href="/lab', "Research Lab", "Gauntlet-"):
                 self.assertNotIn(bad, text, f"{os.path.relpath(f, ROOT)} mentions {bad!r}")
+
+
+class NextRun(unittest.TestCase):
+    def test_exam_first_when_a_sport_has_a_lab_pass(self):
+        from research.lab import next_run as N
+        nfl = {"sport": "NFL", "counts": {"exam_budget_left": 3}, "candidates": [{"state": "failed"}]}
+        self.assertEqual(N.decide(dict(nfl, by_sport={})), "loop")
+        cfb = {"counts": {"exam_budget_left": 3}, "candidates": [{"state": "lab_pass"}]}
+        self.assertEqual(N.decide(dict(nfl, by_sport={"CFB": cfb})), "exam CFB")
+        self.assertEqual(N.decide(dict(nfl, candidates=[{"state": "lab_pass"}], by_sport={"CFB": cfb})), "exam NFL")
+        spent = dict(nfl, counts={"exam_budget_left": 0}, candidates=[{"state": "lab_pass"}], by_sport={})
+        self.assertEqual(N.decide(spent), "loop", "no exam left: keep looping")
 
 
 class FrozenGuardLog(unittest.TestCase):

@@ -5,7 +5,7 @@ the compute, deterministically; there is no AI anywhere in the loop. Results are
 does not show, link or mention the lab, and the Ask AI chat never reads these files. The owner follows it on the
 private `/lab` page, which reads `status.json` (contract: `STATUS_SCHEMA.md`).
 
-1. **Search** (every 2 hours): scores up to 6,000 new model settings a round from the menu (`search/MENU.yaml`, about 4,300 in
+1. **Search** (back to back): scores up to 6,000 new model settings a round from the menu (`search/MENU.yaml`, about 4,300 in
    the grid) on 2006–16 only, then refines around the 30 best and blends the top performers (pairs, trios, 3/5/7/10). Search scores are exploratory and free: they never count.
 2. **Confirm** (nightly): at most 2 per market per 7 days that look real in search (t ≥ 2.5, positive in all three
    search periods, not a near-copy of an earlier one) are tested on 2017–24, which the search never sees. Each
@@ -33,7 +33,8 @@ private `/lab` page, which reads `status.json` (contract: `STATUS_SCHEMA.md`).
 | `lab/` | The code: `lab.py` (runner), `inspector.py` (Inspector General), `models.py`, `metrics.py`, `data.py`, `report.py`. |
 
 ## How it runs
-- **Research Lab -- loop (every 2 hours)** (`.github/workflows/research_lab.yml`, around the clock and on demand): a
+- **Research Lab -- loop (back to back)** (`.github/workflows/research_lab.yml`): runs continuously -- each run
+  queues the next (an hourly start is the safety net; repository variable `RESEARCH_LOOP=off` stops it). Each run: a
   search round (the grid, then focus, neighbours, samples weighted by what past rounds learned, and random samples;
   nothing scored twice, look-alike models skipped), then confirmation of every candidate without a ledger row (at
   most 2 per market per week reach it), then the Inspector General's review.

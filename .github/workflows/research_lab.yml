@@ -1,19 +1,21 @@
-name: Research Lab -- loop (every 2 hours)
+name: Research Lab -- loop (back to back)
 
-# NFL, the loop (Constitution v8, Part B): every 2 hours a search round scores model settings and blends on 2006-16 only
-# and sends at most 2 per market to research/candidates/; every night, NFL candidates without a ledger row (search
+# The loop runs back to back (Constitution v8): when a run finishes, its last job queues the next one (or a sport's
+# sealed exam first, when it has a lab pass and an exam left; the exam then queues the loop). An hourly start is the
+# safety net if the chain ever breaks; a failed run does not queue itself again. Off switch: set the repository
+# variable RESEARCH_LOOP to "off" (Settings > Secrets and variables > Actions > Variables).
+# NFL (Part B): each run does a search round on 2006-16 only, which sends at most 2 per market per week to
+# research/candidates/; NFL candidates without a ledger row (search
 # finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
 # same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
-# Each sport ends with the Inspector General's review. When this finishes, "Research Lab -- Inspector General" starts
-# and sits a sport's sealed exam if that sport has a lab pass.
-# Deterministic; no AI in the loop. Nights with nothing to do stop after one quick check.
+# Each sport ends with the Inspector General's review. Deterministic; no AI in the loop.
 on:
   schedule:
-    - cron: '37 */2 * * *'   # around the clock: every 2 hours (Constitution v8: one search round per 2 hours at most)
+    - cron: '37 * * * *'     # safety net only: the loop queues itself; this restarts it if the chain breaks
   workflow_dispatch:
     inputs:
       search:
-        description: 'Run a search round now (NFL and college football), even if the last one was under 2 hours ago'
+        description: '(Kept for compatibility: every run does a search round now)'
         type: boolean
         default: false
       rerun:
@@ -27,6 +29,7 @@ on:
 
 permissions:
   contents: write
+  actions: write             # the last job queues the next run
 
 concurrency:
   group: research-lab        # the lab and the Inspector General never write research/ at the same time
@@ -187,3 +190,26 @@ jobs:
       - name: Commit and push the results
         if: always() && steps.start.outcome == 'success'
         run: research/lab/push.sh "Research Lab CFB results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  next:
+    needs: [lab, cfb]
+    # only after a good run: a failure waits for the hourly safety net instead of looping on the error
+    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Queue the next run (or a sealed exam first)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          next=$(python3 -m research.lab.next_run)
+          echo "Next: $next"
+          if [ "$next" = "loop" ]; then
+            gh workflow run research_lab.yml --ref main
+          else
+            gh workflow run research_inspector_general.yml --ref main -f action=exam -f sport="${next#exam }" -f then_loop=true
+          fi
+
