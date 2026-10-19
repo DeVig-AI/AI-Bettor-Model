@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-19T06:41:38Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-19T06:43:37Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 
@@ -33,17 +33,27 @@ _Generated 2026-10-19T06:41:38Z by research/lab/report.py after each run. **Expl
 - Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).
 
-## What the search learned (4,436 configurations, 2006–2016 only)
+## What the search learned (4,845 configurations, 2006–2016 only)
 
-- spread · elo · `k`: best 25 (median t +0.96), worst 10 (-0.15) over 2880 configurations
-- spread · elo · `market_resist`: best 1.5039 (median t +0.74), worst 0.0 (+0.09) over 2880 configurations
-- spread · elo · `mov`: best 538 (median t +0.93), worst none (-0.25) over 2880 configurations
-- spread · elo · `revert`: best 0.25 (median t +0.86), worst 0.5263 (-0.03) over 2880 configurations
-- spread · srs · `prior_w`: best 3 (median t +2.14), worst 10 (+1.06) over 144 configurations
-- spread · team_rating · `def_weight`: best 0.5 (median t +0.40), worst 1.0 (-0.10) over 756 configurations
-- spread · team_rating · `halflife`: best 12 (median t +0.36), worst 3 (-0.30) over 756 configurations
-- spread · team_rating · `metric`: best points (median t +1.61), worst success (-0.59) over 756 configurations
-- spread · team_rating · `season_carry`: best 0.5 (median t +0.25), worst 0.3 (-0.12) over 756 configurations
+- spread · elo · `bye_elo`: best 40 (median t +2.55), worst 0 (+0.49) over 3021 configurations
+- spread · elo · `hfa_mode`: best fixed (median t +0.67), worst rolling (+0.41) over 3021 configurations
+- spread · elo · `k`: best 40 (median t +2.23), worst 10 (-0.15) over 3021 configurations
+- spread · elo · `market_blend`: best 0.75 (median t +2.13), worst 0.0 (+0.50) over 3021 configurations
+- spread · elo · `market_resist`: best 3.0 (median t +1.86), worst 0.75 (-0.67) over 3021 configurations
+- spread · elo · `mov`: best 538 (median t +1.03), worst none (-0.24) over 3021 configurations
+- spread · elo · `revert`: best 0.4 (median t +2.75), worst 0.5263 (-0.03) over 3021 configurations
+- spread · elo · `travel_elo_per_1000mi`: best 8 (median t +2.53), worst 0 (+0.47) over 3021 configurations
+- spread · srs · `carry`: best 0.4 (median t +2.55), worst 0.5 (+1.84) over 167 configurations
+- spread · srs · `hfa_pts`: best 3.0 (median t +2.38), worst 1.5 (+1.83) over 167 configurations
+- spread · srs · `margin_cap`: best 35 (median t +2.54), worst 14 (+0.52) over 167 configurations
+- spread · srs · `prior_w`: best 4 (median t +2.33), worst 10 (+1.06) over 167 configurations
+- spread · team_rating · `def_weight`: best 0.5 (median t +0.40), worst 1.0 (-0.10) over 757 configurations
+- spread · team_rating · `halflife`: best 12 (median t +0.36), worst 3 (-0.30) over 757 configurations
+- spread · team_rating · `metric`: best points (median t +1.61), worst success (-0.59) over 757 configurations
+- spread · team_rating · `season_carry`: best 0.6667 (median t +3.01), worst 0.3 (-0.12) over 757 configurations
 - total · pace_eff · `efficiency`: best points (median t -1.43), worst epa (-1.74) over 48 configurations
 - total · pace_eff · `season_carry`: best 0.4 (median t -1.45), worst 0.8 (-1.87) over 48 configurations
-- total · team_rating · `metric`: best points (median t -1.34), worst epa (-1.88) over 468 configurations
+- total · team_rating · `def_weight`: best 0.75 (median t -0.99), worst 1.0 (-1.51) over 573 configurations
+- total · team_rating · `halflife`: best 24 (median t -1.08), worst 8 (-1.64) over 573 configurations
+- total · team_rating · `metric`: best points (median t -1.32), worst epa (-1.88) over 573 configurations
+- total · team_rating · `season_carry`: best 0.6667 (median t -0.97), worst 0.3 (-1.55) over 573 configurations
