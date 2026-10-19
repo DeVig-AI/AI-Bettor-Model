@@ -29,7 +29,7 @@ jobs:
         with: {ref: '${{ github.ref_name }}'}
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = early check; v3)
+      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = early check; v4)
         env: {MAX_MINUTES: '12'}
         run: python3 nba/kalshi_props_history_v1.py
       - name: Save progress
@@ -78,8 +78,36 @@ jobs:
       - if: always()
         env: {MSG: NBA Kalshi props history}
         run: bash -c "$SAVE"
-  backtest:
+  collect5:
     needs: collect4
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - env: {MAX_MINUTES: '320'}
+        run: python3 nba/kalshi_props_history_v1.py
+      - if: always()
+        env: {MSG: NBA Kalshi props history}
+        run: bash -c "$SAVE"
+  collect6:
+    needs: collect5
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - env: {MAX_MINUTES: '320'}
+        run: python3 nba/kalshi_props_history_v1.py
+      - if: always()
+        env: {MSG: NBA Kalshi props history}
+        run: bash -c "$SAVE"
+  backtest:
+    needs: collect6
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:

@@ -27,8 +27,8 @@ import nba_props_exchanges_v1 as X  # noqa: E402  (series filter, team / date pa
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 UA = "nba-props-history/1.0 (personal research; read-only)"
-MIN_GAP = 1 / 12.0                                          # at most ~12 requests a second, all threads together
-THREADS = 6
+MIN_GAP = 1 / 15.0                                          # at most ~15 requests a second, all threads together
+THREADS = 16
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "300"))
 CUTOFF = datetime(2026, 10, 18, tzinfo=timezone.utc)      # only games that tipped off before this
 SNAP_BEFORE = timedelta(minutes=40)                         # candle must close >= 40 min before tip-off
@@ -186,15 +186,15 @@ def markets_for_event(ev, base_path):
     ms = ev.get("markets")
     if ms:
         stats["markets_from"]["nested"] = stats["markets_from"].get("nested", 0) + 1
-        return ms
+        return ms, base_path
     for path in ("/markets", "/historical/markets"):
         d = get(KALSHI + path, {"event_ticker": ev.get("event_ticker"), "limit": 1000})
         ms = (d or {}).get("markets") or []
         if ms:
             stats["markets_from"][path] = stats["markets_from"].get(path, 0) + 1
             raw_samples.setdefault("market_" + path, ms[0])
-            return ms
-    return []
+            return ms, path
+    return [], None
 
 
 def is_over_market(m):
@@ -211,9 +211,10 @@ def is_over_market(m):
         return False
 
 
-def one_market_candles(series, t, start_ts, end_ts):
-    for path, name in ((f"/series/{series}/markets/{t}/candlesticks", "per_market"),
-                       (f"/historical/markets/{t}/candlesticks", "historical")):
+def one_market_candles(series, t, start_ts, end_ts, historical=False):
+    paths = ((f"/series/{series}/markets/{t}/candlesticks", "per_market"),
+             (f"/historical/markets/{t}/candlesticks", "historical"))
+    for path, name in (paths[1:] if historical else paths):
         d = get(KALSHI + path, {"start_ts": start_ts, "end_ts": end_ts, "period_interval": 60})
         if d and d.get("candlesticks"):
             raw_samples.setdefault(name, d if len(json.dumps(d)) < 20000 else {"truncated": True})
@@ -221,11 +222,12 @@ def one_market_candles(series, t, start_ts, end_ts):
     return None, []
 
 
-def candles(series, tickers, start_ts, end_ts, pool):
+def candles(series, tickers, start_ts, end_ts, pool, historical=False):
     """{ticker: [candles]} for the snapshot window: the batch endpoint first, then per market (live, then historical)
-    for any ticker the batch returned nothing for (e.g. archived markets)."""
+    for any ticker the batch returned nothing for. Markets read from /historical/markets go straight to the historical
+    candles (the live endpoints return nothing for them)."""
     out = {}
-    for i in range(0, len(tickers), 50):
+    for i in range(0, 0 if historical else len(tickers), 50):
         d = get(KALSHI + "/markets/candlesticks", {"market_tickers": ",".join(tickers[i:i + 50]), "start_ts": start_ts,
                                                    "end_ts": end_ts, "period_interval": 60})
         for m in (d or {}).get("markets") or []:
@@ -236,7 +238,7 @@ def candles(series, tickers, start_ts, end_ts, pool):
     ce = stats["candles_by_endpoint"]
     ce["batch"] = ce.get("batch", 0) + len(out)
     rest = [t for t in tickers if t not in out]
-    for t, (name, cs) in zip(rest, pool.map(lambda t: one_market_candles(series, t, start_ts, end_ts), rest)):
+    for t, (name, cs) in zip(rest, pool.map(lambda t: one_market_candles(series, t, start_ts, end_ts, historical), rest)):
         out[t] = cs
         if name:
             ce[name] = ce.get(name, 0) + 1
@@ -287,12 +289,14 @@ def main():
             if stype not in GAME_TYPES:                        # preseason / All-Star: excluded by the prereg
                 stats["not_nba_game_type"] += 1; done.add(et); continue
             raw_samples.setdefault("event", {k: v for k, v in ev.items() if k != "markets"})
-            ms = [m for m in markets_for_event(ev, base_path) if is_over_market(m)]
+            all_ms, ms_from = markets_for_event(ev, base_path)
+            ms = [m for m in all_ms if is_over_market(m)]
             if not ms:  # not marked done: an event with no readable markets is retried, never dropped silently
                 stats["no_markets"] += 1; log.append(f"no markets {et}"); continue
             snap_limit = tip - SNAP_BEFORE
             start_ts, end_ts = int((snap_limit - SNAP_SEARCH).timestamp()), int(snap_limit.timestamp())
-            cs = candles(tk, [m["ticker"] for m in ms if m.get("ticker")], start_ts, end_ts, pool)
+            cs = candles(tk, [m["ticker"] for m in ms if m.get("ticker")], start_ts, end_ts, pool,
+                         historical=ms_from in ("/historical/markets", "/historical/events"))
             w = writer(date[:7])
             n_written = 0
             for m in ms:
