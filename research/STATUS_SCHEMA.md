@@ -54,6 +54,19 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
     "kind": "faded",                           // helped | faded | no_effect
     "candidates": ["rest"]                     // ids; shown as "from <name>"
   }],
+  "runs": [{                                   // optional, newest first, up to 10: the "What the lab did" timeline
+    "kind": "lab",                             // lab | exam | review | paper
+    "name": "Research Lab #12", "run_number": 12, "run_url": "https://github.com/...",
+    "started_at": "...", "finished_at": "...", // finished_at null = still running (the page then checks every 15 s)
+    "duration_s": 11,
+    "summary": "18 tested · 0 passed the lab · failed: 15 gate 2, 3 gate 1",
+    "steps": [{                                // up to 60, in order; each links to the candidate's screen
+      "at": "...", "id": "elo-base", "name": "Plain Elo",
+      "text": "pooled +0.10 pts [-0.66, +0.85] · gates +0.25 / -0.87 / +0.89",
+      "state": "failed", "fail_reason": "gate_2",  // a candidate state, or "info"
+      "gates": [true, false, true]                // each gate positive? drawn as the three circles (null = not run)
+    }]
+  }],
   "promoted": [{                               // shown as "Promoted, not proven"
     "name": "...", "picks": 41, "wins": 23, "losses": 18,
     "roi": 0.042,                              // fraction: 0.042 = +4.2%; 0 = break-even
@@ -68,4 +81,8 @@ Notes for the lab:
 - GitHub workflows group themselves by name/file: anything with "research", "lab", "inspector" or "constitution" goes
   under Research, anything with "props" under Props, and everything else under Games & App. So name the lab's
   workflows e.g. `research_lab.yml` / "Research lab -- ...".
+- `runs` was added after v1 of this contract; the page shows nothing for it when it's missing.
+- How fresh the page is: it asks the server every 60 s (every 15 s while a run is in progress); the server re-reads
+  status.json at most every 15 s, through the GitHub API when `GITHUB_TOKEN` is set (otherwise from
+  raw.githubusercontent.com, which itself caches up to 5 minutes). The ↻ button re-reads status.json at once.
 - Comments above (`//`) are for this document only; the real file is plain JSON.

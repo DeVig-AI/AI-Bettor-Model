@@ -237,6 +237,23 @@ class Reports(unittest.TestCase):
         with open(os.path.join(self.tmp, "LESSONS.md")) as f:
             self.assertIn("EXPLORATORY", f.read())
 
+    def test_run_timeline(self):
+        for cid, p in (("elo-base", 0.4), ("elo-mov", 0.3)):
+            L.append_ledger(dict(attempt=len(L.read_ledger()) + 1, sport="NFL", candidate_id=cid, market="spread",
+                                 run_at="2026-10-20T07:00:0%dZ" % len(L.read_ledger()), status="done", run_number=7,
+                                 run_url="https://github.com/x/actions/runs/1", p_one_sided=p, effect_pooled=0.1,
+                                 ci_lo=-0.6, ci_hi=0.8, g1_effect=0.2, g2_effect=-0.8, g3_effect=0.9))
+        s = report.write_all()
+        r = s["runs"][0]
+        self.assertEqual((r["name"], r["duration_s"], len(r["steps"])), ("Research Lab #7", 1, 2))
+        self.assertEqual(r["summary"], "2 tested · 0 passed the lab · failed: 2 gate 2")
+        self.assertEqual((r["steps"][0]["state"], r["steps"][0]["fail_reason"]), ("failed", "gate_2"))
+        self.assertEqual(r["steps"][0]["gates"], [True, False, True])
+        self.assertIn("pooled +0.10 pts [-0.60, +0.80]", r["steps"][0]["text"])
+        live = report.write_all(running=["elo-k10"], started_at="2026-10-20T08:00:00Z")["runs"][0]
+        self.assertIsNone(live["finished_at"])
+        self.assertEqual(live["steps"][0]["state"], "running")
+
     def test_stop_rule(self):
         log = [{"event": "pick", "game_id": f"g{i}", "cost": "0.52"} for i in range(50)]
         log += [{"event": "grade", "game_id": f"g{i}", "week": "10", "outcome": "win" if i < 18 else "loss"}

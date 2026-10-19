@@ -112,6 +112,95 @@ def lessons(cands, res, v):
     return sorted(out, key=lambda x: order[x["kind"]])
 
 
+MAX_RUNS = 10
+
+
+def secs_between(a, b):
+    try:
+        t0 = dt.datetime.fromisoformat(a.replace("Z", "+00:00"))
+        t1 = dt.datetime.fromisoformat(b.replace("Z", "+00:00"))
+        return max(0, int((t1 - t0).total_seconds()))
+    except (AttributeError, ValueError):
+        return None
+
+
+def sg(x, d=2, sign="+"):
+    v = IG.fnum(x)
+    return "—" if v is None else f"{v:{sign}.{d}f}"
+
+
+def runs(ledger, cands, v):
+    """The latest runs as timelines, newest first: lab runs from the ledger (every attempt has its time and run),
+    sealed exams from exam/EXAMS.csv. Nothing new is stored; the ledger stays the record."""
+    groups = {}
+    for r in ledger:
+        if r["sport"] != C.SPORT:
+            continue
+        key = r["run_url"] or r["run_number"] or r["run_at"][:13]          # local runs: group by the hour
+        groups.setdefault(key, []).append(r)
+    out = []
+    fx = lambda x: IG.fnum(x)
+    for rows in groups.values():
+        steps, reasons = [], {}
+        for r in rows:
+            cid = r["candidate_id"]
+            name = cands[cid]["name"] if cid in cands else cid
+            if r["status"] != "done":
+                text = f"crashed: {r['error'][:140]}"
+            else:
+                text = (f"pooled {sg(r['effect_pooled'])} pts [{sg(r['ci_lo'])}, {sg(r['ci_hi'])}] · "
+                        f"gates {' / '.join(sg(r[f'g{k}_effect']) for k in (1, 2, 3))}")
+            ver = v.get(cid) or {}
+            latest = ver.get("attempt") == int(r["attempt"])
+            state = ver.get("state", "failed") if latest else ("failed" if r["status"] != "done" else "info")
+            fr = ver.get("fail_reason", "") if latest else ""
+            if latest:
+                reasons[fr or state] = reasons.get(fr or state, 0) + 1
+            gates = [None if IG.fnum(r[f"g{k}_effect"]) is None else IG.fnum(r[f"g{k}_effect"]) > 0 for k in (1, 2, 3)]
+            steps.append({"at": r["run_at"], "id": cid, "name": name, "text": text, "state": state, "fail_reason": fr,
+                          "gates": gates})
+        passes = sum(1 for s_ in steps if s_["state"] in PASSED_LAB)
+        why = ", ".join(f"{n} {k.replace('_', ' ')}" for k, n in sorted(reasons.items(), key=lambda x: -x[1])
+                        if k not in PASSED_LAB)
+        first, last = rows[0], rows[-1]
+        num = int(fx(first["run_number"])) if fx(first["run_number"]) else None
+        out.append({"kind": "lab", "name": "Research Lab" + (f" #{num}" if num else " (local)"),
+                    "started_at": first["run_at"], "finished_at": last["run_at"],
+                    "duration_s": secs_between(first["run_at"], last["run_at"]), "run_number": num,
+                    "run_url": first["run_url"] or None,
+                    "summary": f"{len(steps)} tested · {passes} passed the lab" + (f" · failed: {why}" if why else ""),
+                    "steps": steps})
+    exams = {}
+    for x in IG.read_csv(C.EXAMS):
+        exams.setdefault(x["exam_no"], []).append(x)
+    for no, rows in exams.items():
+        cid = rows[0]["candidate_id"]
+        name = cands[cid]["name"] if cid in cands else cid
+        steps = []
+        for x in rows:
+            if x["event"] == "registered":
+                steps.append({"at": x["at"], "id": cid, "name": name, "state": "info", "fail_reason": "",
+                              "text": f"exam {no} of {C.EXAM_BUDGET} spent on the best lab pass (before any sealed data)"})
+            elif x["event"] == "scored":
+                ok = x["passed"] == "true"
+                steps.append({"at": x["at"], "id": cid, "name": name, "state": "exam_pass" if ok else "exam_fail",
+                              "fail_reason": "", "text": f"{x['sealed_season']}: {sg(x['effect'])} pts "
+                              f"[{sg(x['ci_lo'])}, {sg(x['ci_hi'])}], p = {sg(x['p_one_sided'], 4, '')} "
+                              f"(needs < {sg(x['alpha'], 4, '')})"})
+            else:
+                steps.append({"at": x["at"], "id": cid, "name": name, "state": "exam_fail", "fail_reason": "error",
+                              "text": f"crashed (the exam is still spent): {x['note'][:140]}"})
+        done = [s_ for s_ in steps if s_["state"] in ("exam_pass", "exam_fail")]
+        out.append({"kind": "exam", "name": f"Sealed exam {no}", "started_at": rows[0]["at"],
+                    "finished_at": rows[-1]["at"] if done else None,
+                    "duration_s": secs_between(rows[0]["at"], rows[-1]["at"]) if done else None,
+                    "run_number": None, "run_url": rows[-1]["run_url"] or None,
+                    "summary": (f"{name}: " + ("passed" if done[0]["state"] == "exam_pass" else "failed")) if done
+                    else f"{name}: being scored", "steps": steps})
+    out.sort(key=lambda r: r["started_at"], reverse=True)
+    return out[:MAX_RUNS]
+
+
 def build(running=(), started_at=None, gate_now=1):
     cands = L.load_candidates()
     ledger = L.read_ledger()
@@ -142,7 +231,17 @@ def build(running=(), started_at=None, gate_now=1):
         "candidates": entries,
         "lessons": lessons(cands, res, v),
         "promoted": paper_summary(),
+        "runs": runs(ledger, cands, v),
     }
+    if running:                                        # the run in progress, at the top of the timeline
+        status["runs"].insert(0, {"kind": "lab", "name": "Research Lab" + (f" #{L.run_info()[0]}" if L.run_info()[0] else ""),
+                                  "started_at": started_at, "finished_at": None, "duration_s": None,
+                                  "run_number": L.run_info()[0], "run_url": L.run_info()[1],
+                                  "summary": f"{len(running)} candidate(s) running through the three gates",
+                                  "steps": [{"at": started_at, "id": cid, "name": cands[cid]["name"], "text": "waiting",
+                                             "state": "running" if i == 0 else "queued", "fail_reason": ""}
+                                            for i, cid in enumerate(running)]})
+        status["runs"] = status["runs"][:MAX_RUNS]
     return status, ledger
 
 
@@ -176,6 +275,11 @@ def status_md(s, ledger):
     lines += [f"- `{e['id']}`: {e['verdict'] or 'not run yet'}" for e in s["candidates"]]
     if s["promoted"]:
         lines += ["", "## Promoted, not proven", ""] + [f"- **{p['name']}**: {p['vs_kalshi_note']}" for p in s["promoted"]]
+    if s["runs"]:
+        lines += ["", "## Recent runs", ""]
+        for r in s["runs"][:5]:
+            took = "" if r["duration_s"] is None else f", {r['duration_s']} s"
+            lines.append(f"- **{r['name']}** {r['started_at']}{took}: {r['summary']}")
     lines += ["", "Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), "
               "`research/LESSONS.md` (exploratory)."]
     return "\n".join(lines) + "\n"
