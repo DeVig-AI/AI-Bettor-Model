@@ -29,8 +29,8 @@ jobs:
         with: {ref: '${{ github.ref_name }}'}
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = early check; v4)
-        env: {MAX_MINUTES: '12'}
+      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = re-run for events with no markets)
+        env: {MAX_MINUTES: '320'}
         run: python3 nba/kalshi_props_history_v1.py
       - name: Save progress
         if: always()
@@ -118,7 +118,7 @@ jobs:
       - run: pip install pandas numpy
       - name: Collection must be complete (the prereg uses every settled market)
         run: |
-          python3 -c "import json,sys; s=json.load(open('nba/props_history/kalshi_props_history_v1_summary.json'))['stats']; print(s); sys.exit(0 if s.get('complete') else 'collection not complete: run the workflow again')"
+          python3 -c "import json,sys; s=json.load(open('nba/props_history/kalshi_props_history_v1_summary.json'))['stats']; print(s); sys.exit(0 if s.get('complete') and not s.get('no_markets') else 'collection not complete (or events with no markets): run the workflow again')"
       - name: Run the pre-registered back-test (NBA_PROPS_KALSHI_BACKTEST_V1)
         run: python3 nba/kalshi_props_backtest_v1.py
       - name: Save results
