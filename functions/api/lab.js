@@ -229,7 +229,7 @@ export function cleanStatus(s, nested = false) {
       text: str(x.text, 600), kind: KINDS.includes(x.kind) ? x.kind : "no_effect",
       candidates: arr(x.candidates, 20).map(v => str(v, 80))})),
     runs: arr(s.runs, 10).filter(x => x && typeof x === "object").map(x => ({
-      kind: ["lab", "exam", "review", "paper"].includes(x.kind) ? x.kind : "lab", name: str(x.name, 80),
+      kind: ["lab", "exam", "review", "paper", "search"].includes(x.kind) ? x.kind : "lab", name: str(x.name, 80),
       started_at: iso(x.started_at), finished_at: iso(x.finished_at), duration_s: num(x.duration_s),
       run_number: num(x.run_number), run_url: link(x.run_url), summary: str(x.summary, 300),
       steps: arr(x.steps, 60).filter(t => t && typeof t === "object").map(t => ({

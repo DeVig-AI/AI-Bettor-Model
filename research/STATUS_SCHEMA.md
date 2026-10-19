@@ -55,7 +55,7 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
     "candidates": ["rest"]                     // ids; shown as "from <name>"
   }],
   "runs": [{                                   // optional, newest first, up to 10: the "What the lab did" timeline
-    "kind": "lab",                             // lab | exam | review | paper
+    "kind": "lab",                             // lab | exam | review | paper | search
     "name": "Research Lab #12", "run_number": 12, "run_url": "https://github.com/...",
     "started_at": "...", "finished_at": "...", // finished_at null = still running (the page then checks every 15 s)
     "duration_s": 11,

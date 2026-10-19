@@ -1,4 +1,4 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v3: Part B NFL,
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v4: Part B NFL,
 Part C college football); the Constitution wins if they ever disagree.
 
 The module holds one sport's settings at a time: NFL by default, `use("CFB")` switches every constant below to
@@ -8,7 +8,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v3"
+CONSTITUTION_VERSION = "v4"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -16,7 +16,7 @@ BLOB = f"https://github.com/{REPO}/blob/main/"
 DATA_DIR = os.path.join(RESEARCH, "data", "nfl")
 CANDIDATES = os.path.join(RESEARCH, "candidates")
 QUEUE = os.path.join(RESEARCH, "queue")
-BATCH = 18                     # A3.3b: at most this many candidates per lab run
+BATCH = 18                     # A3.3b: at most this many confirmations per lab run
 RESULTS = os.path.join(RESEARCH, "results")
 LEDGER = os.path.join(RESEARCH, "LEDGER.csv")
 EXAMS = os.path.join(RESEARCH, "exam", "EXAMS.csv")
@@ -24,12 +24,14 @@ PAPER_DIR = os.path.join(RESEARCH, "paper")
 PROMOTED = os.path.join(RESEARCH, "promoted.json")
 STATUS_JSON = os.path.join(RESEARCH, "status.json")
 
-# B2. Season split (v2; v1 used training 2006-15 and gates 2016-18 / 2019-21 / 2022-24)
+# B2. Season split (v4; v2/v3 used 2006-12 / 2013-18 / 2019-24, v1 used training 2006-15 and gates 2016-18 / 2019-21 / 2022-24)
 FIRST_SEASON = 1999            # ratings start here, from average
 TRAIN = (1999, 2005)
-GATES = [("2006–12", 2006, 2012), ("2013–18", 2013, 2018), ("2019–24", 2019, 2024)]
-POOLED = ("Pooled 2006–24", 2006, 2024)
-RULE_SPLITS = [("2006–20", 2006, 2020, "before the 17-game season"),
+SEARCH = (2006, 2016)          # the search (A3.3c) is given data up to SEARCH[1] and nothing later
+SEARCH_PERIODS = [(2006, 2009), (2010, 2013), (2014, 2016)]
+GATES = [("2017–19", 2017, 2019), ("2020–22", 2020, 2022), ("2023–24", 2023, 2024)]
+POOLED = ("Pooled 2017–24", 2017, 2024)
+RULE_SPLITS = [("2017–20", 2017, 2020, "before the 17-game season"),
                ("2021–23", 2021, 2023, "17 games, from 2021"),
                ("2024", 2024, 2024, "new kickoff rule")]
 LAB_MAX_SEASON = 2024          # the lab refuses anything later
