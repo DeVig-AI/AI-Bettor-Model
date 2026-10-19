@@ -13,6 +13,7 @@
   var SOURCES = [
     {path: "nfl/live/props_live.json", every: 2, live: true},
     {path: "live/game_lines.json", every: 10, live: "GAME_LINES"},
+    {path: "live/cfb_history.json", every: 15, live: "CFB_HISTORY"},
     {path: "nfl/live/props_results.json", every: 15, live: "PROPS_ARCHIVE"},
     {path: "nfl/lineboard_export.json", every: 10},
     {path: "mlb/lineboard_export.json", every: 10},
