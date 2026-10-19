@@ -449,14 +449,39 @@ class Reports(unittest.TestCase):
                                  ci_lo=-0.6, ci_hi=0.8, g1_effect=0.2, g2_effect=-0.8, g3_effect=0.9))
         s = report.write_all()
         r = s["runs"][0]
-        self.assertEqual((r["name"], r["duration_s"], len(r["steps"])), ("Research Lab #7", 1, 2))
-        self.assertEqual(r["summary"], "2 tested · 0 passed the lab · failed: 2 gate 2")
-        self.assertEqual((r["steps"][0]["state"], r["steps"][0]["fail_reason"]), ("failed", "gate_2"))
-        self.assertEqual(r["steps"][0]["gates"], [True, False, True])
-        self.assertIn("pooled +0.10 pts [-0.60, +0.80]", r["steps"][0]["text"])
+        self.assertEqual((r["name"], r["duration_s"], r["steps"]), ("Research Lab #7", 1, []))
+        self.assertEqual(r["summary"], "2 tested → 2 past gate 1 → 0 past gate 2 → 0 passed the lab → "
+                                       "0 passed the exam → 0 promoted")
+        self.assertEqual([f["count"] for f in r["funnel"]], [2, 2, 0, 0, 0, 0])
         live = report.write_all(running=["elo-k10"], started_at="2026-10-20T08:00:00Z")["runs"][0]
         self.assertIsNone(live["finished_at"])
-        self.assertEqual(live["steps"][0]["state"], "running")
+        self.assertEqual(live["summary"], "1 tested → running through the gates")
+
+    def test_search_funnel_and_focus(self):
+        from research.lab import search as SR
+        os.makedirs(C.SEARCH_DIR, exist_ok=True)
+        with open(SR.path("MENU.yaml"), "w") as f:
+            yaml.safe_dump({"search": {"shortlist_min_t": 2.5}}, f)
+        rows = [{"round": "1", "id": f"s-{i}", "market": "spread", "type": "srs", "label": "x", "games": 10,
+                 "effect": 0.1, "t": t, "p1": 1, "p2": 1, "p3": 1, "eligible": e,
+                 "config": SR.config_key({"market": "spread", "type": "srs", "params": {"carry": 0.1 * i}})}
+                for i, (t, e) in enumerate([(3.0, "true"), (2.6, "true"), (1.0, "true"), (3.5, "false")])]
+        SR.append_rows(SR.path("SCORES.csv"), SR.SCORE_COLS, rows)
+        SR.append_rows(SR.path("ROUNDS.csv"), SR.ROUND_COLS, [{"round": 1, "at": "2026-10-20T06:00:00Z",
+                                                               "scored_new": 4, "scored_total": 4, "shortlisted": "s-0"}])
+        r = next(x for x in report.write_all()["runs"] if x["kind"] == "search")
+        self.assertEqual([f["count"] for f in r["funnel"]], [4, 3, 2, 1])
+        # focus: the 2 best values of each setting, combined
+        menu = {"families": [{"market": "spread", "type": "srs", "fixed": {"hfa_pts": 2.5},
+                              "grid": {"carry": [0.4, 0.6, 0.8], "prior_w": [1, 3]}}]}
+        scored = []
+        for carry, w, t in [(0.4, 1, 0.1), (0.4, 3, 0.2), (0.4, 1, 0.3), (0.6, 1, 2.0), (0.6, 3, 2.2), (0.6, 1, 2.1),
+                            (0.8, 1, 1.0), (0.8, 3, 1.1), (0.8, 3, 1.2)]:
+            cfg = {"market": "spread", "type": "srs", "params": {"hfa_pts": 2.5, "carry": carry, "prior_w": w}}
+            scored.append({"market": "spread", "type": "srs", "t": t, "config": SR.config_key(cfg)})
+        f = SR.focus(menu, scored)
+        self.assertEqual(sorted((c["params"]["carry"], c["params"]["prior_w"]) for c in f),
+                         [(0.6, 1), (0.6, 3), (0.8, 1), (0.8, 3)])
 
     def test_stop_rule(self):
         log = [{"event": "pick", "game_id": f"g{i}", "cost": "0.52"} for i in range(50)]

@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v6
+# DeVig Research Lab -- Constitution v7
 
-Version: **v6** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v5 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v5.md`; v4 to v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v5" at the end)
+Version: **v7** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v6 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v6.md`; v5 to v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v6" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -56,8 +56,10 @@ result, and it will be reported exactly like a success: every number, plainly.
    (NFL `research/search/`, CFB `research/cfb/search/`):
    - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
      scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
-     grid combination not yet scored (a large grid spreads over several rounds), then the neighbours (one setting moved
-     one step along its ladder in the menu) of the **30** best configurations per market. Then, every round, blends of
+     grid combination not yet scored (a large grid spreads over several rounds), then the **focus** combinations (for each
+     family, every combination of the 2 best values of each setting, ranked by the median search t of the configurations
+     already scored with that value), then the neighbours (one setting moved one step along its ladder in the menu) of
+     the **30** best configurations per market. Then, every round, blends of
      the best performers: every pair of the 10 best, every trio of the 6 best, equal-weight blends of the best 3, 5, 7
      and 10, and blends of the best 5 and best 8 with non-negative weights summing to 1 fit on the training and search
      seasons. Nothing already scored is scored again.
@@ -71,6 +73,8 @@ result, and it will be reported exactly like a success: every number, plainly.
      committed, and confirmed like any candidate.
    - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
      (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
+   - **What the search learns from:** only its own search-season scores. Confirmation, exam and paper-season results
+     are never read by the search (feeding them back would turn the confirmation seasons into training data).
 4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
    the training and search seasons), and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
@@ -388,4 +392,19 @@ The owner asked for a much bigger search:
    than weekly ones did. The attempt rate (A6) is unchanged; only the bar to be sent is higher.
 
 Unchanged: every other rule, including all season splits, the correction, the bars, the exams and Part C's data rules.
+
+---
+
+## Changes from v6 (2026-10-19)
+
+1. **The search learns (A3.3c, focus step)**, the owner's decision: each round, before the neighbours, every
+   combination of the 2 best values of each setting found so far (ranked by the median search t of the configurations
+   already scored with that value) is scored. This finds settings that work together, not only one change at a time.
+2. **What the search learns from**, stated as a rule: only its own search-season scores. Confirmation, exam and
+   paper-season results are never read by the search.
+3. **Reporting (A10):** the run history on /lab shows counts only (tested → past gate 1 → past gate 2 → passed the lab
+   → passed the exam → promoted; search rounds: scored → consistent → strong → sent). Every number stays in the
+   repository files (results, ledger, search logs).
+
+Nothing had run under v6 (no search round, no attempt) when v7 was adopted. Every other rule is unchanged.
 
