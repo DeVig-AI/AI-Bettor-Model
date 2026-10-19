@@ -1,81 +1,81 @@
 {
- "generated_at": "2026-10-19T07:32:57Z",
+ "generated_at": "2026-10-19T08:17:45Z",
  "stats": {
   "series": {
-   "KXNBAAST": {
-    "stat": "assists",
-    "title": "NBA Player Assists"
+   "KXNBAREB": {
+    "stat": "rebounds",
+    "title": "NBA Player Rebounds"
    },
    "KXNBARA": {
     "stat": "reb_ast",
     "title": "Pro Basketball Player Rebounds + Assists"
    },
-   "KXNBAPTS": {
-    "stat": "points",
-    "title": "NBA Player Points"
-   },
-   "KXNBAREB": {
-    "stat": "rebounds",
-    "title": "NBA Player Rebounds"
-   },
-   "KXNBASTOCK": {
-    "stat": "stl_blk",
-    "title": "NBA Player Steals + Blocks"
-   },
-   "KXNBASTL": {
-    "stat": "steals",
-    "title": "NBA Player Steals"
-   },
-   "KXNBAPLAYOFFPTS": {
-    "stat": "points",
-    "title": "NBA Playoffs Player Points"
-   },
-   "KXNBABLK": {
-    "stat": "blocks",
-    "title": "NBA Player Blocks"
-   },
-   "KXNBAPRA": {
-    "stat": "pts_reb_ast",
-    "title": "NBA Player Points + Rebounds + Assists"
-   },
-   "KXNBAPR": {
-    "stat": "pts_reb",
-    "title": "Pro Basketball Player Points + Rebounds"
-   },
-   "KXNBA3PT": {
-    "stat": "threes",
-    "title": "NBA Player Threes"
+   "KXNBAAST": {
+    "stat": "assists",
+    "title": "NBA Player Assists"
    },
    "KXNBAPA": {
     "stat": "pts_ast",
     "title": "Pro Basketball Player Points + Assists"
    },
+   "KXNBAPR": {
+    "stat": "pts_reb",
+    "title": "Pro Basketball Player Points + Rebounds"
+   },
    "KXNBASTOCKS": {
     "stat": "stl_blk",
     "title": "NBA Player Steals and Blocks"
+   },
+   "KXNBAPLAYOFFPTS": {
+    "stat": "points",
+    "title": "NBA Playoffs Player Points"
+   },
+   "KXNBAPRA": {
+    "stat": "pts_reb_ast",
+    "title": "NBA Player Points + Rebounds + Assists"
+   },
+   "KXNBA3PT": {
+    "stat": "threes",
+    "title": "NBA Player Threes"
+   },
+   "KXNBABLK": {
+    "stat": "blocks",
+    "title": "NBA Player Blocks"
+   },
+   "KXNBASTL": {
+    "stat": "steals",
+    "title": "NBA Player Steals"
+   },
+   "KXNBAPTS": {
+    "stat": "points",
+    "title": "NBA Player Points"
+   },
+   "KXNBASTOCK": {
+    "stat": "stl_blk",
+    "title": "NBA Player Steals + Blocks"
    }
   },
-  "events_seen": 4890,
-  "events_done_now": 3162,
-  "markets_written_now": 61335,
-  "no_candle": 1626,
+  "events_seen": 5515,
+  "events_done_now": 605,
+  "markets_written_now": 6006,
+  "no_candle": 312,
   "no_tipoff": 2,
-  "not_nba_game_type": 3,
+  "not_nba_game_type": 0,
   "after_cutoff": 0,
-  "no_markets": 1539,
+  "no_markets": 1560,
   "events_by_endpoint": {
-   "/events": 4890
+   "/events": 5515
   },
   "markets_from": {
-   "/historical/markets": 4701
+   "/historical/markets": 2165
   },
   "candles_by_endpoint": {
    "batch": 0,
-   "historical": 59709
+   "historical": 5694
   },
-  "minutes": 320.1,
-  "complete": false,
-  "events_done_total": 3348
+  "minutes": 44.6,
+  "complete": true,
+  "events_done_total": 3953
  },
  "errors": [
   "no markets KXNBA3PT-26JAN15CHALAL",
@@ -383,9 +383,9 @@
   "event": {
    "category": "Sports",
    "collateral_return_type": "",
-   "event_ticker": "KXNBA3PT-26MAR30PHIMIA",
+   "event_ticker": "KXNBA3PT-26JAN15CHALAL",
    "exchange_index": 0,
-   "last_updated_ts": "2026-10-16T03:46:32.626037Z",
+   "last_updated_ts": "2026-10-16T06:54:29.032223Z",
    "mutually_exclusive": false,
    "product_metadata": {
     "competition": "Pro Basketball (M)",
@@ -399,35 +399,35 @@
     }
    ],
    "strike_period": "",
-   "sub_title": "PHI at MIA (Mar 30)",
-   "title": "Philadelphia at Miami: Three Pointers"
+   "sub_title": "CHA at LAL (Jan 15)",
+   "title": "Charlotte at Los Angeles L: Three Pointers"
   },
   "market_/historical/markets": {
    "can_close_early": true,
-   "close_time": "2026-03-31T02:15:35Z",
-   "created_time": "2026-03-30T04:05:52.760248Z",
+   "close_time": "2026-01-16T06:04:40.722768Z",
+   "created_time": "2026-01-15T13:01:37.093096Z",
    "custom_strike": {
-    "basketball_player": "3e3ceeda-5f54-4aa0-9ced-e8ff6cbcadf2",
-    "basketball_team": "a17e4a68-2999-4f60-b67e-3e80aa9e198b"
+    "basketball_player": "5631e46b-716c-4842-8607-a6ebf12fe029",
+    "basketball_team": "2ef4d31c-0b46-4f43-a403-f44d62489034"
    },
    "early_close_condition": "This market will close and expire early if the event occurs.",
-   "event_ticker": "KXNBA3PT-26MAR30PHIMIA",
+   "event_ticker": "KXNBA3PT-26JAN15CHALAL",
    "exchange_index": 0,
-   "expected_expiration_time": "2026-03-31T02:00:00Z",
-   "expiration_time": "2026-04-13T23:00:00Z",
+   "expected_expiration_time": "2026-01-16T06:30:00Z",
+   "expiration_time": "2026-01-30T03:30:00Z",
    "expiration_value": "three_pointers",
    "floor_strike": 4.5,
-   "last_price_dollars": "0.1100",
-   "latest_expiration_time": "2026-04-13T23:00:00Z",
+   "last_price_dollars": "0.0000",
+   "latest_expiration_time": "2026-01-30T03:30:00Z",
    "market_type": "binary",
    "no_ask_dollars": "1.0000",
-   "no_bid_dollars": "0.4100",
-   "no_sub_title": "Tyler Herro: 5+",
+   "no_bid_dollars": "0.0000",
+   "no_sub_title": "LeBron James: 5+",
    "notional_value_dollars": "1.0000",
    "open_interest_fp": "0.00",
-   "open_time": "2026-03-30T04:10:00Z",
-   "previous_price_dollars": "0.1100",
-   "previous_yes_ask_dollars": "0.5900",
+   "open_time": "2026-01-15T13:11:00Z",
+   "previous_price_dollars": "0.0000",
+   "previous_yes_ask_dollars": "1.0000",
    "previous_yes_bid_dollars": "0.0000",
    "price_level_structure": "linear_cent",
    "price_ranges": [
@@ -439,229 +439,154 @@
    ],
    "primary_participant_key": "basketball_player",
    "result": "no",
-   "rules_primary": "If Tyler Herro records 5+ Three Pointers in the Philadelphia at Miami professional basketball game originally scheduled for Mar 30, 2026, then the market resolves to Yes.",
-   "rules_secondary": "The following market refers to a player in the Philadelphia at Miami professional basketball game originally scheduled for Mar 30, 2026. If a player is active but never takes the court, the market settles to the last fair market price before game start. Once a player enters the game the market settles based on the player's threes recorded.",
+   "rules_primary": "If LeBron James records 5+ Three Pointers in the Charlotte at Los Angeles L professional basketball game originally scheduled for Jan 15, 2026, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the Charlotte at Los Angeles L professional basketball game originally scheduled for Jan 15, 2026. If a player is active but never takes the court, the market settles to the last fair market price before game start. Once a player enters the game the market settles based on the player's threes recorded.",
    "settlement_bounds_type": "default",
    "settlement_timer_seconds": 300,
-   "settlement_ts": "2026-03-31T02:21:37.933924Z",
+   "settlement_ts": "2026-01-16T06:10:43.616249Z",
    "settlement_value_dollars": "0.0000",
    "status": "finalized",
    "strike_type": "structured",
-   "ticker": "KXNBA3PT-26MAR30PHIMIA-MIATHERRO14-5",
-   "title": "Tyler Herro: 5+ threes",
-   "updated_time": "2026-03-31T02:21:37.969168Z",
+   "ticker": "KXNBA3PT-26JAN15CHALAL-LALLJAMES23-5",
+   "title": "LeBron James records 5+ threes",
+   "updated_time": "2026-02-19T08:48:16.628714Z",
    "volume_24h_fp": "0.00",
-   "volume_fp": "335.00",
-   "yes_ask_dollars": "0.5900",
-   "yes_ask_size_fp": "-1.00",
+   "volume_fp": "0.00",
+   "yes_ask_dollars": "1.0000",
+   "yes_ask_size_fp": "0.00",
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
-   "yes_sub_title": "Tyler Herro: 5+"
+   "yes_sub_title": "LeBron James: 5+"
   },
   "historical": {
    "candlesticks": [
     {
-     "end_period_ts": 1774882800,
-     "open_interest": "12.00",
+     "end_period_ts": 1777910400,
+     "open_interest": "0.00",
      "price": {
       "close": null,
       "high": null,
       "low": null,
       "mean": null,
       "open": null,
-      "previous": "0.2100"
+      "previous": null
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.1600",
-      "high": "0.1800",
-      "low": "0.1600",
-      "open": "0.1800"
+      "close": "0.9200",
+      "high": "0.9200",
+      "low": "0.9100",
+      "open": "0.9100"
      },
      "yes_bid": {
-      "close": "0.1300",
-      "high": "0.1300",
-      "low": "0.1300",
-      "open": "0.1300"
+      "close": "0.0000",
+      "high": "0.0100",
+      "low": "0.0000",
+      "open": "0.0100"
      }
     },
     {
-     "end_period_ts": 1774886400,
-     "open_interest": "12.00",
+     "end_period_ts": 1777917600,
+     "open_interest": "0.00",
      "price": {
       "close": null,
       "high": null,
       "low": null,
       "mean": null,
       "open": null,
-      "previous": "0.2100"
+      "previous": null
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.1600",
-      "high": "0.1600",
-      "low": "0.1600",
-      "open": "0.1600"
+      "close": "0.9700",
+      "high": "0.9700",
+      "low": "0.9200",
+      "open": "0.9200"
      },
      "yes_bid": {
-      "close": "0.1300",
-      "high": "0.1300",
-      "low": "0.1200",
-      "open": "0.1300"
+      "close": "0.0000",
+      "high": "0.0000",
+      "low": "0.0000",
+      "open": "0.0000"
      }
     },
     {
-     "end_period_ts": 1774890000,
-     "open_interest": "289.00",
-     "price": {
-      "close": "0.1600",
-      "high": "0.1600",
-      "low": "0.1600",
-      "mean": "0.1600",
-      "open": "0.1600",
-      "previous": "0.2100"
-     },
-     "volume": "277.00",
-     "yes_ask": {
-      "close": "0.1600",
-      "high": "0.1600",
-      "low": "0.1600",
-      "open": "0.1600"
-     },
-     "yes_bid": {
-      "close": "0.1300",
-      "high": "0.1300",
-      "low": "0.1300",
-      "open": "0.1300"
-     }
-    },
-    {
-     "end_period_ts": 1774893600,
-     "open_interest": "289.00",
+     "end_period_ts": 1777921200,
+     "open_interest": "0.00",
      "price": {
       "close": null,
       "high": null,
       "low": null,
       "mean": null,
       "open": null,
-      "previous": "0.1600"
+      "previous": null
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.1600",
-      "high": "0.2500",
-      "low": "0.0700",
-      "open": "0.1600"
+      "close": "0.9600",
+      "high": "0.9700",
+      "low": "0.9600",
+      "open": "0.9700"
      },
      "yes_bid": {
-      "close": "0.1500",
-      "high": "0.1800",
-      "low": "0.0200",
-      "open": "0.1300"
+      "close": "0.0000",
+      "high": "0.0000",
+      "low": "0.0000",
+      "open": "0.0000"
      }
     },
     {
-     "end_period_ts": 1774897200,
-     "open_interest": "289.00",
+     "end_period_ts": 1777932000,
+     "open_interest": "0.00",
      "price": {
       "close": null,
       "high": null,
       "low": null,
       "mean": null,
       "open": null,
-      "previous": "0.1600"
+      "previous": null
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.1700",
-      "high": "0.1700",
-      "low": "0.1600",
-      "open": "0.1600"
+      "close": "0.2100",
+      "high": "0.9600",
+      "low": "0.2100",
+      "open": "0.9600"
      },
      "yes_bid": {
-      "close": "0.1500",
-      "high": "0.1500",
-      "low": "0.0500",
-      "open": "0.1500"
+      "close": "0.0000",
+      "high": "0.0000",
+      "low": "0.0000",
+      "open": "0.0000"
      }
     },
     {
-     "end_period_ts": 1774900800,
-     "open_interest": "289.00",
+     "end_period_ts": 1777935600,
+     "open_interest": "0.00",
      "price": {
       "close": null,
       "high": null,
       "low": null,
       "mean": null,
       "open": null,
-      "previous": "0.1600"
+      "previous": null
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.1900",
-      "high": "0.2000",
-      "low": "0.1700",
-      "open": "0.1700"
+      "close": "0.2100",
+      "high": "0.9500",
+      "low": "0.2100",
+      "open": "0.2100"
      },
      "yes_bid": {
-      "close": "0.1500",
-      "high": "0.1500",
-      "low": "0.0900",
-      "open": "0.1500"
-     }
-    },
-    {
-     "end_period_ts": 1774904400,
-     "open_interest": "289.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": "0.1600"
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.1900",
-      "high": "0.1900",
-      "low": "0.1900",
-      "open": "0.1900"
-     },
-     "yes_bid": {
-      "close": "0.1500",
-      "high": "0.1600",
-      "low": "0.0700",
-      "open": "0.1500"
-     }
-    },
-    {
-     "end_period_ts": 1774908000,
-     "open_interest": "289.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": "0.1600"
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.1900",
-      "high": "0.2000",
-      "low": "0.1800",
-      "open": "0.1900"
-     },
-     "yes_bid": {
-      "close": "0.1600",
-      "high": "0.1600",
-      "low": "0.0300",
-      "open": "0.1500"
+      "close": "0.0000",
+      "high": "0.0000",
+      "low": "0.0000",
+      "open": "0.0000"
      }
     }
    ],
-   "ticker": "KXNBA3PT-26MAR30PHIMIA-MIATHERRO14-5"
+   "ticker": "KXNBASTL-26MAY04PHINYK-PHIJEMBIID21-3"
   }
  }
 }
