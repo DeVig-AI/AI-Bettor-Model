@@ -96,6 +96,10 @@ class CFB(unittest.TestCase):
     def setUp(self):
         C.use("CFB")
 
+    def test_queue_is_per_sport(self):
+        self.assertTrue(C.QUEUE.endswith(os.path.join("research", "cfb", "queue")))
+        self.assertEqual(L.queued(), [])                    # the NFL queue is never read for CFB
+
     def test_fcs_games_excluded(self):
         self.assertFalse((self.data["games"].away_team == "FCS U").any())
 

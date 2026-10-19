@@ -9,6 +9,8 @@ import datetime as dt
 import json
 import os
 
+import yaml
+
 from . import config as C
 from . import inspector as IG
 from . import lab as L
@@ -121,11 +123,12 @@ def lessons(cands, res, v):
         if not r or (v.get(cid) or {}).get("fail_reason") == "error":
             continue
         e = [g["effect"] for g in r["gates"]]
+        names = [g["name"] for g in r["gates"]]
         par = c.get("parent")
         if par:
             pr = res.get(par)
-            if not pr:
-                continue
+            if not pr or [g["name"] for g in pr["gates"]] != names:   # same seasons only (v1 and v2 NFL gates differ)
+                continue                               # different season splits: not comparable
             d = [a - b for a, b in zip(e, [g["effect"] for g in pr["gates"]])]
             vs = f"vs {cands[par]['name']}"
         else:
@@ -134,11 +137,11 @@ def lessons(cands, res, v):
         if all(x > 0 for x in d):
             kind, word = "helped", "helped in every gate"
         elif d[0] > 0 and d[2] < C.FADE_NEEDED * d[0]:
-            kind, word = "faded", f"helped in {gate_names()[0]}, then faded"
+            kind, word = "faded", f"helped in {names[0]}, then faded"
         else:
             kind, word = "no_effect", "no consistent effect"
         txt = (f"{c['name']} {vs}: {word} ({' / '.join(f'{x:+.2f}' for x in d)} pts in "
-               f"{' / '.join(gate_names())}).")
+               f"{' / '.join(names)}).")
         out.append({"text": txt, "kind": kind, "candidates": [cid]})
     order = {"helped": 0, "faded": 1, "no_effect": 2}
     return sorted(out, key=lambda x: order[x["kind"]])
@@ -247,6 +250,16 @@ def build(running=(), started_at=None, gate_now=1):
         eta = (t + dt.timedelta(minutes=MINUTES_PER_CANDIDATE * len(running))).strftime("%Y-%m-%dT%H:%M:%SZ")
     entries = [candidate_entry(c, res.get(cid), v.get(cid), running, gate_now, started_at, eta, attempts)
                for cid, c in cands.items()]
+    for i, (order, cid, path) in enumerate(L.queued()):          # waiting in research/queue/: shown as queued
+        if cid in cands:
+            continue
+        with open(path) as f:
+            q = yaml.safe_load(f)
+        e = candidate_entry(q, None, None, (), gate_now, None, None, attempts)
+        e["verdict"] = (f"In the queue (#{order}): runs in lab batch {i // C.BATCH + 1} from now. Not an attempt yet, "
+                        "so it can still be edited or removed at no cost.")
+        e["file_url"] = C.BLOB + L.rel(path)
+        entries.append(e)
     gadj, gn = global_holm()
     for e in entries:                                   # C4: reported next to the sport's own correction, never used
         at = (v.get(e["id"]) or {}).get("attempt")
@@ -299,7 +312,9 @@ def status_md(s, ledger):
         f"· across all sports: {s['attempts']['all_sports']} (reported only, Constitution C4)",
         f"- Lab passes: {c['lab_pass']} · exam passes: {c['exam_pass']} · sealed {C.SEALED_SEASON} exams left: "
         f"{c['exam_budget_left']} of {c['exam_budget_total']}", "",
-        "| Candidate | Market | State | " + " | ".join(gate_names()) + " | Pooled [95% CI] | Holm p | Picks win% / ROI |",
+        *(["Gates: v2 candidates 2006–12 / 2013–18 / 2019–24; v1 candidates 2016–18 / 2019–21 / 2022–24 (their ledger rows "
+           "say which).", ""] if C.SPORT == "NFL" else [f"Gates: {' / '.join(gate_names())}.", ""]),
+        "| Candidate | Market | State | Gate 1 | Gate 2 | Gate 3 | Pooled [95% CI] | Holm p | Picks win% / ROI |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
     f = lambda x: "—" if x is None else f"{x:+.2f}"
@@ -332,8 +347,9 @@ def lessons_md(s):
              f"_Generated {s['updated_at']} by research/lab/report.py after each run. **Exploratory, not proof**: each "
              "line compares a candidate with the one it builds on, gate by gate, with no correction for how many "
              "comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._", "",
-             f"- **helped**: beat its parent in all three gates · **faded**: helped in {gate_names()[0]} but by less "
-             f"than half as much (or not at all) in {gate_names()[-1]} · **no effect**: anything else", ""]
+             "- **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half "
+             "as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a "
+             "parent that ran under the same Constitution version (same seasons).", ""]
     for kind, title in (("helped", "Helped"), ("faded", "Faded"), ("no_effect", "No effect")):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]

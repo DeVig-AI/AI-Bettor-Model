@@ -1,0 +1,16 @@
+# Research Lab queued idea rt-noto-epa (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: rt-noto-epa
+name: EPA without turnovers
+market: spread
+family: Team rating
+parent: rt-epa
+reason: Interceptions and lost fumbles swing EPA but repeat poorly; rate teams on EPA per play with those plays left out.
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: noto_epa
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: none

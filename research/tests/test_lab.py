@@ -32,7 +32,7 @@ HOME_STADIUM = {"ARI": "PHO00", "ATL": "ATL00", "BAL": "BAL00", "BUF": "BUF00", 
                 "TEN": "NAS00", "WAS": "WAS00"}
 
 
-def synthetic(first=2002, last=2024, seed=7):
+def synthetic(first=1999, last=2024, seed=7):
     """A fake league: hidden team strengths drift; lines = truth + noise; plays/EPA/QB rows consistent."""
     rng = np.random.default_rng(seed)
     strength = dict(zip(TEAMS, rng.normal(0, 4, len(TEAMS))))
@@ -60,8 +60,13 @@ def synthetic(first=2002, last=2024, seed=7):
                                   away_qb_name="A", home_qb_name="H",
                                   stadium_id="LON00" if neutral else HOME_STADIUM[h], stadium="x"))
                 for t, pts in ((h, hs), (a, as_)):
-                    team.append(dict(season=s, game_id=gid, team=t, plays=int(rng.integers(55, 72)),
-                                     epa=round(float(rng.normal((pts - 21) / 2, 4)), 4)))
+                    plays = int(rng.integers(55, 72))
+                    epa = round(float(rng.normal((pts - 21) / 2, 4)), 4)
+                    team.append(dict(season=s, game_id=gid, team=models.FRANCHISE.get(t, t), plays=plays, epa=epa,
+                                     pass_plays=plays // 2 + 3, pass_epa=epa * 0.7, early_plays=plays - 15,
+                                     early_epa=epa * 0.8, succ=int(plays * (0.42 + pts / 400)), noto_plays=plays - 2,
+                                     noto_epa=epa + 2, comp_plays=plays - 6, comp_epa=epa * 0.9,
+                                     top_seconds=int(plays * rng.normal(28, 2))))
                     qb.append(dict(season=s, game_id=gid, team=t, qb_id=f"QB-{t}-{s % 3}",
                                    att=int(rng.integers(25, 45)), cmp=int(rng.integers(15, 28)),
                                    yds=int(rng.integers(150, 350)), td=int(rng.integers(0, 4)), int=int(rng.integers(0, 3)),
@@ -154,7 +159,84 @@ class Models(unittest.TestCase):
     def test_totals_forecast_scale(self):
         out, fit = models.run(self.cands["tot-pe"], self.data)
         self.assertTrue(30 < out.forecast.mean() < 60)
-        self.assertEqual(fit["fit_seasons"], "2006-2015")
+        self.assertEqual(fit["fit_seasons"], "1999-2005")
+
+
+class NewFamilies(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data = synthetic()
+        cls.queue = {cid: models.find_candidate(cid) for _, cid, _ in L.queued()}
+
+    def test_queue_has_18_distinct_ideas(self):
+        self.assertEqual(len(self.queue), 18)
+        self.assertFalse(set(self.queue) & set(L.load_candidates()), "queued ids must be new")
+
+    def test_every_queued_idea_runs(self):
+        for cid, c in self.queue.items():
+            res = L.evaluate_candidate(c, self.data)
+            self.assertEqual([g["name"] for g in res["gates"]], ["2006–12", "2013–18", "2019–24"], cid)
+            self.assertGreater(res["pooled"]["games"], 2000, cid)
+            self.assertTrue(res["fit"], cid)
+
+    def test_relocated_teams_are_not_skipped(self):
+        """Play-by-play uses today's codes (LV, LAC, LA) for OAK / SD / STL games: those games must still count."""
+        g = self.data["games"]
+        self.assertIn("OAK", set(g.home_team))
+        self.assertNotIn("OAK", set(self.data["team_games"].team))
+        base, _ = models.run(self.queue["tt-epa"], self.data)
+        alt = {k: v.copy() for k, v in self.data.items()}
+        tgm = alt["team_games"]
+        oak = tgm.game_id.isin(g.game_id[(g.season == 2010) & ((g.home_team == "OAK") | (g.away_team == "OAK"))]) & (tgm.team == "LV")
+        tgm.loc[oak, "epa"] += 30                       # the Raiders' 2010 offense suddenly great
+        out, _ = models.run(self.queue["tt-epa"], alt)
+        oak_games = set(g.game_id[(g.home_team == "OAK") | (g.away_team == "OAK")])
+        later = ((out.season == 2011) & out.game_id.isin(oak_games)).values
+        self.assertFalse(np.allclose(out.forecast[later], base.forecast[later]))
+        # tot-pe (v1) learns from a game only when both teams' play-by-play rows are found: dropping the Raiders'
+        # 2010 rows must change their 2011 forecasts, i.e. the rows (coded LV) were being used
+        alt2 = {k: v.copy() for k, v in self.data.items()}
+        alt2["team_games"] = alt2["team_games"][~oak]
+        o2, _ = models.run(L.load_candidates()["tot-pe"], alt2)
+        b2, _ = models.run(L.load_candidates()["tot-pe"], self.data)
+        self.assertFalse(np.allclose(o2.forecast[later], b2.forecast[later]))
+
+    def test_no_peeking_team_rating(self):
+        g = self.data["games"]
+        target = g.index[g.season == 2010][100]
+        for cid in ("rt-epa", "tt-spp", "bl-spread-4"):
+            a, _ = models.run(self.queue[cid], self.data)
+            alt = {k: v.copy() for k, v in self.data.items()}
+            gid = alt["games"].game_id[target]
+            later = alt["games"].index >= target
+            alt["games"].loc[later, "home_score"] += 9
+            alt["team_games"].loc[alt["team_games"].game_id.isin(alt["games"].game_id[later]), "epa"] += 5
+            out, _ = models.run(self.queue[cid], alt)
+            # fitted coefficients use training seasons (1999-2005) only, so a 2010 forecast cannot move
+            self.assertAlmostEqual(a.set_index("game_id").forecast[gid], out.set_index("game_id").forecast[gid],
+                                   places=9, msg=cid)
+
+
+class QueuePull(unittest.TestCase):
+    def test_takes_next_up_to_batch_in_order(self):
+        tmp = tempfile.mkdtemp()
+        saved = (C.QUEUE, C.CANDIDATES)
+        try:
+            C.QUEUE, C.CANDIDATES = os.path.join(tmp, "q"), os.path.join(tmp, "c")
+            os.makedirs(C.QUEUE); os.makedirs(C.CANDIDATES)
+            for i in range(1, 21):
+                with open(os.path.join(C.QUEUE, f"{i:03d}-x{i}.yaml"), "w") as f:
+                    f.write("id: x%d\n" % i)
+            with open(os.path.join(C.CANDIDATES, "old.yaml"), "w") as f:
+                f.write("id: old\n")
+            cands = {"old": {"id": "old"}}
+            moved = L.take_from_queue(cands, [], log=lambda *_: None)
+            self.assertEqual(moved, [f"x{i}" for i in range(1, 18)])      # 17 + the pending one = 18
+            self.assertEqual(len(L.queued()), 3)
+            self.assertTrue(os.path.exists(os.path.join(C.CANDIDATES, "x1.yaml")))
+        finally:
+            C.QUEUE, C.CANDIDATES = saved
+            shutil.rmtree(tmp)
 
 
 class Sealed(unittest.TestCase):

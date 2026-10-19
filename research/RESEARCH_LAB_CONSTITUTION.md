@@ -1,16 +1,14 @@
-# DeVig Research Lab -- Constitution v1
+# DeVig Research Lab -- Constitution v3
 
-Version: **v3** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football)
+Version: **v3** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v2 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v2.md`; v1 at
+`research/constitution/RESEARCH_LAB_CONSTITUTION_v1.md`; what changed: sections "Changes from v1" and "Changes from v2"
+at the end)
 
-v3 changes only where Part C's data is kept (C1, C1a): CollegeFootballData's Terms of Use (effective 2026-08-12) do not
-allow publishing stored raw API responses or mirroring the data, so the CFB cache is never committed to this public
-repo. Made before any CFB history was downloaded (only a five-call provider check had run).
-
-v2 added Part C (college football). It changes nothing in Part A or Part B (Constitution A1.3); NFL ledger rows keep
-the version they ran under. Part C was written and hash-locked before any college football data was downloaded.
-
-This file sets the rules the Research Lab runs by. It was written and hash-locked (`FROZEN.sha256`, checked by
-`tools/frozen_guard.py`) **before any lab data was downloaded**. The lab code checks the lock before every run, writes
+This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
+`tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
+were put in the lab's cache (before writing v2, only those seasons' line coverage was checked: a count of games with a
+line, no results). The lab code checks the lock before every run, writes
 this file's fingerprint into every ledger row, and refuses to run if the fingerprint does not match the lock.
 
 **Expected result, stated up front:** the closing line is a very good forecast. The most likely outcome of this lab is
@@ -47,6 +45,11 @@ result, and it will be reported exactly like a success: every number, plainly.
 2. One file = one fixed configuration. No search inside a candidate (no grid, no tuning on gate seasons). A variant is a
    new file with a new id, and it counts as a new attempt.
 3. Once a candidate has run, its file is locked (added to `FROZEN.sha256` by the lab). It is never edited or deleted.
+3a. **The queue.** Ideas may wait in `research/queue/`, one file each, named `NNN-<id>.yaml`; the number sets the
+   order. A queued file is not yet an attempt: until the lab takes it, it may be edited, reordered or deleted at no
+   cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
+   move before anything runs; from then on rule 3 applies.
+3b. **Batch size:** at most **18** candidates run in one lab run.
 4. Coefficients a candidate fits are fit **once, on the training seasons only**, and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
 5. **No known betting angles.** A candidate may not be built on, or include as a feature, a known betting angle or
@@ -139,28 +142,30 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
   juice on spreads/totals) are dropped from the lab's cache.
 - **Eligible games:** regular season and playoffs, with final scores and a closing line for that market.
 - **Cache:** downloaded seasons are stored in `research/data/nfl/` so runs stay light. The cache holds seasons
-  **2002–2024 only**; the lab refuses any row from 2025 or later.
+  **1999–2024 only** (nflverse's lines start in 1999); the lab refuses any row from 2025 or later.
 
 ### B2. Season split
 | Use | Seasons | Notes |
 |---|---|---|
-| Warm-up | 2002–2005 | ratings and rolling stats only; never scored, never fit on |
-| Training | 2006–2015 | the only seasons coefficients may be fit on; also sets the line-only baseline |
-| Gate 1 | 2016–2018 | exploration |
-| Gate 2 | 2019–2021 | exploration |
-| Gate 3 | 2022–2024 | exploration |
-| Pooled | 2016–2024 | the pooled test of A7 |
+| Training | 1999–2005 | the only seasons coefficients may be fit on; also sets the line-only baseline. Ratings start here (from average) |
+| Gate 1 | 2006–2012 | exploration |
+| Gate 2 | 2013–2018 | exploration |
+| Gate 3 | 2019–2024 | exploration |
+| Pooled | 2006–2024 | the pooled test of A7 |
 | **Sealed** | **2025** | the exam (A8); not in the lab |
 
-Rule-era splits (reported, never used to pass): **2016–2020**, **2021–2023** (17-game season from 2021), **2024**
+Rule-era splits (reported, never used to pass): **2006–2020**, **2021–2023** (17-game season from 2021), **2024**
 (new kickoff rule from 2024).
+
+Candidates that ran under v1 keep their v1 results (training 2006–15; gates 2016–18, 2019–21, 2022–24); their ledger
+rows say so. They are not re-run under v2 unless re-registered under a new id, which is a new attempt.
 
 ### B3. Markets
 - `spread`: forecast = expected home margin; `r = (home score − away score) − spread_line`.
 - `total`: forecast = expected combined points; `r = (home score + away score) − total_line`.
 
 ### B4. Season, budget and mid-season
-- Constitution v1 covers the **2026 research season**: the sealed exam is the 2025 season, budget 3 exams, ending
+- Constitutions v1 and v2 cover the **2026 research season**: the sealed exam is the 2025 season, budget 3 exams shared by v1 and v2, ending
   when the 2026 NFL season's Super Bowl is played. A later version may move 2025 into the lab and seal 2026.
 - Paper-season mid-season point for the stop rule: after week 9 of the regular season.
 - Kalshi markets: NFL spread ladder ("<team> wins by over X points") and total ladder ("over X points"), main line =
@@ -174,7 +179,7 @@ boost, regression toward the market line; (d) a few small pre-declared variants.
 
 ---
 
-## Part C -- College football (CFB), added in v2
+## Part C -- College football (CFB), added in v3
 
 Part C was written and hash-locked before any college football data was downloaded. Part A applies to CFB unchanged
 except where this Part says so explicitly. Everything for CFB lives under `research/cfb/` (candidates, data cache,
@@ -211,7 +216,7 @@ outcome is again that **no CFB candidate passes the sealed exam**. Small samples
 - In season, a weekly data run may refresh only the **current** season (2026), into memory or into files outside the
   lab's cache that the lab never reads. The sealed season is never stored anywhere in the repo.
 
-### C1a. Where the CFB data is kept (v3)
+### C1a. Where the CFB data is kept
 - The provider's terms forbid giving third parties stored raw API responses or a copy of the data. So the cache files
   (`research/cfb/data/*.csv`) and the current-season refresh (`research/cfb/current/`) are **never committed**: they
   live only in this repository's GitHub Actions cache (not public), restored by the CFB workflows and git-ignored.
@@ -253,7 +258,7 @@ home edge (its file says so).
 - v2 covers the **2026 CFB research season**: sealed exam season 2025, budget **3 exams** (A8, recorded in
   `research/cfb/exam/EXAMS.csv`), ending when the 2026 season's national championship game is played (January 2027).
 - A new version never resets an exam budget: exams are counted per sport and sealed season, across versions. So
-  v2 leaves the NFL's 2025 budget (B4) exactly as it was under v1.
+  v3 leaves the NFL's 2025 budget (B4) exactly as it was under v1 and v2.
 - An exam needs at least 400 scored games in the sealed season, or it is recorded as an error (still spent).
 - Paper-season mid-season point for the stop rule: after week 7 of the regular season.
 - Kalshi markets: the NCAA football series (game winner, spread ladder, total ladder) as confirmed by the first
@@ -279,3 +284,26 @@ than those named in C2 is reported. A lesson about CFB (A10) is exploratory like
 ## Part D -- reserved
 
 Reserved for another sport. Until a later version adds it, Part A applies only to NFL and CFB.
+
+---
+
+## Changes from v1 (2026-10-19)
+
+1. **Seasons (B1, B2):** the cache adds 1999–2001; training moves to 1999–2005 and the exploration gates to
+   2006–12, 2013–18 and 2019–24 (pooled 2006–24, about 5,100 games instead of about 2,400). Why: twice the games make
+   each test about 40% sharper, so a real edge is easier to tell from luck. What did not change: the Holm correction
+   over every attempt, the 0.05 bar, "positive in every gate", the fade rule, the sealed 2025 exam and its budget.
+   A1.4 says loosening waits a season; v2 loosens none of the rules A1.4 lists (budget, correction, fade bar). It is
+   a change of data split, made **after** the 18 v1 results were seen, so: all 18 v1 attempts keep counting in the
+   correction; no v1 candidate is re-run under v2; the new split applies only to candidates registered after v2 was
+   locked; older seasons can also add edges that no longer exist, which the fade rule and the sealed exam check.
+2. **Queue and batch size (A3.3a, A3.3b):** ideas can wait in `research/queue/` and run 18 per lab run.
+
+## Changes from v2 (2026-10-19)
+1. **Adds Part C, college football** (A1.3). Nothing in Part A or Part B changes, except one sentence that is
+   stricter: exam budgets are counted per sport and sealed season across versions (C5), so no version can reset
+   the NFL's budget.
+2. **Part C was written and hash-locked before any college football data was touched**, on the CFB branch
+   (commit bfae47e). While that branch was open, the NFL-only v2 above was adopted on main, so Part C arrives as v3.
+   Its text is the same as when it was locked, plus C1a (where the CFB data is kept, from CollegeFootballData's
+   terms). C1a was added before any CFB history was downloaded; only a five-call provider check had run.

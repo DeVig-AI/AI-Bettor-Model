@@ -1,0 +1,16 @@
+# Research Lab queued idea rt-comp-epa (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: rt-comp-epa
+name: EPA in competitive moments
+market: spread
+family: Team rating
+parent: rt-epa
+reason: Garbage time distorts stats; rate teams only on plays while the game is still in doubt (win probability 10-90%).
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: comp_epa
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: none

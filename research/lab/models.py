@@ -6,6 +6,7 @@ kickoff order, forecasts it from what was known before kickoff, then (if it has 
 (Constitution A3.4) and reported in `fit`.
 """
 import math
+import os
 from collections import defaultdict, deque
 
 import numpy as np
@@ -46,6 +47,20 @@ def ordered(games):
     g = games.copy()
     g["_t"] = g.gametime.fillna("13:00").astype(str)
     return g.sort_values(["gameday", "_t", "game_id"]).drop(columns="_t").reset_index(drop=True)
+
+
+def slots(games):
+    """Games grouped by kickoff (same day and time), in order. Every game in a slot is forecast before any of them is
+    learned from: they are played at the same time, so none may see another's result (not even through a league average)."""
+    key = list(zip(games.gameday, games.gametime.fillna("13:00").astype(str)))
+    rows = list(games.itertuples())
+    i = 0
+    while i < len(rows):
+        j = i
+        while j < len(rows) and key[j] == key[i]:
+            j += 1
+        yield rows[i:j]
+        i = j
 
 
 def played(row):
@@ -205,7 +220,7 @@ def run_elo(p, data):
 # ---- Pace x efficiency family (market: total) ----------------------------------------------------------------------
 def run_pace_eff(p, data):
     games = ordered(data["games"])
-    tg = {(r.game_id, r.team): (r.plays, r.epa) for r in data["team_games"].itertuples()}
+    tg = {(r.game_id, FRANCHISE.get(r.team, r.team)): (r.plays, r.epa) for r in data["team_games"].itertuples()}
     lam = 0.5 ** (1 / p["halflife"])
     carry = p["season_carry"]
     league = deque(maxlen=p.get("league_window", 544))  # about one season of team-games: (plays, points, epa)
@@ -224,16 +239,8 @@ def run_pace_eff(p, data):
 
     raw = []
     meta = []
-    for g in games.itertuples():
+    for slot in slots(games):
         L = lg()
-        h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
-        for t in (h, a):
-            if t not in st:
-                st[t] = prior(L)
-            elif last_season.get(t) != g.season:       # new season: shrink toward the league
-                P0 = prior(L)
-                st[t] = {k: carry * st[t][k] + (1 - carry) * P0[k] for k in keys}
-            last_season[t] = g.season
 
         def side(o, d):
             if not p.get("pace", True):                # plain points for / against, no plays at all
@@ -247,24 +254,35 @@ def run_pace_eff(p, data):
                 ppp = lppp * ((st[o]["opts"] / st[o]["op"]) / lppp) * ((st[d]["dpts"] / st[d]["dp"]) / lppp)
             return plays * ppp
 
-        raw.append(side(h, a) + side(a, h))
-        actual = (g.home_score + g.away_score) if played(g) else np.nan
-        meta.append((g.game_id, g.season, g.game_type, g.week, g.total_line, actual))
-        if not played(g):
-            continue
-        ph, pa = tg.get((g.game_id, g.home_team)), tg.get((g.game_id, g.away_team))
-        if ph is None or pa is None:
-            if p.get("pace", True):
+        for g in slot:                                 # 1) forecast every game in the slot
+            h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
+            for t in (h, a):
+                if t not in st:
+                    st[t] = prior(L)
+                elif last_season.get(t) != g.season:   # new season: shrink toward the league
+                    P0 = prior(L)
+                    st[t] = {k: carry * st[t][k] + (1 - carry) * P0[k] for k in keys}
+                last_season[t] = g.season
+            raw.append(side(h, a) + side(a, h))
+            actual = (g.home_score + g.away_score) if played(g) else np.nan
+            meta.append((g.game_id, g.season, g.game_type, g.week, g.total_line, actual))
+        for g in slot:                                 # 2) then learn from the ones that were played
+            if not played(g):
                 continue
-            ph = pa = (L["p"], L["epa"])               # points-only model: plays are not needed
-        for o, d, po, pts_o in ((h, a, ph, g.home_score), (a, h, pa, g.away_score)):
-            st[o]["op"] = lam * st[o]["op"] + (1 - lam) * po[0]
-            st[o]["opts"] = lam * st[o]["opts"] + (1 - lam) * pts_o
-            st[o]["oepa"] = lam * st[o]["oepa"] + (1 - lam) * po[1]
-            st[d]["dp"] = lam * st[d]["dp"] + (1 - lam) * po[0]
-            st[d]["dpts"] = lam * st[d]["dpts"] + (1 - lam) * pts_o
-            st[d]["depa"] = lam * st[d]["depa"] + (1 - lam) * po[1]
-            league.append((po[0], pts_o, po[1]))
+            h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
+            ph, pa = tg.get((g.game_id, h)), tg.get((g.game_id, a))   # play-by-play uses today's codes (LV, LAC, LA)
+            if ph is None or pa is None:
+                if p.get("pace", True):
+                    continue
+                ph = pa = (L["p"], L["epa"])           # points-only model: plays are not needed
+            for o, d, po, pts_o in ((h, a, ph, g.home_score), (a, h, pa, g.away_score)):
+                st[o]["op"] = lam * st[o]["op"] + (1 - lam) * po[0]
+                st[o]["opts"] = lam * st[o]["opts"] + (1 - lam) * pts_o
+                st[o]["oepa"] = lam * st[o]["oepa"] + (1 - lam) * po[1]
+                st[d]["dp"] = lam * st[d]["dp"] + (1 - lam) * po[0]
+                st[d]["dpts"] = lam * st[d]["dpts"] + (1 - lam) * pts_o
+                st[d]["depa"] = lam * st[d]["depa"] + (1 - lam) * po[1]
+                league.append((po[0], pts_o, po[1]))
     raw = np.array(raw)
     m = pd.DataFrame(meta, columns=["game_id", "season", "game_type", "week", "line", "actual"])
     fit = {}
@@ -278,6 +296,127 @@ def run_pace_eff(p, data):
         fc = raw
     m["forecast"] = fc
     return m[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
+
+
+# ---- Team rating family (spread or total) ---------------------------------------------------------------------------
+# Opponent-adjusted offense (O) and defense (D) ratings on one metric, updated after every game by a fraction `lr` of
+# the surprise: expected = league + O[offense] + D[defense]. For totals, a pace rating gives expected plays.
+METRICS = {   # metric -> (numerator column, denominator column or None for per game, prior league value)
+    "points": (None, None, 21.0), "epa": ("epa", "plays", 0.0), "pass_epa": ("pass_epa", "pass_plays", 0.0),
+    "early_epa": ("early_epa", "early_plays", 0.0), "success": ("succ", "plays", 0.45),
+    "noto_epa": ("noto_epa", "noto_plays", 0.05), "comp_epa": ("comp_epa", "comp_plays", 0.0),
+}
+
+
+def _lstsq(X, y):
+    coef, *_ = np.linalg.lstsq(np.asarray(X, dtype=float), np.asarray(y, dtype=float), rcond=None)
+    return coef
+
+
+def run_team_rating(p, data, market):
+    games = ordered(data["games"])
+    tg = {(r.game_id, FRANCHISE.get(r.team, r.team)): r for r in data["team_games"].itertuples()}
+    num, den, prior = METRICS[p["metric"]]
+    lr = 1 - 0.5 ** (1 / p["halflife"])
+    carry, dw, pace = p["season_carry"], p["def_weight"], p["pace"]
+    O, D, PO, PD = (defaultdict(float) for _ in range(4))
+    league, lplays, lspp = deque(maxlen=544), deque(maxlen=544), deque(maxlen=544)
+    last_season = {}
+
+    def mean(q, default):
+        return float(np.mean(q)) if q else default
+
+    def metric(r, pts):
+        if num is None:
+            return float(pts)
+        n = getattr(r, den)
+        return getattr(r, num) / n if n else None
+
+    feats, meta = [], []
+    for slot in slots(games):
+        lg, lp, ls = mean(league, prior), mean(lplays, 63.0), mean(lspp, 28.0)
+        for g in slot:                                 # 1) forecast every game in the slot
+            h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
+            for t in (h, a):
+                if t in last_season and last_season[t] != g.season:
+                    for R in (O, D, PO, PD):
+                        R[t] *= carry
+                last_season[t] = g.season
+            exp_h, exp_a = lg + O[h] + D[a], lg + O[a] + D[h]
+            if pace == "plays":
+                pl_h, pl_a = lp + PO[h] + PD[a], lp + PO[a] + PD[h]
+            elif pace == "seconds":
+                pl_h, pl_a = lp * ls / max(5.0, ls + PO[h] + PD[a]), lp * ls / max(5.0, ls + PO[a] + PD[h])
+            else:
+                pl_h = pl_a = None
+            if market == "spread":
+                feats.append([0.0 if g.location == "Neutral" else 1.0, exp_h - exp_a])
+                actual = (g.home_score - g.away_score) if played(g) else np.nan
+                line = g.spread_line
+            else:
+                feats.append([1.0, exp_h + exp_a] if pl_h is None else [1.0, pl_h + pl_a, pl_h * exp_h + pl_a * exp_a])
+                actual = (g.home_score + g.away_score) if played(g) else np.nan
+                line = g.total_line
+            meta.append((g.game_id, g.season, g.game_type, g.week, line, actual))
+        for g in slot:                                 # 2) then learn from the ones that were played
+            if not played(g):
+                continue
+            h, a = FRANCHISE.get(g.home_team, g.home_team), FRANCHISE.get(g.away_team, g.away_team)
+            rh, ra = tg.get((g.game_id, h)), tg.get((g.game_id, a))
+            if num is not None and (rh is None or ra is None):
+                continue
+            for o, d, r, pts in ((h, a, rh, g.home_score), (a, h, ra, g.away_score)):
+                x = metric(r, pts)
+                if x is not None:
+                    e = x - (lg + O[o] + D[d])
+                    O[o] += lr * e
+                    D[d] += lr * dw * e
+                    league.append(x)
+                if pace != "none" and r is not None and r.plays:
+                    y, base = (r.plays, lp) if pace == "plays" else (r.top_seconds / r.plays, ls)
+                    e = y - (base + PO[o] + PD[d])
+                    PO[o] += lr * e
+                    PD[d] += lr * e
+                    (lplays if pace == "plays" else lspp).append(y)
+                    if pace == "seconds":
+                        lplays.append(r.plays)
+    X = np.array(feats)
+    m = pd.DataFrame(meta, columns=["game_id", "season", "game_type", "week", "line", "actual"])
+    tr = ((m.season >= C.TRAIN[0]) & (m.season <= C.TRAIN[1]) & m.actual.notna()).values
+    coef = _lstsq(X[tr], m.actual.values[tr])
+    m["forecast"] = X @ coef
+    names = ["home", "rating_diff"] if market == "spread" else (["intercept", "rating_sum"] if X.shape[1] == 2 else
+                                                                ["intercept", "pace_sum", "pace_x_efficiency"])
+    fit = {"coef": {n: round(float(c), 6) for n, c in zip(names, coef)}, "fit_games": int(tr.sum()),
+           "fit_seasons": f"{C.TRAIN[0]}-{C.TRAIN[1]}"}
+    return m[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
+
+
+# ---- Blend family -----------------------------------------------------------------------------------------------------
+def find_candidate(cid):
+    """A registered candidate's definition, from research/candidates/ or (same batch) research/queue/."""
+    import glob
+    import yaml
+    paths = [os.path.join(C.CANDIDATES, f"{cid}.yaml")] + sorted(glob.glob(os.path.join(C.QUEUE, f"*-{cid}.yaml")))
+    for path in paths:
+        if os.path.exists(path):
+            with open(path) as f:
+                return yaml.safe_load(f)
+    raise ValueError(f"blend component {cid!r} is not registered")
+
+
+def run_blend(p, data, market):
+    outs, fits = [], {}
+    for cid, w in zip(p["components"], p["weights"]):
+        c = find_candidate(cid)
+        if c["market"] != market:
+            raise ValueError(f"blend component {cid} is a {c['market']} model, not {market}")
+        o, f = run(c, data)
+        outs.append((o.set_index("game_id"), w))
+        fits[cid] = f
+    base = outs[0][0].copy()
+    base["forecast"] = sum(o.forecast.reindex(base.index) * w for o, w in outs) / sum(w for _, w in outs)
+    return base.reset_index()[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fits
 
 
 # ---- Least-squares rating families (college football; market: spread) ------------------------------------------------
@@ -382,14 +521,17 @@ def run_ppa(p, data):
     return f[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
 
 
-FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa}
-MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}
+FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa,
+            "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m)}
+MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}   # the other families take the candidate's market
 
 
 def run(candidate, data):
     t = candidate["model"]["type"]
     if t not in FAMILIES:
         raise ValueError(f"unknown model family {t!r}")
-    if MARKET_OF[t] != candidate["market"]:
-        raise ValueError(f"family {t} forecasts {MARKET_OF[t]}, candidate says {candidate['market']}")
-    return FAMILIES[t](candidate["model"]["params"], data)
+    if t in MARKET_OF:
+        if MARKET_OF[t] != candidate["market"]:
+            raise ValueError(f"family {t} forecasts {MARKET_OF[t]}, candidate says {candidate['market']}")
+        return FAMILIES[t](candidate["model"]["params"], data)
+    return FAMILIES[t](candidate["model"]["params"], data, candidate["market"])
