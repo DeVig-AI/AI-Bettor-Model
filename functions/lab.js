@@ -148,6 +148,20 @@ export const PAGE = `<!doctype html>
   .wf .m{font-size:12px;color:var(--ink-soft);font-family:var(--mono);white-space:nowrap;text-align:right}
   .wf.bad .m{color:var(--bad)} .wf.run .m{color:var(--accent)}
   .gh .more{border:0;border-top:1px solid var(--line);border-radius:0;color:var(--ink-soft);font-size:13px;min-height:48px}
+  .runs{display:flex;flex-direction:column;overflow:hidden;border-radius:16px}
+  .runs .hd{padding:14px;display:flex;flex-direction:column;gap:4px}
+  .runs .hd a{font-weight:600;text-decoration:none}
+  .runs .sum{font-size:13px;color:var(--ink-soft)}
+  .step{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-top:1px solid var(--line);text-decoration:none;color:var(--ink)}
+  .step:hover{color:var(--ink);background:var(--surface-2)}
+  .step .tm{font-family:var(--mono);font-size:12px;color:var(--ink-faint);flex:none;width:62px;padding-top:2px}
+  .step .bd{flex:1;min-width:0}
+  .step .nm{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+  .step .tx{font-family:var(--mono);font-size:11px;color:var(--ink-soft);overflow-wrap:anywhere;margin-top:2px}
+  .step .chip,.step .pips{flex:none;margin-top:1px}
+  .runs .more{border:0;border-top:1px solid var(--line);border-radius:0;color:var(--ink-soft);font-size:13px;min-height:48px}
+  .older{display:flex;flex-direction:column;gap:2px;padding:0 4px}
+  .older a,.older span{font-size:12px;color:var(--ink-soft);text-decoration:none;min-height:32px;display:flex;align-items:center}
   .empty{text-align:center;padding:26px 18px}
   .empty b{display:block;font-size:16px;margin-top:8px}
   .empty p{margin:6px 0 0;color:var(--ink-soft);font-size:14px}
@@ -199,7 +213,7 @@ export const PAGE = `<!doctype html>
   try { if (location.pathname === "/lab") history.replaceState(null, "", "/login?next=/lab" + location.hash); } catch (e) {}
   var KEY = "devig-lab-last", REFRESH_MS = 60000, REPO = "https://github.com/DeVig-AI/AI-Bettor-Model";
   var data = null, loadedAt = 0, loading = false, timer = null, problem = {};
-  var showAllCands = false, showAllWf = false;
+  var showAllCands = false, showAllWf = false, showAllSteps = false, REFRESH_LIVE = 15000;
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -371,6 +385,40 @@ export const PAGE = `<!doctype html>
       (gnames.length ? '<div class="r">gates ' + esc(gnames.join(" · ")) + '</div>' : "") + '</div>' +
       shown.map(function(c){ return candCard(c, scale, unit); }).join("") + more + '</section>';
   }
+  function clock(iso){
+    var t = Date.parse(iso); if (!t) return "";
+    var d = new Date(t), p = function(v){ return (v < 10 ? "0" : "") + v; };
+    return p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+  function stepChip(t){
+    if (t.state === "info") return "";
+    var w = (STATE[t.state] || "").replace(/^\\S+ /, "");
+    if ((t.state === "failed" || t.state === "exam_fail") && t.fail_reason) w += " · " + t.fail_reason;
+    return '<span class="chip s s-' + esc(t.state) + '">' + esc(w) + '</span>';
+  }
+  function viewRuns(s){
+    var runs = s.runs || [];
+    if (!runs.length) return "";
+    var r = runs[0], steps = r.steps || [], SHOWN = 6;
+    var live = !r.finished_at;
+    var head = '<div class="hd"><div class="row"><span class="kicker">' + (live ? "Running now" : "Last run") + '</span>' +
+      '<span class="mono faint" style="font-size:12px">' + esc(ago(r.started_at)) + (r.duration_s != null ? " · took " + dur(r.duration_s) : "") + '</span></div>' +
+      (gh(r.run_url) ? '<a href="' + esc(r.run_url) + '" rel="noreferrer">' + esc(r.name) + ' on GitHub</a>' : '<b>' + esc(r.name) + '</b>') +
+      '<div class="sum">' + esc(r.summary) + '</div></div>';
+    var list = (showAllSteps ? steps : steps.slice(0, SHOWN)).map(function(t){
+      return '<a class="step" href="#c/' + encodeURIComponent(t.id) + '"><span class="tm">' + esc(clock(t.at)) + '</span>' +
+        '<span class="bd"><span class="nm">' + esc(t.name || t.id) + '</span><div class="tx">' + esc(t.text) + '</div></span>' +
+        (t.gates && t.gates.length ? pips({state: t.state, gates: t.gates.map(function(g){ return {passed: g}; })}) : stepChip(t)) + '</a>';
+    }).join("");
+    var more = steps.length > SHOWN && !showAllSteps ? '<button class="btn more" type="button" id="moresteps">Show all ' + steps.length + ' steps</button>' : "";
+    var older = runs.slice(1, 6).map(function(o){
+      var t = esc(o.name) + " · " + esc(ago(o.started_at)) + " · " + esc(o.summary);
+      return gh(o.run_url) ? '<a href="' + esc(o.run_url) + '" rel="noreferrer">' + t + '</a>' : '<span>' + t + '</span>';
+    }).join("");
+    return '<section class="stack" aria-labelledby="h-r"><div class="sechead"><h2 id="h-r">What the lab did</h2>' +
+      '<div class="r">times are yours</div></div><div class="card runs">' + head + list + more + '</div>' +
+      (older ? '<div class="older"><div class="small">Earlier</div>' + older + '</div>' : "") + '</section>';
+  }
   function viewLessons(s){
     var les = s.lessons || [];
     if (!les.length) return "";
@@ -485,7 +533,7 @@ export const PAGE = `<!doctype html>
     if (!s) return '<section class="card empty" aria-label="Research"><div class="kicker">Research</div><b>Lab hasn’t run yet</b>' +
       '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
     return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
-      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
+      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewRuns(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
   }
   function viewOverview(){
     var s = data && data.research && data.research.status;
@@ -575,13 +623,19 @@ export const PAGE = `<!doctype html>
     $("main").innerHTML = id ? viewDetail(id) : viewOverview();
   }
   function tick(){
-    $("when").textContent = loadedAt ? "Updated " + ago(new Date(loadedAt).toISOString()).replace("just now", "just now") + " · auto-refresh on" :
+    $("when").textContent = loadedAt ? "Updated " + ago(new Date(loadedAt).toISOString()).replace("just now", "just now") + (busy() ? " · checking every 15 s" : " · auto-refresh on") :
       problem.signin ? "Signed out" : problem.offline ? "Couldn’t load" : "Loading…";
   }
-  function load(){
+  function busy(){                                 // something is running: check every 15 s instead of every minute
+    var s = data && data.research && data.research.status, g = data && data.github;
+    return !!((s && ((s.candidates || []).some(function(c){ return c.state === "running"; }) ||
+                     (s.runs && s.runs[0] && !s.runs[0].finished_at))) ||
+              (g && (g.workflows || []).some(function(w){ return w.group === "Research" && w.last && (w.last.state === "running" || w.last.state === "queued"); })));
+  }
+  function load(fresh){
     if (loading) return;
     loading = true; $("refresh").classList.add("spin"); $("refresh").setAttribute("aria-busy", "true");
-    fetch("/api/lab", {credentials: "same-origin", cache: "no-store", headers: {accept: "application/json"}})
+    fetch("/api/lab" + (fresh === true ? "?fresh=1" : ""), {credentials: "same-origin", cache: "no-store", headers: {accept: "application/json"}})
       .then(function(r){
         if (r.status === 404) return {signin: true};
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -591,22 +645,23 @@ export const PAGE = `<!doctype html>
         if (res.signin){ problem = {signin: true}; render(); return; }
         data = res.d; loadedAt = Date.now(); problem = {};
         try { localStorage.setItem(KEY, JSON.stringify({at: loadedAt, data: data})); } catch (e) {}
-        render();
+        render(); schedule();
       })
       .catch(function(){ problem = {offline: loadedAt ? new Date(loadedAt).toISOString() : "x"}; render(); })
       .then(function(){ loading = false; $("refresh").classList.remove("spin"); $("refresh").removeAttribute("aria-busy"); });
   }
   function schedule(){
     clearInterval(timer); timer = null;
-    if (document.visibilityState === "visible") timer = setInterval(load, REFRESH_MS);
+    if (document.visibilityState === "visible") timer = setInterval(load, busy() ? REFRESH_LIVE : REFRESH_MS);
   }
 
-  $("refresh").addEventListener("click", load);
+  $("refresh").addEventListener("click", function(){ load(true); });
   $("main").addEventListener("click", function(e){
     if (e.target.closest("#morecands")){ showAllCands = true; render(); }
     var sp = e.target.closest(".sports [data-sport]");
     if (sp){ labSport = sp.getAttribute("data-sport"); try { localStorage.setItem("labSport", labSport); } catch (x) {} showAllCands = false; render(); }
     if (e.target.closest("#morewf")){ showAllWf = true; render(); }
+    if (e.target.closest("#moresteps")){ showAllSteps = true; render(); }
   });
   window.addEventListener("hashchange", function(){
     var id = route();

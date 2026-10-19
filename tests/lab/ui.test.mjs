@@ -80,6 +80,18 @@ test("lab page on a phone", async (t) => {
       assert.match(await pg.locator("#activity .sechead").innerText(), /1 ok · 1 failed/);
       assert.equal(await pg.locator(".wf.bad").count(), 1);
       assert.match(await pg.locator("footer").innerText(), /Only you can see this page/);
+      const runs = pg.locator(".runs");
+      assert.match(await runs.innerText(), /LAST RUN[\s\S]*40 min ago · took 11s[\s\S]*Research Lab #12 on GitHub[\s\S]*8 tested · 1 passed the lab/i);
+      assert.equal(await runs.locator(".step").count(), 6, "six steps before 'Show all'");
+      assert.match(await runs.locator(".step").first().innerText(), /\d\d:\d\d:\d\d[\s\S]*\+ QB adjustment[\s\S]*pooled \+0\.10 pts/);
+      assert.match(await runs.locator(".step").nth(1).innerText(), /Step <b>2/);
+      assert.equal(await runs.locator(".step").first().locator(".pips").getAttribute("aria-label"), "Gates: passed, passed, passed");
+      assert.equal(await runs.locator(".step").nth(1).locator(".pips").getAttribute("aria-label"), "Gates: passed, failed, passed");
+      assert.equal(await runs.locator(".step").first().getAttribute("href"), "#c/qb-adj");
+      await pg.click("#moresteps");
+      assert.equal(await pg.locator(".runs .step").count(), 8);
+      assert.match(await pg.locator(".older").innerText(), /Sealed exam 1 · 3 d ago · being scored/);
+      assert.equal(await pg.locator(".older a").count(), 0, "non-GitHub run link not linked");
       await pg.screenshot({path: OUT + "mixed.png", fullPage: true});
       for (const sel of ["#refresh", ".cand", ".wf", "footer a", "#morecands", ".alert"]) {
         const box = await pg.locator(sel).first().boundingBox();

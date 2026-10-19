@@ -1,0 +1,224 @@
+{
+ "id": "tot-pe-fast",
+ "name": "Pace × efficiency, fast (half-life 4)",
+ "market": "total",
+ "family": "Pace × efficiency · variant",
+ "parent": "tot-pe",
+ "reason": "Pre-declared variant: weight recent games more.",
+ "attempt": 16,
+ "ran_at": "2026-10-19T04:34:08Z",
+ "constitution": {
+  "version": "v1",
+  "sha256": "cd7dbba7715a315d3e861326308f0a292fca6f40d61a210ed1448c96503fce97"
+ },
+ "candidate_sha256": "e61cc4ad5aa026d910533d7b89073ed2fbbf64809259e48c3bef149a8abf8811",
+ "code_sha256": "7e2c3e96f9754dd1d8a0c894cdaf0f4480a8f77fd1812c58169ee7f07f456de0",
+ "data_sha256": "aa6b758c92fa7e2c4a1620e99b215adc09c25312a37965639628b8cabbfcec65",
+ "git_commit": "0c2b595309459cf162f4b0aba5ab2403aa3d60de",
+ "run_number": 1,
+ "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+ "effect_definition": "cover points per game beyond the line-only baseline (Constitution A5)",
+ "pricing": {
+  "price": 0.5,
+  "fee": 0.0175,
+  "break_even": 0.5175
+ },
+ "baseline": {
+  "side": 1.0,
+  "train_mean_cover": 0.9262,
+  "train_games": 2670,
+  "meaning": "line-only baseline takes this side on every game (+1 home/over, -1 away/under)"
+ },
+ "train": {
+  "games": 2670,
+  "effect": -0.4779,
+  "slope": 0.1448,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 2614,
+   "wins": 1346,
+   "losses": 1268,
+   "pushes": 56,
+   "win_rate": 0.5149,
+   "break_even": 0.5175,
+   "roi": -0.005
+  }
+ },
+ "gates": [
+  {
+   "name": "2016–18",
+   "seasons": [
+    2016,
+    2018
+   ],
+   "games": 801,
+   "effect": 0.1261,
+   "ci": [
+    -1.3072,
+    1.5369
+   ],
+   "se": 0.7222,
+   "p": 0.430703,
+   "slope": -0.1848,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 797,
+    "wins": 395,
+    "losses": 402,
+    "pushes": 4,
+    "win_rate": 0.4956,
+    "break_even": 0.5175,
+    "roi": -0.0423
+   }
+  },
+  {
+   "name": "2019–21",
+   "seasons": [
+    2019,
+    2021
+   ],
+   "games": 821,
+   "effect": -0.7491,
+   "ci": [
+    -2.2059,
+    0.6918
+   ],
+   "se": 0.7493,
+   "p": 0.841267,
+   "slope": -0.1411,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 812,
+    "wins": 412,
+    "losses": 400,
+    "pushes": 9,
+    "win_rate": 0.5074,
+    "break_even": 0.5175,
+    "roi": -0.0195
+   }
+  },
+  {
+   "name": "2022–24",
+   "seasons": [
+    2022,
+    2024
+   ],
+   "games": 854,
+   "effect": -0.1827,
+   "ci": [
+    -1.2834,
+    0.8829
+   ],
+   "se": 0.5511,
+   "p": 0.629842,
+   "slope": -0.0382,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 844,
+    "wins": 425,
+    "losses": 419,
+    "pushes": 10,
+    "win_rate": 0.5036,
+    "break_even": 0.5175,
+    "roi": -0.0269
+   }
+  }
+ ],
+ "rule_split": [
+  {
+   "label": "2016–20",
+   "seasons": [
+    2016,
+    2020
+   ],
+   "note": "before the 17-game season",
+   "games": 1337,
+   "effect": -0.4951,
+   "slope": -0.2048,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 1327,
+    "wins": 661,
+    "losses": 666,
+    "pushes": 10,
+    "win_rate": 0.4981,
+    "break_even": 0.5175,
+    "roi": -0.0375
+   }
+  },
+  {
+   "label": "2021–23",
+   "seasons": [
+    2021,
+    2023
+   ],
+   "note": "17 games, from 2021",
+   "games": 854,
+   "effect": 0.3946,
+   "slope": 0.005,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 844,
+    "wins": 422,
+    "losses": 422,
+    "pushes": 10,
+    "win_rate": 0.5,
+    "break_even": 0.5175,
+    "roi": -0.0338
+   }
+  },
+  {
+   "label": "2024",
+   "seasons": [
+    2024,
+    2024
+   ],
+   "note": "new kickoff rule",
+   "games": 285,
+   "effect": -1.2105,
+   "slope": -0.0512,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 282,
+    "wins": 149,
+    "losses": 133,
+    "pushes": 3,
+    "win_rate": 0.5284,
+    "break_even": 0.5175,
+    "roi": 0.021
+   }
+  }
+ ],
+ "fit": {
+  "intercept": 23.1863,
+  "slope": 0.479,
+  "fit_games": 2670,
+  "fit_seasons": "2006-2015"
+ },
+ "pooled": {
+  "name": "Pooled 2016–24",
+  "seasons": [
+   2016,
+   2024
+  ],
+  "games": 2476,
+  "effect": -0.2706,
+  "ci": [
+   -1.034,
+   0.4964
+  ],
+  "se": 0.3915,
+  "p": 0.755287,
+  "slope": -0.0986,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 2453,
+   "wins": 1232,
+   "losses": 1221,
+   "pushes": 23,
+   "win_rate": 0.5022,
+   "break_even": 0.5175,
+   "roi": -0.0295
+  }
+ }
+}

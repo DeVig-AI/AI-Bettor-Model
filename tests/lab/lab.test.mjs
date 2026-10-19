@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import * as api from "../../functions/api/lab.js";
 import * as page from "../../functions/lab.js";
 import { readFileSync } from "node:fs";
-import { mockFetch } from "./fixtures.mjs";
+import { mockFetch, STATUS } from "./fixtures.mjs";
 
 const OWNER = "Owner@Example.com";
 const SITE_404 = readFileSync(new URL("../../docs/404.html", import.meta.url), "utf8");   // the site's real 404 page
@@ -117,9 +117,37 @@ test("data: cached ~3 min, stale copy kept when a fetch fails, missing status.js
   assert.equal(calls.length, n, "second load served from cache");
   assert.equal(d2.research.status, null);
   assert.equal(d2.research.stale, false);
+  // a refresh tap re-reads status.json at once (here it fails: the last good copy is kept, marked stale) but leaves
+  // GitHub Actions alone while its copy is under 20 s old
   const d3 = await api.labData({}, async () => { throw new Error("offline"); }, true);
-  assert.equal(d3.github.stale, true);
+  assert.equal(d3.research.stale, true);
+  assert.equal(d3.github.stale, false);
   assert.ok(d3.github.workflows.length > 0);
+});
+
+test("data: with a token status.json is read through the API (skips raw's 5-minute cache)", async () => {
+  api._clearCache();
+  const calls = [];
+  const d = await api.labData({GITHUB_TOKEN: "tok"}, mockFetch("mixed", calls));
+  const st = calls.find(c => c.url.includes("/contents/research/status.json?ref=main"));
+  assert.ok(st && st.init.headers.authorization === "Bearer tok" && st.init.headers.accept === "application/vnd.github.raw");
+  assert.ok(!calls.some(c => c.url.startsWith("https://raw.githubusercontent.com")));
+  assert.equal(d.research.status.runs[0].name, "Research Lab #12");
+});
+
+test("cleanStatus keeps run timelines, safely", () => {
+  const c = api.cleanStatus(STATUS);
+  assert.equal(c.runs.length, 2);
+  const [a, b] = c.runs;
+  assert.equal(a.steps.length, 8);
+  assert.equal(a.duration_s, 11);
+  assert.equal(a.steps[0].state, "lab_pass");
+  assert.equal(a.steps[1].fail_reason, "gate_2");
+  assert.deepEqual(a.steps[1].gates, [true, false, true]);
+  assert.deepEqual(b.steps[0].gates, []);
+  assert.equal(b.run_url, null, "non-GitHub links dropped");
+  assert.equal(b.steps[0].state, "info", "unknown step state falls back");
+  assert.equal(api.cleanStatus({runs: "x"}).runs.length, 0);
 });
 
 test("cleanStatus keeps contract fields only and coerces bad types", () => {

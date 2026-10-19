@@ -55,6 +55,17 @@ export const STATUS = {
   lessons: [{text: "Starting-QB changes added signal in all three eras.", kind: "helped", candidates: ["qb-adj"]},
             {text: "Rest days helped in 2016–18, then vanished.", kind: "faded", candidates: ["rest"]},
             {text: "Margin-of-victory weighting changed nothing.", kind: "no_effect", candidates: []}],
+  runs: [
+    {kind: "lab", name: "Research Lab #12", started_at: iso(40 * 60e3), finished_at: iso(40 * 60e3 - 11e3), duration_s: 11,
+     run_number: 12, run_url: "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/88",
+     summary: "8 tested · 1 passed the lab · failed: 6 gate 2, 1 faded",
+     steps: [1, 2, 3, 4, 5, 6, 7, 8].map(i => ({at: iso(40 * 60e3 - i * 1e3), id: i === 1 ? "qb-adj" : "rest",
+       name: i === 1 ? "+ QB adjustment" : "Step <b>" + i, text: "pooled +0.10 pts [-0.66, +0.85] · gates +0.25 / -0.87 / +0.89",
+       state: i === 1 ? "lab_pass" : "failed", fail_reason: i === 1 ? "" : "gate_2",
+       gates: i === 1 ? [true, true, true] : [true, false, true]}))},
+    {kind: "exam", name: "Sealed exam 1", started_at: iso(3 * 86400e3), finished_at: null, summary: "being scored",
+     run_url: "javascript:alert(1)", steps: [{at: iso(3 * 86400e3), id: "x", name: "x", text: "spent", state: "bogus"}]},
+  ],
   promoted: [{name: "Rest-days edge on spreads", picks: 41, wins: 23, losses: 18, roi: 0.042, vs_kalshi_note: "Beat the Kalshi close on 26 of 41."}],
 };
 
@@ -87,7 +98,7 @@ export function mockFetch(scenario, calls = []) {
       return j(RUNS);
     }
     if (/\/actions\/workflows\/\d+\/runs/.test(url)) return j({workflow_runs: []});
-    if (url.endsWith("/research/status.json")) return scenario === "empty" ? new Response("404: Not Found", {status: 404})
+    if (url.endsWith("/research/status.json") || url.includes("/contents/research/status.json")) return scenario === "empty" ? new Response("404: Not Found", {status: 404})
       : j(scenario === "sports" ? SPORTS_STATUS : STATUS);
     return new Response("nope", {status: 599});
   };

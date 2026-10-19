@@ -1,11 +1,11 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-10-19T04:54:41Z by research/lab/report.py. Constitution v3 (`03bc028706cb`). Do not edit by hand._
+_Generated 2026-10-19T05:08:37Z by research/lab/report.py. Constitution v3 (`03bc028706cb`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 16 registered, 0 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 0 · across all sports: 0 (reported only, Constitution C4)
+- Ledger attempts (all count in the Holm correction): 0 · across all sports: 18 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 | Candidate | Market | State | 2018–19 | 2021–22 | 2023–24 | Pooled [95% CI] | Holm p | Picks win% / ROI |
