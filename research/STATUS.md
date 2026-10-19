@@ -1,16 +1,16 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-19T04:28:39Z by research/lab/report.py. Constitution v1 (`cd7dbba7715a`). Do not edit by hand._
+_Generated 2026-10-19T04:33:58Z by research/lab/report.py. Constitution v1 (`cd7dbba7715a`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 18 registered, 0 tried, 0 running
+- Candidates: 18 registered, 0 tried, 1 running
 - Ledger attempts (all count in the Holm correction): 0
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 | Candidate | Market | State | 2016–18 | 2019–21 | 2022–24 | Pooled [95% CI] | Holm p | Picks win% / ROI |
 |---|---|---|---|---|---|---|---|---|
-| `elo-538` 538-style combination | spread | queued | — | — | — | — | — | — |
+| `elo-538` 538-style combination | spread | running | — | — | — | — | — | — |
 | `elo-base` Plain Elo | spread | queued | — | — | — | — | — | — |
 | `elo-bye` + Rest / bye bonus | spread | queued | — | — | — | — | — | — |
 | `elo-hfa-trend` + Home field that changes over time | spread | queued | — | — | — | — | — | — |
@@ -31,23 +31,23 @@ _Generated 2026-10-19T04:28:39Z by research/lab/report.py. Constitution v1 (`cd7
 
 Verdicts (Inspector General):
 
-- `elo-538`: Registered; runs in the next nightly lab run.
-- `elo-base`: Registered; runs in the next nightly lab run.
-- `elo-bye`: Registered; runs in the next nightly lab run.
-- `elo-hfa-trend`: Registered; runs in the next nightly lab run.
-- `elo-k10`: Registered; runs in the next nightly lab run.
-- `elo-k30`: Registered; runs in the next nightly lab run.
-- `elo-market`: Registered; runs in the next nightly lab run.
-- `elo-mov`: Registered; runs in the next nightly lab run.
-- `elo-nfelo`: Registered; runs in the next nightly lab run.
-- `elo-playoff`: Registered; runs in the next nightly lab run.
-- `elo-qb`: Registered; runs in the next nightly lab run.
-- `elo-resist`: Registered; runs in the next nightly lab run.
-- `elo-revert`: Registered; runs in the next nightly lab run.
-- `elo-travel`: Registered; runs in the next nightly lab run.
-- `tot-epa`: Registered; runs in the next nightly lab run.
-- `tot-pe-fast`: Registered; runs in the next nightly lab run.
-- `tot-pe-slow`: Registered; runs in the next nightly lab run.
-- `tot-pe`: Registered; runs in the next nightly lab run.
+- `elo-538`: Running through the three gates now.
+- `elo-base`: Waiting to start.
+- `elo-bye`: Waiting to start.
+- `elo-hfa-trend`: Waiting to start.
+- `elo-k10`: Waiting to start.
+- `elo-k30`: Waiting to start.
+- `elo-market`: Waiting to start.
+- `elo-mov`: Waiting to start.
+- `elo-nfelo`: Waiting to start.
+- `elo-playoff`: Waiting to start.
+- `elo-qb`: Waiting to start.
+- `elo-resist`: Waiting to start.
+- `elo-revert`: Waiting to start.
+- `elo-travel`: Waiting to start.
+- `tot-epa`: Waiting to start.
+- `tot-pe-fast`: Waiting to start.
+- `tot-pe-slow`: Waiting to start.
+- `tot-pe`: Waiting to start.
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).
