@@ -8,7 +8,7 @@
  */
 (function () {
   "use strict";
-  var RAW = "https://raw.githubusercontent.com/perezreynaldo1226-afk/AI-Bettor-Model/main/";
+  var RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/";
   // every: minutes between refreshes while the app is open (raw.githubusercontent.com caches up to ~5 minutes)
   var SOURCES = [
     {path: "nfl/live/props_live.json", every: 2, live: true},

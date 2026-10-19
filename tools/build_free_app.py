@@ -18,7 +18,7 @@ HEAD = ('<link rel="manifest" href="manifest.webmanifest"><meta name="theme-colo
 FREE = '<link rel="stylesheet" href="free.css">\n<script src="repo-data.js"></script>\n<script src="install.js" defer></script>\n<script src="account.js" defer></script>\n'
 FOOT = ('<div class="free-foot">Free · account optional · '
         '<a href="#" onclick="return window.devigInstallTip ? devigInstallTip() : false">Add to home screen</a> · '
-        '<a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest" target="_blank" rel="noopener">'
+        '<a href="https://github.com/DeVig-AI/AI-Bettor-Model/releases/latest" target="_blank" rel="noopener">'
         'Desktop &amp; phone downloads</a></div>\n')
 
 # (old, new, required)
