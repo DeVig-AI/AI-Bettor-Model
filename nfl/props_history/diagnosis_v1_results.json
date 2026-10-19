@@ -1,0 +1,2942 @@
+{
+ "doc": "NFL_PROPS_DIAGNOSIS_V1",
+ "plan_sha256": "afb9acb710f774498b5fa33c7a601c037f7f4fb5c0d640811b7bf2f61b7a142c",
+ "script_sha256": "393ba75c6d45a326160bac5119523e4c053dee6f8c2ce9170065a096975ba85f",
+ "data_sha256": "241e13150f89f604576bbf2ff0029f3cd3114a84064b935c026dca8eb3dc553a",
+ "tables_sha256": "d566c111331235218182c708c7e353a4c0983e65e7ba10fd7b48aaaa3e3a1743",
+ "reproduces_v2_study_rows": {
+  "ok": true,
+  "rows_here": 11233,
+  "rows_v2_file": 11233
+ },
+ "game_lines": {
+  "games": 80,
+  "total": 80,
+  "margin_ladder": 80,
+  "margin_moneyline": 0
+ },
+ "overall": {
+  "all": {
+   "rows": 11233,
+   "games": 80,
+   "model_logloss": 0.56739,
+   "kalshi_logloss": 0.53627,
+   "diff_model_minus_kalshi": 0.03112,
+   "avg_model_pct": 34.35,
+   "hit_rate_pct": 37.36,
+   "avg_kalshi_mid_pct": 36.36,
+   "diff_95ci": [
+    0.01831,
+    0.04364
+   ]
+  },
+  "discovery": {
+   "rows": 5784,
+   "games": 40,
+   "model_logloss": 0.56082,
+   "kalshi_logloss": 0.5298,
+   "diff_model_minus_kalshi": 0.03103,
+   "avg_model_pct": 33.83,
+   "hit_rate_pct": 37.98,
+   "avg_kalshi_mid_pct": 35.99,
+   "diff_95ci": [
+    0.0134,
+    0.05091
+   ]
+  },
+  "confirmation": {
+   "rows": 5449,
+   "games": 40,
+   "model_logloss": 0.57436,
+   "kalshi_logloss": 0.54313,
+   "diff_model_minus_kalshi": 0.03123,
+   "avg_model_pct": 34.91,
+   "hit_rate_pct": 36.7,
+   "avg_kalshi_mid_pct": 36.74,
+   "diff_95ci": [
+    0.01364,
+    0.0485
+   ]
+  }
+ },
+ "missing_values": {
+  "stat": 0,
+  "lean_side": 0,
+  "line_minus_ev": 0,
+  "abs_gap": 0,
+  "prior_games": 0,
+  "usage_change": 0,
+  "game_total": 0,
+  "team_spread": 0,
+  "team_implied_pts": 0,
+  "opp_defense": 2398,
+  "home_away": 0
+ },
+ "slices": {
+  "stat": {
+   "A_applies": true,
+   "bins": {
+    "interceptions": {
+     "all": {
+      "rows": 204,
+      "games": 74,
+      "model_logloss": 0.55691,
+      "kalshi_logloss": 0.55587,
+      "diff_model_minus_kalshi": 0.00104,
+      "avg_model_pct": 33.14,
+      "hit_rate_pct": 36.27,
+      "avg_kalshi_mid_pct": 32.97,
+      "diff_95ci": [
+       -0.01638,
+       0.01721
+      ]
+     },
+     "discovery": {
+      "rows": 93,
+      "games": 38,
+      "model_logloss": 0.60251,
+      "kalshi_logloss": 0.60588,
+      "diff_model_minus_kalshi": -0.00337,
+      "avg_model_pct": 33.95,
+      "hit_rate_pct": 36.56,
+      "avg_kalshi_mid_pct": 33.78
+     },
+     "confirmation": {
+      "rows": 111,
+      "games": 36,
+      "model_logloss": 0.5187,
+      "kalshi_logloss": 0.51396,
+      "diff_model_minus_kalshi": 0.00473,
+      "avg_model_pct": 32.46,
+      "hit_rate_pct": 36.04,
+      "avg_kalshi_mid_pct": 32.3
+     },
+     "checks": {
+      "discovery": {
+       "rows": 93,
+       "A_D": 0.01549,
+       "A_ci": [
+        -0.11166,
+        0.13766
+       ],
+       "B_E": 0.00876,
+       "B_ci": [
+        -0.07776,
+        0.10139
+       ]
+      },
+      "confirmation": {
+       "rows": 111,
+       "A_D": -0.01789,
+       "A_ci": [
+        -0.11521,
+        0.08262
+       ],
+       "B_E": 0.05,
+       "B_ci": [
+        -0.03699,
+        0.13722
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "passing_attempts": {
+     "all": {
+      "rows": 206,
+      "games": 75,
+      "model_logloss": 0.70289,
+      "kalshi_logloss": 0.65321,
+      "diff_model_minus_kalshi": 0.04968,
+      "avg_model_pct": 52.67,
+      "hit_rate_pct": 49.03,
+      "avg_kalshi_mid_pct": 50.75,
+      "diff_95ci": [
+       0.01599,
+       0.08277
+      ]
+     },
+     "discovery": {
+      "rows": 96,
+      "games": 36,
+      "model_logloss": 0.69709,
+      "kalshi_logloss": 0.64917,
+      "diff_model_minus_kalshi": 0.04793,
+      "avg_model_pct": 51.69,
+      "hit_rate_pct": 46.88,
+      "avg_kalshi_mid_pct": 50.61
+     },
+     "confirmation": {
+      "rows": 110,
+      "games": 39,
+      "model_logloss": 0.70795,
+      "kalshi_logloss": 0.65674,
+      "diff_model_minus_kalshi": 0.05122,
+      "avg_model_pct": 53.53,
+      "hit_rate_pct": 50.91,
+      "avg_kalshi_mid_pct": 50.88
+     },
+     "checks": {
+      "discovery": {
+       "rows": 96,
+       "A_D": 0.0897,
+       "A_ci": [
+        -0.01125,
+        0.19368
+       ],
+       "B_E": -0.03469,
+       "B_ci": [
+        -0.15865,
+        0.09158
+       ]
+      },
+      "confirmation": {
+       "rows": 110,
+       "A_D": 0.0441,
+       "A_ci": [
+        -0.07027,
+        0.15787
+       ],
+       "B_E": -0.07614,
+       "B_ci": [
+        -0.16428,
+        0.00302
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "passing_completions": {
+     "all": {
+      "rows": 203,
+      "games": 76,
+      "model_logloss": 0.63843,
+      "kalshi_logloss": 0.63184,
+      "diff_model_minus_kalshi": 0.00658,
+      "avg_model_pct": 44.72,
+      "hit_rate_pct": 45.81,
+      "avg_kalshi_mid_pct": 45.36,
+      "diff_95ci": [
+       -0.02685,
+       0.03703
+      ]
+     },
+     "discovery": {
+      "rows": 101,
+      "games": 38,
+      "model_logloss": 0.64341,
+      "kalshi_logloss": 0.65844,
+      "diff_model_minus_kalshi": -0.01503,
+      "avg_model_pct": 42.76,
+      "hit_rate_pct": 51.49,
+      "avg_kalshi_mid_pct": 44.8
+     },
+     "confirmation": {
+      "rows": 102,
+      "games": 38,
+      "model_logloss": 0.63349,
+      "kalshi_logloss": 0.60551,
+      "diff_model_minus_kalshi": 0.02798,
+      "avg_model_pct": 46.65,
+      "hit_rate_pct": 40.2,
+      "avg_kalshi_mid_pct": 45.92
+     },
+     "checks": {
+      "discovery": {
+       "rows": 101,
+       "A_D": -0.04569,
+       "A_ci": [
+        -0.13116,
+        0.03239
+       ],
+       "B_E": 0.07287,
+       "B_ci": [
+        -0.02068,
+        0.16868
+       ]
+      },
+      "confirmation": {
+       "rows": 102,
+       "A_D": 0.08248,
+       "A_ci": [
+        -0.02982,
+        0.1912
+       ],
+       "B_E": -0.03172,
+       "B_ci": [
+        -0.1356,
+        0.06818
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "passing_tds": {
+     "all": {
+      "rows": 450,
+      "games": 77,
+      "model_logloss": 0.49418,
+      "kalshi_logloss": 0.47759,
+      "diff_model_minus_kalshi": 0.0166,
+      "avg_model_pct": 36.77,
+      "hit_rate_pct": 40.22,
+      "avg_kalshi_mid_pct": 37.97,
+      "diff_95ci": [
+       -0.00673,
+       0.03938
+      ]
+     },
+     "discovery": {
+      "rows": 216,
+      "games": 38,
+      "model_logloss": 0.52197,
+      "kalshi_logloss": 0.5106,
+      "diff_model_minus_kalshi": 0.01137,
+      "avg_model_pct": 36.24,
+      "hit_rate_pct": 41.2,
+      "avg_kalshi_mid_pct": 37.77
+     },
+     "confirmation": {
+      "rows": 234,
+      "games": 39,
+      "model_logloss": 0.46854,
+      "kalshi_logloss": 0.44711,
+      "diff_model_minus_kalshi": 0.02142,
+      "avg_model_pct": 37.27,
+      "hit_rate_pct": 39.32,
+      "avg_kalshi_mid_pct": 38.16
+     },
+     "checks": {
+      "discovery": {
+       "rows": 216,
+       "A_D": -0.00803,
+       "A_ci": [
+        -0.07869,
+        0.0651
+       ],
+       "B_E": 0.00632,
+       "B_ci": [
+        -0.06453,
+        0.07653
+       ]
+      },
+      "confirmation": {
+       "rows": 234,
+       "A_D": -0.00259,
+       "A_ci": [
+        -0.07418,
+        0.069
+       ],
+       "B_E": 0.00363,
+       "B_ci": [
+        -0.0605,
+        0.06464
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "passing_yards": {
+     "all": {
+      "rows": 983,
+      "games": 77,
+      "model_logloss": 0.53213,
+      "kalshi_logloss": 0.52179,
+      "diff_model_minus_kalshi": 0.01034,
+      "avg_model_pct": 42.27,
+      "hit_rate_pct": 44.76,
+      "avg_kalshi_mid_pct": 42.04,
+      "diff_95ci": [
+       -0.00997,
+       0.02966
+      ]
+     },
+     "discovery": {
+      "rows": 483,
+      "games": 38,
+      "model_logloss": 0.49547,
+      "kalshi_logloss": 0.48589,
+      "diff_model_minus_kalshi": 0.00958,
+      "avg_model_pct": 40.14,
+      "hit_rate_pct": 46.38,
+      "avg_kalshi_mid_pct": 41.19
+     },
+     "confirmation": {
+      "rows": 500,
+      "games": 39,
+      "model_logloss": 0.56754,
+      "kalshi_logloss": 0.55646,
+      "diff_model_minus_kalshi": 0.01107,
+      "avg_model_pct": 44.33,
+      "hit_rate_pct": 43.2,
+      "avg_kalshi_mid_pct": 42.85
+     },
+     "checks": {
+      "discovery": {
+       "rows": 483,
+       "A_D": -0.02077,
+       "A_ci": [
+        -0.07869,
+        0.03385
+       ],
+       "B_E": -0.02383,
+       "B_ci": [
+        -0.08338,
+        0.0405
+       ]
+      },
+      "confirmation": {
+       "rows": 500,
+       "A_D": 0.02922,
+       "A_ci": [
+        -0.03589,
+        0.09612
+       ],
+       "B_E": -0.03164,
+       "B_ci": [
+        -0.10542,
+        0.03924
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "receiving_yards": {
+     "all": {
+      "rows": 3689,
+      "games": 80,
+      "model_logloss": 0.5643,
+      "kalshi_logloss": 0.53038,
+      "diff_model_minus_kalshi": 0.03393,
+      "avg_model_pct": 30.47,
+      "hit_rate_pct": 33.64,
+      "avg_kalshi_mid_pct": 32.15,
+      "diff_95ci": [
+       0.01575,
+       0.05196
+      ]
+     },
+     "discovery": {
+      "rows": 1928,
+      "games": 40,
+      "model_logloss": 0.55777,
+      "kalshi_logloss": 0.52475,
+      "diff_model_minus_kalshi": 0.03302,
+      "avg_model_pct": 30.69,
+      "hit_rate_pct": 33.77,
+      "avg_kalshi_mid_pct": 31.92
+     },
+     "confirmation": {
+      "rows": 1761,
+      "games": 40,
+      "model_logloss": 0.57145,
+      "kalshi_logloss": 0.53654,
+      "diff_model_minus_kalshi": 0.03492,
+      "avg_model_pct": 30.21,
+      "hit_rate_pct": 33.5,
+      "avg_kalshi_mid_pct": 32.41
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1928,
+       "A_D": 0.01088,
+       "A_ci": [
+        -0.00869,
+        0.03165
+       ],
+       "B_E": -0.01256,
+       "B_ci": [
+        -0.04157,
+        0.01768
+       ]
+      },
+      "confirmation": {
+       "rows": 1761,
+       "A_D": -0.01499,
+       "A_ci": [
+        -0.03398,
+        0.00374
+       ],
+       "B_E": 0.00707,
+       "B_ci": [
+        -0.03196,
+        0.04649
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "receptions": {
+     "all": {
+      "rows": 2615,
+      "games": 80,
+      "model_logloss": 0.56797,
+      "kalshi_logloss": 0.53132,
+      "diff_model_minus_kalshi": 0.03665,
+      "avg_model_pct": 34.98,
+      "hit_rate_pct": 38.05,
+      "avg_kalshi_mid_pct": 37.27,
+      "diff_95ci": [
+       0.01504,
+       0.05801
+      ]
+     },
+     "discovery": {
+      "rows": 1378,
+      "games": 40,
+      "model_logloss": 0.56041,
+      "kalshi_logloss": 0.53245,
+      "diff_model_minus_kalshi": 0.02796,
+      "avg_model_pct": 34.75,
+      "hit_rate_pct": 38.32,
+      "avg_kalshi_mid_pct": 36.79
+     },
+     "confirmation": {
+      "rows": 1237,
+      "games": 40,
+      "model_logloss": 0.57639,
+      "kalshi_logloss": 0.53006,
+      "diff_model_minus_kalshi": 0.04633,
+      "avg_model_pct": 35.24,
+      "hit_rate_pct": 37.75,
+      "avg_kalshi_mid_pct": 37.81
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1378,
+       "A_D": 0.0059,
+       "A_ci": [
+        -0.01533,
+        0.02835
+       ],
+       "B_E": 0.01018,
+       "B_ci": [
+        -0.02451,
+        0.04493
+       ]
+      },
+      "confirmation": {
+       "rows": 1237,
+       "A_D": -0.00717,
+       "A_ci": [
+        -0.03744,
+        0.02065
+       ],
+       "B_E": -0.01113,
+       "B_ci": [
+        -0.05201,
+        0.03219
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "rush_rec_yards": {
+     "all": {
+      "rows": 338,
+      "games": 73,
+      "model_logloss": 0.60328,
+      "kalshi_logloss": 0.58028,
+      "diff_model_minus_kalshi": 0.023,
+      "avg_model_pct": 26.96,
+      "hit_rate_pct": 32.54,
+      "avg_kalshi_mid_pct": 32.17,
+      "diff_95ci": [
+       -0.02131,
+       0.06862
+      ]
+     },
+     "discovery": {
+      "rows": 185,
+      "games": 39,
+      "model_logloss": 0.57546,
+      "kalshi_logloss": 0.56009,
+      "diff_model_minus_kalshi": 0.01538,
+      "avg_model_pct": 27.38,
+      "hit_rate_pct": 31.35,
+      "avg_kalshi_mid_pct": 32.94
+     },
+     "confirmation": {
+      "rows": 153,
+      "games": 34,
+      "model_logloss": 0.63692,
+      "kalshi_logloss": 0.6047,
+      "diff_model_minus_kalshi": 0.03222,
+      "avg_model_pct": 26.45,
+      "hit_rate_pct": 33.99,
+      "avg_kalshi_mid_pct": 31.25
+     },
+     "checks": {
+      "discovery": {
+       "rows": 185,
+       "A_D": 0.00189,
+       "A_ci": [
+        -0.06285,
+        0.06975
+       ],
+       "B_E": 0.02395,
+       "B_ci": [
+        -0.04966,
+        0.10725
+       ]
+      },
+      "confirmation": {
+       "rows": 153,
+       "A_D": -0.05748,
+       "A_ci": [
+        -0.15088,
+        0.04068
+       ],
+       "B_E": -0.00454,
+       "B_ci": [
+        -0.08374,
+        0.07685
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "rushing_attempts": {
+     "all": {
+      "rows": 428,
+      "games": 77,
+      "model_logloss": 0.68645,
+      "kalshi_logloss": 0.64469,
+      "diff_model_minus_kalshi": 0.04175,
+      "avg_model_pct": 43.5,
+      "hit_rate_pct": 49.53,
+      "avg_kalshi_mid_pct": 49.1,
+      "diff_95ci": [
+       -0.00307,
+       0.09465
+      ]
+     },
+     "discovery": {
+      "rows": 220,
+      "games": 39,
+      "model_logloss": 0.67871,
+      "kalshi_logloss": 0.62468,
+      "diff_model_minus_kalshi": 0.05403,
+      "avg_model_pct": 41.05,
+      "hit_rate_pct": 49.55,
+      "avg_kalshi_mid_pct": 49.03
+     },
+     "confirmation": {
+      "rows": 208,
+      "games": 38,
+      "model_logloss": 0.69463,
+      "kalshi_logloss": 0.66586,
+      "diff_model_minus_kalshi": 0.02877,
+      "avg_model_pct": 46.1,
+      "hit_rate_pct": 49.52,
+      "avg_kalshi_mid_pct": 49.18
+     },
+     "checks": {
+      "discovery": {
+       "rows": 220,
+       "A_D": -0.0434,
+       "A_ci": [
+        -0.11153,
+        0.02102
+       ],
+       "B_E": 0.0165,
+       "B_ci": [
+        -0.0468,
+        0.07829
+       ]
+      },
+      "confirmation": {
+       "rows": 208,
+       "A_D": -0.01628,
+       "A_ci": [
+        -0.08548,
+        0.05983
+       ],
+       "B_E": 0.03293,
+       "B_ci": [
+        -0.02399,
+        0.09118
+       ]
+      }
+     },
+     "call": {
+      "eligible": false,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "rushing_yards": {
+     "all": {
+      "rows": 2117,
+      "games": 80,
+      "model_logloss": 0.5552,
+      "kalshi_logloss": 0.52045,
+      "diff_model_minus_kalshi": 0.03475,
+      "avg_model_pct": 32.83,
+      "hit_rate_pct": 35.43,
+      "avg_kalshi_mid_pct": 35.72,
+      "diff_95ci": [
+       0.0065,
+       0.06395
+      ]
+     },
+     "discovery": {
+      "rows": 1084,
+      "games": 40,
+      "model_logloss": 0.55387,
+      "kalshi_logloss": 0.50528,
+      "diff_model_minus_kalshi": 0.04859,
+      "avg_model_pct": 32.14,
+      "hit_rate_pct": 37.55,
+      "avg_kalshi_mid_pct": 35.5
+     },
+     "confirmation": {
+      "rows": 1033,
+      "games": 40,
+      "model_logloss": 0.5566,
+      "kalshi_logloss": 0.53638,
+      "diff_model_minus_kalshi": 0.02023,
+      "avg_model_pct": 33.56,
+      "hit_rate_pct": 33.2,
+      "avg_kalshi_mid_pct": 35.95
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1084,
+       "A_D": -0.01252,
+       "A_ci": [
+        -0.05338,
+        0.02563
+       ],
+       "B_E": -0.00179,
+       "B_ci": [
+        -0.05374,
+        0.04905
+       ]
+      },
+      "confirmation": {
+       "rows": 1033,
+       "A_D": 0.02145,
+       "A_ci": [
+        -0.02633,
+        0.07154
+       ],
+       "B_E": 0.02496,
+       "B_ci": [
+        -0.01484,
+        0.06439
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "lean_side": {
+   "A_applies": false,
+   "bins": {
+    "over_lean": {
+     "all": {
+      "rows": 4805,
+      "games": 80,
+      "model_logloss": 0.53339,
+      "kalshi_logloss": 0.51963,
+      "diff_model_minus_kalshi": 0.01376,
+      "avg_model_pct": 37.32,
+      "hit_rate_pct": 30.8,
+      "avg_kalshi_mid_pct": 29.62,
+      "diff_95ci": [
+       -0.00184,
+       0.02834
+      ]
+     },
+     "discovery": {
+      "rows": 2399,
+      "games": 40,
+      "model_logloss": 0.51639,
+      "kalshi_logloss": 0.50852,
+      "diff_model_minus_kalshi": 0.00787,
+      "avg_model_pct": 35.66,
+      "hit_rate_pct": 30.35,
+      "avg_kalshi_mid_pct": 28.14
+     },
+     "confirmation": {
+      "rows": 2406,
+      "games": 40,
+      "model_logloss": 0.55034,
+      "kalshi_logloss": 0.53069,
+      "diff_model_minus_kalshi": 0.01964,
+      "avg_model_pct": 38.97,
+      "hit_rate_pct": 31.26,
+      "avg_kalshi_mid_pct": 31.1
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2399,
+       "B_E": 0.02205,
+       "B_ci": [
+        -0.0159,
+        0.05878
+       ]
+      },
+      "confirmation": {
+       "rows": 2406,
+       "B_E": 0.00155,
+       "B_ci": [
+        -0.03699,
+        0.04296
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "under_lean": {
+     "all": {
+      "rows": 6428,
+      "games": 80,
+      "model_logloss": 0.59281,
+      "kalshi_logloss": 0.54871,
+      "diff_model_minus_kalshi": 0.0441,
+      "avg_model_pct": 32.14,
+      "hit_rate_pct": 42.27,
+      "avg_kalshi_mid_pct": 41.39,
+      "diff_95ci": [
+       0.02472,
+       0.06374
+      ]
+     },
+     "discovery": {
+      "rows": 3385,
+      "games": 40,
+      "model_logloss": 0.59231,
+      "kalshi_logloss": 0.54488,
+      "diff_model_minus_kalshi": 0.04744,
+      "avg_model_pct": 32.53,
+      "hit_rate_pct": 43.4,
+      "avg_kalshi_mid_pct": 41.56
+     },
+     "confirmation": {
+      "rows": 3043,
+      "games": 40,
+      "model_logloss": 0.59336,
+      "kalshi_logloss": 0.55297,
+      "diff_model_minus_kalshi": 0.04039,
+      "avg_model_pct": 31.71,
+      "hit_rate_pct": 41.01,
+      "avg_kalshi_mid_pct": 41.2
+     },
+     "checks": {
+      "discovery": {
+       "rows": 3385,
+       "B_E": -0.01839,
+       "B_ci": [
+        -0.04958,
+        0.01359
+       ]
+      },
+      "confirmation": {
+       "rows": 3043,
+       "B_E": 0.00193,
+       "B_ci": [
+        -0.03326,
+        0.03671
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "line_minus_ev": {
+   "A_applies": true,
+   "bins": {
+    "Q1": {
+     "all": {
+      "rows": 2250,
+      "games": 80,
+      "model_logloss": 0.60331,
+      "kalshi_logloss": 0.5791,
+      "diff_model_minus_kalshi": 0.02422,
+      "avg_model_pct": 67.73,
+      "hit_rate_pct": 68.22,
+      "avg_kalshi_mid_pct": 66.75,
+      "diff_95ci": [
+       0.00603,
+       0.04134
+      ]
+     },
+     "discovery": {
+      "rows": 1113,
+      "games": 40,
+      "model_logloss": 0.58773,
+      "kalshi_logloss": 0.56313,
+      "diff_model_minus_kalshi": 0.02459,
+      "avg_model_pct": 67.35,
+      "hit_rate_pct": 70.8,
+      "avg_kalshi_mid_pct": 67.07
+     },
+     "confirmation": {
+      "rows": 1137,
+      "games": 40,
+      "model_logloss": 0.61857,
+      "kalshi_logloss": 0.59473,
+      "diff_model_minus_kalshi": 0.02385,
+      "avg_model_pct": 68.11,
+      "hit_rate_pct": 65.7,
+      "avg_kalshi_mid_pct": 66.44
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1113,
+       "A_D": 0.00704,
+       "A_ci": [
+        -0.03298,
+        0.04649
+       ],
+       "B_E": -0.00983,
+       "B_ci": [
+        -0.05251,
+        0.03623
+       ]
+      },
+      "confirmation": {
+       "rows": 1137,
+       "A_D": 0.04205,
+       "A_ci": [
+        0.01063,
+        0.07092
+       ],
+       "B_E": -0.01675,
+       "B_ci": [
+        -0.0552,
+        0.02206
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "Q2": {
+     "all": {
+      "rows": 2244,
+      "games": 80,
+      "model_logloss": 0.68346,
+      "kalshi_logloss": 0.65945,
+      "diff_model_minus_kalshi": 0.02401,
+      "avg_model_pct": 47.75,
+      "hit_rate_pct": 48.75,
+      "avg_kalshi_mid_pct": 49.34,
+      "diff_95ci": [
+       0.00982,
+       0.03748
+      ]
+     },
+     "discovery": {
+      "rows": 1143,
+      "games": 40,
+      "model_logloss": 0.68835,
+      "kalshi_logloss": 0.66028,
+      "diff_model_minus_kalshi": 0.02807,
+      "avg_model_pct": 47.58,
+      "hit_rate_pct": 51.62,
+      "avg_kalshi_mid_pct": 49.45
+     },
+     "confirmation": {
+      "rows": 1101,
+      "games": 40,
+      "model_logloss": 0.67838,
+      "kalshi_logloss": 0.65859,
+      "diff_model_minus_kalshi": 0.01979,
+      "avg_model_pct": 47.91,
+      "hit_rate_pct": 45.78,
+      "avg_kalshi_mid_pct": 49.22
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1143,
+       "A_D": 0.00125,
+       "A_ci": [
+        -0.02238,
+        0.02437
+       ],
+       "B_E": 0.01288,
+       "B_ci": [
+        -0.02397,
+        0.04934
+       ]
+      },
+      "confirmation": {
+       "rows": 1101,
+       "A_D": 0.03929,
+       "A_ci": [
+        0.01591,
+        0.06223
+       ],
+       "B_E": 0.00582,
+       "B_ci": [
+        -0.02914,
+        0.04195
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "Q3": {
+     "all": {
+      "rows": 2246,
+      "games": 80,
+      "model_logloss": 0.63851,
+      "kalshi_logloss": 0.60555,
+      "diff_model_minus_kalshi": 0.03296,
+      "avg_model_pct": 31.0,
+      "hit_rate_pct": 35.0,
+      "avg_kalshi_mid_pct": 34.22,
+      "diff_95ci": [
+       0.01725,
+       0.04827
+      ]
+     },
+     "discovery": {
+      "rows": 1180,
+      "games": 40,
+      "model_logloss": 0.64934,
+      "kalshi_logloss": 0.61758,
+      "diff_model_minus_kalshi": 0.03176,
+      "avg_model_pct": 30.82,
+      "hit_rate_pct": 35.93,
+      "avg_kalshi_mid_pct": 33.97
+     },
+     "confirmation": {
+      "rows": 1066,
+      "games": 40,
+      "model_logloss": 0.62651,
+      "kalshi_logloss": 0.59223,
+      "diff_model_minus_kalshi": 0.03428,
+      "avg_model_pct": 31.21,
+      "hit_rate_pct": 33.96,
+      "avg_kalshi_mid_pct": 34.5
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1180,
+       "A_D": -0.00956,
+       "A_ci": [
+        -0.03018,
+        0.01116
+       ],
+       "B_E": -0.00778,
+       "B_ci": [
+        -0.04559,
+        0.03092
+       ]
+      },
+      "confirmation": {
+       "rows": 1066,
+       "A_D": -0.00961,
+       "A_ci": [
+        -0.03752,
+        0.01753
+       ],
+       "B_E": 0.00594,
+       "B_ci": [
+        -0.02742,
+        0.03918
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "Q4": {
+     "all": {
+      "rows": 2244,
+      "games": 80,
+      "model_logloss": 0.52274,
+      "kalshi_logloss": 0.49635,
+      "diff_model_minus_kalshi": 0.02639,
+      "avg_model_pct": 17.6,
+      "hit_rate_pct": 22.46,
+      "avg_kalshi_mid_pct": 20.32,
+      "diff_95ci": [
+       0.00915,
+       0.04282
+      ]
+     },
+     "discovery": {
+      "rows": 1172,
+      "games": 40,
+      "model_logloss": 0.5214,
+      "kalshi_logloss": 0.49514,
+      "diff_model_minus_kalshi": 0.02626,
+      "avg_model_pct": 17.61,
+      "hit_rate_pct": 22.61,
+      "avg_kalshi_mid_pct": 20.34
+     },
+     "confirmation": {
+      "rows": 1072,
+      "games": 40,
+      "model_logloss": 0.5242,
+      "kalshi_logloss": 0.49767,
+      "diff_model_minus_kalshi": 0.02652,
+      "avg_model_pct": 17.58,
+      "hit_rate_pct": 22.29,
+      "avg_kalshi_mid_pct": 20.31
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1172,
+       "A_D": -0.00838,
+       "A_ci": [
+        -0.03073,
+        0.01163
+       ],
+       "B_E": 0.00334,
+       "B_ci": [
+        -0.0227,
+        0.02903
+       ]
+      },
+      "confirmation": {
+       "rows": 1072,
+       "A_D": -0.02922,
+       "A_ci": [
+        -0.04801,
+        -0.00922
+       ],
+       "B_E": 0.01832,
+       "B_ci": [
+        -0.01374,
+        0.04963
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "Q5": {
+     "all": {
+      "rows": 2249,
+      "games": 80,
+      "model_logloss": 0.38917,
+      "kalshi_logloss": 0.34114,
+      "diff_model_minus_kalshi": 0.04803,
+      "avg_model_pct": 7.66,
+      "hit_rate_pct": 12.36,
+      "avg_kalshi_mid_pct": 11.13,
+      "diff_95ci": [
+       0.01844,
+       0.07911
+      ]
+     },
+     "discovery": {
+      "rows": 1176,
+      "games": 40,
+      "model_logloss": 0.36188,
+      "kalshi_logloss": 0.31789,
+      "diff_model_minus_kalshi": 0.04399,
+      "avg_model_pct": 7.9,
+      "hit_rate_pct": 11.05,
+      "avg_kalshi_mid_pct": 11.13
+     },
+     "confirmation": {
+      "rows": 1073,
+      "games": 40,
+      "model_logloss": 0.41909,
+      "kalshi_logloss": 0.36663,
+      "diff_model_minus_kalshi": 0.05246,
+      "avg_model_pct": 7.39,
+      "hit_rate_pct": 13.79,
+      "avg_kalshi_mid_pct": 11.12
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1176,
+       "A_D": 0.01006,
+       "A_ci": [
+        -0.02154,
+        0.04163
+       ],
+       "B_E": -0.0067,
+       "B_ci": [
+        -0.03336,
+        0.01774
+       ]
+      },
+      "confirmation": {
+       "rows": 1073,
+       "A_D": -0.04613,
+       "A_ci": [
+        -0.07563,
+        -0.01499
+       ],
+       "B_E": -0.00349,
+       "B_ci": [
+        -0.03709,
+        0.02937
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "abs_gap": {
+   "A_applies": false,
+   "bins": {
+    "0-5": {
+     "all": {
+      "rows": 4692,
+      "games": 80,
+      "model_logloss": 0.47742,
+      "kalshi_logloss": 0.47418,
+      "diff_model_minus_kalshi": 0.00324,
+      "avg_model_pct": 30.53,
+      "hit_rate_pct": 32.25,
+      "avg_kalshi_mid_pct": 30.73,
+      "diff_95ci": [
+       -0.00015,
+       0.00645
+      ]
+     },
+     "discovery": {
+      "rows": 2471,
+      "games": 40,
+      "model_logloss": 0.4628,
+      "kalshi_logloss": 0.45864,
+      "diff_model_minus_kalshi": 0.00416,
+      "avg_model_pct": 29.65,
+      "hit_rate_pct": 31.32,
+      "avg_kalshi_mid_pct": 29.86
+     },
+     "confirmation": {
+      "rows": 2221,
+      "games": 40,
+      "model_logloss": 0.49369,
+      "kalshi_logloss": 0.49147,
+      "diff_model_minus_kalshi": 0.00222,
+      "avg_model_pct": 31.51,
+      "hit_rate_pct": 33.27,
+      "avg_kalshi_mid_pct": 31.7
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2471,
+       "B_E": -0.0167,
+       "B_ci": [
+        -0.03835,
+        0.00601
+       ]
+      },
+      "confirmation": {
+       "rows": 2221,
+       "B_E": -0.00416,
+       "B_ci": [
+        -0.02403,
+        0.01697
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "10-15": {
+     "all": {
+      "rows": 1659,
+      "games": 80,
+      "model_logloss": 0.6265,
+      "kalshi_logloss": 0.58286,
+      "diff_model_minus_kalshi": 0.04364,
+      "avg_model_pct": 38.05,
+      "hit_rate_pct": 39.72,
+      "avg_kalshi_mid_pct": 40.37,
+      "diff_95ci": [
+       0.01875,
+       0.06934
+      ]
+     },
+     "discovery": {
+      "rows": 872,
+      "games": 40,
+      "model_logloss": 0.63223,
+      "kalshi_logloss": 0.59469,
+      "diff_model_minus_kalshi": 0.03755,
+      "avg_model_pct": 38.46,
+      "hit_rate_pct": 43.81,
+      "avg_kalshi_mid_pct": 41.81
+     },
+     "confirmation": {
+      "rows": 787,
+      "games": 40,
+      "model_logloss": 0.62014,
+      "kalshi_logloss": 0.56975,
+      "diff_model_minus_kalshi": 0.05038,
+      "avg_model_pct": 37.6,
+      "hit_rate_pct": 35.2,
+      "avg_kalshi_mid_pct": 38.78
+     },
+     "checks": {
+      "discovery": {
+       "rows": 872,
+       "B_E": 0.01089,
+       "B_ci": [
+        -0.04381,
+        0.06674
+       ]
+      },
+      "confirmation": {
+       "rows": 787,
+       "B_E": -0.00715,
+       "B_ci": [
+        -0.05088,
+        0.03877
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "15-20": {
+     "all": {
+      "rows": 1010,
+      "games": 80,
+      "model_logloss": 0.67565,
+      "kalshi_logloss": 0.61399,
+      "diff_model_minus_kalshi": 0.06165,
+      "avg_model_pct": 38.73,
+      "hit_rate_pct": 44.75,
+      "avg_kalshi_mid_pct": 43.73,
+      "diff_95ci": [
+       0.02921,
+       0.09428
+      ]
+     },
+     "discovery": {
+      "rows": 507,
+      "games": 40,
+      "model_logloss": 0.66443,
+      "kalshi_logloss": 0.6127,
+      "diff_model_minus_kalshi": 0.05173,
+      "avg_model_pct": 38.78,
+      "hit_rate_pct": 46.55,
+      "avg_kalshi_mid_pct": 44.19
+     },
+     "confirmation": {
+      "rows": 503,
+      "games": 40,
+      "model_logloss": 0.68695,
+      "kalshi_logloss": 0.6153,
+      "diff_model_minus_kalshi": 0.07165,
+      "avg_model_pct": 38.68,
+      "hit_rate_pct": 42.94,
+      "avg_kalshi_mid_pct": 43.28
+     },
+     "checks": {
+      "discovery": {
+       "rows": 507,
+       "B_E": 0.02837,
+       "B_ci": [
+        -0.02392,
+        0.08413
+       ]
+      },
+      "confirmation": {
+       "rows": 503,
+       "B_E": 0.02236,
+       "B_ci": [
+        -0.02766,
+        0.07055
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "20+": {
+     "all": {
+      "rows": 998,
+      "games": 80,
+      "model_logloss": 0.79377,
+      "kalshi_logloss": 0.65459,
+      "diff_model_minus_kalshi": 0.13918,
+      "avg_model_pct": 38.58,
+      "hit_rate_pct": 50.2,
+      "avg_kalshi_mid_pct": 49.41,
+      "diff_95ci": [
+       0.04933,
+       0.22895
+      ]
+     },
+     "discovery": {
+      "rows": 487,
+      "games": 40,
+      "model_logloss": 0.81864,
+      "kalshi_logloss": 0.64733,
+      "diff_model_minus_kalshi": 0.17131,
+      "avg_model_pct": 38.51,
+      "hit_rate_pct": 51.33,
+      "avg_kalshi_mid_pct": 48.33
+     },
+     "confirmation": {
+      "rows": 511,
+      "games": 40,
+      "model_logloss": 0.77007,
+      "kalshi_logloss": 0.6615,
+      "diff_model_minus_kalshi": 0.10856,
+      "avg_model_pct": 38.65,
+      "hit_rate_pct": 49.12,
+      "avg_kalshi_mid_pct": 50.43
+     },
+     "checks": {
+      "discovery": {
+       "rows": 487,
+       "B_E": 0.02663,
+       "B_ci": [
+        -0.05753,
+        0.10698
+       ]
+      },
+      "confirmation": {
+       "rows": 511,
+       "B_E": 0.06573,
+       "B_ci": [
+        -0.01475,
+        0.15618
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "5-10": {
+     "all": {
+      "rows": 2874,
+      "games": 80,
+      "model_logloss": 0.56349,
+      "kalshi_logloss": 0.54233,
+      "diff_model_minus_kalshi": 0.02117,
+      "avg_model_pct": 35.45,
+      "hit_rate_pct": 37.3,
+      "avg_kalshi_mid_pct": 36.1,
+      "diff_95ci": [
+       0.00893,
+       0.03323
+      ]
+     },
+     "discovery": {
+      "rows": 1447,
+      "games": 40,
+      "model_logloss": 0.5621,
+      "kalshi_logloss": 0.5436,
+      "diff_model_minus_kalshi": 0.0185,
+      "avg_model_pct": 34.86,
+      "hit_rate_pct": 38.36,
+      "avg_kalshi_mid_pct": 35.94
+     },
+     "confirmation": {
+      "rows": 1427,
+      "games": 40,
+      "model_logloss": 0.56491,
+      "kalshi_logloss": 0.54103,
+      "diff_model_minus_kalshi": 0.02388,
+      "avg_model_pct": 36.05,
+      "hit_rate_pct": 36.23,
+      "avg_kalshi_mid_pct": 36.27
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1447,
+       "B_E": -0.00343,
+       "B_ci": [
+        -0.03847,
+        0.03206
+       ]
+      },
+      "confirmation": {
+       "rows": 1427,
+       "B_E": -0.01427,
+       "B_ci": [
+        -0.05387,
+        0.02788
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "prior_games": {
+   "A_applies": true,
+   "bins": {
+    "21-40": {
+     "all": {
+      "rows": 3262,
+      "games": 78,
+      "model_logloss": 0.57517,
+      "kalshi_logloss": 0.54761,
+      "diff_model_minus_kalshi": 0.02756,
+      "avg_model_pct": 34.13,
+      "hit_rate_pct": 36.97,
+      "avg_kalshi_mid_pct": 35.03,
+      "diff_95ci": [
+       0.00671,
+       0.05196
+      ]
+     },
+     "discovery": {
+      "rows": 1528,
+      "games": 40,
+      "model_logloss": 0.55299,
+      "kalshi_logloss": 0.53265,
+      "diff_model_minus_kalshi": 0.02034,
+      "avg_model_pct": 32.93,
+      "hit_rate_pct": 37.3,
+      "avg_kalshi_mid_pct": 34.12
+     },
+     "confirmation": {
+      "rows": 1734,
+      "games": 38,
+      "model_logloss": 0.59472,
+      "kalshi_logloss": 0.56079,
+      "diff_model_minus_kalshi": 0.03393,
+      "avg_model_pct": 35.19,
+      "hit_rate_pct": 36.68,
+      "avg_kalshi_mid_pct": 35.83
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1528,
+       "A_D": -0.00212,
+       "A_ci": [
+        -0.04819,
+        0.04114
+       ],
+       "B_E": 0.02359,
+       "B_ci": [
+        -0.01805,
+        0.06203
+       ]
+      },
+      "confirmation": {
+       "rows": 1734,
+       "A_D": 0.00299,
+       "A_ci": [
+        -0.04416,
+        0.05148
+       ],
+       "B_E": -0.00499,
+       "B_ci": [
+        -0.05161,
+        0.04332
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "41-80": {
+     "all": {
+      "rows": 7971,
+      "games": 80,
+      "model_logloss": 0.56421,
+      "kalshi_logloss": 0.53163,
+      "diff_model_minus_kalshi": 0.03258,
+      "avg_model_pct": 34.44,
+      "hit_rate_pct": 37.52,
+      "avg_kalshi_mid_pct": 36.9,
+      "diff_95ci": [
+       0.01761,
+       0.047
+      ]
+     },
+     "discovery": {
+      "rows": 4256,
+      "games": 40,
+      "model_logloss": 0.56364,
+      "kalshi_logloss": 0.52878,
+      "diff_model_minus_kalshi": 0.03486,
+      "avg_model_pct": 34.15,
+      "hit_rate_pct": 38.23,
+      "avg_kalshi_mid_pct": 36.66
+     },
+     "confirmation": {
+      "rows": 3715,
+      "games": 40,
+      "model_logloss": 0.56486,
+      "kalshi_logloss": 0.53489,
+      "diff_model_minus_kalshi": 0.02997,
+      "avg_model_pct": 34.78,
+      "hit_rate_pct": 36.72,
+      "avg_kalshi_mid_pct": 37.17
+     },
+     "checks": {
+      "discovery": {
+       "rows": 4256,
+       "A_D": 0.00076,
+       "A_ci": [
+        -0.0153,
+        0.01702
+       ],
+       "B_E": -0.01067,
+       "B_ci": [
+        -0.03407,
+        0.0159
+       ]
+      },
+      "confirmation": {
+       "rows": 3715,
+       "A_D": -0.0014,
+       "A_ci": [
+        -0.02392,
+        0.02097
+       ],
+       "B_E": 0.00491,
+       "B_ci": [
+        -0.0235,
+        0.03426
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "usage_change": {
+   "A_applies": true,
+   "bins": {
+    "high": {
+     "all": {
+      "rows": 3739,
+      "games": 79,
+      "model_logloss": 0.58616,
+      "kalshi_logloss": 0.55876,
+      "diff_model_minus_kalshi": 0.0274,
+      "avg_model_pct": 37.32,
+      "hit_rate_pct": 37.34,
+      "avg_kalshi_mid_pct": 36.75,
+      "diff_95ci": [
+       0.00458,
+       0.05181
+      ]
+     },
+     "discovery": {
+      "rows": 1763,
+      "games": 40,
+      "model_logloss": 0.58429,
+      "kalshi_logloss": 0.56116,
+      "diff_model_minus_kalshi": 0.02313,
+      "avg_model_pct": 36.22,
+      "hit_rate_pct": 37.55,
+      "avg_kalshi_mid_pct": 36.1
+     },
+     "confirmation": {
+      "rows": 1976,
+      "games": 39,
+      "model_logloss": 0.58783,
+      "kalshi_logloss": 0.55662,
+      "diff_model_minus_kalshi": 0.03121,
+      "avg_model_pct": 38.29,
+      "hit_rate_pct": 37.15,
+      "avg_kalshi_mid_pct": 37.33
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1763,
+       "A_D": 0.02831,
+       "A_ci": [
+        -0.01371,
+        0.07046
+       ],
+       "B_E": 0.01803,
+       "B_ci": [
+        -0.02362,
+        0.0582
+       ]
+      },
+      "confirmation": {
+       "rows": 1976,
+       "A_D": 0.02937,
+       "A_ci": [
+        -0.01284,
+        0.07087
+       ],
+       "B_E": -0.00908,
+       "B_ci": [
+        -0.04035,
+        0.02438
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "low": {
+     "all": {
+      "rows": 3754,
+      "games": 80,
+      "model_logloss": 0.55777,
+      "kalshi_logloss": 0.52133,
+      "diff_model_minus_kalshi": 0.03644,
+      "avg_model_pct": 30.98,
+      "hit_rate_pct": 37.03,
+      "avg_kalshi_mid_pct": 35.67,
+      "diff_95ci": [
+       0.00956,
+       0.06249
+      ]
+     },
+     "discovery": {
+      "rows": 1940,
+      "games": 40,
+      "model_logloss": 0.54321,
+      "kalshi_logloss": 0.50441,
+      "diff_model_minus_kalshi": 0.0388,
+      "avg_model_pct": 30.9,
+      "hit_rate_pct": 37.22,
+      "avg_kalshi_mid_pct": 35.54
+     },
+     "confirmation": {
+      "rows": 1814,
+      "games": 40,
+      "model_logloss": 0.57333,
+      "kalshi_logloss": 0.53942,
+      "diff_model_minus_kalshi": 0.03391,
+      "avg_model_pct": 31.06,
+      "hit_rate_pct": 36.82,
+      "avg_kalshi_mid_pct": 35.81
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1940,
+       "A_D": -0.02159,
+       "A_ci": [
+        -0.06504,
+        0.02158
+       ],
+       "B_E": -0.00486,
+       "B_ci": [
+        -0.04193,
+        0.03537
+       ]
+      },
+      "confirmation": {
+       "rows": 1814,
+       "A_D": -0.03974,
+       "A_ci": [
+        -0.08122,
+        -0.00075
+       ],
+       "B_E": 0.01955,
+       "B_ci": [
+        -0.02519,
+        0.06216
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "mid": {
+     "all": {
+      "rows": 3740,
+      "games": 79,
+      "model_logloss": 0.55829,
+      "kalshi_logloss": 0.52877,
+      "diff_model_minus_kalshi": 0.02951,
+      "avg_model_pct": 34.78,
+      "hit_rate_pct": 37.73,
+      "avg_kalshi_mid_pct": 36.65,
+      "diff_95ci": [
+       0.01204,
+       0.04693
+      ]
+     },
+     "discovery": {
+      "rows": 2081,
+      "games": 40,
+      "model_logloss": 0.55736,
+      "kalshi_logloss": 0.5269,
+      "diff_model_minus_kalshi": 0.03046,
+      "avg_model_pct": 34.52,
+      "hit_rate_pct": 39.07,
+      "avg_kalshi_mid_pct": 36.32
+     },
+     "confirmation": {
+      "rows": 1659,
+      "games": 39,
+      "model_logloss": 0.55945,
+      "kalshi_logloss": 0.53113,
+      "diff_model_minus_kalshi": 0.02832,
+      "avg_model_pct": 35.1,
+      "hit_rate_pct": 36.05,
+      "avg_kalshi_mid_pct": 37.05
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2081,
+       "A_D": -0.00385,
+       "A_ci": [
+        -0.03941,
+        0.03079
+       ],
+       "B_E": -0.01525,
+       "B_ci": [
+        -0.05632,
+        0.02477
+       ]
+      },
+      "confirmation": {
+       "rows": 1659,
+       "A_D": 0.00847,
+       "A_ci": [
+        -0.03102,
+        0.05034
+       ],
+       "B_E": -0.00479,
+       "B_ci": [
+        -0.04364,
+        0.03041
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "game_total": {
+   "A_applies": true,
+   "bins": {
+    "high": {
+     "all": {
+      "rows": 3575,
+      "games": 20,
+      "model_logloss": 0.57968,
+      "kalshi_logloss": 0.54944,
+      "diff_model_minus_kalshi": 0.03023,
+      "avg_model_pct": 34.31,
+      "hit_rate_pct": 40.25,
+      "avg_kalshi_mid_pct": 36.98,
+      "diff_95ci": [
+       0.01095,
+       0.04911
+      ]
+     },
+     "discovery": {
+      "rows": 2563,
+      "games": 14,
+      "model_logloss": 0.56134,
+      "kalshi_logloss": 0.54264,
+      "diff_model_minus_kalshi": 0.01869,
+      "avg_model_pct": 34.16,
+      "hit_rate_pct": 39.33,
+      "avg_kalshi_mid_pct": 36.41
+     },
+     "confirmation": {
+      "rows": 1012,
+      "games": 6,
+      "model_logloss": 0.62613,
+      "kalshi_logloss": 0.56667,
+      "diff_model_minus_kalshi": 0.05946,
+      "avg_model_pct": 34.68,
+      "hit_rate_pct": 42.59,
+      "avg_kalshi_mid_pct": 38.42
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2563,
+       "A_D": -0.01011,
+       "A_ci": [
+        -0.04394,
+        0.02169
+       ],
+       "B_E": 0.00688,
+       "B_ci": [
+        -0.03016,
+        0.0522
+       ]
+      },
+      "confirmation": {
+       "rows": 1012,
+       "A_D": -0.06121,
+       "A_ci": [
+        -0.11648,
+        -0.0146
+       ],
+       "B_E": -0.02174,
+       "B_ci": [
+        -0.06681,
+        0.04345
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "low": {
+     "all": {
+      "rows": 3853,
+      "games": 31,
+      "model_logloss": 0.55462,
+      "kalshi_logloss": 0.51996,
+      "diff_model_minus_kalshi": 0.03466,
+      "avg_model_pct": 33.95,
+      "hit_rate_pct": 35.27,
+      "avg_kalshi_mid_pct": 35.71,
+      "diff_95ci": [
+       0.0137,
+       0.05883
+      ]
+     },
+     "discovery": {
+      "rows": 1676,
+      "games": 14,
+      "model_logloss": 0.56793,
+      "kalshi_logloss": 0.52007,
+      "diff_model_minus_kalshi": 0.04786,
+      "avg_model_pct": 32.4,
+      "hit_rate_pct": 37.65,
+      "avg_kalshi_mid_pct": 34.85
+     },
+     "confirmation": {
+      "rows": 2177,
+      "games": 17,
+      "model_logloss": 0.54437,
+      "kalshi_logloss": 0.51987,
+      "diff_model_minus_kalshi": 0.0245,
+      "avg_model_pct": 35.14,
+      "hit_rate_pct": 33.44,
+      "avg_kalshi_mid_pct": 36.38
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1676,
+       "A_D": -0.01094,
+       "A_ci": [
+        -0.05545,
+        0.03012
+       ],
+       "B_E": -0.01355,
+       "B_ci": [
+        -0.06513,
+        0.03462
+       ]
+      },
+      "confirmation": {
+       "rows": 2177,
+       "A_D": 0.03492,
+       "A_ci": [
+        -0.00441,
+        0.07325
+       ],
+       "B_E": -0.00607,
+       "B_ci": [
+        -0.03479,
+        0.02083
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "mid": {
+     "all": {
+      "rows": 3805,
+      "games": 29,
+      "model_logloss": 0.56878,
+      "kalshi_logloss": 0.5404,
+      "diff_model_minus_kalshi": 0.02838,
+      "avg_model_pct": 34.81,
+      "hit_rate_pct": 36.77,
+      "avg_kalshi_mid_pct": 36.43,
+      "diff_95ci": [
+       0.00275,
+       0.05334
+      ]
+     },
+     "discovery": {
+      "rows": 1545,
+      "games": 12,
+      "model_logloss": 0.55226,
+      "kalshi_logloss": 0.51904,
+      "diff_model_minus_kalshi": 0.03321,
+      "avg_model_pct": 34.82,
+      "hit_rate_pct": 36.12,
+      "avg_kalshi_mid_pct": 36.54
+     },
+     "confirmation": {
+      "rows": 2260,
+      "games": 17,
+      "model_logloss": 0.58007,
+      "kalshi_logloss": 0.555,
+      "diff_model_minus_kalshi": 0.02507,
+      "avg_model_pct": 34.8,
+      "hit_rate_pct": 37.21,
+      "avg_kalshi_mid_pct": 36.35
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1545,
+       "A_D": 0.02864,
+       "A_ci": [
+        -0.02073,
+        0.07746
+       ],
+       "B_E": -0.00277,
+       "B_ci": [
+        -0.03838,
+        0.03331
+       ]
+      },
+      "confirmation": {
+       "rows": 2260,
+       "A_D": -0.00623,
+       "A_ci": [
+        -0.04073,
+        0.02615
+       ],
+       "B_E": 0.01983,
+       "B_ci": [
+        -0.01891,
+        0.06272
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "team_spread": {
+   "A_applies": true,
+   "bins": {
+    "high": {
+     "all": {
+      "rows": 3638,
+      "games": 45,
+      "model_logloss": 0.58992,
+      "kalshi_logloss": 0.54228,
+      "diff_model_minus_kalshi": 0.04764,
+      "avg_model_pct": 35.59,
+      "hit_rate_pct": 38.54,
+      "avg_kalshi_mid_pct": 37.34,
+      "diff_95ci": [
+       0.02451,
+       0.06995
+      ]
+     },
+     "discovery": {
+      "rows": 1843,
+      "games": 21,
+      "model_logloss": 0.57189,
+      "kalshi_logloss": 0.52206,
+      "diff_model_minus_kalshi": 0.04983,
+      "avg_model_pct": 35.1,
+      "hit_rate_pct": 38.9,
+      "avg_kalshi_mid_pct": 36.55
+     },
+     "confirmation": {
+      "rows": 1795,
+      "games": 24,
+      "model_logloss": 0.60844,
+      "kalshi_logloss": 0.56305,
+      "diff_model_minus_kalshi": 0.04539,
+      "avg_model_pct": 36.1,
+      "hit_rate_pct": 38.16,
+      "avg_kalshi_mid_pct": 38.15
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1843,
+       "A_D": 0.00355,
+       "A_ci": [
+        -0.05158,
+        0.05695
+       ],
+       "B_E": -0.02152,
+       "B_ci": [
+        -0.05266,
+        0.01192
+       ]
+      },
+      "confirmation": {
+       "rows": 1795,
+       "A_D": -0.00269,
+       "A_ci": [
+        -0.041,
+        0.03382
+       ],
+       "B_E": -0.01431,
+       "B_ci": [
+        -0.05586,
+        0.03188
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "low": {
+     "all": {
+      "rows": 3746,
+      "games": 62,
+      "model_logloss": 0.55464,
+      "kalshi_logloss": 0.53896,
+      "diff_model_minus_kalshi": 0.01567,
+      "avg_model_pct": 33.43,
+      "hit_rate_pct": 37.21,
+      "avg_kalshi_mid_pct": 35.49,
+      "diff_95ci": [
+       -0.00525,
+       0.03742
+      ]
+     },
+     "discovery": {
+      "rows": 1918,
+      "games": 30,
+      "model_logloss": 0.54985,
+      "kalshi_logloss": 0.53545,
+      "diff_model_minus_kalshi": 0.0144,
+      "avg_model_pct": 33.32,
+      "hit_rate_pct": 35.92,
+      "avg_kalshi_mid_pct": 35.2
+     },
+     "confirmation": {
+      "rows": 1828,
+      "games": 32,
+      "model_logloss": 0.55965,
+      "kalshi_logloss": 0.54265,
+      "diff_model_minus_kalshi": 0.01701,
+      "avg_model_pct": 33.55,
+      "hit_rate_pct": 38.57,
+      "avg_kalshi_mid_pct": 35.8
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1918,
+       "A_D": 0.01554,
+       "A_ci": [
+        -0.02607,
+        0.05855
+       ],
+       "B_E": 0.02249,
+       "B_ci": [
+        -0.01714,
+        0.0687
+       ]
+      },
+      "confirmation": {
+       "rows": 1828,
+       "A_D": -0.03228,
+       "A_ci": [
+        -0.07156,
+        0.00664
+       ],
+       "B_E": 0.01954,
+       "B_ci": [
+        -0.01894,
+        0.05499
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "mid": {
+     "all": {
+      "rows": 3849,
+      "games": 35,
+      "model_logloss": 0.55851,
+      "kalshi_logloss": 0.52796,
+      "diff_model_minus_kalshi": 0.03055,
+      "avg_model_pct": 34.08,
+      "hit_rate_pct": 36.4,
+      "avg_kalshi_mid_pct": 36.27,
+      "diff_95ci": [
+       0.00916,
+       0.05499
+      ]
+     },
+     "discovery": {
+      "rows": 2023,
+      "games": 19,
+      "model_logloss": 0.56114,
+      "kalshi_logloss": 0.53149,
+      "diff_model_minus_kalshi": 0.02965,
+      "avg_model_pct": 33.15,
+      "hit_rate_pct": 39.1,
+      "avg_kalshi_mid_pct": 36.24
+     },
+     "confirmation": {
+      "rows": 1826,
+      "games": 16,
+      "model_logloss": 0.55559,
+      "kalshi_logloss": 0.52404,
+      "diff_model_minus_kalshi": 0.03154,
+      "avg_model_pct": 35.11,
+      "hit_rate_pct": 33.41,
+      "avg_kalshi_mid_pct": 36.31
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2023,
+       "A_D": -0.01797,
+       "A_ci": [
+        -0.05013,
+        0.01332
+       ],
+       "B_E": -0.00634,
+       "B_ci": [
+        -0.04948,
+        0.03405
+       ]
+      },
+      "confirmation": {
+       "rows": 1826,
+       "A_D": 0.03496,
+       "A_ci": [
+        -0.00722,
+        0.07707
+       ],
+       "B_E": -0.00025,
+       "B_ci": [
+        -0.03527,
+        0.03711
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "team_implied_pts": {
+   "A_applies": true,
+   "bins": {
+    "high": {
+     "all": {
+      "rows": 3706,
+      "games": 38,
+      "model_logloss": 0.58665,
+      "kalshi_logloss": 0.54889,
+      "diff_model_minus_kalshi": 0.03776,
+      "avg_model_pct": 35.02,
+      "hit_rate_pct": 38.45,
+      "avg_kalshi_mid_pct": 37.54,
+      "diff_95ci": [
+       0.01518,
+       0.06129
+      ]
+     },
+     "discovery": {
+      "rows": 2276,
+      "games": 21,
+      "model_logloss": 0.58378,
+      "kalshi_logloss": 0.54666,
+      "diff_model_minus_kalshi": 0.03712,
+      "avg_model_pct": 34.83,
+      "hit_rate_pct": 39.46,
+      "avg_kalshi_mid_pct": 37.0
+     },
+     "confirmation": {
+      "rows": 1430,
+      "games": 17,
+      "model_logloss": 0.59123,
+      "kalshi_logloss": 0.55245,
+      "diff_model_minus_kalshi": 0.03878,
+      "avg_model_pct": 35.33,
+      "hit_rate_pct": 36.85,
+      "avg_kalshi_mid_pct": 38.41
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2276,
+       "A_D": -0.0047,
+       "A_ci": [
+        -0.04376,
+        0.03568
+       ],
+       "B_E": -0.01674,
+       "B_ci": [
+        -0.0469,
+        0.01591
+       ]
+      },
+      "confirmation": {
+       "rows": 1430,
+       "A_D": 0.0027,
+       "A_ci": [
+        -0.03861,
+        0.04551
+       ],
+       "B_E": 0.00185,
+       "B_ci": [
+        -0.04805,
+        0.0583
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "low": {
+     "all": {
+      "rows": 3785,
+      "games": 62,
+      "model_logloss": 0.55476,
+      "kalshi_logloss": 0.5202,
+      "diff_model_minus_kalshi": 0.03455,
+      "avg_model_pct": 33.52,
+      "hit_rate_pct": 35.88,
+      "avg_kalshi_mid_pct": 35.26,
+      "diff_95ci": [
+       0.01296,
+       0.05929
+      ]
+     },
+     "discovery": {
+      "rows": 1713,
+      "games": 27,
+      "model_logloss": 0.57275,
+      "kalshi_logloss": 0.52992,
+      "diff_model_minus_kalshi": 0.04283,
+      "avg_model_pct": 32.39,
+      "hit_rate_pct": 36.19,
+      "avg_kalshi_mid_pct": 34.46
+     },
+     "confirmation": {
+      "rows": 2072,
+      "games": 35,
+      "model_logloss": 0.53989,
+      "kalshi_logloss": 0.51217,
+      "diff_model_minus_kalshi": 0.02771,
+      "avg_model_pct": 34.45,
+      "hit_rate_pct": 35.62,
+      "avg_kalshi_mid_pct": 35.93
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1713,
+       "A_D": 0.00358,
+       "A_ci": [
+        -0.04521,
+        0.05522
+       ],
+       "B_E": -0.00654,
+       "B_ci": [
+        -0.04952,
+        0.04318
+       ]
+      },
+      "confirmation": {
+       "rows": 2072,
+       "A_D": 0.00623,
+       "A_ci": [
+        -0.03522,
+        0.04889
+       ],
+       "B_E": -0.00506,
+       "B_ci": [
+        -0.03781,
+        0.02492
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "mid": {
+     "all": {
+      "rows": 3742,
+      "games": 46,
+      "model_logloss": 0.56109,
+      "kalshi_logloss": 0.54001,
+      "diff_model_minus_kalshi": 0.02108,
+      "avg_model_pct": 34.53,
+      "hit_rate_pct": 37.79,
+      "avg_kalshi_mid_pct": 36.29,
+      "diff_95ci": [
+       0.00116,
+       0.0433
+      ]
+     },
+     "discovery": {
+      "rows": 1795,
+      "games": 21,
+      "model_logloss": 0.52034,
+      "kalshi_logloss": 0.50831,
+      "diff_model_minus_kalshi": 0.01203,
+      "avg_model_pct": 33.92,
+      "hit_rate_pct": 37.83,
+      "avg_kalshi_mid_pct": 36.17
+     },
+     "confirmation": {
+      "rows": 1947,
+      "games": 25,
+      "model_logloss": 0.59866,
+      "kalshi_logloss": 0.56924,
+      "diff_model_minus_kalshi": 0.02943,
+      "avg_model_pct": 35.1,
+      "hit_rate_pct": 37.75,
+      "avg_kalshi_mid_pct": 36.39
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1795,
+       "A_D": 0.00255,
+       "A_ci": [
+        -0.03589,
+        0.04183
+       ],
+       "B_E": 0.02225,
+       "B_ci": [
+        -0.01574,
+        0.06136
+       ]
+      },
+      "confirmation": {
+       "rows": 1947,
+       "A_D": -0.00862,
+       "A_ci": [
+        -0.04808,
+        0.02878
+       ],
+       "B_E": 0.00895,
+       "B_ci": [
+        -0.03148,
+        0.04789
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  },
+  "opp_defense": {
+   "A_applies": true,
+   "bins": {
+    "high": {
+     "all": {
+      "rows": 2807,
+      "games": 62,
+      "model_logloss": 0.55449,
+      "kalshi_logloss": 0.5394,
+      "diff_model_minus_kalshi": 0.01508,
+      "avg_model_pct": 33.19,
+      "hit_rate_pct": 38.08,
+      "avg_kalshi_mid_pct": 36.7,
+      "diff_95ci": [
+       -0.00713,
+       0.03806
+      ]
+     },
+     "discovery": {
+      "rows": 1600,
+      "games": 32,
+      "model_logloss": 0.546,
+      "kalshi_logloss": 0.53626,
+      "diff_model_minus_kalshi": 0.00974,
+      "avg_model_pct": 33.51,
+      "hit_rate_pct": 39.94,
+      "avg_kalshi_mid_pct": 36.24
+     },
+     "confirmation": {
+      "rows": 1207,
+      "games": 30,
+      "model_logloss": 0.56573,
+      "kalshi_logloss": 0.54357,
+      "diff_model_minus_kalshi": 0.02216,
+      "avg_model_pct": 32.77,
+      "hit_rate_pct": 35.63,
+      "avg_kalshi_mid_pct": 37.3
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1600,
+       "A_D": -0.02268,
+       "A_ci": [
+        -0.06635,
+        0.02066
+       ],
+       "B_E": 0.01676,
+       "B_ci": [
+        -0.01272,
+        0.04822
+       ]
+      },
+      "confirmation": {
+       "rows": 1207,
+       "A_D": -0.01062,
+       "A_ci": [
+        -0.05965,
+        0.03711
+       ],
+       "B_E": 0.02802,
+       "B_ci": [
+        -0.01069,
+        0.07238
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "low": {
+     "all": {
+      "rows": 3040,
+      "games": 64,
+      "model_logloss": 0.55636,
+      "kalshi_logloss": 0.52562,
+      "diff_model_minus_kalshi": 0.03074,
+      "avg_model_pct": 35.03,
+      "hit_rate_pct": 36.91,
+      "avg_kalshi_mid_pct": 36.28,
+      "diff_95ci": [
+       0.00862,
+       0.05387
+      ]
+     },
+     "discovery": {
+      "rows": 1702,
+      "games": 33,
+      "model_logloss": 0.57704,
+      "kalshi_logloss": 0.54162,
+      "diff_model_minus_kalshi": 0.03542,
+      "avg_model_pct": 33.69,
+      "hit_rate_pct": 37.13,
+      "avg_kalshi_mid_pct": 35.65
+     },
+     "confirmation": {
+      "rows": 1338,
+      "games": 31,
+      "model_logloss": 0.53005,
+      "kalshi_logloss": 0.50527,
+      "diff_model_minus_kalshi": 0.02477,
+      "avg_model_pct": 36.73,
+      "hit_rate_pct": 36.62,
+      "avg_kalshi_mid_pct": 37.07
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1702,
+       "A_D": 0.00716,
+       "A_ci": [
+        -0.03334,
+        0.04505
+       ],
+       "B_E": -0.01275,
+       "B_ci": [
+        -0.05195,
+        0.02682
+       ]
+      },
+      "confirmation": {
+       "rows": 1338,
+       "A_D": 0.01904,
+       "A_ci": [
+        -0.02679,
+        0.06471
+       ],
+       "B_E": 0.02074,
+       "B_ci": [
+        -0.01813,
+        0.0617
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "mid": {
+     "all": {
+      "rows": 2988,
+      "games": 64,
+      "model_logloss": 0.60589,
+      "kalshi_logloss": 0.55068,
+      "diff_model_minus_kalshi": 0.05521,
+      "avg_model_pct": 34.65,
+      "hit_rate_pct": 38.72,
+      "avg_kalshi_mid_pct": 36.87,
+      "diff_95ci": [
+       0.03198,
+       0.07792
+      ]
+     },
+     "discovery": {
+      "rows": 1485,
+      "games": 33,
+      "model_logloss": 0.57336,
+      "kalshi_logloss": 0.52646,
+      "diff_model_minus_kalshi": 0.0469,
+      "avg_model_pct": 34.16,
+      "hit_rate_pct": 38.99,
+      "avg_kalshi_mid_pct": 36.58
+     },
+     "confirmation": {
+      "rows": 1503,
+      "games": 31,
+      "model_logloss": 0.63803,
+      "kalshi_logloss": 0.57462,
+      "diff_model_minus_kalshi": 0.06342,
+      "avg_model_pct": 35.14,
+      "hit_rate_pct": 38.46,
+      "avg_kalshi_mid_pct": 37.16
+     },
+     "checks": {
+      "discovery": {
+       "rows": 1485,
+       "A_D": -0.0067,
+       "A_ci": [
+        -0.04902,
+        0.03711
+       ],
+       "B_E": -0.01726,
+       "B_ci": [
+        -0.06514,
+        0.03266
+       ]
+      },
+      "confirmation": {
+       "rows": 1503,
+       "A_D": -0.01526,
+       "A_ci": [
+        -0.05197,
+        0.02261
+       ],
+       "B_E": -0.0604,
+       "B_ci": [
+        -0.1097,
+        -0.00526
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "n/a": {
+     "all": {
+      "rows": 2398,
+      "games": 16,
+      "model_logloss": 0.54851,
+      "kalshi_logloss": 0.52813,
+      "diff_model_minus_kalshi": 0.02038,
+      "avg_model_pct": 34.48,
+      "hit_rate_pct": 35.4,
+      "avg_kalshi_mid_pct": 35.43,
+      "diff_95ci": [
+       -0.00476,
+       0.04285
+      ]
+     },
+     "discovery": {
+      "rows": 997,
+      "games": 7,
+      "model_logloss": 0.53825,
+      "kalshi_logloss": 0.50423,
+      "diff_model_minus_kalshi": 0.03403,
+      "avg_model_pct": 34.06,
+      "hit_rate_pct": 34.8,
+      "avg_kalshi_mid_pct": 35.31
+     },
+     "confirmation": {
+      "rows": 1401,
+      "games": 9,
+      "model_logloss": 0.55581,
+      "kalshi_logloss": 0.54513,
+      "diff_model_minus_kalshi": 0.01068,
+      "avg_model_pct": 34.77,
+      "hit_rate_pct": 35.83,
+      "avg_kalshi_mid_pct": 35.51
+     }
+    }
+   }
+  },
+  "home_away": {
+   "A_applies": true,
+   "bins": {
+    "away": {
+     "all": {
+      "rows": 5591,
+      "games": 80,
+      "model_logloss": 0.557,
+      "kalshi_logloss": 0.53996,
+      "diff_model_minus_kalshi": 0.01704,
+      "avg_model_pct": 34.12,
+      "hit_rate_pct": 36.99,
+      "avg_kalshi_mid_pct": 36.09,
+      "diff_95ci": [
+       0.00162,
+       0.03172
+      ]
+     },
+     "discovery": {
+      "rows": 2845,
+      "games": 40,
+      "model_logloss": 0.55732,
+      "kalshi_logloss": 0.53579,
+      "diff_model_minus_kalshi": 0.02152,
+      "avg_model_pct": 33.8,
+      "hit_rate_pct": 38.0,
+      "avg_kalshi_mid_pct": 35.74
+     },
+     "confirmation": {
+      "rows": 2746,
+      "games": 40,
+      "model_logloss": 0.55667,
+      "kalshi_logloss": 0.54427,
+      "diff_model_minus_kalshi": 0.0124,
+      "avg_model_pct": 34.46,
+      "hit_rate_pct": 35.94,
+      "avg_kalshi_mid_pct": 36.46
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2845,
+       "A_D": -0.00039,
+       "A_ci": [
+        -0.03834,
+        0.03703
+       ],
+       "B_E": 0.01225,
+       "B_ci": [
+        -0.0219,
+        0.04913
+       ]
+      },
+      "confirmation": {
+       "rows": 2746,
+       "A_D": 0.00305,
+       "A_ci": [
+        -0.02809,
+        0.03321
+       ],
+       "B_E": 0.02214,
+       "B_ci": [
+        -0.00983,
+        0.05287
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    },
+    "home": {
+     "all": {
+      "rows": 5642,
+      "games": 80,
+      "model_logloss": 0.57769,
+      "kalshi_logloss": 0.53261,
+      "diff_model_minus_kalshi": 0.04508,
+      "avg_model_pct": 34.58,
+      "hit_rate_pct": 37.73,
+      "avg_kalshi_mid_pct": 36.62,
+      "diff_95ci": [
+       0.02473,
+       0.06678
+      ]
+     },
+     "discovery": {
+      "rows": 2939,
+      "games": 40,
+      "model_logloss": 0.56422,
+      "kalshi_logloss": 0.52399,
+      "diff_model_minus_kalshi": 0.04023,
+      "avg_model_pct": 33.85,
+      "hit_rate_pct": 37.97,
+      "avg_kalshi_mid_pct": 36.24
+     },
+     "confirmation": {
+      "rows": 2703,
+      "games": 40,
+      "model_logloss": 0.59234,
+      "kalshi_logloss": 0.54198,
+      "diff_model_minus_kalshi": 0.05035,
+      "avg_model_pct": 35.38,
+      "hit_rate_pct": 37.48,
+      "avg_kalshi_mid_pct": 37.03
+     },
+     "checks": {
+      "discovery": {
+       "rows": 2939,
+       "A_D": 0.00038,
+       "A_ci": [
+        -0.03516,
+        0.03665
+       ],
+       "B_E": -0.01504,
+       "B_ci": [
+        -0.04463,
+        0.01424
+       ]
+      },
+      "confirmation": {
+       "rows": 2703,
+       "A_D": -0.00309,
+       "A_ci": [
+        -0.03492,
+        0.02735
+       ],
+       "B_E": -0.01894,
+       "B_ci": [
+        -0.05033,
+        0.01241
+       ]
+      }
+     },
+     "call": {
+      "eligible": true,
+      "A_lead": false,
+      "B_lead": false
+     }
+    }
+   }
+  }
+ },
+ "eligible_bins": 35,
+ "leads": [],
+ "chance_analytic": {
+  "per_check_rate": 0.00125,
+  "A_checks": 28,
+  "B_checks": 35,
+  "expected_hits": 0.079
+ },
+ "chance_placebo": {
+  "runs": 200,
+  "avg_hits_per_run": 0.0,
+  "share_of_runs_with_any_hit": 0.0,
+  "max_hits_in_a_run": 0
+ },
+ "verdict": "NO LEADS FOUND"
+}
