@@ -1,10 +1,10 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-19T06:25:32Z by research/lab/report.py. Constitution v7 (`70ed618b8ccc`). Do not edit by hand._
+_Generated 2026-10-19T06:27:04Z by research/lab/report.py. Constitution v7 (`70ed618b8ccc`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 20 registered, 18 tried, 0 running
+- Candidates: 20 registered, 18 tried, 1 running
 - Ledger attempts (all count in the Holm correction): 18 · across all sports: 18 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
@@ -26,7 +26,7 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `elo-resist` + Market-resistant K | spread | failed · gate_2 | +0.88 | -0.39 | +0.69 | +0.39 [-0.40, +1.18] | 1.000 | 51.1% / -1.2% (2412) |
 | `elo-revert` + Stronger preseason reversion | spread | failed · gate_2 | +0.45 | -0.68 | +1.25 | +0.35 [-0.40, +1.09] | 1.000 | 51.4% / -0.7% (2412) |
 | `elo-travel` + Travel distance | spread | failed · gate_2 | +0.06 | -0.74 | +0.82 | +0.06 [-0.71, +0.83] | 1.000 | 50.6% / -2.2% (2412) |
-| `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | queued | — | — | — | — | — | — |
+| `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | running | — | — | — | — | — | — |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | queued | — | — | — | — | — | — |
 | `tot-epa` + EPA per play as efficiency | total | failed · gate_1 | -0.68 | -0.32 | -1.33 | -0.78 [-1.57, +0.00] | 1.000 | 48.8% / -5.6% (2453) |
 | `tot-pe-fast` Pace × efficiency, fast (half-life 4) | total | failed · gate_2 | +0.13 | -0.75 | -0.18 | -0.27 [-1.03, +0.50] | 1.000 | 50.2% / -2.9% (2453) |
@@ -49,8 +49,8 @@ Verdicts (Inspector General):
 - `elo-resist`: Fails the lab: not positive in gate 2 (2020–22: -0.39 pts); pooled +0.39 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `elo-revert`: Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 18 attempts.
-- `s-e27628a8`: Registered; runs in the next nightly lab run.
-- `s-f369d5f7`: Registered; runs in the next nightly lab run.
+- `s-e27628a8`: Running through the three gates now.
+- `s-f369d5f7`: Waiting to start.
 - `tot-epa`: Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `tot-pe-fast`: Fails the lab: not positive in gate 2 (2020–22: -0.75 pts); pooled -0.27 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `tot-pe-slow`: Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.31 pts, Holm-adjusted p = 1.000 over 18 attempts.
@@ -58,6 +58,7 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Research Lab #5** 2026-10-19T06:27:04Z: 2 tested → running through the gates
 - **Search round 1** 2026-10-19T06:25:32Z: 4,436 models scored → 929 consistent → 92 strong (t ≥ 2.5) → 2 sent to confirmation
 - **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 
