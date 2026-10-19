@@ -10,27 +10,31 @@ which reads `status.json` (contract: `STATUS_SCHEMA.md`).
 | File | What it is |
 |---|---|
 | `RESEARCH_LAB_CONSTITUTION.md` | The rules: data split, pricing, metric, multiple-testing rule, exam budget, promotion and stop rules. Hash-locked in `FROZEN.sha256`; changes = a new version, logged in `CONSTITUTION_LOG.md` and `FROZEN_CHANGES.md`. |
-| `candidates/*.yaml` | One file per idea, committed before it runs, locked once it has run. |
+| `queue/NNN-<id>.yaml` | Ideas waiting their turn, in order. Free to edit, reorder or delete until the lab takes them (18 per run). |
+| `candidates/*.yaml` | One file per idea that has been taken to run; locked once it has run. |
 | `LEDGER.csv` | Every attempt, never edited or deleted (append-only; the frozen guard checks it). |
 | `results/<id>.json` | Every number for one candidate: three gates, pooled, rule eras, pick record at Kalshi pricing. |
 | `status.json`, `STATUS.md` | Generated after every run (the /lab page and a readable copy). |
 | `LESSONS.md` | Generated, EXPLORATORY: did each idea help, fade or do nothing against the model it builds on. |
 | `exam/EXAMS.csv` | Sealed 2025 exams (at most 3; each final). |
 | `promoted.json`, `paper/<name>.csv` | Promoted models ("Promoted, not proven") and their pre-kickoff Kalshi paper log. |
-| `data/nfl/` | The lab's cache of nflverse data, seasons 2002–2024 only. 2025 is sealed and never stored here. |
+| `data/nfl/` | The lab's cache of nflverse data, seasons 1999–2024 only. 2025 is sealed and never stored here. |
+| `constitution/` | Earlier Constitution versions, unchanged (v1). |
 | `lab/` | The code: `lab.py` (runner), `inspector.py` (Inspector General), `models.py`, `metrics.py`, `data.py`, `report.py`. |
 
 ## How it runs
-- **Research Lab -- nightly run** (`.github/workflows/research_lab.yml`, 3:37am ET and on demand): if any candidate
-  has no ledger row, marks it running on /lab, runs it through 2016–18, 2019–21 and 2022–24, writes its results and
-  ledger row, locks its file, then runs the Inspector General's review. Nights with nothing new stop after one check.
+- **Research Lab -- nightly run** (`.github/workflows/research_lab.yml`, 3:37am ET and on demand): takes the next
+  ideas from `queue/` (up to 18 per run, counting any registered candidate that hasn't run), commits that move, marks
+  them running on /lab, runs them through the gates (Constitution v2: 2006–12, 2013–18, 2019–24; training 1999–2005),
+  writes their results and ledger rows, locks their files, then runs the Inspector General's review. Nights with
+  nothing new stop after one check. The 18 v1 candidates ran under v1's seasons; their rows say so.
 - **Research Lab -- Inspector General** (`.github/workflows/research_inspector_general.yml`): `review` on demand;
   `exam` only when the owner starts it (spends 1 of 3 sealed exams on the best lab pass, recorded and pushed before the
   sealed data is downloaded); `paper` every 3 hours, which does nothing until a model is promoted.
 
 ## Adding an idea
-Add `research/candidates/<new-id>.yaml` (copy a similar one, change the parameters, write the reason), commit it to
-`main`, and the next nightly run picks it up. Every file is an attempt in the Holm correction, so each one makes it
+Add `research/queue/<next number>-<new-id>.yaml` (copy a similar one, change the parameters, write the reason) and
+commit it to `main`; it runs when its turn comes, 18 per night. Every file is an attempt in the Holm correction, so each one makes it
 harder for every candidate to pass: add ideas sparingly, and never known betting angles (Constitution A3.5).
 
 ## Locally
