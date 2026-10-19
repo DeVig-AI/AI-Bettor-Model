@@ -1,4 +1,4 @@
-# Research Lab search menu, college football (Part C) (Constitution v8 A3.3c). Every round scores, in this order, up to
+# Research Lab search menu, college football (Part C) (Constitution v9 A3.3c). Every round scores, in this order, up to
 # search.max_new_per_round configurations not scored before: the grid below (all combinations, in order), then
 # the neighbours of the 30 best per market (one setting one step along its ladder), then samples
 # weighted by what past rounds learned, then uniform samples (both seeded by round), then blends of the best.
@@ -266,3 +266,22 @@ search:
   max_disagreement_corr: 0.95
   learned_samples: 300
   random_samples: 100
+  signal_pairs_of: 6
+  signal_trios_of: 4
+signal_bases:
+  spread:
+  - type: srs
+    params:
+      hfa_pts: 2.5
+      carry: 0.6
+      prior_w: 3
+      margin_cap: null
+  total:
+  - type: pace_eff
+    params:
+      halflife: 6
+      season_carry: 0.5
+      calibrate: true
+      league_window: 1600
+      efficiency: points
+      pace: true

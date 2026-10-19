@@ -150,6 +150,7 @@ class CFB(unittest.TestCase):
                                            "pace": [True, False]}
             real["search"]["shortlist_min_t"] = -99
             real["search"].update(learned_samples=2, random_samples=1)
+            real["signal_bases"] = {}
             with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
                 yaml.safe_dump(real, f)
             CD.load_lab = lambda *a: {k: v.copy() for k, v in self.data.items()}

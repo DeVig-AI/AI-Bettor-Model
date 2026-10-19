@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v8
+# DeVig Research Lab -- Constitution v9
 
-Version: **v8** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v7 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v7.md`; v6 to v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v7" at the end)
+Version: **v9** · adopted 2026-10-20 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v8 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v8.md`; v7 to v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v8" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -29,12 +29,17 @@ result, and it will be reported exactly like a success: every number, plainly.
 4. Rules may only be made stricter mid-season. Loosening a rule (a bigger exam budget, a weaker correction, a smaller
    fade bar) waits for the next season's version.
 
-### A2. Roles (no AI anywhere in the loop)
+### A2. Roles (no AI anywhere in the scoring loop)
 - **Research lab** (`research/lab/`, workflow "Research Lab -- ..."): runs every registered candidate that has not run
   yet through the exploration gates, deterministically, inside GitHub Actions. It never sees sealed data.
 - **Inspector General** (`research/lab/inspector.py`, workflow "Research Lab -- Inspector General"): judges the lab's
   numbers against these rules, applies the multiple-testing correction over the whole ledger, and is the only code
   that may download sealed data (the exam) or current-season data (the paper season).
+- **Researcher** (since v9; a Claude session a scheduled task starts weekly, instructions in `research/RESEARCHER.md`):
+  **proposes** new signals (A3.3e) and menu values by pull request, each with a football reason. It never scores,
+  judges, merges or runs anything in the loop, and it may read only the search side (signal libraries, menus, search
+  leaderboards and code), never the ledger, results, exams, status, lessons or paper logs. Nothing it proposes is
+  used until the owner merges it; everything merged is then scored by the same deterministic code as any idea.
 - **The owner** decides when a sealed exam is spent (a manual run of the Inspector General workflow) and whether a
   promoted model ever appears anywhere outside `research/`.
 
@@ -80,6 +85,15 @@ result, and it will be reported exactly like a success: every number, plainly.
      (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
    - **What the search learns from:** only its own search-season scores. Confirmation, exam and paper-season results
      are never read by the search (feeding them back would turn the confirmation seasons into training data).
+3e. **Signals.** A signal is an extra input added on top of a base rating model, declared in the sport's
+   `SIGNALS.yaml` (NFL `research/search/`, CFB `research/cfb/search/`) with a football reason, and built **only** from
+   the fields `research/lab/signals.py` allows: rolling per-team values of pre-game team statistics (offense or
+   defense), rest, bye, short week, travel and divisional games, and quarterback changes. The code rejects any other
+   field, so weather, dates, kickoff times, prices and situational spots cannot be expressed (A3.5 still applies to
+   what may be proposed). Each round the search tests every signal alone on each of the menu's `signal_bases`, then
+   pairs and trios of the signals with the best search t so far; a signal's weights are fit once on the training
+   seasons' residuals (actual − base forecast). Signal models are configurations like any other: search scores are
+   free, and only shortlisted ones are confirmed and count as attempts.
 4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
    the training and search seasons), and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
@@ -429,4 +443,18 @@ The owner asked for the loop to run around the clock, never retest the same mode
 
 Unchanged: the shortlist (t ≥ 2.5, at most 2 per market in any 7 days), so running more often sends no more candidates
 to confirmation; every other rule. Search rounds 1-3 (NFL) ran under v6/v7 before this version.
+
+---
+
+## Changes from v8 (2026-10-20)
+
+The owner asked for a researcher that keeps adding reasonable new signals to test:
+1. **Signals (A3.3e):** a library of football-reasoned signals per sport, restricted by code to pre-game team
+   statistics, rest, travel, divisional games and quarterback changes; the search tests each on base rating models,
+   alone and in combination, weights fit on training seasons only. Seeded with 17 NFL and 4 college football signals.
+2. **The researcher (A2):** a weekly Claude session that proposes new signals by pull request for the owner to approve,
+   reading only the search side, never confirmation, exam or paper results. This is the first AI role in the lab; it
+   sits outside the scoring loop, and nothing it writes is used unless the owner merges it.
+
+Unchanged: every scoring, testing, correction, exam and promotion rule.
 

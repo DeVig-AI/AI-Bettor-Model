@@ -1,4 +1,4 @@
-"""Research Lab search (Constitution v8 A3.3c): find candidates automatically, deterministically, with no AI.
+"""Research Lab search (Constitution v9 A3.3c): find candidates automatically, deterministically, with no AI.
 
     python3 -m research.lab.search round [--force] [--sport CFB]   # one round if 20 hours have passed (or --force)
 
@@ -170,6 +170,33 @@ def samples(menu, scored_rows, n, seed, learned=True):
     return out
 
 
+def signal_configs(menu, scored_rows):
+    """Signals (A3.3e) on top of the menu's signal_bases: each signal alone, then pairs of the best `signal_pairs_of`
+    and trios of the best `signal_trios_of`, ranked by their best single-signal search t so far (learned)."""
+    from . import signals as SG
+    lib = SG.load_library()
+    bases = menu.get("signal_bases") or {}
+    S = menu["search"]
+    best = {}
+    for r in scored_rows:
+        if r["type"] == "signals" and r["t"] != "-inf":
+            ids = [x["id"] for x in json.loads(r["config"])["params"]["signals"]]
+            if len(ids) == 1:
+                best[ids[0]] = max(best.get(ids[0], -np.inf), float(r["t"]))
+    out = []
+    for market, blist in bases.items():
+        mine = [x for x in lib if market in x["markets"]]
+        ranked = sorted(mine, key=lambda x: (-best.get(x["id"], -np.inf), x["id"]))
+        sets = [[x] for x in mine]
+        sets += [list(c) for c in itertools.combinations(ranked[:S.get("signal_pairs_of", 0)], 2)]
+        sets += [list(c) for c in itertools.combinations(ranked[:S.get("signal_trios_of", 0)], 3)]
+        for b in blist:
+            for st in sets:
+                out.append({"market": market, "type": "signals",
+                            "params": {"base": b, "signals": sorted(st, key=lambda x: x["id"]), "ridge": 1.0}})
+    return out
+
+
 def fingerprint(out):
     """Identical forecasts on the search seasons = the same model under another name (A3.3c: scored once)."""
     v = out.forecast[(out.season <= C.SEARCH[1])].values
@@ -206,6 +233,10 @@ def label(cfg):
     if t == "pace_eff":
         return (f"{'Pace × ' if p.get('pace', True) else 'Points, no pace · '}{p['efficiency']} · half-life "
                 f"{p['halflife']:g} · carry {p['season_carry']:g}")
+    if t == "signals":
+        b = p["base"]
+        return f"Signals ({label({'market': cfg['market'], 'type': b['type'], 'params': b['params']})}) + " + \
+            ", ".join(x["id"] for x in p["signals"])
     if t == "blend":
         ws = p["weights"]
         same = len(set(round(w, 6) for w in ws)) == 1
@@ -335,6 +366,7 @@ def run_round(force=False, log=print, progress=None):
     # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
     # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round
     todo = [c for c in grid(menu) if config_id(c) not in scored]
+    todo += signal_configs(menu, list(scored.values()))
     todo += focus(menu, list(scored.values()))
     for market in ("spread", "total"):
         singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
@@ -471,12 +503,13 @@ def write_candidate(cfg, r, n_round):
     cid = config_id(cfg)
     c = {"id": cid, "name": label(cfg), "market": cfg["market"],
          "family": {"elo": "Elo family", "team_rating": "Team rating", "pace_eff": "Pace × efficiency",
-                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend"}.get(cfg["type"], cfg["type"]) + " · search",
+                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend",
+                    "signals": "Signals"}.get(cfg["type"], cfg["type"]) + " · search",
          "parent": None,
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
                     f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": f"automatic search ({C.SPORT}, Constitution v8 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution v9 A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
                     "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"]),
                     "sent_at": L.now()},

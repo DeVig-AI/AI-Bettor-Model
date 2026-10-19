@@ -1,4 +1,4 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v8: Part B NFL,
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v9: Part B NFL,
 Part C college football); the Constitution wins if they ever disagree.
 
 The module holds one sport's settings at a time: NFL by default, `use("CFB")` switches every constant below to
@@ -8,7 +8,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v8"
+CONSTITUTION_VERSION = "v9"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"

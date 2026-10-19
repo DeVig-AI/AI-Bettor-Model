@@ -524,8 +524,14 @@ def run_ppa(p, data):
     return f[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
 
 
+def _run_signals(p, d, m):
+    from .signals import run_signals
+    return run_signals(p, d, m)
+
+
 FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa,
-            "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m)}
+            "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m),
+            "signals": _run_signals}
 MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}   # the other families take the candidate's market
 
 

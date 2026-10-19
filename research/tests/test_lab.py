@@ -258,6 +258,7 @@ class Search(unittest.TestCase):
              "rules": ["points_has_no_pace"]}]
         m["search"]["shortlist_min_t"] = -99          # synthetic data: let the shortlist rules be exercised
         m["search"].update(learned_samples=2, random_samples=1)   # keep the tests quick
+        m["signal_bases"] = {}
         with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
 
@@ -575,6 +576,61 @@ class Visibility(unittest.TestCase):
                 text = fh.read()
             for bad in ("research/", "status.json", "/api/lab", 'href="/lab', "Research Lab", "Gauntlet-"):
                 self.assertNotIn(bad, text, f"{os.path.relpath(f, ROOT)} mentions {bad!r}")
+
+
+class Signals(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from research.lab import signals as SG
+        cls.SG = SG
+        cls.data = synthetic()
+        cls.lib = {x["id"]: x for x in SG.load_library()}
+
+    def cand(self, ids, market="spread"):
+        base = {"type": "team_rating", "params": {"metric": "epa", "halflife": 8, "season_carry": 0.6, "def_weight": 1.0,
+                                                  "pace": "none" if market == "spread" else "plays"}}
+        return {"id": "x", "market": market, "model": {"type": "signals", "params": {
+            "base": base, "signals": [self.lib[i] for i in ids], "ridge": 1.0}}}
+
+    def test_library_and_rules(self):
+        self.assertGreaterEqual(len(self.lib), 15)
+        for bad in ({"id": "w", "kind": "team", "side": "offense", "num": {"temp": 1}, "halflife": 8, "reason": "r"},
+                    {"id": "w", "kind": "schedule", "field": "kickoff_hour", "reason": "r"},
+                    {"id": "w", "kind": "weather", "reason": "r"},
+                    {"id": "w", "kind": "team", "side": "offense", "num": {"epa": 1}, "halflife": 8}):
+            with self.assertRaises(self.SG.SignalError):
+                self.SG.validate(dict(bad))
+        C.use("CFB")
+        try:
+            self.assertEqual(len(self.SG.load_library()), 4)
+        finally:
+            C.use("NFL")
+
+    def test_every_signal_runs_and_no_lookahead(self):
+        g = self.data["games"]
+        target = g.index[g.season == 2010][100]
+        gid = g.game_id[target]
+        for sid, sig in self.lib.items():
+            market = sig["markets"][0]
+            c = self.cand([sid], market)
+            a, fit = models.run(c, self.data)
+            self.assertTrue(np.isfinite(a.forecast).all(), sid)
+            self.assertEqual(fit["fit_seasons"], f"{C.TRAIN[0]}-{C.TRAIN[1]}")
+            alt = {k: v.copy() for k, v in self.data.items()}
+            slot = alt["games"].loc[target, "gameday"]
+            later = alt["games"].gameday >= slot
+            alt["games"].loc[later, "home_score"] += 9
+            alt["team_games"].loc[alt["team_games"].game_id.isin(alt["games"].game_id[later]), ["epa", "succ"]] += 3
+            b, _ = models.run(c, alt)
+            self.assertAlmostEqual(a.set_index("game_id").forecast[gid], b.set_index("game_id").forecast[gid],
+                                   places=9, msg=sid)
+
+    def test_qb_change_and_combos(self):
+        out, fit = models.run(self.cand(["qb-change", "rest-diff", "off-success"]), self.data)
+        self.assertEqual(set(fit["beta"]), {"qb-change", "rest-diff", "off-success"})
+        from research.lab import search as SR
+        cs = SR.signal_configs(SR.load_menu(os.path.join(C.SEARCH_DIR, "MENU.yaml")), [])
+        self.assertTrue(cs and all(SR.label(c).startswith("Signals (") for c in cs))
 
 
 class NextRun(unittest.TestCase):
