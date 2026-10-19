@@ -1,0 +1,31 @@
+# Research Lab candidate elo-bye -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-bye
+name: + Rest / bye bonus
+market: spread
+family: Elo family
+parent: elo-base
+reason: 'Teams coming off a bye have had extra rest and preparation: +25 Elo for a team whose rest is 13+ days (not week 1).'
+source: FiveThirtyEight's NFL methodology page (2019+ model); that page is offline, so the number is as recalled, not re-checked
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    revert_center: none
+    mean: 1505
+    elo_per_point: 25
+    mov: none
+    bye_elo: 25
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

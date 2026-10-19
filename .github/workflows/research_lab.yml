@@ -1,0 +1,75 @@
+name: Research Lab -- nightly run
+
+# Runs every registered candidate in research/candidates/ that has no ledger row yet through the three exploration
+# gates (2016-18, 2019-21, 2022-24), then the Inspector General's review. Deterministic; no AI in the loop.
+# Rules: research/RESEARCH_LAB_CONSTITUTION.md. Nights with nothing new to run stop after one quick check.
+on:
+  schedule:
+    - cron: '37 7 * * *'     # 3:37am ET
+  workflow_dispatch:
+    inputs:
+      rerun:
+        description: 'Re-run ONE candidate whose last attempt crashed (its id). Leave empty for a normal run. Every attempt counts in the correction.'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-lab        # the lab and the Inspector General never write research/ at the same time
+  cancel-in-progress: false
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RERUN: ${{ inputs.rerun }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Fill the data cache if a season is missing (2002-2024 only; no-op when complete)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.data fetch
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start ${RERUN:+--rerun "$RERUN"}
+          research/lab/push.sh "Research Lab: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run ${RERUN:+--rerun "$RERUN"}
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab results $(date -u +%Y-%m-%dT%H:%M:%SZ)"

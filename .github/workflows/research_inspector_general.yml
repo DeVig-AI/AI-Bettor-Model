@@ -1,0 +1,78 @@
+name: Research Lab -- Inspector General
+
+# The Inspector General (research/lab/inspector.py): the only code that downloads the sealed 2025 season (the exam)
+# or current-season data (the paper season), and never into the repo. Rules: research/RESEARCH_LAB_CONSTITUTION.md.
+#   review -- re-judge every candidate against the whole ledger (also runs after every lab run)
+#   exam   -- spend ONE of the 3 sealed 2025 exams on the best current lab pass. Final; a crash still spends it.
+#   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
+on:
+  schedule:
+    - cron: '41 */3 * * *'   # paper season; exits at once while no model is promoted
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'review, paper, or exam (spends 1 of the 3 sealed exams on the best lab pass; final)'
+        type: choice
+        options: [review, paper, exam]
+        default: review
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-lab
+  cancel-in-progress: false
+
+jobs:
+  inspector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ACTION: ${{ inputs.action || 'paper' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Anything to do?
+        id: go
+        run: |
+          if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' research/promoted.json 2>/dev/null; then
+            echo "No promoted model: nothing to paper-track."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.go.outputs.go == 'true'
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        if: steps.go.outputs.go == 'true'
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Locked files unchanged
+        if: steps.go.outputs.go == 'true'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Review
+        if: steps.go.outputs.go == 'true' && env.ACTION == 'review'
+        run: python3 -m research.lab.inspector review
+
+      - name: Exam -- record that one sealed exam is spent, and push that BEFORE any sealed data is downloaded
+        if: steps.go.outputs.go == 'true' && env.ACTION == 'exam'
+        run: |
+          python3 -m research.lab.inspector exam-register
+          research/lab/push.sh "Inspector General: sealed exam registered $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Exam -- download the sealed season (memory only) and score it
+        if: steps.go.outputs.go == 'true' && env.ACTION == 'exam'
+        run: python3 -m research.lab.inspector exam-run
+
+      - name: Paper season
+        if: steps.go.outputs.go == 'true' && env.ACTION == 'paper'
+        run: python3 -m research.lab.inspector paper
+
+      - name: Commit and push
+        if: always() && steps.go.outputs.go == 'true'
+        run: research/lab/push.sh "Inspector General ($ACTION) $(date -u +%Y-%m-%dT%H:%M:%SZ)"

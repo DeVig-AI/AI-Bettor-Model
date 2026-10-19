@@ -1,0 +1,16 @@
+# Research Lab candidate tot-epa -- registered before it runs (Constitution A3). Never edit after it has run.
+id: tot-epa
+name: + EPA per play as efficiency
+market: total
+family: Pace × efficiency
+parent: tot-pe
+reason: Expected points added per play is a steadier measure of offence and defence than raw points per play; map it to points
+  with a fit on 2006–15.
+source: DeVig's own; standard pace × efficiency idea
+model:
+  type: pace_eff
+  params:
+    halflife: 8
+    season_carry: 0.6666666666666666
+    efficiency: epa
+    calibrate: true

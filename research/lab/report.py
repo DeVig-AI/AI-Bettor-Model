@@ -1,0 +1,206 @@
+"""Reports after every run (Constitution A10): research/status.json for the owner's /lab page (contract:
+research/STATUS_SCHEMA.md), research/STATUS.md and research/LESSONS.md (EXPLORATORY). All generated, never hand-written.
+"""
+import datetime as dt
+import json
+import os
+
+from . import config as C
+from . import inspector as IG
+from . import lab as L
+
+GATE_NAMES = [g[0] for g in C.GATES]
+PASSED_LAB = ("lab_pass", "exam_pass", "exam_fail", "promoted", "stopped")
+PASSED_EXAM = ("exam_pass", "promoted", "stopped")
+MINUTES_PER_CANDIDATE = 1.5
+
+
+def r2(x):
+    return None if x is None else round(float(x), 2)
+
+
+def ci2(c):
+    return None if not c or c[0] is None else [r2(c[0]), r2(c[1])]
+
+
+def candidate_entry(c, res, v, running, gate_now, started_at, eta_at, attempts):
+    e = {"id": c["id"], "name": c["name"], "market": c["market"], "family": c["family"], "reason": c["reason"],
+         "state": "queued", "fail_reason": "", "gate_now": None, "started_at": None, "eta_at": None,
+         "gates": [{"name": n, "effect": None, "ci": None, "games": None, "passed": None} for n in GATE_NAMES],
+         "pooled": None, "attempts": attempts, "p_bar": C.P_BAR, "fade_ratio": None, "fade_needed": C.FADE_NEEDED,
+         "kalshi": None, "rule_split": [], "exam": {"state": "not_taken", "effect": None, "ci": None, "taken_at": None,
+                                                    "note": ""},
+         "verdict": "Registered; runs in the next nightly lab run.", "graded_at": None, "run_number": None, "run_url": None,
+         "file_url": C.BLOB + f"research/candidates/{c['id']}.yaml", "updated_at": None}
+    if res:
+        e["gates"] = [{"name": g["name"], "effect": r2(g["effect"]), "ci": ci2(g.get("ci")), "games": g["games"],
+                       "passed": bool(g["effect"] is not None and g["effect"] > 0)} for g in res["gates"]]
+        p = res["pooled"]
+        e["pooled"] = {"name": p["name"], "effect": r2(p["effect"]), "ci": ci2(p.get("ci")),
+                       "adj_p": v.get("adj_p") if v else None}
+        k = p.get("kalshi") or {}
+        e["kalshi"] = {"picks": k.get("picks"), "win_rate": k.get("win_rate"), "break_even": k.get("break_even"),
+                       "roi": k.get("roi")}
+        e["rule_split"] = [{"label": s["label"], "effect": r2(s["effect"]), "note": f"{s['games']} games · {s['note']}"}
+                           for s in res["rule_split"]]
+        e["file_url"] = C.BLOB + f"research/results/{c['id']}.json"
+        e["updated_at"] = res.get("ran_at")
+    if v:
+        e.update(state=v.get("state", "queued"), fail_reason=v.get("fail_reason", ""), verdict=v.get("verdict", ""),
+                 graded_at=v.get("graded_at"), run_number=int(v["run_number"]) if v.get("run_number") else None,
+                 run_url=v.get("run_url"), fade_ratio=v.get("fade_ratio"))
+        if v.get("exam"):
+            e["exam"] = v["exam"]
+        if v.get("promoted_name"):
+            e["name"] = f"{v['promoted_name']} · {c['name']}"
+    if c["id"] in running:
+        first = running.index(c["id"]) == 0
+        e.update(state="running" if first else "queued", gate_now=gate_now if first else None,
+                 started_at=started_at if first else None, eta_at=eta_at if first else None,
+                 verdict="Running through the three gates now." if first else "Waiting to start.")
+    return e
+
+
+def paper_summary():
+    out = []
+    for p in IG.promoted_list():
+        log = IG.read_csv(os.path.join(C.ROOT, p["paper_log"]))
+        picks = {r["game_id"]: r for r in log if r["event"] == "pick"}
+        gr = [r for r in log if r["event"] == "grade"]
+        w = sum(r["outcome"] == "win" for r in gr)
+        cost = sum(float(r["cost"]) for r in gr)
+        prof = sum(float(r["profit"]) for r in gr)
+        be = (cost / len(gr)) if gr else None
+        logged = len(picks)
+        nopick = sum(1 for r in picks.values() if r["side"] in ("", "none") or not r["price"])
+        note = (f"Promoted, not proven. {logged} games logged before kickoff ({nopick} without a pick); "
+                f"{len(gr)} graded at Kalshi prices"
+                + (f", average break-even {be:.1%}, win rate {w / len(gr):.1%}." if gr else ".")
+                + (" Stopped by the stop rule." if p.get("state") == "stopped" else ""))
+        out.append({"name": p["name"], "picks": len(gr), "wins": w, "losses": len(gr) - w,
+                    "roi": round(prof / cost, 4) if cost else None, "vs_kalshi_note": note})
+    return out
+
+
+def lessons(cands, res, v):
+    out = []
+    for cid, c in cands.items():
+        r = res.get(cid)
+        if not r or (v.get(cid) or {}).get("fail_reason") == "error":
+            continue
+        e = [g["effect"] for g in r["gates"]]
+        par = c.get("parent")
+        if par:
+            pr = res.get(par)
+            if not pr:
+                continue
+            d = [a - b for a, b in zip(e, [g["effect"] for g in pr["gates"]])]
+            vs = f"vs {cands[par]['name']}"
+        else:
+            d = e
+            vs = "vs the line-only baseline"
+        if all(x > 0 for x in d):
+            kind, word = "helped", "helped in every gate"
+        elif d[0] > 0 and d[2] < C.FADE_NEEDED * d[0]:
+            kind, word = "faded", "helped in 2016–18, then faded"
+        else:
+            kind, word = "no_effect", "no consistent effect"
+        txt = (f"{c['name']} {vs}: {word} ({' / '.join(f'{x:+.2f}' for x in d)} pts in "
+               f"{' / '.join(GATE_NAMES)}).")
+        out.append({"text": txt, "kind": kind, "candidates": [cid]})
+    order = {"helped": 0, "faded": 1, "no_effect": 2}
+    return sorted(out, key=lambda x: order[x["kind"]])
+
+
+def build(running=(), started_at=None, gate_now=1):
+    cands = L.load_candidates()
+    ledger = L.read_ledger()
+    v = IG.verdicts(ledger, cands)
+    res = {cid: IG.results(cid) for cid in cands}
+    res = {k: x for k, x in res.items() if x}
+    attempts = sum(1 for r in ledger if r["sport"] == C.SPORT)
+    running = list(running)
+    eta = None
+    if started_at and running:
+        t = dt.datetime.fromisoformat(started_at.replace("Z", "+00:00"))
+        eta = (t + dt.timedelta(minutes=MINUTES_PER_CANDIDATE * len(running))).strftime("%Y-%m-%dT%H:%M:%SZ")
+    entries = [candidate_entry(c, res.get(cid), v.get(cid), running, gate_now, started_at, eta, attempts)
+               for cid, c in cands.items()]
+    states = [x["state"] for x in entries]
+    used = IG.budget_used()
+    status = {
+        "updated_at": L.now(), "scope": C.SPORT, "effect_name": "Edge beyond the closing line", "effect_unit": "pts",
+        "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+        "exam_name": f"Sealed {C.SEALED_SEASON} exam",
+        "constitution": {"version": C.CONSTITUTION_VERSION, "sha256": L.constitution_sha()},
+        "links": {"constitution": C.BLOB + C.CONSTITUTION, "ledger": C.BLOB + "research/LEDGER.csv",
+                  "lessons": C.BLOB + "research/LESSONS.md"},
+        "counts": {"tried": len({r["candidate_id"] for r in ledger if r["sport"] == C.SPORT} & set(cands)),
+                   "running": states.count("running"),
+                   "lab_pass": sum(s in PASSED_LAB for s in states), "exam_pass": sum(s in PASSED_EXAM for s in states),
+                   "exam_budget_left": max(0, C.EXAM_BUDGET - used), "exam_budget_total": C.EXAM_BUDGET},
+        "candidates": entries,
+        "lessons": lessons(cands, res, v),
+        "promoted": paper_summary(),
+    }
+    return status, ledger
+
+
+def status_md(s, ledger):
+    c = s["counts"]
+    lines = [
+        "# Research Lab -- status (NFL)", "",
+        f"_Generated {s['updated_at']} by research/lab/report.py. Constitution {s['constitution']['version']} "
+        f"(`{s['constitution']['sha256'][:12]}`). Do not edit by hand._", "",
+        f"**Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the "
+        f"line-only baseline (Constitution A5); break-even at Kalshi pricing {C.COST:.2%}.", "",
+        f"- Candidates: {len(s['candidates'])} registered, {c['tried']} tried, {c['running']} running",
+        f"- Ledger attempts (all count in the Holm correction): {sum(1 for r in ledger if r['sport'] == C.SPORT)}",
+        f"- Lab passes: {c['lab_pass']} · exam passes: {c['exam_pass']} · sealed {C.SEALED_SEASON} exams left: "
+        f"{c['exam_budget_left']} of {c['exam_budget_total']}", "",
+        "| Candidate | Market | State | 2016–18 | 2019–21 | 2022–24 | Pooled [95% CI] | Holm p | Picks win% / ROI |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+    f = lambda x: "—" if x is None else f"{x:+.2f}"
+    for e in s["candidates"]:
+        g = e["gates"]
+        p = e["pooled"] or {}
+        k = e["kalshi"] or {}
+        pooled = "—" if p.get("effect") is None else f"{p['effect']:+.2f} [{p['ci'][0]:+.2f}, {p['ci'][1]:+.2f}]"
+        kal = "—" if not k.get("picks") else f"{k['win_rate']:.1%} / {k['roi']:+.1%} ({k['picks']})"
+        state = e["state"] + (f" · {e['fail_reason']}" if e["fail_reason"] else "")
+        holm = "—" if p.get("adj_p") is None else f"{p['adj_p']:.3f}"
+        lines.append(f"| `{e['id']}` {e['name']} | {e['market']} | {state} | {f(g[0]['effect'])} | {f(g[1]['effect'])} | "
+                     f"{f(g[2]['effect'])} | {pooled} | {holm} | {kal} |")
+    lines += ["", "Verdicts (Inspector General):", ""]
+    lines += [f"- `{e['id']}`: {e['verdict'] or 'not run yet'}" for e in s["candidates"]]
+    if s["promoted"]:
+        lines += ["", "## Promoted, not proven", ""] + [f"- **{p['name']}**: {p['vs_kalshi_note']}" for p in s["promoted"]]
+    lines += ["", "Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), "
+              "`research/LESSONS.md` (exploratory)."]
+    return "\n".join(lines) + "\n"
+
+
+def lessons_md(s):
+    lines = ["# Research Lab -- lessons (EXPLORATORY)", "",
+             f"_Generated {s['updated_at']} by research/lab/report.py after each run. **Exploratory, not proof**: each "
+             "line compares a candidate with the one it builds on, gate by gate, with no correction for how many "
+             "comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._", "",
+             "- **helped**: beat its parent in all three gates · **faded**: helped in 2016–18 but by less than half as "
+             "much (or not at all) in 2022–24 · **no effect**: anything else", ""]
+    for kind, title in (("helped", "Helped"), ("faded", "Faded"), ("no_effect", "No effect")):
+        xs = [x for x in s["lessons"] if x["kind"] == kind]
+        lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
+    return "\n".join(lines)
+
+
+def write_all(running=(), started_at=None, gate_now=1):
+    s, ledger = build(running, started_at, gate_now)
+    with open(C.STATUS_JSON, "w") as f:
+        json.dump(s, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+    with open(os.path.join(C.RESEARCH, "STATUS.md"), "w") as f:
+        f.write(status_md(s, ledger))
+    with open(os.path.join(C.RESEARCH, "LESSONS.md"), "w") as f:
+        f.write(lessons_md(s))
+    return s
