@@ -94,4 +94,16 @@ jobs:
           git add mlb/MLB_PROSPECTIVE_TRACKER_V1.sqlite3
           if [ -f mlb/lineboard_export.json ]; then git add mlb/lineboard_export.json; fi
           git diff --cached --quiet || git commit -m "MLB automated run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git push
+          # another bot may have pushed since checkout: rebase onto it and retry. A conflict aborts the rebase and fails the
+          # step (never a half-rebased push); the step only passes once the results are on main.
+          for i in 1 2 3; do
+            if git pull --rebase --autostash -q; then
+              git push -q && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+              echo "::warning::git pull --rebase failed (try $i)"
+            fi
+            sleep $((i * 5))
+          done
+          echo "::error::could not push the results after 3 tries"
+          exit 1

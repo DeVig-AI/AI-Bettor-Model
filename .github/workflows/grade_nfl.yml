@@ -112,4 +112,16 @@ jobs:
           if [ -f nfl/lineboard_export.json ]; then git add nfl/lineboard_export.json; fi
           if [ -f nfl/injury_report.json ]; then git add nfl/injury_report.json; fi
           git diff --cached --quiet || git commit -m "NFL automated run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git push
+          # another bot may have pushed since checkout: rebase onto it and retry. A conflict aborts the rebase and fails the
+          # step (never a half-rebased push); the step only passes once the results are on main.
+          for i in 1 2 3; do
+            if git pull --rebase --autostash -q; then
+              git push -q && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+              echo "::warning::git pull --rebase failed (try $i)"
+            fi
+            sleep $((i * 5))
+          done
+          echo "::error::could not push the results after 3 tries"
+          exit 1
