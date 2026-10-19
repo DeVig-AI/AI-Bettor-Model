@@ -53,7 +53,7 @@ jobs:
         id: search
         run: |
           python3 tools/frozen_guard.py check
-          python3 -m research.lab.search round $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          python3 -m research.lab.search round --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
           if [ -n "$(git status --porcelain research/search)" ]; then
             python3 -m research.lab.inspector review
             research/lab/push.sh "Research Lab search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -143,7 +143,7 @@ jobs:
         run: |
           python3 tools/frozen_guard.py check
           python3 -m research.lab.cfb_data check
-          python3 -m research.lab.search round --sport CFB $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          python3 -m research.lab.search round --sport CFB --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
           if [ -n "$(git status --porcelain research/cfb/search)" ]; then
             python3 -m research.lab.inspector review --sport CFB
             research/lab/push.sh "Research Lab CFB search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"

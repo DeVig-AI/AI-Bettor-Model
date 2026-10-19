@@ -257,7 +257,7 @@ def sent_before():
 
 
 # ---- one round --------------------------------------------------------------------------------------------------------
-def run_round(force=False, log=print):
+def run_round(force=False, log=print, progress=None):
     L.check_constitution()
     os.makedirs(C.SEARCH_DIR, exist_ok=True)
     rounds = read_csv(path("ROUNDS.csv"))
@@ -301,10 +301,16 @@ def run_round(force=False, log=print):
                      **{k: sc[k] for k in ("games", "effect", "t", "p1", "p2", "p3")},
                      "eligible": "true" if sc["eligible"] else "false", "config": config_key(cfg)})
 
+    planned = min(cap, len(todo))
+    if progress:
+        progress(n_round, 0, planned)
     for cfg in todo:
-        if sum(1 for r in rows if r["type"] != "blend") >= cap:
+        done = sum(1 for r in rows if r["type"] != "blend")
+        if done >= cap:
             break
         add(cfg)
+        if progress:
+            progress(n_round, done + 1, planned)
     # blends of the best singles so far (this round's and earlier rounds')
     allrows = list(scored.values()) + rows
     for market in ("spread", "total"):
@@ -453,10 +459,41 @@ def main(argv=None):
     ap.add_argument("cmd", choices=["round"])
     ap.add_argument("--force", action="store_true", help="run a round even if the last one was under 20 hours ago")
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
+    ap.add_argument("--progress", action="store_true", help="post the round's progress to /lab (GitHub Actions)")
     a = ap.parse_args(argv)
     C.use(a.sport)
-    run_round(force=a.force)
+    run_round(force=a.force, progress=Progress() if a.progress else None)
     return 0
+
+
+class Progress:
+    """Posts a running search round to /lab: once at the start, then at most every `every` seconds (status.json only
+    changes; the scores are written when the round ends). A failed push never stops the search."""
+
+    def __init__(self, every=180):
+        self.every, self.last, self.started = every, 0.0, L.now()
+
+    def __call__(self, n_round, done, planned):
+        import time
+        now = time.time()
+        if done and now - self.last < self.every:
+            return
+        self.last = now
+        from . import report
+        number, url = L.run_info()
+        live = {"kind": "search", "name": f"Search round {n_round} ({C.SPORT}, running)", "started_at": self.started,
+                "finished_at": None, "duration_s": None, "run_number": number, "run_url": url,
+                "summary": f"{done:,} of {planned:,} models scored on {C.SEARCH[0]}–{C.SEARCH[1]}",
+                "funnel": [{"label": "models scored", "count": done}, {"label": "planned this round", "count": planned}],
+                "steps": []}
+        try:
+            report.write_all(live=live)
+            import subprocess
+            subprocess.run([os.path.join(C.ROOT, "research", "lab", "push.sh"),
+                            f"Research Lab {C.SPORT} search round {n_round}: {done:,} of {planned:,} scored"],
+                           cwd=C.ROOT, timeout=120, capture_output=True)
+        except Exception as e:                         # progress is a courtesy; the round goes on
+            print(f"progress post failed: {e}")
 
 
 if __name__ == "__main__":

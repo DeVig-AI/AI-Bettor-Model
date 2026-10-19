@@ -275,7 +275,7 @@ def search_runs(cands, v):
     return out
 
 
-def build(running=(), started_at=None, gate_now=1):
+def build(running=(), started_at=None, gate_now=1, live=None):
     cands = L.load_candidates()
     ledger = L.read_ledger()
     v = IG.verdicts(ledger, cands)
@@ -326,6 +326,8 @@ def build(running=(), started_at=None, gate_now=1):
         "promoted": paper_summary(),
         "runs": runs(ledger, cands, v),
     }
+    if live:                                           # a search round in progress (search.py --progress)
+        status["runs"] = ([live] + status["runs"])[:MAX_RUNS]
     if running:                                        # the run in progress, at the top of the timeline
         status["runs"].insert(0, {"kind": "lab", "name": "Research Lab" + (f" #{L.run_info()[0]}" if L.run_info()[0] else ""),
                                   "started_at": started_at, "finished_at": None, "duration_s": None,
@@ -402,13 +404,13 @@ def lessons_md(s):
     return "\n".join(lines)
 
 
-def write_all(running=(), started_at=None, gate_now=1):
+def write_all(running=(), started_at=None, gate_now=1, live=None):
     """Rebuild every sport's block (only the sport in use can be running) and write status.json, plus the sport in
     use's STATUS.md and LESSONS.md."""
     me = C.SPORT
     keep = {k: getattr(C, k) for k in dir(C) if k.isupper()}
     blocks = {}
-    s, ledger = build(running, started_at, gate_now)
+    s, ledger = build(running, started_at, gate_now, live)
     blocks[me] = s
     path = status_md_path()
     os.makedirs(os.path.dirname(path), exist_ok=True)
