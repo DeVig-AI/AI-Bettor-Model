@@ -5,6 +5,8 @@ name: Research Lab -- Inspector General
 #   review -- re-judge every candidate against the whole ledger (also runs after every lab run)
 #   exam   -- spend ONE of the 3 sealed 2025 exams on the best current lab pass. Final; a crash still spends it.
 #   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
+# sport: NFL (Part B, sealed 2025) or CFB (Part C, sealed 2025). Scheduled runs do NFL every 3 hours and CFB once a
+# day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
   schedule:
     - cron: '41 */3 * * *'   # paper season; exits at once while no model is promoted
@@ -15,6 +17,11 @@ on:
         type: choice
         options: [review, paper, exam]
         default: review
+      sport:
+        description: 'NFL or CFB (college football)'
+        type: choice
+        options: [NFL, CFB]
+        default: NFL
 
 permissions:
   contents: write
@@ -29,13 +36,18 @@ jobs:
     timeout-minutes: 60
     env:
       ACTION: ${{ inputs.action || 'paper' }}
+      LAB_SPORT: ${{ inputs.sport || 'NFL' }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Anything to do?
         id: go
         run: |
-          if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' research/promoted.json 2>/dev/null; then
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%H)" = "15" ]; then
+            echo "LAB_SPORT=CFB" >> "$GITHUB_ENV"; LAB_SPORT=CFB      # the once-a-day CFB paper slot (15:41 UTC; NFL takes the other seven)
+          fi
+          prom=research/promoted.json; [ "$LAB_SPORT" = "CFB" ] && prom=research/cfb/promoted.json
+          if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' "$prom" 2>/dev/null; then
             echo "No promoted model: nothing to paper-track."
             echo "go=false" >> "$GITHUB_OUTPUT"
           else
@@ -50,6 +62,20 @@ jobs:
       - name: Install
         if: steps.go.outputs.go == 'true'
         run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Restore the CFB data cache (private Actions cache; never committed, Constitution C1a)
+        if: steps.go.outputs.go == 'true' && env.LAB_SPORT == 'CFB'
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
 
       - name: Locked files unchanged
         if: steps.go.outputs.go == 'true'
@@ -67,12 +93,16 @@ jobs:
 
       - name: Exam -- download the sealed season (memory only) and score it
         if: steps.go.outputs.go == 'true' && env.ACTION == 'exam'
+        env:
+          CFB_API_KEY: ${{ env.LAB_SPORT == 'CFB' && secrets.CFB_API_KEY || '' }}
         run: python3 -m research.lab.inspector exam-run
 
       - name: Paper season
         if: steps.go.outputs.go == 'true' && env.ACTION == 'paper'
+        env:
+          CFB_API_KEY: ${{ env.LAB_SPORT == 'CFB' && secrets.CFB_API_KEY || '' }}
         run: python3 -m research.lab.inspector paper
 
       - name: Commit and push
         if: always() && steps.go.outputs.go == 'true'
-        run: research/lab/push.sh "Inspector General ($ACTION) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        run: research/lab/push.sh "Inspector General ($LAB_SPORT $ACTION) $(date -u +%Y-%m-%dT%H:%M:%SZ)"

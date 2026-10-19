@@ -1,7 +1,8 @@
 name: Research Lab -- nightly run
 
-# Runs every registered candidate in research/candidates/ that has no ledger row yet through the three exploration
-# gates (2016-18, 2019-21, 2022-24), then the Inspector General's review. Deterministic; no AI in the loop.
+# Runs every registered candidate that has no ledger row yet through the three exploration gates, then the Inspector
+# General's review: NFL (research/candidates/; 2016-18, 2019-21, 2022-24), then college football
+# (research/cfb/candidates/; 2018-19, 2021-22, 2023-24). Deterministic; no AI in the loop.
 # Rules: research/RESEARCH_LAB_CONSTITUTION.md. Nights with nothing new to run stop after one quick check.
 on:
   schedule:
@@ -10,6 +11,10 @@ on:
     inputs:
       rerun:
         description: 'Re-run ONE candidate whose last attempt crashed (its id). Leave empty for a normal run. Every attempt counts in the correction.'
+        type: string
+        default: ''
+      rerun_cfb:
+        description: 'College football: re-run ONE CFB candidate whose last attempt crashed (its id).'
         type: string
         default: ''
 
@@ -73,3 +78,76 @@ jobs:
       - name: Commit and push the results
         if: always() && steps.start.outcome == 'success'
         run: research/lab/push.sh "Research Lab results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  cfb:
+    needs: lab
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RERUN: ${{ inputs.rerun_cfb }}
+      LAB_SPORT: CFB
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main          # the NFL job may have just pushed
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          if [ ! -f research/cfb/data/MANIFEST.json ]; then echo "No CFB data cache yet: run 'Research CFB -- data' first."; echo "n=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Restore the CFB data cache (private Actions cache; never committed, Constitution C1a)
+        if: steps.pending.outputs.n != '0'
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+
+      - name: CFB data cache present? (filled by "Research CFB -- data"; the lab itself never calls the API)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.cfb_data check
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start ${RERUN:+--rerun "$RERUN"}
+          research/lab/push.sh "Research Lab CFB: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run ${RERUN:+--rerun "$RERUN"}
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab CFB results $(date -u +%Y-%m-%dT%H:%M:%SZ)"

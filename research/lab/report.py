@@ -1,5 +1,9 @@
 """Reports after every run (Constitution A10): research/status.json for the owner's /lab page (contract:
-research/STATUS_SCHEMA.md), research/STATUS.md and research/LESSONS.md (EXPLORATORY). All generated, never hand-written.
+research/STATUS_SCHEMA.md), and per sport STATUS.md and LESSONS.md (EXPLORATORY; NFL in research/, CFB in
+research/cfb/). All generated, never hand-written.
+
+status.json holds every sport: the NFL block at the top level (as before, so older pages keep working) and each
+other sport's block under `by_sport`, plus the attempt count across all sports (Constitution C4).
 """
 import datetime as dt
 import json
@@ -8,11 +12,39 @@ import os
 from . import config as C
 from . import inspector as IG
 from . import lab as L
-
-GATE_NAMES = [g[0] for g in C.GATES]
+from . import metrics as M
 PASSED_LAB = ("lab_pass", "exam_pass", "exam_fail", "promoted", "stopped")
 PASSED_EXAM = ("exam_pass", "promoted", "stopped")
 MINUTES_PER_CANDIDATE = 1.5
+SPORT_NAMES = {"NFL": "NFL", "CFB": "College football"}
+
+
+def status_md_path():
+    return C.STATUS_MD or os.path.join(C.RESEARCH, "STATUS.md")
+
+
+def lessons_md_path():
+    return C.LESSONS_MD or os.path.join(C.RESEARCH, "LESSONS.md")
+
+
+def gate_names():
+    return [g[0] for g in C.GATES]
+
+
+def all_sports_ledger():
+    """Every ledger row of every sport, in sport order: [(sport, row)]."""
+    out = []
+    for sp in C.SPORTS:
+        path = C.LEDGER if sp == C.SPORT else C.dir_for(sp)["LEDGER"]
+        out += [(sp, r) for r in L.read_ledger(path) if r["sport"] == sp]
+    return out
+
+
+def global_holm():
+    """C4, reported only: {(sport, attempt): Holm-adjusted p over every attempt of every sport}."""
+    rows = all_sports_ledger()
+    adj = M.holm([IG.fnum(r["p_one_sided"]) if r["status"] == "done" else 1.0 for _, r in rows])
+    return {(sp, int(r["attempt"])): a for (sp, r), a in zip(rows, adj)}, len(rows)
 
 
 def r2(x):
@@ -26,12 +58,12 @@ def ci2(c):
 def candidate_entry(c, res, v, running, gate_now, started_at, eta_at, attempts):
     e = {"id": c["id"], "name": c["name"], "market": c["market"], "family": c["family"], "reason": c["reason"],
          "state": "queued", "fail_reason": "", "gate_now": None, "started_at": None, "eta_at": None,
-         "gates": [{"name": n, "effect": None, "ci": None, "games": None, "passed": None} for n in GATE_NAMES],
+         "gates": [{"name": n, "effect": None, "ci": None, "games": None, "passed": None} for n in gate_names()],
          "pooled": None, "attempts": attempts, "p_bar": C.P_BAR, "fade_ratio": None, "fade_needed": C.FADE_NEEDED,
          "kalshi": None, "rule_split": [], "exam": {"state": "not_taken", "effect": None, "ci": None, "taken_at": None,
                                                     "note": ""},
          "verdict": "Registered; runs in the next nightly lab run.", "graded_at": None, "run_number": None, "run_url": None,
-         "file_url": C.BLOB + f"research/candidates/{c['id']}.yaml", "updated_at": None}
+         "file_url": C.BLOB + L.rel(L.cand_path(c["id"])), "updated_at": None}
     if res:
         e["gates"] = [{"name": g["name"], "effect": r2(g["effect"]), "ci": ci2(g.get("ci")), "games": g["games"],
                        "passed": bool(g["effect"] is not None and g["effect"] > 0)} for g in res["gates"]]
@@ -43,7 +75,7 @@ def candidate_entry(c, res, v, running, gate_now, started_at, eta_at, attempts):
                        "roi": k.get("roi")}
         e["rule_split"] = [{"label": s["label"], "effect": r2(s["effect"]), "note": f"{s['games']} games · {s['note']}"}
                            for s in res["rule_split"]]
-        e["file_url"] = C.BLOB + f"research/results/{c['id']}.json"
+        e["file_url"] = C.BLOB + L.rel(os.path.join(C.RESULTS, f"{c['id']}.json"))
         e["updated_at"] = res.get("ran_at")
     if v:
         e.update(state=v.get("state", "queued"), fail_reason=v.get("fail_reason", ""), verdict=v.get("verdict", ""),
@@ -102,11 +134,11 @@ def lessons(cands, res, v):
         if all(x > 0 for x in d):
             kind, word = "helped", "helped in every gate"
         elif d[0] > 0 and d[2] < C.FADE_NEEDED * d[0]:
-            kind, word = "faded", "helped in 2016–18, then faded"
+            kind, word = "faded", f"helped in {gate_names()[0]}, then faded"
         else:
             kind, word = "no_effect", "no consistent effect"
         txt = (f"{c['name']} {vs}: {word} ({' / '.join(f'{x:+.2f}' for x in d)} pts in "
-               f"{' / '.join(GATE_NAMES)}).")
+               f"{' / '.join(gate_names())}).")
         out.append({"text": txt, "kind": kind, "candidates": [cid]})
     order = {"helped": 0, "faded": 1, "no_effect": 2}
     return sorted(out, key=lambda x: order[x["kind"]])
@@ -126,15 +158,24 @@ def build(running=(), started_at=None, gate_now=1):
         eta = (t + dt.timedelta(minutes=MINUTES_PER_CANDIDATE * len(running))).strftime("%Y-%m-%dT%H:%M:%SZ")
     entries = [candidate_entry(c, res.get(cid), v.get(cid), running, gate_now, started_at, eta, attempts)
                for cid, c in cands.items()]
+    gadj, gn = global_holm()
+    for e in entries:                                   # C4: reported next to the sport's own correction, never used
+        at = (v.get(e["id"]) or {}).get("attempt")
+        if e["pooled"] is not None:
+            e["pooled"]["adj_p_all_sports"] = gadj.get((C.SPORT, at)) if at else None
     states = [x["state"] for x in entries]
     used = IG.budget_used()
     status = {
         "updated_at": L.now(), "scope": C.SPORT, "effect_name": "Edge beyond the closing line", "effect_unit": "pts",
         "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
         "exam_name": f"Sealed {C.SEALED_SEASON} exam",
+        "sport": C.SPORT, "sport_name": SPORT_NAMES.get(C.SPORT, C.SPORT),
+        "attempts": {"this_sport": attempts, "all_sports": gn,
+                     "note": f"Holm correction over this sport's {attempts} attempts decides; across all sports "
+                             f"there are {gn} attempts (reported only)."},
         "constitution": {"version": C.CONSTITUTION_VERSION, "sha256": L.constitution_sha()},
-        "links": {"constitution": C.BLOB + C.CONSTITUTION, "ledger": C.BLOB + "research/LEDGER.csv",
-                  "lessons": C.BLOB + "research/LESSONS.md"},
+        "links": {"constitution": C.BLOB + C.CONSTITUTION, "ledger": C.BLOB + L.rel(C.LEDGER),
+                  "lessons": C.BLOB + L.rel(lessons_md_path())},
         "counts": {"tried": len({r["candidate_id"] for r in ledger if r["sport"] == C.SPORT} & set(cands)),
                    "running": states.count("running"),
                    "lab_pass": sum(s in PASSED_LAB for s in states), "exam_pass": sum(s in PASSED_EXAM for s in states),
@@ -149,16 +190,17 @@ def build(running=(), started_at=None, gate_now=1):
 def status_md(s, ledger):
     c = s["counts"]
     lines = [
-        "# Research Lab -- status (NFL)", "",
+        f"# Research Lab -- status ({SPORT_NAMES.get(C.SPORT, C.SPORT)})", "",
         f"_Generated {s['updated_at']} by research/lab/report.py. Constitution {s['constitution']['version']} "
         f"(`{s['constitution']['sha256'][:12]}`). Do not edit by hand._", "",
         f"**Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the "
         f"line-only baseline (Constitution A5); break-even at Kalshi pricing {C.COST:.2%}.", "",
         f"- Candidates: {len(s['candidates'])} registered, {c['tried']} tried, {c['running']} running",
-        f"- Ledger attempts (all count in the Holm correction): {sum(1 for r in ledger if r['sport'] == C.SPORT)}",
+        f"- Ledger attempts (all count in the Holm correction): {sum(1 for r in ledger if r['sport'] == C.SPORT)} "
+        f"· across all sports: {s['attempts']['all_sports']} (reported only, Constitution C4)",
         f"- Lab passes: {c['lab_pass']} · exam passes: {c['exam_pass']} · sealed {C.SEALED_SEASON} exams left: "
         f"{c['exam_budget_left']} of {c['exam_budget_total']}", "",
-        "| Candidate | Market | State | 2016–18 | 2019–21 | 2022–24 | Pooled [95% CI] | Holm p | Picks win% / ROI |",
+        "| Candidate | Market | State | " + " | ".join(gate_names()) + " | Pooled [95% CI] | Holm p | Picks win% / ROI |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
     f = lambda x: "—" if x is None else f"{x:+.2f}"
@@ -176,18 +218,18 @@ def status_md(s, ledger):
     lines += [f"- `{e['id']}`: {e['verdict'] or 'not run yet'}" for e in s["candidates"]]
     if s["promoted"]:
         lines += ["", "## Promoted, not proven", ""] + [f"- **{p['name']}**: {p['vs_kalshi_note']}" for p in s["promoted"]]
-    lines += ["", "Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), "
-              "`research/LESSONS.md` (exploratory)."]
+    lines += ["", f"Files: `{L.rel(C.RESULTS)}/<id>.json` (every number), `{L.rel(C.LEDGER)}` (every attempt), "
+              f"`{L.rel(lessons_md_path())}` (exploratory)."]
     return "\n".join(lines) + "\n"
 
 
 def lessons_md(s):
-    lines = ["# Research Lab -- lessons (EXPLORATORY)", "",
+    lines = [f"# Research Lab -- lessons, {SPORT_NAMES.get(C.SPORT, C.SPORT)} (EXPLORATORY)", "",
              f"_Generated {s['updated_at']} by research/lab/report.py after each run. **Exploratory, not proof**: each "
              "line compares a candidate with the one it builds on, gate by gate, with no correction for how many "
              "comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._", "",
-             "- **helped**: beat its parent in all three gates · **faded**: helped in 2016–18 but by less than half as "
-             "much (or not at all) in 2022–24 · **no effect**: anything else", ""]
+             f"- **helped**: beat its parent in all three gates · **faded**: helped in {gate_names()[0]} but by less "
+             f"than half as much (or not at all) in {gate_names()[-1]} · **no effect**: anything else", ""]
     for kind, title in (("helped", "Helped"), ("faded", "Faded"), ("no_effect", "No effect")):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
@@ -195,12 +237,34 @@ def lessons_md(s):
 
 
 def write_all(running=(), started_at=None, gate_now=1):
+    """Rebuild every sport's block (only the sport in use can be running) and write status.json, plus the sport in
+    use's STATUS.md and LESSONS.md."""
+    me = C.SPORT
+    keep = {k: getattr(C, k) for k in dir(C) if k.isupper()}
+    blocks = {}
     s, ledger = build(running, started_at, gate_now)
-    with open(C.STATUS_JSON, "w") as f:
-        json.dump(s, f, indent=1, ensure_ascii=False)
-        f.write("\n")
-    with open(os.path.join(C.RESEARCH, "STATUS.md"), "w") as f:
+    blocks[me] = s
+    path = status_md_path()
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
         f.write(status_md(s, ledger))
-    with open(os.path.join(C.RESEARCH, "LESSONS.md"), "w") as f:
+    with open(lessons_md_path(), "w") as f:
         f.write(lessons_md(s))
+    try:
+        for sp in C.SPORTS:
+            if sp == me:
+                continue
+            C.use(sp)
+            if os.path.isdir(C.CANDIDATES):
+                blocks[sp] = build()[0]
+    finally:
+        for k, v in keep.items():
+            setattr(C, k, v)
+    order = [sp for sp in C.SPORTS if sp in blocks]
+    top = dict(blocks["NFL"]) if "NFL" in blocks else dict(blocks[order[0]])
+    top["by_sport"] = {sp: blocks[sp] for sp in order if sp != top["sport"]}
+    top["sports"] = [{"key": sp, "name": SPORT_NAMES.get(sp, sp)} for sp in order]
+    with open(C.STATUS_JSON, "w") as f:
+        json.dump(top, f, indent=1, ensure_ascii=False)
+        f.write("\n")
     return s

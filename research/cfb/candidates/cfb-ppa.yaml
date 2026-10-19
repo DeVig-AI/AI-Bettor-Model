@@ -1,0 +1,15 @@
+# Research Lab CFB candidate cfb-ppa -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-ppa
+name: Opponent-adjusted PPA ratings
+market: spread
+family: Efficiency ratings
+parent: null
+reason: 'Each offence''s predicted points added per play and each defence''s PPA allowed, adjusted for opponents by least
+  squares (prior: 60% of last season, 3 games'' worth), turned into a spread by a slope and home edge fit once on 2014–17.'
+source: PPA/EPA as computed by CFBD and cfbfastR (MIT); opponent adjustment as in public adjusted-EPA ratings
+model:
+  type: ppa
+  params:
+    carry: 0.6
+    prior_w: 3
+    garbage_time: include

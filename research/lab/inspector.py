@@ -4,6 +4,7 @@
     python3 -m research.lab.inspector exam-register  # spend one sealed exam on the best lab pass (pushed BEFORE the data)
     python3 -m research.lab.inspector exam-run       # download the sealed season, score the registered exam
     python3 -m research.lab.inspector paper          # paper season for promoted models (Kalshi prices before kickoff)
+    ... --sport CFB                                  # college football (Part C)
 
 Only this module downloads the sealed season (exam) or current-season data (paper season), and never into the
 repo: data.fetch_live keeps it in memory. Only the exam's and the paper season's summary numbers are committed.
@@ -165,8 +166,9 @@ def best_lab_pass(v, ledger):
 
 
 def budget_used():
+    """Exams spent for this sport and sealed season, across Constitution versions (Part C5: a version never resets it)."""
     return sum(1 for x in read_csv(C.EXAMS) if x["event"] == "registered" and x["sport"] == C.SPORT
-               and x["constitution_version"] == C.CONSTITUTION_VERSION and x["sealed_season"] == str(C.SEALED_SEASON))
+               and x["sealed_season"] == str(C.SEALED_SEASON))
 
 
 def review():
@@ -206,8 +208,8 @@ def exam_register():
 
 
 def with_live(seasons):
-    lab = D.load_lab()
-    live = D.fetch_live(seasons)
+    lab = L.dm().load_lab()
+    live = L.dm().fetch_live(seasons)
     return {k: pd.concat([lab[k], live[k]], ignore_index=True) for k in lab}
 
 
@@ -232,7 +234,7 @@ def exam_run():
         tr = L.between(e, *C.TRAIN)
         s0 = M.baseline_side(tr.r.values)
         ex = L.between(e, C.SEALED_SEASON, C.SEALED_SEASON)
-        if len(ex) < 200:
+        if len(ex) < C.EXAM_MIN_GAMES:
             raise RuntimeError(f"only {len(ex)} scored games in {C.SEALED_SEASON}")
         res = M.evaluate(ex.d, ex.r, s0)
         passed = res["effect"] > 0 and res["p"] < C.EXAM_ALPHA
@@ -259,7 +261,7 @@ def promote(cid, exam_no):
     prom = promoted_list()
     name = f"Gauntlet-{len(prom) + 1}"
     prom.append({"name": name, "candidate_id": cid, "promoted_at": L.now(), "exam_no": exam_no, "state": "active",
-                 "paper_log": f"research/paper/{name}.csv", "label": "Promoted, not proven"})
+                 "paper_log": L.rel(os.path.join(C.PAPER_DIR, f"{name}.csv")), "label": "Promoted, not proven"})
     with open(C.PROMOTED, "w") as f:
         json.dump(prom, f, indent=1)
         f.write("\n")
@@ -267,7 +269,7 @@ def promote(cid, exam_no):
     subprocess.run([sys.executable, os.path.join(C.ROOT, "tools", "frozen_guard.py"), "rehash", *lock],
                    cwd=C.ROOT, check=True, capture_output=True)
     manifest = os.path.join(C.ROOT, "FROZEN.sha256")
-    log = f"research/paper/{name}.csv"
+    log = L.rel(os.path.join(C.PAPER_DIR, f"{name}.csv"))
     with open(manifest, "a") as f:
         f.write(f"append-only  {log}\n")
     print(f"promoted {cid} as {name}")
@@ -326,7 +328,7 @@ def paper():
     season_now = dt.date.today().year if dt.date.today().month >= 8 else dt.date.today().year - 1
     data = with_live(sorted({C.SEALED_SEASON, season_now}))
     try:
-        kal = K.kalshi_games("NFL")
+        kal = K.kalshi_games(C.KALSHI_SPORT)
     except Exception as e:                           # no prices: no picks this run (never invented)
         print(f"Kalshi unavailable: {e}")
         kal = {}
@@ -346,10 +348,7 @@ def paper():
             g = games.loc[r.game_id]
             ko = kickoff_utc(g.gameday, g.gametime)
             if r.game_id not in picked and pd.isna(r.actual) and now + dt.timedelta(minutes=5) < ko <= now + dt.timedelta(hours=30):
-                home, away = K.canon("NFL", g.home_team), K.canon("NFL", g.away_team)
-                kg = next((v for v in kal.values() if K.canon("NFL", v["home_code"]) == home
-                           and K.canon("NFL", v["away_code"]) == away
-                           and v.get("date") and abs((dt.date.fromisoformat(v["date"]) - ko.date()).days) <= 1), None)
+                kg = kalshi_game_for(kal, g, ko)
                 row = dict(event="pick", at=L.now(), game_id=r.game_id, season=r.season, week=r.week,
                            kickoff=ko.strftime("%Y-%m-%dT%H:%M:%SZ"), away=g.away_team, home=g.home_team,
                            market=c["market"], model_forecast=round(float(r.forecast), 3))
@@ -399,6 +398,19 @@ def paper():
     print("paper season: updated" if changed else "paper season: nothing new")
 
 
+def kalshi_game_for(kal, g, ko):
+    """The Kalshi game for one schedule row: NFL by team code, CFB by team names (Kalshi's college codes are its own)."""
+    near = [v for v in kal.values() if v.get("date") and abs((dt.date.fromisoformat(v["date"]) - ko.date()).days) <= 1]
+    if C.SPORT == "CFB":
+        sys.path.insert(0, os.path.join(C.ROOT, "tools"))
+        import cfb_teams
+        return next((v for v in near if cfb_teams.same_team(v["teams"][v["home_code"]]["name"], g.home_team)
+                     and cfb_teams.same_team(v["teams"][v["away_code"]]["name"], g.away_team)), None)
+    import kalshi_games_v1 as K
+    home, away = K.canon("NFL", g.home_team), K.canon("NFL", g.away_team)
+    return next((v for v in near if K.canon("NFL", v["home_code"]) == home and K.canon("NFL", v["away_code"]) == away), None)
+
+
 def graded_win(pick, final):
     """Kalshi rules: YES on "over X" / "<team> wins by over X" wins only when strictly over X; a tie goes to NO."""
     strike = float(pick["strike"])
@@ -430,7 +442,9 @@ def stop_rule(log, games):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["review", "exam-register", "exam-run", "paper"])
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
     a = ap.parse_args(argv)
+    C.use(a.sport)
     {"review": review, "exam-register": exam_register, "exam-run": exam_run, "paper": paper}[a.cmd]()
     return 0
 

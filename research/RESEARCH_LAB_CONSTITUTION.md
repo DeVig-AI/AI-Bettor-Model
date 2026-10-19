@@ -1,8 +1,12 @@
 # DeVig Research Lab -- Constitution v1
 
-Version: **v2** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football)
+Version: **v3** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football)
 
-v2 adds Part C (college football). It changes nothing in Part A or Part B (Constitution A1.3); NFL ledger rows keep
+v3 changes only where Part C's data is kept (C1, C1a): CollegeFootballData's Terms of Use (effective 2026-08-12) do not
+allow publishing stored raw API responses or mirroring the data, so the CFB cache is never committed to this public
+repo. Made before any CFB history was downloaded (only a five-call provider check had run).
+
+v2 added Part C (college football). It changes nothing in Part A or Part B (Constitution A1.3); NFL ledger rows keep
 the version they ran under. Part C was written and hash-locked before any college football data was downloaded.
 
 This file sets the rules the Research Lab runs by. It was written and hash-locked (`FROZEN.sha256`, checked by
@@ -201,11 +205,22 @@ outcome is again that **no CFB candidate passes the sealed exam**. Small samples
   for a market, the lab refuses to run that market (it does not shrink or move the seasons); only a new version may
   change the split.
 - **Cache:** `research/cfb/data/`, seasons **2009-2024 only**; the lab refuses any row from 2025 or later. A season
-  already cached is **never fetched again**. Every workflow run logs the API calls it used
+  already cached is **never fetched again** while the cache exists (C1a). Every workflow run logs the API calls it used
   (`research/cfb/data/CALLS.csv`), uses at most 150 calls, and stops early when the provider reports fewer than 100
   calls left in the month.
 - In season, a weekly data run may refresh only the **current** season (2026), into memory or into files outside the
   lab's cache that the lab never reads. The sealed season is never stored anywhere in the repo.
+
+### C1a. Where the CFB data is kept (v3)
+- The provider's terms forbid giving third parties stored raw API responses or a copy of the data. So the cache files
+  (`research/cfb/data/*.csv`) and the current-season refresh (`research/cfb/current/`) are **never committed**: they
+  live only in this repository's GitHub Actions cache (not public), restored by the CFB workflows and git-ignored.
+- What is committed: `research/cfb/data/MANIFEST.json` (seasons held and each file's SHA-256), `CALLS.csv` (every API
+  call), and derived outputs (results, ledger, verdicts, reports), which the terms allow.
+- Every ledger row carries the data fingerprint, so a run on a different copy of the data is visible. If GitHub ever
+  evicts the Actions cache, the missing seasons are fetched once more and logged; the lab refuses to run when the
+  re-fetched files do not match the fingerprints in `MANIFEST.json` for seasons already used, until the owner adopts
+  a new version that says what to do.
 
 ### C2. Season split
 | Use | Seasons | Notes |

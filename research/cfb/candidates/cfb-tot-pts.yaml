@@ -1,0 +1,18 @@
+# Research Lab CFB candidate cfb-tot-pts -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-tot-pts
+name: Points for / against totals
+market: total
+family: Pace × efficiency
+parent: null
+reason: 'The plain totals baseline: each team''s rolling (half-life 6 games) points scored and allowed relative to the league,
+  offence against the defence it faces, calibrated once on 2014–17.'
+source: DeVig's own; standard points-for/against idea
+model:
+  type: pace_eff
+  params:
+    halflife: 6
+    season_carry: 0.5
+    calibrate: true
+    league_window: 1600
+    efficiency: points
+    pace: false

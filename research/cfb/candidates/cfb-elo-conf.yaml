@@ -1,0 +1,36 @@
+# Research Lab CFB candidate cfb-elo-conf -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-elo-conf
+name: + Preseason regression toward the conference
+market: spread
+family: Elo family
+parent: cfb-elo-base
+reason: 'Between seasons, regress each team toward its own conference''s average rating instead of the whole league''s: conferences
+  differ a lot in strength and that carries over (538''s college football Elo and CFBD-style ratings do this).'
+source: FiveThirtyEight's college football Elo methodology (regression toward conference mean)
+model:
+  type: elo
+  params:
+    k: 25
+    hfa_elo: 70
+    revert: 0.3333333333333333
+    revert_center: conference
+    mean: 1500
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    returning: none
+    returning_k: 0.5
+    returning_mid: 0.5
+    mov_cap: null

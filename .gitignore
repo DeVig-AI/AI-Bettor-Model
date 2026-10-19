@@ -1,3 +1,7 @@
 tests/lab/out/
 research/**/__pycache__/
 tools/__pycache__/
+# CollegeFootballData terms: raw API data is never committed (Constitution C1a). It lives in the Actions cache.
+research/cfb/data/*.csv
+!research/cfb/data/CALLS.csv
+research/cfb/current/
