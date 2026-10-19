@@ -11,6 +11,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import yaml
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, ROOT)
@@ -162,39 +163,49 @@ class Models(unittest.TestCase):
         self.assertEqual(fit["fit_seasons"], "1999-2005")
 
 
+def tr(metric="epa", market="spread", **kw):
+    p = dict(metric=metric, halflife=8, season_carry=0.6, def_weight=1.0, pace="none" if market == "spread" else "plays")
+    p.update(kw)
+    return {"id": f"t-{metric}-{market}", "name": "x", "market": market, "model": {"type": "team_rating", "params": p}}
+
+
 class NewFamilies(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.data = synthetic()
-        cls.queue = {cid: models.find_candidate(cid) for _, cid, _ in L.queued()}
 
-    def test_queue_has_18_distinct_ideas(self):
-        self.assertEqual(len(self.queue), 18)
-        self.assertFalse(set(self.queue) & set(L.load_candidates()), "queued ids must be new")
-
-    def test_every_queued_idea_runs(self):
-        for cid, c in self.queue.items():
+    def test_every_metric_and_pace_runs(self):
+        cands = [tr(m) for m in models.METRICS] + [tr(m, "total") for m in models.METRICS if m != "points"] + \
+            [tr("points", "total", pace="none"), tr("epa", "total", pace="seconds")]
+        for c in cands:
             res = L.evaluate_candidate(c, self.data)
-            self.assertEqual([g["name"] for g in res["gates"]], ["2006–12", "2013–18", "2019–24"], cid)
-            self.assertGreater(res["pooled"]["games"], 2000, cid)
-            self.assertTrue(res["fit"], cid)
+            self.assertEqual([g["name"] for g in res["gates"]], ["2017–19", "2020–22", "2023–24"], c["id"])
+            self.assertGreater(res["pooled"]["games"], 1000, c["id"])
+            self.assertTrue(res["fit"], c["id"])
+
+    def test_blend_inline_and_by_id(self):
+        comp = {"market": "spread", "model": {"type": "team_rating", "params": tr()["model"]["params"]}}
+        b = {"id": "b", "market": "spread", "model": {"type": "blend", "params": {
+            "components": ["elo-base", comp], "weights": [0.5, 0.5]}}}
+        out, fit = models.run(b, self.data)
+        e1, _ = models.run(L.load_candidates()["elo-base"], self.data)
+        e2, _ = models.run(tr(), self.data)
+        self.assertTrue(np.allclose(out.forecast.values, (e1.forecast.values + e2.forecast.values) / 2))
 
     def test_relocated_teams_are_not_skipped(self):
         """Play-by-play uses today's codes (LV, LAC, LA) for OAK / SD / STL games: those games must still count."""
         g = self.data["games"]
         self.assertIn("OAK", set(g.home_team))
         self.assertNotIn("OAK", set(self.data["team_games"].team))
-        base, _ = models.run(self.queue["tt-epa"], self.data)
-        alt = {k: v.copy() for k, v in self.data.items()}
-        tgm = alt["team_games"]
-        oak = tgm.game_id.isin(g.game_id[(g.season == 2010) & ((g.home_team == "OAK") | (g.away_team == "OAK"))]) & (tgm.team == "LV")
-        tgm.loc[oak, "epa"] += 30                       # the Raiders' 2010 offense suddenly great
-        out, _ = models.run(self.queue["tt-epa"], alt)
         oak_games = set(g.game_id[(g.home_team == "OAK") | (g.away_team == "OAK")])
+        tgm = self.data["team_games"]
+        oak = tgm.game_id.isin(g.game_id[(g.season == 2010) & g.game_id.isin(oak_games)]) & (tgm.team == "LV")
+        alt = {k: v.copy() for k, v in self.data.items()}
+        alt["team_games"].loc[oak, "epa"] += 30
+        base, _ = models.run(tr("epa", "total"), self.data)
+        out, _ = models.run(tr("epa", "total"), alt)
         later = ((out.season == 2011) & out.game_id.isin(oak_games)).values
         self.assertFalse(np.allclose(out.forecast[later], base.forecast[later]))
-        # tot-pe (v1) learns from a game only when both teams' play-by-play rows are found: dropping the Raiders'
-        # 2010 rows must change their 2011 forecasts, i.e. the rows (coded LV) were being used
         alt2 = {k: v.copy() for k, v in self.data.items()}
         alt2["team_games"] = alt2["team_games"][~oak]
         o2, _ = models.run(L.load_candidates()["tot-pe"], alt2)
@@ -204,17 +215,104 @@ class NewFamilies(unittest.TestCase):
     def test_no_peeking_team_rating(self):
         g = self.data["games"]
         target = g.index[g.season == 2010][100]
-        for cid in ("rt-epa", "tt-spp", "bl-spread-4"):
-            a, _ = models.run(self.queue[cid], self.data)
+        for c in (tr("epa"), tr("epa", "total", pace="seconds"), tr("success", "total")):
+            a, _ = models.run(c, self.data)
             alt = {k: v.copy() for k, v in self.data.items()}
             gid = alt["games"].game_id[target]
-            later = alt["games"].index >= target
+            slot = alt["games"].loc[target, ["gameday", "gametime"]]
+            later = (alt["games"].gameday > slot.gameday) | ((alt["games"].gameday == slot.gameday))
             alt["games"].loc[later, "home_score"] += 9
             alt["team_games"].loc[alt["team_games"].game_id.isin(alt["games"].game_id[later]), "epa"] += 5
-            out, _ = models.run(self.queue[cid], alt)
-            # fitted coefficients use training seasons (1999-2005) only, so a 2010 forecast cannot move
+            out, _ = models.run(c, alt)
             self.assertAlmostEqual(a.set_index("game_id").forecast[gid], out.set_index("game_id").forecast[gid],
-                                   places=9, msg=cid)
+                                   places=9, msg=c["id"])
+
+
+class Search(unittest.TestCase):
+    def setUp(self):
+        from research.lab import search as SR
+        self.SR = SR
+        self.tmp = tempfile.mkdtemp()
+        self.saved = (SR.SCORES, SR.ROUNDS, SR.LEADERBOARD, SR.MENU, C.CANDIDATES, SR.D.load_lab)
+        SR.SCORES, SR.ROUNDS = os.path.join(self.tmp, "S.csv"), os.path.join(self.tmp, "R.csv")
+        SR.LEADERBOARD = os.path.join(self.tmp, "LB.md")
+        C.CANDIDATES = os.path.join(self.tmp, "cands")
+        shutil.copytree(self.saved[4], C.CANDIDATES)
+        self.data = synthetic()
+        SR.D.load_lab = lambda *a: {k: v.copy() for k, v in self.data.items()}
+
+    def tearDown(self):
+        SR = self.SR
+        SR.SCORES, SR.ROUNDS, SR.LEADERBOARD, SR.MENU, C.CANDIDATES, SR.D.load_lab = self.saved
+        shutil.rmtree(self.tmp)
+
+    def small_menu(self):
+        m = self.SR.load_menu(self.saved[3])
+        m["families"] = [
+            {"name": "TR", "type": "team_rating", "market": "spread", "fixed": {"pace": "none", "def_weight": 1.0},
+             "grid": {"metric": ["points", "epa"], "halflife": [4, 8], "season_carry": [0.6]}},
+            {"name": "TT", "type": "team_rating", "market": "total", "fixed": {"def_weight": 1.0},
+             "grid": {"metric": ["points", "epa"], "halflife": [8], "season_carry": [0.6], "pace": ["plays", "seconds"]},
+             "rules": ["points_has_no_pace"]}]
+        m["search"]["shortlist_min_t"] = -99          # synthetic data: let the shortlist rules be exercised
+        path = os.path.join(self.tmp, "MENU.yaml")
+        with open(path, "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.MENU = path
+
+    def test_real_menu(self):
+        g = self.SR.grid(self.SR.load_menu(self.saved[3]))
+        ids = [self.SR.config_id(c) for c in g]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertEqual(len(g), 576 + 126 + 117 + 18)
+        self.assertTrue(all(self.SR.label(c) for c in g))
+
+    def test_search_never_sees_later_seasons(self):
+        cfg = {"market": "spread", "type": "team_rating", "params": tr()["model"]["params"]}
+        a = self.SR.score_out(self.SR.forecasts(cfg, self.SR.search_data()))
+        d = self.data["games"]
+        d.loc[d.season > C.SEARCH[1], "home_score"] += 30           # change every later result
+        b = self.SR.score_out(self.SR.forecasts(cfg, self.SR.search_data()))
+        self.assertEqual((a["effect"], a["t"]), (b["effect"], b["t"]))
+        self.assertEqual(int(self.SR.search_data()["games"].season.max()), C.SEARCH[1])
+
+    def test_rounds_shortlist_and_refine(self):
+        self.small_menu()
+        picks = self.SR.run_round(force=True, log=lambda *_: None)
+        rows = self.SR.read_csv(self.SR.SCORES)
+        singles = [r for r in rows if r["type"] != "blend"]
+        self.assertEqual(len(singles), 4 + 3)
+        self.assertTrue(any(r["type"] == "blend" for r in rows))
+        self.assertLessEqual(len(picks), 4)
+        for cid in picks:
+            c = L.load_candidates()[cid]
+            self.assertIn("search", c)
+            self.assertTrue(c["reason"].startswith("Found by search round 1"))
+            r = next(x for x in rows if x["id"] == cid)
+            self.assertEqual(r["eligible"], "true")
+        by_market = {}
+        for cid in picks:
+            by_market[L.load_candidates()[cid]["market"]] = by_market.get(L.load_candidates()[cid]["market"], 0) + 1
+        self.assertTrue(all(v <= 2 for v in by_market.values()))
+        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within a week does nothing")
+        self.SR.run_round(force=True, log=lambda *_: None)
+        rows2 = self.SR.read_csv(self.SR.SCORES)
+        ids = [r["id"] for r in rows2]
+        self.assertEqual(len(ids), len(set(ids)), "nothing scored twice")
+        self.assertGreater(len(rows2), len(rows), "round 2 adds neighbours")
+        self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.ROUNDS)], ["1", "2"])
+
+    def test_fit_weights_and_neighbours(self):
+        rng = np.random.default_rng(3)
+        F = rng.normal(size=(500, 3))
+        y = F @ np.array([0.7, 0.3, 0.0]) + rng.normal(0, 0.01, 500)
+        w = self.SR.fit_weights(F, y)
+        self.assertAlmostEqual(w.sum(), 1.0)
+        self.assertTrue((w >= 0).all())
+        self.assertAlmostEqual(w[0], 0.7, places=2)
+        n = self.SR.neighbours({"market": "spread", "type": "team_rating", "params": {"halflife": 8, "metric": "epa"}},
+                               {"halflife": [4, 6, 8, 12]})
+        self.assertEqual(sorted(x["params"]["halflife"] for x in n), [6, 12])
 
 
 class QueuePull(unittest.TestCase):
@@ -273,10 +371,14 @@ class Reports(unittest.TestCase):
         C.PROMOTED = os.path.join(self.tmp, "promoted.json")
         C.STATUS_JSON = os.path.join(self.tmp, "status.json")
         os.makedirs(C.RESULTS)
+        from research.lab import search as SR
+        self.SR, self.sr_saved = SR, (SR.SCORES, SR.ROUNDS)
+        SR.SCORES, SR.ROUNDS = os.path.join(self.tmp, "S.csv"), os.path.join(self.tmp, "R.csv")
 
     def tearDown(self):
         for k, v in self.saved.items():
             setattr(C, k, v)
+        self.SR.SCORES, self.SR.ROUNDS = self.sr_saved
         shutil.rmtree(self.tmp)
 
     def row(self, cid, p, g, status="done"):

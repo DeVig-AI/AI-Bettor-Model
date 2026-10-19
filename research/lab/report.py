@@ -200,8 +200,32 @@ def runs(ledger, cands, v):
                     "run_number": None, "run_url": rows[-1]["run_url"] or None,
                     "summary": (f"{name}: " + ("passed" if done[0]["state"] == "exam_pass" else "failed")) if done
                     else f"{name}: being scored", "steps": steps})
+    out += search_runs(cands, v)
     out.sort(key=lambda r: r["started_at"], reverse=True)
     return out[:MAX_RUNS]
+
+
+def search_runs(cands, v):
+    from . import search as SR
+    out = []
+    scores = {r["id"]: r for r in SR.read_csv(SR.SCORES)}
+    for rd in SR.read_csv(SR.ROUNDS):
+        steps = []
+        for cid in rd["shortlisted"].split():
+            r = scores.get(cid, {})
+            ver = v.get(cid) or {}
+            steps.append({"at": rd["at"], "id": cid, "name": cands[cid]["name"] if cid in cands else r.get("label", cid),
+                          "text": f"search {sg(r.get('effect'))} pts on {C.SEARCH[0]}–{C.SEARCH[1]}, "
+                                  f"t = {sg(r.get('t'), 2, '')} → sent to confirmation",
+                          "state": ver.get("state", "queued"), "fail_reason": ver.get("fail_reason", "")})
+        best = "; ".join(f"best {m} t = {sg(rd[f'best_{m}_t'], 2, '')}" for m in ("spread", "total") if rd[f"best_{m}_t"])
+        out.append({"kind": "search", "name": f"Search round {rd['round']}", "started_at": rd["at"],
+                    "finished_at": rd["at"], "duration_s": None, "run_number": None, "run_url": rd["run_url"] or None,
+                    "summary": f"{int(rd['scored_new']):,} new configurations scored on {C.SEARCH[0]}–{C.SEARCH[1]} "
+                               f"({int(rd['scored_total']):,} so far); {best}; "
+                               f"{len(steps) or 'none'} sent to confirmation",
+                    "steps": steps})
+    return out
 
 
 def build(running=(), started_at=None, gate_now=1):
@@ -270,8 +294,8 @@ def status_md(s, ledger):
         f"- Ledger attempts (all count in the Holm correction): {sum(1 for r in ledger if r['sport'] == C.SPORT)}",
         f"- Lab passes: {c['lab_pass']} · exam passes: {c['exam_pass']} · sealed {C.SEALED_SEASON} exams left: "
         f"{c['exam_budget_left']} of {c['exam_budget_total']}", "",
-        "Gates: v2 candidates 2006–12 / 2013–18 / 2019–24; v1 candidates 2016–18 / 2019–21 / 2022–24 (their ledger rows "
-        "say which).", "",
+        "Gates: v2 candidates 2017–19 / 2020–22 / 2023–24 (confirmation); v1 candidates 2016–18 / 2019–21 / 2022–24 "
+        "(their ledger rows say which). Search leaderboard: `research/search/LEADERBOARD.md`.", "",
         "| Candidate | Market | State | Gate 1 | Gate 2 | Gate 3 | Pooled [95% CI] | Holm p | Picks win% / ROI |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
@@ -311,6 +335,11 @@ def lessons_md(s):
     for kind, title in (("helped", "Helped"), ("faded", "Faded"), ("no_effect", "No effect")):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
+    from . import search as SR
+    rows = SR.read_csv(SR.SCORES)
+    if rows:
+        lines += [f"## What the search learned ({len(rows):,} configurations, {C.SEARCH[0]}–{C.SEARCH[1]} only)", ""]
+        lines += [f"- {x}" for x in SR.learned(rows)] + [""]
     return "\n".join(lines)
 
 

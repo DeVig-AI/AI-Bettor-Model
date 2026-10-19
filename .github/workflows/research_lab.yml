@@ -1,13 +1,19 @@
 name: Research Lab -- nightly run
 
-# Runs every registered candidate in research/candidates/ that has no ledger row yet through the three exploration
-# gates (2016-18, 2019-21, 2022-24), then the Inspector General's review. Deterministic; no AI in the loop.
-# Rules: research/RESEARCH_LAB_CONSTITUTION.md. Nights with nothing new to run stop after one quick check.
+# The loop (Constitution v2): once a week a search round scores model settings and blends on 2006-16 only and sends
+# at most 2 per market to research/candidates/; every night, candidates without a ledger row (search finds, queued or
+# hand-written ideas, at most 18) are confirmed on 2017-19, 2020-22, 2023-24, then the Inspector General reviews.
+# When this finishes, "Research Lab -- Inspector General" starts and sits the sealed exam if a lab pass exists.
+# Deterministic; no AI in the loop. Nights with nothing to do stop after one quick check.
 on:
   schedule:
     - cron: '37 7 * * *'     # 3:37am ET
   workflow_dispatch:
     inputs:
+      search:
+        description: 'Run a search round now, even if the last one was under a week ago'
+        type: boolean
+        default: false
       rerun:
         description: 'Re-run ONE candidate whose last attempt crashed (its id). Leave empty for a normal run. Every attempt counts in the correction.'
         type: string
@@ -26,6 +32,7 @@ jobs:
     timeout-minutes: 60
     env:
       RERUN: ${{ inputs.rerun }}
+      FORCE_SEARCH: ${{ inputs.search }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +42,16 @@ jobs:
 
       - name: Install
         run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Search round (weekly; 2006-16 only)
+        id: search
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.search round $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain research/search)" ]; then
+            python3 -m research.lab.inspector review
+            research/lab/push.sh "Research Lab search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
 
       - name: Anything new to run?
         id: pending

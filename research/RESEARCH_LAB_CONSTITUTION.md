@@ -4,9 +4,10 @@ Version: **v2** · adopted 2026-10-19 · applies to: Part A (all sports), Part B
 `research/constitution/RESEARCH_LAB_CONSTITUTION_v1.md`; what changed and why: section "Changes from v1" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
-`tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
-were put in the lab's cache (before writing v2, only those seasons' line coverage was checked: a count of games with a
-line, no results). The lab code checks the lock before every run, writes
+`tools/frozen_guard.py`) **before any lab data was downloaded**; v2's first draft was locked (on its branch, before it
+took effect) before the 1999–2001 seasons were put in the lab's cache; before merging, the owner chose the search →
+confirm design and v2 was revised to this text, after that cache was built. No model was scored on any season while
+v2 was being written (only the line coverage of 1999–2005 was counted). The lab code checks the lock before every run, writes
 this file's fingerprint into every ledger row, and refuses to run if the fingerprint does not match the lock.
 
 **Expected result, stated up front:** the closing line is a very good forecast. The most likely outcome of this lab is
@@ -43,12 +44,27 @@ result, and it will be reported exactly like a success: every number, plainly.
 2. One file = one fixed configuration. No search inside a candidate (no grid, no tuning on gate seasons). A variant is a
    new file with a new id, and it counts as a new attempt.
 3. Once a candidate has run, its file is locked (added to `FROZEN.sha256` by the lab). It is never edited or deleted.
-3a. **The queue.** Ideas may wait in `research/queue/`, one file each, named `NNN-<id>.yaml`; the number sets the
-   order. A queued file is not yet an attempt: until the lab takes it, it may be edited, reordered or deleted at no
-   cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
-   move before anything runs; from then on rule 3 applies.
-3b. **Batch size:** at most **18** candidates run in one lab run.
-4. Coefficients a candidate fits are fit **once, on the training seasons only**, and then frozen. Team ratings and
+3a. **The search (automatic).** Besides hand-written candidates, the lab finds candidates itself, in rounds (at most
+   one round a week), deterministically, with no AI:
+   - **Menu:** `research/search/MENU.yaml` lists the model families and the values each setting may take. Round 1
+     scores every combination. Each later round adds the neighbours (one setting moved one step along its ladder in
+     the menu) of the 10 best configurations per market, plus blends of the best performers: every pair of the 6 best,
+     equal-weight blends of the best 3 and best 5, and a best-5 blend with non-negative weights fit on the search
+     seasons. Nothing already scored is scored again.
+   - **Search seasons only:** the search code is given data only up to the last search season; it never sees the
+     confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
+     t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in `research/search/`.
+   - **Shortlist:** after each round, at most **2 per market** become candidates, best search t first, and only if
+     t ≥ **2.0**, the effect is positive in **each** search sub-period, and the model's disagreements with the line
+     correlate at most **0.95** with any candidate the search sent before or in the same round. A shortlisted model is
+     written to `research/candidates/` with its search numbers, committed, and then confirmed like any candidate.
+   - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
+     (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
+3b. A hand-written idea may also wait in `research/queue/` (`NNN-<id>.yaml`, in order; free to edit or delete until
+   the lab takes it, then rule 3 applies) or be added to the menu, where it competes in the search. A lab run confirms
+   at most **18** candidates.
+4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
+   the training and search seasons), and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
 5. **No known betting angles.** A candidate may not be built on, or include as a feature, a known betting angle or
    situational trend: weather (temperature, wind, precipitation, dome/outdoor as a totals signal), low-total underdogs,
@@ -102,7 +118,8 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
   spent the moment it is recorded in `research/exam/EXAMS.csv`, which happens before the sealed data is downloaded,
   so a crash still spends it. **Every exam is final**: no retakes, no "fixed" re-runs.
 - Only the **best current lab pass** may sit an exam: smallest Holm-adjusted p, then the larger pooled effect, then the
-  earlier ledger row. An exam is started only by the owner (a manual run of the Inspector General workflow).
+  earlier ledger row. The lab's workflow starts the exam automatically after a review that finds a lab pass (the owner
+  may also start it by hand); budget and finality are the same either way.
 - The candidate runs exactly as in the lab (same file, coefficients fit on the training seasons only), with ratings
   carried forward through the sealed season game by game.
 - **Exam pass:** sealed-season effect > 0 **and** one-sided p < 0.05 / 3 = **0.0167** (Bonferroni over the budget).
@@ -146,13 +163,14 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
 | Use | Seasons | Notes |
 |---|---|---|
 | Training | 1999–2005 | the only seasons coefficients may be fit on; also sets the line-only baseline. Ratings start here (from average) |
-| Gate 1 | 2006–2012 | exploration |
-| Gate 2 | 2013–2018 | exploration |
-| Gate 3 | 2019–2024 | exploration |
-| Pooled | 2006–2024 | the pooled test of A7 |
+| Search | 2006–2016 | the search (A3.3a) scores configurations here; sub-periods 2006–09, 2010–13, 2014–16 |
+| Gate 1 | 2017–2019 | confirmation |
+| Gate 2 | 2020–2022 | confirmation |
+| Gate 3 | 2023–2024 | confirmation |
+| Pooled | 2017–2024 | the pooled test of A7 |
 | **Sealed** | **2025** | the exam (A8); not in the lab |
 
-Rule-era splits (reported, never used to pass): **2006–2020**, **2021–2023** (17-game season from 2021), **2024**
+Rule-era splits (reported, never used to pass): **2017–2020**, **2021–2023** (17-game season from 2021), **2024**
 (new kickoff rule from 2024).
 
 Candidates that ran under v1 keep their v1 results (training 2006–15; gates 2016–18, 2019–21, 2022–24); their ledger
@@ -185,13 +203,17 @@ Reserved for another sport (college football is planned). Until a later version 
 
 ## Changes from v1 (2026-10-19)
 
-1. **Seasons (B1, B2):** the cache adds 1999–2001; training moves to 1999–2005 and the exploration gates to
-   2006–12, 2013–18 and 2019–24 (pooled 2006–24, about 5,100 games instead of about 2,400). Why: twice the games make
-   each test about 40% sharper, so a real edge is easier to tell from luck. What did not change: the Holm correction
-   over every attempt, the 0.05 bar, "positive in every gate", the fade rule, the sealed 2025 exam and its budget.
-   A1.4 says loosening waits a season; v2 loosens none of the rules A1.4 lists (budget, correction, fade bar). It is
-   a change of data split, made **after** the 18 v1 results were seen, so: all 18 v1 attempts keep counting in the
-   correction; no v1 candidate is re-run under v2; the new split applies only to candidates registered after v2 was
-   locked; older seasons can also add edges that no longer exist, which the fade rule and the sealed exam check.
-2. **Queue and batch size (A3.3a, A3.3b):** ideas can wait in `research/queue/` and run 18 per lab run.
+1. **A search → confirm loop (A3.3a, B2).** The lab finds candidates itself: an automatic, deterministic search over
+   a menu of model settings and blends, scored only on the search seasons 2006–16; at most 2 per market per round that
+   clear t ≥ 2.0 and are positive in every search sub-period go on to confirmation on 2017–24, which the search never
+   sees. Only confirmations are attempts. Why: the owner wants many ideas tried and the lab to learn from what ran;
+   trying many ideas directly on the gates would make the correction impossible to pass (or, loosened, let luck
+   through), and learning from gate results would turn the gates into training data.
+2. **Seasons (B1, B2):** the cache adds 1999–2001; training 1999–2005; search 2006–16; confirmation 2017–24.
+3. **The exam starts automatically** when a review finds a lab pass (A8). Budget (3) and finality unchanged.
+4. **Queue (A3.3b):** hand-written ideas can wait in `research/queue/`; at most 18 confirmations per lab run.
 
+What did not change: the Holm correction over every attempt (v1's 18 attempts keep counting), the 0.05 bar,
+"positive in every gate", the fade rule, the sealed 2025 exam and its budget, promotion and the stop rule.
+Said plainly: v2 was written after the 18 v1 results were seen. Those results used 2016–24, so the confirmation
+seasons 2017–24 are not untouched; the sealed 2025 exam and the paper season are the clean tests.

@@ -159,7 +159,7 @@ def run_elo(p, data):
             shift = 0.0 if err == 0 else math.copysign(k * math.log(max(abs(err), 1) + 1, p["nfelo_log_base"]), err)
         else:
             res = 1.0 if m > 0 else 0.0 if m < 0 else 0.5
-            pu = 1 / (1 + 10 ** (-du / 400))
+            pu = 1 / (1 + 10 ** max(-300.0, min(300.0, -du / 400)))     # some settings run away; never overflow
             mult = 1.0
             if p["mov"] == "538":
                 lead = du if res == 1.0 else -du
@@ -367,8 +367,9 @@ def find_candidate(cid):
 
 def run_blend(p, data, market):
     outs, fits = [], {}
-    for cid, w in zip(p["components"], p["weights"]):
-        c = find_candidate(cid)
+    for comp, w in zip(p["components"], p["weights"]):
+        c = comp if isinstance(comp, dict) else find_candidate(comp)    # inline (search) or a registered id
+        cid = comp if isinstance(comp, str) else f"component {len(fits) + 1}"
         if c["market"] != market:
             raise ValueError(f"blend component {cid} is a {c['market']} model, not {market}")
         o, f = run(c, data)

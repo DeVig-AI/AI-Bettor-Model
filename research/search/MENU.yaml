@@ -1,0 +1,63 @@
+# Research Lab search menu (Constitution v2 A3.3a). Round 1 scores every combination below; later rounds move one
+# setting of the best configurations one step along its ladder. Adding a value or a family here is how a new idea
+# joins the search (it competes there; only shortlisted models are confirmed and count as attempts).
+# No known betting angles (A3.5).
+families:
+  - name: Elo
+    type: elo
+    market: spread
+    fixed: {mean: 1505, elo_per_point: 25, playoff_mult: 1.0, market_blend: 0.0, bye_rest_days: 13, hfa_seasons: 3,
+            qb_alpha: 0.1, qb_elo_per_value: 3.3, qb_new_below_avg: 10, nfelo_log_base: 10, hfa_elo: 65,
+            revert_center: none}
+    grid:
+      k: [10, 20, 30]
+      hfa_mode: [fixed, rolling]
+      mov: [none, '538', nfelo]
+      revert: [0.3333, 0.5263]
+      qb: [none, '538']
+      market_resist: [0.0, 1.5039]
+      bye_elo: [0, 25]
+      travel_elo_per_1000mi: [0, 4]
+  - name: Team rating
+    type: team_rating
+    market: spread
+    fixed: {pace: none}
+    grid:
+      metric: [points, epa, pass_epa, early_epa, success, noto_epa, comp_epa]
+      halflife: [4, 8, 16]
+      def_weight: [0.5, 1.0]
+      season_carry: [0.4, 0.6, 0.8]
+  - name: Team rating totals
+    type: team_rating
+    market: total
+    fixed: {def_weight: 1.0}
+    grid:
+      metric: [points, epa, pass_epa, early_epa, success, noto_epa, comp_epa]
+      halflife: [4, 8, 16]
+      season_carry: [0.4, 0.6, 0.8]
+      pace: [plays, seconds]
+    rules: [points_has_no_pace]     # metric points is per game: pace none, one copy instead of two
+  - name: Pace × efficiency
+    type: pace_eff
+    market: total
+    fixed: {calibrate: true}
+    grid:
+      halflife: [4, 8, 16]
+      efficiency: [points, epa]
+      season_carry: [0.5, 0.6667, 0.8]
+# One step along these moves a setting in later rounds (numbers only; other settings never move).
+ladders:
+  k: [6, 8, 10, 15, 20, 25, 30, 40]
+  revert: [0.2, 0.3333, 0.4, 0.5263, 0.6, 0.7]
+  halflife: [2, 3, 4, 6, 8, 12, 16, 24, 32]
+  season_carry: [0.2, 0.3, 0.4, 0.5, 0.6, 0.6667, 0.7, 0.8, 0.9]
+  def_weight: [0.25, 0.5, 0.75, 1.0, 1.25]
+  bye_elo: [0, 12, 25, 40]
+  travel_elo_per_1000mi: [0, 2, 4, 8]
+  market_resist: [0.0, 0.75, 1.5039, 3.0]
+search:
+  neighbours_of_best: 10        # per market
+  blend_pool: 6                 # pairs among the best 6; equal blends of best 3 and 5; fitted blend of best 5
+  shortlist_per_market: 2
+  shortlist_min_t: 2.0
+  max_disagreement_corr: 0.95
