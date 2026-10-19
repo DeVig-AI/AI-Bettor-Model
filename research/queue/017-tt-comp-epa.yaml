@@ -1,0 +1,16 @@
+# Research Lab queued idea tt-comp-epa (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: tt-comp-epa
+name: Competitive-moment EPA totals
+market: total
+family: Team rating
+parent: tt-epa
+reason: EPA from plays while the game is in doubt as the efficiency measure for totals.
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: comp_epa
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: plays

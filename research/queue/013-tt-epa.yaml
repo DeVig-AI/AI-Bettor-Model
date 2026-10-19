@@ -1,0 +1,16 @@
+# Research Lab queued idea tt-epa (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: tt-epa
+name: EPA × pace totals
+market: total
+family: Team rating
+parent: null
+reason: Opponent-adjusted EPA per play for offense and defense, times expected plays from opponent-adjusted pace ratings.
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: epa
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: plays

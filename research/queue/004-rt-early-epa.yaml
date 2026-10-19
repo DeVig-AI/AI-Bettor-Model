@@ -1,0 +1,17 @@
+# Research Lab queued idea rt-early-epa (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: rt-early-epa
+name: Early-down EPA rating
+market: spread
+family: Team rating
+parent: rt-epa
+reason: First- and second-down plays show a team's normal style with less third-down luck; rate teams on early-down EPA per
+  play.
+source: DeVig's own; opponent-adjusted offense/defense ratings, a standard public-analytics idea
+model:
+  type: team_rating
+  params:
+    metric: early_epa
+    halflife: 8
+    season_carry: 0.6
+    def_weight: 1.0
+    pace: none

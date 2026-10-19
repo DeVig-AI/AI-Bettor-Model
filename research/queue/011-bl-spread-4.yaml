@@ -1,0 +1,21 @@
+# Research Lab queued idea bl-spread-4 (Constitution v2 A3.3a): free to edit, reorder or delete until the lab takes it.
+id: bl-spread-4
+name: Blend of four spread ratings
+market: spread
+family: Blend
+parent: null
+reason: 'Equal-weight average of plain Elo, points, EPA and success-rate ratings: no single view of team strength.'
+source: DeVig's own; equal-weight forecast averaging
+model:
+  type: blend
+  params:
+    components:
+    - elo-base
+    - rt-points
+    - rt-epa
+    - rt-success
+    weights:
+    - 0.25
+    - 0.25
+    - 0.25
+    - 0.25
