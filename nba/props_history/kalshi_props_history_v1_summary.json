@@ -1,10 +1,22 @@
 {
- "generated_at": "2026-10-19T08:17:45Z",
+ "generated_at": "2026-10-19T08:31:28Z",
  "stats": {
   "series": {
-   "KXNBAREB": {
-    "stat": "rebounds",
-    "title": "NBA Player Rebounds"
+   "KXNBAPTS": {
+    "stat": "points",
+    "title": "NBA Player Points"
+   },
+   "KXNBA3PT": {
+    "stat": "threes",
+    "title": "NBA Player Threes"
+   },
+   "KXNBAPRA": {
+    "stat": "pts_reb_ast",
+    "title": "NBA Player Points + Rebounds + Assists"
+   },
+   "KXNBASTOCK": {
+    "stat": "stl_blk",
+    "title": "NBA Player Steals + Blocks"
    },
    "KXNBARA": {
     "stat": "reb_ast",
@@ -14,10 +26,6 @@
     "stat": "assists",
     "title": "NBA Player Assists"
    },
-   "KXNBAPA": {
-    "stat": "pts_ast",
-    "title": "Pro Basketball Player Points + Assists"
-   },
    "KXNBAPR": {
     "stat": "pts_reb",
     "title": "Pro Basketball Player Points + Rebounds"
@@ -26,39 +34,31 @@
     "stat": "stl_blk",
     "title": "NBA Player Steals and Blocks"
    },
+   "KXNBASTL": {
+    "stat": "steals",
+    "title": "NBA Player Steals"
+   },
+   "KXNBAPA": {
+    "stat": "pts_ast",
+    "title": "Pro Basketball Player Points + Assists"
+   },
    "KXNBAPLAYOFFPTS": {
     "stat": "points",
     "title": "NBA Playoffs Player Points"
-   },
-   "KXNBAPRA": {
-    "stat": "pts_reb_ast",
-    "title": "NBA Player Points + Rebounds + Assists"
-   },
-   "KXNBA3PT": {
-    "stat": "threes",
-    "title": "NBA Player Threes"
    },
    "KXNBABLK": {
     "stat": "blocks",
     "title": "NBA Player Blocks"
    },
-   "KXNBASTL": {
-    "stat": "steals",
-    "title": "NBA Player Steals"
-   },
-   "KXNBAPTS": {
-    "stat": "points",
-    "title": "NBA Player Points"
-   },
-   "KXNBASTOCK": {
-    "stat": "stl_blk",
-    "title": "NBA Player Steals + Blocks"
+   "KXNBAREB": {
+    "stat": "rebounds",
+    "title": "NBA Player Rebounds"
    }
   },
   "events_seen": 5515,
-  "events_done_now": 605,
-  "markets_written_now": 6006,
-  "no_candle": 312,
+  "events_done_now": 0,
+  "markets_written_now": 0,
+  "no_candle": 0,
   "no_tipoff": 2,
   "not_nba_game_type": 0,
   "after_cutoff": 0,
@@ -67,13 +67,10 @@
    "/events": 5515
   },
   "markets_from": {
-   "/historical/markets": 2165
+   "/historical/markets": 1560
   },
-  "candles_by_endpoint": {
-   "batch": 0,
-   "historical": 5694
-  },
-  "minutes": 44.6,
+  "candles_by_endpoint": {},
+  "minutes": 13.6,
   "complete": true,
   "events_done_total": 3953
  },
@@ -457,136 +454,6 @@
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
    "yes_sub_title": "LeBron James: 5+"
-  },
-  "historical": {
-   "candlesticks": [
-    {
-     "end_period_ts": 1777910400,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.9200",
-      "high": "0.9200",
-      "low": "0.9100",
-      "open": "0.9100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0100",
-      "low": "0.0000",
-      "open": "0.0100"
-     }
-    },
-    {
-     "end_period_ts": 1777917600,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.9700",
-      "high": "0.9700",
-      "low": "0.9200",
-      "open": "0.9200"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777921200,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.9600",
-      "high": "0.9700",
-      "low": "0.9600",
-      "open": "0.9700"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777932000,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.2100",
-      "high": "0.9600",
-      "low": "0.2100",
-      "open": "0.9600"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777935600,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.2100",
-      "high": "0.9500",
-      "low": "0.2100",
-      "open": "0.2100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    }
-   ],
-   "ticker": "KXNBASTL-26MAY04PHINYK-PHIJEMBIID21-3"
   }
  }
 }
