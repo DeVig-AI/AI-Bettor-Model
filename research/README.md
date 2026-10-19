@@ -1,4 +1,4 @@
-# DeVig Research Lab (NFL)
+# DeVig Research Lab (NFL; college football in `cfb/`)
 
 A closed loop: **search → confirm → sealed exam → paper season (with automatic removal)**. GitHub Actions does all
 the compute, deterministically; there is no AI anywhere in the loop. Results are public in this repo; the public app
@@ -58,7 +58,7 @@ where its data is kept): everything lives under `research/cfb/` (candidates, res
 `STATUS.md`, `LESSONS.md`). Its data comes from CollegeFootballData with the `CFB_API_KEY` secret, only in GitHub
 Actions (`Research CFB -- data`: history once, then weekly in season); by the provider's terms the data files are
 never committed and live in the private Actions cache, while `research/cfb/data/MANIFEST.json` (fingerprints) and
-`CALLS.csv` (every API call) are. The nightly lab runs NFL, then CFB; the Inspector General takes `sport: NFL|CFB`.
+`CALLS.csv` (every API call) are. The nightly lab runs NFL (with the search, which is NFL only), then CFB; the Inspector General takes `sport: NFL|CFB`.
 Each sport's correction counts its own attempts; the count across all sports is reported next to it.
 `status.json` keeps NFL at the top level and other sports under `by_sport` (see `STATUS_SCHEMA.md`); /lab has a
 sport switch.
