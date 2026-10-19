@@ -1,14 +1,14 @@
-# DeVig Research Lab -- Constitution v3
+# DeVig Research Lab -- Constitution v4
 
-Version: **v3** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v2 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v2.md`; v1 at
-`research/constitution/RESEARCH_LAB_CONSTITUTION_v1.md`; what changed: sections "Changes from v1" and "Changes from v2"
-at the end)
+Version: **v4** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v3 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v3.md`; v2 and v1 alongside it; what
+changed: sections "Changes from v1", "Changes from v2" and "Changes from v3" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
 were put in the lab's cache (before writing v2, only those seasons' line coverage was checked: a count of games with a
-line, no results). The lab code checks the lock before every run, writes
+line, no results). v4 (the NFL search → confirm loop) was written after that cache was built; no model was scored on
+any season while it was written. The lab code checks the lock before every run, writes
 this file's fingerprint into every ledger row, and refuses to run if the fingerprint does not match the lock.
 
 **Expected result, stated up front:** the closing line is a very good forecast. The most likely outcome of this lab is
@@ -50,7 +50,24 @@ result, and it will be reported exactly like a success: every number, plainly.
    cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
-4. Coefficients a candidate fits are fit **once, on the training seasons only**, and then frozen. Team ratings and
+3c. **The search (NFL only, Part B).** Besides hand-written candidates, the lab finds NFL candidates itself, in rounds
+   (at most one round a week), deterministically, with no AI:
+   - **Menu:** `research/search/MENU.yaml` lists the model families and the values each setting may take. Round 1
+     scores every combination. Each later round adds the neighbours (one setting moved one step along its ladder in the
+     menu) of the 10 best configurations per market, plus blends of the best performers: every pair of the 6 best,
+     equal-weight blends of the best 3 and best 5, and a best-5 blend with non-negative weights summing to 1 fit on the
+     training and search seasons. Nothing already scored is scored again.
+   - **Search seasons only:** the search code is given data only up to the last search season (B2); it never sees the
+     confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
+     t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in `research/search/`.
+   - **Shortlist:** after each round, at most **2 per market** become candidates, best search t first, and only if
+     t ≥ **2.0**, the effect is positive in **each** search sub-period, and the model's disagreements with the line
+     correlate at most **0.95** with any candidate the search sent before or in the same round. A shortlisted model is
+     written to `research/candidates/` with its search numbers, committed, and confirmed like any candidate.
+   - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
+     (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
+4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
+   the training and search seasons), and then frozen. Team ratings and
    rolling averages update game by game using only games already finished before the game being forecast.
 5. **No known betting angles.** A candidate may not be built on, or include as a feature, a known betting angle or
    situational trend: weather (temperature, wind, precipitation, dome/outdoor as a totals signal), low-total underdogs,
@@ -104,7 +121,9 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
   spent the moment it is recorded in `research/exam/EXAMS.csv`, which happens before the sealed data is downloaded,
   so a crash still spends it. **Every exam is final**: no retakes, no "fixed" re-runs.
 - Only the **best current lab pass** may sit an exam: smallest Holm-adjusted p, then the larger pooled effect, then the
-  earlier ledger row. An exam is started only by the owner (a manual run of the Inspector General workflow).
+  earlier ledger row. NFL: the Inspector General's workflow starts the exam automatically after a lab run whose review
+  finds a lab pass (the owner may also start it by hand). College football: started only by the owner. Budget and
+  finality are the same either way.
 - The candidate runs exactly as in the lab (same file, coefficients fit on the training seasons only), with ratings
   carried forward through the sealed season game by game.
 - **Exam pass:** sealed-season effect > 0 **and** one-sided p < 0.05 / 3 = **0.0167** (Bonferroni over the budget).
@@ -148,17 +167,19 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
 | Use | Seasons | Notes |
 |---|---|---|
 | Training | 1999–2005 | the only seasons coefficients may be fit on; also sets the line-only baseline. Ratings start here (from average) |
-| Gate 1 | 2006–2012 | exploration |
-| Gate 2 | 2013–2018 | exploration |
-| Gate 3 | 2019–2024 | exploration |
-| Pooled | 2006–2024 | the pooled test of A7 |
+| Search | 2006–2016 | the search (A3.3c) scores configurations here; sub-periods 2006–09, 2010–13, 2014–16 |
+| Gate 1 | 2017–2019 | confirmation |
+| Gate 2 | 2020–2022 | confirmation |
+| Gate 3 | 2023–2024 | confirmation |
+| Pooled | 2017–2024 | the pooled test of A7 |
 | **Sealed** | **2025** | the exam (A8); not in the lab |
 
-Rule-era splits (reported, never used to pass): **2006–2020**, **2021–2023** (17-game season from 2021), **2024**
+Rule-era splits (reported, never used to pass): **2017–2020**, **2021–2023** (17-game season from 2021), **2024**
 (new kickoff rule from 2024).
 
 Candidates that ran under v1 keep their v1 results (training 2006–15; gates 2016–18, 2019–21, 2022–24); their ledger
-rows say so. They are not re-run under v2 unless re-registered under a new id, which is a new attempt.
+rows say so. No NFL candidate ran under v2 or v3's split (2006–12 / 2013–18 / 2019–24). None is re-run unless
+re-registered under a new id, which is a new attempt.
 
 ### B3. Markets
 - `spread`: forecast = expected home margin; `r = (home score − away score) − spread_line`.
@@ -307,3 +328,24 @@ Reserved for another sport. Until a later version adds it, Part A applies only t
    (commit bfae47e). While that branch was open, the NFL-only v2 above was adopted on main, so Part C arrives as v3.
    Its text is the same as when it was locked, plus C1a (where the CFB data is kept, from CollegeFootballData's
    terms). C1a was added before any CFB history was downloaded; only a five-call provider check had run.
+
+---
+
+## Changes from v3 (2026-10-19)
+
+1. **NFL: a search → confirm loop (A3.3c, B2)**, the owner's decision. The lab finds NFL candidates itself: an
+   automatic, deterministic search over a menu of model settings and blends, scored only on 2006–16; at most 2 per
+   market per round that clear t ≥ 2.0 and are positive in every search sub-period are confirmed on 2017–19, 2020–22
+   and 2023–24, which the search never sees. Only confirmations are attempts. Why: the owner wants many ideas tried and
+   the lab to learn from what ran; trying many ideas directly on the gates would make the correction impossible to pass
+   (or, loosened, let luck through), and learning from gate results would turn the gates into training data.
+2. **NFL season split (B2):** training 1999–2005 (unchanged), search 2006–16, confirmation 2017–24 (v2/v3 used gates
+   2006–12 / 2013–18 / 2019–24; no NFL candidate ran under them). The 18 NFL ideas queued under v2 are now part of the
+   search menu instead (same families and settings), so they compete in the search rather than each costing an attempt.
+3. **NFL exam starts automatically** when a review finds a lab pass (A8). Budget (3) and finality unchanged.
+
+Unchanged: Part C (college football) entirely; the Holm correction over every attempt of a sport (v1's 18 NFL attempts
+keep counting); the 0.05 bar; "positive in every gate"; the fade rule; the sealed 2025 exams and their budgets;
+promotion and the stop rule. Said plainly: v4 was written after the 18 v1 NFL results were seen; those used 2016–24, so
+the confirmation seasons 2017–24 are not untouched; the sealed 2025 exam and the paper season are the clean tests.
+

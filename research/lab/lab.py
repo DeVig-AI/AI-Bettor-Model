@@ -32,7 +32,7 @@ LEDGER_COLS = ["attempt", "sport", "candidate_id", "market", "run_at", "status",
                "run_url", "games_pooled", "effect_pooled", "ci_lo", "ci_hi", "p_one_sided", "g1_effect", "g2_effect",
                "g3_effect", "error"]
 REQUIRED = ["id", "name", "market", "family", "parent", "reason", "model"]
-CODE_FILES = ["config.py", "data.py", "cfb_data.py", "models.py", "metrics.py", "lab.py"]
+CODE_FILES = ["config.py", "data.py", "cfb_data.py", "models.py", "metrics.py", "lab.py", "search.py"]
 
 
 def dm():

@@ -4,10 +4,15 @@ name: Research Lab -- Inspector General
 # or current-season data (the paper season), and never into the repo. Rules: research/RESEARCH_LAB_CONSTITUTION.md.
 #   review -- re-judge every candidate against the whole ledger (also runs after every lab run)
 #   exam   -- spend ONE of the 3 sealed 2025 exams on the best current lab pass. Final; a crash still spends it.
+#             NFL: also starts by itself after every successful lab run, and does nothing unless a lab pass exists
+#             (Constitution v4 A8). College football exams stay manual.
 #   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
 # sport: NFL (Part B, sealed 2025) or CFB (Part C, sealed 2025). Scheduled runs do NFL every 3 hours and CFB once a
 # day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
+  workflow_run:
+    workflows: ["Research Lab -- nightly run"]
+    types: [completed]
   schedule:
     - cron: '41 */3 * * *'   # paper season; exits at once while no model is promoted
   workflow_dispatch:
@@ -32,13 +37,17 @@ concurrency:
 
 jobs:
   inspector:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      ACTION: ${{ inputs.action || 'paper' }}
-      LAB_SPORT: ${{ inputs.sport || 'NFL' }}
+      ACTION: ${{ github.event_name == 'workflow_run' && 'exam' || inputs.action || 'paper' }}
+      AUTO: ${{ github.event_name == 'workflow_run' }}      # after a lab run: NFL exam only if an NFL lab pass exists
+      LAB_SPORT: ${{ github.event_name == 'workflow_run' && 'NFL' || inputs.sport || 'NFL' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main              # after a lab run: its pushed results, not the commit that started it
 
       - name: Anything to do?
         id: go
@@ -49,6 +58,9 @@ jobs:
           prom=research/promoted.json; [ "$LAB_SPORT" = "CFB" ] && prom=research/cfb/promoted.json
           if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' "$prom" 2>/dev/null; then
             echo "No promoted model: nothing to paper-track."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          elif [ "$AUTO" = "true" ] && ! grep -q '"state": "lab_pass"' research/status.json 2>/dev/null; then
+            echo "After the lab run: no lab pass, so no sealed exam."
             echo "go=false" >> "$GITHUB_OUTPUT"
           else
             echo "go=true" >> "$GITHUB_OUTPUT"
