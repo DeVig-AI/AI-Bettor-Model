@@ -232,6 +232,7 @@ export function cleanStatus(s, nested = false) {
       kind: ["lab", "exam", "review", "paper", "search"].includes(x.kind) ? x.kind : "lab", name: str(x.name, 80),
       started_at: iso(x.started_at), finished_at: iso(x.finished_at), duration_s: num(x.duration_s),
       run_number: num(x.run_number), run_url: link(x.run_url), summary: str(x.summary, 300),
+      funnel: arr(x.funnel, 8).filter(f => f && typeof f === "object").map(f => ({label: str(f.label, 40), count: num(f.count)})),
       steps: arr(x.steps, 60).filter(t => t && typeof t === "object").map(t => ({
         at: iso(t.at), id: str(t.id, 80), name: str(t.name, 160), text: str(t.text, 300),
         state: STEP_STATES.includes(t.state) ? t.state : "info", fail_reason: str(t.fail_reason, 40),

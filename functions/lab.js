@@ -160,6 +160,11 @@ export const PAGE = `<!doctype html>
   .step .tx{font-family:var(--mono);font-size:11px;color:var(--ink-soft);overflow-wrap:anywhere;margin-top:2px}
   .step .chip,.step .pips{flex:none;margin-top:1px}
   .runs .more{border:0;border-top:1px solid var(--line);border-radius:0;color:var(--ink-soft);font-size:13px;min-height:48px}
+  .funnel{display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px;padding:0 14px 14px}
+  .funnel .f{display:flex;flex-direction:column;min-width:0}
+  .funnel b{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1}
+  .funnel span{font-size:11px;color:var(--ink-soft)}
+  .funnel .ar{color:var(--ink-faint);font-size:14px;padding:0 2px}
   .older{display:flex;flex-direction:column;gap:2px;padding:0 4px}
   .older a,.older span{font-size:12px;color:var(--ink-soft);text-decoration:none;min-height:32px;display:flex;align-items:center}
   .empty{text-align:center;padding:26px 18px}
@@ -404,7 +409,13 @@ export const PAGE = `<!doctype html>
     var head = '<div class="hd"><div class="row"><span class="kicker">' + (live ? "Running now" : "Last run") + '</span>' +
       '<span class="mono faint" style="font-size:12px">' + esc(ago(r.started_at)) + (r.duration_s != null ? " · took " + dur(r.duration_s) : "") + '</span></div>' +
       (gh(r.run_url) ? '<a href="' + esc(r.run_url) + '" rel="noreferrer">' + esc(r.name) + ' on GitHub</a>' : '<b>' + esc(r.name) + '</b>') +
-      '<div class="sum">' + esc(r.summary) + '</div></div>';
+      (r.funnel && r.funnel.length ? "" : '<div class="sum">' + esc(r.summary) + '</div>') + '</div>' +
+      (r.funnel && r.funnel.length ? '<div class="funnel" role="img" aria-label="' + esc(r.summary) + '">' +
+        r.funnel.map(function(f, i){
+          return (i ? '<span class="ar" aria-hidden="true">→</span>' : "") + '<div class="f"><b' +
+            (i && f.count > 0 && i === r.funnel.length - 1 ? ' style="color:var(--accent)"' : "") + '>' +
+            esc(typeof f.count === "number" ? f.count.toLocaleString() : "—") + '</b><span>' + esc(f.label) + '</span></div>';
+        }).join("") + '</div>' : "");
     var list = (showAllSteps ? steps : steps.slice(0, SHOWN)).map(function(t){
       return '<a class="step" href="#c/' + encodeURIComponent(t.id) + '"><span class="tm">' + esc(clock(t.at)) + '</span>' +
         '<span class="bd"><span class="nm">' + esc(t.name || t.id) + '</span><div class="tx">' + esc(t.text) + '</div></span>' +
@@ -416,7 +427,7 @@ export const PAGE = `<!doctype html>
       return gh(o.run_url) ? '<a href="' + esc(o.run_url) + '" rel="noreferrer">' + t + '</a>' : '<span>' + t + '</span>';
     }).join("");
     return '<section class="stack" aria-labelledby="h-r"><div class="sechead"><h2 id="h-r">What the lab did</h2>' +
-      '<div class="r">times are yours</div></div><div class="card runs">' + head + list + more + '</div>' +
+      '<div class="r">counts only</div></div><div class="card runs">' + head + list + more + '</div>' +
       (older ? '<div class="older"><div class="small">Earlier</div>' + older + '</div>' : "") + '</section>';
   }
   function viewLessons(s){

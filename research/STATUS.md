@@ -1,6 +1,6 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-19T05:57:39Z by research/lab/report.py. Constitution v6 (`fdfc2e6d5cb3`). Do not edit by hand._
+_Generated 2026-10-19T06:12:37Z by research/lab/report.py. Constitution v7 (`70ed618b8ccc`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -54,6 +54,6 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested · 0 passed the lab · failed: 15 gate 2, 3 gate 1
+- **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).

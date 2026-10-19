@@ -194,17 +194,22 @@ def runs(ledger, cands, v):
             gates = [None if IG.fnum(r[f"g{k}_effect"]) is None else IG.fnum(r[f"g{k}_effect"]) > 0 for k in (1, 2, 3)]
             steps.append({"at": r["run_at"], "id": cid, "name": name, "text": text, "state": state, "fail_reason": fr,
                           "gates": gates})
-        passes = sum(1 for s_ in steps if s_["state"] in PASSED_LAB)
-        why = ", ".join(f"{n} {k.replace('_', ' ')}" for k, n in sorted(reasons.items(), key=lambda x: -x[1])
-                        if k not in PASSED_LAB)
+        done = [r for r in rows if r["status"] == "done"]
+        pos = lambda r, k: (IG.fnum(r[f"g{k}_effect"]) or 0) > 0
+        latest_states = [s_["state"] for s_ in steps]
+        funnel = [{"label": "tested", "count": len(rows)},
+                  {"label": "past gate 1", "count": sum(pos(r, 1) for r in done)},
+                  {"label": "past gate 2", "count": sum(pos(r, 1) and pos(r, 2) for r in done)},
+                  {"label": "passed the lab", "count": sum(x in PASSED_LAB for x in latest_states)},
+                  {"label": "passed the exam", "count": sum(x in PASSED_EXAM for x in latest_states)},
+                  {"label": "promoted", "count": sum(x in ("promoted", "stopped") for x in latest_states)}]
         first, last = rows[0], rows[-1]
         num = int(fx(first["run_number"])) if fx(first["run_number"]) else None
         out.append({"kind": "lab", "name": "Research Lab" + (f" #{num}" if num else " (local)"),
                     "started_at": first["run_at"], "finished_at": last["run_at"],
                     "duration_s": secs_between(first["run_at"], last["run_at"]), "run_number": num,
                     "run_url": first["run_url"] or None,
-                    "summary": f"{len(steps)} tested · {passes} passed the lab" + (f" · failed: {why}" if why else ""),
-                    "steps": steps})
+                    "summary": funnel_text(funnel), "funnel": funnel, "steps": []})
     exams = {}
     for x in IG.read_csv(C.EXAMS):
         exams.setdefault(x["exam_no"], []).append(x)
@@ -226,15 +231,22 @@ def runs(ledger, cands, v):
                 steps.append({"at": x["at"], "id": cid, "name": name, "state": "exam_fail", "fail_reason": "error",
                               "text": f"crashed (the exam is still spent): {x['note'][:140]}"})
         done = [s_ for s_ in steps if s_["state"] in ("exam_pass", "exam_fail")]
+        funnel = [{"label": "sat the exam", "count": 1},
+                  {"label": "passed", "count": int(bool(done) and done[0]["state"] == "exam_pass")}]
         out.append({"kind": "exam", "name": f"Sealed exam {no}", "started_at": rows[0]["at"],
                     "finished_at": rows[-1]["at"] if done else None,
                     "duration_s": secs_between(rows[0]["at"], rows[-1]["at"]) if done else None,
                     "run_number": None, "run_url": rows[-1]["run_url"] or None,
-                    "summary": (f"{name}: " + ("passed" if done[0]["state"] == "exam_pass" else "failed")) if done
-                    else f"{name}: being scored", "steps": steps})
+                    "summary": funnel_text(funnel) if done else "1 sat the exam → being scored",
+                    "funnel": funnel, "steps": []})
     out += search_runs(cands, v)
     out.sort(key=lambda r: r["started_at"], reverse=True)
     return out[:MAX_RUNS]
+
+
+def funnel_text(funnel):
+    """'18 tested → 9 past gate 1 → ...': the one line a run's history shows (owner's choice: counts only)."""
+    return " → ".join(f"{f['count']:,} {f['label']}" for f in funnel)
 
 
 def SR_path(name):
@@ -245,23 +257,21 @@ def SR_path(name):
 def search_runs(cands, v):
     from . import search as SR
     out = []
-    scores = {r["id"]: r for r in SR.read_csv(SR.path("SCORES.csv"))}
+    rows = SR.read_csv(SR.path("SCORES.csv"))
+    try:
+        bar = SR.load_menu()["search"]["shortlist_min_t"]
+    except (OSError, KeyError):
+        bar = float("inf")
     for rd in SR.read_csv(SR.path("ROUNDS.csv")):
-        steps = []
-        for cid in rd["shortlisted"].split():
-            r = scores.get(cid, {})
-            ver = v.get(cid) or {}
-            steps.append({"at": rd["at"], "id": cid, "name": cands[cid]["name"] if cid in cands else r.get("label", cid),
-                          "text": f"search {sg(r.get('effect'))} pts on {C.SEARCH[0]}–{C.SEARCH[1]}, "
-                                  f"t = {sg(r.get('t'), 2, '')} → sent to confirmation",
-                          "state": ver.get("state", "queued"), "fail_reason": ver.get("fail_reason", "")})
-        best = "; ".join(f"best {m} t = {sg(rd[f'best_{m}_t'], 2, '')}" for m in ("spread", "total") if rd[f"best_{m}_t"])
+        mine = [r for r in rows if r["round"] == rd["round"]]
+        consistent = [r for r in mine if r["eligible"] == "true"]
+        funnel = [{"label": "models scored", "count": len(mine)},
+                  {"label": "consistent", "count": len(consistent)},
+                  {"label": f"strong (t ≥ {bar:g})", "count": sum(float(r["t"]) >= bar for r in consistent)},
+                  {"label": "sent to confirmation", "count": len(rd["shortlisted"].split())}]
         out.append({"kind": "search", "name": f"Search round {rd['round']}", "started_at": rd["at"],
                     "finished_at": rd["at"], "duration_s": None, "run_number": None, "run_url": rd["run_url"] or None,
-                    "summary": f"{int(rd['scored_new']):,} new configurations scored on {C.SEARCH[0]}–{C.SEARCH[1]} "
-                               f"({int(rd['scored_total']):,} so far); {best}; "
-                               f"{len(steps) or 'none'} sent to confirmation",
-                    "steps": steps})
+                    "summary": funnel_text(funnel), "funnel": funnel, "steps": []})
     return out
 
 
@@ -320,10 +330,8 @@ def build(running=(), started_at=None, gate_now=1):
         status["runs"].insert(0, {"kind": "lab", "name": "Research Lab" + (f" #{L.run_info()[0]}" if L.run_info()[0] else ""),
                                   "started_at": started_at, "finished_at": None, "duration_s": None,
                                   "run_number": L.run_info()[0], "run_url": L.run_info()[1],
-                                  "summary": f"{len(running)} candidate(s) running through the three gates",
-                                  "steps": [{"at": started_at, "id": cid, "name": cands[cid]["name"], "text": "waiting",
-                                             "state": "running" if i == 0 else "queued", "fail_reason": ""}
-                                            for i, cid in enumerate(running)]})
+                                  "summary": f"{len(running)} tested → running through the gates",
+                                  "funnel": [{"label": "tested", "count": len(running)}], "steps": []})
         status["runs"] = status["runs"][:MAX_RUNS]
     return status, ledger
 
