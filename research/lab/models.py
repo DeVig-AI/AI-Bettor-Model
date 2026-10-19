@@ -320,7 +320,7 @@ def run_team_rating(p, data, market):
     lr = 1 - 0.5 ** (1 / p["halflife"])
     carry, dw, pace = p["season_carry"], p["def_weight"], p["pace"]
     O, D, PO, PD = (defaultdict(float) for _ in range(4))
-    lw = p.get("league_window", 544)                   # team-games in the league averages (~ one NFL season)
+    lw = p.get("league_window") or 544                 # team-games in the league averages (~ one NFL season)
     league, lplays, lspp = deque(maxlen=lw), deque(maxlen=lw), deque(maxlen=lw)
     last_season = {}
 

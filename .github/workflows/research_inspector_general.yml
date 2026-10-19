@@ -11,7 +11,7 @@ name: Research Lab -- Inspector General
 # day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
   workflow_run:
-    workflows: ["Research Lab -- nightly run"]
+    workflows: ["Research Lab -- loop (every 2 hours)"]
     types: [completed]
   schedule:
     - cron: '41 */3 * * *'   # paper season; exits at once while no model is promoted

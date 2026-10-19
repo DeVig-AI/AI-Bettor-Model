@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v7
+# DeVig Research Lab -- Constitution v8
 
-Version: **v7** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v6 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v6.md`; v5 to v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v6" at the end)
+Version: **v8** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v7 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v7.md`; v6 to v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v7" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -51,18 +51,23 @@ result, and it will be reported exactly like a success: every number, plainly.
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
 3c. **The search (every sport with a search split: NFL Part B, college football Part C).** Besides hand-written
-   candidates, the lab finds candidates itself, per sport, in rounds (at most one round a day per sport: at least the
-   menu's `round_every_hours`, 20, between rounds), deterministically, with no AI. Each sport has its own menu and logs
+   candidates, the lab finds candidates itself, per sport, in rounds (at most one round every 2 hours per sport: at
+   least the menu's `round_every_hours`, 2, between rounds), deterministically, with no AI. Each sport has its own menu and logs
    (NFL `research/search/`, CFB `research/cfb/search/`):
    - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
      scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
      grid combination not yet scored (a large grid spreads over several rounds), then the **focus** combinations (for each
      family, every combination of the 2 best values of each setting, ranked by the median search t of the configurations
      already scored with that value), then the neighbours (one setting moved one step along its ladder in the menu) of
-     the **30** best configurations per market. Then, every round, blends of
+     the **30** best configurations per market, then **learned samples** (configurations drawn with a seed fixed by sport
+     and round number, each setting's value drawn with weight exp(median search t of the configurations already
+     scored with it), values never tried getting the family's average weight; values come from the grid and, for
+     numeric settings, the ladder), then **random samples** (the same, with equal weights). Then, every round, blends of
      the best performers: every pair of the 10 best, every trio of the 6 best, equal-weight blends of the best 3, 5, 7
      and 10, and blends of the best 5 and best 8 with non-negative weights summing to 1 fit on the training and search
-     seasons. Nothing already scored is scored again.
+     seasons. Nothing already scored is scored again, and a configuration whose
+     search-season forecasts are identical to one already scored is logged as the same model and never ranked,
+     blended or shortlisted.
    - **Search seasons only:** the search code is given data only up to the last search season (B2, C2); it never sees
      the confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
      t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in the sport's search folder.
@@ -407,4 +412,18 @@ Unchanged: every other rule, including all season splits, the correction, the ba
    repository files (results, ledger, search logs).
 
 Nothing had run under v6 (no search round, no attempt) when v7 was adopted. Every other rule is unchanged.
+
+---
+
+## Changes from v7 (2026-10-19)
+
+The owner asked for the loop to run around the clock, never retest the same model, and learn from every past run:
+1. **Rounds at most every 2 hours** (was daily); the lab workflow runs every 2 hours.
+2. **Learned and random samples** each round (A3.3c), seeded by sport and round, so every round has new models to try
+   and the search draws more often from settings that scored well before (search seasons only, as always).
+3. **Look-alikes:** a configuration with forecasts identical to one already scored is logged as the same model and
+   never ranked, blended or shortlisted.
+
+Unchanged: the shortlist (t ≥ 2.5, at most 2 per market in any 7 days), so running more often sends no more candidates
+to confirmation; every other rule. Search rounds 1-3 (NFL) ran under v6/v7 before this version.
 

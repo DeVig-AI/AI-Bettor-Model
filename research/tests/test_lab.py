@@ -257,6 +257,7 @@ class Search(unittest.TestCase):
              "grid": {"metric": ["points", "epa"], "halflife": [8], "season_carry": [0.6], "pace": ["plays", "seconds"]},
              "rules": ["points_has_no_pace"]}]
         m["search"]["shortlist_min_t"] = -99          # synthetic data: let the shortlist rules be exercised
+        m["search"].update(learned_samples=2, random_samples=1)   # keep the tests quick
         with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
 
@@ -281,7 +282,7 @@ class Search(unittest.TestCase):
         picks = self.SR.run_round(force=True, log=lambda *_: None)
         rows = self.SR.read_csv(self.SR.path("SCORES.csv"))
         singles = [r for r in rows if r["type"] != "blend"]
-        self.assertEqual(len(singles), 4 + 3)
+        self.assertEqual(len(singles), 4 + 3 + 3, "grid, then 2 learned and 1 random sample")
         self.assertTrue(any(r["type"] == "blend" for r in rows))
         self.assertLessEqual(len(picks), 4)
         for cid in picks:
@@ -306,8 +307,8 @@ class Search(unittest.TestCase):
         self.small_menu()
         seen = []
         self.SR.run_round(force=True, log=lambda *_: None, progress=lambda n, d, p: seen.append((n, d, p)))
-        self.assertEqual(seen[0], (1, 0, 7), "posted once at the start")
-        self.assertEqual(seen[-1][1:], (7, 7), "counts every model up to the planned total")
+        self.assertEqual(seen[0], (1, 0, 10), "posted once at the start (7 grid + 3 samples)")
+        self.assertEqual(seen[-1][1:], (10, 10), "counts every model up to the planned total")
 
     def test_cap_resumes_and_window(self):
         self.small_menu()
@@ -328,6 +329,38 @@ class Search(unittest.TestCase):
             mk = L.load_candidates()[cid]["market"]
             by[mk] = by.get(mk, 0) + 1
         self.assertTrue(all(v <= 1 for v in by.values()), "at most shortlist_per_market per 7 days")
+
+    def test_samples_learned_and_seeded(self):
+        menu = {"families": [{"market": "spread", "type": "srs", "fixed": {"hfa_pts": 2.5},
+                              "grid": {"carry": [0.4, 0.8], "prior_w": [1, 3]}}],
+                "ladders": {"carry": [0.2, 0.4, 0.6, 0.8], "prior_w": [1, 3, 6]}}
+        scored = []
+        for carry, t in [(0.4, -3.0), (0.4, -2.5), (0.8, 3.0), (0.8, 2.8)]:
+            cfg = {"market": "spread", "type": "srs", "params": {"hfa_pts": 2.5, "carry": carry, "prior_w": 1}}
+            scored.append({"id": self.SR.config_id(cfg), "market": "spread", "type": "srs", "t": t,
+                           "config": self.SR.config_key(cfg)})
+        a = self.SR.samples(menu, scored, 6, seed=7)
+        self.assertEqual([self.SR.config_id(c) for c in a], [self.SR.config_id(c) for c in self.SR.samples(menu, scored, 6, 7)])
+        self.assertFalse({self.SR.config_id(c) for c in a} & {r["id"] for r in scored}, "never an already-scored model")
+        many = self.SR.samples(menu, scored, 9, seed=1)
+        carries = [c["params"]["carry"] for c in many]
+        self.assertGreater(carries.count(0.8) + carries.count(0.6) + carries.count(0.2), carries.count(0.4),
+                           "the setting that scored badly is drawn less often")
+
+    def test_lookalikes_scored_once(self):
+        self.small_menu()
+        m = self.SR.load_menu()
+        p = {"pace": "none", "def_weight": 1.0, "metric": "epa", "halflife": 4, "season_carry": 0.6}
+        m["families"] = [{"name": "TR", "type": "team_rating", "market": "spread", "fixed": {"pace": "none", "def_weight": 1.0},
+                          "grid": {"metric": ["epa"], "halflife": [4], "season_carry": [0.6], "league_window": [None, 544]}}]
+        m["search"].update(learned_samples=0, random_samples=0)
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.run_round(force=True, log=lambda *_: None)
+        rows = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(sum("(same as " in r["label"] for r in rows), 1, "the second is flagged as the same model")
+        self.assertEqual([r["t"] for r in rows if "(same as " in r["label"]], ["-inf"])
 
     def test_fit_weights_and_neighbours(self):
         rng = np.random.default_rng(3)

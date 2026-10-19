@@ -1,6 +1,6 @@
-name: Research Lab -- nightly run
+name: Research Lab -- loop (every 2 hours)
 
-# NFL, the loop (Constitution v6, Part B): once a day a search round scores model settings and blends on 2006-16 only
+# NFL, the loop (Constitution v8, Part B): every 2 hours a search round scores model settings and blends on 2006-16 only
 # and sends at most 2 per market to research/candidates/; every night, NFL candidates without a ledger row (search
 # finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
 # same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
@@ -9,11 +9,11 @@ name: Research Lab -- nightly run
 # Deterministic; no AI in the loop. Nights with nothing to do stop after one quick check.
 on:
   schedule:
-    - cron: '37 7 * * *'     # 3:37am ET
+    - cron: '37 */2 * * *'   # around the clock: every 2 hours (Constitution v8: one search round per 2 hours at most)
   workflow_dispatch:
     inputs:
       search:
-        description: 'Run a search round now (NFL and college football), even if the last one was under 20 hours ago'
+        description: 'Run a search round now (NFL and college football), even if the last one was under 2 hours ago'
         type: boolean
         default: false
       rerun:
@@ -49,7 +49,7 @@ jobs:
       - name: Install
         run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
 
-      - name: Search round (daily; 2006-16 only)
+      - name: Search round (every 2 hours; 2006-16 only)
         id: search
         run: |
           python3 tools/frozen_guard.py check
@@ -138,7 +138,7 @@ jobs:
             research/cfb/data/returning.csv
             research/cfb/current
 
-      - name: CFB search round (daily; 2018, 2019, 2021 only)
+      - name: CFB search round (every 2 hours; 2018, 2019, 2021 only)
         if: steps.data.outputs.ok == 'true'
         run: |
           python3 tools/frozen_guard.py check

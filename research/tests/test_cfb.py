@@ -149,6 +149,7 @@ class CFB(unittest.TestCase):
             real["families"][1]["grid"] = {"halflife": [6], "season_carry": [0.5], "efficiency": ["points"],
                                            "pace": [True, False]}
             real["search"]["shortlist_min_t"] = -99
+            real["search"].update(learned_samples=2, random_samples=1)
             with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
                 yaml.safe_dump(real, f)
             CD.load_lab = lambda *a: {k: v.copy() for k, v in self.data.items()}

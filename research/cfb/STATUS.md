@@ -1,6 +1,6 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-10-19T07:16:53Z by research/lab/report.py. Constitution v7 (`70ed618b8ccc`). Do not edit by hand._
+_Generated 2026-10-19T23:37:04Z by research/lab/report.py. Constitution v8 (`108c9ddb02db`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
