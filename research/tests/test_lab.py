@@ -302,6 +302,13 @@ class Search(unittest.TestCase):
         self.assertGreater(len(rows2), len(rows), "round 2 adds neighbours")
         self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.path("ROUNDS.csv"))], ["1", "2"])
 
+    def test_progress_callback(self):
+        self.small_menu()
+        seen = []
+        self.SR.run_round(force=True, log=lambda *_: None, progress=lambda n, d, p: seen.append((n, d, p)))
+        self.assertEqual(seen[0], (1, 0, 7), "posted once at the start")
+        self.assertEqual(seen[-1][1:], (7, 7), "counts every model up to the planned total")
+
     def test_cap_resumes_and_window(self):
         self.small_menu()
         m = self.SR.load_menu()
@@ -482,6 +489,14 @@ class Reports(unittest.TestCase):
         f = SR.focus(menu, scored)
         self.assertEqual(sorted((c["params"]["carry"], c["params"]["prior_w"]) for c in f),
                          [(0.6, 1), (0.6, 3), (0.8, 1), (0.8, 3)])
+
+    def test_live_search_entry(self):
+        live = {"kind": "search", "name": "Search round 1 (NFL, running)", "started_at": "2026-10-20T06:00:00Z",
+                "finished_at": None, "duration_s": None, "run_number": 5, "run_url": None,
+                "summary": "1,000 of 4,296 models scored", "funnel": [{"label": "models scored", "count": 1000}],
+                "steps": []}
+        r = report.write_all(live=live)["runs"][0]
+        self.assertEqual((r["name"], r["finished_at"]), ("Search round 1 (NFL, running)", None))
 
     def test_stop_rule(self):
         log = [{"event": "pick", "game_id": f"g{i}", "cost": "0.52"} for i in range(50)]
