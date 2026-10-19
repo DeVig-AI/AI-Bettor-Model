@@ -2390,6 +2390,8 @@
       if(propStarted(doc)) pane.appendChild(el("div", "faint", "This game has started, so these prop prices are from before kickoff."));
       if(key === "top") renderTopProps(pane, doc, g);
       else renderPropCat(pane, doc, propCats(doc).filter(function(c){ return c.key === key; })[0], g);
+      var recEl = propsRecordEl(docSport(doc));
+      if(recEl){ recEl.style.marginTop = "12px"; pane.appendChild(recEl); }
       pane.appendChild(propsHelpEl(doc));
     }
     function onLeg(ev){
@@ -2414,7 +2416,7 @@
   function renderTopProps(box, doc, g){
     var bestMap = propBestEdges(doc);
     var all = Object.keys(bestMap).map(function(x){ return bestMap[x]; }).sort(function(a, b){ return b.e.ev - a.e.ev; });
-    box.appendChild(el("div", "pp-stat", "Most confident in this game"));
+    box.appendChild(el("div", "pp-stat", "Biggest gaps vs Kalshi in this game"));
     if(!all.length){ box.appendChild(el("div", "bb-empty", "Nothing in this game clears the bar right now.")); return; }
     var limit = 8, list = el("div");
     box.appendChild(list);
@@ -2451,7 +2453,7 @@
     if(propKalshiTwoSided(r)) od = exOdds(side === "OVER" ? r.ka : Math.round((1 - r.kb) * 10000) / 10000, true);
     else if(r.pp != null){ od = exOdds(side === "OVER" ? r.pp : 1 - r.pp, false); book = "Polymarket"; }
     var cls = "", tag = "";
-    if(e && e.side === side){ cls = e.tier === "HIGH" ? "edge-high" : (e.tier === "MEDIUM" ? "edge-med" : "edge-lean"); tag = e.tier; }
+    if(e && e.side === side){ cls = e.tier === "HIGH" ? "edge-high" : (e.tier === "MEDIUM" ? "edge-med" : "edge-lean"); tag = propTierTxt(e.tier); }
     var h = sbBtn(label, od, cls, tag);
     if(od == null || !g) return h;
     var leg = propLeg(r, side, od, book, g, e);
@@ -2560,7 +2562,7 @@
     d.innerHTML = '<summary class="faint" style="cursor:pointer">How to read props' + (doc.prices_fetched ? ' · prices as of ' + escapeHtml(whenTxt(doc.prices_fetched)) : '') + '</summary>' +
       '<p style="margin-top:8px"><b>Odds</b> are Kalshi\'s price shown as sportsbook odds, with Kalshi\'s fee included (Polymarket when Kalshi has no price; "thin" means little money behind it). Any odds have a <b>needs %</b>: how often the bet must win to break even. −150 needs 60%.</p>' +
       '<p><b>Model %</b> is our model\'s chance, from the player\'s own recent games only. It doesn\'t know about injuries, teammates, weather or game plans.</p>' +
-      '<p><b>Labels</b> (<span class="pr-tier high">HIGH</span> <span class="pr-tier med">MEDIUM</span> <span class="pr-tier lean">LEAN</span>) are not the chance it hits. They show how far the model % is above the needs %: 10+ points, 5–10, or 2–5. ' + (docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
+      '<p><b>Labels</b> (<span class="pr-tier high">Big gap</span> <span class="pr-tier med">Gap</span> <span class="pr-tier lean">Small gap</span>) are not confidence and not the chance it hits. They show how far the model % is above the needs % at Kalshi\'s price: 10+ points, 5–10, or 2–5. So far the big gaps have won about as often as their price needed, no more. ' + (docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
       '<p>A big gap can mean the market knows something the model doesn\'t. Prices move: check the live price first.</p>';
     return d;
   }
@@ -2946,7 +2948,7 @@
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
           if(x && x.doc === "GAME_LINES") linesDoc = x;
-          if(x && x.doc === "PROPS_ARCHIVE") propsArchive = x;
+          if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
         });
         liveLoaded = true; renderLive();
       });
@@ -3054,7 +3056,7 @@
       if(!byPlayer[r.player]){ byPlayer[r.player] = []; order.push(r.player); }
       byPlayer[r.player].push(r);
     });
-    // most confident players first (best labeled edge), then the most-traded
+    // biggest gaps vs Kalshi first (best labeled edge), then the most-traded
     var inj = propInjuries(doc), edges = {}, bestBy = {};
     renderGameTop(doc, inj);
     order.forEach(function(name){
@@ -3128,7 +3130,38 @@
     return {side: side, ev: ev, price: side === "OVER" ? r.ka : noAsk, chance: side === "OVER" ? r.mp : 1 - r.mp,
             tier: ev >= 0.10 ? "HIGH" : (ev >= 0.05 ? "MEDIUM" : "LEAN"), injury: st || null};
   }
-  function propTierPill(t){ return '<span class="pr-tier ' + (t === "HIGH" ? "high" : (t === "MEDIUM" ? "med" : "lean")) + '">' + t + '</span>'; }
+  // Prop labels say how far the model is from Kalshi's price, not how sure a pick is: on the back-test and live so far the
+  // biggest gaps won about as often as the price needed. The stored tier codes (HIGH / MEDIUM / LEAN) are unchanged.
+  var PROP_TIER_TXT = {HIGH: "Big gap", MEDIUM: "Gap", LEAN: "Small gap"};
+  function propTierTxt(t){ return PROP_TIER_TXT[t] || PROP_TIER_TXT.LEAN; }
+  function propTierPill(t){ return '<span class="pr-tier ' + (t === "HIGH" ? "high" : (t === "MEDIUM" ? "med" : "lean")) + '">' + propTierTxt(t) + '</span>'; }
+  // The real record so far: NFL big-gap picks from the results archive (live box scores until the official grade), else
+  // the official graded tally (all labeled picks; NBA always). Null while nothing is graded.
+  function propsRecord(sport){
+    if(sport === "NFL" && propsArchive){
+      var n = 0, w = 0, need = 0, ag = propsArchive.games || {};
+      Object.keys(ag).forEach(function(k){
+        (ag[k].picks || []).forEach(function(p){
+          if((p.status !== "won" && p.status !== "lost") || p.price == null || p.model_p == null) return;
+          var chance = p.side === "OVER" ? p.model_p : 1 - p.model_p;
+          if(chance - p.price - propFee(p.price) < 0.10) return;          // same bar as the Big gap label
+          n++; if(p.status === "won") w++; need += p.price + propFee(p.price);
+        });
+      });
+      if(n) return {label: "Big gaps", n: n, w: w, need: need / n};
+    }
+    var r = propsReports[sport + "_PROPS_MODEL_V1"] || (sport === "NFL" ? propsReport : null);
+    var g = r ? (r.paper_picks_graded || 0) : 0;
+    if(g && r.cost_sum) return {label: "Graded picks", n: g, w: r.wins || 0, need: r.cost_sum / g};
+    return null;
+  }
+  function propsRecordEl(sport){
+    var x = propsRecord(sport);
+    if(!x) return null;
+    var won = x.w / x.n;
+    function pct(v){ return (Math.round(v * 1000) / 10).toFixed(1) + "%"; }
+    return el("div", "faint", '<b style="color:var(--ink-soft)">' + x.label + ' so far: won ' + pct(won) + '</b> (' + x.w + ' of ' + x.n + ') · needed ' + pct(x.need) + ' to break even');
+  }
   function propBetTxt(r, side){
     if(side === "OVER") return propLineTxt(r.stat, r.line);
     return "Under " + r.line + " " + propStat(r.stat, true);
@@ -3171,6 +3204,8 @@
       box.appendChild(more);
     }
     box.appendChild(el("div", "faint", "Tap one to see all its lines. One line per player per stat. Check Kalshi's live price first."));
+    var recB = propsRecordEl(docSport(doc));
+    if(recB){ recB.style.marginTop = "6px"; box.appendChild(recB); }
   }
   function propRowEl(r, pick, e){
     var row = el("div", "pr-row");
@@ -4126,7 +4161,7 @@
       var row = el("div", "line-row");
       var metaBits = [];
       if(leg.book) metaBits.push(leg.book + (leg.kind === "prop" ? " price, fee included" : ""));
-      if(leg.tier) metaBits.push(leg.tier + " label");
+      if(leg.tier) metaBits.push(leg.kind === "prop" ? propTierTxt(leg.tier).toLowerCase() + " vs Kalshi" : leg.tier + " label");
       if(leg.model != null) metaBits.push("model " + leg.model + "%");
       if(leg.game) metaBits.push(leg.game);
       if(leg.when) metaBits.push(leg.when);
@@ -4261,7 +4296,7 @@
     if(/live test -- MEDIUM/.test(tag)) return ['medium', 'neutral'];
     if(/LOW confidence|live test/.test(tag)) return ['low', 'neutral'];
     if(/no demonstrated edge/.test(tag)) return ['no edge', 'neutral'];
-    var pm = /^player prop -- (HIGH|MEDIUM) label/.exec(tag);
+    var pm = /^player prop -- (Big gap|Gap) vs Kalshi/.exec(tag);
     if(pm) return ['prop · ' + pm[1].toLowerCase(), 'neutral'];
     return null;
   }
@@ -4663,7 +4698,7 @@
           .sort(function(a, b){ return b.e.ev - a.e.ev; }).slice(0, 4).forEach(function(x){
             var leg = propLeg(x.r, x.e.side, exOdds(x.e.price, true), "Kalshi", g, x.e);
             candidates.push({desc: leg.desc, odds: leg.odds, book: "Kalshi", game: gameLabel, kind: "prop", model: leg.model, tier: x.e.tier,
-              tag: "player prop -- " + x.e.tier + " label: model " + Math.round(x.e.chance * 100) + "% vs needs " + needsPct(x.e.price, true) +
+              tag: "player prop -- " + propTierTxt(x.e.tier) + " vs Kalshi: model " + Math.round(x.e.chance * 100) + "% vs needs " + needsPct(x.e.price, true) +
                 "% at Kalshi's price; UNPROVEN (paper test running), Kalshi exchange price not a sportsbook price"});
           });
       }
@@ -4722,9 +4757,10 @@
       "HIGH confidence ones freely as legs, MEDIUM only if needed, and NEVER LOW confidence or \"NO PICK\" ones. Avoid " +
       "longshot legs (odds +200 or longer) unless the user is clearly after a big payout.\n" +
       "1c. Candidates tagged \"player prop\" are player props where the app's prop model disagrees with Kalshi's price " +
-      "(HIGH = model 10+ points above what the odds need, MEDIUM = 5-10). They are UNPROVEN: a paper test is running and " +
+      "(\"Big gap\" = model 10+ points above what the odds need, \"Gap\" = 5-10). The labels measure disagreement, not " +
+      "confidence: so far the big gaps have won about as often as their price needed. They are UNPROVEN: a paper test is running and " +
       "a big gap can mean the market knows something the model can't see (injury, role change). You may use them, " +
-      "preferring HIGH over MEDIUM, at most 2 props per parlay, and say they are priced on Kalshi, not at a sportsbook. " +
+      "preferring Big gap over Gap, at most 2 props per parlay, and say they are priced on Kalshi, not at a sportsbook. " +
       "Prefer validated ML picks over props when both are available.\n" +
       "2. Never include two candidates from the same game -- the game name is the text right after \"--\" and before " +
       "the bracketed tag (e.g. \"CIN @ ATL (MLB)\"); it always names the sport in parentheses too, since the same " +
@@ -4856,7 +4892,10 @@
       nba_graded: nba ? (nba.paper_picks_graded || 0) : 0, nba_wins: nba ? (nba.wins || 0) : 0,
       games_with_prices: propsDocs.length,
       graded: r ? (r.paper_picks_graded || 0) : 0, wins: r ? (r.wins || 0) : 0,
-      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null, locked_paper_picks: window.devigAskCompact ? picks.slice(0, 40) : picks};
+      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null,
+      record_so_far: ["NFL", "NBA"].map(function(sp){ var x = propsRecord(sp); return x ? sp + " " + x.label.toLowerCase() + ": won " + x.w + " of " + x.n + ", needed " + (Math.round(x.need * 1000) / 10) + "% to break even" : null; }).filter(Boolean),
+      labels: "Big gap / Gap / Small gap = how far the model is from Kalshi's price, not confidence; never call them high-confidence or locks.",
+      locked_paper_picks: window.devigAskCompact ? picks.slice(0, 40) : picks};
   }
   function whenTxt(iso){
     var t = new Date(iso);
