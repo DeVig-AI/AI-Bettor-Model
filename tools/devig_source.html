@@ -242,6 +242,14 @@
   .lab-table td{padding:7px 6px; border-bottom:1px solid var(--line); text-align:right; font-family:var(--font-mono); white-space:nowrap;}
   .lab-table td:first-child{font-family:var(--font-sans); font-weight:600; white-space:normal;}
   .lab-table tr.bench td{color:var(--ink-soft);}
+  .md-tabs{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 8px;}
+  .md-game{padding:10px 0; border-top:1px solid var(--line);}
+  .md-game:first-of-type{border-top:none;}
+  .md-game .t{display:flex; justify-content:space-between; gap:8px; font-weight:600; font-size:14px;}
+  .md-game .p{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.5;}
+  .md-game .p span{white-space:nowrap;}
+  .md-credit{padding:8px 0; border-top:1px solid var(--line); font-size:13.5px;}
+  .md-credit:first-of-type{border-top:none;}
   .lab-game{padding:10px 0; border-top:1px solid var(--line);}
   .lab-game:first-of-type{border-top:none;}
   .lab-game .top{display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap;}
@@ -543,6 +551,7 @@
       <button role="tab" aria-selected="false" data-tab="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask</button>
       <button role="tab" aria-selected="false" data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
       <button role="tab" aria-selected="false" data-tab="parlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Parlay</button>
+      <button role="tab" aria-selected="false" data-tab="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg>Models</button>
       <button role="tab" aria-selected="false" data-tab="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Testing</button>
       <button role="tab" aria-selected="false" data-tab="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>About</button>
     </nav>
@@ -745,6 +754,25 @@
     </div>
   </section>
 
+  <section class="panel" id="panel-models" hidden>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Models</h3>
+      <p class="faint" style="margin:0 0 12px">DeVig's models next to open-source models other people publish, all graded here on the same games with the same rules. Kalshi's price is the baseline. A comparison, not proof that any model beats the market.</p>
+      <div class="md-tabs" id="mdSport" role="tablist" aria-label="Sport"></div>
+      <div class="md-tabs" id="mdBet" role="tablist" aria-label="Bet type"></div>
+      <div class="lab-scroll"><table class="lab-table" id="mdTable"></table></div>
+      <div class="faint" id="mdNote" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px" id="mdGamesTitle">Picks</h3>
+      <div id="mdGames"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Who made these models</h3>
+      <div id="mdCredits"></div>
+    </div>
+  </section>
+
   <section class="panel about" id="panel-about" hidden>
     <div class="card">
       <div class="about-logo"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div><b style="font-size:18px">DeVig</b><div class="faint">odds, read straight</div></div></div>
@@ -756,6 +784,15 @@
       <p><strong>Player props:</strong> the props model beat a simple player hit rate on past seasons but was less accurate than Kalshi's own prices.</p>
       <p><strong>NFL over/unders, key-number spreads and the low-total dog:</strong> each looked positive on past seasons without being confirmed, so each is being followed live on Kalshi prices.</p>
       <p>The Testing tab shows every model's live record, the rules each test was locked with before its first pick, and the experiments still running.</p>
+    </div>
+    <div class="card">
+      <h3>Models compared</h3>
+      <p>The Models tab shows DeVig's own models next to models other people have made public, graded by DeVig on the same games with the same rules, from each model's last number published before the game. Nobody's own posted record is used. Kalshi's price is the baseline.</p>
+      <p><strong>nfelo</strong> (NFL) -- by Robby Greer (@greerreNFL). <a href="https://github.com/greerreNFL/nfelo" target="_blank" rel="noopener">github.com/greerreNFL/nfelo</a>. License: none stated, so none of its code is copied or run here; DeVig only reads the weekly picks it publishes in that repo.</p>
+      <p><strong>538 Elo</strong> (NFL) -- FiveThirtyEight's NFL Elo game model, by FiveThirtyEight (ABC News). <a href="https://github.com/fivethirtyeight/nfl-elo-game" target="_blank" rel="noopener">github.com/fivethirtyeight/nfl-elo-game</a>. License: MIT, Copyright (c) 2021 ABC News Internet Ventures (notice kept with the copied code). FiveThirtyEight stopped updating it, so DeVig re-runs their unchanged code on nflverse results from 2021 on. Spread = Elo gap ÷ 25, their own rule of thumb. This open version has no QB adjustment.</p>
+      <p><strong>Blotny NBA</strong> (NBA) -- NBA Win-Probability Predictor, by Blotny. <a href="https://github.com/Blotny/nba-win-probability-predictor" target="_blank" rel="noopener">github.com/Blotny/nba-win-probability-predictor</a>. License: MIT. DeVig reads the daily predictions it publishes; a small hobby project, and it may stop updating.</p>
+      <p><strong>Market</strong> -- Kalshi's prices: its favourite (moneyline and spread) and the over (total), at the price you would pay including Kalshi's fee.</p>
+      <p>Results come from nflverse (NFL) and ESPN (NBA, MLB) final scores.</p>
     </div>
     <div class="card" id="donateCard" hidden>
       <h3>Keep DeVig free</h3>
@@ -877,6 +914,7 @@
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
     lab: document.getElementById("panel-lab"),
+    models: document.getElementById("panel-models"),
     me: document.getElementById("panel-me"),
     about: document.getElementById("panel-about")
   };
@@ -888,6 +926,7 @@
     if(name === "scan"){ loadHistory(); renderPast(); }
     if(name === "parlay") renderBestParlay();
     if(name === "me") renderMe();
+    if(name === "models") renderModels();
   }
   tabs.forEach(function(btn){
     btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); });
@@ -1256,6 +1295,109 @@
       w.setAttribute("data-ready", "");
     });
   }
+
+  // ---------- Models: DeVig next to published open-source models, graded the same way (comparison only) ----------
+  var mdReport = null, mdGames = [], mdLoaded = false, mdSport = "NFL", mdBet = "ml";
+  var MD_BETS = [["ml", "Moneyline"], ["spread", "Spread"], ["total", "Total"], ["props", "Props"]];
+  function mdPct(x, dec){ return x == null ? "—" : dec ? (Math.round(x * 1000) / 10).toFixed(1) + "%" : Math.round(x * 100) + "%"; }
+  function mdLine(team, pt){
+    var h = Math.round(Number(pt) * 2) / 2;
+    return h === 0 ? team + " PK" : team + " " + (h > 0 ? "+" : "\u2212") + Math.abs(h);
+  }
+  // one model's pick in one game, for the chosen bet type, or null
+  function mdPick(g, key, p){
+    if(!p) return null;
+    if(mdBet === "ml"){
+      if(p.home_wp == null || p.home_wp === 0.5) return null;
+      var home = p.home_wp > 0.5;
+      return (home ? g.home_team : g.away_team) + " " + Math.round((home ? p.home_wp : 1 - p.home_wp) * 100) + "%";
+    }
+    if(mdBet === "spread"){
+      if(p.spread_side && p.spread_point != null) return mdLine(p.spread_side === "home" ? g.home_team : g.away_team, p.spread_point);
+      if(p.home_line == null || g.sport === "MLB" && key !== "kalshi") return null;
+      return p.home_line < 0 ? mdLine(g.home_team, p.home_line) : mdLine(g.away_team, -p.home_line);
+    }
+    if(mdBet === "total") return p.total != null ? "O/U " + p.total : null;
+    return null;
+  }
+  function renderModels(){
+    var sp = document.getElementById("mdSport");
+    if(!sp || panels.models.hidden) return;
+    var r = mdReport;
+    sp.innerHTML = ["NFL", "NBA", "MLB"].map(function(s){
+      return '<button type="button" role="tab" class="pill-tab' + (s === mdSport ? ' active' : '') + '" aria-selected="' + (s === mdSport) + '" data-md-sport="' + s + '">' + s + '</button>';
+    }).join("");
+    document.getElementById("mdBet").innerHTML = MD_BETS.map(function(b){
+      return '<button type="button" role="tab" class="pill-tab' + (b[0] === mdBet ? ' active' : '') + '" aria-selected="' + (b[0] === mdBet) + '" data-md-bet="' + b[0] + '">' + b[1] + '</button>';
+    }).join("");
+    var table = document.getElementById("mdTable"), noteEl = document.getElementById("mdNote");
+    var rows = r && r.sports && r.sports[mdSport] ? r.sports[mdSport][mdBet] || [] : [];
+    if(!rows.length){
+      table.innerHTML = "";
+      noteEl.textContent = mdLoaded ? "No model records yet." : "Loading…";
+    }else{
+      var money = mdBet === "ml" || mdBet === "props";
+      var html = '<tr><th>Model</th><th>Picks</th><th>W–L</th><th>Win %</th><th>Needs</th>' + (money ? '<th>Profit</th>' : '') + '</tr>';
+      rows.forEach(function(m){
+        var bench = m.key === "kalshi" ? ' class="bench"' : '';
+        if(m.none){
+          html += '<tr' + bench + '><td>' + escapeHtml(m.name) + '</td><td>—</td><td>—</td><td>—</td><td>—</td>' + (money ? '<td>—</td>' : '') + '</tr>';
+          return;
+        }
+        var beat = m.pct != null && m.breakeven != null ? (m.pct > m.breakeven ? "var(--good)" : "var(--bad)") : "inherit";
+        var prof = m.profit == null ? "—" : (m.profit >= 0 ? "+" : "\u2212") + Math.abs(m.profit).toFixed(1) + "u" +
+          (m.roi != null ? '<br><span class="faint" style="font-size:11px">' + (m.roi >= 0 ? "+" : "\u2212") + Math.abs(Math.round(m.roi * 100)) + '%</span>' : "");
+        html += '<tr' + bench + '><td>' + escapeHtml(m.name) + '</td><td>' + (m.bar_only ? "—" : (m.n || 0)) + '</td><td>' + (m.bar_only || !(m.w + m.l) ? "—" : m.w + "–" + m.l) + '</td>' +
+          '<td style="color:' + beat + '">' + (m.bar_only ? "—" : mdPct(m.pct, !money)) + '</td><td>' + mdPct(m.breakeven, !money) + '</td>' + (money ? '<td>' + prof + '</td>' : '') + '</tr>';
+      });
+      table.innerHTML = html;
+      var notes = {
+        ml: "Each model's favourite in every game it covers, so DeVig's row isn't its confident-picks Track record. Picking favourites alone wins often, so look at Profit: 1 unit on each pick at Kalshi's last price before the game, fee included. Needs = the win rate those prices need to break even.",
+        spread: mdSport === "MLB" ? "DeVig's run-line picks at the line and price it locked; Market = Kalshi's favourite at −1.5. Needs = the win rate those prices need to break even." : "Each model's line against Kalshi's last line before the game: a model with a lower line takes the home side, a higher one the away side, the same line is no pick. Market = Kalshi's favourite. Needs 52.4% to break even at −110.",
+        total: "None of these models picks totals yet. Market = the over at Kalshi's main total, as a baseline. Needs 52.4% at −110.",
+        props: "DeVig's props model v1, its whole live record, graded from settled results. Profit after Kalshi's price and fee. Market = the average price paid: the win rate Kalshi's price implied."
+      };
+      var since = r.tracking_since ? new Date(r.tracking_since) : null;
+      noteEl.textContent = notes[mdBet] + " Pushes and ties don't count." + (since && !isNaN(since) && mdBet !== "props" ? " Tracking since " + since.toLocaleDateString([], {month: "short", day: "numeric", year: "numeric"}) + "; earlier games aren't counted." : "") + " — means the model doesn't make this kind of pick.";
+    }
+    // this sport's games: upcoming first, then the last few days' finals
+    var gw = document.getElementById("mdGames");
+    var names = {};
+    ((r && r.models) || []).forEach(function(m){ names[m.key] = m.name; });
+    var order = ((r && r.models) || []).map(function(m){ return m.key; }).filter(function(k){ return k !== "kalshi"; }).concat(["kalshi"]);
+    var gs = mdGames.filter(function(g){ return g.sport === mdSport; });
+    var up = gs.filter(function(g){ return !g.final; }), fin = gs.filter(function(g){ return g.final; }).reverse();
+    document.getElementById("mdGamesTitle").textContent = mdSport + " picks · " + MD_BETS.filter(function(b){ return b[0] === mdBet; })[0][1];
+    if(mdBet === "props"){
+      gw.innerHTML = '<div class="faint">Prop picks are on each game\'s card on Home.</div>';
+    }else if(!gs.length){
+      gw.innerHTML = '<div class="empty"><div class="icon">—</div>No ' + escapeHtml(mdSport) + ' games with model picks right now.</div>';
+    }else{
+      function gameHtml(g){
+        var bits = [];
+        order.forEach(function(k){ var t = mdPick(g, k, g.picks && g.picks[k]); if(t) bits.push('<span><b>' + escapeHtml(names[k] || k) + '</b> ' + escapeHtml(t) + '</span>'); });
+        var when = g.final ? 'Final ' + g.away_score + '–' + g.home_score
+          : new Date(g.kickoff_time).toLocaleString([], {weekday: "short", hour: "numeric", minute: "2-digit"});
+        return '<div class="md-game"><div class="t"><span>' + escapeHtml(g.away_team) + ' @ ' + escapeHtml(g.home_team) + '</span><span class="faint">' + escapeHtml(when) + '</span></div>' +
+          '<div class="p">' + (bits.length ? bits.join(" · ") : '<span class="faint">no picks of this kind</span>') + '</div></div>';
+      }
+      gw.innerHTML = (up.length ? up.slice(0, 20).map(gameHtml).join("") : '<div class="faint">No upcoming games with picks.</div>') +
+        (fin.length ? '<div class="bb-sec" style="margin-top:12px">Recent finals</div>' + fin.slice(0, 16).map(gameHtml).join("") : "");
+    }
+    document.getElementById("mdCredits").innerHTML = ((r && r.models) || []).map(function(m){
+      return '<div class="md-credit"><b>' + escapeHtml(m.name) + '</b> <span class="faint">' + escapeHtml((m.sports || []).join(", ")) + '</span><br>' +
+        escapeHtml(m.author) + ' · <a href="' + escapeHtml(m.url) + '" target="_blank" rel="noopener">' + escapeHtml(m.url.replace(/^https?:\/\//, "")) + '</a><br>' +
+        '<span class="faint">License: ' + escapeHtml(m.license) + '. ' + escapeHtml(m.note) + '</span></div>';
+    }).join("") || '<div class="faint">See About.</div>';
+  }
+  document.getElementById("mdSport").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-md-sport]");
+    if(b){ mdSport = b.getAttribute("data-md-sport"); renderModels(); }
+  });
+  document.getElementById("mdBet").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-md-bet]");
+    if(b){ mdBet = b.getAttribute("data-md-bet"); renderModels(); }
+  });
 
   // ---------- History: finished games as Home-style cards, by sport, then by day (newest first) ----------
   var pastSport = null;
@@ -2771,6 +2913,19 @@
         labLoaded.live = true; renderLab();
       });
     }catch(e){ labLoaded.live = true; renderLab(); }
+    try{
+      dbApi.collection("models_games").onSnapshot(function(snap){
+        mdGames = snap.docs.map(function(d){ return d.data(); });
+        renderModels();
+      });
+    }catch(e){}
+    try{
+      dbApi.collection("models_report").onSnapshot(function(snap){
+        mdReport = null;
+        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.doc === "MODELS_V1") mdReport = x; });
+        mdLoaded = true; renderModels();
+      });
+    }catch(e){ mdLoaded = true; }
     try{
       dbApi.collection("props_model").onSnapshot(function(snap){
         propsDocs = snap.docs.map(function(d){ return d.data(); });

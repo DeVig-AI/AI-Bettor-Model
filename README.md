@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://devigai.pages.dev/">Open the app</a> ·
-  <a href="https://github.com/perezreynaldo1226-afk/AI-Bettor-Model/releases/latest">Mac, Windows, Android and iPhone downloads</a>
+  <a href="https://github.com/DeVig-AI/AI-Bettor-Model/releases/latest">Mac, Windows, Android and iPhone downloads</a>
 </p>
 
 GitHub Actions in this repo pull public odds and exchange prices, run frozen models, lock paper picks before each

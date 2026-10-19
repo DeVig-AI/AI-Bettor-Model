@@ -8,7 +8,7 @@
  */
 (function () {
   "use strict";
-  var RAW = "https://raw.githubusercontent.com/perezreynaldo1226-afk/AI-Bettor-Model/main/";
+  var RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/";
   // every: minutes between refreshes while the app is open (raw.githubusercontent.com caches up to ~5 minutes)
   var SOURCES = [
     {path: "nfl/live/props_live.json", every: 2, live: true},
@@ -19,6 +19,7 @@
     {path: "nba/lineboard_export.json", every: 10},
     {path: "nba/preseason_trial_export.json", every: 30},
     {path: "nfl/comparison_lineboard_export.json", every: 30},
+    {path: "live/models_export.json", every: 15},
     {path: "nfl/props_model_export.json", every: 15, props: true},
     {path: "nba/props_model_export.json", every: 15, props: true}
   ];
