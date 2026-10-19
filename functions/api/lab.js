@@ -8,15 +8,20 @@
 // Needs, in the Pages project settings:
 //   OWNER_EMAIL          the owner's sign-in email (a plain variable; never written in the repo)
 //   ACCESS_TEAM_DOMAIN   as for /api/me (ACCESS_AUD optional)
-//   GITHUB_TOKEN         optional secret: fine-grained, this repo only, Actions read-only. Without it GitHub allows 60
-//                        requests an hour, which the 3-minute cache keeps under; with it, workflows that aren't in the
-//                        recent-runs page get their own latest run looked up too.
+//   GITHUB_TOKEN         optional secret: fine-grained, this repo only, Actions + Contents read-only. Without it GitHub
+//                        allows 60 requests an hour, which the 3-minute cache keeps under, and status.json comes from
+//                        raw.githubusercontent.com (cached there up to 5 minutes); with it, Actions are re-read every
+//                        minute, status.json is read through the API (fresh within ~15 s), and workflows that aren't in
+//                        the recent-runs page get their own latest run looked up too.
 import { accessUser } from "./me.js";
 
 export const REPO = "DeVig-AI/AI-Bettor-Model";
 const API = "https://api.github.com/repos/" + REPO;
 const STATUS_URL = `https://raw.githubusercontent.com/${REPO}/main/research/status.json`;
-const TTL = 180;                   // seconds before GitHub / status.json are asked again
+const TTL = 180;                   // seconds before GitHub Actions is asked again (60 with a token)
+const TTL_STATUS = 15;             // seconds before research/status.json is read again (it costs no rate limit without
+                                   // a token; with one, it's read through the API, which skips raw's 5-minute cache)
+const FRESH_MIN = 20;              // the page's refresh button re-asks GitHub Actions at most this often
 const KEEP = 86400;                // a last good copy is kept this long to show (marked stale) when a fetch fails
 const RUNS_PAGE = 50;              // recent runs read in one request (covers the busy bots and the occasional ones)
 const MAX_LOOKUPS = 25;            // with a token: workflows missing from the page get their own latest run
@@ -57,7 +62,7 @@ export async function notFound(request, env) {
 }
 
 // ---- small cache: Cloudflare's Cache API when present, memory otherwise -------------------------------------------
-async function remember(key, make, fresh) {
+async function remember(key, make, fresh, ttl = TTL) {
   const url = "https://devig-lab.invalid/" + key;
   const cache = typeof caches !== "undefined" && caches.default;
   let old = null;
@@ -65,7 +70,10 @@ async function remember(key, make, fresh) {
     if (cache) { const hit = await cache.match(url); if (hit) old = await hit.json(); }
     else if (mem.has(url)) old = mem.get(url);
   } catch (e) { old = null; }
-  if (!fresh && old && Date.now() - old.at < TTL * 1000) return {...old.value, fetched_at: new Date(old.at).toISOString(), stale: false};
+  // A refresh tap (fresh) re-reads status.json at once, but GitHub Actions only if its copy is FRESH_MIN s old.
+  const age = old ? Date.now() - old.at : Infinity;
+  const forced = fresh && age >= (key === "research" ? 0 : FRESH_MIN) * 1000;
+  if (old && !forced && age < ttl * 1000) return {...old.value, fetched_at: new Date(old.at).toISOString(), stale: false};
   try {
     const value = await make();
     const rec = {at: Date.now(), value};
@@ -156,6 +164,7 @@ export async function loadGithub(env, fetcher = fetch) {
 const STATES = ["queued", "running", "failed", "lab_pass", "exam_pass", "exam_fail", "promoted", "stopped"];
 const MARKETS = ["spread", "total", "props"];
 const KINDS = ["helped", "faded", "no_effect"];
+const STEP_STATES = [...STATES, "info"];
 const str = (v, n = 300) => (v === undefined || v === null ? "" : String(v).slice(0, n));
 const num = v => (typeof v === "number" && isFinite(v) ? v : null);
 const ci = v => (Array.isArray(v) && v.length === 2 && num(v[0]) !== null && num(v[1]) !== null ? [v[0], v[1]] : null);
@@ -205,6 +214,13 @@ export function cleanStatus(s) {
     lessons: arr(s.lessons, 100).filter(x => x && typeof x === "object").map(x => ({
       text: str(x.text, 600), kind: KINDS.includes(x.kind) ? x.kind : "no_effect",
       candidates: arr(x.candidates, 20).map(v => str(v, 80))})),
+    runs: arr(s.runs, 10).filter(x => x && typeof x === "object").map(x => ({
+      kind: ["lab", "exam", "review", "paper"].includes(x.kind) ? x.kind : "lab", name: str(x.name, 80),
+      started_at: iso(x.started_at), finished_at: iso(x.finished_at), duration_s: num(x.duration_s),
+      run_number: num(x.run_number), run_url: link(x.run_url), summary: str(x.summary, 300),
+      steps: arr(x.steps, 60).filter(t => t && typeof t === "object").map(t => ({
+        at: iso(t.at), id: str(t.id, 80), name: str(t.name, 160), text: str(t.text, 300),
+        state: STEP_STATES.includes(t.state) ? t.state : "info", fail_reason: str(t.fail_reason, 40)}))})),
     promoted: arr(s.promoted, 50).filter(x => x && typeof x === "object").map(x => ({
       name: str(x.name, 160), picks: num(x.picks), wins: num(x.wins), losses: num(x.losses), roi: num(x.roi),
       vs_kalshi_note: str(x.vs_kalshi_note, 400)})),
@@ -212,7 +228,11 @@ export function cleanStatus(s) {
 }
 
 export async function loadResearch(env, fetcher = fetch) {
-  const r = await fetcher(STATUS_URL, {headers: {"user-agent": "devig-lab"}});
+  const r = env.GITHUB_TOKEN
+    ? await fetcher(API + "/contents/research/status.json?ref=main", {headers: {
+        "accept": "application/vnd.github.raw", "user-agent": "devig-lab", "x-github-api-version": "2022-11-28",
+        "authorization": "Bearer " + String(env.GITHUB_TOKEN).trim()}})
+    : await fetcher(STATUS_URL, {headers: {"user-agent": "devig-lab"}});
   if (r.status === 404) return {status: null};
   if (!r.ok) throw new Error("status.json " + r.status);
   let body;
@@ -222,8 +242,8 @@ export async function loadResearch(env, fetcher = fetch) {
 
 export async function labData(env, fetcher = fetch, fresh = false) {
   const [github, research] = await Promise.all([
-    remember("github", () => loadGithub(env, fetcher), fresh),
-    remember("research", () => loadResearch(env, fetcher), fresh),
+    remember("github", () => loadGithub(env, fetcher), fresh, env.GITHUB_TOKEN ? 60 : TTL),
+    remember("research", () => loadResearch(env, fetcher), fresh, TTL_STATUS),
   ]);
   return {generated_at: new Date().toISOString(), github, research};
 }
@@ -232,7 +252,7 @@ export async function handle(request, env, deps = {}) {
   const who = deps.accessUser || accessUser;
   const fetcher = deps.fetch || fetch;
   if (request.method !== "GET" || !(await ownerOnly(request, env, who))) return notFound(request, env);
-  const data = await labData(env, fetcher);
+  const data = await labData(env, fetcher, new URL(request.url).searchParams.get("fresh") === "1");
   return new Response(JSON.stringify(data), {
     status: 200, headers: {"content-type": "application/json; charset=utf-8", ...SECURE_HEADERS},
   });

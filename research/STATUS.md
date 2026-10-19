@@ -1,6 +1,6 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-19T04:34:12Z by research/lab/report.py. Constitution v1 (`cd7dbba7715a`). Do not edit by hand._
+_Generated 2026-10-19T04:47:26Z by research/lab/report.py. Constitution v1 (`cd7dbba7715a`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -49,5 +49,9 @@ Verdicts (Inspector General):
 - `tot-pe-fast`: Fails the lab: not positive in gate 2 (2019–21: -0.75 pts); pooled -0.27 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `tot-pe-slow`: Fails the lab: not positive in gate 1 (2016–18: -0.39 pts); pooled -0.31 pts, Holm-adjusted p = 1.000 over 18 attempts.
 - `tot-pe`: Fails the lab: not positive in gate 1 (2016–18: -0.39 pts); pooled -0.50 pts, Holm-adjusted p = 1.000 over 18 attempts.
+
+## Recent runs
+
+- **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested · 0 passed the lab · failed: 15 gate 2, 3 gate 1
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).
