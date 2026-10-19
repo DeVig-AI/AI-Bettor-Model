@@ -3,7 +3,7 @@
 Source: https://github.com/fivethirtyeight/nfl-elo-game (branch `master`), downloaded 2026-10-19.
 Copyright (c) 2021 ABC News Internet Ventures. MIT License: see `LICENSE` in this folder, kept as published.
 
-Every file here is an unmodified copy. `nfl/open_models_v1.py` calls `Forecast.forecast` as-is, feeding it their
+Every file here is an unmodified copy. `tools/models_compare.py` calls `Forecast.forecast` as-is, feeding it their
 1920-2020 games (`data/nfl_games.csv`) followed by nflverse results from 2021 on. Checked on download: their code
 reproduces all 16,810 of their published `elo_prob1` values (largest difference 1.7e-6).
 

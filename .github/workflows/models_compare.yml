@@ -1,0 +1,32 @@
+name: Models page -- DeVig next to published open-source models (comparison only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 * * * *'   # hourly: each model's latest number before the game; public data only, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: models-compare
+  cancel-in-progress: false   # never drop a run half-way: it moves picks into the append-only file
+jobs:
+  models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read every model's pick, lock started games, grade finals, write the app's file
+        run: python3 tools/models_compare.py
+      - name: Save it
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Models page $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1
