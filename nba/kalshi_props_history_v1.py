@@ -16,7 +16,7 @@ Resumable: appends to nba/props_history/kalshi/<YYYY-MM>.csv (one file per month
 finished events in nba/props_history/done_events.txt, and stops itself after MAX_MINUTES so a GitHub job never times out.
 Run from the repo root:  python3 nba/kalshi_props_history_v1.py
 """
-import csv, json, os, sys, threading, time, urllib.parse, urllib.request, urllib.error
+import csv, json, os, re, sys, threading, time, urllib.parse, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 
@@ -197,6 +197,20 @@ def markets_for_event(ev, base_path):
     return []
 
 
+def is_over_market(m):
+    """An "N+ <stat>" market (= Over N-0.5). Live markets say strike_type "greater"; Kalshi's historical copies of the
+    same markets say "structured" (player in custom_strike), so those count only when the title reads "N+" and
+    floor_strike = N - 0.5."""
+    st = m.get("strike_type")
+    if st in (None, "greater"):
+        return True
+    mt = re.search(r":\s*(\d+)\+", str(m.get("title") or ""))
+    try:
+        return st == "structured" and bool(mt) and abs(float(m.get("floor_strike")) - (int(mt.group(1)) - 0.5)) < 1e-9
+    except (TypeError, ValueError):
+        return False
+
+
 def one_market_candles(series, t, start_ts, end_ts):
     for path, name in ((f"/series/{series}/markets/{t}/candlesticks", "per_market"),
                        (f"/historical/markets/{t}/candlesticks", "historical")):
@@ -273,7 +287,7 @@ def main():
             if stype not in GAME_TYPES:                        # preseason / All-Star: excluded by the prereg
                 stats["not_nba_game_type"] += 1; done.add(et); continue
             raw_samples.setdefault("event", {k: v for k, v in ev.items() if k != "markets"})
-            ms = [m for m in markets_for_event(ev, base_path) if m.get("strike_type") in (None, "greater")]
+            ms = [m for m in markets_for_event(ev, base_path) if is_over_market(m)]
             if not ms:  # not marked done: an event with no readable markets is retried, never dropped silently
                 stats["no_markets"] += 1; log.append(f"no markets {et}"); continue
             snap_limit = tip - SNAP_BEFORE
