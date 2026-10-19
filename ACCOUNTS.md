@@ -87,7 +87,7 @@ If the profile says "Saved on this device (…)", the words in brackets say what
 
 ## Owner Lab (private)
 
-`/lab` is a private phone dashboard for the owner: the latest run of every GitHub Actions workflow and the Research
+`/lab` is a private phone dashboard for the owner (layout from the owner-approved sketch): the latest run of every GitHub Actions workflow and the Research
 Lab's progress (`research/status.json`, format in `research/STATUS_SCHEMA.md`). It's served only by
 `functions/lab.js` and `functions/api/lab.js`, never linked from the app, and marked noindex / no-store.
 Anyone who isn't the owner (signed out, another account, `OWNER_EMAIL` not set) gets the site's normal

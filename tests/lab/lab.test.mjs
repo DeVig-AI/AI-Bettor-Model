@@ -85,11 +85,13 @@ test("data: latest run per workflow, failures flagged, groups", async () => {
   assert.equal(by[5].last, null);
   assert.deepEqual(d.github.failing, [2]);
   assert.equal(by[1].group, "Props");
-  assert.equal(by[2].group, "Game lines");
-  assert.equal(by[3].group, "App");
+  assert.equal(by[2].group, "Games & App");
+  assert.equal(by[3].group, "Games & App");
   assert.equal(by[4].group, "Research");
   assert.equal(d.research.status.counts.tried, 9);
-  assert.equal(d.research.status.candidates[1].run_url, null, "non-GitHub links dropped");
+  assert.equal(d.research.status.candidates[2].run_url, null, "non-GitHub links dropped");
+  assert.equal(d.research.status.candidates[0].kalshi.picks, 412);
+  assert.equal(d.research.status.candidates[1].gate_now, 2);
 });
 
 test("data: token is sent and fills missing workflows; no token -> no extra calls", async () => {

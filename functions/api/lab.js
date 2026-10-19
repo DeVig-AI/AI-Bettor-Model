@@ -101,13 +101,12 @@ export function runState(run) {
   return "skipped";                                  // skipped, neutral, stale, action_required
 }
 
-// Research / Props / Game lines / App, from the workflow's name and file.
+// Research / Props / Games & App, from the workflow's name and file.
 export function groupOf(wf) {
   const s = `${wf.path || ""} ${wf.name || ""}`.toLowerCase();
   if (/research|\blab\b|inspector|constitution/.test(s)) return "Research";
   if (/props/.test(s)) return "Props";
-  if (/devig_apps|frozen|pages|deploy|downloads|\bapp\b/.test(s)) return "App";
-  return "Game lines";
+  return "Games & App";
 }
 
 function slimRun(r) {
@@ -163,27 +162,46 @@ const ci = v => (Array.isArray(v) && v.length === 2 && num(v[0]) !== null && num
 const link = v => (typeof v === "string" && v.startsWith("https://github.com/") ? v.slice(0, 500) : null);
 const arr = (v, n) => (Array.isArray(v) ? v.slice(0, n) : []);
 
+const iso = v => str(v, 40);
+const frac = v => (num(v) !== null ? v : null);
+
 // Keep only the contract's fields, with their types; anything else is dropped.
 export function cleanStatus(s) {
   if (!s || typeof s !== "object") return null;
   const c = s.counts || {};
-  const out = {
-    updated_at: str(s.updated_at, 40),
+  const L = s.links && typeof s.links === "object" ? s.links : {};
+  return {
+    updated_at: iso(s.updated_at), scope: str(s.scope, 24), note: str(s.note, 300),
+    effect_name: str(s.effect_name, 80), effect_unit: str(s.effect_unit, 12),
     constitution: s.constitution && typeof s.constitution === "object"
       ? {version: str(s.constitution.version, 20), sha256: str(s.constitution.sha256, 64)} : null,
     counts: {tried: num(c.tried), running: num(c.running), lab_pass: num(c.lab_pass), exam_pass: num(c.exam_pass),
-             exam_budget_left: num(c.exam_budget_left)},
-    candidates: arr(s.candidates, 300).filter(x => x && typeof x === "object").map(x => ({
-      id: str(x.id, 80), name: str(x.name, 160) || str(x.id, 80), market: MARKETS.includes(x.market) ? x.market : "other",
-      family: str(x.family, 80), reason: str(x.reason, 1000),
-      state: STATES.includes(x.state) ? x.state : "queued",
-      gates: arr(x.gates, 6).filter(g => g && typeof g === "object").map(g => ({
-        name: str(g.name, 40), effect: num(g.effect), ci: ci(g.ci), games: num(g.games),
-        passed: g.passed === true ? true : g.passed === false ? false : null})),
-      pooled: x.pooled && typeof x.pooled === "object"
-        ? {effect: num(x.pooled.effect), ci: ci(x.pooled.ci), adj_p: num(x.pooled.adj_p)} : null,
-      verdict: str(x.verdict, 400), run_url: link(x.run_url), updated_at: str(x.updated_at, 40),
-    })),
+             exam_budget_left: num(c.exam_budget_left), exam_budget_total: num(c.exam_budget_total)},
+    exam_name: str(s.exam_name, 60),
+    links: {constitution: link(L.constitution), ledger: link(L.ledger), lessons: link(L.lessons)},
+    candidates: arr(s.candidates, 300).filter(x => x && typeof x === "object").map(x => {
+      const k = x.kalshi && typeof x.kalshi === "object" ? x.kalshi : null;
+      const ex = x.exam && typeof x.exam === "object" ? x.exam : null;
+      return {
+        id: str(x.id, 80), name: str(x.name, 160) || str(x.id, 80), market: MARKETS.includes(x.market) ? x.market : "other",
+        family: str(x.family, 80), reason: str(x.reason, 1000),
+        state: STATES.includes(x.state) ? x.state : "queued", fail_reason: str(x.fail_reason, 40),
+        gate_now: num(x.gate_now), started_at: iso(x.started_at), eta_at: iso(x.eta_at),
+        gates: arr(x.gates, 6).filter(g => g && typeof g === "object").map(g => ({
+          name: str(g.name, 40), effect: num(g.effect), ci: ci(g.ci), games: num(g.games),
+          passed: g.passed === true ? true : g.passed === false ? false : null})),
+        pooled: x.pooled && typeof x.pooled === "object"
+          ? {name: str(x.pooled.name, 40), effect: num(x.pooled.effect), ci: ci(x.pooled.ci), adj_p: num(x.pooled.adj_p)} : null,
+        attempts: num(x.attempts), p_bar: num(x.p_bar), fade_ratio: frac(x.fade_ratio), fade_needed: frac(x.fade_needed),
+        kalshi: k ? {picks: num(k.picks), win_rate: frac(k.win_rate), break_even: frac(k.break_even), roi: frac(k.roi)} : null,
+        rule_split: arr(x.rule_split, 6).filter(r => r && typeof r === "object").map(r => ({
+          label: str(r.label, 60), effect: num(r.effect), note: str(r.note, 80)})),
+        exam: ex ? {state: ["not_taken", "passed", "failed"].includes(ex.state) ? ex.state : "not_taken",
+                    effect: num(ex.effect), ci: ci(ex.ci), note: str(ex.note, 300), taken_at: iso(ex.taken_at)} : null,
+        verdict: str(x.verdict, 400), graded_at: iso(x.graded_at), run_number: num(x.run_number),
+        run_url: link(x.run_url), file_url: link(x.file_url), updated_at: iso(x.updated_at),
+      };
+    }),
     lessons: arr(s.lessons, 100).filter(x => x && typeof x === "object").map(x => ({
       text: str(x.text, 600), kind: KINDS.includes(x.kind) ? x.kind : "no_effect",
       candidates: arr(x.candidates, 20).map(v => str(v, 80))})),
@@ -191,7 +209,6 @@ export function cleanStatus(s) {
       name: str(x.name, 160), picks: num(x.picks), wins: num(x.wins), losses: num(x.losses), roi: num(x.roi),
       vs_kalshi_note: str(x.vs_kalshi_note, 400)})),
   };
-  return out;
 }
 
 export async function loadResearch(env, fetcher = fetch) {

@@ -54,24 +54,56 @@ test("lab page on a phone", async (t) => {
       scenario = "mixed";
       await pg.getByRole("button", {name: "Refresh"}).click();
       await pg.locator(".alert").waitFor();
-      assert.match(await pg.locator(".alert").innerText(), /1 workflow failing[\s\S]*Game lines/);
-      assert.match(await pg.locator(".big").innerText(), /9 tried · 3 passed lab · 1 passed exam/);
-      assert.equal(await pg.locator(".cand").count(), 3);
-      assert.equal(await pg.locator(".lesson .tag").first().innerText(), "EXPLORATORY — NOT PROOF");
+      assert.match(await pg.locator(".alert").innerText(), /Game lines -- every Kalshi spread failed[\s\S]*1 of 5 workflows red/);
+      assert.equal(await pg.locator(".alert").getAttribute("href"), "#activity");
+      assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["9", "1", "0"]);
+      assert.match(await pg.locator(".exam").innerText(), /Sealed 2025 exam\s*3 of 3 left/);
+      assert.equal(await pg.locator(".cand").count(), 4, "four shown before 'Show more'");
+      assert.match(await pg.locator("#morecands").innerText(), /Show 2 more · 1 failed, 1 queued/);
+      const first = pg.locator(".cand").first();
+      assert.match(await first.innerText(), /\+ QB adjustment[\s\S]*★ Lab pass[\s\S]*\+1\.4 pts \[\+0\.4, \+2\.4\]/);
+      assert.equal(await first.locator(".pips").getAttribute("aria-label"), "Gates: passed, passed, passed");
+      const running = pg.locator(".cand").nth(1);
+      assert.match(await running.innerText(), /Running · gate 2[\s\S]*Started 3 min ago on GitHub · about \d+ min left/);
+      assert.equal(await running.locator(".pips").getAttribute("aria-label"), "Gates: passed, running, waiting");
+      assert.match(await pg.locator(".cand").nth(2).innerText(), /✕ Failed · faded/);
+      assert.ok((await pg.locator(".cand").nth(2).innerText()).includes("<img src=x"), "names shown as text");
+      assert.equal(await pg.locator(".lesson").count(), 3);
+      assert.match(await pg.locator("#h-l").locator("..").innerText(), /Exploratory · not proof/);
       assert.match(await pg.locator(".promo").innerText(), /Promoted, not proven[\s\S]*23–18/i);
-      const b = pg.locator(".cand > button").first();
-      assert.equal(await b.getAttribute("aria-expanded"), "false");
-      await b.click();
-      assert.equal(await b.getAttribute("aria-expanded"), "true");
-      await pg.getByText("Held up in every window and the exam.").waitFor();
-      assert.equal(await pg.locator('.cand a[href^="javascript"]').count(), 0);
-      assert.ok((await pg.locator(".cand").nth(1).innerText()).includes("<img src=x"), "names shown as text");
+      assert.match(await pg.locator("#activity .sechead").innerText(), /1 ok · 1 failed/);
+      assert.equal(await pg.locator(".wf.bad").count(), 1);
+      assert.match(await pg.locator("footer").innerText(), /Only you can see this page/);
       await pg.screenshot({path: OUT + "mixed.png", fullPage: true});
-      // targets: buttons and workflow links at least 44px tall
-      for (const sel of ["#refresh", ".cand > button", ".wf", "footer a"]) {
+      for (const sel of ["#refresh", ".cand", ".wf", "footer a", "#morecands", ".alert"]) {
         const box = await pg.locator(sel).first().boundingBox();
         assert.ok(box.height >= 44, `${sel} is ${box.height}px tall`);
       }
+      await pg.locator("#morecands").click();
+      assert.equal(await pg.locator(".cand").count(), 6);
+    });
+    await t.test("candidate detail", async () => {
+      await pg.locator(".cand").first().click();
+      await pg.locator(".ig").waitFor();
+      assert.match(await pg.locator(".ig").innerText(), /INSPECTOR GENERAL[\s\S]*Passed all three gates[\s\S]*run #41/);
+      assert.equal(await pg.locator(".gate").count(), 4);
+      assert.match(await pg.locator(".scale").innerText(), /−4\s*0\s*\+4/);
+      const checks = await pg.locator(".checks").innerText();
+      for (const re of [/Holds after 9 attempts[\s\S]*Adjusted p = 0.030 · bar 0.05/, /Positive in every gate[\s\S]*3 of 3/,
+                        /Not fading[\s\S]*69% of the first · needs 50%/, /412 picks · won 53.4% · needs 51.8% · \+1.9% · can’t pass alone/,
+                        /Before 2021 \+1.6 · after 2021 \+1.1 · after 2024 kickoff rule: too few games/]) assert.match(checks, re);
+      assert.match(await pg.locator(".sealed").innerText(), /Sealed 2025 exam[\s\S]*Not taken yet[\s\S]*3 of 3 exams left/);
+      assert.equal(await pg.getByRole("link", {name: "View run on GitHub"}).getAttribute("href"), "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/77");
+      await pg.screenshot({path: OUT + "detail.png", fullPage: true});
+      await pg.locator(".back").click();
+      await pg.locator(".sumcard").waitFor();
+      // the failed candidate's javascript: link is never used
+      await pg.goto(base + "/lab#c/rest");
+      await pg.locator(".dtitle").waitFor();
+      assert.equal(await pg.getByRole("link", {name: "View run on GitHub"}).count(), 0);
+      assert.match(await pg.locator(".checks").innerText(), /Doesn’t hold/);
+      await pg.goto(base + "/lab");
+      await pg.locator(".sumcard").waitFor();
     });
     await t.test("no horizontal scroll at 360px", async () => {
       await pg.setViewportSize({width: 360, height: 780});
@@ -84,7 +116,7 @@ test("lab page on a phone", async (t) => {
       down = true;
       await pg.reload();
       await pg.getByText(/Couldn’t reach the server/).waitFor();
-      assert.match(await pg.locator(".big").innerText(), /9 tried/);
+      assert.equal(await pg.locator(".nums b").first().innerText(), "9");
       down = false;
       await pg.screenshot({path: OUT + "offline.png"});
     });

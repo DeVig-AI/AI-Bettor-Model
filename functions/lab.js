@@ -42,342 +42,510 @@ export const PAGE = `<!doctype html>
 <title>DeVig Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Design B ("minimal dark"), same tokens as tools/devig_source.html */
+  /* Design B ("minimal dark"), same tokens as tools/devig_source.html; layout follows the owner-approved Lab sketch */
   :root{
     --bg:#08090B; --surface:#111214; --surface-2:#18191D;
     --ink:#F4F4F5; --ink-soft:#A1A1AA; --ink-faint:#80808A;
     --accent:#E8A64E; --accent-strong:#F2BD78; --accent-ink:#1A1206; --accent-wash:#2A2013;
     --line:#1E1F24; --line-strong:#2C2D33;
-    --good:#6EDC9A; --good-wash:#11261A;
-    --bad:#F08A8A; --bad-wash:#2E1515;
-    --radius:14px;
-    --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --font-sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    --good:#6EDC9A; --bad:#F08A8A; --bad-wash:#2E1515; --bad-line:#5A2626;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
     color-scheme:dark;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.45}
-  body{padding:0 16px calc(32px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;overflow-x:hidden}
-  a{color:var(--accent-strong)}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
-  .mono{font-family:var(--font-mono)}
-  .soft{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
-  header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;gap:12px;
-         padding:calc(10px + env(safe-area-inset-top)) 0 10px;border-bottom:1px solid var(--line)}
-  .dv-logo{width:36px;height:36px;flex:none;display:block}
-  header h1{margin:0;font-size:20px;font-weight:600;letter-spacing:.2px}
-  header .when{font-size:12px;color:var(--ink-soft);font-family:var(--font-mono)}
-  header .grow{flex:1;min-width:0}
-  .btn{min-height:44px;min-width:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);
-       background:var(--surface-2);color:var(--ink);font:inherit;font-weight:500;cursor:pointer;display:inline-flex;
-       align-items:center;justify-content:center;gap:6px;text-decoration:none}
-  .btn:hover{border-color:var(--accent)}
-  .btn svg{width:18px;height:18px}
-  .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-  .spin svg{animation:spin 1s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45}
+  body{max-width:560px;margin:0 auto;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
+  a{color:var(--accent)} a:hover{color:var(--accent-strong)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .mono{font-family:var(--mono)} .soft{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
+  header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;
+         padding:calc(16px + env(safe-area-inset-top)) 20px 14px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .dv-logo{width:30px;height:30px;flex:none;display:block}
+  header h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  #when{font-size:12px;color:var(--ink-soft)}
+  .round{width:44px;height:44px;flex:none;border-radius:22px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+         display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+  .round svg{width:18px;height:18px}
+  .spin svg{animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion:reduce){.spin svg{animation:none}}
-  section{margin-top:22px}
-  h2{font-size:13px;font-family:var(--font-mono);font-weight:600;text-transform:uppercase;letter-spacing:.8px;
-     color:var(--ink-soft);margin:0 0 10px}
-  h3{font-size:12px;font-family:var(--font-mono);font-weight:500;color:var(--ink-faint);margin:14px 0 6px;
-     text-transform:uppercase;letter-spacing:.6px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
-  .note{margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-2);
-        font-size:13px;color:var(--ink-soft)}
-  .note.warn{border-color:#5a4422;background:var(--accent-wash);color:var(--accent-strong)}
-  .alert{margin-top:12px;padding:12px;border-radius:12px;background:var(--bad-wash);border:1px solid #5b2626;color:var(--ink)}
-  .alert b{color:var(--bad)}
-  .alert ul{margin:6px 0 0;padding:0;list-style:none}
-  .alert li a{display:flex;align-items:center;min-height:44px;gap:8px;color:var(--ink);text-decoration:none;
-              border-top:1px solid #4a2020}
-  .alert li a span:first-child{color:var(--bad);font-weight:700}
-  .big{font-family:var(--font-mono);font-size:22px;font-weight:600;line-height:1.3;word-break:break-word}
-  .big .sep{color:var(--ink-faint);font-weight:400}
-  .budget{margin-top:6px;font-size:13px;color:var(--ink-soft)}
-  .budget b{color:var(--accent-strong);font-family:var(--font-mono)}
-  .funnel{margin-top:12px;display:grid;gap:6px}
-  .fbar{display:grid;grid-template-columns:86px 1fr 40px;align-items:center;gap:8px;font-size:12px}
-  .fbar .track{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
-  .fbar .fill{height:100%;border-radius:6px}
-  .fbar .n{font-family:var(--font-mono);text-align:right}
-  .empty{text-align:center;padding:22px 14px}
-  .empty .ico{font-size:28px;color:var(--ink-faint)}
+  main{display:flex;flex-direction:column;gap:18px;padding:16px 16px 28px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:18px}
+  .pad{padding:18px}
+  .note{padding:10px 12px;border-radius:12px;border:1px solid #5a4422;background:var(--accent-wash);color:var(--accent-strong);font-size:13px}
+  .note a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+  .alert{text-decoration:none;display:flex;align-items:center;gap:12px;background:var(--bad-wash);border:1px solid var(--bad-line);
+         border-radius:14px;padding:12px 14px;color:var(--ink);min-height:44px}
+  .alert:hover{color:var(--ink)}
+  .alert .grow{flex:1;min-width:0}
+  .alert b{display:block;font-size:14px;font-weight:600;overflow-wrap:anywhere}
+  .alert small{font-size:12px;color:#D9B3B3}
+  .alert .go{font-size:13px;font-weight:600;color:var(--bad)}
+  .kicker{font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
+  .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .sumcard{display:flex;flex-direction:column;gap:16px}
+  .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .nums b{display:block;font-family:var(--mono);font-size:34px;font-weight:600;line-height:1}
+  .nums span{font-size:12px;color:var(--ink-soft)}
+  .seg{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-soft);margin-top:8px}
+  .exam{display:flex;justify-content:space-between;align-items:center;background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13px}
+  .exam b{font-family:var(--mono);font-weight:600}
+  .small{font-size:12px;color:var(--ink-faint);line-height:1.45}
+  h2{margin:0;font-size:17px;font-weight:600}
+  .sechead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 4px}
+  .sechead .r{font-size:12px;color:var(--ink-faint);text-align:right}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .cand{text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;
+        display:flex;flex-direction:column;gap:12px}
+  .cand:hover{color:var(--ink);border-color:var(--line-strong)}
+  .cand.hi{border-color:#3A2E1A}
+  .cand .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .cand .nm{font-size:15px;font-weight:600;overflow-wrap:anywhere}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;margin-top:6px}
+  .chip{border:1px solid var(--line-strong);color:var(--ink-soft);border-radius:6px;padding:2px 7px;white-space:nowrap}
+  .chip.s{border:0;font-weight:600}
+  .s-lab_pass,.s-exam_pass{background:var(--accent-wash);color:var(--accent-strong)}
+  .s-promoted{background:var(--accent);color:var(--accent-ink)}
+  .s-running{background:var(--surface-2);color:var(--ink)}
+  .s-failed,.s-exam_fail{background:var(--bad-wash);color:var(--bad)}
+  .s-queued,.s-stopped{background:transparent;color:var(--ink-faint);border:1px dashed var(--line-strong)!important}
+  .pips{display:flex;gap:5px;flex:none}
+  .pips svg{width:20px;height:20px;display:block}
+  .ival{display:flex;align-items:center;gap:10px}
+  .ival svg{width:120px;height:16px;flex:none}
+  .ival span{font-family:var(--mono);font-size:12px}
+  .btn{min-height:44px;border-radius:14px;border:1px solid var(--line-strong);background:transparent;color:var(--ink);font:inherit;
+       font-size:14px;font-weight:600;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;text-decoration:none;padding:0 12px}
+  .btn:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;min-height:48px;font-size:15px}
+  .btn.primary:hover{color:var(--accent-ink)}
+  .lessons{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
+  .lesson{flex:0 0 250px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;
+          display:flex;flex-direction:column;gap:8px}
+  .lesson .k{font-size:11px;font-weight:600;letter-spacing:.06em}
+  .lesson .t{font-size:14px;line-height:1.45}
+  .k-helped{color:var(--good)} .k-faded{color:var(--bad)} .k-no_effect{color:var(--ink-soft)}
+  .promo .tag{font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent);padding:2px 8px;border-radius:6px;display:inline-block}
+  .promo .rec{font-family:var(--mono);font-size:22px;font-weight:600;margin-top:4px}
+  .gh{display:flex;flex-direction:column;overflow:hidden;border-radius:16px}
+  .gh .grp{padding:14px 14px 6px;font-size:11px;font-weight:600;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--line)}
+  .gh .grp:first-child{border-top:0;padding-top:12px}
+  .wf{text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 14px;border-top:1px solid var(--line)}
+  .wf:hover{color:var(--ink);background:var(--surface-2)}
+  .wf.bad{background:#1A0F0F}
+  .wf svg{width:12px;height:12px;flex:none}
+  .wf .n{flex:1;min-width:0;font-size:14px;overflow-wrap:anywhere}
+  .wf .m{font-size:12px;color:var(--ink-soft);font-family:var(--mono);white-space:nowrap;text-align:right}
+  .wf.bad .m{color:var(--bad)} .wf.run .m{color:var(--accent)}
+  .gh .more{border:0;border-top:1px solid var(--line);border-radius:0;color:var(--ink-soft);font-size:13px;min-height:48px}
+  .empty{text-align:center;padding:26px 18px}
+  .empty b{display:block;font-size:16px;margin-top:8px}
   .empty p{margin:6px 0 0;color:var(--ink-soft);font-size:14px}
-  .list{display:grid;gap:8px}
-  .cand{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-  .cand>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1fr auto;gap:6px 10px;width:100%;
-               padding:12px 14px;min-height:44px;cursor:pointer}
-  .cand>button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-  .cand .nm{font-weight:600;min-width:0;overflow-wrap:anywhere}
-  .cand .chips{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1}
-  .cand .meta{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .cand .chev{color:var(--ink-faint);transition:transform .15s}
-  .cand[data-open="1"] .chev{transform:rotate(90deg)}
-  .detail{padding:0 14px 14px;border-top:1px solid var(--line);font-size:14px}
-  .detail p{margin:10px 0 0}
-  .chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-family:var(--font-mono);padding:2px 8px;
-        border-radius:999px;border:1px solid var(--line-strong);color:var(--ink-soft);white-space:nowrap}
-  /* state chips: lightness, fill/outline and an icon all differ, not just hue */
-  .st-queued{color:var(--ink-faint);border-style:dashed}
-  .st-running{color:var(--accent-strong);border-color:#6b5025;background:var(--accent-wash)}
-  .st-failed{color:#1a0b0b;background:var(--bad);border-color:var(--bad);font-weight:600}
-  .st-lab_pass{color:var(--good);border-color:#2f6b47}
-  .st-exam_pass{color:#08200f;background:var(--good);border-color:var(--good);font-weight:600}
-  .st-exam_fail{color:var(--bad);border-color:#6b2f2f}
-  .st-promoted{color:var(--accent-ink);background:var(--accent);border-color:var(--accent);font-weight:700}
-  .st-stopped{color:var(--ink-faint);text-decoration:line-through}
-  .pips{display:inline-flex;gap:4px;align-items:center}
-  .pip{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-       font-size:11px;font-weight:700;line-height:1}
-  .pip.pass{background:var(--good);color:#08200f}
-  .pip.fail{background:var(--bad-wash);color:var(--bad);border:1.5px solid var(--bad)}
-  .pip.pend{border:1.5px dashed var(--ink-faint);color:var(--ink-faint)}
-  .ival{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-soft)}
-  .ival svg{width:84px;height:16px;flex:none}
-  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-  th,td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)}
-  th{font-weight:500;color:var(--ink-faint);font-family:var(--font-mono);font-size:11px}
-  td.num{font-family:var(--font-mono);white-space:nowrap}
-  .tablewrap{overflow-x:auto}
-  .lesson{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line-strong);
-          border-radius:12px;padding:12px}
-  .lesson .tag{font-size:11px;font-family:var(--font-mono);color:var(--accent-strong);text-transform:uppercase;letter-spacing:.6px}
-  .lesson.k-helped{border-left-color:var(--good)} .lesson.k-faded{border-left-color:var(--bad)}
-  .lesson p{margin:6px 0 0}
-  .promo .rec{font-family:var(--font-mono);font-size:18px;font-weight:600}
-  .promo .tag{font-size:11px;font-family:var(--font-mono);color:var(--accent-ink);background:var(--accent);
-              padding:2px 8px;border-radius:999px;display:inline-block}
-  .wf{display:grid;grid-template-columns:22px 1fr auto;gap:4px 10px;align-items:center;min-height:52px;
-      padding:10px 12px;text-decoration:none;color:var(--ink);border-top:1px solid var(--line)}
-  .wf:first-child{border-top:0}
-  .wf:hover{background:var(--surface-2)}
-  .wf .t{min-width:0;overflow-wrap:anywhere;font-size:14px}
-  .wf .t small{display:block;font-size:12px;color:var(--ink-soft);font-family:var(--font-mono)}
-  .wf .ext{color:var(--ink-faint);font-size:13px}
-  .dot{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-       font-size:11px;font-weight:700;line-height:1}
-  .dot.success{background:var(--good);color:#08200f}
-  .dot.failed{background:var(--bad);color:#1a0b0b}
-  .dot.running{border:2px solid var(--accent);border-top-color:transparent}
-  .dot.queued{border:2px dashed var(--ink-faint)}
-  .dot.cancelled,.dot.skipped,.dot.none{border:2px solid var(--ink-faint);color:var(--ink-faint)}
-  .group{padding:0;overflow:hidden}
-  footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px}
+  footer{display:flex;flex-wrap:wrap;gap:0 16px;padding:4px 4px 0;font-size:13px}
   footer a{display:inline-flex;align-items:center;min-height:44px}
-  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  footer .only{flex-basis:100%;font-size:12px;color:var(--ink-faint)}
+  /* candidate detail */
+  .back{color:var(--ink-soft);text-decoration:none;min-height:44px;display:inline-flex;align-items:center;gap:4px;padding:0 8px 0 0;font-size:14px}
+  .back svg{width:18px;height:18px}
+  .dtitle{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere}
+  .reason{font-size:14px;color:var(--ink-soft);line-height:1.5}
+  .ig{border:1px solid var(--accent);background:#1A140B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+  .ig .k{font-size:12px;color:var(--accent-strong);font-weight:600;letter-spacing:.06em}
+  .ig .v{font-size:16px;font-weight:600;line-height:1.4}
+  .gates{padding:16px;display:flex;flex-direction:column;gap:14px}
+  .gates h2{font-size:15px}
+  .scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-faint);padding:0 2px}
+  .gate .row{font-size:13px}
+  .gate .row b{font-weight:600}
+  .gate .row .mono{text-align:right}
+  .gate svg{width:100%;height:18px;display:block;margin-top:6px}
+  .gate.pool{padding-top:10px;border-top:1px solid var(--line)}
+  .gate.pool b{font-weight:700;color:var(--accent-strong)}
+  .gate.pool svg{height:22px}
+  .checks .ck{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-top:1px solid var(--line)}
+  .checks .ck:first-child{border-top:0}
+  .ck .g{font-weight:700;width:14px;flex:none;text-align:center}
+  .ck .t{font-size:14px;font-weight:600}
+  .ck .d{font-size:12px;color:var(--ink-soft)}
+  .sealed{background:var(--surface);border:1px dashed var(--line-strong);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px}
+  .sealed .h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+  .sealed .h svg{width:20px;height:20px}
+  .sealed p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5}
 </style>
 </head>
 <body>
 <header>
-  ${LOGO}
-  <div class="grow"><h1>Lab</h1><div class="when" id="when" aria-live="polite">loading…</div></div>
-  <button class="btn" id="refresh" type="button" aria-label="Refresh">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+  <div class="brand">${LOGO}<div><h1>Lab</h1><div id="when" aria-live="polite">Loading…</div></div></div>
+  <button class="round" id="refresh" type="button" aria-label="Refresh">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
   </button>
 </header>
-<main>
-  <div id="notes"></div>
-  <div id="alerts"></div>
-  <section aria-labelledby="h-research"><h2 id="h-research">Research</h2><div id="research"></div></section>
-  <section aria-labelledby="h-cands" id="sec-cands" hidden><h2 id="h-cands">Candidates</h2><div class="list" id="cands"></div></section>
-  <section aria-labelledby="h-lessons" id="sec-lessons" hidden><h2 id="h-lessons">Lessons</h2><div class="list" id="lessons"></div></section>
-  <section aria-labelledby="h-promoted" id="sec-promoted" hidden><h2 id="h-promoted">Promoted models</h2><div class="list" id="promoted"></div></section>
-  <section aria-labelledby="h-gh"><h2 id="h-gh">GitHub activity</h2><div id="gh"></div></section>
-</main>
-<footer>
-  <a href="https://github.com/DeVig-AI/AI-Bettor-Model/tree/main/research" rel="noreferrer">Research files</a>
-  <a href="https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/CONSTITUTION.md" rel="noreferrer">Constitution</a>
-  <a href="https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/STATUS_SCHEMA.md" rel="noreferrer">Status format</a>
-  <a href="https://github.com/DeVig-AI/AI-Bettor-Model/actions" rel="noreferrer">All runs</a>
-</footer>
+<main id="main"></main>
 <script>
 (function(){
   "use strict";
-  var KEY = "devig-lab-last", REFRESH_MS = 60000;
-  var data = null, loadedAt = 0, loading = false, timer = null, open = {};
+  var KEY = "devig-lab-last", REFRESH_MS = 60000, REPO = "https://github.com/DeVig-AI/AI-Bettor-Model";
+  var data = null, loadedAt = 0, loading = false, timer = null, problem = {};
+  var showAllCands = false, showAllWf = false;
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-  function safeUrl(u){ return typeof u === "string" && /^https:\\/\\/github\\.com\\//.test(u) ? u : null; }
-  function ago(iso){
-    var t = Date.parse(iso); if (!t) return "—";
-    var s = Math.max(0, (Date.now() - t) / 1000);
+  function gh(u){ return typeof u === "string" && /^https:\\/\\/github\\.com\\//.test(u) ? u : null; }
+  function secs(iso){ var t = Date.parse(iso); return t ? Math.max(0, (Date.now() - t) / 1000) : null; }
+  function ago(iso, short){
+    var s = secs(iso); if (s == null) return "—";
     if (s < 60) return "just now";
-    if (s < 3600) return Math.floor(s / 60) + " min ago";
-    if (s < 86400) return Math.floor(s / 3600) + " h ago";
-    return Math.floor(s / 86400) + " d ago";
+    if (s < 3600) return Math.floor(s / 60) + (short ? "m" : " min") + " ago";
+    if (s < 86400) return Math.floor(s / 3600) + (short ? "h" : " h") + " ago";
+    return Math.floor(s / 86400) + (short ? "d" : " d") + " ago";
   }
   function dur(s){
     if (s == null) return "";
     if (s < 60) return s + "s";
-    if (s < 3600) return Math.floor(s / 60) + "m " + (s % 60) + "s";
-    return Math.floor(s / 3600) + "h " + Math.floor(s % 3600 / 60) + "m";
+    if (s < 3600) return Math.round(s / 60) + "m";
+    return Math.floor(s / 3600) + "h " + Math.round(s % 3600 / 60) + "m";
   }
   function n(v){ return typeof v === "number" ? v : 0; }
-  function fx(v, d){ return typeof v === "number" ? (v > 0 ? "+" : "") + v.toFixed(d == null ? 3 : d) : "—"; }
-  function pct(v){ return typeof v === "number" ? (v > 0 ? "+" : "") + (Math.abs(v) <= 1.5 ? (v * 100).toFixed(1) : v.toFixed(1)) + "%" : "—"; }
+  function sgn(v, d){ if (typeof v !== "number") return "—"; var t = Math.abs(v).toFixed(d);
+    return (v > 0 && +t ? "+" : v < 0 && +t ? "−" : "") + t; }
+  function pct(v, d){ return typeof v === "number" ? (v * 100).toFixed(d == null ? 1 : d) + "%" : "—"; }
 
-  var STATE = {
-    queued:   ["◌", "queued"],   running: ["◐", "running"],  failed: ["✕", "failed"],
-    lab_pass: ["✓", "lab pass"], exam_pass: ["★", "exam pass"], exam_fail: ["✕", "exam fail"],
-    promoted: ["▲", "promoted"], stopped: ["■", "stopped"]
+  // ---- shapes --------------------------------------------------------------------------------------------------
+  var PIP = {
+    pass: '<circle cx="10" cy="10" r="9" fill="#6EDC9A"/><path d="M6 10.5l2.6 2.5L14 7.5" fill="none" stroke="#08090B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+    fail: '<circle cx="10" cy="10" r="8" fill="none" stroke="#F08A8A" stroke-width="2"/><path d="M7 7l6 6M13 7l-6 6" stroke="#F08A8A" stroke-width="2" stroke-linecap="round"/>',
+    run:  '<circle cx="10" cy="10" r="8" fill="none" stroke="#E8A64E" stroke-width="2" stroke-dasharray="3 3"/>',
+    wait: '<circle cx="10" cy="10" r="8" fill="none" stroke="#2C2D33" stroke-width="2"/>'
   };
-  var RUN = {success:["✓","succeeded"], failed:["✕","failed"], running:["","running"], queued:["","queued"],
-             cancelled:["–","cancelled"], skipped:["–","skipped"], none:["","no recent run"]};
-  var GROUPS = ["Research", "Props", "Game lines", "App"];
-
-  function stateChip(st){ var s = STATE[st] || STATE.queued;
-    return '<span class="chip st-' + esc(st) + '"><span aria-hidden="true">' + s[0] + '</span>' + esc(s[1]) + '</span>'; }
-  function pip(g){
-    var cls = g && g.passed === true ? "pass" : g && g.passed === false ? "fail" : "pend";
-    var ch = cls === "pass" ? "✓" : cls === "fail" ? "✕" : "";
-    var label = (g && g.name ? g.name : "gate") + ": " + (cls === "pass" ? "passed" : cls === "fail" ? "failed" : "pending");
-    return '<span class="pip ' + cls + '" role="img" aria-label="' + esc(label) + '" title="' + esc(label) + '">' + ch + '</span>';
+  var PIPWORD = {pass: "passed", fail: "failed", run: "running", wait: "waiting"};
+  function gateKinds(c){
+    var g = (c.gates || []).slice(0, 3), out = [];
+    var runAt = c.state === "running" ? (typeof c.gate_now === "number" ? c.gate_now - 1 : -1) : -2;
+    for (var i = 0; i < 3; i++){
+      var x = g[i];
+      if (x && x.passed === true) out.push("pass");
+      else if (x && x.passed === false) out.push("fail");
+      else {
+        if (runAt === -1) runAt = i;               // running, no gate given: the first one not done
+        out.push(i === runAt ? "run" : "wait");
+      }
+    }
+    return out;
   }
-  // the pooled effect as a dot with its interval, around a 0 line in the middle
-  function interval(p){
-    if (!p || typeof p.effect !== "number") return '<span class="ival">no pooled effect yet</span>';
-    var lo = p.ci ? p.ci[0] : p.effect, hi = p.ci ? p.ci[1] : p.effect;
-    var m = Math.max(Math.abs(lo), Math.abs(hi), Math.abs(p.effect)) || 1;
-    var x = function(v){ return 42 + v / m * 38; };
-    var col = lo > 0 ? "#6EDC9A" : hi < 0 ? "#F08A8A" : "#A1A1AA";
-    var label = "pooled effect " + fx(p.effect) + (p.ci ? ", interval " + fx(lo) + " to " + fx(hi) : "");
-    return '<span class="ival"><svg viewBox="0 0 84 16" role="img" aria-label="' + esc(label) + '">' +
-      '<line x1="42" y1="1" x2="42" y2="15" stroke="#80808A" stroke-width="1" stroke-dasharray="2 2"/>' +
-      '<line x1="' + x(lo).toFixed(1) + '" y1="8" x2="' + x(hi).toFixed(1) + '" y2="8" stroke="' + col + '" stroke-width="3" stroke-linecap="round"/>' +
-      '<circle cx="' + x(p.effect).toFixed(1) + '" cy="8" r="3.5" fill="' + col + '" stroke="#08090B" stroke-width="1"/></svg>' +
-      esc(fx(p.effect)) + '</span>';
+  function pips(c){
+    var k = gateKinds(c);
+    return '<div class="pips" role="img" aria-label="Gates: ' + k.map(function(x){ return PIPWORD[x]; }).join(", ") + '">' +
+      k.map(function(x){ return '<svg viewBox="0 0 20 20" aria-hidden="true">' + PIP[x] + '</svg>'; }).join("") + '</div>';
   }
-
-  function renderNotes(state){
-    var h = "";
-    if (state.signin) h += '<div class="note warn" role="status">Your sign-in ran out. <a class="btn primary" style="margin-top:8px" href="/login?next=/lab">Sign in again</a></div>';
-    if (state.offline) h += '<div class="note warn" role="status">Couldn’t reach the server — showing what was loaded ' + esc(ago(state.offline)) + ' (stale).</div>';
-    $("notes").innerHTML = h;
+  var STATE = {
+    queued: "◌ Queued", running: "● Running", failed: "✕ Failed", lab_pass: "★ Lab pass", exam_pass: "★ Exam pass",
+    exam_fail: "✕ Exam fail", promoted: "▲ Promoted", stopped: "■ Stopped"
+  };
+  function stateChip(c){
+    var t = STATE[c.state] || STATE.queued;
+    if (c.state === "running"){ var k = gateKinds(c).indexOf("run"); if (k >= 0) t += " · gate " + (k + 1); }
+    if ((c.state === "failed" || c.state === "exam_fail") && c.fail_reason) t += " · " + c.fail_reason;
+    return '<span class="chip s s-' + esc(c.state) + '">' + esc(t) + '</span>';
   }
+  function marketName(m){ return {spread: "Spread", total: "Total", props: "Props"}[m] || "Other"; }
 
-  function renderAlerts(gh){
-    var wfs = (gh && gh.workflows) || [], bad = wfs.filter(function(w){ return (gh.failing || []).indexOf(w.id) >= 0; });
-    if (!bad.length){ $("alerts").innerHTML = ""; return; }
-    $("alerts").innerHTML = '<div class="alert" role="alert"><b>' + bad.length + ' workflow' + (bad.length > 1 ? "s" : "") +
-      ' failing</b> — latest run failed<ul>' + bad.map(function(w){
-        var u = safeUrl(w.last && w.last.url) || safeUrl(w.url);
-        return '<li><a href="' + esc(u) + '" rel="noreferrer"><span aria-hidden="true">✕</span><span>' + esc(w.name) +
-          ' <span class="faint">· ' + esc(ago(w.last && w.last.started_at)) + '</span></span></a></li>';
-      }).join("") + '</ul></div>';
-  }
-
-  function renderResearch(r){
-    var s = r && r.status, box = $("research");
-    ["sec-cands", "sec-lessons", "sec-promoted"].forEach(function(id){ $(id).hidden = true; });
-    if (!r || (!s && r.error && !r.fetched_at)){
-      box.innerHTML = '<div class="card empty"><div class="ico" aria-hidden="true">⚠</div><p>Couldn’t read research/status.json' +
-        (r && r.error ? ": " + esc(r.error) : "") + '.</p></div>';
-      return;
-    }
-    if (!s){
-      box.innerHTML = '<div class="card empty"><div class="ico" aria-hidden="true">⚗</div><p><b>Lab hasn’t run yet.</b></p>' +
-        '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></div>';
-      return;
-    }
-    var c = s.counts || {}, tried = n(c.tried);
-    var bars = [["tried", tried, "#A1A1AA"], ["running", n(c.running), "#E8A64E"], ["passed lab", n(c.lab_pass), "#2f9e5f"], ["passed exam", n(c.exam_pass), "#6EDC9A"]];
-    var max = Math.max(1, tried);
-    box.innerHTML = '<div class="card">' +
-      '<div class="big">' + tried + ' tried <span class="sep">·</span> ' + n(c.lab_pass) + ' passed lab <span class="sep">·</span> ' + n(c.exam_pass) + ' passed exam</div>' +
-      '<div class="budget">Sealed-exam budget left: <b>' + (typeof c.exam_budget_left === "number" ? c.exam_budget_left : "—") + '</b>' +
-      (s.constitution && s.constitution.version ? ' <span class="faint">· Constitution ' + esc(s.constitution.version) + '</span>' : "") + '</div>' +
-      '<div class="funnel" role="img" aria-label="' + esc(bars.map(function(b){ return b[1] + " " + b[0]; }).join(", ")) + '">' +
-      bars.map(function(b){ return '<div class="fbar" aria-hidden="true"><span class="soft">' + b[0] + '</span><span class="track"><span class="fill" style="display:block;width:' +
-        (b[1] / max * 100).toFixed(1) + '%;background:' + b[2] + '"></span></span><span class="n">' + b[1] + '</span></div>'; }).join("") +
-      '</div><div class="faint" style="font-size:12px;margin-top:8px">Lab status updated ' + esc(ago(s.updated_at)) + '</div></div>';
-
-    var cands = s.candidates || [];
-    if (cands.length){
-      $("sec-cands").hidden = false;
-      $("cands").innerHTML = cands.map(function(x, i){
-        var id = "c" + i, key = x.id || x.name, isOpen = !!open[key];
-        var gates = (x.gates || []).slice(0, 3); while (gates.length < 3) gates.push(null);
-        var det = '<div class="detail" id="' + id + '"' + (isOpen ? "" : " hidden") + '>' +
-          (x.reason ? '<p><span class="faint">Why:</span> ' + esc(x.reason) + '</p>' : "") +
-          ((x.gates || []).length ? '<div class="tablewrap"><table><thead><tr><th scope="col">Gate</th><th scope="col">Effect</th><th scope="col">Interval</th><th scope="col">Games</th><th scope="col">Result</th></tr></thead><tbody>' +
-            x.gates.map(function(g){ return '<tr><td>' + esc(g.name) + '</td><td class="num">' + esc(fx(g.effect)) + '</td><td class="num">' +
-              (g.ci ? esc(fx(g.ci[0]) + " … " + fx(g.ci[1])) : "—") + '</td><td class="num">' + (g.games == null ? "—" : esc(g.games)) + '</td><td>' +
-              (g.passed === true ? "✓ pass" : g.passed === false ? "✕ fail" : "pending") + '</td></tr>'; }).join("") + '</tbody></table></div>' : "") +
-          (x.pooled ? '<p><span class="faint">Pooled:</span> <span class="mono">' + esc(fx(x.pooled.effect)) +
-            (x.pooled.ci ? " [" + esc(fx(x.pooled.ci[0])) + ", " + esc(fx(x.pooled.ci[1])) + "]" : "") +
-            (typeof x.pooled.adj_p === "number" ? " · adj p " + esc(x.pooled.adj_p.toPrecision(2)) : "") + '</span></p>' : "") +
-          (x.verdict ? '<p><b>' + esc(x.verdict) + '</b></p>' : "") +
-          '<p class="faint" style="font-size:12px">' + esc([x.family, x.id].filter(Boolean).join(" · ")) + (x.updated_at ? " · updated " + esc(ago(x.updated_at)) : "") + '</p>' +
-          (safeUrl(x.run_url) ? '<p><a class="btn" href="' + esc(x.run_url) + '" rel="noreferrer">Open the run on GitHub</a></p>' : "") + '</div>';
-        return '<div class="cand" data-open="' + (isOpen ? 1 : 0) + '" data-key="' + esc(key) + '">' +
-          '<button type="button" aria-expanded="' + isOpen + '" aria-controls="' + id + '">' +
-          '<span class="nm">' + esc(x.name) + '</span><span class="chev" aria-hidden="true">›</span>' +
-          '<span class="chips"><span class="chip">' + esc(x.market) + '</span>' + stateChip(x.state) + '</span>' +
-          '<span class="meta"><span class="pips">' + gates.map(pip).join("") + '</span>' + interval(x.pooled) + '</span>' +
-          '</button>' + det + '</div>';
-      }).join("");
-    }
-    var les = s.lessons || [];
-    if (les.length){
-      $("sec-lessons").hidden = false;
-      var KL = {helped: "helped", faded: "faded", no_effect: "no effect"};
-      $("lessons").innerHTML = les.map(function(l){
-        return '<div class="lesson k-' + esc(l.kind) + '"><span class="tag">Exploratory — not proof</span> <span class="chip">' + esc(KL[l.kind] || l.kind) +
-          '</span><p>' + esc(l.text) + '</p>' + ((l.candidates || []).length ? '<p class="faint" style="font-size:12px">' + esc(l.candidates.join(", ")) + '</p>' : "") + '</div>';
-      }).join("");
-    }
-    var pro = s.promoted || [];
-    if (pro.length){
-      $("sec-promoted").hidden = false;
-      $("promoted").innerHTML = pro.map(function(p){
-        var w = n(p.wins), l = n(p.losses), rate = w + l ? w / (w + l) : null;
-        var above = typeof p.roi === "number" ? (p.roi > 0 ? "above break-even" : p.roi < 0 ? "below break-even" : "at break-even") : "";
-        return '<div class="card promo"><span class="tag">Promoted, not proven</span><div style="font-weight:600;margin-top:8px">' + esc(p.name) + '</div>' +
-          '<div class="rec">' + w + '–' + l + (rate == null ? "" : ' <span class="soft" style="font-size:14px">(' + (rate * 100).toFixed(1) + '%)</span>') + '</div>' +
-          '<div class="soft" style="font-size:13px">' + (p.picks == null ? "" : esc(p.picks) + ' picks · ') + 'ROI ' + esc(pct(p.roi)) + (above ? ' · ' + above : "") + '</div>' +
-          (p.vs_kalshi_note ? '<p class="faint" style="font-size:13px;margin:6px 0 0">' + esc(p.vs_kalshi_note) + '</p>' : "") + '</div>';
-      }).join("");
-    }
-  }
-
-  function renderGithub(gh){
-    var box = $("gh");
-    if (!gh || !gh.workflows){
-      box.innerHTML = '<div class="card empty"><div class="ico" aria-hidden="true">⚠</div><p>Couldn’t read GitHub Actions' + (gh && gh.error ? ": " + esc(gh.error) : "") + '.</p></div>';
-      return;
-    }
-    var h = gh.stale ? '<div class="note warn" style="margin:0 0 10px">GitHub didn’t answer (' + esc(gh.error || "error") + ') — runs as of ' + esc(ago(gh.fetched_at)) + '.</div>' : "";
-    GROUPS.forEach(function(g){
-      var rows = gh.workflows.filter(function(w){ return w.group === g; });
-      if (!rows.length) return;
-      h += '<h3>' + esc(g) + '</h3><div class="card group">' + rows.map(function(w){
-        var r = w.last, st = r ? r.state : "none", lab = RUN[st] || RUN.none;
-        var u = safeUrl(r && r.url) || safeUrl(w.url);
-        var when = r ? " · " + ago(r.started_at) + (r.duration_s != null ? " · " + dur(r.duration_s) : "") : "";
-        return '<a class="wf" href="' + esc(u) + '" rel="noreferrer"><span class="dot ' + esc(st) + '" role="img" aria-label="' + esc(lab[1]) + '">' + lab[0] + '</span>' +
-          '<span class="t">' + esc(w.name) + '<small>' + esc(lab[1]) + esc(when) + (w.disabled ? " · disabled" : "") + '</small></span><span class="ext" aria-hidden="true">↗</span></a>';
-      }).join("") + '</div>';
+  // one scale for every interval bar, so cards compare at a glance; at least ±1 (±4 on the detail screen)
+  function scaleOf(cands, floor){
+    var m = floor;
+    cands.forEach(function(c){
+      [c.pooled].concat(c.gates || []).forEach(function(g){
+        if (!g) return;
+        [g.effect].concat(g.ci || []).forEach(function(v){ if (typeof v === "number") m = Math.max(m, Math.abs(v)); });
+      });
     });
-    h += '<p class="faint" style="font-size:12px">From GitHub ' + esc(ago(gh.fetched_at)) + (gh.authed ? "" : " · no token (60 requests/hour)") + '</p>';
-    box.innerHTML = h;
+    return Math.ceil(m);
+  }
+  function decimals(scale){ return scale <= 1 ? 3 : 1; }
+  function bar(g, scale, w, h, big, passed){
+    var x = function(v){ return (w / 2 + Math.max(-1, Math.min(1, v / scale)) * (w / 2 - 8)).toFixed(1); };
+    var lo = g.ci ? g.ci[0] : g.effect, hi = g.ci ? g.ci[1] : g.effect, y = h / 2;
+    var col = lo > 0 ? "#E8A64E" : hi < 0 ? "#F08A8A" : "#80808A";
+    var dot = lo > 0 ? "#F2BD78" : hi < 0 ? "#F08A8A" : "#A1A1AA";
+    if (passed === true) col = dot = "#6EDC9A"; else if (passed === false) col = dot = "#F08A8A";   // a gate: its verdict
+    var op = passed === true || passed === false ? ' opacity="0.55"' : "";
+    return '<line x1="0" y1="' + y + '" x2="' + w + '" y2="' + y + '" stroke="#1E1F24" stroke-width="2"/>' +
+      '<line x1="' + w / 2 + '" y1="0" x2="' + w / 2 + '" y2="' + h + '" stroke="#80808A"/>' +
+      '<line x1="' + x(lo) + '" y1="' + y + '" x2="' + x(hi) + '" y2="' + y + '" stroke="' + col + '" stroke-width="' + (big ? 7 : passed != null ? 5 : 4) + '" stroke-linecap="round"' + op + '/>' +
+      '<circle cx="' + x(g.effect) + '" cy="' + y + '" r="' + (big ? 8 : 5) + '" fill="' + dot + '"/>';
+  }
+  function effText(g, unit, d){
+    return sgn(g.effect, d) + (unit ? " " + esc(unit) : "") + (g.ci ? ' <span class="faint">[' + sgn(g.ci[0], d) + ", " + sgn(g.ci[1], d) + "]</span>" : "");
   }
 
-  function render(state){
-    state = state || {};
-    renderNotes(state);
-    if (!data){ $("when").textContent = state.signin ? "signed out" : "couldn’t load"; return; }
-    renderAlerts(data.github);
-    renderResearch(data.research);
-    renderGithub(data.github);
+  // ---- overview --------------------------------------------------------------------------------------------------
+  function viewAlert(g){
+    if (!g || !g.workflows) return "";
+    var bad = g.workflows.filter(function(w){ return (g.failing || []).indexOf(w.id) >= 0; });
+    if (!bad.length) return "";
+    var total = g.workflows.filter(function(w){ return !w.disabled; }).length;
+    return '<a class="alert" href="#activity" role="alert">' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F08A8A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18v.5"/></svg>' +
+      '<span class="grow"><b>' + esc(shortName(bad[0].name)) + (bad.length > 1 ? " and " + (bad.length - 1) + " more" : "") + ' failed</b>' +
+      '<small>' + esc(ago(bad[0].last && bad[0].last.started_at)) + " · " + bad.length + " of " + total + ' workflows red</small></span>' +
+      '<span class="go">View</span></a>';
+  }
+
+  function counted(s){
+    var by = {}; (s.candidates || []).forEach(function(c){ by[c.state] = (by[c.state] || 0) + 1; });
+    return by;
+  }
+  function viewSummary(s){
+    var c = s.counts || {}, by = counted(s);
+    var segs = [
+      ["failed", n(by.failed) + n(by.exam_fail) + n(by.stopped), "#5A2626", "#F08A8A", "■"],
+      ["running", n(by.running), "#2C2D33", "#80808A", "■"],
+      ["lab pass", n(by.lab_pass) + n(by.exam_pass) + n(by.promoted), "#E8A64E", "#E8A64E", "■"],
+      ["queued", n(by.queued), "#1E1F24", "#80808A", "□"]
+    ].filter(function(x){ return x[1] > 0; });
+    var tried = typeof c.tried === "number" ? c.tried : (s.candidates || []).length;
+    var examName = s.exam_name || "Sealed exam";
+    var left = typeof c.exam_budget_left === "number" ? c.exam_budget_left : null;
+    var tot = typeof c.exam_budget_total === "number" ? c.exam_budget_total : null;
+    return '<section class="card pad sumcard" aria-label="Research summary">' +
+      '<div class="row"><div class="kicker">Research' + (s.scope ? " · " + esc(s.scope) : "") + '</div>' +
+      (s.constitution && s.constitution.version ? '<div class="mono faint" style="font-size:12px">Constitution ' + esc(s.constitution.version) + '</div>' : "") + '</div>' +
+      '<div class="nums"><div><b>' + tried + '</b><span>tried</span></div>' +
+      '<div><b style="color:var(--accent)">' + n(c.lab_pass) + '</b><span>passed lab</span></div>' +
+      '<div><b>' + n(c.exam_pass) + '</b><span>passed exam</span></div></div>' +
+      (segs.length ? '<div><div class="seg" role="img" aria-label="' + esc(segs.map(function(x){ return x[1] + " " + x[0]; }).join(", ")) + '">' +
+        segs.map(function(x){ return '<div style="flex-grow:' + x[1] + ";background:" + x[2] + (x[0] === "queued" ? ";border:1px dashed #2C2D33" : "") + '"></div>'; }).join("") +
+        '</div><div class="legend" aria-hidden="true">' + segs.map(function(x){ return '<span><span style="color:' + x[3] + '">' + x[4] + "</span> " + x[1] + " " + x[0] + "</span>"; }).join("") + '</div></div>' : "") +
+      '<div class="exam"><span class="soft">' + esc(examName) + '</span><b>' + (left == null ? "—" : left + (tot == null ? "" : " of " + tot) + " left") + '</b></div>' +
+      '<div class="small">Bar to pass rises with every attempt (adjusted for ' + tried + ' tries).' + (s.note ? " " + esc(s.note) : "") +
+      ' <span class="faint">Lab status ' + esc(ago(s.updated_at)) + '.</span></div></section>';
+  }
+
+  var ORDER = {promoted: 0, exam_pass: 1, lab_pass: 2, running: 3, exam_fail: 4, failed: 5, stopped: 6, queued: 7};
+  function sorted(cands){
+    return cands.slice().sort(function(a, b){
+      return (ORDER[a.state] - ORDER[b.state]) || ((Date.parse(b.updated_at) || 0) - (Date.parse(a.updated_at) || 0));
+    });
+  }
+  function candCard(c, scale, unit){
+    var d = decimals(scale), hi = c.state === "lab_pass" || c.state === "exam_pass" || c.state === "promoted";
+    var bottom;
+    if (c.state === "running" || c.state === "queued"){
+      var left = Date.parse(c.eta_at) ? Math.max(1, Math.round((Date.parse(c.eta_at) - Date.now()) / 60000)) : null;
+      bottom = '<div class="small">' + (c.state === "queued" ? "Waiting to start" : (c.started_at ? "Started " + esc(ago(c.started_at)) + " on GitHub" : "Running on GitHub") +
+        (left != null ? " · about " + left + " min left" : "")) + '</div>';
+    } else if (c.pooled && typeof c.pooled.effect === "number"){
+      bottom = '<div class="ival"><svg viewBox="0 0 120 16" aria-hidden="true">' + bar(c.pooled, scale, 120, 16) + '</svg>' +
+        '<span' + (c.pooled.ci && c.pooled.ci[0] > 0 ? "" : ' class="soft"') + '>' + effText(c.pooled, unit, d) + '</span></div>';
+    } else bottom = '<div class="small">No pooled result yet</div>';
+    return '<a class="cand' + (hi ? " hi" : "") + '" href="#c/' + encodeURIComponent(c.id || c.name) + '">' +
+      '<div class="top"><div style="min-width:0"><div class="nm">' + esc(c.name) + '</div>' +
+      '<div class="chips"><span class="chip">' + marketName(c.market) + '</span>' + stateChip(c) + '</div></div>' + pips(c) + '</div>' +
+      bottom + '</a>';
+  }
+  function viewCandidates(s){
+    var cands = sorted(s.candidates || []);
+    if (!cands.length) return "";
+    var scale = scaleOf(cands, 1), unit = s.effect_unit || "pts", SHOW = 4;
+    var shown = showAllCands ? cands : cands.slice(0, SHOW), rest = cands.slice(SHOW);
+    var gnames = ((cands[0].gates || []).slice(0, 3)).map(function(g){ return g.name; }).filter(Boolean);
+    var more = "";
+    if (rest.length && !showAllCands){
+      var by = {}; rest.forEach(function(c){ var k = (STATE[c.state] || "").replace(/^\\S+ /, "").toLowerCase(); by[k] = (by[k] || 0) + 1; });
+      more = '<button class="btn" type="button" id="morecands">Show ' + rest.length + " more · " +
+        Object.keys(by).map(function(k){ return by[k] + " " + k; }).join(", ") + '</button>';
+    }
+    return '<section class="stack" aria-labelledby="h-c"><div class="sechead"><h2 id="h-c">Candidates</h2>' +
+      (gnames.length ? '<div class="r">gates ' + esc(gnames.join(" · ")) + '</div>' : "") + '</div>' +
+      shown.map(function(c){ return candCard(c, scale, unit); }).join("") + more + '</section>';
+  }
+  function viewLessons(s){
+    var les = s.lessons || [];
+    if (!les.length) return "";
+    var names = {}; (s.candidates || []).forEach(function(c){ names[c.id] = c.name; });
+    var K = {helped: "▲ HELPED", faded: "▼ FADED", no_effect: "● NO EFFECT"};
+    return '<section class="stack" aria-labelledby="h-l"><div class="sechead"><h2 id="h-l">Lessons</h2>' +
+      '<div class="r" style="color:var(--accent);font-weight:600">Exploratory · not proof</div></div>' +
+      '<div class="lessons" tabindex="0" aria-label="Lessons, scrolls sideways">' + les.map(function(l){
+        var from = (l.candidates || []).map(function(id){ return names[id] || id; }).filter(Boolean);
+        return '<div class="lesson"><div class="k k-' + esc(l.kind) + '">' + (K[l.kind] || K.no_effect) + '</div><div class="t">' + esc(l.text) + '</div>' +
+          (from.length ? '<div class="small">from ' + esc(from.join(", ")) + '</div>' : "") + '</div>';
+      }).join("") + '</div></section>';
+  }
+  function viewPromoted(s){
+    var pro = s.promoted || [];
+    if (!pro.length) return "";
+    return '<section class="stack" aria-labelledby="h-p"><div class="sechead"><h2 id="h-p">Promoted models</h2></div>' + pro.map(function(p){
+      var w = n(p.wins), l = n(p.losses), rate = w + l ? w / (w + l) : null;
+      var vs = typeof p.roi === "number" ? (p.roi > 0 ? "above break-even" : p.roi < 0 ? "below break-even" : "at break-even") : "";
+      return '<div class="card pad promo"><span class="tag">Promoted, not proven</span><div style="font-weight:600;margin-top:10px">' + esc(p.name) + '</div>' +
+        '<div class="rec">' + w + "–" + l + (rate == null ? "" : ' <span class="soft" style="font-size:14px">' + pct(rate) + '</span>') + '</div>' +
+        '<div class="soft" style="font-size:13px">' + (p.picks == null ? "" : esc(p.picks) + " picks · ") + "ROI " + (typeof p.roi === "number" ? sgn(p.roi * 100, 1) + "%" : "—") + (vs ? " · " + vs : "") + '</div>' +
+        (p.vs_kalshi_note ? '<div class="small" style="margin-top:6px">' + esc(p.vs_kalshi_note) + '</div>' : "") + '</div>';
+    }).join("") + '</section>';
+  }
+
+  var GLYPH = {
+    success: '<circle cx="6" cy="6" r="5" fill="#6EDC9A"/>',
+    failed: '<path d="M2 2l8 8M10 2l-8 8" stroke="#F08A8A" stroke-width="2.4" stroke-linecap="round"/>',
+    running: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#E8A64E" stroke-width="2" stroke-dasharray="2.5 2"/>',
+    queued: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#80808A" stroke-width="1.5" stroke-dasharray="1.5 2"/>',
+    cancelled: '<path d="M2 6h8" stroke="#80808A" stroke-width="2.4" stroke-linecap="round"/>',
+    skipped: '<path d="M2 6h8" stroke="#80808A" stroke-width="2.4" stroke-linecap="round"/>',
+    none: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#2C2D33" stroke-width="1.5"/>'
+  };
+  var WORD = {success: "succeeded", failed: "failed", running: "running", queued: "queued", cancelled: "cancelled", skipped: "skipped", none: "no recent run"};
+  function shortName(name){ return String(name || "").replace(/\\s*\\((?:[^)]*)\\)\\s*$/, ""); }
+  function wfRow(w){
+    var r = w.last, st = r ? r.state : "none", u = gh(r && r.url) || gh(w.url);
+    var m = !r ? "no recent run" : st === "running" ? "running " + dur(Math.round(secs(r.started_at) || 0)) :
+      st === "queued" ? "queued " + ago(r.started_at, true) : st === "failed" ? "failed " + ago(r.started_at, true).replace(" ago", "") :
+      ago(r.started_at, true) + (r.duration_s != null ? " · " + dur(r.duration_s) : "") + (st !== "success" ? " · " + WORD[st] : "");
+    return '<a class="wf' + (st === "failed" ? " bad" : st === "running" ? " run" : "") + '" href="' + esc(u) + '" rel="noreferrer">' +
+      '<svg viewBox="0 0 12 12" role="img" aria-label="' + esc(WORD[st]) + '">' + (GLYPH[st] || GLYPH.none) + '</svg>' +
+      '<span class="n">' + esc(shortName(w.name)) + (w.disabled ? ' <span class="faint">(disabled)</span>' : "") + '</span><span class="m">' + esc(m) + '</span></a>';
+  }
+  function viewGithub(g){
+    var head = '<div class="sechead"><h2 id="h-gh">GitHub activity</h2>';
+    if (!g || !g.workflows){
+      return '<section class="stack" id="activity" aria-labelledby="h-gh">' + head + '</div><div class="card empty"><b>Couldn’t read GitHub Actions</b><p>' +
+        esc((g && g.error) || "No answer yet.") + '</p></div></section>';
+    }
+    var wfs = g.workflows, bad = wfs.filter(function(w){ return w.last && w.last.state === "failed" && !w.disabled; }).length;
+    var ok = wfs.filter(function(w){ return w.last && w.last.state === "success"; }).length;
+    var PER = 3, hidden = 0, body = "";
+    ["Research", "Props", "Games & App"].forEach(function(name){
+      var rows = wfs.filter(function(w){ return w.group === name; });
+      if (!rows.length) return;
+      var show = showAllWf ? rows : rows.filter(function(w, i){
+        var st = w.last ? w.last.state : "none";
+        return i < PER || st === "failed" || st === "running" || st === "queued";
+      });
+      hidden += rows.length - show.length;
+      if (show.length) body += '<div class="grp">' + esc(name) + '</div>' + show.map(wfRow).join("");
+    });
+    if (hidden) body += '<button class="btn more" type="button" id="morewf">Show all ' + wfs.length + ' workflows</button>';
+    return '<section class="stack" id="activity" aria-labelledby="h-gh">' + head + '<div class="r">' + ok + " ok" + (bad ? " · " + bad + " failed" : "") + '</div></div>' +
+      (g.stale ? '<div class="note">GitHub didn’t answer (' + esc(g.error || "error") + ') — runs as of ' + esc(ago(g.fetched_at)) + '.</div>' : "") +
+      '<div class="card gh">' + body + '</div>' +
+      '<div class="small" style="padding:0 4px">From GitHub ' + esc(ago(g.fetched_at)) + (g.authed ? "" : " · no token, 60 requests/hour") + '</div></section>';
+  }
+  function viewFooter(s){
+    var L = (s && s.links) || {};
+    return '<footer><a href="' + esc(gh(L.constitution) || REPO + "/blob/main/research/CONSTITUTION.md") + '" rel="noreferrer">Constitution</a>' +
+      '<a href="' + esc(gh(L.ledger) || REPO + "/tree/main/research") + '" rel="noreferrer">Ledger</a>' +
+      '<a href="' + esc(gh(L.lessons) || REPO + "/tree/main/research") + '" rel="noreferrer">Lessons file</a>' +
+      '<a href="' + REPO + '/actions" rel="noreferrer">All runs on GitHub</a>' +
+      '<span class="only">Only you can see this page.</span></footer>';
+  }
+  function viewNotes(){
+    var h = "";
+    if (problem.signin) h += '<div class="note" role="status">Your sign-in ran out. <a href="/login?next=/lab">Sign in again</a></div>';
+    if (problem.offline) h += '<div class="note" role="status">Couldn’t reach the server — showing what loaded ' + esc(ago(problem.offline)) + ' (stale).</div>';
+    return h;
+  }
+  function viewResearchBlock(r){
+    var s = r && r.status;
+    if (!r || (!s && r.error && !r.fetched_at))
+      return '<div class="card empty"><b>Couldn’t read research/status.json</b><p>' + esc((r && r.error) || "") + '</p></div>';
+    if (!s) return '<section class="card empty" aria-label="Research"><div class="kicker">Research</div><b>Lab hasn’t run yet</b>' +
+      '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
+    return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
+      viewSummary(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
+  }
+  function viewOverview(){
+    var s = data && data.research && data.research.status;
+    return viewNotes() + viewAlert(data.github) + viewResearchBlock(data.research) + viewGithub(data.github) + viewFooter(s);
+  }
+
+  // ---- candidate detail --------------------------------------------------------------------------------------------
+  function check(ok, title, detail){
+    var g = ok === true ? '<span class="g" style="color:var(--good)" aria-label="passed">✓</span>' :
+            ok === false ? '<span class="g" style="color:var(--bad)" aria-label="failed">✕</span>' :
+            '<span class="g faint" aria-label="information">i</span>';
+    return '<div class="ck">' + g + '<div><div class="t">' + esc(title) + '</div>' + (detail ? '<div class="d">' + esc(detail) + '</div>' : "") + '</div></div>';
+  }
+  function viewDetail(id){
+    var s = data && data.research && data.research.status;
+    var c = s && (s.candidates || []).filter(function(x){ return (x.id || x.name) === id; })[0];
+    var back = '<a class="back" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Lab</a>';
+    if (!c) return viewNotes() + back + '<div class="card empty"><b>Candidate not found</b><p>It may have been renamed in the latest status.</p></div>';
+    var unit = s.effect_unit || "pts", scale = scaleOf([c], 4), d = decimals(scale);
+    var h = viewNotes() + back +
+      '<div class="stack"><div class="chips" style="margin:0"><span class="chip">' + marketName(c.market) + '</span>' +
+      (c.family ? '<span class="chip">' + esc(c.family) + '</span>' : "") + stateChip(c) + '</div>' +
+      '<h2 class="dtitle">' + esc(c.name) + '</h2>' + (c.reason ? '<div class="reason">' + esc(c.reason) + '</div>' : "") + '</div>';
+    if (c.verdict) h += '<section class="ig" aria-label="Verdict"><div class="k">INSPECTOR GENERAL</div><div class="v">' + esc(c.verdict) + '</div>' +
+      '<div class="small soft">' + esc([c.graded_at ? "Graded " + ago(c.graded_at) : "", c.run_number != null ? "run #" + c.run_number : ""].filter(Boolean).join(" · ")) + '</div></section>';
+    var gates = c.gates || [];
+    if (gates.length || c.pooled){
+      h += '<section class="card gates" aria-label="Gates"><div class="row"><h2>' + esc(s.effect_name || "Effect by gate") + '</h2><div class="small">' + esc(unit) + '</div></div>' +
+        '<div class="scale" aria-hidden="true"><span>−' + scale + '</span><span>0</span><span>+' + scale + '</span></div>';
+      gates.forEach(function(g){
+        var mark = g.passed === true ? '<span style="color:var(--good)">✓</span> ' : g.passed === false ? '<span style="color:var(--bad)">✕</span> ' : '<span class="faint">◌</span> ';
+        h += '<div class="gate"><div class="row"><b>' + mark + esc(g.name) + '</b><span class="mono">' +
+          (typeof g.effect === "number" ? sgn(g.effect, d) + ' <span class="faint">' + (g.ci ? "[" + sgn(g.ci[0], d) + ", " + sgn(g.ci[1], d) + "]" : "") +
+            (g.games != null ? " · " + esc(g.games) + " g" : "") + '</span>' : '<span class="faint">not run yet</span>') + '</span></div>' +
+          (typeof g.effect === "number" ? '<svg viewBox="0 0 300 18" preserveAspectRatio="none" role="img" aria-label="' + esc(g.name + " " + sgn(g.effect, d)) + '">' + bar(g, scale, 300, 18, false, g.passed) + '</svg>' : "") + '</div>';
+      });
+      if (c.pooled && typeof c.pooled.effect === "number")
+        h += '<div class="gate pool"><div class="row"><b>' + esc(c.pooled.name || "Pooled") + '</b><span class="mono">' + sgn(c.pooled.effect, d) +
+          (c.pooled.ci ? ' <span class="faint">[' + sgn(c.pooled.ci[0], d) + ", " + sgn(c.pooled.ci[1], d) + "]</span>" : "") + '</span></div>' +
+          '<svg viewBox="0 0 300 22" preserveAspectRatio="none" role="img" aria-label="pooled ' + sgn(c.pooled.effect, d) + '">' + bar(c.pooled, scale, 300, 22, true) + '</svg></div>';
+      h += '</section>';
+    }
+    var cks = [];
+    if (c.pooled && typeof c.pooled.adj_p === "number"){
+      var bar05 = typeof c.p_bar === "number" ? c.p_bar : 0.05;
+      cks.push(check(c.pooled.adj_p <= bar05, (c.pooled.adj_p <= bar05 ? "Holds" : "Doesn’t hold") + " after " + (c.attempts != null ? c.attempts : "all") + " attempts",
+        "Adjusted p = " + c.pooled.adj_p.toPrecision(2) + " · bar " + bar05));
+    }
+    var done = gates.filter(function(g){ return typeof g.effect === "number"; });
+    if (done.length){
+      var pos = done.filter(function(g){ return g.effect > 0; }).length;
+      cks.push(check(pos === gates.length ? true : pos < done.length ? false : null, "Positive in every gate", pos + " of " + gates.length + " gates"));
+    }
+    if (typeof c.fade_ratio === "number"){
+      var need = typeof c.fade_needed === "number" ? c.fade_needed : 0.5;
+      cks.push(check(c.fade_ratio >= need, c.fade_ratio >= need ? "Not fading" : "Fading", "Last gate is " + pct(c.fade_ratio, 0) + " of the first · needs " + pct(need, 0)));
+    }
+    if (c.kalshi){
+      var k = c.kalshi;
+      cks.push(check(null, "Picks at Kalshi price + fee", [k.picks != null ? k.picks + " picks" : "", k.win_rate != null ? "won " + pct(k.win_rate) : "",
+        k.break_even != null ? "needs " + pct(k.break_even) : "", k.roi != null ? sgn(k.roi * 100, 1) + "%" : "", "can’t pass alone"].filter(Boolean).join(" · ")));
+    }
+    if ((c.rule_split || []).length)
+      cks.push(check(null, "Rule-change split", c.rule_split.map(function(r){ return r.label + (typeof r.effect === "number" ? " " + sgn(r.effect, d) : ": " + (r.note || "—")); }).join(" · ")));
+    if (cks.length) h += '<section class="card checks" aria-label="Checks">' + cks.join("") + '</section>';
+    var ex = c.exam || {state: "not_taken"}, en = s.exam_name || "Sealed exam", left = s.counts && s.counts.exam_budget_left, tot = s.counts && s.counts.exam_budget_total;
+    var budget = typeof left === "number" ? " " + left + (typeof tot === "number" ? " of " + tot : "") + " exams left." : "";
+    h += '<section class="sealed" aria-label="' + esc(en) + '"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' + esc(en) + '</div>' +
+      '<p>' + (ex.state === "not_taken" ? "Not taken yet. Runs once; the result is final — no retakes." + budget :
+        (ex.state === "passed" ? "Passed" : "Failed") + (typeof ex.effect === "number" ? ": " + sgn(ex.effect, d) + " " + esc(unit) + (ex.ci ? " [" + sgn(ex.ci[0], d) + ", " + sgn(ex.ci[1], d) + "]" : "") : "") +
+          (ex.taken_at ? " · " + esc(ago(ex.taken_at)) : "") + ".") + (ex.note ? " " + esc(ex.note) : "") + '</p></section>';
+    h += '<div class="stack">' + (gh(c.run_url) ? '<a class="btn primary" href="' + esc(c.run_url) + '" rel="noreferrer">View run on GitHub</a>' : "") +
+      '<a class="btn" href="' + esc(gh(c.file_url) || REPO + "/tree/main/research") + '" rel="noreferrer">Candidate file &amp; raw results</a></div>';
+    return h;
+  }
+
+  // ---- render / load ---------------------------------------------------------------------------------------------
+  function route(){ var m = /^#c\\/(.+)$/.exec(location.hash); return m ? decodeURIComponent(m[1]) : null; }
+  function render(){
     tick();
+    if (!data){
+      $("main").innerHTML = viewNotes() + (problem.signin || problem.offline ? "" : '<div class="card empty"><p>Loading…</p></div>');
+      return;
+    }
+    var id = route();
+    $("main").innerHTML = id ? viewDetail(id) : viewOverview();
   }
-  function tick(){ if (loadedAt) $("when").textContent = "updated " + ago(new Date(loadedAt).toISOString()); }
-
-  var last = {};
+  function tick(){
+    $("when").textContent = loadedAt ? "Updated " + ago(new Date(loadedAt).toISOString()).replace("just now", "just now") + " · auto-refresh on" :
+      problem.signin ? "Signed out" : problem.offline ? "Couldn’t load" : "Loading…";
+  }
   function load(){
     if (loading) return;
     loading = true; $("refresh").classList.add("spin"); $("refresh").setAttribute("aria-busy", "true");
@@ -388,12 +556,12 @@ export const PAGE = `<!doctype html>
         return r.json().then(function(d){ return {d: d}; });
       })
       .then(function(res){
-        if (res.signin){ last = {signin: true}; render(last); return; }
-        data = res.d; loadedAt = Date.now(); last = {};
+        if (res.signin){ problem = {signin: true}; render(); return; }
+        data = res.d; loadedAt = Date.now(); problem = {};
         try { localStorage.setItem(KEY, JSON.stringify({at: loadedAt, data: data})); } catch (e) {}
-        render(last);
+        render();
       })
-      .catch(function(){ last = {offline: loadedAt ? new Date(loadedAt).toISOString() : "a while ago"}; render(last); })
+      .catch(function(){ problem = {offline: loadedAt ? new Date(loadedAt).toISOString() : "x"}; render(); })
       .then(function(){ loading = false; $("refresh").classList.remove("spin"); $("refresh").removeAttribute("aria-busy"); });
   }
   function schedule(){
@@ -402,12 +570,15 @@ export const PAGE = `<!doctype html>
   }
 
   $("refresh").addEventListener("click", load);
-  $("cands").addEventListener("click", function(e){
-    var b = e.target.closest(".cand > button"); if (!b) return;
-    var card = b.parentNode, key = card.getAttribute("data-key"), det = card.querySelector(".detail");
-    var on = card.getAttribute("data-open") !== "1";
-    card.setAttribute("data-open", on ? "1" : "0"); b.setAttribute("aria-expanded", String(on)); det.hidden = !on;
-    if (on) open[key] = 1; else delete open[key];
+  $("main").addEventListener("click", function(e){
+    if (e.target.closest("#morecands")){ showAllCands = true; render(); }
+    if (e.target.closest("#morewf")){ showAllWf = true; render(); }
+  });
+  window.addEventListener("hashchange", function(){
+    var id = route();
+    render();
+    if (id || location.hash === "" || location.hash === "#") window.scrollTo(0, 0);
+    else if (location.hash === "#activity"){ var a = $("activity"); if (a) a.scrollIntoView(); }
   });
   document.addEventListener("visibilitychange", function(){
     if (document.visibilityState === "visible" && Date.now() - loadedAt > REFRESH_MS) load();
@@ -417,9 +588,9 @@ export const PAGE = `<!doctype html>
 
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (saved && saved.data){ data = saved.data; loadedAt = saved.at; render({}); }
+    if (saved && saved.data){ data = saved.data; loadedAt = saved.at; }
   } catch (e) {}
-  load(); schedule();
+  render(); load(); schedule();
 })();
 </script>
 </body>
