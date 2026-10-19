@@ -1,0 +1,227 @@
+{
+ "old:events_one": {
+  "status": 200,
+  "keys": [
+   "event",
+   "markets"
+  ],
+  "markets_n": 0,
+  "event_markets_n": 0,
+  "cursor": false
+ },
+ "old:hist_events_one": {
+  "status": 404,
+  "body": "404 page not found"
+ },
+ "old:markets_by_event": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "old:markets_by_event_settled": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "old:hist_markets_by_event": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 20,
+  "markets_first_keys": [
+   "can_close_early",
+   "close_time",
+   "created_time",
+   "custom_strike",
+   "early_close_condition",
+   "event_ticker",
+   "exchange_index",
+   "expected_expiration_time",
+   "expiration_time",
+   "expiration_value",
+   "floor_strike",
+   "last_price_dollars",
+   "latest_expiration_time",
+   "market_type",
+   "no_ask_dollars",
+   "no_bid_dollars",
+   "no_sub_title",
+   "notional_value_dollars",
+   "open_interest_fp",
+   "open_time",
+   "previous_price_dollars",
+   "previous_yes_ask_dollars",
+   "previous_yes_bid_dollars",
+   "price_level_structure",
+   "price_ranges",
+   "primary_participant_key",
+   "result",
+   "rules_primary",
+   "rules_secondary",
+   "settlement_bounds_type",
+   "settlement_timer_seconds",
+   "settlement_ts",
+   "settlement_value_dollars",
+   "status",
+   "strike_type",
+   "ticker",
+   "title",
+   "updated_time",
+   "volume_24h_fp",
+   "volume_fp",
+   "yes_ask_dollars",
+   "yes_ask_size_fp",
+   "yes_bid_dollars",
+   "yes_bid_size_fp",
+   "yes_sub_title"
+  ],
+  "markets_tickers": [
+   "KXNBA3PT-25DEC15MEMLAC-MEMJMORANT12-5",
+   "KXNBA3PT-25DEC15MEMLAC-MEMJMORANT12-4",
+   "KXNBA3PT-25DEC15MEMLAC-MEMJMORANT12-3"
+  ],
+  "cursor": false
+ },
+ "old:hist_markets_by_tickers": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "new:events_one": {
+  "status": 200,
+  "keys": [
+   "event",
+   "markets"
+  ],
+  "markets_n": 0,
+  "event_markets_n": 0,
+  "cursor": false
+ },
+ "new:hist_events_one": {
+  "status": 404,
+  "body": "404 page not found"
+ },
+ "new:markets_by_event": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "new:markets_by_event_settled": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "new:hist_markets_by_event": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 15,
+  "markets_first_keys": [
+   "can_close_early",
+   "close_time",
+   "created_time",
+   "custom_strike",
+   "early_close_condition",
+   "event_ticker",
+   "exchange_index",
+   "expected_expiration_time",
+   "expiration_time",
+   "expiration_value",
+   "floor_strike",
+   "last_price_dollars",
+   "latest_expiration_time",
+   "market_type",
+   "no_ask_dollars",
+   "no_bid_dollars",
+   "no_sub_title",
+   "notional_value_dollars",
+   "open_interest_fp",
+   "open_time",
+   "previous_price_dollars",
+   "previous_yes_ask_dollars",
+   "previous_yes_bid_dollars",
+   "price_level_structure",
+   "price_ranges",
+   "primary_participant_key",
+   "result",
+   "rules_primary",
+   "rules_secondary",
+   "settlement_bounds_type",
+   "settlement_timer_seconds",
+   "settlement_ts",
+   "settlement_value_dollars",
+   "status",
+   "strike_type",
+   "ticker",
+   "title",
+   "updated_time",
+   "volume_24h_fp",
+   "volume_fp",
+   "yes_ask_dollars",
+   "yes_ask_size_fp",
+   "yes_bid_dollars",
+   "yes_bid_size_fp",
+   "yes_sub_title"
+  ],
+  "markets_tickers": [
+   "KXNBA3PT-26JAN16CHIBKN-BKNMPORTER17-6",
+   "KXNBA3PT-26JAN16CHIBKN-BKNMPORTER17-5",
+   "KXNBA3PT-26JAN16CHIBKN-BKNMPORTER17-4"
+  ],
+  "cursor": false
+ },
+ "new:hist_markets_by_tickers": {
+  "status": 200,
+  "keys": [
+   "cursor",
+   "markets"
+  ],
+  "markets_n": 0,
+  "cursor": false
+ },
+ "historical_cutoff": [
+  200,
+  {
+   "market_positions_last_updated_ts": "2026-08-20T00:00:00Z",
+   "market_settled_ts": "2026-08-20T00:00:00Z",
+   "orders_updated_ts": "2026-10-05T00:00:00Z",
+   "trades_created_ts": "2026-08-20T00:00:00Z"
+  }
+ ],
+ "hist_series_scan_KXNBA3PT_markets_by_month": {
+  "26JUN": 300,
+  "26MAY": 1050,
+  "26APR": 2670,
+  "26MAR": 3670,
+  "26FEB": 2335,
+  "26JAN": 3294,
+  "25DEC": 2380,
+  "25NOV": 920
+ },
+ "hist_series_scan_pages": 17,
+ "live_series_scan_KXNBA3PT_settled_by_month": {}
+}
