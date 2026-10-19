@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-19T06:12:37Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-19T06:25:32Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 
@@ -30,3 +30,18 @@ _Generated 2026-10-19T06:12:37Z by research/lab/report.py after each run. **Expl
 - + EPA per play as efficiency vs Pace × efficiency totals: no consistent effect (-0.29 / +0.49 / -1.04 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).
+
+## What the search learned (4,436 configurations, 2006–2016 only)
+
+- spread · elo · `k`: best 25 (median t +0.96), worst 10 (-0.15) over 2880 configurations
+- spread · elo · `market_resist`: best 1.5039 (median t +0.74), worst 0.0 (+0.09) over 2880 configurations
+- spread · elo · `mov`: best 538 (median t +0.93), worst none (-0.25) over 2880 configurations
+- spread · elo · `revert`: best 0.25 (median t +0.86), worst 0.5263 (-0.03) over 2880 configurations
+- spread · srs · `prior_w`: best 3 (median t +2.14), worst 10 (+1.06) over 144 configurations
+- spread · team_rating · `def_weight`: best 0.5 (median t +0.40), worst 1.0 (-0.10) over 756 configurations
+- spread · team_rating · `halflife`: best 12 (median t +0.36), worst 3 (-0.30) over 756 configurations
+- spread · team_rating · `metric`: best points (median t +1.61), worst success (-0.59) over 756 configurations
+- spread · team_rating · `season_carry`: best 0.5 (median t +0.25), worst 0.3 (-0.12) over 756 configurations
+- total · pace_eff · `efficiency`: best points (median t -1.43), worst epa (-1.74) over 48 configurations
+- total · pace_eff · `season_carry`: best 0.4 (median t -1.45), worst 0.8 (-1.87) over 48 configurations
+- total · team_rating · `metric`: best points (median t -1.34), worst epa (-1.88) over 468 configurations
