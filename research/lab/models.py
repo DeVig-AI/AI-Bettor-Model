@@ -320,7 +320,8 @@ def run_team_rating(p, data, market):
     lr = 1 - 0.5 ** (1 / p["halflife"])
     carry, dw, pace = p["season_carry"], p["def_weight"], p["pace"]
     O, D, PO, PD = (defaultdict(float) for _ in range(4))
-    league, lplays, lspp = deque(maxlen=544), deque(maxlen=544), deque(maxlen=544)
+    lw = p.get("league_window", 544)                   # team-games in the league averages (~ one NFL season)
+    league, lplays, lspp = deque(maxlen=lw), deque(maxlen=lw), deque(maxlen=lw)
     last_season = {}
 
     def mean(q, default):
@@ -437,7 +438,8 @@ def run_srs(p, data):
     """Simple Rating System (least-squares margins, as in sports-reference / cfbfastR), re-solved before every game
     date from this season's finished games, shrunk toward last season's final rating (prior_w games' worth, carry)."""
     games = ordered(data["games"])
-    teams = sorted(set(games.home_team) | set(games.away_team))
+    fr = lambda t: FRANCHISE.get(t, t)                # NFL relocations keep one rating (no effect on CFB names)
+    teams = sorted({fr(t) for t in set(games.home_team) | set(games.away_team)})
     ix = {t: i for i, t in enumerate(teams)}
     n = len(teams)
     prior = np.zeros(n)
@@ -453,7 +455,7 @@ def run_srs(p, data):
         if g.gameday != cur_day:                       # only games finished before this date
             cur_day = g.gameday
             x = _ridge(ix, n, rows_season, prior, p["prior_w"]) if rows_season else prior.copy()
-        i, j = ix[g.home_team], ix[g.away_team]
+        i, j = ix[fr(g.home_team)], ix[fr(g.away_team)]
         h = 0.0 if g.location == "Neutral" else hfa
         rows.append((g.game_id, g.season, g.game_type, g.week, x[i] - x[j] + h, g.spread_line,
                      (g.home_score - g.away_score) if played(g) else np.nan))

@@ -1,7 +1,9 @@
-# Research Lab search menu, college football (Constitution v5 A3.3c, Part C). Round 1 scores every combination;
-# later rounds move one setting of the best configurations one step along its ladder. The 16 hand-written CFB
-# seed candidates (none had run) are all in this grid. Adding a value here lets an idea compete in the search for
-# free. No known betting angles (A3.5, C6).
+# Research Lab search menu, college football (Part C) (Constitution v6 A3.3c). Every round scores, in this order, up to
+# search.max_new_per_round configurations not scored before: the grid below (all combinations, in order), then
+# the neighbours of the 30 best per market (one setting one step along its ladder), then blends of the best.
+# Adding a value or a family here is how an idea joins the search: free, since search scores are not attempts.
+# No known betting angles (A3.5).
+# The 16 hand-written CFB seed ideas (v3) are all grid points (kept for reference in seeds/).
 families:
 - name: Elo
   type: elo
@@ -27,8 +29,11 @@ families:
   grid:
     k:
     - 15
+    - 20
     - 25
+    - 30
     - 35
+    - 40
     revert_center:
     - none
     - conference
@@ -46,40 +51,100 @@ families:
     - rolling
     market_blend:
     - 0.0
+    - 0.25
     - 0.5
 - name: SRS
   type: srs
   market: spread
-  fixed:
-    hfa_pts: 2.5
+  fixed: {}
   grid:
+    hfa_pts:
+    - 2.0
+    - 2.5
+    - 3.0
     carry:
     - 0.4
     - 0.6
+    - 0.7
     - 0.8
     prior_w:
     - 1
     - 3
     - 6
+    - 10
     margin_cap:
     - null
     - 28
+    - 35
 - name: PPA rating
   type: ppa
   market: spread
   fixed: {}
   grid:
     carry:
+    - 0.3
     - 0.4
+    - 0.5
     - 0.6
+    - 0.7
     - 0.8
     prior_w:
     - 1
+    - 2
     - 3
     - 6
+    - 10
     garbage_time:
     - include
     - exclude
+- name: Team rating
+  type: team_rating
+  market: spread
+  fixed:
+    pace: none
+    league_window: 1600
+  grid:
+    metric:
+    - points
+    - epa
+    halflife:
+    - 3
+    - 4
+    - 6
+    - 8
+    - 12
+    def_weight:
+    - 0.5
+    - 0.75
+    - 1.0
+    season_carry:
+    - 0.3
+    - 0.5
+    - 0.7
+- name: Team rating totals
+  type: team_rating
+  market: total
+  fixed:
+    def_weight: 1.0
+    league_window: 1600
+  grid:
+    metric:
+    - points
+    - epa
+    halflife:
+    - 3
+    - 4
+    - 6
+    - 8
+    - 12
+    season_carry:
+    - 0.3
+    - 0.5
+    - 0.7
+    pace:
+    - plays
+  rules:
+  - points_has_no_pace
 - name: Pace × efficiency
   type: pace_eff
   market: total
@@ -88,12 +153,17 @@ families:
     league_window: 1600
   grid:
     halflife:
+    - 3
     - 4
     - 6
+    - 8
     - 10
+    - 14
     season_carry:
     - 0.3
+    - 0.4
     - 0.5
+    - 0.6
     - 0.7
     efficiency:
     - points
@@ -176,8 +246,20 @@ ladders:
   - 28
   - 35
 search:
-  neighbours_of_best: 10
-  blend_pool: 6
+  max_new_per_round: 800
+  round_every_hours: 20
+  neighbours_of_best: 30
+  blend_pool: 10
+  blend_triples_of: 6
+  equal_blends:
+  - 3
+  - 5
+  - 7
+  - 10
+  fitted_blends:
+  - 5
+  - 8
   shortlist_per_market: 2
-  shortlist_min_t: 2.0
+  shortlist_window_days: 7
+  shortlist_min_t: 2.5
   max_disagreement_corr: 0.95

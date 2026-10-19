@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v5
+# DeVig Research Lab -- Constitution v6
 
-Version: **v5** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v4 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v4.md`; v3, v2 and v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v4" at the end)
+Version: **v6** · adopted 2026-10-19 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v5 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v5.md`; v4 to v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v5" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -51,21 +51,24 @@ result, and it will be reported exactly like a success: every number, plainly.
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
 3c. **The search (every sport with a search split: NFL Part B, college football Part C).** Besides hand-written
-   candidates, the lab finds candidates itself, per sport, in rounds (at most one round a week per sport),
-   deterministically, with no AI. Each sport has its own menu and logs (NFL `research/search/`, CFB
-   `research/cfb/search/`):
-   - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Round 1
-     scores every combination. Each later round adds the neighbours (one setting moved one step along its ladder in the
-     menu) of the 10 best configurations per market, plus blends of the best performers: every pair of the 6 best,
-     equal-weight blends of the best 3 and best 5, and a best-5 blend with non-negative weights summing to 1 fit on the
-     training and search seasons. Nothing already scored is scored again.
-   - **Search seasons only:** the search code is given data only up to the last search season (B2); it never sees the
-     confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
-     t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in `research/search/`.
-   - **Shortlist:** after each round, at most **2 per market** become candidates, best search t first, and only if
-     t ≥ **2.0**, the effect is positive in **each** search sub-period, and the model's disagreements with the line
-     correlate at most **0.95** with any candidate the search sent before or in the same round. A shortlisted model is
-     written to the sport's candidates folder with its search numbers, committed, and confirmed like any candidate.
+   candidates, the lab finds candidates itself, per sport, in rounds (at most one round a day per sport: at least the
+   menu's `round_every_hours`, 20, between rounds), deterministically, with no AI. Each sport has its own menu and logs
+   (NFL `research/search/`, CFB `research/cfb/search/`):
+   - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
+     scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
+     grid combination not yet scored (a large grid spreads over several rounds), then the neighbours (one setting moved
+     one step along its ladder in the menu) of the **30** best configurations per market. Then, every round, blends of
+     the best performers: every pair of the 10 best, every trio of the 6 best, equal-weight blends of the best 3, 5, 7
+     and 10, and blends of the best 5 and best 8 with non-negative weights summing to 1 fit on the training and search
+     seasons. Nothing already scored is scored again.
+   - **Search seasons only:** the search code is given data only up to the last search season (B2, C2); it never sees
+     the confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
+     t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in the sport's search folder.
+   - **Shortlist:** after each round, candidates are taken best search t first, only if t ≥ **2.5**, the effect is
+     positive in **each** search sub-period, and the model's disagreements with the line correlate at most **0.95** with
+     any candidate the search sent before or in the same round; and at most **2 per market in any 7 days**. A
+     shortlisted model is written to the sport's candidates folder with its search numbers and the time it was sent,
+     committed, and confirmed like any candidate.
    - Search scores are **exploratory, not attempts**: only the confirmation of a shortlisted candidate is an attempt
      (A6). The search may choose settings and blend weights using the training and search seasons; never later ones.
 4. Coefficients a candidate fits are fit **once, on the training seasons only** (blend weights found by the search: on
@@ -367,4 +370,22 @@ the confirmation seasons 2017–24 are not untouched; the sealed 2025 exam and t
    seen before the split was chosen.
 2. **The exam starts automatically in every sport** when a review finds a lab pass in that sport (A8; v4 did this for
    the NFL only). Budgets and finality unchanged.
+
+---
+
+## Changes from v5 (2026-10-19)
+
+The owner asked for a much bigger search:
+1. **Bigger menus:** NFL about 4,300 configurations (finer Elo, team-rating and pace settings, and the SRS family
+   added), college football about 1,000 (finer settings, team ratings on points and PPA added). Menus are data files
+   the search reads; A3.3c already allowed adding to them.
+2. **Wider refinement and more blends:** neighbours of the 30 best (was 10); pairs of the best 10, trios of the best 6,
+   equal blends of 3/5/7/10, fitted blends of 5 and 8 (was pairs of 6, equal 3/5, fitted 5).
+3. **Rounds at most daily** (was weekly), each scoring at most a fixed number of new configurations, in a fixed order,
+   so a round stays deterministic and inside the workflow's time limit; a large grid finishes over several rounds.
+4. **Stricter shortlist:** t ≥ 2.5 (was 2.0), because a bigger search makes a high best t likelier by luck; and the
+   limit of 2 per market is now per 7 days, not per round, so daily rounds do not send more candidates to confirmation
+   than weekly ones did. The attempt rate (A6) is unchanged; only the bar to be sent is higher.
+
+Unchanged: every other rule, including all season splits, the correction, the bars, the exams and Part C's data rules.
 

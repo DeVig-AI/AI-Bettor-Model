@@ -1,12 +1,13 @@
-"""Research Lab search (Constitution v5 A3.3c): find candidates automatically, deterministically, with no AI.
+"""Research Lab search (Constitution v6 A3.3c): find candidates automatically, deterministically, with no AI.
 
-    python3 -m research.lab.search round [--force] [--sport CFB]   # one round if a week has passed (or --force)
+    python3 -m research.lab.search round [--force] [--sport CFB]   # one round if 20 hours have passed (or --force)
 
-A round scores configurations from research/search/MENU.yaml on the SEARCH seasons only -- this module is given data
-up to the last search season and nothing later -- then sends at most 2 per market to confirmation by writing them to
-research/candidates/ (the lab confirms them on the gate seasons like any candidate; only that is an attempt).
-Round 1: every combination in the menu. Later rounds: neighbours of the 10 best per market (one setting one step along
-its ladder) and blends of the best. Nothing is scored twice. Everything scored is logged in research/search/.
+A round scores configurations from the sport's MENU.yaml on the SEARCH seasons only -- this module is given data up
+to the last search season and nothing later -- then sends candidates to confirmation by writing them to the sport's
+candidates folder (the lab confirms them on the gate seasons like any candidate; only that is an attempt).
+Each round: up to max_new_per_round configurations not scored before (the grid in order, then neighbours of the 30
+best per market), then blends of the best. Shortlist: t >= 2.5, positive in every search period, not a near-copy,
+at most 2 per market per 7 days. Nothing is scored twice. Everything scored is logged in the sport's search folder.
 """
 import argparse
 import csv
@@ -35,7 +36,6 @@ SCORE_COLS = ["round", "id", "market", "type", "label", "games", "effect", "t", 
               "config"]
 ROUND_COLS = ["round", "at", "data_through", "scored_new", "scored_total", "best_spread_id", "best_spread_t",
               "best_total_id", "best_total_t", "shortlisted", "run_url"]
-ROUND_EVERY_DAYS = 6
 METRIC_NAMES = {"points": "Points", "epa": "EPA", "pass_epa": "Passing-EPA", "early_epa": "Early-down EPA",
                 "success": "Success-rate", "noto_epa": "No-turnover EPA", "comp_epa": "Competitive EPA"}
 
@@ -212,19 +212,20 @@ def append_rows(path, cols, rows):
             w.writerow({k: r.get(k, "") for k in cols})
 
 
-def round_due(rounds, force):
+def round_due(rounds, force, hours):
     if force or not rounds:
         return True
     last = dt.datetime.fromisoformat(rounds[-1]["at"].replace("Z", "+00:00"))
-    return dt.datetime.now(dt.timezone.utc) - last >= dt.timedelta(days=ROUND_EVERY_DAYS)
+    return dt.datetime.now(dt.timezone.utc) - last >= dt.timedelta(hours=hours)
 
 
 def sent_before():
-    """Configs the search already sent to confirmation: {id: cfg}."""
+    """Configs the search already sent to confirmation: {id: (cfg, sent_at or None)}."""
     out = {}
     for cid, c in L.load_candidates().items():
         if c.get("search"):
-            out[cid] = {"market": c["market"], "type": c["model"]["type"], "params": c["model"]["params"]}
+            out[cid] = ({"market": c["market"], "type": c["model"]["type"], "params": c["model"]["params"]},
+                        c["search"].get("sent_at"))
     return out
 
 
@@ -233,25 +234,24 @@ def run_round(force=False, log=print):
     L.check_constitution()
     os.makedirs(C.SEARCH_DIR, exist_ok=True)
     rounds = read_csv(path("ROUNDS.csv"))
-    if not round_due(rounds, force):
-        log(f"search: last round {rounds[-1]['at']}; next one after {ROUND_EVERY_DAYS} days")
-        return []
     menu = load_menu()
     S = menu["search"]
+    if not round_due(rounds, force, S["round_every_hours"]):
+        log(f"search: last round {rounds[-1]['at']}; the next one after {S['round_every_hours']} hours")
+        return []
     n_round = len(rounds) + 1
     scored = {r["id"]: r for r in read_csv(path("SCORES.csv"))}
     data = search_data()
-    todo = []
-    if n_round == 1:
-        todo = grid(menu)
-    else:
-        for market in ("spread", "total"):
-            singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
-                             key=lambda r: -float(r["t"]))
-            for r in singles[:S["neighbours_of_best"]]:
-                todo += neighbours(json.loads(r["config"]), menu["ladders"])
+    # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) neighbours
+    todo = [c for c in grid(menu) if config_id(c) not in scored]
+    for market in ("spread", "total"):
+        singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
+                         key=lambda r: (-float(r["t"]), r["id"]))
+        for r in singles[:S["neighbours_of_best"]]:
+            todo += neighbours(json.loads(r["config"]), menu["ladders"])
     rows, fc = [], {}
     seen = set(scored)
+    cap = S.get("max_new_per_round") or len(todo) + 1
 
     def add(cfg):
         cid = config_id(cfg)
@@ -273,11 +273,14 @@ def run_round(force=False, log=print):
                      "eligible": "true" if sc["eligible"] else "false", "config": config_key(cfg)})
 
     for cfg in todo:
+        if sum(1 for r in rows if r["type"] != "blend") >= cap:
+            break
         add(cfg)
     # blends of the best singles so far (this round's and earlier rounds')
     allrows = list(scored.values()) + rows
     for market in ("spread", "total"):
-        best = sorted((r for r in allrows if r["market"] == market and r["type"] != "blend"), key=lambda r: -float(r["t"]))
+        best = sorted((r for r in allrows if r["market"] == market and r["type"] != "blend" and r["t"] != "-inf"),
+                      key=lambda r: (-float(r["t"]), r["id"]))
         pool = [json.loads(r["config"]) for r in best[:S["blend_pool"]]]
         if len(pool) < 2:
             continue
@@ -287,16 +290,18 @@ def run_round(force=False, log=print):
             outs.append(fc[cid][1] if cid in fc else forecasts(cfg, data))
         for i, j in itertools.combinations(range(len(pool)), 2):
             add(blend_cfg([pool[i], pool[j]], [0.5, 0.5], market))
-        for k in (3, 5):
+        for trio in itertools.combinations(range(min(len(pool), S["blend_triples_of"])), 3):
+            add(blend_cfg([pool[k] for k in trio], [1 / 3] * 3, market))
+        for k in S["equal_blends"]:
             if len(pool) >= k:
                 add(blend_cfg(pool[:k], [1 / k] * k, market))
-        if len(pool) >= 5:
-            F = np.column_stack([o.forecast.values for o in outs[:5]])
-            y = outs[0].actual.values
-            fit = ((outs[0].season >= C.TRAIN[0]) & (outs[0].season <= C.SEARCH[1])
-                   & ~outs[0].season.isin(C.SKIP_SEASONS)).values & ~np.isnan(y)
-            w = fit_weights(F[fit], y[fit])
-            add(blend_cfg(pool[:5], w, market))
+        for k in S["fitted_blends"]:
+            if len(pool) >= k:
+                F = np.column_stack([o.forecast.values for o in outs[:k]])
+                y = outs[0].actual.values
+                fit = ((outs[0].season >= C.TRAIN[0]) & (outs[0].season <= C.SEARCH[1])
+                       & ~outs[0].season.isin(C.SKIP_SEASONS)).values & ~np.isnan(y)
+                add(blend_cfg(pool[:k], fit_weights(F[fit], y[fit]), market))
     append_rows(path("SCORES.csv"), SCORE_COLS, rows)
     allrows = list(scored.values()) + rows
     picks = shortlist(allrows, data, S, fc)
@@ -320,17 +325,20 @@ def run_round(force=False, log=print):
     return [config_id(c) for c, _ in picks]
 
 
-def shortlist(allrows, data, S, fc):
+def shortlist(allrows, data, S, fc, now=None):
     sent = sent_before()
+    now = now or dt.datetime.now(dt.timezone.utc)
     sent_d = {}
-    for cid, cfg in sent.items():
+    for cid, (cfg, _) in sent.items():
         sent_d[cid] = fc[cid][2]["d"] if cid in fc else score_out(forecasts(cfg, data))["d"]
     picks = []
     for market in ("spread", "total"):
+        recent = sum(1 for cfg, at in sent.values() if cfg["market"] == market and at and
+                     now - dt.datetime.fromisoformat(at.replace("Z", "+00:00")) < dt.timedelta(days=S["shortlist_window_days"]))
         pool = sorted((r for r in allrows if r["market"] == market and r["eligible"] == "true"
                        and float(r["t"]) >= S["shortlist_min_t"] and r["id"] not in sent),
                       key=lambda r: (-float(r["t"]), r["id"]))
-        n = 0
+        n = recent                                     # at most shortlist_per_market per market in any window
         for r in pool:
             if n >= S["shortlist_per_market"]:
                 break
@@ -354,9 +362,10 @@ def write_candidate(cfg, r, n_round):
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
                     f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": f"automatic search ({C.SPORT}, Constitution v5 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution v6 A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
-                    "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"])},
+                    "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"]),
+                    "sent_at": L.now()},
          "model": {"type": cfg["type"], "params": cfg["params"]}}
     os.makedirs(C.CANDIDATES, exist_ok=True)
     with open(L.cand_path(cid), "w") as f:
@@ -413,7 +422,7 @@ def learned(allrows):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["round"])
-    ap.add_argument("--force", action="store_true", help="run a round even if the last one was under a week ago")
+    ap.add_argument("--force", action="store_true", help="run a round even if the last one was under 20 hours ago")
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
     a = ap.parse_args(argv)
     C.use(a.sport)
