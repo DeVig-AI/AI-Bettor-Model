@@ -1,0 +1,31 @@
+# Research Lab candidate elo-resist -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-resist
+name: + Market-resistant K
+market: spread
+family: Elo family
+parent: elo-base
+reason: 'When the market called a game better than the model, the model should move further: K grows by |model error − market
+  error| / 1.5039 points when the model''s error is the larger one.'
+source: 'nfelo''s public code (greerreNFL/nfelo, config nfelo_v4.3.1): market_resist_factor 1.5039'
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    mean: 1505
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 1.5039
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

@@ -1,0 +1,30 @@
+# Research Lab candidate elo-playoff -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-playoff
+name: + Playoff boost
+market: spread
+family: Elo family
+parent: elo-base
+reason: 'Rating gaps may matter more in the playoffs, when teams play their best: playoff Elo gaps ×1.1.'
+source: 'nfelo''s public code (greerreNFL/nfelo, config nfelo_v4.3.1): playoff_boost 0.1'
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    mean: 1505
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.1
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

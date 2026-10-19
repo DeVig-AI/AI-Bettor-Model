@@ -1,0 +1,30 @@
+# Research Lab candidate elo-k10 -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-k10
+name: Plain Elo, slower (K 10)
+market: spread
+family: Elo family · variant
+parent: elo-base
+reason: 'Pre-declared variant: ratings that react half as fast.'
+source: variant of elo-base
+model:
+  type: elo
+  params:
+    k: 10
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    mean: 1505
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

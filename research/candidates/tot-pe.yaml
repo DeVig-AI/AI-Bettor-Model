@@ -1,0 +1,16 @@
+# Research Lab candidate tot-pe -- registered before it runs (Constitution A3). Never edit after it has run.
+id: tot-pe
+name: Pace × efficiency totals
+market: total
+family: Pace × efficiency
+parent: null
+reason: 'Points = plays × points per play for each offence, against the defence it faces: rolling (half-life 8 games) plays
+  per game and points per play, offence and defence, relative to the league, calibrated once on 2006–15.'
+source: DeVig's own; standard pace × efficiency idea
+model:
+  type: pace_eff
+  params:
+    halflife: 8
+    season_carry: 0.6666666666666666
+    efficiency: points
+    calibrate: true

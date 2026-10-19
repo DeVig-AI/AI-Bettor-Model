@@ -1,0 +1,32 @@
+# Research Lab candidate elo-538 -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-538
+name: 538-style combination
+market: spread
+family: Elo family · combo
+parent: elo-base
+reason: 'All of the 538 ideas at once: margin multiplier, bye bonus, travel, QB adjustment and a playoff ×1.2 (538''s published
+  playoff multiplier).'
+source: FiveThirtyEight's public NFL Elo code (fivethirtyeight/nfl-elo-game forecast.py); FiveThirtyEight's NFL methodology
+  page (2019+ model); that page is offline, so the number is as recalled, not re-checked
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    mean: 1505
+    elo_per_point: 25
+    mov: '538'
+    bye_elo: 25
+    travel_elo_per_1000mi: 4
+    playoff_mult: 1.2
+    qb: '538'
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

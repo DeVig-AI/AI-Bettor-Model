@@ -1,0 +1,32 @@
+# Research Lab candidate elo-base -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-base
+name: Plain Elo
+market: spread
+family: Elo family
+parent: null
+reason: 'The simplest team rating: win/loss Elo with a fixed home edge, turned into a point spread. Everything else in the
+  Elo family is measured against it.'
+source: 'FiveThirtyEight''s public NFL Elo code (fivethirtyeight/nfl-elo-game forecast.py): K 20, home edge 65, keeps 2/3
+  of last season''s rating'
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    mean: 1505
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

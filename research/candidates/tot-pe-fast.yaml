@@ -1,0 +1,15 @@
+# Research Lab candidate tot-pe-fast -- registered before it runs (Constitution A3). Never edit after it has run.
+id: tot-pe-fast
+name: Pace × efficiency, fast (half-life 4)
+market: total
+family: Pace × efficiency · variant
+parent: tot-pe
+reason: 'Pre-declared variant: weight recent games more.'
+source: DeVig's own; standard pace × efficiency idea
+model:
+  type: pace_eff
+  params:
+    halflife: 4
+    season_carry: 0.6666666666666666
+    efficiency: points
+    calibrate: true
