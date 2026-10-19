@@ -98,7 +98,9 @@ Setup, in devigai → Settings → Variables and secrets (Production), then retr
 - `GITHUB_TOKEN` (optional, type Secret) = a fine-grained token for this repo only, permission Actions: read-only.
   Without it GitHub allows 60 requests an hour; the page caches for 3 minutes, which stays under that.
 
-To open it: go to **/login?next=/lab** (bookmark that), enter the email code, and you land on the Lab.
+To open it: go to **/login?next=/lab**, enter the email code, and you land on the Lab. The page keeps showing
+/login?next=/lab as its address, so Share → Add to Home Screen (or a bookmark) saves that route: tapping the icon
+signs you in again if needed and opens the Lab.
 The Access login cookie covers the whole site, so `/lab` sees it the same way `/api/me` does. When the login runs
 out, the page shows "Sign in again", which goes the same way.
 

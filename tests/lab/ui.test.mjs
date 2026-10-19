@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import * as api from "../../functions/api/lab.js";
 import * as page from "../../functions/lab.js";
@@ -26,6 +26,7 @@ const server = http.createServer(async (req, res) => {
     if (scenario === "signedout") r = await api.handle(new Request(url), env, {accessUser: async () => null});
     else { api._clearCache(); r = await api.handle(new Request(url), env, {...owner, fetch: mockFetch(scenario)}); }
   } else if (req.url.startsWith("/lab")) r = await page.handle(new Request(url), env, owner);
+  else if (req.url.startsWith("/login")) r = new Response(readFileSync(new URL("../../docs/login/index.html", import.meta.url)), {headers: {"content-type": "text/html"}});
   else r = new Response("not found", {status: 404});
   res.writeHead(r.status, Object.fromEntries(r.headers));
   res.end(Buffer.from(await r.arrayBuffer()));
@@ -46,6 +47,11 @@ test("lab page on a phone", async (t) => {
       scenario = "empty";
       await pg.goto(base + "/lab");
       await pg.getByText("Lab hasn’t run yet").waitFor();
+      // the address shown (and saved by Add to Home Screen / bookmarks) is the sign-in route, and it comes back here
+      assert.equal(new URL(pg.url()).pathname + new URL(pg.url()).search, "/login?next=/lab");
+      await pg.reload();
+      await pg.getByText("Lab hasn’t run yet").waitFor();
+      assert.equal(await pg.locator('link[rel="apple-touch-icon"]').getAttribute("href"), "/icons/icon-180.png");
       assert.equal(await pg.locator(".alert").count(), 0);
       assert.ok(await pg.locator(".wf").count() >= 4);
       await pg.screenshot({path: OUT + "empty.png", fullPage: true});

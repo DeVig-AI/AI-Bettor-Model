@@ -7,6 +7,8 @@
 // Signing in: Cloudflare Access guards only /login and sets its login cookie for the whole site (that's how /api/me
 // sees it too). Open /login?next=/lab: after the email code it lands here. When the login runs out while the page is
 // open, /api/lab starts answering 404 and the page shows a "Sign in again" button that goes the same way.
+// The page also shows /login?next=/lab as its own address, so saving it to the Home Screen (or a bookmark) keeps that
+// route rather than the bare /lab.
 import { ownerOnly, notFound, SECURE_HEADERS } from "./api/lab.js";
 import { accessUser } from "./api/me.js";
 
@@ -39,6 +41,8 @@ export const PAGE = `<!doctype html>
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#08090B">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<meta name="apple-mobile-web-app-title" content="DeVig Lab">
 <title>DeVig Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,6 +192,9 @@ export const PAGE = `<!doctype html>
 <script>
 (function(){
   "use strict";
+  // Show the sign-in route as this page's address, so a bookmark or Home Screen icon saves /login?next=/lab: opening
+  // it signs in again when the login has run out (instead of the bare /lab, which then looks like a missing page).
+  try { if (location.pathname === "/lab") history.replaceState(null, "", "/login?next=/lab" + location.hash); } catch (e) {}
   var KEY = "devig-lab-last", REFRESH_MS = 60000, REPO = "https://github.com/DeVig-AI/AI-Bettor-Model";
   var data = null, loadedAt = 0, loading = false, timer = null, problem = {};
   var showAllCands = false, showAllWf = false;
