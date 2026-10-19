@@ -5,7 +5,8 @@ frozen_guard.py -- keeps the paper tests' frozen files and recorded results from
 FROZEN.sha256 (repo root) lists two kinds of entries:
   <sha256>  <path>        a frozen file: models, tables, preregs, pick / grading code, training data
   append-only  <path>     a results database: new rows and filling in empty fields (grading) are fine,
-                          changing or deleting a recorded value is not
+                          changing or deleting a recorded value is not. A .csv log (e.g. research/LEDGER.csv) may
+                          only grow: every line it had at base must still be there, unchanged and in order, at the top
 
 Checks:
   1. every frozen file still has the fingerprint in FROZEN.sha256;
@@ -166,6 +167,17 @@ def compare_db(name, base_path, head_path):
     return problems
 
 
+def compare_log(old, new):
+    """Problems where an append-only text log lost or rewrote a line it had at base."""
+    a, b = old.decode("utf-8", "replace").splitlines(), new.decode("utf-8", "replace").splitlines()
+    for n, line in enumerate(a):
+        if n >= len(b):
+            return [f"log lost {len(a) - n} line(s) from line {n + 1} on"]
+        if b[n] != line:
+            return [f"log line {n + 1} changed: {line[:120]!r} -> {b[n][:120]!r}"]
+    return []
+
+
 def check_dbs(base, entries, lines):
     bad, notes = [], []
     for path, kind in entries.items():
@@ -178,12 +190,15 @@ def check_dbs(base, entries, lines):
         if not os.path.exists(head):
             (notes if logged(path, lines) else bad).append(f"{path}: results database was deleted")
             continue
-        with tempfile.NamedTemporaryFile(suffix=".sqlite3", delete=False) as f:
-            f.write(old)
-        try:
-            problems = compare_db(os.path.basename(path), f.name, head)
-        finally:
-            os.unlink(f.name)
+        if path.endswith(".csv"):
+            problems = compare_log(old, open(head, "rb").read())
+        else:
+            with tempfile.NamedTemporaryFile(suffix=".sqlite3", delete=False) as f:
+                f.write(old)
+            try:
+                problems = compare_db(os.path.basename(path), f.name, head)
+            finally:
+                os.unlink(f.name)
         if problems:
             target = notes if logged(path, lines) else bad
             target += [f"{path}: {p}" for p in problems[:20]]
