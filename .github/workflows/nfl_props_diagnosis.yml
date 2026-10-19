@@ -1,0 +1,39 @@
+name: NFL props -- diagnosis v1 (where is the model wrong vs Kalshi; lead-finding only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/nfl-props-diagnosis-v1]
+    paths:
+      - .github/workflows/nfl_props_diagnosis.yml
+      - nfl/kalshi_game_lines_history_v1.py
+      - nfl/nfl_props_diagnosis_v1.py
+permissions:
+  contents: write
+concurrency:
+  group: kalshi-props-history      # never overlaps the props history collector or the earlier studies
+  cancel-in-progress: false
+jobs:
+  diagnosis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas + numpy
+        run: pip install pandas numpy
+      - name: Collect Kalshi pre-game game lines for the props-history games (read-only, no keys, nothing bet)
+        run: python3 nfl/kalshi_game_lines_history_v1.py
+      - name: Run the diagnosis (NFL_PROPS_DIAGNOSIS_V1, plan committed first)
+        run: python3 nfl/nfl_props_diagnosis_v1.py
+      - name: Save data and results
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/props_history/kalshi_game_lines_history_v1.csv nfl/props_history/kalshi_game_lines_history_v1_summary.json nfl/props_history/diagnosis_v1_* 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NFL props diagnosis v1 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i * 5)); done
+          exit 1
