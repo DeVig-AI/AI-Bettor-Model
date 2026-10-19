@@ -43,7 +43,8 @@ COLS = ["series", "stat", "event_ticker", "ticker", "game_date", "season", "seas
         "tipoff_utc", "player", "line", "snap_end_utc", "yes_bid", "yes_ask", "last_price", "open_interest",
         "volume", "result", "settlement_value", "source"]
 log, stats = [], {"series": {}, "events_seen": 0, "events_done_now": 0, "markets_written_now": 0, "no_candle": 0,
-                  "no_tipoff": 0, "not_nba_game_type": 0, "after_cutoff": 0, "events_by_endpoint": {},
+                  "no_tipoff": 0, "not_nba_game_type": 0, "after_cutoff": 0, "no_markets": 0, "events_by_endpoint": {},
+                  "markets_from": {},
                   "candles_by_endpoint": {}}
 raw_samples = {}
 T0 = time.time()
@@ -180,12 +181,20 @@ def settled_events(series):
 
 
 def markets_for_event(ev, base_path):
+    """The event's markets: nested, else the live list, else the historical list (Kalshi keeps a settled event under
+    /events but moves its markets to /historical/markets after its historical cutoff)."""
     ms = ev.get("markets")
     if ms:
+        stats["markets_from"]["nested"] = stats["markets_from"].get("nested", 0) + 1
         return ms
-    d = get(KALSHI + ("/markets" if base_path == "/events" else "/historical/markets"),
-            {"event_ticker": ev.get("event_ticker"), "limit": 1000})
-    return (d or {}).get("markets") or []
+    for path in ("/markets", "/historical/markets"):
+        d = get(KALSHI + path, {"event_ticker": ev.get("event_ticker"), "limit": 1000})
+        ms = (d or {}).get("markets") or []
+        if ms:
+            stats["markets_from"][path] = stats["markets_from"].get(path, 0) + 1
+            raw_samples.setdefault("market_" + path, ms[0])
+            return ms
+    return []
 
 
 def one_market_candles(series, t, start_ts, end_ts):
@@ -263,11 +272,15 @@ def main():
                 stats["after_cutoff"] += 1; continue          # not done: never collected (live-test period)
             if stype not in GAME_TYPES:                        # preseason / All-Star: excluded by the prereg
                 stats["not_nba_game_type"] += 1; done.add(et); continue
+            raw_samples.setdefault("event", {k: v for k, v in ev.items() if k != "markets"})
             ms = [m for m in markets_for_event(ev, base_path) if m.get("strike_type") in (None, "greater")]
+            if not ms:  # not marked done: an event with no readable markets is retried, never dropped silently
+                stats["no_markets"] += 1; log.append(f"no markets {et}"); continue
             snap_limit = tip - SNAP_BEFORE
             start_ts, end_ts = int((snap_limit - SNAP_SEARCH).timestamp()), int(snap_limit.timestamp())
             cs = candles(tk, [m["ticker"] for m in ms if m.get("ticker")], start_ts, end_ts, pool)
             w = writer(date[:7])
+            n_written = 0
             for m in ms:
                 title = str(m.get("title") or "")
                 player = title.split(":")[0].strip() if ":" in title else None
@@ -292,7 +305,11 @@ def main():
                             m.get("result"), m.get("settlement_value_dollars") or m.get("settlement_value") or m.get("expiration_value"),
                             base_path])
                 stats["markets_written_now"] += 1
+                n_written += 1
             files[date[:7]].flush()
+            if not n_written:
+                stats["no_markets"] += 1; log.append(f"no player markets {et}")
+                raw_samples.setdefault("unparsed_market", ms[0]); continue
             done.add(et)
             stats["events_done_now"] += 1
             with open(DONE, "w") as f:
