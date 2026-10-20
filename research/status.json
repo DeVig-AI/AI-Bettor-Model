@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T02:02:13Z",
+ "updated_at": "2026-10-20T02:02:52Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -1917,144 +1917,185 @@
    "kind": "helped",
    "candidates": [
     "elo-k10"
-   ]
+   ],
+   "at": "2026-10-19T04:34:02Z"
   },
   {
    "text": "+ Stronger preseason reversion vs Plain Elo: helped in every gate (+0.20 / +0.20 / +0.36 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "helped",
    "candidates": [
     "elo-revert"
-   ]
+   ],
+   "at": "2026-10-19T04:34:06Z"
   },
   {
    "text": "Pace × efficiency, fast (half-life 4) vs Pace × efficiency totals: helped in every gate (+0.51 / +0.06 / +0.11 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "helped",
    "candidates": [
     "tot-pe-fast"
-   ]
+   ],
+   "at": "2026-10-19T04:34:10Z"
   },
   {
    "text": "538-style combination vs Plain Elo: helped in 2016–18, then faded (+0.14 / +0.05 / -0.26 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "faded",
    "candidates": [
     "elo-538"
-   ]
+   ],
+   "at": "2026-10-19T04:34:01Z"
   },
   {
    "text": "+ Rest / bye bonus vs Plain Elo: helped in 2016–18, then faded (+0.08 / -0.02 / +0.00 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "faded",
    "candidates": [
     "elo-bye"
-   ]
+   ],
+   "at": "2026-10-19T04:34:01Z"
   },
   {
    "text": "+ Margin-of-victory multiplier vs Plain Elo: helped in 2016–18, then faded (+0.07 / -0.17 / -0.61 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "faded",
    "candidates": [
     "elo-mov"
-   ]
+   ],
+   "at": "2026-10-19T04:34:03Z"
   },
   {
    "text": "nfelo-style combination vs Plain Elo: helped in 2016–18, then faded (+0.19 / +0.18 / -0.22 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "faded",
    "candidates": [
     "elo-nfelo"
-   ]
+   ],
+   "at": "2026-10-19T04:34:04Z"
   },
   {
    "text": "+ Market-resistant K vs Plain Elo: helped in 2016–18, then faded (+0.63 / +0.48 / -0.20 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "faded",
    "candidates": [
     "elo-resist"
-   ]
+   ],
+   "at": "2026-10-19T04:34:05Z"
   },
   {
    "text": "Blend of 2: s-3770bfc8 + s-6f3641ca vs the line-only baseline: helped in 2017–19, then faded (+0.55 / +0.73 / -1.30 pts in 2017–19 / 2020–22 / 2023–24).",
    "kind": "faded",
    "candidates": [
     "s-e27628a8"
-   ]
+   ],
+   "at": "2026-10-19T06:27:06Z"
   },
   {
    "text": "Blend of 2: s-473e5379 + s-8a5f816b vs the line-only baseline: helped in 2017–19, then faded (+0.62 / +0.00 / -0.83 pts in 2017–19 / 2020–22 / 2023–24).",
    "kind": "faded",
    "candidates": [
     "s-f369d5f7"
-   ]
+   ],
+   "at": "2026-10-19T06:27:06Z"
   },
   {
    "text": "Plain Elo vs the line-only baseline: no consistent effect (+0.25 / -0.87 / +0.89 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-base"
-   ]
+   ],
+   "at": "2026-10-19T04:34:01Z"
   },
   {
    "text": "+ Home field that changes over time vs Plain Elo: no consistent effect (-0.02 / +0.40 / -0.39 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-hfa-trend"
-   ]
+   ],
+   "at": "2026-10-19T04:34:02Z"
   },
   {
    "text": "Plain Elo, faster (K 30) vs Plain Elo: no consistent effect (-0.03 / +0.04 / -0.40 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-k30"
-   ]
+   ],
+   "at": "2026-10-19T04:34:03Z"
   },
   {
    "text": "+ Learn from the market line vs Plain Elo: no consistent effect (-0.06 / +0.09 / +0.19 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-market"
-   ]
+   ],
+   "at": "2026-10-19T04:34:03Z"
   },
   {
    "text": "+ Playoff boost vs Plain Elo: no consistent effect (+0.00 / +0.07 / +0.04 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-playoff"
-   ]
+   ],
+   "at": "2026-10-19T04:34:04Z"
   },
   {
    "text": "+ Quarterback adjustment vs Plain Elo: no consistent effect (-0.15 / -0.13 / +0.04 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-qb"
-   ]
+   ],
+   "at": "2026-10-19T04:34:05Z"
   },
   {
    "text": "+ Travel distance vs Plain Elo: no consistent effect (-0.19 / +0.14 / -0.06 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "elo-travel"
-   ]
+   ],
+   "at": "2026-10-19T04:34:06Z"
   },
   {
    "text": "+ EPA per play as efficiency vs Pace × efficiency totals: no consistent effect (-0.29 / +0.49 / -1.04 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "tot-epa"
-   ]
+   ],
+   "at": "2026-10-19T04:34:10Z"
   },
   {
    "text": "Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "tot-pe-slow"
-   ]
+   ],
+   "at": "2026-10-19T04:34:10Z"
   },
   {
    "text": "Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).",
    "kind": "no_effect",
    "candidates": [
     "tot-pe"
-   ]
+   ],
+   "at": "2026-10-19T04:34:10Z"
   }
  ],
  "promoted": [],
  "runs": [
+  {
+   "kind": "search",
+   "name": "Search round 20 (NFL, running)",
+   "started_at": "2026-10-20T02:02:48Z",
+   "finished_at": null,
+   "duration_s": null,
+   "run_number": 26,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39356736116",
+   "summary": "0 of 2,996 models scored on 2006–2016",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 0
+    },
+    {
+     "label": "planned this round",
+     "count": 2996
+    }
+   ],
+   "steps": []
+  },
   {
    "kind": "search",
    "name": "Search round 19",
@@ -2315,40 +2356,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 10",
-   "started_at": "2026-10-20T01:14:21Z",
-   "finished_at": "2026-10-20T01:14:21Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39351796519",
-   "summary": "1,978 models scored → 592 consistent → 24 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 1978
-    },
-    {
-     "label": "consistent",
-     "count": 592
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 24
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-20T02:02:13Z",
+   "updated_at": "2026-10-20T02:02:53Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
