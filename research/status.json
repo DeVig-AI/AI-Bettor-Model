@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T00:24:26Z",
+ "updated_at": "2026-10-20T00:32:05Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2057,6 +2057,27 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 6 (NFL, running)",
+   "started_at": "2026-10-20T00:32:03Z",
+   "finished_at": null,
+   "duration_s": null,
+   "run_number": 11,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39348175002",
+   "summary": "0 of 3,002 models scored on 2006–2016",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 0
+    },
+    {
+     "label": "planned this round",
+     "count": 3002
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 5",
    "started_at": "2026-10-20T00:23:56Z",
    "finished_at": "2026-10-20T00:23:56Z",
@@ -2277,7 +2298,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-20T00:24:26Z",
+   "updated_at": "2026-10-20T00:32:05Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -2313,21 +2334,29 @@
    "runs": [
     {
      "kind": "search",
-     "name": "Search round 5 (CFB, running)",
-     "started_at": "2026-10-20T00:24:25Z",
-     "finished_at": null,
+     "name": "Search round 5",
+     "started_at": "2026-10-20T00:31:31Z",
+     "finished_at": "2026-10-20T00:31:31Z",
      "duration_s": null,
-     "run_number": 10,
+     "run_number": null,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39346614042",
-     "summary": "0 of 800 models scored on 2018–2021",
+     "summary": "473 models scored → 29 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
+       "count": 473
+      },
+      {
+       "label": "consistent",
+       "count": 29
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
        "count": 0
       },
       {
-       "label": "planned this round",
-       "count": 800
+       "label": "sent to confirmation",
+       "count": 0
       }
      ],
      "steps": []
