@@ -197,16 +197,27 @@ def markets_for_event(ev, base_path):
     return [], None
 
 
+def label(m):
+    """(player, N) from an "N+" market's wording: "Name: N+ threes" (title), "Name: N+" (yes_sub_title) or, before
+    mid-January 2026, "Name records N+ threes" (title). (None, None) if none fits."""
+    for text, pat in ((m.get("title"), r"^(.+?):\s*(\d+)\+"), (m.get("yes_sub_title"), r"^(.+?):\s*(\d+)\+"),
+                      (m.get("title"), r"^(.+?)\s+records\s+(\d+)\+")):
+        mt = re.search(pat, str(text or "").strip())
+        if mt:
+            return mt.group(1).strip(), int(mt.group(2))
+    return None, None
+
+
 def is_over_market(m):
     """An "N+ <stat>" market (= Over N-0.5). Live markets say strike_type "greater"; Kalshi's historical copies of the
-    same markets say "structured" (player in custom_strike), so those count only when the title reads "N+" and
+    same markets say "structured" (player in custom_strike), so those count only when the wording reads "N+" and
     floor_strike = N - 0.5."""
     st = m.get("strike_type")
     if st in (None, "greater"):
         return True
-    mt = re.search(r":\s*(\d+)\+", str(m.get("title") or ""))
+    _, n = label(m)
     try:
-        return st == "structured" and bool(mt) and abs(float(m.get("floor_strike")) - (int(mt.group(1)) - 0.5)) < 1e-9
+        return st == "structured" and n is not None and abs(float(m.get("floor_strike")) - (n - 0.5)) < 1e-9
     except (TypeError, ValueError):
         return False
 
@@ -300,8 +311,7 @@ def main():
             w = writer(date[:7])
             n_written = 0
             for m in ms:
-                title = str(m.get("title") or "")
-                player = title.split(":")[0].strip() if ":" in title else None
+                player = label(m)[0]
                 if not player or m.get("floor_strike") is None:
                     continue
                 best = None

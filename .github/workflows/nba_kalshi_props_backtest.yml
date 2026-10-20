@@ -29,7 +29,7 @@ jobs:
         with: {ref: '${{ github.ref_name }}'}
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = re-run for events with no markets)
+      - name: Collect settled Kalshi NBA player props + pre-tip-off prices (no keys, nothing bet; short first job = re-run for events with no markets; v2)
         env: {MAX_MINUTES: '320'}
         run: python3 nba/kalshi_props_history_v1.py
       - name: Save progress
