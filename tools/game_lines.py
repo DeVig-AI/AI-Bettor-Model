@@ -7,7 +7,10 @@ Kalshi lists "TEAM wins by over X" markets. Buying YES is TEAM -X; buying NO is 
 as fee-included American odds, so each team gets its whole ladder of lines.
 
 Output: live/game_lines.json
-  {generated_at, games: [{sport, date, away, home, event, home_ticker, spreads: {TEAM: [[point, odds], ...]}}]}
+  {generated_at, games: [{sport, date, away, home, event, home_ticker, spreads: {TEAM: [[point, odds], ...]},
+                          kickoff, espn_id, home_wp, ml, spread, total}]}
+  The last six let the app show a game the model has no pick on (e.g. MLB postseason games skipped for an
+  unannounced starter) with Kalshi's prices.
 home_ticker is the home team's Kalshi win market, which the app's win-chance graph reads (functions/api/winline.js).
 
 College football (sport "CFB", Kalshi series KXNCAAFGAME / KXNCAAFSPREAD / KXNCAAFTOTAL): Kalshi's school codes are
@@ -53,6 +56,31 @@ def ladders(g):
     for (team, point), odds in best.items():
         out.setdefault(team, []).append([point, round(odds)])
     return {t: sorted(v) for t, v in out.items()}
+
+
+def board_fields(sport, g):
+    """What the app needs to show a game the model has no pick on: ESPN's start time and Kalshi's win chance,
+    moneylines, main spread (MLB: the 1.5 run line) and main total. Any part that can't be read is left out."""
+    a, h = g["away_code"], g["home_code"]
+    th, ta = g["teams"][h], g["teams"][a]
+    out = {}
+    try:
+        e = KG.match_espn(sport, g)
+        if e and e.get("kickoff"):
+            out.update(kickoff=e["kickoff"], espn_id=e.get("espn_id"))
+    except Exception as ex:                       # no start time: the app just won't show this game on its own
+        KG.log.append(f"{sport} {g.get('event')}: ESPN {type(ex).__name__}")
+    mh, ma = KG._mid(th), KG._mid(ta)
+    if mh is not None and ma is not None and mh + ma > 0:
+        out["home_wp"] = round(mh / (mh + ma), 4)
+    out["ml"] = {"home": KG.american(th["ask"]), "away": KG.american(ta["ask"])}
+    ms = KG.spread_at(g, a, h, 1.5) if sport == "MLB" else KG.main_spread(g, a, h)
+    if ms:
+        out["spread"] = {"home_point": ms[0], "home": ms[1], "away": ms[2]}
+    mt = KG.main_total(g)
+    if mt:
+        out["total"] = {"line": mt[0], "over": mt[1], "under": mt[2]}
+    return out
 
 
 def espn_cfb(now):
@@ -172,10 +200,10 @@ def main():
         for g in kg.values():
             lad = ladders(g)
             a, h = g["away_code"], g["home_code"]
-            games.append({"sport": sport, "date": g["date"], "event": g.get("event"),
-                          "home_ticker": (g["teams"].get(h) or {}).get("ticker"),
-                          "away": KG.canon(sport, a), "home": KG.canon(sport, h),
-                          "spreads": {KG.canon(sport, t): v for t, v in lad.items()}})
+            games.append(dict({"sport": sport, "date": g["date"], "event": g.get("event"),
+                               "home_ticker": (g["teams"].get(h) or {}).get("ticker"),
+                               "away": KG.canon(sport, a), "home": KG.canon(sport, h),
+                               "spreads": {KG.canon(sport, t): v for t, v in lad.items()}}, **board_fields(sport, g)))
     now = datetime.now(timezone.utc)
     try:
         cfb, espn = cfb_games(now)

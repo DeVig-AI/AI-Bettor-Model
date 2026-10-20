@@ -1152,6 +1152,7 @@
   function renderHome(){
     updateMeBtn();
     if(homeDocs.length || !dbApi) hideSplash();
+    if(linesDoc && marketOnlyGames().length) hideSplash();
     var statusEl = document.getElementById("homeStatus");
     var syncedEl = document.getElementById("homeSyncedAt");
     var wrap = document.getElementById("homeSlate");
@@ -1167,7 +1168,7 @@
     var hiEl = document.getElementById("homeHi");
     if(hiEl) hiEl.textContent = "";                    // the greeting lives in the header now
     if(currentSport === "CFB"){ renderCfbBoard(wrap, statusEl, syncedEl); return; }
-    var allSynced = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport; });
+    var allSynced = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
     var noteEl = document.getElementById("confFilterNote");
@@ -1185,7 +1186,7 @@
       if(currentSport === "NFL"){
         emptyMsg = "The model's pick gets locked close to kickoff, not days in advance. Games show up here on their own once the week's picks are locked and synced — no re-opening or refreshing needed.";
       } else if(currentSport === "MLB"){
-        emptyMsg = "Picks lock automatically every morning (10:30am ET) and show up here on their own once synced. See About for the honest MLB track record.";
+        emptyMsg = "Picks lock at 10:30am and 4pm ET when both starting pitchers are announced; in the postseason there are only one or two games a day, and games Kalshi lists show up here with its odds even without a pick. See About for the honest MLB track record.";
       } else if(currentSport === "NBA"){
         emptyMsg = "Picks lock automatically every morning (11am ET) for games in the next 3 days and show up here on their own once synced. The 2026-27 regular season starts October 20. See About for the NBA track record.";
       } else {
@@ -1228,7 +1229,7 @@
     var latest = forSport.reduce(function(a, b){ return (a.synced_at || "") > (b.synced_at || "") ? a : b; }, forSport[0]);
     syncedEl.textContent = latest.synced_at ? "synced " + new Date(latest.synced_at).toLocaleString() : "";
 
-    var allOnBoard = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
+    var allOnBoard = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
     var myCard = renderTrackedCard(allOnBoard);
     if(myCard) wrap.appendChild(myCard);
     wrap.appendChild(renderBestBetsCard(allOnBoard));
@@ -1242,7 +1243,7 @@
     // computed from every synced game this week (not narrowed by forSport's later
     // ML-confidence slice), since the teaser rule has nothing to do with moneyline
     // confidence (that was tested and found to add nothing -- see computeTeaserSignal).
-    var allForSport = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
+    var allForSport = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
     var teaserCandidates = allForSport.map(function(g){
       var t = computeTeaserSignal(g);
       if(!t) return null;
@@ -1270,6 +1271,30 @@
 
   // ---------- Spread wheel: every Kalshi spread line for both teams (tools/game_lines.py, display only) ----------
   var linesDoc = null, wheelSel = {};
+  // Games Kalshi lists that have no synced pick doc (e.g. an MLB postseason game skipped because a starter wasn't
+  // announced): shown on the board with Kalshi's prices and the live score, marked "No model pick".
+  var marketOnlyCache = {src: null, out: []};
+  function marketOnlyGames(){
+    if(!linesDoc) return [];
+    if(marketOnlyCache.src === linesDoc && marketOnlyCache.n === homeDocs.length) return marketOnlyCache.out;
+    var out = (linesDoc.games || []).filter(function(x){
+      return x.sport !== "CFB" && x.kickoff && x.away && x.home && !homeDocs.some(function(h){
+        return (h.sport || "NFL") === x.sport && sameGame(h, x.away, x.home, x.kickoff);
+      });
+    }).map(function(x){
+      var ml = x.ml || {}, sp = x.spread || {}, tot = x.total || {};
+      var why = x.sport === "MLB" ? "The MLB model locks a pick at 10:30am and 4pm ET only when both starting pitchers are announced; this game didn't get one."
+        : "The model hasn't locked a pick for this game (yet).";
+      return {game_id: "kalshi:" + (x.event || x.away + x.home + x.kickoff), sport: x.sport, away_team: x.away, home_team: x.home,
+        kickoff_time: x.kickoff, game_date: x.date, marketOnly: true,
+        market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
+                 spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
+        model: {available: false, note: "No model pick. " + why + " Prices are Kalshi's, fee included."}};
+    });
+    marketOnlyCache = {src: linesDoc, n: homeDocs.length, out: out};
+    return out;
+  }
+  function boardDocs(){ return homeDocs.concat(marketOnlyGames()); }
   function linesFor(g){
     if(!linesDoc || !g.kickoff_time) return null;
     var kt = new Date(g.kickoff_time).getTime();
@@ -2415,6 +2440,7 @@
       (pickOdds(g, mm.winner_side) != null ? ' <span class="odds">' + fmtOdds(pickOdds(g, mm.winner_side)) + '</span>' : ''));
     else if(d.action === "SKIP") chips.push('<span class="pill bad">Skip · QB out</span>');
     else if(d.action === "PASS") chips.push('<span class="pill neutral">No pick</span>');
+    else if(g.marketOnly) chips.push('<span class="pill neutral">No model pick · Kalshi odds</span>');
     else chips.push('<span class="pill neutral">Waiting for pick</span>');
     var adv = !isSimple(), sd = computeSpreadDecision(g);
     if(adv && sd && sd.action === "COVER") chips.push('<span class="pill good">' + escapeHtml(sd.side) + '</span>');
@@ -3189,7 +3215,7 @@
         snap.docs.forEach(function(d){
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
-          if(x && x.doc === "GAME_LINES"){ linesDoc = x; if(currentSport === "CFB") setTimeout(renderHome, 0); }
+          if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
           if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
           if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
         });
@@ -3671,7 +3697,7 @@
   var fastScores = {}, fastBox = {}, fastLines = {}, fastOff = false, fastTimer = null;
   function fastSportsNow(){
     var now = Date.now(), want = {};
-    homeDocs.forEach(function(g){
+    boardDocs().forEach(function(g){
       var k = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
       if(!g.trial && isFinite(k) && now > k - 15 * 60e3 && now < k + 6 * 3600e3) want[g.sport || "NFL"] = true;
     });
@@ -3705,7 +3731,7 @@
   // Live games in any sport whose win-chance graph needs (re)loading: once a minute, from /api/winline.
   function lineGamesNow(){
     var now = Date.now();
-    return homeDocs.filter(function(g){
+    return boardDocs().filter(function(g){
       if(g.trial) return false;
       var lg = liveFor(g), gl = linesFor(g), have = fastLines[gameKey(g)];
       return lg && lg.state === "in" && gl && gl.home_ticker && (!have || now - have.at > 55e3);
@@ -3850,7 +3876,7 @@
   }
 
 
-  function renderLive(){ if(homeDocs.length){ renderHome(); renderPast(); } if(!panels.parlay.hidden) renderTrackedParlays(); }
+  function renderLive(){ if(boardDocs().length){ renderHome(); renderPast(); } if(!panels.parlay.hidden) renderTrackedParlays(); }
 
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
@@ -4599,7 +4625,7 @@
   // One pick's state from the live data the app already has: won / lost / push / live / pending / unknown.
   function legState(l){
     if(!l.mk || !l.away || !l.home) return {st: "unknown"};
-    var g = homeDocs.filter(function(x){ return l.gkey && gameKey(x) === l.gkey; })[0] ||
+    var g = boardDocs().filter(function(x){ return l.gkey && gameKey(x) === l.gkey; })[0] ||
       {sport: l.sport, away_team: l.away, home_team: l.home, kickoff_time: l.kickoff};
     var lg = liveFor(g);
     if(!lg || lg.state === "pre" || lg.away_score == null || lg.home_score == null) return {st: "pending"};
