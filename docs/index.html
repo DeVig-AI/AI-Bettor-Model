@@ -659,6 +659,8 @@
   .ab-sec:last-child{border-bottom:none;}
   .ab-sec[open]{padding-bottom:10px;}
   #labMore{margin-top:12px;}
+  .lv-pk .ended{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .lv-pk .ended b{color:var(--ink); font-weight:700;}
   .tr-fine{border-bottom:none; margin-top:4px;}
   .tr-fine > summary{min-height:40px; font-size:13px; color:var(--accent);}
   [data-mode-switch]{text-align:left;}
@@ -3775,14 +3777,14 @@
     return Object.assign({}, p, {current: cur, status: st.status, to_go: st.to_go});
   }
   function livePickEl(p, trkKey){
-    var b = liveBadge(p), cur = p.current;
+    var b = liveBadge(p), cur = p.current, done = p.status === "won" || p.status === "lost";
     var k = p.kalshi_now, sideNow = null;
     if(k && k.bid != null && k.ask != null && k.ask > 0 && k.ask < 1) sideNow = p.side === "OVER" ? k.ask : Math.round((1 - k.bid) * 10000) / 10000;
     var row = el("div", "lv-pk"), fill = cur != null ? Math.min(1, cur / Math.max(p.line, 0.5)) : 0;
     var barCls = p.status === "won" || p.status === "lost" ? p.status : (p.side === "OVER" ? "up" : (fill >= 0.75 ? "danger" : "warn"));
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
       '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
-      '</div></div>' +
+      '</div>' + (done && cur != null ? '<div class="ended">Ended with <b class="tabular">' + cur + '</b> ' + escapeHtml(propStat(p.stat, true)) + '</div>' : '') + '</div>' +
       '<div><span class="pill ' + b[0] + '">' + escapeHtml(b[1]) + '</span></div>' +
       (cur != null ? '<div class="lv-track"><div class="lv-bar ' + barCls + '"><i style="width:' + fill * 100 + '%"></i>' +
         '<b class="lv-dot" style="left:' + fill * 100 + '%"><span>' + cur + '</span></b></div><span class="lv-total">' + p.line + '</span></div>' : '') +
