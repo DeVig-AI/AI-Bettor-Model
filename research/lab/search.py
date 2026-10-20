@@ -1,4 +1,4 @@
-"""Research Lab search (Constitution v7 A3.3c): find candidates automatically, deterministically, with no AI.
+"""Research Lab search (Constitution v9 A3.3c): find candidates automatically, deterministically, with no AI.
 
     python3 -m research.lab.search round [--force] [--sport CFB]   # one round if 20 hours have passed (or --force)
 
@@ -17,6 +17,7 @@ import itertools
 import json
 import os
 import sys
+import zlib
 
 import numpy as np
 import pandas as pd
@@ -114,6 +115,94 @@ def focus(menu, scored_rows, top=2, min_n=3):
     return out
 
 
+def value_space(fam, ladders):
+    """Every value a family's setting may take: its grid values plus, for numeric settings, its ladder."""
+    out = {}
+    for name, vals in fam["grid"].items():
+        vs = list(vals)
+        numeric = all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in vals if v is not None)
+        if numeric and name in ladders:
+            vs += [v for v in ladders[name] if v not in vs]
+        out[name] = vs
+    return out
+
+
+def samples(menu, scored_rows, n, seed, learned=True):
+    """Up to n configurations not scored before, drawn with a fixed seed (deterministic). learned=True: each setting's
+    value is drawn with weight exp(median search t of the configurations already scored with it) -- what past rounds
+    learned; values never tried get the family's average weight. learned=False: uniform (exploration)."""
+    rng = np.random.default_rng(seed)
+    fams = menu["families"]
+    have = {r["id"] for r in scored_rows}
+    plan = []
+    for fam in fams:
+        space = value_space(fam, menu["ladders"])
+        rows = [(json.loads(r["config"]), float(r["t"])) for r in scored_rows
+                if r["market"] == fam["market"] and r["type"] == fam["type"] and r["t"] != "-inf"]
+        probs = {}
+        for name, vals in space.items():
+            w = np.ones(len(vals))
+            if learned and rows:
+                med = {}
+                for c, t in rows:
+                    med.setdefault(json.dumps(c["params"].get(name)), []).append(t)
+                med = {k: float(np.median(v)) for k, v in med.items()}
+                avg = float(np.mean(list(med.values()))) if med else 0.0
+                w = np.exp(np.array([med.get(json.dumps(v), avg) for v in vals]))
+            probs[name] = w / w.sum()
+        plan.append((fam, space, probs))
+    out, keys = [], set()
+    for _ in range(n * 20):
+        if len(out) >= n:
+            break
+        fam, space, probs = plan[int(rng.integers(len(plan)))]
+        p = dict(fam.get("fixed") or {})
+        for name, vals in space.items():
+            p[name] = vals[int(rng.choice(len(vals), p=probs[name]))]
+        if "points_has_no_pace" in (fam.get("rules") or []) and p.get("metric") == "points":
+            p["pace"] = "none"
+        cfg = {"market": fam["market"], "type": fam["type"], "params": p}
+        cid = config_id(cfg)
+        if cid in have or cid in keys:
+            continue
+        keys.add(cid)
+        out.append(cfg)
+    return out
+
+
+def signal_configs(menu, scored_rows):
+    """Signals (A3.3e) on top of the menu's signal_bases: each signal alone, then pairs of the best `signal_pairs_of`
+    and trios of the best `signal_trios_of`, ranked by their best single-signal search t so far (learned)."""
+    from . import signals as SG
+    lib = SG.load_library()
+    bases = menu.get("signal_bases") or {}
+    S = menu["search"]
+    best = {}
+    for r in scored_rows:
+        if r["type"] == "signals" and r["t"] != "-inf":
+            ids = [x["id"] for x in json.loads(r["config"])["params"]["signals"]]
+            if len(ids) == 1:
+                best[ids[0]] = max(best.get(ids[0], -np.inf), float(r["t"]))
+    out = []
+    for market, blist in bases.items():
+        mine = [x for x in lib if market in x["markets"]]
+        ranked = sorted(mine, key=lambda x: (-best.get(x["id"], -np.inf), x["id"]))
+        sets = [[x] for x in mine]
+        sets += [list(c) for c in itertools.combinations(ranked[:S.get("signal_pairs_of", 0)], 2)]
+        sets += [list(c) for c in itertools.combinations(ranked[:S.get("signal_trios_of", 0)], 3)]
+        for b in blist:
+            for st in sets:
+                out.append({"market": market, "type": "signals",
+                            "params": {"base": b, "signals": sorted(st, key=lambda x: x["id"]), "ridge": 1.0}})
+    return out
+
+
+def fingerprint(out):
+    """Identical forecasts on the search seasons = the same model under another name (A3.3c: scored once)."""
+    v = out.forecast[(out.season <= C.SEARCH[1])].values
+    return hashlib.sha1(np.round(v.astype(float), 6).tobytes()).hexdigest()[:16]
+
+
 def label(cfg):
     p, t = cfg["params"], cfg["type"]
     if t == "elo":
@@ -144,6 +233,10 @@ def label(cfg):
     if t == "pace_eff":
         return (f"{'Pace × ' if p.get('pace', True) else 'Points, no pace · '}{p['efficiency']} · half-life "
                 f"{p['halflife']:g} · carry {p['season_carry']:g}")
+    if t == "signals":
+        b = p["base"]
+        return f"Signals ({label({'market': cfg['market'], 'type': b['type'], 'params': b['params']})}) + " + \
+            ", ".join(x["id"] for x in p["signals"])
     if t == "blend":
         ws = p["weights"]
         same = len(set(round(w, 6) for w in ws)) == 1
@@ -270,16 +363,23 @@ def run_round(force=False, log=print, progress=None):
     scored = {r["id"]: r for r in read_csv(path("SCORES.csv"))}
     data = search_data()
     # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
-    # step: every combination of the best values of each setting so far, 3) neighbours of the best
+    # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
+    # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round
     todo = [c for c in grid(menu) if config_id(c) not in scored]
+    todo += signal_configs(menu, list(scored.values()))
     todo += focus(menu, list(scored.values()))
     for market in ("spread", "total"):
         singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
                          key=lambda r: (-float(r["t"]), r["id"]))
         for r in singles[:S["neighbours_of_best"]]:
             todo += neighbours(json.loads(r["config"]), menu["ladders"])
+    seed = zlib.crc32(f"{C.SPORT}-{n_round}".encode())
+    todo += samples(menu, list(scored.values()), S.get("learned_samples", 0), seed, learned=True)
+    todo += samples(menu, list(scored.values()), S.get("random_samples", 0), seed + 1, learned=False)
     rows, fc = [], {}
     seen = set(scored)
+    fps = {r["fingerprint"]: r["id"] for r in read_csv(path("FINGERPRINTS.csv")) if not r["same_as"]}
+    fp_rows = []
     cap = S.get("max_new_per_round") or len(todo) + 1
 
     def add(cfg):
@@ -296,6 +396,16 @@ def run_round(force=False, log=print, progress=None):
                          "label": label(cfg) + " (error)", "games": 0, "effect": "nan", "t": "-inf", "p1": "nan",
                          "p2": "nan", "p3": "nan", "eligible": "false", "config": config_key(cfg)})
             return
+        fp = fingerprint(out)
+        twin = fps.get(fp)
+        fp_rows.append({"id": cid, "fingerprint": fp, "same_as": twin or ""})
+        if twin:                                       # same forecasts as a model already scored: never ranked again
+            rows.append({"round": n_round, "id": cid, "market": cfg["market"], "type": cfg["type"],
+                         "label": label(cfg) + f" (same as {twin})", **{k: sc[k] for k in ("games", "effect", "p1",
+                                                                                         "p2", "p3")},
+                         "t": "-inf", "eligible": "false", "config": config_key(cfg)})
+            return
+        fps[fp] = cid
         fc[cid] = (cfg, out, sc)
         rows.append({"round": n_round, "id": cid, "market": cfg["market"], "type": cfg["type"], "label": label(cfg),
                      **{k: sc[k] for k in ("games", "effect", "t", "p1", "p2", "p3")},
@@ -338,6 +448,7 @@ def run_round(force=False, log=print, progress=None):
                        & ~outs[0].season.isin(C.SKIP_SEASONS)).values & ~np.isnan(y)
                 add(blend_cfg(pool[:k], fit_weights(F[fit], y[fit]), market))
     append_rows(path("SCORES.csv"), SCORE_COLS, rows)
+    append_rows(path("FINGERPRINTS.csv"), ["id", "fingerprint", "same_as"], fp_rows)
     allrows = list(scored.values()) + rows
     picks = shortlist(allrows, data, S, fc)
     for cfg, r in picks:
@@ -392,12 +503,13 @@ def write_candidate(cfg, r, n_round):
     cid = config_id(cfg)
     c = {"id": cid, "name": label(cfg), "market": cfg["market"],
          "family": {"elo": "Elo family", "team_rating": "Team rating", "pace_eff": "Pace × efficiency",
-                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend"}.get(cfg["type"], cfg["type"]) + " · search",
+                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend",
+                    "signals": "Signals"}.get(cfg["type"], cfg["type"]) + " · search",
          "parent": None,
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
                     f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": f"automatic search ({C.SPORT}, Constitution v7 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution v9 A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
                     "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"]),
                     "sent_at": L.now()},
@@ -470,7 +582,7 @@ class Progress:
     """Posts a running search round to /lab: once at the start, then at most every `every` seconds (status.json only
     changes; the scores are written when the round ends). A failed push never stops the search."""
 
-    def __init__(self, every=180):
+    def __init__(self, every=600):
         self.every, self.last, self.started = every, 0.0, L.now()
 
     def __call__(self, n_round, done, planned):

@@ -4,15 +4,12 @@ name: Research Lab -- Inspector General
 # or current-season data (the paper season), and never into the repo. Rules: research/RESEARCH_LAB_CONSTITUTION.md.
 #   review -- re-judge every candidate against the whole ledger (also runs after every lab run)
 #   exam   -- spend ONE of the 3 sealed 2025 exams on the best current lab pass. Final; a crash still spends it.
-#             Also starts by itself after every successful lab run, once per sport, and does nothing for a sport
-#             without a lab pass (Constitution v5 A8).
+#             The research loop hands over here (then_loop) when a sport has a lab pass and an exam left;
+#             this queues the loop again when done (Constitution v8 A8).
 #   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
 # sport: NFL (Part B, sealed 2025) or CFB (Part C, sealed 2025). Scheduled runs do NFL every 3 hours and CFB once a
 # day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
-  workflow_run:
-    workflows: ["Research Lab -- nightly run"]
-    types: [completed]
   schedule:
     - cron: '41 */3 * * *'   # paper season; exits at once while no model is promoted
   workflow_dispatch:
@@ -27,26 +24,30 @@ on:
         type: choice
         options: [NFL, CFB]
         default: NFL
+      then_loop:
+        description: 'Queue the research loop again when done (the loop sets this when it hands over for an exam)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  actions: write             # an exam handed over by the loop queues the loop again
 
 concurrency:
-  group: research-lab
+  # scheduled paper-season checks get their own queue, so they can never bump a queued loop run
+  group: ${{ github.event_name == 'schedule' && 'research-paper' || 'research-lab' }}
   cancel-in-progress: false
 
 jobs:
   inspector:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     strategy:
       max-parallel: 1          # one sport at a time: both write research/status.json
       matrix:
-        sport: ${{ fromJSON(github.event_name == 'workflow_run' && '["NFL","CFB"]' || format('["{0}"]', inputs.sport || 'NFL')) }}
+        sport: ${{ fromJSON(format('["{0}"]', inputs.sport || 'NFL')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      ACTION: ${{ github.event_name == 'workflow_run' && 'exam' || inputs.action || 'paper' }}
-      AUTO: ${{ github.event_name == 'workflow_run' }}      # after a lab run: a sport's exam only if it has a lab pass
+      ACTION: ${{ inputs.action || 'paper' }}
       LAB_SPORT: ${{ matrix.sport }}
     steps:
       - uses: actions/checkout@v4
@@ -62,9 +63,6 @@ jobs:
           prom=research/promoted.json; [ "$LAB_SPORT" = "CFB" ] && prom=research/cfb/promoted.json
           if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' "$prom" 2>/dev/null; then
             echo "No promoted model: nothing to paper-track."
-            echo "go=false" >> "$GITHUB_OUTPUT"
-          elif [ "$AUTO" = "true" ] && ! grep -q '"state": "lab_pass"' research/status.json 2>/dev/null; then
-            echo "After the lab run: no lab pass, so no sealed exam."
             echo "go=false" >> "$GITHUB_OUTPUT"
           else
             echo "go=true" >> "$GITHUB_OUTPUT"
@@ -122,3 +120,10 @@ jobs:
       - name: Commit and push
         if: always() && steps.go.outputs.go == 'true'
         run: research/lab/push.sh "Inspector General ($LAB_SPORT $ACTION) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Hand back to the research loop
+        if: always() && inputs.then_loop && vars.RESEARCH_LOOP != 'off'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run research_lab.yml --ref main
+

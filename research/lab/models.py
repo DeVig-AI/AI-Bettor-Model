@@ -320,7 +320,7 @@ def run_team_rating(p, data, market):
     lr = 1 - 0.5 ** (1 / p["halflife"])
     carry, dw, pace = p["season_carry"], p["def_weight"], p["pace"]
     O, D, PO, PD = (defaultdict(float) for _ in range(4))
-    lw = p.get("league_window", 544)                   # team-games in the league averages (~ one NFL season)
+    lw = p.get("league_window") or 544                 # team-games in the league averages (~ one NFL season)
     league, lplays, lspp = deque(maxlen=lw), deque(maxlen=lw), deque(maxlen=lw)
     last_season = {}
 
@@ -524,8 +524,14 @@ def run_ppa(p, data):
     return f[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
 
 
+def _run_signals(p, d, m):
+    from .signals import run_signals
+    return run_signals(p, d, m)
+
+
 FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa,
-            "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m)}
+            "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m),
+            "signals": _run_signals}
 MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}   # the other families take the candidate's market
 
 

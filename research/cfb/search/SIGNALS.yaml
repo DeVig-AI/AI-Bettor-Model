@@ -1,0 +1,45 @@
+# Research Lab signal library, college football (Constitution v9 A3.3e). Each signal is tested by the search on top of the
+# menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons only.
+# Allowed: kind team (columns: plays, epa, points (CFB data has no other columns)), schedule (none (CFB data has no rest or travel)), qb_change. Anything else is rejected by the code.
+# New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
+# football reason; no known betting angles or situational spots (A3.5).
+signals:
+- id: off-ppa
+  kind: team
+  side: offense
+  num:
+    epa: 1
+  den: plays
+  halflife: 6
+  carry: 0.4
+  reason: 'Offensive PPA per play: efficiency is steadier than points.'
+- id: def-ppa
+  kind: team
+  side: defense
+  num:
+    epa: 1
+  den: plays
+  halflife: 6
+  carry: 0.4
+  reason: PPA per play allowed by the defense.
+- id: off-finishing
+  kind: team
+  side: offense
+  num:
+    points: 1
+    epa: -1
+  den: null
+  halflife: 6
+  carry: 0.4
+  reason: 'Points beyond what PPA explains: finishing drives and short fields are partly luck.'
+- id: off-pace
+  kind: team
+  side: offense
+  num:
+    plays: 1
+  den: null
+  halflife: 6
+  carry: 0.4
+  reason: 'Plays per game: tempo drives the number of possessions.'
+  markets:
+  - total

@@ -1,0 +1,136 @@
+# Research Lab signal library, NFL (Constitution v9 A3.3e). Each signal is tested by the search on top of the
+# menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons only.
+# Allowed: kind team (columns: plays, epa, pass_plays, pass_epa, early_plays, early_epa, succ, noto_plays, noto_epa, comp_plays, comp_epa, top_seconds, points), schedule (rest_diff, travel_diff, div_game, off_bye_diff, short_week_diff), qb_change. Anything else is rejected by the code.
+# New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
+# football reason; no known betting angles or situational spots (A3.5).
+signals:
+- id: off-success
+  kind: team
+  side: offense
+  num:
+    succ: 1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: Success rate is a steadier read of an offense than points or yards.
+- id: def-success
+  kind: team
+  side: defense
+  num:
+    succ: 1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: 'Success rate allowed: how often a defense lets opponents stay on schedule.'
+- id: off-pass-epa
+  kind: team
+  side: offense
+  num:
+    pass_epa: 1
+  den: pass_plays
+  halflife: 8
+  carry: 0.5
+  reason: Passing efficiency is the most stable and predictive part of offense.
+- id: def-pass-epa
+  kind: team
+  side: defense
+  num:
+    pass_epa: 1
+  den: pass_plays
+  halflife: 8
+  carry: 0.5
+  reason: Pass defense efficiency matters more than run defense in modern football.
+- id: off-early-epa
+  kind: team
+  side: offense
+  num:
+    early_epa: 1
+  den: early_plays
+  halflife: 8
+  carry: 0.5
+  reason: Early-down efficiency shows a team's real offense with less third-down noise.
+- id: off-turnover-epa
+  kind: team
+  side: offense
+  num:
+    epa: 1
+    noto_epa: -1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: 'EPA lost to turnovers per play: turnovers are noisy and tend to even out, so recent turnover luck may mislead the
+    rating.'
+- id: def-turnover-epa
+  kind: team
+  side: defense
+  num:
+    epa: 1
+    noto_epa: -1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.'
+- id: off-finishing
+  kind: team
+  side: offense
+  num:
+    points: 1
+    epa: -1
+  den: null
+  halflife: 8
+  carry: 0.5
+  reason: 'Points scored beyond what EPA explains (red-zone finishing, short fields): partly luck that may not repeat.'
+- id: off-comp-epa
+  kind: team
+  side: offense
+  num:
+    comp_epa: 1
+  den: comp_plays
+  halflife: 8
+  carry: 0.5
+  reason: Efficiency while the game is in doubt, without garbage-time stats.
+- id: off-pace
+  kind: team
+  side: offense
+  num:
+    plays: 1
+  den: null
+  halflife: 8
+  carry: 0.5
+  reason: 'Plays per game: faster offenses create more scoring chances.'
+  markets:
+  - total
+- id: off-seconds-per-play
+  kind: team
+  side: offense
+  num:
+    top_seconds: 1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: 'Seconds of possession per play: tempo, which drives how many possessions a game has.'
+  markets:
+  - total
+- id: rest-diff
+  kind: schedule
+  field: rest_diff
+  reason: Extra days of rest help recovery and preparation.
+- id: bye-diff
+  kind: schedule
+  field: off_bye_diff
+  reason: Coming off a bye means extra rest and game-planning time.
+- id: short-week-diff
+  kind: schedule
+  field: short_week_diff
+  reason: Short weeks (Thursday games) limit recovery and preparation.
+- id: travel-diff
+  kind: schedule
+  field: travel_diff
+  reason: Long trips cost the travelling team rest and routine.
+- id: div-game
+  kind: schedule
+  field: div_game
+  reason: Division rivals know each other well, which may narrow the home edge.
+- id: qb-change
+  kind: qb_change
+  reason: A new starting quarterback changes a team more than any other player.

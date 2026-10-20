@@ -1,6 +1,7 @@
-# Research Lab search menu, NFL (Constitution v7 A3.3c). Every round scores, in this order, up to
+# Research Lab search menu, NFL (Constitution v9 A3.3c). Every round scores, in this order, up to
 # search.max_new_per_round configurations not scored before: the grid below (all combinations, in order), then
-# the neighbours of the 30 best per market (one setting one step along its ladder), then blends of the best.
+# the neighbours of the 30 best per market (one setting one step along its ladder), then samples
+# weighted by what past rounds learned, then uniform samples (both seeded by round), then blends of the best.
 # Adding a value or a family here is how an idea joins the search: free, since search scores are not attempts.
 # No known betting angles (A3.5).
 families:
@@ -256,7 +257,7 @@ ladders:
   - 35
 search:
   max_new_per_round: 6000
-  round_every_hours: 20
+  round_every_hours: 0
   neighbours_of_best: 30
   blend_pool: 10
   blend_triples_of: 6
@@ -272,3 +273,30 @@ search:
   shortlist_window_days: 7
   shortlist_min_t: 2.5
   max_disagreement_corr: 0.95
+  learned_samples: 1500
+  random_samples: 500
+  signal_pairs_of: 6
+  signal_trios_of: 4
+signal_bases:
+  spread:
+  - type: team_rating
+    params:
+      metric: epa
+      halflife: 8
+      season_carry: 0.6
+      def_weight: 1.0
+      pace: none
+  - type: srs
+    params:
+      hfa_pts: 2.0
+      carry: 0.5
+      prior_w: 3
+      margin_cap: null
+  total:
+  - type: team_rating
+    params:
+      metric: points
+      halflife: 8
+      season_carry: 0.6
+      def_weight: 1.0
+      pace: none

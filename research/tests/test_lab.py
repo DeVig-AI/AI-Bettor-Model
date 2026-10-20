@@ -257,6 +257,8 @@ class Search(unittest.TestCase):
              "grid": {"metric": ["points", "epa"], "halflife": [8], "season_carry": [0.6], "pace": ["plays", "seconds"]},
              "rules": ["points_has_no_pace"]}]
         m["search"]["shortlist_min_t"] = -99          # synthetic data: let the shortlist rules be exercised
+        m["search"].update(learned_samples=2, random_samples=1)   # keep the tests quick
+        m["signal_bases"] = {}
         with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
 
@@ -281,7 +283,7 @@ class Search(unittest.TestCase):
         picks = self.SR.run_round(force=True, log=lambda *_: None)
         rows = self.SR.read_csv(self.SR.path("SCORES.csv"))
         singles = [r for r in rows if r["type"] != "blend"]
-        self.assertEqual(len(singles), 4 + 3)
+        self.assertEqual(len(singles), 4 + 3 + 3, "grid, then 2 learned and 1 random sample")
         self.assertTrue(any(r["type"] == "blend" for r in rows))
         self.assertLessEqual(len(picks), 4)
         for cid in picks:
@@ -294,7 +296,10 @@ class Search(unittest.TestCase):
         for cid in picks:
             by_market[L.load_candidates()[cid]["market"]] = by_market.get(L.load_candidates()[cid]["market"], 0) + 1
         self.assertTrue(all(v <= 2 for v in by_market.values()))
-        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a second round within 20 hours does nothing")
+        m = self.SR.load_menu(); m["search"]["round_every_hours"] = 20
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.assertFalse(self.SR.run_round(log=lambda *_: None), "a menu gap between rounds is respected")
         self.SR.run_round(force=True, log=lambda *_: None)
         rows2 = self.SR.read_csv(self.SR.path("SCORES.csv"))
         ids = [r["id"] for r in rows2]
@@ -306,8 +311,8 @@ class Search(unittest.TestCase):
         self.small_menu()
         seen = []
         self.SR.run_round(force=True, log=lambda *_: None, progress=lambda n, d, p: seen.append((n, d, p)))
-        self.assertEqual(seen[0], (1, 0, 7), "posted once at the start")
-        self.assertEqual(seen[-1][1:], (7, 7), "counts every model up to the planned total")
+        self.assertEqual(seen[0], (1, 0, 10), "posted once at the start (7 grid + 3 samples)")
+        self.assertEqual(seen[-1][1:], (10, 10), "counts every model up to the planned total")
 
     def test_cap_resumes_and_window(self):
         self.small_menu()
@@ -328,6 +333,38 @@ class Search(unittest.TestCase):
             mk = L.load_candidates()[cid]["market"]
             by[mk] = by.get(mk, 0) + 1
         self.assertTrue(all(v <= 1 for v in by.values()), "at most shortlist_per_market per 7 days")
+
+    def test_samples_learned_and_seeded(self):
+        menu = {"families": [{"market": "spread", "type": "srs", "fixed": {"hfa_pts": 2.5},
+                              "grid": {"carry": [0.4, 0.8], "prior_w": [1, 3]}}],
+                "ladders": {"carry": [0.2, 0.4, 0.6, 0.8], "prior_w": [1, 3, 6]}}
+        scored = []
+        for carry, t in [(0.4, -3.0), (0.4, -2.5), (0.8, 3.0), (0.8, 2.8)]:
+            cfg = {"market": "spread", "type": "srs", "params": {"hfa_pts": 2.5, "carry": carry, "prior_w": 1}}
+            scored.append({"id": self.SR.config_id(cfg), "market": "spread", "type": "srs", "t": t,
+                           "config": self.SR.config_key(cfg)})
+        a = self.SR.samples(menu, scored, 6, seed=7)
+        self.assertEqual([self.SR.config_id(c) for c in a], [self.SR.config_id(c) for c in self.SR.samples(menu, scored, 6, 7)])
+        self.assertFalse({self.SR.config_id(c) for c in a} & {r["id"] for r in scored}, "never an already-scored model")
+        many = self.SR.samples(menu, scored, 9, seed=1)
+        carries = [c["params"]["carry"] for c in many]
+        self.assertGreater(carries.count(0.8) + carries.count(0.6) + carries.count(0.2), carries.count(0.4),
+                           "the setting that scored badly is drawn less often")
+
+    def test_lookalikes_scored_once(self):
+        self.small_menu()
+        m = self.SR.load_menu()
+        p = {"pace": "none", "def_weight": 1.0, "metric": "epa", "halflife": 4, "season_carry": 0.6}
+        m["families"] = [{"name": "TR", "type": "team_rating", "market": "spread", "fixed": {"pace": "none", "def_weight": 1.0},
+                          "grid": {"metric": ["epa"], "halflife": [4], "season_carry": [0.6], "league_window": [None, 544]}}]
+        m["search"].update(learned_samples=0, random_samples=0)
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.run_round(force=True, log=lambda *_: None)
+        rows = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(sum("(same as " in r["label"] for r in rows), 1, "the second is flagged as the same model")
+        self.assertEqual([r["t"] for r in rows if "(same as " in r["label"]], ["-inf"])
 
     def test_fit_weights_and_neighbours(self):
         rng = np.random.default_rng(3)
@@ -539,6 +576,73 @@ class Visibility(unittest.TestCase):
                 text = fh.read()
             for bad in ("research/", "status.json", "/api/lab", 'href="/lab', "Research Lab", "Gauntlet-"):
                 self.assertNotIn(bad, text, f"{os.path.relpath(f, ROOT)} mentions {bad!r}")
+
+
+class Signals(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from research.lab import signals as SG
+        cls.SG = SG
+        cls.data = synthetic()
+        cls.lib = {x["id"]: x for x in SG.load_library()}
+
+    def cand(self, ids, market="spread"):
+        base = {"type": "team_rating", "params": {"metric": "epa", "halflife": 8, "season_carry": 0.6, "def_weight": 1.0,
+                                                  "pace": "none" if market == "spread" else "plays"}}
+        return {"id": "x", "market": market, "model": {"type": "signals", "params": {
+            "base": base, "signals": [self.lib[i] for i in ids], "ridge": 1.0}}}
+
+    def test_library_and_rules(self):
+        self.assertGreaterEqual(len(self.lib), 15)
+        for bad in ({"id": "w", "kind": "team", "side": "offense", "num": {"temp": 1}, "halflife": 8, "reason": "r"},
+                    {"id": "w", "kind": "schedule", "field": "kickoff_hour", "reason": "r"},
+                    {"id": "w", "kind": "weather", "reason": "r"},
+                    {"id": "w", "kind": "team", "side": "offense", "num": {"epa": 1}, "halflife": 8}):
+            with self.assertRaises(self.SG.SignalError):
+                self.SG.validate(dict(bad))
+        C.use("CFB")
+        try:
+            self.assertEqual(len(self.SG.load_library()), 4)
+        finally:
+            C.use("NFL")
+
+    def test_every_signal_runs_and_no_lookahead(self):
+        g = self.data["games"]
+        target = g.index[g.season == 2010][100]
+        gid = g.game_id[target]
+        for sid, sig in self.lib.items():
+            market = sig["markets"][0]
+            c = self.cand([sid], market)
+            a, fit = models.run(c, self.data)
+            self.assertTrue(np.isfinite(a.forecast).all(), sid)
+            self.assertEqual(fit["fit_seasons"], f"{C.TRAIN[0]}-{C.TRAIN[1]}")
+            alt = {k: v.copy() for k, v in self.data.items()}
+            slot = alt["games"].loc[target, "gameday"]
+            later = alt["games"].gameday >= slot
+            alt["games"].loc[later, "home_score"] += 9
+            alt["team_games"].loc[alt["team_games"].game_id.isin(alt["games"].game_id[later]), ["epa", "succ"]] += 3
+            b, _ = models.run(c, alt)
+            self.assertAlmostEqual(a.set_index("game_id").forecast[gid], b.set_index("game_id").forecast[gid],
+                                   places=9, msg=sid)
+
+    def test_qb_change_and_combos(self):
+        out, fit = models.run(self.cand(["qb-change", "rest-diff", "off-success"]), self.data)
+        self.assertEqual(set(fit["beta"]), {"qb-change", "rest-diff", "off-success"})
+        from research.lab import search as SR
+        cs = SR.signal_configs(SR.load_menu(os.path.join(C.SEARCH_DIR, "MENU.yaml")), [])
+        self.assertTrue(cs and all(SR.label(c).startswith("Signals (") for c in cs))
+
+
+class NextRun(unittest.TestCase):
+    def test_exam_first_when_a_sport_has_a_lab_pass(self):
+        from research.lab import next_run as N
+        nfl = {"sport": "NFL", "counts": {"exam_budget_left": 3}, "candidates": [{"state": "failed"}]}
+        self.assertEqual(N.decide(dict(nfl, by_sport={})), "loop")
+        cfb = {"counts": {"exam_budget_left": 3}, "candidates": [{"state": "lab_pass"}]}
+        self.assertEqual(N.decide(dict(nfl, by_sport={"CFB": cfb})), "exam CFB")
+        self.assertEqual(N.decide(dict(nfl, candidates=[{"state": "lab_pass"}], by_sport={"CFB": cfb})), "exam NFL")
+        spent = dict(nfl, counts={"exam_budget_left": 0}, candidates=[{"state": "lab_pass"}], by_sport={})
+        self.assertEqual(N.decide(spent), "loop", "no exam left: keep looping")
 
 
 class FrozenGuardLog(unittest.TestCase):
