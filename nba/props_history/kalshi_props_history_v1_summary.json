@@ -1,34 +1,14 @@
 {
- "generated_at": "2026-10-20T00:50:58Z",
+ "generated_at": "2026-10-20T03:09:00Z",
  "stats": {
   "series": {
    "KXNBASTOCKS": {
     "stat": "stl_blk",
     "title": "NBA Player Steals and Blocks"
    },
-   "KXNBA3PT": {
-    "stat": "threes",
-    "title": "NBA Player Threes"
-   },
-   "KXNBAREB": {
-    "stat": "rebounds",
-    "title": "NBA Player Rebounds"
-   },
-   "KXNBAPRA": {
-    "stat": "pts_reb_ast",
-    "title": "NBA Player Points + Rebounds + Assists"
-   },
-   "KXNBAPA": {
-    "stat": "pts_ast",
-    "title": "Pro Basketball Player Points + Assists"
-   },
-   "KXNBAPR": {
-    "stat": "pts_reb",
-    "title": "Pro Basketball Player Points + Rebounds"
-   },
-   "KXNBABLK": {
-    "stat": "blocks",
-    "title": "NBA Player Blocks"
+   "KXNBAPTS": {
+    "stat": "points",
+    "title": "NBA Player Points"
    },
    "KXNBAAST": {
     "stat": "assists",
@@ -38,6 +18,14 @@
     "stat": "stl_blk",
     "title": "NBA Player Steals + Blocks"
    },
+   "KXNBAPRA": {
+    "stat": "pts_reb_ast",
+    "title": "NBA Player Points + Rebounds + Assists"
+   },
+   "KXNBAPR": {
+    "stat": "pts_reb",
+    "title": "Pro Basketball Player Points + Rebounds"
+   },
    "KXNBASTL": {
     "stat": "steals",
     "title": "NBA Player Steals"
@@ -46,335 +34,52 @@
     "stat": "points",
     "title": "NBA Playoffs Player Points"
    },
-   "KXNBAPTS": {
-    "stat": "points",
-    "title": "NBA Player Points"
-   },
    "KXNBARA": {
     "stat": "reb_ast",
     "title": "Pro Basketball Player Rebounds + Assists"
+   },
+   "KXNBABLK": {
+    "stat": "blocks",
+    "title": "NBA Player Blocks"
+   },
+   "KXNBA3PT": {
+    "stat": "threes",
+    "title": "NBA Player Threes"
+   },
+   "KXNBAREB": {
+    "stat": "rebounds",
+    "title": "NBA Player Rebounds"
+   },
+   "KXNBAPA": {
+    "stat": "pts_ast",
+    "title": "Pro Basketball Player Points + Assists"
    }
   },
   "events_seen": 5515,
-  "events_done_now": 0,
-  "markets_written_now": 0,
-  "no_candle": 0,
+  "events_done_now": 1560,
+  "markets_written_now": 19863,
+  "no_candle": 270,
   "no_tipoff": 2,
   "not_nba_game_type": 0,
   "after_cutoff": 0,
-  "no_markets": 1560,
+  "no_markets": 0,
   "events_by_endpoint": {
    "/events": 5515
   },
   "markets_from": {
    "/historical/markets": 1560
   },
-  "candles_by_endpoint": {},
-  "minutes": 13.6,
+  "candles_by_endpoint": {
+   "batch": 0,
+   "historical": 19593
+  },
+  "minutes": 100.8,
   "complete": true,
-  "events_done_total": 3953
+  "events_done_total": 5513
  },
  "errors": [
-  "no markets KXNBA3PT-26JAN15CHALAL",
-  "no markets KXNBA3PT-26JAN15NYKGSW",
-  "no markets KXNBA3PT-26JAN15ATLPOR",
-  "no markets KXNBA3PT-26JAN15MILSAS",
-  "no markets KXNBA3PT-26JAN15OKCHOU",
-  "no markets KXNBA3PT-26JAN15BOSMIA",
-  "no markets KXNBA3PT-26JAN15PHXDET",
-  "no markets KXNBA3PT-26JAN15MEMORL",
-  "no markets KXNBA3PT-26JAN14WASLAC",
-  "no markets KXNBA3PT-26JAN14NYKSAC",
-  "no markets KXNBA3PT-26JAN14DENDAL",
-  "no markets KXNBA3PT-26JAN14UTACHI",
-  "no markets KXNBA3PT-26JAN14BKNNOP",
-  "no markets KXNBA3PT-26JAN14TORIND",
-  "no markets KXNBA3PT-26JAN14CLEPHI",
-  "no markets KXNBA3PT-26JAN13PORGSW",
-  "no markets KXNBA3PT-26JAN13ATLLAL",
-  "no markets KXNBA3PT-26JAN13SASOKC",
-  "no markets KXNBA3PT-26JAN13DENNOP",
-  "no markets KXNBA3PT-26JAN13CHIHOU",
-  "no markets KXNBA3PT-26JAN13PHXMIA",
-  "no markets KXNBA3PT-26JAN12CHALAC",
-  "no markets KXNBA3PT-26JAN12LALSAC",
-  "no markets KXNBA3PT-26JAN12BKNDAL",
-  "no markets KXNBA3PT-26JAN12PHITOR",
-  "no markets KXNBA3PT-26JAN12BOSIND",
-  "no markets KXNBA3PT-26JAN12UTACLE",
-  "no markets KXNBA3PT-26JAN11HOUSAC",
-  "no markets KXNBA3PT-26JAN11ATLGSW",
-  "no markets KXNBA3PT-26JAN11WASPHX",
-  "no markets KXNBA3PT-26JAN11MILDEN",
-  "no markets KXNBA3PT-26JAN11SASMIN",
-  "no markets KXNBA3PT-26JAN11MIAOKC",
-  "no markets KXNBA3PT-26JAN11PHITOR",
-  "no markets KXNBA3PT-26JAN11NYKPOR",
-  "no markets KXNBA3PT-26JAN11BKNMEM",
-  "no markets KXNBA3PT-26JAN11NOPORL",
-  "no markets KXNBA3PT-26JAN10CHAUTA",
-  "no markets KXNBA3PT-26JAN10SASBOS",
-  "no markets KXNBA3PT-26JAN10DALCHI",
-  "no markets KXNBA3PT-26JAN10LACDET",
-  "no markets KXNBA3PT-26JAN10MIAIND",
-  "no markets KXNBA3PT-26JAN10MINCLE",
-  "no markets KXNBA3PT-26JAN09MILLAL",
-  "no markets KXNBA3PT-26JAN09SACGSW",
-  "no markets KXNBA3PT-26JAN09HOUPOR",
-  "no markets KXNBA3PT-26JAN09NYKPHX",
-  "no markets KXNBA3PT-26JAN09ATLDEN",
-  "no markets KXNBA3PT-26JAN09OKCMEM",
-  "no markets KXNBA3PT-26JAN09LACBKN",
-  "no markets KXNBA3PT-26JAN09TORBOS",
-  "no markets KXNBA3PT-26JAN09PHIORL",
-  "no markets KXNBA3PT-26JAN08DALUTA",
-  "no markets KXNBA3PT-26JAN08MIACHI",
-  "no markets KXNBA3PT-26JAN08CLEMIN",
-  "no markets KXNBA3PT-26JAN08INDCHA",
-  "no markets KXNBA3PT-26JAN07MILGSW",
-  "no markets KXNBA3PT-26JAN07HOUPOR",
-  "no markets KXNBA3PT-26JAN07LALSAS",
-  "no markets KXNBA3PT-26JAN07UTAOKC",
-  "no markets KXNBA3PT-26JAN07PHXMEM",
-  "no markets KXNBA3PT-26JAN07ORLBKN",
-  "no markets KXNBA3PT-26JAN07NOPATL",
-  "no markets KXNBA3PT-26JAN07LACNYK",
-  "no markets KXNBA3PT-26JAN07WASPHI",
-  "no markets KXNBA3PT-26JAN07TORCHA",
-  "no markets KXNBA3PT-26JAN07DENBOS",
-  "no markets KXNBA3PT-26JAN07CHIDET",
-  "no markets KXNBA3PT-26JAN06DALSAC",
-  "no markets KXNBA3PT-26JAN06SASMEM",
-  "no markets KXNBA3PT-26JAN06MIAMIN",
-  "no markets KXNBA3PT-26JAN06LALNOP",
-  "no markets KXNBA3PT-26JAN06ORLWAS",
-  "no markets KXNBA3PT-26JAN06CLEIND",
-  "no markets KXNBA3PT-26JAN05UTAPOR",
-  "no markets KXNBA3PT-26JAN05GSWLAC",
-  "no markets KXNBA3PT-26JAN05DENPHI",
-  "no markets KXNBA3PT-26JAN05PHXHOU",
-  "no markets KXNBA3PT-26JAN05CHAOKC",
-  "no markets KXNBA3PT-26JAN05CHIBOS",
-  "no markets KXNBA3PT-26JAN05ATLTOR",
-  "no markets KXNBA3PT-26JAN05NYKDET",
-  "no markets KXNBA3PT-26JAN04MEMLAL",
-  "no markets KXNBA3PT-26JAN04OKCPHX",
-  "no markets KXNBA3PT-26JAN04MINWAS",
-  "no markets KXNBA3PT-26JAN04DENBKN",
-  "no markets KXNBA3PT-26JAN04INDORL",
-  "no markets KXNBA3PT-26JAN04DETCLE",
-  "no markets KXNBA3PT-26JAN03BOSLAC",
-  "no markets KXNBA3PT-26JAN03HOUDAL",
-  "no markets KXNBA3PT-26JAN03PORSAS",
-  "no markets KXNBA3PT-26JAN03CHACHI",
-  "no markets KXNBA3PT-26JAN03PHINYK",
-  "no markets KXNBA3PT-26JAN03ATLTOR",
-  "no markets KXNBA3PT-26JAN03MINMIA",
-  "no markets KXNBA3PT-26JAN02MEMLAL",
-  "no markets KXNBA3PT-26JAN02OKCGSW",
-  "no markets KXNBA3PT-26JAN02SACPHX",
-  "no markets KXNBA3PT-26JAN02PORNOP",
-  "no markets KXNBA3PT-26JAN02ORLCHI",
-  "no markets KXNBA3PT-26JAN02CHAMIL",
-  "no markets KXNBA3PT-26JAN02DENCLE",
-  "no markets KXNBA3PT-26JAN02ATLNYK",
-  "no markets KXNBA3PT-26JAN02SASIND",
-  "no markets KXNBA3PT-26JAN02BKNWAS",
-  "no markets KXNBA3PT-26JAN01UTALAC",
-  "no markets KXNBA3PT-26JAN01BOSSAC",
-  "no markets KXNBA3PT-26JAN01PHIDAL",
-  "no markets KXNBA3PT-26JAN01MIADET",
-  "no markets KXNBA3PT-26JAN01HOUBKN",
-  "no markets KXNBA3PT-25DEC31WASMIL",
-  "no markets KXNBA3PT-25DEC31POROKC",
-  "no markets KXNBA3PT-25DEC31DENTOR",
-  "no markets KXNBA3PT-25DEC31NOPCHI",
-  "no markets KXNBA3PT-25DEC31PHXCLE",
-  "no markets KXNBA3PT-25DEC31ORLIND",
-  "no markets KXNBA3PT-25DEC31MINATL",
-  "no markets KXNBA3PT-25DEC31GSWCHA",
-  "no markets KXNBA3PT-25DEC30DETLAL",
-  "no markets KXNBA3PT-25DEC30BOSUTA",
-  "no markets KXNBA3PT-25DEC30PHIMEM",
-  "no markets KXNBA3PT-25DEC29DALPOR",
-  "no markets KXNBA3PT-25DEC29NYKNOP",
-  "no markets KXNBA3PT-25DEC29MINCHI",
-  "no markets KXNBA3PT-25DEC29ATLOKC",
-  "no markets KXNBA3PT-25DEC29ORLTOR",
-  "no markets KXNBA3PT-25DEC29GSWBKN",
-  "no markets KXNBA3PT-25DEC29DENMIA",
-  "no markets KXNBA3PT-25DEC29MILCHA",
-  "no markets KXNBA3PT-25DEC28SACLAL",
-  "no markets KXNBA3PT-25DEC28DETLAC",
-  "no markets KXNBA3PT-25DEC28MEMWAS",
-  "no markets KXNBA3PT-25DEC28BOSPOR",
-  "no markets KXNBA3PT-25DEC28PHIOKC",
-  "no markets KXNBA3PT-25DEC28GSWTOR",
-  "no markets KXNBA3PT-25DEC27UTASAS",
-  "no markets KXNBA3PT-25DEC27NYKATL",
-  "no markets KXNBA3PT-25DEC27INDMIA",
-  "no markets KXNBA3PT-25DEC27CLEHOU",
-  "no markets KXNBA3PT-25DEC27BKNMIN",
-  "no markets KXNBA3PT-25DEC27DENORL",
-  "no markets KXNBA3PT-25DEC27DALSAC",
-  "no markets KXNBA3PT-25DEC26LACPOR",
-  "no markets KXNBA3PT-25DEC26DETUTA",
-  "no markets KXNBA3PT-25DEC26PHXNOP",
-  "no markets KXNBA3PT-25DEC26MILMEM",
-  "no markets KXNBA3PT-25DEC26PHICHI",
-  "no markets KXNBA3PT-25DEC26TORWAS",
-  "no markets KXNBA3PT-25DEC26MIAATL",
-  "no markets KXNBA3PT-25DEC26CHAORL",
-  "no markets KXNBA3PT-25DEC26BOSIND",
-  "no markets KXNBA3PT-25DEC25MINDEN",
-  "no markets KXNBA3PT-25DEC25HOULAL",
-  "no markets KXNBA3PT-25DEC25DALGSW",
-  "no markets KXNBA3PT-25DEC25SASOKC",
-  "no markets KXNBA3PT-25DEC25CLENYK",
-  "no markets KXNBA3PT-25DEC23HOULAC",
-  "no markets KXNBA3PT-25DEC23ORLPOR",
-  "no markets KXNBA3PT-25DEC23DETSAC",
-  "no markets KXNBA3PT-25DEC23MEMUTA",
-  "no markets KXNBA3PT-25DEC23LALPHX",
-  "no markets KXNBA3PT-25DEC23OKCSAS",
-  "no markets KXNBA3PT-25DEC23NYKMIN",
-  "no markets KXNBA3PT-25DEC23DENDAL",
-  "no markets KXNBA3PT-25DEC23TORMIA",
-  "no markets KXNBA3PT-25DEC23NOPCLE",
-  "no markets KXNBA3PT-25DEC23MILIND",
-  "no markets KXNBA3PT-25DEC23CHIATL",
-  "no markets KXNBA3PT-25DEC23WASCHA",
-  "no markets KXNBA3PT-25DEC23BKNPHI",
-  "no markets KXNBA3PT-25DEC22ORLGSW",
-  "no markets KXNBA3PT-25DEC22DETPOR",
-  "no markets KXNBA3PT-25DEC22MEMOKC",
-  "no markets KXNBA3PT-25DEC22UTADEN",
-  "no markets KXNBA3PT-25DEC22DALNOP",
-  "no markets KXNBA3PT-25DEC22INDBOS",
-  "no markets KXNBA3PT-25DEC22CHACLE",
-  "no markets KXNBA3PT-25DEC21HOUSAC",
-  "no markets KXNBA3PT-25DEC21SASWAS",
-  "no markets KXNBA3PT-25DEC21MILMIN",
-  "no markets KXNBA3PT-25DEC21TORBKN",
-  "no markets KXNBA3PT-25DEC21MIANYK",
-  "no markets KXNBA3PT-25DEC21CHIATL",
-  "no markets KXNBA3PT-25DEC20LALLAC",
-  "no markets KXNBA3PT-25DEC20PORSAC",
-  "no markets KXNBA3PT-25DEC20ORLUTA",
-  "no markets KXNBA3PT-25DEC20PHXGSW",
-  "no markets KXNBA3PT-25DEC20WASMEM",
-  "no markets KXNBA3PT-25DEC20CHADET",
-  "no markets KXNBA3PT-25DEC20INDNOP",
-  "no markets KXNBA3PT-25DEC20DALPHI",
-  "no markets KXNBA3PT-25DEC20BOSTOR",
-  "no markets KXNBA3PT-25DEC20HOUDEN",
-  "no markets KXNBA3PT-25DEC19OKCMIN",
-  "no markets KXNBA3PT-25DEC19SASATL",
-  "no markets KXNBA3PT-25DEC19CHICLE",
-  "no markets KXNBA3PT-25DEC19PHINYK",
-  "no markets KXNBA3PT-25DEC19MIABOS",
-  "no markets KXNBA3PT-25DEC18SACPOR",
-  "no markets KXNBA3PT-25DEC18ORLDEN",
-  "no markets KXNBA3PT-25DEC18LALUTA",
-  "no markets KXNBA3PT-25DEC18GSWPHX",
-  "no markets KXNBA3PT-25DEC18DETDAL",
-  "no markets KXNBA3PT-25DEC18WASSAS",
-  "no markets KXNBA3PT-25DEC18TORMIL",
-  "no markets KXNBA3PT-25DEC18LACOKC",
-  "no markets KXNBA3PT-25DEC18HOUNOP",
-  "no markets KXNBA3PT-25DEC18MIABKN",
-  "no markets KXNBA3PT-25DEC18NYKIND",
-  "no markets KXNBA3PT-25DEC18ATLCHA",
-  "no markets KXNBA3PT-25DEC17MEMMIN",
-  "no markets KXNBA3PT-25DEC17CLECHI",
-  "no markets KXNBA3PT-25DEC16SASNYK",
-  "no markets KXNBA3PT-25DEC15MEMLAC",
-  "no markets KXNBA3PT-25DEC15HOUDEN",
-  "no markets KXNBA3PT-25DEC15DALUTA",
-  "no markets KXNBA3PT-25DEC15TORMIA",
-  "no markets KXNBA3PT-25DEC15DETBOS",
-  "no markets KXNBA3PT-25DEC14GSWPOR",
-  "no markets KXNBA3PT-25DEC14LALPHX",
-  "no markets KXNBA3PT-25DEC14NOPCHI",
-  "no markets KXNBA3PT-25DEC14PHIATL",
-  "no markets KXNBA3PT-25DEC14MILBKN",
-  "no markets KXNBA3PT-25DEC14CHACLE",
-  "no markets KXNBA3PT-25DEC14WASIND",
-  "no markets KXNBA3PT-25DEC13SASOKC",
-  "no markets KXNBA3PT-25DEC13NYKORL",
-  "no markets KXNBA3PT-25DEC12MINGSW",
-  "no markets KXNBA3PT-25DEC12BKNDAL",
-  "no markets KXNBA3PT-25DEC12UTAMEM",
-  "no markets KXNBA3PT-25DEC12INDPHI",
-  "no markets KXNBA3PT-25DEC12CLEWAS",
-  "no markets KXNBA3PT-25DEC12ATLDET",
-  "no markets KXNBA3PT-25DEC11DENSAC",
-  "no markets KXNBA3PT-25DEC11PORNOP",
-  "no markets KXNBA3PT-25DEC11LACHOU",
-  "no markets KXNBA3PT-25DEC11BOSMIL",
-  "no markets KXNBA3PT-25DEC10SASLAL",
-  "no markets KXNBA3PT-25DEC10PHXOKC",
-  "no markets KXNBA3PT-25DEC09NYKTOR",
-  "no markets KXNBA3PT-25DEC09MIAORL",
-  "no markets KXNBA3PT-25DEC08SASNOP",
-  "no markets KXNBA3PT-25DEC08PHXMIN",
-  "no markets KXNBA3PT-25DEC08SACIND",
-  "no markets KXNBA3PT-25DEC07OKCUTA",
-  "no markets KXNBA3PT-25DEC07LALPHI",
-  "no markets KXNBA3PT-25DEC07PORMEM",
-  "no markets KXNBA3PT-25DEC07DENCHA",
-  "no markets KXNBA3PT-25DEC07BOSTOR",
-  "no markets KXNBA3PT-25DEC07ORLNYK",
-  "no markets KXNBA3PT-25DEC06HOUDAL",
-  "no markets KXNBA3PT-25DEC06LACMIN",
-  "no markets KXNBA3PT-25DEC06MILDET",
-  "no markets KXNBA3PT-25DEC06GSWCLE",
-  "no markets KXNBA3PT-25DEC06ATLWAS",
-  "no markets KXNBA3PT-25DEC06NOPBKN",
-  "no markets KXNBA3PT-25DEC05DALOKC",
-  "no markets KXNBA3PT-25DEC05PHXHOU",
-  "no markets KXNBA3PT-25DEC05PHIMIL",
-  "no markets KXNBA3PT-25DEC05LACMEM",
-  "no markets KXNBA3PT-25DEC05INDCHI",
-  "no markets KXNBA3PT-25DEC05UTANYK",
-  "no markets KXNBA3PT-25DEC05SASCLE",
-  "no markets KXNBA3PT-25DEC05PORDET",
-  "no markets KXNBA3PT-25DEC05DENATL",
-  "no markets KXNBA3PT-25DEC05CHATOR",
-  "no markets KXNBA3PT-25DEC05MIAORL",
-  "no markets KXNBA3PT-25DEC05LALBOS",
-  "no markets KXNBA3PT-25DEC04MINNOP",
-  "no markets KXNBA3PT-25DEC04UTABKN",
-  "no markets KXNBA3PT-25DEC04LALTOR",
-  "no markets KXNBA3PT-25DEC04GSWPHI",
-  "no markets KXNBA3PT-25DEC04BOSWAS",
-  "no markets KXNBA3PT-25DEC03MIADAL",
-  "no markets KXNBA3PT-25DEC03SACHOU",
-  "no markets KXNBA3PT-25DEC03DETMIL",
-  "no markets KXNBA3PT-25DEC03BKNCHI",
-  "no markets KXNBA3PT-25DEC03LACATL",
-  "no markets KXNBA3PT-25DEC03CHANYK",
-  "no markets KXNBA3PT-25DEC03SASORL",
-  "no markets KXNBA3PT-25DEC03PORCLE",
-  "no markets KXNBA3PT-25DEC03DENIND",
-  "no markets KXNBA3PT-25DEC02OKCGSW",
-  "no markets KXNBA3PT-25DEC02NYKBOS",
-  "no markets KXNBA3PT-25DEC02MINNOP",
-  "no markets KXNBA3PT-25DEC02MEMSAS",
-  "no markets KXNBA3PT-25DEC02PORTOR",
-  "no markets KXNBA3PT-25DEC02WASPHI",
-  "no markets KXNBA3PT-25DEC01PHXLAL",
-  "no markets KXNBA3PT-25DEC01HOUUTA",
-  "no markets KXNBA3PT-25DEC01DALDEN",
-  "no markets KXNBA3PT-25DEC01LACMIA",
-  "no markets KXNBA3PT-25DEC01CHIORL",
-  "no markets KXNBA3PT-25DEC01CHABKN",
-  "no markets KXNBA3PT-25DEC01MILWAS",
-  "no markets KXNBA3PT-25DEC01CLEIND",
-  "no markets KXNBA3PT-25DEC01ATLDET",
-  "no markets KXNBA3PT-25NOV30MEMSAC",
-  "no markets KXNBA3PT-25NOV30SASMIN",
-  "no markets KXNBA3PT-25NOV30TORNYK"
+  "no tip-off KXNBAPLAYOFFPTS-2650 'Players to Score 50+ Points in a Playoff Game'",
+  "no tip-off KXNBAPLAYOFFPTS-2640 'Players to Score 40+ Points in a Playoff Game'"
  ],
  "raw_candle_samples": {
   "event": {
@@ -454,6 +159,211 @@
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
    "yes_sub_title": "LeBron James: 5+"
+  },
+  "historical": {
+   "candlesticks": [
+    {
+     "end_period_ts": 1768503600,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0700",
+      "high": "0.0800",
+      "low": "0.0600",
+      "open": "0.0600"
+     },
+     "yes_bid": {
+      "close": "0.0200",
+      "high": "0.0500",
+      "low": "0.0200",
+      "open": "0.0200"
+     }
+    },
+    {
+     "end_period_ts": 1768507200,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0600",
+      "high": "0.0700",
+      "low": "0.0500",
+      "open": "0.0700"
+     },
+     "yes_bid": {
+      "close": "0.0100",
+      "high": "0.0400",
+      "low": "0.0000",
+      "open": "0.0200"
+     }
+    },
+    {
+     "end_period_ts": 1768510800,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0600",
+      "high": "0.0700",
+      "low": "0.0500",
+      "open": "0.0600"
+     },
+     "yes_bid": {
+      "close": "0.0200",
+      "high": "0.0500",
+      "low": "0.0100",
+      "open": "0.0100"
+     }
+    },
+    {
+     "end_period_ts": 1768514400,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0600",
+      "high": "0.0800",
+      "low": "0.0600",
+      "open": "0.0600"
+     },
+     "yes_bid": {
+      "close": "0.0000",
+      "high": "0.0200",
+      "low": "0.0000",
+      "open": "0.0200"
+     }
+    },
+    {
+     "end_period_ts": 1768518000,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0700",
+      "high": "0.0800",
+      "low": "0.0600",
+      "open": "0.0600"
+     },
+     "yes_bid": {
+      "close": "0.0100",
+      "high": "0.0100",
+      "low": "0.0000",
+      "open": "0.0000"
+     }
+    },
+    {
+     "end_period_ts": 1768521600,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0700",
+      "high": "0.0700",
+      "low": "0.0700",
+      "open": "0.0700"
+     },
+     "yes_bid": {
+      "close": "0.0100",
+      "high": "0.0100",
+      "low": "0.0000",
+      "open": "0.0100"
+     }
+    },
+    {
+     "end_period_ts": 1768525200,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0700",
+      "high": "0.0700",
+      "low": "0.0700",
+      "open": "0.0700"
+     },
+     "yes_bid": {
+      "close": "0.0500",
+      "high": "0.0500",
+      "low": "0.0000",
+      "open": "0.0100"
+     }
+    },
+    {
+     "end_period_ts": 1768528800,
+     "open_interest": "0.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": null
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0700",
+      "high": "0.0800",
+      "low": "0.0700",
+      "open": "0.0700"
+     },
+     "yes_bid": {
+      "close": "0.0100",
+      "high": "0.0500",
+      "low": "0.0000",
+      "open": "0.0500"
+     }
+    }
+   ],
+   "ticker": "KXNBA3PT-26JAN15CHALAL-LALLJAMES23-5"
   }
  }
 }
