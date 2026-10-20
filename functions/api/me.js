@@ -13,7 +13,10 @@
 //                       and issuer; with it, only logins for this exact app.
 //   INVITE_CODE         secret; the code friends type once to open an account (several allowed, comma-separated)
 
-const MAX_BODY = 20000;            // bytes; a full season of tracking is far smaller
+const MAX_BODY = 120000;           // bytes; a season of tracking plus tracked parlays stays well under this
+const MAX_PARLAYS = 60;            // tracked parlays kept (removed ones are kept as a small tombstone so devices agree)
+const LEG_STR = ["desc", "book", "game", "when", "kind", "mk", "side", "player", "stat", "sport", "away", "home", "kickoff", "gkey"];
+const LEG_NUM = ["odds", "point", "line"];
 const MAX_TRACKED = 2000;          // per kind (games, picks)
 const MAX_TEAMS = 60;              // per sport
 const SAVE_GAP_MS = 2000;          // at most one save every 2 seconds per person
@@ -91,7 +94,8 @@ export async function userKey(email) {
   return "user:" + [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Keep only the shapes the app writes: tracked {g:{key:time}, p:{key:time}, updated}, prefs {name, teams, updated}.
+// Keep only the shapes the app writes: tracked {g:{key:time}, p:{key:time}, parlays:{id:{at, stake, odds, legs}|{removed}},
+// updated}, prefs {name, teams, updated}.
 export function clean(body) {
   const out = {tracked: {g: {}, p: {}, updated: 0}, prefs: {name: "", teams: {}, mode: "simple", updated: 0}};
   const t = body && body.tracked;
@@ -100,6 +104,23 @@ export function clean(body) {
       const src = t[kind] && typeof t[kind] === "object" ? t[kind] : {};
       for (const k of Object.keys(src).slice(0, MAX_TRACKED)) {
         if (typeof k === "string" && k.length <= 200) out.tracked[kind][k] = Number(src[k]) || 1;
+      }
+    }
+    const ps = t.parlays && typeof t.parlays === "object" && !Array.isArray(t.parlays) ? t.parlays : null;
+    if (ps) {
+      out.tracked.parlays = {};
+      for (const id of Object.keys(ps).slice(-MAX_PARLAYS)) {
+        const x = ps[id];
+        if (!/^[a-z0-9]{1,24}$/.test(id) || !x || typeof x !== "object") continue;
+        if (x.removed) { out.tracked.parlays[id] = {removed: Number(x.removed) || 1}; continue; }
+        if (!Array.isArray(x.legs)) continue;
+        out.tracked.parlays[id] = {at: String(x.at || "").slice(0, 30), stake: Number(x.stake) || 0, odds: Number(x.odds) || null,
+          legs: x.legs.slice(0, 15).filter(l => l && typeof l === "object").map(l => {
+            const o = {};
+            for (const k of LEG_STR) if (l[k] != null) o[k] = String(l[k]).slice(0, 160);
+            for (const k of LEG_NUM) if (l[k] != null && isFinite(Number(l[k]))) o[k] = Number(l[k]);
+            return o;
+          })};
       }
     }
     out.tracked.updated = Number(t.updated) || 0;

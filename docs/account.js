@@ -40,6 +40,14 @@
     ["g", "p"].forEach(function (k) {
       [rt[k] || {}, lt[k] || {}].forEach(function (src) { Object.keys(src).forEach(function (key) { t[k][key] = src[key]; }); });
     });
+    // tracked parlays: every one either device has; a parlay removed on one device stays removed
+    var lp_ = lt.parlays || {}, rp_ = rt.parlays || {};
+    if (Object.keys(lp_).length || Object.keys(rp_).length) {
+      t.parlays = {};
+      [rp_, lp_].forEach(function (src) { Object.keys(src).forEach(function (id) {
+        if (!t.parlays[id] || src[id].removed) t.parlays[id] = src[id];
+      }); });
+    }
     t.updated = Math.max(lt.updated || 0, rt.updated || 0);
     var lp = local.prefs || {}, rp = remote.prefs || {};
     var prefs = (lp.updated || 0) > (rp.updated || 0) ? lp : rp;
