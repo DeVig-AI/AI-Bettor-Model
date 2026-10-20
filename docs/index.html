@@ -366,12 +366,22 @@
   .slip-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(128px + env(safe-area-inset-bottom, 0px)); z-index:50; white-space:nowrap;
     background:var(--ink); color:var(--bg); font-family:var(--font-sans); font-size:13.5px; font-weight:600; padding:9px 14px; border-radius:999px;
     box-shadow:0 4px 18px rgba(0,0,0,.25); max-width:calc(100vw - 32px);}
-  .slip-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(72px + env(safe-area-inset-bottom, 0px)); z-index:40;
-    display:flex; align-items:center; gap:10px; min-height:48px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; white-space:nowrap;
-    background:var(--accent); color:#111; font-family:var(--font-sans); font-size:15px; font-weight:700; box-shadow:0 6px 22px rgba(0,0,0,.35);}
+  .slip-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(74px + env(safe-area-inset-bottom, 0px)); z-index:40;
+    width:calc(100% - 24px); max-width:520px; min-height:58px; display:flex; align-items:center; gap:12px; padding:8px 16px 8px 9px;
+    border-radius:30px; border:1px solid rgba(255,255,255,.08); cursor:pointer; text-align:left; color:#fff;
+    background:rgba(14,14,17,.92); -webkit-backdrop-filter:blur(18px) saturate(1.4); backdrop-filter:blur(18px) saturate(1.4);
+    font-family:var(--font-sans); box-shadow:0 10px 30px rgba(0,0,0,.45); transition:transform .25s ease;}
   .slip-bar[hidden]{display:none;}
-  .slip-bar .n{background:#111; color:var(--accent); border-radius:999px; min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; padding:0 6px;}
-  .slip-bar .o{font-family:var(--font-mono);}
+  body.has-slip .panel{padding-bottom:76px;}            /* room under the last card for the island */
+  .slip-bar.pop{animation:slipPop .35s ease;}
+  @keyframes slipPop{0%{transform:translateX(-50%) scale(1)} 40%{transform:translateX(-50%) scale(1.04)} 100%{transform:translateX(-50%) scale(1)}}
+  .slip-bar .n{flex:none; width:40px; height:40px; border-radius:50%; background:var(--accent); color:#111; font-weight:800; font-size:17px;
+    display:inline-flex; align-items:center; justify-content:center;}
+  .slip-bar .t{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2;}
+  .slip-bar .t b{font-size:15px;}
+  .slip-bar .t span{font-size:12.5px; color:rgba(255,255,255,.62); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slip-bar .o{flex:none; font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--accent);}
+  .slip-bar .c{flex:none; color:rgba(255,255,255,.5); font-size:20px; margin-left:-4px;}
   .slip-shade{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60;}
   .slip-shade[hidden], .slip-sheet[hidden]{display:none;}
   .slip-sheet{position:fixed; left:0; right:0; bottom:0; z-index:61; max-height:86vh; overflow-y:auto; background:var(--surface);
@@ -2681,10 +2691,10 @@
   function toggleSlipLeg(leg, btn){
     var i = -1;
     parlayLegs.forEach(function(l, j){ if(l.desc === leg.desc && l.game === leg.game) i = j; });
-    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); slipToast("Removed from slip"); return; }
+    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); if(parlayLegs.length) slipFlash("Removed " + leg.desc); return; }
     addParlayLeg(leg);
     if(btn) btn.classList.add("in-slip");
-    slipToast("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
+    slipFlash("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
   }
   function ppMainLine(rs){
     // the line the market is closest to a coin flip on (like a sportsbook's main line)
@@ -4364,14 +4374,25 @@
     return {n: n, mult: mult, chance: chance, american: n ? Math.round(american) : null};
   }
   function slipPrice(l){ return slipView === "pct" ? pctTxt(legChance(l)) : fmtOdds(l.odds); }
+  var slipNote = "", slipNoteTimer = null;
   function renderSlipBar(){
     var n = parlayLegs.length;
     slipBar.hidden = n === 0;
+    document.body.classList.toggle("has-slip", n > 0);
     if(!n) return;
     var mm = slipMath(parlayLegs);
-    slipBar.setAttribute("aria-label", "Bet slip: " + n + " pick" + (n === 1 ? "" : "s"));
-    slipBar.innerHTML = '<span class="n">' + n + '</span>' + (n === 1 ? 'pick' : 'picks') + ' <span class="o">' +
-      (slipView === "pct" ? pctTxt(mm.chance) : fmtOdds(mm.american)) + '</span> <span aria-hidden="true">›</span>';
+    var sub = slipNote || parlayLegs.map(function(l){ return l.desc; }).join(" · ");
+    slipBar.setAttribute("aria-label", "Bet slip: " + n + " pick" + (n === 1 ? "" : "s") + ". Open to review");
+    slipBar.innerHTML = '<span class="n">' + n + '</span><span class="t"><b>' + (n > 1 ? n + "-pick parlay" : "Bet slip") + '</b><span>' +
+      escapeHtml(sub) + '</span></span><span class="o">' + (slipView === "pct" ? pctTxt(mm.chance) : fmtOdds(mm.american)) +
+      '</span><span class="c" aria-hidden="true">›</span>';
+  }
+  // the island shows what just changed for a moment, instead of a separate pop-up
+  function slipFlash(msg){
+    slipNote = msg; renderSlipBar();
+    slipBar.classList.remove("pop"); void slipBar.offsetWidth; slipBar.classList.add("pop");
+    clearTimeout(slipNoteTimer);
+    slipNoteTimer = setTimeout(function(){ slipNote = ""; renderSlipBar(); }, 2200);
   }
   function openSlip(){
     if(!parlayLegs.length){ slipToast("Tap any odds to add a pick"); return; }

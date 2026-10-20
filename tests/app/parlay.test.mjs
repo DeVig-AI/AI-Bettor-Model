@@ -80,12 +80,13 @@ test("bet slip and tracked parlays on a phone", async (t) => {
       const jaxMl = pg.locator('.sb-btn[data-legg*="\\"desc\\":\\"JAX ML\\""]');
       await jaxMl.click();
       await pg.locator('.sb-btn[data-legg*="\\"desc\\":\\"Over 48.5\\""]').click();
-      assert.match(await pg.locator(".slip-bar").innerText(), /2\s*picks/);
+      assert.match(await pg.locator(".slip-bar").innerText(), /2\s*2-pick parlay/);
       assert.ok(await jaxMl.evaluate(e => e.classList.contains("in-slip")));
       await jaxMl.click();                                                  // second tap takes it out
-      assert.match(await pg.locator(".slip-bar").innerText(), /1\s*pick/);
+      assert.match(await pg.locator(".slip-bar").innerText(), /1\s*Bet slip[\s\S]*Removed JAX ML/);
       await jaxMl.click();
-      assert.match(await pg.locator(".slip-bar").innerText(), /2\s*picks\s*\+\d+/);
+      assert.match(await pg.locator(".slip-bar").innerText(), /2-pick parlay[\s\S]*Added JAX ML[\s\S]*\+\d+/);
+      await pg.waitForFunction(() => /JAX ML · Over|Over 48\.5 · JAX ML/.test(document.querySelector(".slip-bar").innerText), null, {timeout: 4000});
       const box = await pg.locator(".slip-bar").boundingBox();
       assert.ok(box.height >= 44 && box.x >= 0 && box.x + box.width <= 390);
       await pg.screenshot({path: OUT + "slip-bar.png"});
