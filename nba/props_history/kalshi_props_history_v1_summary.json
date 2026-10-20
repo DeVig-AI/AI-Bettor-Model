@@ -1,10 +1,22 @@
 {
- "generated_at": "2026-10-20T03:11:16Z",
+ "generated_at": "2026-10-20T03:11:59Z",
  "stats": {
   "series": {
-   "KXNBAPLAYOFFPTS": {
-    "stat": "points",
-    "title": "NBA Playoffs Player Points"
+   "KXNBA3PT": {
+    "stat": "threes",
+    "title": "NBA Player Threes"
+   },
+   "KXNBASTOCK": {
+    "stat": "stl_blk",
+    "title": "NBA Player Steals + Blocks"
+   },
+   "KXNBARA": {
+    "stat": "reb_ast",
+    "title": "Pro Basketball Player Rebounds + Assists"
+   },
+   "KXNBASTL": {
+    "stat": "steals",
+    "title": "NBA Player Steals"
    },
    "KXNBAPRA": {
     "stat": "pts_reb_ast",
@@ -14,45 +26,33 @@
     "stat": "blocks",
     "title": "NBA Player Blocks"
    },
-   "KXNBARA": {
-    "stat": "reb_ast",
-    "title": "Pro Basketball Player Rebounds + Assists"
-   },
-   "KXNBA3PT": {
-    "stat": "threes",
-    "title": "NBA Player Threes"
-   },
    "KXNBASTOCKS": {
     "stat": "stl_blk",
     "title": "NBA Player Steals and Blocks"
    },
-   "KXNBASTL": {
-    "stat": "steals",
-    "title": "NBA Player Steals"
-   },
-   "KXNBAAST": {
-    "stat": "assists",
-    "title": "NBA Player Assists"
+   "KXNBAREB": {
+    "stat": "rebounds",
+    "title": "NBA Player Rebounds"
    },
    "KXNBAPR": {
     "stat": "pts_reb",
     "title": "Pro Basketball Player Points + Rebounds"
    },
+   "KXNBAAST": {
+    "stat": "assists",
+    "title": "NBA Player Assists"
+   },
    "KXNBAPA": {
     "stat": "pts_ast",
     "title": "Pro Basketball Player Points + Assists"
    },
-   "KXNBASTOCK": {
-    "stat": "stl_blk",
-    "title": "NBA Player Steals + Blocks"
+   "KXNBAPLAYOFFPTS": {
+    "stat": "points",
+    "title": "NBA Playoffs Player Points"
    },
    "KXNBAPTS": {
     "stat": "points",
     "title": "NBA Player Points"
-   },
-   "KXNBAREB": {
-    "stat": "rebounds",
-    "title": "NBA Player Rebounds"
    }
   },
   "events_seen": 5515,
@@ -68,7 +68,7 @@
   },
   "markets_from": {},
   "candles_by_endpoint": {},
-  "minutes": 0.6,
+  "minutes": 0.5,
   "complete": true,
   "events_done_total": 5513
  },
