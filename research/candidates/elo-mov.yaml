@@ -1,0 +1,32 @@
+# Research Lab candidate elo-mov -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-mov
+name: + Margin-of-victory multiplier
+market: spread
+family: Elo family
+parent: elo-base
+reason: Bigger wins should move ratings more, damped when a favourite wins big (538's multiplier ln(margin+1)·2.2/(winner's
+  Elo edge·0.001+2.2)).
+source: FiveThirtyEight's public NFL Elo code (fivethirtyeight/nfl-elo-game forecast.py)
+model:
+  type: elo
+  params:
+    k: 20
+    hfa_elo: 65
+    revert: 0.3333333333333333
+    revert_center: none
+    mean: 1505
+    elo_per_point: 25
+    mov: '538'
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10

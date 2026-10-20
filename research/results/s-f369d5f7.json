@@ -1,0 +1,222 @@
+{
+ "id": "s-f369d5f7",
+ "name": "Blend of 2: s-473e5379 + s-8a5f816b",
+ "market": "spread",
+ "family": "Blend · search",
+ "parent": null,
+ "reason": "Found by search round 1: on 2006–2016 it beat the line by +1.12 pts a game (t = 3.32), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+ "attempt": 20,
+ "ran_at": "2026-10-19T06:27:06Z",
+ "constitution": {
+  "version": "v7",
+  "sha256": "70ed618b8ccc14c6bf1a3e431d99958cf4712c708996255ba8f921f8452f0151"
+ },
+ "candidate_sha256": "6da2d749dacda77a612aae56e5fa8857b8a54d40fd9b7e64a9f45d5b59744ef3",
+ "code_sha256": "3775dc7240ed8b3653f70c7c97e8567a343a8e3bbc339d5c08e7326c6a707a59",
+ "data_sha256": "69e8093989fd3fd28491ae25befa299acba23f4403844dfc0e3195deb2a2f045",
+ "git_commit": "577cdaa463c36577bece41c6c443af35d8528cf8",
+ "run_number": 5,
+ "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39208787262",
+ "effect_definition": "cover points per game beyond the line-only baseline (Constitution A5)",
+ "pricing": {
+  "price": 0.5,
+  "fee": 0.0175,
+  "break_even": 0.5175
+ },
+ "baseline": {
+  "side": 1.0,
+  "train_mean_cover": 0.487,
+  "train_games": 1845,
+  "meaning": "line-only baseline takes this side on every game (+1 home/over, -1 away/under)"
+ },
+ "train": {
+  "games": 1845,
+  "effect": 0.1951,
+  "slope": 0.1661,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 1786,
+   "wins": 915,
+   "losses": 871,
+   "pushes": 59,
+   "win_rate": 0.5123,
+   "break_even": 0.5175,
+   "roi": -0.01
+  }
+ },
+ "gates": [
+  {
+   "name": "2017–19",
+   "seasons": [
+    2017,
+    2019
+   ],
+   "games": 801,
+   "effect": 0.6167,
+   "ci": [
+    -0.4982,
+    1.7279
+   ],
+   "se": 0.575,
+   "p": 0.141739,
+   "slope": 0.0751,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 774,
+    "wins": 390,
+    "losses": 384,
+    "pushes": 27,
+    "win_rate": 0.5039,
+    "break_even": 0.5175,
+    "roi": -0.0263
+   }
+  },
+  {
+   "name": "2020–22",
+   "seasons": [
+    2020,
+    2022
+   ],
+   "games": 838,
+   "effect": 0.0012,
+   "ci": [
+    -1.0215,
+    1.0358
+   ],
+   "se": 0.5276,
+   "p": 0.499098,
+   "slope": 0.0605,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 824,
+    "wins": 401,
+    "losses": 423,
+    "pushes": 14,
+    "win_rate": 0.4867,
+    "break_even": 0.5175,
+    "roi": -0.0596
+   }
+  },
+  {
+   "name": "2023–24",
+   "seasons": [
+    2023,
+    2024
+   ],
+   "games": 570,
+   "effect": -0.8316,
+   "ci": [
+    -2.0966,
+    0.3982
+   ],
+   "se": 0.6329,
+   "p": 0.90557,
+   "slope": -0.0265,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 552,
+    "wins": 277,
+    "losses": 275,
+    "pushes": 18,
+    "win_rate": 0.5018,
+    "break_even": 0.5175,
+    "roi": -0.0303
+   }
+  }
+ ],
+ "rule_split": [
+  {
+   "label": "2017–20",
+   "seasons": [
+    2017,
+    2020
+   ],
+   "note": "before the 17-game season",
+   "games": 1070,
+   "effect": 0.7178,
+   "slope": 0.1163,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 1043,
+    "wins": 524,
+    "losses": 519,
+    "pushes": 27,
+    "win_rate": 0.5024,
+    "break_even": 0.5175,
+    "roi": -0.0292
+   }
+  },
+  {
+   "label": "2021–23",
+   "seasons": [
+    2021,
+    2023
+   ],
+   "note": "17 games, from 2021",
+   "games": 854,
+   "effect": -0.8607,
+   "slope": -0.0433,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 826,
+    "wins": 400,
+    "losses": 426,
+    "pushes": 28,
+    "win_rate": 0.4843,
+    "break_even": 0.5175,
+    "roi": -0.0642
+   }
+  },
+  {
+   "label": "2024",
+   "seasons": [
+    2024,
+    2024
+   ],
+   "note": "new kickoff rule",
+   "games": 285,
+   "effect": -0.0421,
+   "slope": 0.0548,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 281,
+    "wins": 144,
+    "losses": 137,
+    "pushes": 4,
+    "win_rate": 0.5125,
+    "break_even": 0.5175,
+    "roi": -0.0097
+   }
+  }
+ ],
+ "fit": {
+  "component 1": {},
+  "component 2": {}
+ },
+ "pooled": {
+  "name": "Pooled 2017–24",
+  "seasons": [
+   2017,
+   2024
+  ],
+  "games": 2209,
+  "effect": 0.0095,
+  "ci": [
+   -0.6343,
+   0.641
+  ],
+  "se": 0.3286,
+  "p": 0.48846,
+  "slope": 0.0412,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 2150,
+   "wins": 1068,
+   "losses": 1082,
+   "pushes": 59,
+   "win_rate": 0.4967,
+   "break_even": 0.5175,
+   "roi": -0.0401
+  }
+ }
+}

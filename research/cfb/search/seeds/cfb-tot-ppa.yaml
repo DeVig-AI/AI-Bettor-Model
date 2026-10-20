@@ -1,0 +1,17 @@
+# Research Lab CFB candidate cfb-tot-ppa -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-tot-ppa
+name: + PPA efficiency
+market: total
+family: Pace × efficiency
+parent: cfb-tot-pe
+reason: Measure efficiency with predicted points added per play (CFBD/cfbfastR PPA) instead of points per play.
+source: PPA/EPA as computed by CFBD and cfbfastR (MIT)
+model:
+  type: pace_eff
+  params:
+    halflife: 6
+    season_carry: 0.5
+    calibrate: true
+    league_window: 1600
+    efficiency: epa
+    pace: true

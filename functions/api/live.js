@@ -1,10 +1,12 @@
-// DeVig live scores: GET /api/live?sport=nfl|nba|mlb returns ESPN's scoreboard in a small form; adding &event=<ESPN id>
+// DeVig live scores: GET /api/live?sport=nfl|nba|mlb|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
+// with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
 // (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
-const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb"};
+const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", cfb: "football/college-football"};
+const QUERY = {cfb: "?groups=80&limit=500"};       // every FBS game, not just ESPN's featured ones
 // ESPN codes -> the app's team codes (same table as kalshi_games_v1.ALIASES, ESPN side)
 const ALIASES = {
   nfl: {JAC: "JAX", LAR: "LA", WSH: "WAS"},
@@ -43,9 +45,14 @@ export function scoreboard(d, sport) {
     const ty = ((ev.status || comp.status || {}).type) || {};
     const pos = (comp.situation || {}).possession;
     const posTeam = [a, h].find(c => pos && (c.team || {}).id === pos);
-    return {id: ev.id, kickoff: ev.date, away: code((a.team || {}).abbreviation), home: code((h.team || {}).abbreviation),
+    const out = {id: ev.id, kickoff: ev.date, away: code((a.team || {}).abbreviation), home: code((h.team || {}).abbreviation),
             away_score: num(a.score), home_score: num(h.score), state: ty.state || "pre",
             detail: ty.shortDetail || ty.detail || "", possession: posTeam ? code(posTeam.team.abbreviation) : null};
+    if (sport === "cfb") {
+      out.away_id = String((a.team || {}).id || ""); out.home_id = String((h.team || {}).id || "");
+      out.away_name = (a.team || {}).location || ""; out.home_name = (h.team || {}).location || "";
+    }
+    return out;
   }).filter(Boolean);
 }
 
@@ -118,7 +125,7 @@ export async function handle(request, fetcher = fetch) {
       const d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
       return json({sport, event, at: new Date().toISOString(), players: sport === "nba" ? nbaBox(d) : nflBox(d)}, 200, 10);
     }
-    const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard`, SCORE_TTL, fetcher);
+    const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${QUERY[sport] || ""}`, SCORE_TTL, fetcher);
     return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, 10);
   } catch (e) {
     return json({error: "scores unavailable"}, 502);

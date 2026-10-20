@@ -1,0 +1,37 @@
+# Research Lab CFB candidate cfb-elo-returning -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-elo-returning
+name: + Returning production as the preseason prior
+market: spread
+family: Elo family
+parent: cfb-elo-base
+reason: 'Teams that bring back most of last year''s production should keep more of last year''s rating: the offseason regression
+  grows or shrinks with the share of last season''s PPA that returns (±0.25 at 0% / 100%), as in SP+-style and CFBD-based
+  open preseason models.'
+source: Returning production (CFBD /player/returning) as used by public preseason college models
+model:
+  type: elo
+  params:
+    k: 25
+    hfa_elo: 70
+    revert: 0.3333333333333333
+    revert_center: none
+    mean: 1500
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    returning: ppa
+    returning_k: 0.5
+    returning_mid: 0.5
+    mov_cap: null

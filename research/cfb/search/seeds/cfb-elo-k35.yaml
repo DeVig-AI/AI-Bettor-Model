@@ -1,0 +1,35 @@
+# Research Lab CFB candidate cfb-elo-k35 -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-elo-k35
+name: 'Variant: K 35'
+market: spread
+family: Elo family
+parent: cfb-elo-base
+reason: 'Pre-declared variant: faster updates (K 35) for short college seasons.'
+source: FiveThirtyEight's public Elo rules (fivethirtyeight/nfl-elo-game forecast.py, MIT), applied to FBS games
+model:
+  type: elo
+  params:
+    k: 35
+    hfa_elo: 70
+    revert: 0.3333333333333333
+    revert_center: none
+    mean: 1500
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.0
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    returning: none
+    returning_k: 0.5
+    returning_mid: 0.5
+    mov_cap: null

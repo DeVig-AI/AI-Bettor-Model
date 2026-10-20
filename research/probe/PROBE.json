@@ -1,0 +1,1561 @@
+{
+ "at": "2026-10-19T05:46:44Z",
+ "sports": {
+  "NBA": [
+   {
+    "source": "Sportsbook Reviews Online odds archive",
+    "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm",
+    "files": 0,
+    "terms_snippet": null,
+    "seasons": []
+   },
+   {
+    "source": "kyleskom/NBA-Machine-Learning-Sports-Betting OddsData.sqlite (scraped from SBR)",
+    "url": "https://raw.githubusercontent.com/kyleskom/NBA-Machine-Learning-Sports-Betting/master/Data/OddsData.sqlite",
+    "tables": [
+     {
+      "table": "2023-24",
+      "rows": 1255,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.373,
+      "dates": [
+       "2023-10-24",
+       "2024-04-28"
+      ]
+     },
+     {
+      "table": "2024-25",
+      "rows": 1326,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.4,
+      "dates": [
+       "2024-10-22",
+       "2025-06-22"
+      ]
+     },
+     {
+      "table": "odds_2007-08",
+      "rows": 1316,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 0.999,
+      "numeric:ML_Away": 0.999,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2007-08-0102",
+       "2007-08-1231"
+      ]
+     },
+     {
+      "table": "odds_2007-08_new",
+      "rows": 1316,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 0.999,
+      "numeric:ML_Away": 0.999,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2007-10-30",
+       "2008-06-17"
+      ]
+     },
+     {
+      "table": "odds_2008-09",
+      "rows": 1315,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2008-09-0102",
+       "2008-09-1231"
+      ]
+     },
+     {
+      "table": "odds_2008-09_new",
+      "rows": 1315,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2008-10-28",
+       "2009-06-14"
+      ]
+     },
+     {
+      "table": "odds_2009-10",
+      "rows": 1312,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2009-10-0101",
+       "2009-10-1231"
+      ]
+     },
+     {
+      "table": "odds_2009-10_new",
+      "rows": 1312,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2009-10-27",
+       "2010-06-17"
+      ]
+     },
+     {
+      "table": "odds_2010-11",
+      "rows": 1311,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2010-11-0101",
+       "2010-11-1231"
+      ]
+     },
+     {
+      "table": "odds_2010-11_new",
+      "rows": 1311,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2010-10-26",
+       "2011-06-12"
+      ]
+     },
+     {
+      "table": "odds_2011-12",
+      "rows": 1074,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2011-12-0101",
+       "2011-12-1231"
+      ]
+     },
+     {
+      "table": "odds_2011-12_new",
+      "rows": 1074,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2011-12-25",
+       "2012-06-21"
+      ]
+     },
+     {
+      "table": "odds_2012-13",
+      "rows": 1314,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2012-13-0101",
+       "2012-13-1231"
+      ]
+     },
+     {
+      "table": "odds_2012-13_new",
+      "rows": 1314,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2012-10-30",
+       "2013-06-20"
+      ]
+     },
+     {
+      "table": "odds_2013-14",
+      "rows": 1319,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2013-14-0101",
+       "2013-14-1231"
+      ]
+     },
+     {
+      "table": "odds_2013-14_new",
+      "rows": 1319,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2013-10-29",
+       "2014-06-15"
+      ]
+     },
+     {
+      "table": "odds_2014-15",
+      "rows": 1311,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2014-15-0101",
+       "2014-15-1231"
+      ]
+     },
+     {
+      "table": "odds_2014-15_new",
+      "rows": 1311,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2014-10-28",
+       "2015-06-16"
+      ]
+     },
+     {
+      "table": "odds_2015-16",
+      "rows": 1316,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2015-16-0101",
+       "2015-16-1231"
+      ]
+     },
+     {
+      "table": "odds_2015-16_new",
+      "rows": 1316,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2015-10-27",
+       "2016-06-19"
+      ]
+     },
+     {
+      "table": "odds_2016-17",
+      "rows": 1309,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2016-17-0101",
+       "2016-17-1231"
+      ]
+     },
+     {
+      "table": "odds_2016-17_new",
+      "rows": 1309,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2016-10-25",
+       "2017-06-12"
+      ]
+     },
+     {
+      "table": "odds_2017-18",
+      "rows": 1312,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2017-18-0101",
+       "2017-18-1231"
+      ]
+     },
+     {
+      "table": "odds_2017-18_new",
+      "rows": 1312,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2017-10-17",
+       "2018-06-08"
+      ]
+     },
+     {
+      "table": "odds_2018-19",
+      "rows": 1312,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 0.999,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2018-19-0101",
+       "2018-19-1231"
+      ]
+     },
+     {
+      "table": "odds_2018-19_new",
+      "rows": 1312,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 0.999,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2018-10-16",
+       "2019-06-13"
+      ]
+     },
+     {
+      "table": "odds_2019-20",
+      "rows": 1143,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.001,
+      "dates": [
+       "2019-20-0101",
+       "2019-20-1231"
+      ]
+     },
+     {
+      "table": "odds_2019-20_new",
+      "rows": 1143,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.001,
+      "dates": [
+       "2019-10-22",
+       "2020-10-11"
+      ]
+     },
+     {
+      "table": "odds_2020-21",
+      "rows": 1171,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2020-21-0101",
+       "2020-21-1231"
+      ]
+     },
+     {
+      "table": "odds_2020-21_new",
+      "rows": 1171,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2020-12-22",
+       "2021-07-20"
+      ]
+     },
+     {
+      "table": "odds_2021-22",
+      "rows": 1323,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 0.998,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2021-22-0101",
+       "2021-22-1231"
+      ]
+     },
+     {
+      "table": "odds_2021-22_new",
+      "rows": 1323,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 0.998,
+      "spread_signed_share": 0.0,
+      "dates": [
+       "2021-10-19",
+       "2022-06-16"
+      ]
+     },
+     {
+      "table": "odds_2022-23",
+      "rows": 1319,
+      "columns": [
+       "index",
+       "Unnamed: 0",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.353,
+      "dates": [
+       "2022-23-0101",
+       "2022-23-1231"
+      ]
+     },
+     {
+      "table": "odds_2022-23_new",
+      "rows": 1319,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.353,
+      "dates": [
+       "2022-10-19",
+       "2023-06-12"
+      ]
+     },
+     {
+      "table": "odds_2023-24_new",
+      "rows": 1195,
+      "columns": [
+       "index",
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.375,
+      "dates": [
+       "2023-10-24",
+       "2024-04-28"
+      ]
+     },
+     {
+      "table": "odds_2025-26",
+      "rows": 554,
+      "columns": [
+       "Date",
+       "Home",
+       "Away",
+       "OU",
+       "Spread",
+       "ML_Home",
+       "ML_Away",
+       "Points",
+       "Win_Margin",
+       "Days_Rest_Home",
+       "Days_Rest_Away"
+      ],
+      "numeric:OU": 1.0,
+      "numeric:Spread": 1.0,
+      "numeric:ML_Home": 1.0,
+      "numeric:ML_Away": 1.0,
+      "spread_signed_share": 0.419,
+      "dates": [
+       "2025-10-21",
+       "2026-01-07"
+      ]
+     }
+    ],
+    "note": "License not stated in the repository. Older tables give the spread without a side (favourite's number), recent ones signed; whether lines are closing is not documented."
+   },
+   {
+    "source": "ESPN public odds (core API) for past games",
+    "samples": [
+     {
+      "date": "20080115",
+      "games_that_day": 8,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20090115",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20100115",
+      "games_that_day": 13,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20110115",
+      "games_that_day": 9,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20120115",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20130115",
+      "games_that_day": 6,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20140115",
+      "games_that_day": 12,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20150115",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20160115",
+      "games_that_day": 9,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20170115",
+      "games_that_day": 7,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20180115",
+      "games_that_day": 11,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20190115",
+      "games_that_day": 6,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20200115",
+      "games_that_day": 10,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20210115",
+      "games_that_day": 10,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20220115",
+      "games_that_day": 10,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20230115",
+      "games_that_day": 8,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20240115",
+      "games_that_day": 11,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20250115",
+      "games_that_day": 11,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   }
+  ],
+  "MLB": [
+   {
+    "source": "Sportsbook Reviews Online odds archive",
+    "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/mlb/mlboddsarchives.htm",
+    "files": 12,
+    "terms_snippet": "These over-under bets are also known as totals, so don\u2019t get confused since the terms are used interchangeably and they refer to the same thing.",
+    "seasons": [
+     {
+      "file": "mlb-odds-2010.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2011.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2012.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2013.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2014.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2015.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2016.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2017.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2018.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2019.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2020.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "mlb-odds-2021.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   },
+   {
+    "source": "ESPN public odds (core API) for past games",
+    "samples": [
+     {
+      "date": "20080710",
+      "games_that_day": 13,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20090710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20100710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20110710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20120710",
+      "games_that_day": 1,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20130710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20140710",
+      "games_that_day": 12,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20150710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20160710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20170710",
+      "games_that_day": 0
+     },
+     {
+      "date": "20180710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20190710",
+      "games_that_day": 0
+     },
+     {
+      "date": "20200710",
+      "games_that_day": 0
+     },
+     {
+      "date": "20210710",
+      "games_that_day": 16,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20220710",
+      "games_that_day": 15,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20230710",
+      "games_that_day": 0
+     },
+     {
+      "date": "20240710",
+      "games_that_day": 17,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20250710",
+      "games_that_day": 11,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   },
+   {
+    "source": "Retrosheet game logs (MLB scores)",
+    "years": {
+     "2008": {
+      "file": "gl2008.txt",
+      "games": 2428
+     },
+     "2009": {
+      "file": "gl2009.txt",
+      "games": 2430
+     },
+     "2010": {
+      "file": "gl2010.txt",
+      "games": 2430
+     },
+     "2011": {
+      "file": "gl2011.txt",
+      "games": 2429
+     },
+     "2012": {
+      "file": "gl2012.txt",
+      "games": 2430
+     },
+     "2013": {
+      "file": "gl2013.txt",
+      "games": 2431
+     },
+     "2014": {
+      "file": "gl2014.txt",
+      "games": 2430
+     },
+     "2015": {
+      "file": "gl2015.txt",
+      "games": 2429
+     },
+     "2016": {
+      "file": "gl2016.txt",
+      "games": 2428
+     },
+     "2017": {
+      "file": "gl2017.txt",
+      "games": 2430
+     },
+     "2018": {
+      "file": "gl2018.txt",
+      "games": 2431
+     },
+     "2019": {
+      "file": "gl2019.txt",
+      "games": 2429
+     },
+     "2020": {
+      "file": "gl2020.txt",
+      "games": 898
+     },
+     "2021": {
+      "file": "gl2021.txt",
+      "games": 2429
+     },
+     "2022": {
+      "file": "gl2022.txt",
+      "games": 2430
+     },
+     "2023": {
+      "file": "gl2023.txt",
+      "games": 2430
+     },
+     "2024": {
+      "file": "gl2024.txt",
+      "games": 2429
+     },
+     "2025": {
+      "file": "gl2025.txt",
+      "games": 2430
+     }
+    },
+    "notice": "Recipients of Retrosheet data are free to make any desired use of\nthe information, including (but not limited to) selling it,\ngiving it away, or producing a commercial product based upon the\ndata.  Retrosheet has one requirement for any such transfer of\ndata or product development, which is that the following\nstatement must appear prominently:\n\n     The information used here was obtained free of\n     charge from and is copyrighted by Retrosheet.  Interested\n     parties may contact Retrosheet at \"www.retrosheet.org\".\n\nRetrosheet makes no guarantees of accuracy for the information \nthat is supplied. Much effort is expended to make our website \nas correct as possible, but Retrosheet shall not be held \nresponsible for any consequences arising from the use of the \nmaterial presented here. All "
+   }
+  ],
+  "WNBA": [
+   {
+    "source": "Sportsbook Reviews Online odds archive",
+    "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/wnba/wnbaoddsarchives.htm",
+    "files": 0,
+    "terms_snippet": " This bonus always has a maximum bet cap of around 5-10 USD and comes with wagering requirements, so it\u2019s better to check the Terms &amp; Conditions before using it. Agree to the bookie\u2019s Terms and Conditions and click to submit the action.",
+    "seasons": []
+   },
+   {
+    "source": "ESPN public odds (core API) for past games",
+    "samples": [
+     {
+      "date": "20100715",
+      "games_that_day": 1,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20110715",
+      "games_that_day": 4,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20120715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20130715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20140715",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20150715",
+      "games_that_day": 4,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20160715",
+      "games_that_day": 5,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20170715",
+      "games_that_day": 1,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20180715",
+      "games_that_day": 5,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20190715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20200715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20210715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20220715",
+      "games_that_day": 2,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20230715",
+      "games_that_day": 1,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20240715",
+      "games_that_day": 0
+     },
+     {
+      "date": "20250715",
+      "games_that_day": 2,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   }
+  ],
+  "NCAAB": [
+   {
+    "source": "Sportsbook Reviews Online odds archive",
+    "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/ncaabasketball/ncaabasketballoddsarchives.htm",
+    "files": 14,
+    "terms_snippet": null,
+    "seasons": [
+     {
+      "file": "ncaa-basketball-2007-08.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2008-09.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2009-10.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2010-11.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2011-12.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2012-13.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2013-14.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2014-15.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2015-16.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2016-17.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2017-18.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2018-19.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2019-20.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "file": "ncaa-basketball-2020-21.xlsx",
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   },
+   {
+    "source": "ESPN public odds (core API) for past games",
+    "samples": [
+     {
+      "date": "20080201",
+      "games_that_day": 9,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20090201",
+      "games_that_day": 4,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20100201",
+      "games_that_day": 1,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20110201",
+      "games_that_day": 5,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20120201",
+      "games_that_day": 8,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20130201",
+      "games_that_day": 9,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20140201",
+      "games_that_day": 17,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20150201",
+      "games_that_day": 2,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20160201",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20170201",
+      "games_that_day": 7,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20180201",
+      "games_that_day": 5,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20190201",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20200201",
+      "games_that_day": 21,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20210201",
+      "games_that_day": 3,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20220201",
+      "games_that_day": 8,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20230201",
+      "games_that_day": 4,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20240201",
+      "games_that_day": 2,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     },
+     {
+      "date": "20250201",
+      "games_that_day": 16,
+      "error": "RuntimeError: HTTPError: HTTP Error 404: Not Found"
+     }
+    ]
+   }
+  ]
+ }
+}

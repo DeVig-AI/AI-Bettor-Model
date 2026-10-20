@@ -1,0 +1,215 @@
+name: Research Lab -- loop (back to back)
+
+# The loop runs back to back (Constitution v8): when a run finishes, its last job queues the next one (or a sport's
+# sealed exam first, when it has a lab pass and an exam left; the exam then queues the loop). An hourly start is the
+# safety net if the chain ever breaks; a failed run does not queue itself again. Off switch: set the repository
+# variable RESEARCH_LOOP to "off" (Settings > Secrets and variables > Actions > Variables).
+# NFL (Part B): each run does a search round on 2006-16 only, which sends at most 2 per market per week to
+# research/candidates/; NFL candidates without a ledger row (search
+# finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
+# same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
+# Each sport ends with the Inspector General's review. Deterministic; no AI in the loop.
+on:
+  schedule:
+    - cron: '37 * * * *'     # safety net only: the loop queues itself; this restarts it if the chain breaks
+  workflow_dispatch:
+    inputs:
+      search:
+        description: '(Kept for compatibility: every run does a search round now)'
+        type: boolean
+        default: false
+      rerun:
+        description: 'Re-run ONE candidate whose last attempt crashed (its id). Leave empty for a normal run. Every attempt counts in the correction.'
+        type: string
+        default: ''
+      rerun_cfb:
+        description: 'College football: re-run ONE CFB candidate whose last attempt crashed (its id).'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  actions: write             # the last job queues the next run
+
+concurrency:
+  group: research-lab        # the lab and the Inspector General never write research/ at the same time
+  cancel-in-progress: false
+
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150     # a search round scores up to 6,000 configurations (NFL) / 800 (CFB)
+    env:
+      RERUN: ${{ inputs.rerun }}
+      FORCE_SEARCH: ${{ inputs.search }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Search round (every 2 hours; 2006-16 only)
+        id: search
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.search round --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain research/search)" ]; then
+            python3 -m research.lab.inspector review
+            research/lab/push.sh "Research Lab search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Fill the data cache if a season is missing (1999-2024 only; no-op when complete)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.data fetch
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start ${RERUN:+--rerun "$RERUN"}
+          research/lab/push.sh "Research Lab: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run ${RERUN:+--rerun "$RERUN"}
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  cfb:
+    needs: lab
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 150     # a search round scores up to 6,000 configurations (NFL) / 800 (CFB)
+    env:
+      RERUN: ${{ inputs.rerun_cfb }}
+      LAB_SPORT: CFB
+      FORCE_SEARCH: ${{ inputs.search }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main          # the NFL job may have just pushed
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: CFB data cache listed? (filled by "Research CFB -- data")
+        id: data
+        run: |
+          if [ -f research/cfb/data/MANIFEST.json ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else
+            echo "No CFB data cache yet: run 'Research CFB -- data' first."; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Restore the CFB data cache (private Actions cache; never committed, Constitution C1a)
+        if: steps.data.outputs.ok == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+
+      - name: CFB search round (every 2 hours; 2018, 2019, 2021 only)
+        if: steps.data.outputs.ok == 'true'
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.cfb_data check
+          python3 -m research.lab.search round --sport CFB --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain research/cfb/search)" ]; then
+            python3 -m research.lab.inspector review --sport CFB
+            research/lab/push.sh "Research Lab CFB search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          if [ "${{ steps.data.outputs.ok }}" != "true" ]; then echo "n=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          n=$(python3 -m research.lab.lab pending ${RERUN:+--rerun "$RERUN"})
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: CFB data cache present? (filled by "Research CFB -- data"; the lab itself never calls the API)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.cfb_data check
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start ${RERUN:+--rerun "$RERUN"}
+          research/lab/push.sh "Research Lab CFB: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run ${RERUN:+--rerun "$RERUN"}
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab CFB results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  next:
+    needs: [lab, cfb]
+    # only after a good run: a failure waits for the hourly safety net instead of looping on the error
+    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Queue the next run (or a sealed exam first)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          next=$(python3 -m research.lab.next_run)
+          echo "Next: $next"
+          if [ "$next" = "loop" ]; then
+            gh workflow run research_lab.yml --ref main
+          else
+            gh workflow run research_inspector_general.yml --ref main -f action=exam -f sport="${next#exam }" -f then_loop=true
+          fi
+

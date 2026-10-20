@@ -1,0 +1,15 @@
+# Research Lab CFB candidate cfb-ppa-ngt -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-ppa-ngt
+name: + Garbage time removed
+market: spread
+family: Efficiency ratings
+parent: cfb-ppa
+reason: The same PPA ratings from plays outside garbage time only (CFBD's excludeGarbageTime), so lopsided fourth quarters
+  do not count.
+source: CFBD / cfbfastR garbage-time filter
+model:
+  type: ppa
+  params:
+    carry: 0.6
+    prior_w: 3
+    garbage_time: exclude

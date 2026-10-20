@@ -1,0 +1,36 @@
+# Research Lab CFB candidate cfb-elo-market -- registered before it runs (Constitution A3, Part C). Never edit after it has run.
+id: cfb-elo-market
+name: + Learns against the market line
+market: spread
+family: Elo family
+parent: cfb-elo-base
+reason: 'Let ratings learn from the market: after each game, update against a 50/50 blend of the Elo spread and the closing
+  line (nfelo''s idea, also used by open college Elo models).'
+source: nfelo (greerreNFL) idea; DeVig's own implementation
+model:
+  type: elo
+  params:
+    k: 25
+    hfa_elo: 70
+    revert: 0.3333333333333333
+    revert_center: none
+    mean: 1500
+    elo_per_point: 25
+    mov: none
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.0
+    qb: none
+    hfa_mode: fixed
+    market_blend: 0.5
+    market_resist: 0.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    returning: none
+    returning_k: 0.5
+    returning_mid: 0.5
+    mov_cap: null

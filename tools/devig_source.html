@@ -204,6 +204,23 @@
   .ask-row button{width:auto; flex:none;}
   /* Best-bets summary + collapsible game rows */
   .bb-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .cfb-head{padding:12px 14px}
+  .cfb-card, .cfb-past{padding:12px 14px}
+  .cfb-card > summary{list-style:none; cursor:pointer}
+  .cfb-card > summary::-webkit-details-marker{display:none}
+  .cfb-when{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--ink-soft); margin-bottom:6px}
+  .cfb-src{color:var(--ink-faint)}
+  .cfb-live{color:var(--bad); font-weight:700}
+  .cfb-row{display:flex; align-items:center; gap:8px; min-height:34px}
+  .cfb-row.won .cfb-nm{font-weight:700}
+  .cfb-nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600}
+  .cfb-rk{font-size:11px; color:var(--ink-faint); font-weight:600; margin-right:4px}
+  .cfb-sc{font-family:var(--font-mono); font-size:18px; min-width:28px; text-align:right}
+  .cfb-p{font-family:var(--font-mono); color:var(--ink-soft); min-width:42px; text-align:right}
+  .cfb-lines{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:8px; font-size:13px; color:var(--ink-soft)}
+  .cfb-lines b{color:var(--ink)}
+  .cfb-body{margin-top:10px; border-top:1px solid var(--line); padding-top:8px}
+  .cfb-note{margin-top:8px; font-size:12px}
   .bb-sec{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:14px 0 4px;}
   .bb-row{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; width:100%; text-align:left;
     background:none; border:none; border-top:1px solid var(--line); padding:11px 0; cursor:pointer; color:var(--ink); font:inherit;}
@@ -242,6 +259,14 @@
   .lab-table td{padding:7px 6px; border-bottom:1px solid var(--line); text-align:right; font-family:var(--font-mono); white-space:nowrap;}
   .lab-table td:first-child{font-family:var(--font-sans); font-weight:600; white-space:normal;}
   .lab-table tr.bench td{color:var(--ink-soft);}
+  .md-tabs{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 8px;}
+  .md-game{padding:10px 0; border-top:1px solid var(--line);}
+  .md-game:first-of-type{border-top:none;}
+  .md-game .t{display:flex; justify-content:space-between; gap:8px; font-weight:600; font-size:14px;}
+  .md-game .p{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.5;}
+  .md-game .p span{white-space:nowrap;}
+  .md-credit{padding:8px 0; border-top:1px solid var(--line); font-size:13.5px;}
+  .md-credit:first-of-type{border-top:none;}
   .lab-game{padding:10px 0; border-top:1px solid var(--line);}
   .lab-game:first-of-type{border-top:none;}
   .lab-game .top{display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap;}
@@ -335,12 +360,68 @@
   .sb-btn.edge-med .tg{color:var(--accent-strong);}
   .sb-btn.edge-lean .tg{color:var(--ink-soft);}
   .sb-btn.empty{background:none; border-style:dashed;}
-  .sb-btn[data-leg]{cursor:pointer;}
-  .sb-btn[data-leg]:active{transform:scale(.97);}
-  .sb-btn[data-leg].in-slip{outline:2px solid var(--accent); outline-offset:1px;}
-  .slip-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom, 0px)); z-index:50;
+  .sb-btn[data-leg], .sb-btn[data-legg]{cursor:pointer;}
+  .sb-btn[data-leg]:active, .sb-btn[data-legg]:active{transform:scale(.97);}
+  .sb-btn[data-leg].in-slip, .sb-btn[data-legg].in-slip{outline:2px solid var(--accent); outline-offset:1px; background:var(--accent-wash);}
+  .slip-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(128px + env(safe-area-inset-bottom, 0px)); z-index:50; white-space:nowrap;
     background:var(--ink); color:var(--bg); font-family:var(--font-sans); font-size:13.5px; font-weight:600; padding:9px 14px; border-radius:999px;
     box-shadow:0 4px 18px rgba(0,0,0,.25); max-width:calc(100vw - 32px);}
+  /* the slip drawer: always at the bottom while it has picks, in the app's own card style; pull it up for every pick */
+  .slip-bar{position:fixed; left:0; right:0; bottom:calc(60px + env(safe-area-inset-bottom, 0px)); z-index:40; max-width:560px; margin:0 auto;
+    background:var(--surface); border:1px solid var(--line-strong); border-bottom:none; border-radius:18px 18px 0 0;
+    box-shadow:0 -12px 32px rgba(0,0,0,.5); font-family:var(--font-sans); color:var(--ink); touch-action:pan-x;}
+  .slip-bar[hidden]{display:none;}
+  body.has-slip .panel{padding-bottom:150px;}
+  .slip-bar .grab{display:block; width:100%; height:18px; background:none; border:none; cursor:pointer; position:relative;}
+  .slip-bar .grab::after{content:""; position:absolute; left:50%; top:7px; width:36px; height:4px; margin-left:-18px; border-radius:2px; background:var(--line-strong);}
+  .slip-bar .top{display:flex; align-items:center; gap:10px; padding:0 16px; cursor:pointer;}
+  .slip-bar .n{flex:none; width:30px; height:30px; border-radius:50%; background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:14px;
+    display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-mono);}
+  .slip-bar .top b{flex:1; min-width:0; font-size:15px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slip-bar .top .o{font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--accent);}
+  .slip-bar .chips{display:flex; gap:6px; overflow-x:auto; padding:10px 16px 2px; scrollbar-width:none;}
+  .slip-bar .chips::-webkit-scrollbar{display:none;}
+  .slip-bar .chip{flex:none; display:inline-flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line-strong);
+    border-radius:999px; padding:0 4px 0 12px; min-height:34px; font-size:13px; white-space:nowrap;}
+  .slip-bar .chip i{font-style:normal; font-family:var(--font-mono); color:var(--ink-soft);}
+  .slip-bar .chip button, .slip-bar .pk button{background:none; border:none; color:var(--ink-faint); font-size:15px; min-width:30px; min-height:32px; cursor:pointer;}
+  .slip-bar .picks{display:none; max-height:42vh; overflow-y:auto; padding:6px 16px 0;}
+  .slip-bar.open .picks{display:block;} .slip-bar.open .chips{display:none;}
+  .slip-bar .ph{display:flex; align-items:center; gap:8px; padding:4px 0 6px;}
+  .slip-bar .ph .pill-tab{min-height:32px;}
+  .slip-bar .ph .clr{margin-left:auto; background:none; border:none; color:var(--ink-soft); font:inherit; font-size:13px; text-decoration:underline; min-height:36px; cursor:pointer;}
+  .slip-bar .sp{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:8px 0 2px;}
+  .slip-bar .pk{display:grid; grid-template-columns:minmax(0,1fr) auto 34px; align-items:center; gap:6px; padding:8px 0; border-bottom:1px solid var(--line);}
+  .slip-bar .pk .d{font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slip-bar .pk .m{font-size:12px; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slip-bar .pk .v{font-family:var(--font-mono); font-weight:700; font-size:15px;}
+  .slip-bar .foot{display:flex; align-items:center; gap:12px; padding:10px 16px 12px;}
+  .slip-bar .foot .t{flex:1; min-width:0; font-size:13px; color:var(--ink-soft);}
+  .slip-bar .foot .t b{display:block; font-family:var(--font-mono); font-size:20px; color:var(--ink); font-weight:700; white-space:nowrap;}
+  .slip-bar .foot .t b em{font-style:normal; color:var(--good);}
+  .slip-bar .go{flex:none; width:auto; min-height:44px; padding:0 18px; border-radius:10px;}
+  .slip-bar.pop .top .o, .slip-bar.pop .foot b{animation:slipPop .35s ease;}
+  @keyframes slipPop{0%{transform:scale(1)} 40%{transform:scale(1.07)} 100%{transform:scale(1)}}
+  .slip-shade{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60;}
+  .slip-shade[hidden], .slip-sheet[hidden]{display:none;}
+  .slip-sheet{position:fixed; left:0; right:0; bottom:0; z-index:61; max-height:86vh; overflow-y:auto; background:var(--surface);
+    border-radius:18px 18px 0 0; padding:12px 16px calc(18px + env(safe-area-inset-bottom, 0px)); box-shadow:0 -8px 30px rgba(0,0,0,.4);}
+  .slip-head{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .slip-head h3{margin:0; flex:1;}
+  .slip-x{background:none; border:none; color:var(--ink-soft); font-size:22px; min-width:44px; min-height:44px; cursor:pointer;}
+  .slip-view{display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden;}
+  .slip-view button{background:none; border:none; color:var(--ink-soft); font:inherit; font-size:13px; font-weight:600; padding:0 14px; min-height:36px; cursor:pointer;}
+  .slip-view button[aria-pressed="true"]{background:var(--accent); color:#111;}
+  .slip-leg{display:grid; grid-template-columns:minmax(0,1fr) auto 44px; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--line);}
+  .slip-leg .d{font-weight:600;} .slip-leg .m{font-size:12.5px; color:var(--ink-soft);}
+  .slip-leg .v{font-family:var(--font-mono); font-weight:700; font-size:16px;}
+  .slip-leg button, .tp-rm{background:none; border:none; color:var(--ink-faint); font-size:18px; min-width:44px; min-height:44px; cursor:pointer;}
+  .slip-btns{display:flex; gap:8px; margin-top:12px;} .slip-btns .primary{flex:1;}
+  .tp-card{border:1px solid var(--line); border-radius:12px; padding:8px 12px; margin-top:10px;}
+  .tp-top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .tp-leg{display:flex; gap:8px; align-items:baseline; padding:6px 0; border-top:1px solid var(--line); font-size:14px;}
+  .tp-leg .st{min-width:18px; text-align:center; font-weight:700;} .tp-leg .d{flex:1; min-width:0;} .tp-leg .o{font-family:var(--font-mono); color:var(--ink-soft);}
+  .tp-won{color:var(--good);} .tp-lost{color:var(--bad);} .tp-live{color:var(--accent);}
   .slip-toast button{background:none; border:none; color:var(--accent); font:inherit; margin-left:8px; cursor:pointer; text-decoration:underline;}
   .sb-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
   .sb-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 2px; scrollbar-width:none; margin-top:4px;}
@@ -528,6 +609,61 @@
   @media (prefers-reduced-motion: reduce){ #splash .dv-logo{animation:none;} }
   .about-logo{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
   .about-logo .dv-logo{width:44px; height:44px;}
+  /* Home: sport tabs, one day at a time, picks first */
+  #homeStatusCard{margin:4px 0 6px;}
+  .seg{margin-top:4px; display:flex; gap:2px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:3px; overflow-x:auto; scrollbar-width:none; min-width:0;}
+  .seg:empty{display:none;}
+  .seg::-webkit-scrollbar{display:none;}
+  .seg button{flex:none; min-height:34px; padding:0 13px; border-radius:9px; font-size:13px; font-weight:500; color:var(--ink-soft); background:none; border:none; white-space:nowrap;}
+  .seg button[aria-selected="true"]{background:var(--surface-2); color:var(--ink); font-weight:600;}
+  #homeSyncedAt{margin-left:auto; font-size:12px; padding-bottom:8px;}
+  #confFilterNote:empty, #homeStatus:empty{display:none;}
+  .home-sec{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin:18px 2px 8px;}
+  .home-sec b{font-size:17px; font-weight:600;}
+  .home-sec .faint{font-size:12px;}
+  .home-empty{padding:14px 16px; font-size:14px;}
+  .home-more{display:block; width:100%; min-height:44px; margin:-4px 0 10px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
+    color:var(--accent); font-size:13px; font-weight:600; text-align:left; padding:0 14px;}
+  .home-fold{margin:0 0 10px;}
+  .home-fold > summary{list-style:none; cursor:pointer; min-height:44px; display:flex; align-items:center; padding:0 14px; border:1px dashed var(--line-strong);
+    border-radius:12px; font-size:13px; color:var(--ink-soft);}
+  .home-fold > summary::-webkit-details-marker{display:none;}
+  .home-fold > summary b{color:var(--ink); margin-right:4px;}
+  .home-fold[open] > summary{margin-bottom:10px;}
+  .card.game.slim .game-head{padding:10px 14px;}
+  .card.game.slim .game-sum{display:none;}
+  .card.game.slim .sb-top{font-size:12.5px;}
+  .card.game.slim .sb-top .trk-btn{min-height:0;}
+  .card.game.slim .sb-grid.one{grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr) 64px !important; align-items:center; gap:0 8px; margin-top:6px;}
+  .card.game.slim .sb-grid.one > div:first-child, .card.game.slim .sb-grid.one > .sb-colh{display:none;}
+  .card.game.slim .sb-grid.one .sb-team.has-badge{grid-template-columns:24px minmax(0,1fr); column-gap:7px;}
+  .card.game.slim .sb-grid.one .tm-badge{width:24px; height:24px; font-size:8px;}
+  .card.game.slim .sb-grid.one .sb-team b{font-size:14px;}
+  .card.game.slim .sb-grid.one .sb-team small{display:none;}
+  .card.game.slim{margin-bottom:8px;}
+  /* More: Models, Testing, About and Profile */
+  .more-tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px;}
+  .more-tile{display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-height:96px; padding:14px; border-radius:14px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); text-align:left;}
+  .more-tile svg{width:22px; height:22px; color:var(--accent); margin-bottom:auto;}
+  .more-tile b{font-size:15px; font-weight:600;}
+  .more-tile span{font-size:12px; color:var(--ink-soft);}
+  .back-more{display:inline-flex; align-items:center; gap:4px; min-height:44px; padding:0 8px 0 0; background:none; border:none; color:var(--ink-soft); font-size:14px;}
+  .back-more svg{width:18px; height:18px;}
+  details.fold > summary, .ab-sec > summary{list-style:none; cursor:pointer; min-height:48px; display:flex; align-items:center; justify-content:space-between;
+    font-weight:600; font-size:15px; color:var(--ink);}
+  details.fold > summary::-webkit-details-marker, .ab-sec > summary::-webkit-details-marker{display:none;}
+  details.fold > summary::after, .ab-sec > summary::after{content:"+"; font-size:20px; font-weight:400; color:var(--ink-faint);}
+  details.fold[open] > summary::after, .ab-sec[open] > summary::after{content:"−"; color:var(--accent);}
+  .ab-sec{border-bottom:1px solid var(--line);}
+  .ab-sec:last-child{border-bottom:none;}
+  .ab-sec[open]{padding-bottom:10px;}
+  #labMore{margin-top:12px;}
+  .tr-fine{border-bottom:none; margin-top:4px;}
+  .tr-fine > summary{min-height:40px; font-size:13px; color:var(--accent);}
+  [data-mode-switch]{text-align:left;}
+  #labMore > summary{padding:0 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); font-size:14px;}
+  #labMore[open] > summary{margin-bottom:6px;}
 </style>
 
 <div id="splash" role="status" aria-label="Loading DeVig"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div class="word">DeVig</div></div>
@@ -543,31 +679,21 @@
       <button role="tab" aria-selected="false" data-tab="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask</button>
       <button role="tab" aria-selected="false" data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
       <button role="tab" aria-selected="false" data-tab="parlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Parlay</button>
-      <button role="tab" aria-selected="false" data-tab="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Testing</button>
-      <button role="tab" aria-selected="false" data-tab="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>About</button>
+      <button role="tab" aria-selected="false" data-tab="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</button>
     </nav>
   </header>
 
   <section class="panel" id="panel-home">
-    <div class="card" id="homeStatusCard">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap">
-        <h3>Today's board<span class="faint" id="homeHi" style="font-family:var(--font-sans); font-weight:500; margin-left:8px"></span></h3>
-        <span class="faint" id="homeSyncedAt"></span>
-      </div>
-      <div id="sportPills" style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; align-items:center">
+    <div id="homeStatusCard">
+      <div id="sportPills" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center">
         <button class="pill-tab active" data-sport="NFL">NFL</button>
         <button class="pill-tab" data-sport="MLB">MLB</button>
         <button class="pill-tab" data-sport="NBA">NBA</button>
-        <button type="button" class="ios-switch" role="switch" aria-checked="false" data-mode-switch style="margin-left:auto"><span class="knob" aria-hidden="true"></span>Advanced</button>
+        <button class="pill-tab" data-sport="CFB">CFB</button>
+        <span class="faint" id="homeSyncedAt"></span>
       </div>
-      <div class="faint" style="margin-top:10px">Show games:</div>
-      <div id="confFilterPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
-        <button class="pill-tab active" data-conf="all">All games</button>
-        <button class="pill-tab adv-only" data-conf="top50">Top 50% confident</button>
-        <button class="pill-tab adv-only" data-conf="top25">Top 25% confident</button>
-        <button class="pill-tab" data-conf="tracked">★ Tracked</button>
-      </div>
-      <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
+      <div class="seg" id="dayTabs" role="tablist" aria-label="Pick a day"></div>
+      <div class="faint" id="confFilterNote"></div>
       <div class="status" id="homeStatus">Loading…</div>
     </div>
     <div id="homeSlate"></div>
@@ -630,6 +756,11 @@
   </section>
 
   <section class="panel" id="panel-parlay" hidden>
+    <div class="card" id="trackedParlaysCard">
+      <h3 style="margin-bottom:6px">Tracked parlays</h3>
+      <p class="faint" style="margin:0 0 10px">Tap the odds on any game or prop to add picks to your slip, then open the slip and track it. DeVig doesn't place bets: it follows each leg here as the games play out.</p>
+      <div id="trackedParlays"></div>
+    </div>
     <div class="card" id="bestParlayCard">
       <h3 style="margin-bottom:6px">Best parlay</h3>
       <p class="faint" style="margin:0 0 14px">Built from the model's own picks: one leg per game, games that haven't started, fairly priced picks first and the most confident first. Swipe for bigger parlays: more legs pay more and hit less.</p>
@@ -657,48 +788,17 @@
       <div id="lsResult"></div>
     </div>
 
-    <div class="card">
-      <h3 style="margin-bottom:6px">Build a parlay</h3>
-      <p class="faint" style="margin:0 0 12px">Pick legs from the games already in the app (every sport, games not started yet), with the odds the app synced. This just multiplies the honest payout math; it does not tell you whether the bet is good.</p>
-
-      <button class="primary" id="pickFromGamesBtn" style="margin-bottom:8px">+ Pick legs from the app's games</button>
-      <div id="gamesPickerWrap"></div>
-
-      <button class="secondary" id="aiParlayBtn" style="width:100%; margin:8px 0">Ask DeVig.AI for its best parlay</button>
-      <p class="faint" style="margin:0 0 12px">DeVig.AI picks only from the games in the app, across every sport it has synced — NFL, MLB, and NBA together, not just one — favoring picks tagged "real signal" over anything flagged as unproven, and never combines two legs from the same game. It explains its reasoning below — it is not a guarantee, and combining picks always multiplies risk.</p>
-      <div class="status" id="aiParlayStatus"></div>
-      <div id="aiParlayReasoning"></div>
-
-      <details style="margin-top:6px">
-      <summary class="faint" style="cursor:pointer; padding:6px 0">Other ways to add a leg (saved scans or by hand)</summary>
-      <button class="secondary" id="pickFromHistoryBtn" style="width:100%; margin:8px 0 14px">+ Add a leg from history</button>
-      <div id="historyPickerWrap"></div>
-
-      <h3 style="margin:16px 0 10px; font-size:14px">Or add a leg by hand</h3>
-      <div class="field"><label>Description</label><input id="p-desc" placeholder="e.g. Bills -3.5"></div>
-      <div class="row">
-        <div class="field"><label>Odds (American)</label><input id="p-odds" inputmode="numeric" placeholder="-110"></div>
-        <div class="field"><label>Book (optional)</label><input id="p-book" placeholder="e.g. Kalshi"></div>
-      </div>
-      <div class="field"><label>Game (optional — for correlation check)</label><input id="p-game" placeholder="e.g. Bills @ Chiefs"></div>
-      <button class="primary" id="addLegBtn">+ Add this leg</button>
-      </details>
-    </div>
-
-    <div class="card" id="parlayLegsCard" hidden>
-      <h3 style="margin-bottom:10px">Your parlay</h3>
-      <div id="parlayLegsList"></div>
-      <div class="field" style="margin-top:14px"><label>Stake</label><input id="p-stake" inputmode="decimal" placeholder="20"></div>
-      <div id="parlaySummary"></div>
-    </div>
   </section>
 
   <section class="panel" id="panel-lab" hidden>
     <div class="card">
       <h3 style="margin-bottom:6px">Testing</h3>
-      <p class="faint" style="margin:0">Every pick on Home is what a model thinks. This tab is where those models are checked: each one's record so far, the rules it was locked with before its first pick, and the experiments still running. None of the models has been proven to beat the betting odds yet; About sums up what testing has found.</p>
+      <p class="faint" style="margin:0">Every pick is locked before the game and graded from the final score. None of the models has been proven to beat the betting odds yet.</p>
     </div>
     <div id="testingRecords"></div>
+    <details class="fold" id="labMore">
+    <summary>Every test and backtest</summary>
+    <div id="testingMore"></div>
     <div class="bb-sec" style="margin-top:18px">Model comparison · NFL</div>
     <div class="card">
       <h3 style="margin-bottom:6px">Model Lab</h3>
@@ -725,6 +825,7 @@
       <h3 style="margin-bottom:4px">Limits</h3>
       <ul class="lab-list" id="labLimits"></ul>
     </div>
+    </details>
   </section>
 
   <section class="panel" id="panel-me" hidden>
@@ -745,6 +846,37 @@
     </div>
   </section>
 
+  <section class="panel" id="panel-more" hidden>
+    <div class="more-tiles">
+      <button type="button" class="more-tile" data-go="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg><b>Models</b><span>What each sport runs on</span></button>
+      <button type="button" class="more-tile" data-go="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg><b>Testing</b><span>How the picks have done</span></button>
+      <button type="button" class="more-tile" data-go="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><b>About</b><span>How DeVig works, plainly</span></button>
+      <button type="button" class="more-tile" data-go="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><b>Profile</b><span>Name, favorite teams</span></button>
+    </div>
+    <div class="card">
+      <button type="button" class="ios-switch" role="switch" aria-checked="false" data-mode-switch><span class="knob" aria-hidden="true"></span>Show spreads, totals and every test (Advanced)</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-models" hidden>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Models</h3>
+      <p class="faint" style="margin:0 0 12px">DeVig's models next to open-source models other people publish, all graded here on the same games with the same rules. Kalshi's price is the baseline. A comparison, not proof that any model beats the market.</p>
+      <div class="md-tabs" id="mdSport" role="tablist" aria-label="Sport"></div>
+      <div class="md-tabs" id="mdBet" role="tablist" aria-label="Bet type"></div>
+      <div class="lab-scroll"><table class="lab-table" id="mdTable"></table></div>
+      <div class="faint" id="mdNote" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px" id="mdGamesTitle">Picks</h3>
+      <div id="mdGames"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Who made these models</h3>
+      <div id="mdCredits"></div>
+    </div>
+  </section>
+
   <section class="panel about" id="panel-about" hidden>
     <div class="card">
       <div class="about-logo"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div><b style="font-size:18px">DeVig</b><div class="faint">odds, read straight</div></div></div>
@@ -756,6 +888,21 @@
       <p><strong>Player props:</strong> the props model beat a simple player hit rate on past seasons but was less accurate than Kalshi's own prices.</p>
       <p><strong>NFL over/unders, key-number spreads and the low-total dog:</strong> each looked positive on past seasons without being confirmed, so each is being followed live on Kalshi prices.</p>
       <p>The Testing tab shows every model's live record, the rules each test was locked with before its first pick, and the experiments still running.</p>
+    </div>
+    <div class="card">
+      <h3>Models compared</h3>
+      <p>The Models tab shows DeVig's own models next to models other people have made public, graded by DeVig on the same games with the same rules, from each model's last number published before the game. Nobody's own posted record is used. Kalshi's price is the baseline.</p>
+      <p><strong>nfelo</strong> (NFL) -- by Robby Greer (@greerreNFL). <a href="https://github.com/greerreNFL/nfelo" target="_blank" rel="noopener">github.com/greerreNFL/nfelo</a>. License: none stated, so none of its code is copied or run here; DeVig only reads the weekly picks it publishes in that repo.</p>
+      <p><strong>538 Elo</strong> (NFL) -- FiveThirtyEight's NFL Elo game model, by FiveThirtyEight (ABC News). <a href="https://github.com/fivethirtyeight/nfl-elo-game" target="_blank" rel="noopener">github.com/fivethirtyeight/nfl-elo-game</a>. License: MIT, Copyright (c) 2021 ABC News Internet Ventures (notice kept with the copied code). FiveThirtyEight stopped updating it, so DeVig re-runs their unchanged code on nflverse results from 2021 on. Spread = Elo gap ÷ 25, their own rule of thumb. This open version has no QB adjustment.</p>
+      <p><strong>Blotny NBA</strong> (NBA) -- NBA Win-Probability Predictor, by Blotny. <a href="https://github.com/Blotny/nba-win-probability-predictor" target="_blank" rel="noopener">github.com/Blotny/nba-win-probability-predictor</a>. License: MIT. DeVig reads the daily predictions it publishes; a small hobby project, and it may stop updating.</p>
+      <p><strong>Market</strong> -- Kalshi's prices: its favourite (moneyline and spread) and the over (total), at the price you would pay including Kalshi's fee.</p>
+      <p><strong>FBS Elo</strong> (college football) -- College FBS Elo, by schwill2018. <a href="https://github.com/schwill2018/college-football-elo" target="_blank" rel="noopener">github.com/schwill2018/college-football-elo</a>. License: none stated, so none of its code is copied or run here; DeVig only reads the predictions it publishes in that repo, the last one made before each kickoff.</p>
+      <p><strong>CFB Rankings</strong> (college football) -- by Brandon Keck. <a href="https://github.com/brandon-keck/cfb-rankings" target="_blank" rel="noopener">github.com/brandon-keck/cfb-rankings</a>. License: MIT. DeVig reads its published weekly Elo ratings and turns them into a win chance with the project's own formula (+65 rating points for the home team, none at a neutral site). It makes no spread, so it is graded on winners only.</p>
+      <p>Results come from nflverse (NFL) and ESPN (NBA, MLB, college football) final scores.</p>
+    </div>
+    <div class="card">
+      <h3>College football</h3>
+      <p><strong>Under construction.</strong> When it opens, the CFB tab will show every FBS game Kalshi lists: ESPN's live score, Kalshi's win chance, moneyline, main spread and total, every spread line, and the win-chance graph from Kalshi's price history, and History will show finished games against Kalshi's last price before kickoff. DeVig has no college football model, so nothing on the CFB tab is a pick. Games are matched between Kalshi and ESPN by school name.</p>
     </div>
     <div class="card" id="donateCard" hidden>
       <h3>Keep DeVig free</h3>
@@ -877,21 +1024,55 @@
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
     lab: document.getElementById("panel-lab"),
+    models: document.getElementById("panel-models"),
     me: document.getElementById("panel-me"),
+    more: document.getElementById("panel-more"),
     about: document.getElementById("panel-about")
   };
+  var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1};
   var meBtn = document.getElementById("meBtn");
   function showPanel(name){
-    tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === name)); });
+    var navTab = UNDER_MORE[name] ? "more" : name;
+    tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === navTab)); });
     meBtn.setAttribute("aria-pressed", String(name === "me"));
     Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
     if(name === "scan"){ loadHistory(); renderPast(); }
-    if(name === "parlay") renderBestParlay();
+    if(name === "parlay"){ renderTrackedParlays(); renderBestParlay(); }
     if(name === "me") renderMe();
+    if(name === "models") renderModels();
   }
   tabs.forEach(function(btn){
-    btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); });
+    btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); window.scrollTo(0, 0); });
   });
+  document.querySelectorAll("#panel-more [data-go]").forEach(function(b){
+    b.addEventListener("click", function(){ showPanel(b.dataset.go); window.scrollTo(0, 0); });
+  });
+  ["models", "lab", "about", "me"].forEach(function(k){                 // pages under More get a way back
+    var back = el("button", "back-more", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>More');
+    back.type = "button";
+    back.addEventListener("click", function(){ showPanel("more"); window.scrollTo(0, 0); });
+    panels[k].insertBefore(back, panels[k].firstChild);
+  });
+  // About: each heading becomes a section you tap open (the first one starts open)
+  (function(){
+    var first = true;
+    panels.about.querySelectorAll(".card").forEach(function(card){
+      if(card.id === "donateCard") return;
+      var kids = Array.prototype.slice.call(card.children), cur = null;
+      kids.forEach(function(k){
+        if(k.tagName === "H3"){
+          cur = document.createElement("details");
+          cur.className = "ab-sec";
+          if(first){ cur.open = true; first = false; }
+          var sm = document.createElement("summary");
+          sm.textContent = k.textContent;
+          cur.appendChild(sm);
+          card.insertBefore(cur, k);
+          card.removeChild(k);
+        } else if(cur) cur.appendChild(k);
+      });
+    });
+  })();
   // The profile button (top right) opens profile and settings; tapping it again goes back Home.
   meBtn.addEventListener("click", function(){ showPanel(panels.me.hidden ? "me" : "home"); });
   window.devigShowProfile = function(){ showPanel("me"); window.scrollTo(0, 0); };
@@ -1029,12 +1210,40 @@
   // Re-render once a minute so games drop off on their own while the page
   // stays open, without waiting for the next sync.
   setInterval(function(){ if(homeDocs.length) renderHome(); }, 60 * 1000);
-  var currentConfKey = "all"; // "all" | "top50" | "top25" -- resolved to a real probability per sport at render time
+  var currentConfKey = "all"; // "all" | "tracked"
+  // Home shows one day at a time (tabs for each day with games, plus ★ Tracked)
+  var currentDay = null, dayPicked = false, showAllPicks = false;
+  function boardDay(g){
+    var t = g.kickoff_time ? new Date(g.kickoff_time) : null;
+    if(!t || !isFinite(t.getTime())) return "later";
+    return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+  }
+  function dayLabel(k){
+    if(k === "later") return "Later";
+    var now = new Date(), tm = new Date(now.getTime() + 86400e3);
+    if(k === boardDay({kickoff_time: now.toISOString()})) return "Today";
+    if(k === boardDay({kickoff_time: tm.toISOString()})) return "Tomorrow";
+    var p = k.split("-");
+    var dt = new Date(+p[0], +p[1] - 1, +p[2]);
+    return dt.toLocaleDateString([], {weekday: "short"}) + " " + dt.getDate();
+  }
+  function agoTxt(iso){
+    var m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if(!isFinite(m)) return "";
+    return m < 1 ? "just now" : m < 60 ? m + "m ago" : m < 1440 ? Math.round(m / 60) + "h ago" : new Date(iso).toLocaleDateString();
+  }
+  function renderDayTabs(days){
+    var box = document.getElementById("dayTabs");
+    box.innerHTML = days.concat(["tracked"]).map(function(k){
+      return '<button type="button" role="tab" data-day="' + k + '" aria-selected="' + (k === currentDay) + '">' +
+        (k === "tracked" ? "★ Tracked" : escapeHtml(dayLabel(k))) + '</button>';
+    }).join("");
+  }
 
   document.querySelectorAll("#sportPills .pill-tab").forEach(function(btn){
     btn.addEventListener("click", function(){
       if(btn.disabled) return;
-      currentSport = btn.dataset.sport;
+      currentSport = btn.dataset.sport; dayPicked = false; showAllPicks = false;
       document.querySelectorAll("#sportPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
       renderHome();
       // renderDecisionHistoryCard is intentionally NOT re-run here -- it shows
@@ -1043,12 +1252,13 @@
     });
   });
 
-  document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      currentConfKey = btn.dataset.conf || "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
-      renderHome();
-    });
+  document.getElementById("dayTabs").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-day]");
+    if(!b) return;
+    currentDay = b.dataset.day; dayPicked = true;
+    currentConfKey = currentDay === "tracked" ? "tracked" : "all";
+    showAllPicks = false;
+    renderHome();
   });
 
   var splashGone = false;
@@ -1062,6 +1272,7 @@
   function renderHome(){
     updateMeBtn();
     if(homeDocs.length || !dbApi) hideSplash();
+    if(linesDoc && marketOnlyGames().length) hideSplash();
     var statusEl = document.getElementById("homeStatus");
     var syncedEl = document.getElementById("homeSyncedAt");
     var wrap = document.getElementById("homeSlate");
@@ -1074,15 +1285,12 @@
       return;
     }
 
-    var hiEl = document.getElementById("homeHi");
-    if(hiEl) hiEl.textContent = "";                    // the greeting lives in the header now
-    var allSynced = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport; });
+    if(currentSport === "CFB"){ document.getElementById("dayTabs").innerHTML = ""; renderCfbBoard(wrap, statusEl, syncedEl); return; }
+    var allSynced = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
     var noteEl = document.getElementById("confFilterNote");
-    var finishedNote = nFinished
-      ? nFinished + " finished game" + (nFinished === 1 ? "" : "s") + " moved off the board -- picks and results are in the Track record and under History."
-      : "";
+    var finishedNote = nFinished ? "Finished games are under History." : "";
 
     if(!forSport.length){
       statusEl.textContent = "";
@@ -1090,11 +1298,12 @@
       syncedEl.textContent = "";
       noteEl.textContent = "";
       renderTesting();
+      renderDayTabs([]);
       var emptyMsg;
       if(currentSport === "NFL"){
         emptyMsg = "The model's pick gets locked close to kickoff, not days in advance. Games show up here on their own once the week's picks are locked and synced — no re-opening or refreshing needed.";
       } else if(currentSport === "MLB"){
-        emptyMsg = "Picks lock automatically every morning (10:30am ET) and show up here on their own once synced. See About for the honest MLB track record.";
+        emptyMsg = "Picks lock at 10:30am and 4pm ET when both starting pitchers are announced; in the postseason there are only one or two games a day, and games Kalshi lists show up here with its odds even without a pick. See About for the honest MLB track record.";
       } else if(currentSport === "NBA"){
         emptyMsg = "Picks lock automatically every morning (11am ET) for games in the next 3 days and show up here on their own once synced. The 2026-27 regular season starts October 20. See About for the NBA track record.";
       } else {
@@ -1107,51 +1316,83 @@
       return;
     }
 
-    var confTh = CONF_THRESHOLDS[currentSport] || CONF_THRESHOLDS.NFL;
-    var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
-    if(currentConfKey === "tracked"){
-      forSport = forSport.filter(followsGame);
-      noteEl.textContent = "Games you track plus your favorite teams' games. Tap ☆ Track on a game card, or pick favorite teams in your profile (top right).";
-    } else if(currentConfThreshold > 0){
-      forSport = forSport.filter(function(g){
-        return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
-      });
-      var barAcc = currentConfKey === "top25" ? confTh.top25AccPct : confTh.top50AccPct;
-      noteEl.textContent = confTh.filterNote.replace("{acc}", barAcc);
-    } else {
-      noteEl.textContent = "";
-    }
-
-    if(!forSport.length){
-      statusEl.textContent = "";
-      syncedEl.textContent = "";
-      wrap.innerHTML = currentConfKey === "tracked"
-        ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
-          '<span class="faint">Switch to All games and tap ☆ Track, or add favorite teams in your profile (top right).</span></div></div>'
-        : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
-          '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
-      return;
-    }
-    statusEl.textContent = finishedNote;
+    var days = forSport.map(boardDay).filter(function(k, i, arr){ return arr.indexOf(k) === i; }).sort();
+    var today = boardDay({kickoff_time: new Date().toISOString()});
+    if(!dayPicked || (currentDay !== "tracked" && days.indexOf(currentDay) < 0))   // until a day is tapped: today, else the next day with games
+      currentDay = days.indexOf(today) >= 0 ? today : days[0];
+    currentConfKey = currentDay === "tracked" ? "tracked" : "all";
+    renderDayTabs(days);
+    noteEl.textContent = "";
+    statusEl.textContent = "";
     statusEl.className = "status";
     var latest = forSport.reduce(function(a, b){ return (a.synced_at || "") > (b.synced_at || "") ? a : b; }, forSport[0]);
-    syncedEl.textContent = latest.synced_at ? "synced " + new Date(latest.synced_at).toLocaleString() : "";
+    syncedEl.textContent = latest.synced_at ? "Updated " + agoTxt(latest.synced_at) : "";
+    var allOnBoard = forSport.slice();
 
-    var allOnBoard = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
-    var myCard = renderTrackedCard(allOnBoard);
-    if(myCard) wrap.appendChild(myCard);
-    wrap.appendChild(renderBestBetsCard(allOnBoard));
-    var gamesHead = el("div", "bb-sec", "All games · tap one for the full breakdown");
-    wrap.appendChild(gamesHead);
-    var sortedGames = forSport.slice().sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
-    sortedGames.forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
+    if(currentDay === "tracked"){
+      var myCard = renderTrackedCard(allOnBoard);
+      if(myCard) wrap.appendChild(myCard);
+      var mine = forSport.filter(followsGame);
+      if(!mine.length){
+        wrap.innerHTML = '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
+          '<span class="faint">Open a game and tap ☆ Track, or add favorite teams under More › Profile.</span></div></div>';
+        return;
+      }
+      mine.sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); })
+        .forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
+      renderTesting();
+      return;
+    }
+
+    var dayGames = forSport.filter(function(g){ return boardDay(g) === currentDay; })
+      .sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
+    var picks = [], passed = [], others = [];
+    dayGames.forEach(function(g){
+      var d = computeDecision(g), pc = priceCheck(g);
+      if(d.action === "ML" && !g.trial) (pc && pc.steep ? passed : picks).push(g);
+      else if(d.action === "SKIP") passed.push(g);
+      else others.push(g);
+    });
+    function byChance(a, b){ return ((b.model || {}).winner_prob || 0) - ((a.model || {}).winner_prob || 0); }
+    picks.sort(byChance); passed.sort(byChance);
+    var SHOW = 4;
+    wrap.appendChild(el("div", "home-sec", '<b>DeVig\'s picks</b><span class="faint">' +
+      (picks.length ? picks.length + ' pick' + (picks.length === 1 ? '' : 's') + ' · most likely first' : '') + '</span>'));
+    if(!picks.length) wrap.appendChild(el("div", "card home-empty faint", "No pick clears the bar " + (dayLabel(currentDay) === "Today" ? "today" : "this day") + "."));
+    picks.forEach(function(g, i){
+      var c = renderGameCard(g);
+      if(i >= SHOW && !showAllPicks) c.hidden = true;
+      wrap.appendChild(c);
+    });
+    if(picks.length > SHOW && !showAllPicks){
+      var moreBtn = el("button", "home-more", (picks.length - SHOW) + " more pick" + (picks.length - SHOW === 1 ? "" : "s") + " · " +
+        escapeHtml(picks.slice(SHOW).map(function(g){ return (g.model || {}).winner_side; }).join(", ")));
+      moreBtn.type = "button";
+      moreBtn.addEventListener("click", function(){ showAllPicks = true; renderHome(); });
+      wrap.appendChild(moreBtn);
+    }
+    if(passed.length){
+      var pf = el("details", "home-fold");
+      pf.innerHTML = '<summary><b>' + passed.length + ' passed</b> · ' + escapeHtml(passed.map(function(g){ return (g.model || {}).winner_side; }).join(", ")) +
+        ' · liked, but the price is too steep</summary>';
+      passed.forEach(function(g){ pf.appendChild(renderGameCard(g)); });
+      wrap.appendChild(pf);
+    }
+    if(!isSimple()){
+      var adv = renderBestBetsCard(allOnBoard, {noMoneyline: true});
+      if(adv) wrap.appendChild(adv);
+    }
+    if(others.length){
+      wrap.appendChild(el("div", "home-sec", '<b>Other games</b><span class="faint">no pick · Kalshi odds</span>'));
+      others.forEach(function(g){ var c = renderGameCard(g); c.classList.add("slim"); wrap.appendChild(c); });
+    }
     renderTesting();
 
     // Teaser candidates are independent of the moneyline confidence filter above --
     // computed from every synced game this week (not narrowed by forSport's later
     // ML-confidence slice), since the teaser rule has nothing to do with moneyline
     // confidence (that was tested and found to add nothing -- see computeTeaserSignal).
-    var allForSport = homeDocs.filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
+    var allForSport = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
     var teaserCandidates = allForSport.map(function(g){
       var t = computeTeaserSignal(g);
       if(!t) return null;
@@ -1179,6 +1420,30 @@
 
   // ---------- Spread wheel: every Kalshi spread line for both teams (tools/game_lines.py, display only) ----------
   var linesDoc = null, wheelSel = {};
+  // Games Kalshi lists that have no synced pick doc (e.g. an MLB postseason game skipped because a starter wasn't
+  // announced): shown on the board with Kalshi's prices and the live score, marked "No model pick".
+  var marketOnlyCache = {src: null, out: []};
+  function marketOnlyGames(){
+    if(!linesDoc) return [];
+    if(marketOnlyCache.src === linesDoc && marketOnlyCache.n === homeDocs.length) return marketOnlyCache.out;
+    var out = (linesDoc.games || []).filter(function(x){
+      return x.sport !== "CFB" && x.kickoff && x.away && x.home && !homeDocs.some(function(h){
+        return (h.sport || "NFL") === x.sport && sameGame(h, x.away, x.home, x.kickoff);
+      });
+    }).map(function(x){
+      var ml = x.ml || {}, sp = x.spread || {}, tot = x.total || {};
+      var why = x.sport === "MLB" ? "The MLB model locks a pick at 10:30am and 4pm ET only when both starting pitchers are announced; this game didn't get one."
+        : "The model hasn't locked a pick for this game (yet).";
+      return {game_id: "kalshi:" + (x.event || x.away + x.home + x.kickoff), sport: x.sport, away_team: x.away, home_team: x.home,
+        kickoff_time: x.kickoff, game_date: x.date, marketOnly: true,
+        market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
+                 spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
+        model: {available: false, note: "No model pick. " + why + " Prices are Kalshi's, fee included."}};
+    });
+    marketOnlyCache = {src: linesDoc, n: homeDocs.length, out: out};
+    return out;
+  }
+  function boardDocs(){ return homeDocs.concat(marketOnlyGames()); }
   function linesFor(g){
     if(!linesDoc || !g.kickoff_time) return null;
     var kt = new Date(g.kickoff_time).getTime();
@@ -1257,6 +1522,285 @@
     });
   }
 
+  // ---------- College football: games, live scores, Kalshi prices, win-chance graph (display only) ----------
+  // No DeVig model picks CFB games. The board is built from the lines file (tools/game_lines.py: Kalshi's
+  // KXNCAAF* markets matched to ESPN's FBS scoreboard), with scores from the fast feed (/api/live?sport=cfb).
+  var CFB_IDS = {}, cfbOpen = {}, cfbHistory = null;
+  // The CFB tab is under construction: tapping it shows a notice instead of the board (and History / Models leave
+  // CFB out). Set to false to switch the board on; window.devigCfbPreview = true shows it anyway (tests, previews).
+  var CFB_UNDER_CONSTRUCTION = !window.devigCfbPreview;
+  function cfbConstructionHtml(){
+    return '<div class="empty"><div class="icon">🚧</div><b>College football is under construction</b><br>' +
+      '<span class="faint">Games, live scores, Kalshi prices and the win-chance graph are coming soon.</span></div>';
+  }
+  function cfbGames(){
+    TEAM_COLORS.CFB = TEAM_COLORS.CFB || {};          // filled from the lines file: ESPN's colour for each school
+    return ((linesDoc && linesDoc.games) || []).filter(function(x){ return x.sport === "CFB" && x.kickoff; }).map(function(x){
+      ["away", "home"].forEach(function(k){
+        var code = x[k];
+        if(x.ids && x.ids[k]) CFB_IDS[code] = x.ids[k];
+        if(x.colors && /^#[0-9a-f]{6}$/i.test(x.colors[k] || "")) TEAM_COLORS.CFB[code] = x.colors[k];
+      });
+      return Object.assign({}, x, {away_team: x.away, home_team: x.home, kickoff_time: x.kickoff});
+    });
+  }
+  // ESPN's fast feed when the website has it, else the score the lines file saw when it was built
+  function cfbState(g){
+    var f = (fastScores.CFB || []).filter(function(y){ return String(y.id) === String(g.espn_id); })[0];
+    return f ? {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score, possession: f.possession}
+             : {state: g.state || "pre", detail: g.detail || "", away_score: g.away_score, home_score: g.home_score};
+  }
+  function cfbOnBoard(g){
+    var st = cfbState(g).state, k = new Date(g.kickoff_time).getTime();
+    if(st === "post") return false;
+    return !isFinite(k) || Date.now() < k + FINISHED_AFTER_HOURS * 3600 * 1000;
+  }
+  function cfbTeamName(g, side){
+    var r = g.rank && g.rank[side];
+    return (r ? '<span class="cfb-rk">' + r + '</span>' : '') + escapeHtml((g.names && g.names[side]) || g[side]);
+  }
+  function cfbCard(g){
+    var lg = cfbState(g), started = lg.state === "in" || lg.state === "post";
+    var wp = g.home_wp, sp = g.spread, tot = g.total, ml = g.ml || {};
+    var card = el("details", "card cfb-card");
+    if(cfbOpen[g.espn_id]) card.open = true;
+    var when = lg.state === "in" ? '<span class="cfb-live">Live</span> ' + escapeHtml(lg.detail)
+      : lg.state === "post" ? escapeHtml(lg.detail || "Final") : escapeHtml(shortTime(g)) + (g.neutral ? ' · neutral site' : '');
+    function row(side){
+      var p = wp == null ? null : (side === "home" ? wp : 1 - wp);
+      var score = started && lg[side + "_score"] != null ? '<b class="cfb-sc">' + lg[side + "_score"] + '</b>' : '';
+      return '<div class="cfb-row">' + teamBadge("CFB", g[side]) + '<span class="cfb-nm">' + cfbTeamName(g, side) + '</span>' + score +
+        '<span class="cfb-p">' + (p == null ? '—' : Math.round(p * 100) + '%') + '</span></div>';
+    }
+    var fav = sp ? (sp.home_point < 0 ? g.home + ' ' + sp.home_point + ' (' + fmtOdds(sp.home) + ')' : sp.home_point > 0 ? g.away + ' ' + (-sp.home_point) + ' (' + fmtOdds(sp.away) + ')' : 'PK') : '—';
+    card.innerHTML = '<summary><div class="cfb-when">' + when + '<span class="cfb-src">Win chance · Kalshi</span></div>' + row("away") + row("home") +
+      '<div class="cfb-lines"><span>Spread <b>' + escapeHtml(fav) + '</b></span><span>Total <b>' + (tot ? escapeHtml(String(tot.line)) : '—') + '</b></span>' +
+      '<span>Money <b>' + escapeHtml(g.away) + ' ' + fmtOdds(ml.away) + '</b> · <b>' + escapeHtml(g.home) + ' ' + fmtOdds(ml.home) + '</b></span></div></summary>';
+    var body = el("div", "cfb-body");
+    var fl = fastLines[gameKey(g)];
+    var chart = fl && fl.points && fl.points.length > 1 ? liveChartEl(Object.assign({}, g, {market: {}}), {state: lg.state, kalshi_line: {team: g.home, points: fl.points}}) : "";
+    body.innerHTML = chart || '<div class="faint" style="margin:8px 0">' + (g.home_ticker ? 'Loading the win-chance graph…' : 'No Kalshi win market for this game.') + '</div>';
+    var wheel = spreadWheelEl(g);
+    if(wheel) body.appendChild(wheel);
+    body.appendChild(el("div", "faint cfb-note", "Prices are Kalshi's, fee included. Display only: DeVig has no college football model yet, so nothing here is a pick."));
+    card.appendChild(body);
+    card.addEventListener("toggle", function(){
+      cfbOpen[g.espn_id] = card.open;
+      if(card.open){ initWheels(); if(!fastLines[gameKey(g)]) loadCfbLine(g); }
+    });
+    return card;
+  }
+  function loadCfbLine(g){
+    if(!g.home_ticker || !dbApi) return;
+    var start = Math.floor(new Date(g.kickoff_time).getTime() / 1000) - (cfbState(g).state === "pre" ? 3 * 86400 : 7200);
+    fetch("/api/winline?ticker=" + encodeURIComponent(g.home_ticker) + "&start=" + start, {headers: {accept: "application/json"}})
+      .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
+      .then(function(d){
+        fastLines[gameKey(g)] = {at: Date.now(), points: (d && d.points) || [], last: d && d.last};
+        if(currentSport === "CFB" && !panels.home.hidden) renderHome();
+      });
+  }
+  function renderCfbBoard(wrap, statusEl, syncedEl){
+    var noteEl = document.getElementById("confFilterNote");
+    if(CFB_UNDER_CONSTRUCTION){
+      noteEl.textContent = ""; statusEl.textContent = ""; statusEl.className = "status"; syncedEl.textContent = "";
+      wrap.appendChild(el("div", "card cfb-soon", cfbConstructionHtml()));
+      return;
+    }
+    var all = cfbGames(), games = all.filter(cfbOnBoard);
+    if(currentConfKey === "tracked") games = games.filter(function(g){ return followsGame(g); });
+    noteEl.textContent = currentConfKey === "top25" || currentConfKey === "top50" ? "Confidence bars are for DeVig's models; college football has none yet, so every game is shown." : "";
+    statusEl.textContent = ""; statusEl.className = "status";
+    syncedEl.textContent = linesDoc && linesDoc.generated_at ? "Kalshi prices " + new Date(linesDoc.generated_at).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}) : "";
+    if(!games.length){
+      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No upcoming college football games with Kalshi prices right now.<br>' +
+        '<span class="faint">FBS games show up here once Kalshi lists them (usually early in the week). Finished games are under History.</span></div>'));
+      return;
+    }
+    games.sort(function(a, b){
+      var la = cfbState(a).state === "in" ? 0 : 1, lb = cfbState(b).state === "in" ? 0 : 1;
+      return la - lb || a.kickoff_time.localeCompare(b.kickoff_time) || ((a.rank && (a.rank.home || a.rank.away)) ? 0 : 1) - ((b.rank && (b.rank.home || b.rank.away)) ? 0 : 1);
+    });
+    var head = el("div", "card cfb-head");
+    head.innerHTML = '<b>College football</b> <span class="faint">· ' + games.length + ' FBS game' + (games.length === 1 ? '' : 's') + ' · tap one for the win-chance graph and every spread</span>';
+    wrap.appendChild(head);
+    var day = null;
+    games.forEach(function(g){
+      var st = cfbState(g).state, d = st === "in" ? "Live now" : new Date(g.kickoff_time).toLocaleDateString([], {weekday: "long", month: "short", day: "numeric"});
+      if(d !== day){ day = d; wrap.appendChild(el("div", "bb-sec", escapeHtml(d))); }
+      wrap.appendChild(cfbCard(g));
+    });
+    setTimeout(initWheels, 0);
+  }
+  // History: each finished game with Kalshi's last numbers before kickoff (live/cfb_history.json)
+  function cfbFinals(){
+    if(CFB_UNDER_CONSTRUCTION) return [];
+    var gs = (cfbHistory && cfbHistory.games) || {};
+    return Object.keys(gs).map(function(k){ return Object.assign({espn_id: k}, gs[k]); })
+      .filter(function(h){ return h.final && h.pre && h.kickoff; });
+  }
+  function renderCfbPast(wrap, recEl, strip){
+    var fin = cfbFinals();
+    var fw = 0, fl = 0, cw = 0, cl = 0;
+    function grade(h){
+      var m = h.final.home - h.final.away, p = h.pre, out = {};
+      if(p.home_wp != null && p.home_wp !== 0.5 && m !== 0) out.fav = (p.home_wp > 0.5) === (m > 0);
+      if(p.spread && p.spread.home_point){
+        var favHome = p.spread.home_point < 0, cover = m + p.spread.home_point;   // home margin against the home line
+        if(cover !== 0) out.cover = favHome ? cover > 0 : cover < 0;
+      }
+      return out;
+    }
+    fin.forEach(function(h){ var r = grade(h); if(r.fav === true) fw++; else if(r.fav === false) fl++; if(r.cover === true) cw++; else if(r.cover === false) cl++; });
+    recEl.innerHTML = '<div class="rec-big"><b>' + fw + '–' + fl + '</b><span>' + (fw + fl ? Math.round(fw / (fw + fl) * 100) + '% of Kalshi favourites won' : 'no finished games yet') + '</span></div>' +
+      (cw + cl ? '<div class="rec-big" style="margin-top:4px"><b style="font-size:22px">' + cw + '–' + cl + '</b><span>favourites covered Kalshi\'s main spread</span></div>' : '') +
+      '<div class="faint">College football has no DeVig model, so this is the market itself: Kalshi\'s last price before kickoff against the final score. Favourites win often but pay little.</div>';
+    var byDay = {};
+    fin.forEach(function(h){ (byDay[dayKey(h.kickoff)] = byDay[dayKey(h.kickoff)] || []).push(h); });
+    var days = Object.keys(byDay).sort();
+    if(!days.length){
+      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished college football games yet.</div>'));
+      return;
+    }
+    if(days.indexOf(pastDay) < 0) pastDay = days[days.length - 1];
+    strip.innerHTML = days.map(function(k){
+      var w = 0, l = 0, dt = new Date(byDay[k][0].kickoff);
+      byDay[k].forEach(function(h){ var r = grade(h); if(r.fav === true) w++; else if(r.fav === false) l++; });
+      return '<button type="button" class="day-tab" role="tab" aria-selected="' + (k === pastDay) + '" data-day="' + k + '">' +
+        '<span class="d1">' + dt.toLocaleDateString([], {weekday: "short"}) + '</span><span class="d2">' + dt.toLocaleDateString([], {month: "short", day: "numeric"}) + '</span>' +
+        '<span class="d3" style="color:var(--ink-faint)">fav ' + w + '–' + l + '</span></button>';
+    }).join("");
+    var sel = strip.querySelector('[aria-selected="true"]');
+    if(sel) strip.scrollLeft = sel.offsetLeft - strip.clientWidth / 2 + sel.offsetWidth / 2;
+    var list = byDay[pastDay].slice().sort(function(a, b){ return a.kickoff.localeCompare(b.kickoff); });
+    wrap.appendChild(el("div", "bb-sec", escapeHtml(new Date(list[0].kickoff).toLocaleDateString([], {weekday: "long", month: "long", day: "numeric"}))));
+    list.forEach(function(h){
+      var r = grade(h), p = h.pre, favHome = p.home_wp > 0.5, c = el("div", "card cfb-past");
+      ["away", "home"].forEach(function(k){ if(h.ids && h.ids[k]) CFB_IDS[h[k]] = h.ids[k]; });
+      function line(side){
+        var won = side === "home" ? h.final.home > h.final.away : h.final.away > h.final.home;
+        var pr = side === "home" ? p.home_wp : 1 - p.home_wp;
+        return '<div class="cfb-row' + (won ? ' won' : '') + '">' + teamBadge("CFB", h[side]) + '<span class="cfb-nm">' + escapeHtml((h.names && h.names[side]) || h[side]) + '</span>' +
+          '<b class="cfb-sc">' + h.final[side] + '</b><span class="cfb-p">' + Math.round(pr * 100) + '%</span></div>';
+      }
+      var spTxt = p.spread && p.spread.home_point ? (p.spread.home_point < 0 ? h.home + ' ' + p.spread.home_point : h.away + ' ' + (-p.spread.home_point)) : null;
+      c.innerHTML = '<div class="cfb-when">Final<span class="cfb-src">Kalshi before kickoff</span></div>' + line("away") + line("home") +
+        '<div class="cfb-lines"><span>Favourite <b>' + escapeHtml(favHome ? h.home : h.away) + '</b> ' + (r.fav === true ? '<span class="pill good">won</span>' : r.fav === false ? '<span class="pill bad">lost</span>' : '') + '</span>' +
+        (spTxt ? '<span>Spread <b>' + escapeHtml(spTxt) + '</b> ' + (r.cover === true ? '<span class="pill good">covered</span>' : r.cover === false ? '<span class="pill bad">didn\'t cover</span>' : '<span class="pill neutral">push</span>') + '</span>' : '') +
+        (p.total ? '<span>Total <b>' + escapeHtml(String(p.total.line)) + '</b> ' + ((h.final.home + h.final.away) > p.total.line ? 'went over' : (h.final.home + h.final.away) < p.total.line ? 'stayed under' : 'push') + '</span>' : '') + '</div>';
+      wrap.appendChild(c);
+    });
+  }
+
+  // ---------- Models: DeVig next to published open-source models, graded the same way (comparison only) ----------
+  var mdReport = null, mdGames = [], mdLoaded = false, mdSport = "NFL", mdBet = "ml";
+  var MD_BETS = [["ml", "Moneyline"], ["spread", "Spread"], ["total", "Total"], ["props", "Props"]];
+  function mdPct(x, dec){ return x == null ? "—" : dec ? (Math.round(x * 1000) / 10).toFixed(1) + "%" : Math.round(x * 100) + "%"; }
+  function mdLine(team, pt){
+    var h = Math.round(Number(pt) * 2) / 2;
+    return h === 0 ? team + " PK" : team + " " + (h > 0 ? "+" : "\u2212") + Math.abs(h);
+  }
+  // one model's pick in one game, for the chosen bet type, or null
+  function mdPick(g, key, p){
+    if(!p) return null;
+    if(mdBet === "ml"){
+      if(p.home_wp == null || p.home_wp === 0.5) return null;
+      var home = p.home_wp > 0.5;
+      return (home ? g.home_team : g.away_team) + " " + Math.round((home ? p.home_wp : 1 - p.home_wp) * 100) + "%";
+    }
+    if(mdBet === "spread"){
+      if(p.spread_side && p.spread_point != null) return mdLine(p.spread_side === "home" ? g.home_team : g.away_team, p.spread_point);
+      if(p.home_line == null || g.sport === "MLB" && key !== "kalshi") return null;
+      return p.home_line < 0 ? mdLine(g.home_team, p.home_line) : mdLine(g.away_team, -p.home_line);
+    }
+    if(mdBet === "total") return p.total != null ? "O/U " + p.total : null;
+    return null;
+  }
+  function renderModels(){
+    var sp = document.getElementById("mdSport");
+    if(!sp || panels.models.hidden) return;
+    var r = mdReport;
+    sp.innerHTML = ["NFL", "NBA", "MLB", "CFB"].map(function(s){
+      return '<button type="button" role="tab" class="pill-tab' + (s === mdSport ? ' active' : '') + '" aria-selected="' + (s === mdSport) + '" data-md-sport="' + s + '">' + s + '</button>';
+    }).join("");
+    document.getElementById("mdBet").innerHTML = MD_BETS.map(function(b){
+      return '<button type="button" role="tab" class="pill-tab' + (b[0] === mdBet ? ' active' : '') + '" aria-selected="' + (b[0] === mdBet) + '" data-md-bet="' + b[0] + '">' + b[1] + '</button>';
+    }).join("");
+    var table = document.getElementById("mdTable"), noteEl = document.getElementById("mdNote");
+    if(mdSport === "CFB" && CFB_UNDER_CONSTRUCTION){
+      table.innerHTML = ""; noteEl.textContent = "";
+      document.getElementById("mdGamesTitle").textContent = "CFB";
+      document.getElementById("mdGames").innerHTML = cfbConstructionHtml();
+      return;
+    }
+    var rows = r && r.sports && r.sports[mdSport] ? r.sports[mdSport][mdBet] || [] : [];
+    if(!rows.length){
+      table.innerHTML = "";
+      noteEl.textContent = mdLoaded ? "No model records yet." : "Loading…";
+    }else{
+      var money = mdBet === "ml" || mdBet === "props";
+      var html = '<tr><th>Model</th><th>Picks</th><th>W–L</th><th>Win %</th><th>Needs</th>' + (money ? '<th>Profit</th>' : '') + '</tr>';
+      rows.forEach(function(m){
+        var bench = m.key === "kalshi" ? ' class="bench"' : '';
+        if(m.none){
+          html += '<tr' + bench + '><td>' + escapeHtml(m.name) + '</td><td>—</td><td>—</td><td>—</td><td>—</td>' + (money ? '<td>—</td>' : '') + '</tr>';
+          return;
+        }
+        var beat = m.pct != null && m.breakeven != null ? (m.pct > m.breakeven ? "var(--good)" : "var(--bad)") : "inherit";
+        var prof = m.profit == null ? "—" : (m.profit >= 0 ? "+" : "\u2212") + Math.abs(m.profit).toFixed(1) + "u" +
+          (m.roi != null ? '<br><span class="faint" style="font-size:11px">' + (m.roi >= 0 ? "+" : "\u2212") + Math.abs(Math.round(m.roi * 100)) + '%</span>' : "");
+        html += '<tr' + bench + '><td>' + escapeHtml(m.name) + '</td><td>' + (m.bar_only ? "—" : (m.n || 0)) + '</td><td>' + (m.bar_only || !(m.w + m.l) ? "—" : m.w + "–" + m.l) + '</td>' +
+          '<td style="color:' + beat + '">' + (m.bar_only ? "—" : mdPct(m.pct, !money)) + '</td><td>' + mdPct(m.breakeven, !money) + '</td>' + (money ? '<td>' + prof + '</td>' : '') + '</tr>';
+      });
+      table.innerHTML = html;
+      var notes = {
+        ml: "Each model's favourite in every game it covers, so DeVig's row isn't its confident-picks Track record. Picking favourites alone wins often, so look at Profit: 1 unit on each pick at Kalshi's last price before the game, fee included. Needs = the win rate those prices need to break even.",
+        spread: mdSport === "MLB" ? "DeVig's run-line picks at the line and price it locked; Market = Kalshi's favourite at −1.5. Needs = the win rate those prices need to break even." : "Each model's line against Kalshi's last line before the game: a model with a lower line takes the home side, a higher one the away side, the same line is no pick. Market = Kalshi's favourite. Needs 52.4% to break even at −110.",
+        total: "None of these models picks totals yet. Market = the over at Kalshi's main total, as a baseline. Needs 52.4% at −110.",
+        props: "DeVig's props model v1, its whole live record, graded from settled results. Profit after Kalshi's price and fee. Market = the average price paid: the win rate Kalshi's price implied."
+      };
+      var since = r.tracking_since ? new Date(r.tracking_since) : null;
+      noteEl.textContent = notes[mdBet] + " Pushes and ties don't count." + (since && !isNaN(since) && mdBet !== "props" ? " Tracking since " + since.toLocaleDateString([], {month: "short", day: "numeric", year: "numeric"}) + "; earlier games aren't counted." : "") + " — means the model doesn't make this kind of pick.";
+    }
+    // this sport's games: upcoming first, then the last few days' finals
+    var gw = document.getElementById("mdGames");
+    var names = {};
+    ((r && r.models) || []).forEach(function(m){ names[m.key] = m.name; });
+    var order = ((r && r.models) || []).map(function(m){ return m.key; }).filter(function(k){ return k !== "kalshi"; }).concat(["kalshi"]);
+    var gs = mdGames.filter(function(g){ return g.sport === mdSport; });
+    var up = gs.filter(function(g){ return !g.final; }), fin = gs.filter(function(g){ return g.final; }).reverse();
+    document.getElementById("mdGamesTitle").textContent = mdSport + " picks · " + MD_BETS.filter(function(b){ return b[0] === mdBet; })[0][1];
+    if(mdBet === "props"){
+      gw.innerHTML = '<div class="faint">Prop picks are on each game\'s card on Home.</div>';
+    }else if(!gs.length){
+      gw.innerHTML = '<div class="empty"><div class="icon">—</div>No ' + escapeHtml(mdSport) + ' games with model picks right now.</div>';
+    }else{
+      function gameHtml(g){
+        var bits = [];
+        order.forEach(function(k){ var t = mdPick(g, k, g.picks && g.picks[k]); if(t) bits.push('<span><b>' + escapeHtml(names[k] || k) + '</b> ' + escapeHtml(t) + '</span>'); });
+        var when = g.final ? 'Final ' + g.away_score + '–' + g.home_score
+          : new Date(g.kickoff_time).toLocaleString([], {weekday: "short", hour: "numeric", minute: "2-digit"});
+        return '<div class="md-game"><div class="t"><span>' + escapeHtml(g.away_team) + ' @ ' + escapeHtml(g.home_team) + '</span><span class="faint">' + escapeHtml(when) + '</span></div>' +
+          '<div class="p">' + (bits.length ? bits.join(" · ") : '<span class="faint">no picks of this kind</span>') + '</div></div>';
+      }
+      gw.innerHTML = (up.length ? up.slice(0, 20).map(gameHtml).join("") : '<div class="faint">No upcoming games with picks.</div>') +
+        (fin.length ? '<div class="bb-sec" style="margin-top:12px">Recent finals</div>' + fin.slice(0, 16).map(gameHtml).join("") : "");
+    }
+    document.getElementById("mdCredits").innerHTML = ((r && r.models) || []).map(function(m){
+      return '<div class="md-credit"><b>' + escapeHtml(m.name) + '</b> <span class="faint">' + escapeHtml((m.sports || []).join(", ")) + '</span><br>' +
+        escapeHtml(m.author) + ' · <a href="' + escapeHtml(m.url) + '" target="_blank" rel="noopener">' + escapeHtml(m.url.replace(/^https?:\/\//, "")) + '</a><br>' +
+        '<span class="faint">License: ' + escapeHtml(m.license) + '. ' + escapeHtml(m.note) + '</span></div>';
+    }).join("") || '<div class="faint">See About.</div>';
+  }
+  document.getElementById("mdSport").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-md-sport]");
+    if(b){ mdSport = b.getAttribute("data-md-sport"); renderModels(); }
+  });
+  document.getElementById("mdBet").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-md-bet]");
+    if(b){ mdBet = b.getAttribute("data-md-bet"); renderModels(); }
+  });
+
   // ---------- History: finished games as Home-style cards, by sport, then by day (newest first) ----------
   var pastSport = null;
   function gameResult(g){
@@ -1292,12 +1836,14 @@
     var past = homeDocs.filter(function(g){ return !isOnBoard(g); });
     var sports = [];
     past.concat(decisionsDocs).forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
+    if(cfbFinals().length && sports.indexOf("CFB") < 0) sports.push("CFB");
     sports.sort(function(a, b){ return historySportRank(a) - historySportRank(b); });
     if(sports.indexOf(pastSport) < 0) pastSport = sports[0] || null;
     pills.innerHTML = sports.map(function(sp){
       return '<button type="button" class="pill-tab' + (sp === pastSport ? ' active' : '') + '" data-past-sport="' + escapeHtml(sp) + '">' + escapeHtml(sp) + '</button>';
     }).join("");
     wrap.innerHTML = ""; recEl.innerHTML = ""; strip.innerHTML = "";
+    if(pastSport === "CFB"){ renderCfbPast(wrap, recEl, strip); return; }
     if(!pastSport){
       wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished games yet.<br><span class="faint">Games move here from Home once they end.</span></div>'));
       return;
@@ -1496,10 +2042,6 @@
     var b = ev.target.closest && ev.target.closest("[data-mode-switch]");
     if(!b) return;
     prefs.mode = isSimple() ? "advanced" : "simple";
-    if(isSimple() && (currentConfKey === "top50" || currentConfKey === "top25")){        // that filter is hidden now
-      currentConfKey = "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(x){ x.classList.toggle("active", x.dataset.conf === "all"); });
-    }
     savePrefs(); applyMode(); renderHome();
   });
   applyMode();
@@ -1586,7 +2128,7 @@
         savePrefs(); renderMe(); renderHome(); return;
       }
       if(ev.target.id === "meClear" && confirm("Stop tracking every game and pick?")){
-        tracked = {g: {}, p: {}, updated: Date.now()};
+        tracked = {g: {}, p: {}, parlays: tracked.parlays, updated: Date.now()};   // tracked parlays stay (Parlay tab)
         try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
         prefsChanged(); renderMe(); renderHome();
       }
@@ -1689,10 +2231,12 @@
     }
     return card;
   }
-  function renderBestBetsCard(games){
+  function renderBestBetsCard(games, opts){
+    opts = opts || {};
     var card = el("div", "card");
     var bets = collectBets(games);
-    card.innerHTML = '<div class="bb-head"><h3>Best bets</h3><span class="faint">' + escapeHtml(currentSport) + ' · tap a bet for details</span></div>';
+    if(opts.noMoneyline && !bets.spreads.length && !bets.totals.length) return null;
+    card.innerHTML = '<div class="bb-head"><h3>' + (opts.noMoneyline ? 'Spreads and totals' : 'Best bets') + '</h3><span class="faint">' + escapeHtml(currentSport) + ' · tap a bet for details</span></div>';
     // Upcoming week synced early (slate model.status "preview"): say so up top.
     var prevGames = games.filter(isPreviewGame);
     if(prevGames.length){
@@ -1709,14 +2253,14 @@
       if(list.length) list.forEach(function(b){ card.appendChild(betRow(b)); });
       else card.appendChild(el("div", "bb-empty", emptyTxt));
     }
-    section("Moneyline · model picks", bets.picks, "No game clears the confidence bar right now.");
+    if(!opts.noMoneyline) section("Moneyline · model picks", bets.picks, "No game clears the confidence bar right now.");
     var isNFL = currentSport === "NFL";
     var trAll = computeTrackRecord(decisionsDocs.filter(function(d){ return (d.sport || "NFL") === currentSport; }));
     var spRec = isNFL ? {w: trAll.ladder.w + trAll.lowdog.w, l: trAll.ladder.l + trAll.lowdog.l} : trAll.spreadDecision;
     section("Spreads" + (currentSport === "NBA" ? "" : recTxt(spRec)), bets.spreads, isNFL ? "No spread pick right now." : "");
     section("Over/Under" + (isNFL ? recTxt(trAll.weather) : ""), bets.totals, isNFL ? "No over/under pick right now." : "");
-    section("Avoid", bets.avoid, "");
-    card.appendChild(el("p", "faint", "% = chance to win. Moneyline: the model's estimate. Spreads: how often that exact line covered in past games. Over/Under: the weather model's estimate. " +
+    if(!opts.noMoneyline) section("Avoid", bets.avoid, "");
+    if(!opts.noMoneyline) card.appendChild(el("p", "faint", "% = chance to win. Moneyline: the model's estimate. Spreads: how often that exact line covered in past games. Over/Under: the weather model's estimate. " +
       "\"Preview\" on a game = that week's picks, synced before it's played. \"Early read\" on an over/under = from today's forecast; the final pick comes about 3 hours before kickoff."));
     return card;
   }
@@ -1725,13 +2269,14 @@
     openGames[k] = true;
     var target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
     if(!target){
-      // the game is hidden by the confidence filter -- show everything
-      currentConfKey = "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b.dataset.conf === "all"); });
+      // the game is on another day, or behind "more picks"
+      currentDay = boardDay(g); dayPicked = true; currentConfKey = "all"; showAllPicks = true;
       renderHome();
       target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
     }
     if(!target) return;
+    var fold = target.closest("details");
+    if(fold) fold.open = true;
     var det = target.querySelector(".game-details"), head = target.querySelector(".game-head");
     if(det){ det.hidden = false; head.setAttribute("aria-expanded", "true"); head.querySelector(".game-more").textContent = "Hide details"; }
     target.scrollIntoView({behavior: "smooth", block: "start"});
@@ -1984,7 +2529,7 @@
     }
     row.appendChild(left); row.appendChild(figs);
     if(onAdd){
-      var addBtn = el("button", "ghost", "+ parlay");
+      var addBtn = el("button", "ghost", "+ slip");
       addBtn.style.marginLeft = "4px";
       addBtn.addEventListener("click", onAdd);
       row.appendChild(addBtn);
@@ -2043,6 +2588,7 @@
       (pickOdds(g, mm.winner_side) != null ? ' <span class="odds">' + fmtOdds(pickOdds(g, mm.winner_side)) + '</span>' : ''));
     else if(d.action === "SKIP") chips.push('<span class="pill bad">Skip · QB out</span>');
     else if(d.action === "PASS") chips.push('<span class="pill neutral">No pick</span>');
+    else if(g.marketOnly) chips.push('<span class="pill neutral">No model pick · Kalshi odds</span>');
     else chips.push('<span class="pill neutral">Waiting for pick</span>');
     var adv = !isSimple(), sd = computeSpreadDecision(g);
     if(adv && sd && sd.action === "COVER") chips.push('<span class="pill good">' + escapeHtml(sd.side) + '</span>');
@@ -2135,6 +2681,7 @@
   // the website's account script), hot-linked from ESPN; nothing is copied into this public repo.
   function logoUrl(sport, code){
     if(!window.devigLogos || !code) return null;
+    if(sport === "CFB") return CFB_IDS[code] ? "https://a.espncdn.com/i/teamlogos/ncaa/500/" + encodeURIComponent(CFB_IDS[code]) + ".png" : null;
     var lg = {NFL: "nfl", NBA: "nba", MLB: "mlb"}[sport];
     if(!lg) return null;
     var f = (LOGO_CODES[sport] || {})[code] || String(code).toLowerCase();
@@ -2157,8 +2704,15 @@
     if(m.total_line != null && !isSimple()) cols.push("Total");
     if(m.moneyline_home != null || m.moneyline_away != null) cols.push("Money");
     if(!cols.length) return "";
-    var html = '<div class="sb-grid" style="grid-template-columns:minmax(0,1fr) repeat(' + cols.length + ', minmax(58px, 72px))">' +
+    var html = '<div class="sb-grid' + (cols.length === 1 ? ' one' : '') + '" style="grid-template-columns:minmax(0,1fr) repeat(' + cols.length + ', minmax(58px, 72px))">' +
       '<div></div>' + cols.map(function(c){ return '<div class="sb-colh">' + c + '</div>'; }).join("");
+    var open = !g.trial && (!lg || lg.state === "pre") && (!g.kickoff_time || new Date(g.kickoff_time).getTime() > Date.now());
+    function cell(h, leg, od){
+      if(!open || od == null) return h;
+      leg = Object.assign(leg, {odds: od, book: m.book || "", game: gameLabelFor(g), when: lsWhen(g.kickoff_time)}, legMeta(g));
+      if(slipHas(leg)) h = h.replace('class="sb-btn', 'class="sb-btn in-slip');
+      return h.replace('<div class="sb-btn', '<div role="button" tabindex="0" aria-label="Add ' + escapeHtml(leg.desc) + ' to the slip" data-legg="' + escapeHtml(JSON.stringify(leg)) + '" class="sb-btn');
+    }
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
@@ -2169,13 +2723,16 @@
         (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
       cols.forEach(function(c){
         if(c === "Spread"){
-          var pt = side === "home" ? m.spread_home : -m.spread_home;
-          html += sbBtn(fmtHalfPoint(pt), side === "home" ? m.spread_home_odds : m.spread_away_odds);
+          var pt = side === "home" ? m.spread_home : -m.spread_home, spo = side === "home" ? m.spread_home_odds : m.spread_away_odds;
+          html += cell(sbBtn(fmtHalfPoint(pt), spo), {desc: team + " " + (pt > 0 ? "+" : "") + pt, mk: "spread", side: side, point: pt}, spo);
         } else if(c === "Total"){
-          html += sbBtn((side === "away" ? "O " : "U ") + m.total_line, side === "away" ? m.over_odds : m.under_odds);
+          var tod = side === "away" ? m.over_odds : m.under_odds;
+          html += cell(sbBtn((side === "away" ? "O " : "U ") + m.total_line, tod),
+            {desc: (side === "away" ? "Over " : "Under ") + m.total_line, mk: "total", side: side === "away" ? "over" : "under", point: m.total_line}, tod);
         } else {
           var isPick = d && d.action === "ML" && mm.winner_side === team;
-          html += sbBtn(null, side === "home" ? m.moneyline_home : m.moneyline_away, isPick ? "pick" : "", isPick ? "PICK" : "");
+          var mlo = side === "home" ? m.moneyline_home : m.moneyline_away;
+          html += cell(sbBtn(null, mlo, isPick ? "pick" : "", isPick ? "PICK" : ""), {desc: team + " ML", mk: "ml", side: side}, mlo);
         }
       });
     });
@@ -2248,6 +2805,8 @@
       if(propStarted(doc)) pane.appendChild(el("div", "faint", "This game has started, so these prop prices are from before kickoff."));
       if(key === "top") renderTopProps(pane, doc, g);
       else renderPropCat(pane, doc, propCats(doc).filter(function(c){ return c.key === key; })[0], g);
+      var recEl = propsRecordEl(docSport(doc));
+      if(recEl){ recEl.style.marginTop = "12px"; pane.appendChild(recEl); }
       pane.appendChild(propsHelpEl(doc));
     }
     function onLeg(ev){
@@ -2272,7 +2831,7 @@
   function renderTopProps(box, doc, g){
     var bestMap = propBestEdges(doc);
     var all = Object.keys(bestMap).map(function(x){ return bestMap[x]; }).sort(function(a, b){ return b.e.ev - a.e.ev; });
-    box.appendChild(el("div", "pp-stat", "Most confident in this game"));
+    box.appendChild(el("div", "pp-stat", "Biggest gaps vs Kalshi in this game"));
     if(!all.length){ box.appendChild(el("div", "bb-empty", "Nothing in this game clears the bar right now.")); return; }
     var limit = 8, list = el("div");
     box.appendChild(list);
@@ -2309,7 +2868,7 @@
     if(propKalshiTwoSided(r)) od = exOdds(side === "OVER" ? r.ka : Math.round((1 - r.kb) * 10000) / 10000, true);
     else if(r.pp != null){ od = exOdds(side === "OVER" ? r.pp : 1 - r.pp, false); book = "Polymarket"; }
     var cls = "", tag = "";
-    if(e && e.side === side){ cls = e.tier === "HIGH" ? "edge-high" : (e.tier === "MEDIUM" ? "edge-med" : "edge-lean"); tag = e.tier; }
+    if(e && e.side === side){ cls = e.tier === "HIGH" ? "edge-high" : (e.tier === "MEDIUM" ? "edge-med" : "edge-lean"); tag = propTierTxt(e.tier); }
     var h = sbBtn(label, od, cls, tag);
     if(od == null || !g) return h;
     var leg = propLeg(r, side, od, book, g, e);
@@ -2318,21 +2877,22 @@
   }
   function propLeg(r, side, odds, book, g, e){
     var desc = r.player + " " + (side === "OVER" ? propLineTxt(r.stat, r.line) : "Under " + r.line + " " + propStat(r.stat, true));
-    var leg = {desc: desc, odds: Math.round(odds), book: book, game: gameLabelFor(g), when: lsWhen(g.kickoff_time), kind: "prop"};
+    var leg = Object.assign({desc: desc, odds: Math.round(odds), book: book, game: gameLabelFor(g), when: lsWhen(g.kickoff_time), kind: "prop",
+      mk: "prop", player: r.player, stat: r.stat, line: r.line, side: side}, legMeta(g));
     if(r.mp != null) leg.model = Math.round((side === "OVER" ? r.mp : 1 - r.mp) * 100);
     if(e && e.side === side) leg.tier = e.tier;
     return leg;
+  }
+  // What a slip leg needs to be followed after it is tracked: the game, the market and the side.
+  function legMeta(g){
+    return {sport: g.sport || "NFL", away: g.away_team, home: g.home_team, kickoff: g.kickoff_time || null, gkey: gameKey(g)};
   }
   function slipHas(leg){ return parlayLegs.some(function(l){ return l.desc === leg.desc && l.game === leg.game; }); }
   var slipToastEl = null, slipToastTimer = null;
   function slipToast(msg){
     if(!slipToastEl){ slipToastEl = el("div", "slip-toast"); document.body.appendChild(slipToastEl); }
-    slipToastEl.innerHTML = escapeHtml(msg) + '<button type="button">View parlay</button>';
-    slipToastEl.querySelector("button").onclick = function(){
-      document.querySelector('nav.tabs button[data-tab="parlay"]').click();
-      setTimeout(function(){ parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"}); }, 50);
-      slipToastEl.hidden = true;
-    };
+    slipToastEl.innerHTML = escapeHtml(msg) + '<button type="button">View slip</button>';
+    slipToastEl.querySelector("button").onclick = function(){ slipToastEl.hidden = true; openSlip(); };
     slipToastEl.hidden = false;
     clearTimeout(slipToastTimer);
     slipToastTimer = setTimeout(function(){ slipToastEl.hidden = true; }, 3500);
@@ -2340,10 +2900,10 @@
   function toggleSlipLeg(leg, btn){
     var i = -1;
     parlayLegs.forEach(function(l, j){ if(l.desc === leg.desc && l.game === leg.game) i = j; });
-    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); slipToast("Removed from parlay"); return; }
+    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); if(parlayLegs.length) slipFlash("Removed " + leg.desc); return; }
     addParlayLeg(leg);
     if(btn) btn.classList.add("in-slip");
-    slipToast("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
+    slipFlash("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
   }
   function ppMainLine(rs){
     // the line the market is closest to a coin flip on (like a sportsbook's main line)
@@ -2418,7 +2978,7 @@
     d.innerHTML = '<summary class="faint" style="cursor:pointer">How to read props' + (doc.prices_fetched ? ' · prices as of ' + escapeHtml(whenTxt(doc.prices_fetched)) : '') + '</summary>' +
       '<p style="margin-top:8px"><b>Odds</b> are Kalshi\'s price shown as sportsbook odds, with Kalshi\'s fee included (Polymarket when Kalshi has no price; "thin" means little money behind it). Any odds have a <b>needs %</b>: how often the bet must win to break even. −150 needs 60%.</p>' +
       '<p><b>Model %</b> is our model\'s chance, from the player\'s own recent games only. It doesn\'t know about injuries, teammates, weather or game plans.</p>' +
-      '<p><b>Labels</b> (<span class="pr-tier high">HIGH</span> <span class="pr-tier med">MEDIUM</span> <span class="pr-tier lean">LEAN</span>) are not the chance it hits. They show how far the model % is above the needs %: 10+ points, 5–10, or 2–5. ' + (docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
+      '<p><b>Labels</b> (<span class="pr-tier high">Big gap</span> <span class="pr-tier med">Gap</span> <span class="pr-tier lean">Small gap</span>) are not confidence and not the chance it hits. They show how far the model % is above the needs % at Kalshi\'s price: 10+ points, 5–10, or 2–5. So far the big gaps have won about as often as their price needed, no more. ' + (docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
       '<p>A big gap can mean the market knows something the model doesn\'t. Prices move: check the live price first.</p>';
     return d;
   }
@@ -2491,10 +3051,10 @@
         mWrap.appendChild(el("div", "mkt-label", "Moneyline"));
         var mlBox = el("div", "mkt-box");
         mlBox.appendChild(mktSelection(g.away_team || "Away", null, m.moneyline_away, function(){
-          addParlayLeg({desc: (g.away_team || "Away") + " ML", odds: m.moneyline_away, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.away_team || "Away") + " ML", odds: m.moneyline_away, book: m.book || "", game: gameLabel, mk: "ml", side: "away"}, legMeta(g)));
         }));
         mlBox.appendChild(mktSelection(g.home_team || "Home", null, m.moneyline_home, function(){
-          addParlayLeg({desc: (g.home_team || "Home") + " ML", odds: m.moneyline_home, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.home_team || "Home") + " ML", odds: m.moneyline_home, book: m.book || "", game: gameLabel, mk: "ml", side: "home"}, legMeta(g)));
         }));
         mWrap.appendChild(mlBox);
       }
@@ -2508,10 +3068,10 @@
         var spreadBox = el("div", "mkt-box");
         var awayPoint = -m.spread_home;
         spreadBox.appendChild(mktSelection(g.away_team || "Away", fmtHalfPoint(awayPoint), m.spread_away_odds, function(){
-          addParlayLeg({desc: (g.away_team || "Away") + " " + (awayPoint > 0 ? "+" : "") + awayPoint, odds: m.spread_away_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.away_team || "Away") + " " + (awayPoint > 0 ? "+" : "") + awayPoint, odds: m.spread_away_odds, book: m.book || "", game: gameLabel, mk: "spread", side: "away", point: awayPoint}, legMeta(g)));
         }));
         spreadBox.appendChild(mktSelection(g.home_team || "Home", fmtHalfPoint(m.spread_home), m.spread_home_odds, function(){
-          addParlayLeg({desc: (g.home_team || "Home") + " " + (m.spread_home > 0 ? "+" : "") + m.spread_home, odds: m.spread_home_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.home_team || "Home") + " " + (m.spread_home > 0 ? "+" : "") + m.spread_home, odds: m.spread_home_odds, book: m.book || "", game: gameLabel, mk: "spread", side: "home", point: m.spread_home}, legMeta(g)));
         }));
         mWrap.appendChild(spreadBox);
       }
@@ -2519,10 +3079,10 @@
         mWrap.appendChild(el("div", "mkt-label", "Total"));
         var totalBox = el("div", "mkt-box");
         totalBox.appendChild(mktSelection("Over", String(m.total_line), m.over_odds, function(){
-          addParlayLeg({desc: "Over " + m.total_line, odds: m.over_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: "Over " + m.total_line, odds: m.over_odds, book: m.book || "", game: gameLabel, mk: "total", side: "over", point: m.total_line}, legMeta(g)));
         }));
         totalBox.appendChild(mktSelection("Under", String(m.total_line), m.under_odds, function(){
-          addParlayLeg({desc: "Under " + m.total_line, odds: m.under_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: "Under " + m.total_line, odds: m.under_odds, book: m.book || "", game: gameLabel, mk: "total", side: "under", point: m.total_line}, legMeta(g)));
         }));
         mWrap.appendChild(totalBox);
       }
@@ -2772,6 +3332,19 @@
       });
     }catch(e){ labLoaded.live = true; renderLab(); }
     try{
+      dbApi.collection("models_games").onSnapshot(function(snap){
+        mdGames = snap.docs.map(function(d){ return d.data(); });
+        renderModels();
+      });
+    }catch(e){}
+    try{
+      dbApi.collection("models_report").onSnapshot(function(snap){
+        mdReport = null;
+        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.doc === "MODELS_V1") mdReport = x; });
+        mdLoaded = true; renderModels();
+      });
+    }catch(e){ mdLoaded = true; }
+    try{
       dbApi.collection("props_model").onSnapshot(function(snap){
         propsDocs = snap.docs.map(function(d){ return d.data(); });
         propsLoaded.games = true; renderHome();
@@ -2790,8 +3363,9 @@
         snap.docs.forEach(function(d){
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
-          if(x && x.doc === "GAME_LINES") linesDoc = x;
-          if(x && x.doc === "PROPS_ARCHIVE") propsArchive = x;
+          if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
+          if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
+          if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
         });
         liveLoaded = true; renderLive();
       });
@@ -2899,7 +3473,7 @@
       if(!byPlayer[r.player]){ byPlayer[r.player] = []; order.push(r.player); }
       byPlayer[r.player].push(r);
     });
-    // most confident players first (best labeled edge), then the most-traded
+    // biggest gaps vs Kalshi first (best labeled edge), then the most-traded
     var inj = propInjuries(doc), edges = {}, bestBy = {};
     renderGameTop(doc, inj);
     order.forEach(function(name){
@@ -2973,7 +3547,38 @@
     return {side: side, ev: ev, price: side === "OVER" ? r.ka : noAsk, chance: side === "OVER" ? r.mp : 1 - r.mp,
             tier: ev >= 0.10 ? "HIGH" : (ev >= 0.05 ? "MEDIUM" : "LEAN"), injury: st || null};
   }
-  function propTierPill(t){ return '<span class="pr-tier ' + (t === "HIGH" ? "high" : (t === "MEDIUM" ? "med" : "lean")) + '">' + t + '</span>'; }
+  // Prop labels say how far the model is from Kalshi's price, not how sure a pick is: on the back-test and live so far the
+  // biggest gaps won about as often as the price needed. The stored tier codes (HIGH / MEDIUM / LEAN) are unchanged.
+  var PROP_TIER_TXT = {HIGH: "Big gap", MEDIUM: "Gap", LEAN: "Small gap"};
+  function propTierTxt(t){ return PROP_TIER_TXT[t] || PROP_TIER_TXT.LEAN; }
+  function propTierPill(t){ return '<span class="pr-tier ' + (t === "HIGH" ? "high" : (t === "MEDIUM" ? "med" : "lean")) + '">' + propTierTxt(t) + '</span>'; }
+  // The real record so far: NFL big-gap picks from the results archive (live box scores until the official grade), else
+  // the official graded tally (all labeled picks; NBA always). Null while nothing is graded.
+  function propsRecord(sport){
+    if(sport === "NFL" && propsArchive){
+      var n = 0, w = 0, need = 0, ag = propsArchive.games || {};
+      Object.keys(ag).forEach(function(k){
+        (ag[k].picks || []).forEach(function(p){
+          if((p.status !== "won" && p.status !== "lost") || p.price == null || p.model_p == null) return;
+          var chance = p.side === "OVER" ? p.model_p : 1 - p.model_p;
+          if(chance - p.price - propFee(p.price) < 0.10) return;          // same bar as the Big gap label
+          n++; if(p.status === "won") w++; need += p.price + propFee(p.price);
+        });
+      });
+      if(n) return {label: "Big gaps", n: n, w: w, need: need / n};
+    }
+    var r = propsReports[sport + "_PROPS_MODEL_V1"] || (sport === "NFL" ? propsReport : null);
+    var g = r ? (r.paper_picks_graded || 0) : 0;
+    if(g && r.cost_sum) return {label: "Graded picks", n: g, w: r.wins || 0, need: r.cost_sum / g};
+    return null;
+  }
+  function propsRecordEl(sport){
+    var x = propsRecord(sport);
+    if(!x) return null;
+    var won = x.w / x.n;
+    function pct(v){ return (Math.round(v * 1000) / 10).toFixed(1) + "%"; }
+    return el("div", "faint", '<b style="color:var(--ink-soft)">' + x.label + ' so far: won ' + pct(won) + '</b> (' + x.w + ' of ' + x.n + ') · needed ' + pct(x.need) + ' to break even');
+  }
   function propBetTxt(r, side){
     if(side === "OVER") return propLineTxt(r.stat, r.line);
     return "Under " + r.line + " " + propStat(r.stat, true);
@@ -3016,6 +3621,8 @@
       box.appendChild(more);
     }
     box.appendChild(el("div", "faint", "Tap one to see all its lines. One line per player per stat. Check Kalshi's live price first."));
+    var recB = propsRecordEl(docSport(doc));
+    if(recB){ recB.style.marginTop = "6px"; box.appendChild(recB); }
   }
   function propRowEl(r, pick, e){
     var row = el("div", "pr-row");
@@ -3238,9 +3845,13 @@
   var fastScores = {}, fastBox = {}, fastLines = {}, fastOff = false, fastTimer = null;
   function fastSportsNow(){
     var now = Date.now(), want = {};
-    homeDocs.forEach(function(g){
+    boardDocs().forEach(function(g){
       var k = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
       if(!g.trial && isFinite(k) && now > k - 15 * 60e3 && now < k + 6 * 3600e3) want[g.sport || "NFL"] = true;
+    });
+    cfbGames().forEach(function(g){
+      var k = new Date(g.kickoff_time).getTime();
+      if(isFinite(k) && now > k - 15 * 60e3 && now < k + 6 * 3600e3) want.CFB = true;
     });
     return Object.keys(want);
   }
@@ -3268,11 +3879,14 @@
   // Live games in any sport whose win-chance graph needs (re)loading: once a minute, from /api/winline.
   function lineGamesNow(){
     var now = Date.now();
-    return homeDocs.filter(function(g){
+    return boardDocs().filter(function(g){
       if(g.trial) return false;
       var lg = liveFor(g), gl = linesFor(g), have = fastLines[gameKey(g)];
       return lg && lg.state === "in" && gl && gl.home_ticker && (!have || now - have.at > 55e3);
-    });
+    }).concat(cfbGames().filter(function(g){                     // college football: live games, and any open card
+      var have = fastLines[gameKey(g)], st = cfbState(g).state;
+      return g.home_ticker && (st === "in" || cfbOpen[g.espn_id] && !have) && (!have || now - have.at > 55e3);
+    }));
   }
   function pollFast(){
     clearTimeout(fastTimer);
@@ -3300,6 +3914,7 @@
     }).then(function(){
       if(fastOff) return;
       renderLive();
+      if(currentSport === "CFB" && !panels.home.hidden) renderHome();
       var anyLive = Object.keys(fastScores).some(function(sp){ return fastScores[sp].some(function(x){ return x.state === "in"; }); });
       fastTimer = setTimeout(pollFast, anyLive ? 20e3 : 60e3);
     });
@@ -3409,7 +4024,7 @@
   }
 
 
-  function renderLive(){ if(homeDocs.length){ renderHome(); renderPast(); } }
+  function renderLive(){ if(boardDocs().length){ renderHome(); renderPast(); } if(!panels.parlay.hidden) renderTrackedParlays(); }
 
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
@@ -3720,17 +4335,28 @@
   function renderTesting(){
     var box = document.getElementById("testingRecords");
     if(!box) return;
-    box.innerHTML = "";
+    var more = document.getElementById("testingMore");
+    box.innerHTML = ""; more.innerHTML = "";
+    // the record up top, its fine print folded; prop tests and ended tests sit under "Every test and backtest"
     ["NFL", "MLB", "NBA"].forEach(function(sp){
       var tr = renderTrackRecordCard(sp), pt = (sp === "NFL" || sp === "NBA") ? propsTestCard(sp) : null;
-      if(!tr && !pt) return;
-      box.appendChild(el("div", "bb-sec", sp));
-      if(tr) box.appendChild(tr);
-      if(pt) box.appendChild(pt);
+      if(tr){
+        var ps = tr.querySelectorAll(":scope > p");
+        if(ps.length){
+          var fine = document.createElement("details");
+          fine.className = "ab-sec tr-fine";
+          fine.innerHTML = "<summary>How to read this</summary>";
+          ps.forEach(function(p){ fine.appendChild(p); });
+          tr.appendChild(fine);
+        }
+        box.appendChild(el("div", "bb-sec", sp));
+        box.appendChild(tr);
+      }
+      if(pt){ more.appendChild(el("div", "bb-sec", sp + " props")); more.appendChild(pt); }
     });
     var ended = el("div", "card");
     ended.innerHTML = '<h3>Ended tests</h3><p class="faint" style="margin:6px 0 0">The first NFL weather over/under, key-number ladder and low-total dog tests were priced at Pinnacle, DraftKings and Hard Rock through a paid odds feed. They ended on Oct 18, 2026 when the app moved to free Kalshi prices, with their results kept as they were: weather 1-5, key-number ladder 7-5 (+9.6 units), low-total dog 0-1. None reached the size where it would be judged. Each restarted the same day on Kalshi prices with new pre-registered rules.</p>';
-    box.appendChild(ended);
+    more.appendChild(ended);
   }
 
   // Full game-by-game decision + outcome log -- lives under the History tab
@@ -3891,7 +4517,7 @@
   // matches the Home tab's pill-tab order (NFL, MLB, NBA) so the two stay
   // consistent. Anything unrecognized sorts last under "Other" rather than
   // being silently merged into NFL.
-  var HISTORY_SPORT_ORDER = ["NFL", "MLB", "NBA"];
+  var HISTORY_SPORT_ORDER = ["NFL", "MLB", "NBA", "CFB"];
   function historySportRank(s){
     var i = HISTORY_SPORT_ORDER.indexOf(s);
     return i === -1 ? HISTORY_SPORT_ORDER.length : i;
@@ -3934,238 +4560,285 @@
   }
 
   // ---------- parlay tab ----------
-  var parlayLegs = []; // {desc, odds, book, game}
-  var parlayLegsCard = document.getElementById("parlayLegsCard");
-  var parlayLegsList = document.getElementById("parlayLegsList");
-  var parlaySummary = document.getElementById("parlaySummary");
-  var pStake = document.getElementById("p-stake");
+  // ---------- Bet slip: tap odds anywhere to add picks; the floating button opens the slip; "Track parlay" keeps it ----------
+  // The slip lives in this browser (devig.slip.v1). Tracked parlays live with the other tracking (devig.tracked.v1,
+  // tracked.parlays), so on the website they follow the account. DeVig never places a bet.
+  var SLIP_KEY = "devig.slip.v1";
+  var parlayLegs = [], slipStake = 10, slipView = "odds";   // slipView: "odds" | "pct"
+  (function(){
+    try{
+      var sj = JSON.parse(localStorage.getItem(SLIP_KEY) || "null");
+      if(sj && Array.isArray(sj.legs)) parlayLegs = sj.legs.slice(0, 15);
+      if(sj && sj.stake > 0) slipStake = sj.stake;
+      if(sj && sj.view === "pct") slipView = "pct";
+    }catch(e){}
+  })();
+  function saveSlip(){
+    try{ localStorage.setItem(SLIP_KEY, JSON.stringify({legs: parlayLegs, stake: slipStake, view: slipView})); }catch(e){}
+    renderSlipBar();
+  }
+  var slipBar = el("div", "slip-bar"), slipShade = el("div", "slip-shade"), slipSheet = el("div", "slip-sheet"), slipOpen = false;
+  slipBar.hidden = true; slipBar.setAttribute("role", "region"); slipBar.setAttribute("aria-label", "Bet slip");
+  slipShade.hidden = true; slipSheet.hidden = true;
+  slipSheet.setAttribute("role", "dialog"); slipSheet.setAttribute("aria-modal", "true"); slipSheet.setAttribute("aria-label", "Bet slip");
+  document.body.appendChild(slipBar); document.body.appendChild(slipShade); document.body.appendChild(slipSheet);
+  // the drawer: tap the handle or the summary to pull the picks up or down (or swipe it), the arrow opens the full slip
+  slipBar.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(t.closest(".go")) return openSlip();
+    var rm = t.closest("[data-rm]");
+    if(rm){ ev.stopPropagation(); return removeParlayLeg(Number(rm.getAttribute("data-rm"))); }
+    if(t.closest(".clr")){ parlayLegs = []; slipOpen = false; saveSlip(); refreshSlipMarks(); return; }
+    var v = t.closest("[data-view]");
+    if(v){ slipView = v.getAttribute("data-view"); saveSlip(); return; }
+    if(t.closest(".grab, .top")){ slipOpen = !slipOpen; renderSlipBar(); }
+  });
+  (function(){
+    var y0 = null;
+    slipBar.addEventListener("touchstart", function(ev){ y0 = ev.touches[0].clientY; }, {passive: true});
+    slipBar.addEventListener("touchend", function(ev){
+      if(y0 == null) return;
+      var dy = ev.changedTouches[0].clientY - y0; y0 = null;
+      if(dy < -30 && !slipOpen){ slipOpen = true; renderSlipBar(); }
+      else if(dy > 30 && slipOpen){ slipOpen = false; renderSlipBar(); }
+    }, {passive: true});
+  })();
+  slipShade.addEventListener("click", closeSlip);
+
+  function legChance(l){ return impliedProb(l.odds); }       // what the price says: the win chance it implies
+  function pctTxt(p){ return p == null ? "—" : (p >= 0.995 ? ">99" : p < 0.005 ? "<1" : Math.round(p * 100)) + "%"; }
+  function slipMath(legs){
+    var mult = 1, chance = 1, n = 0;
+    legs.forEach(function(l){ var pm = payoutMultiplier(l.odds), p = legChance(l); if(pm != null && p != null){ mult *= pm; chance *= p; n++; } });
+    var american = mult >= 2 ? (mult - 1) * 100 : -100 / (mult - 1);
+    return {n: n, mult: mult, chance: chance, american: n ? Math.round(american) : null};
+  }
+  function slipPrice(l){ return slipView === "pct" ? pctTxt(legChance(l)) : fmtOdds(l.odds); }
+  var slipNote = "", slipNoteTimer = null;
+  // "SF 49ers to win (vs WAS)": how a pick reads in the drawer
+  function pickLine(l){
+    var opp = l.side === "home" ? l.away : l.side === "away" ? l.home : null;
+    var team = l.side === "home" ? l.home : l.side === "away" ? l.away : null;
+    if(l.mk === "ml" && team) return team + " to win" + (opp ? " (vs " + opp + ")" : "");
+    if(l.mk === "spread" && opp) return l.desc + " (vs " + opp + ")";
+    if(l.mk === "total" && l.away && l.home) return l.desc + " (" + l.away + " @ " + l.home + ")";
+    return l.desc || "";
+  }
+  function renderSlipBar(){
+    var n = parlayLegs.length;
+    slipBar.hidden = n === 0;
+    document.body.classList.toggle("has-slip", n > 0);
+    if(!n){ slipOpen = false; return; }
+    var mm = slipMath(parlayLegs), stake = slipStake > 0 ? slipStake : 10;
+    slipBar.classList.toggle("open", slipOpen);
+    var price = n > 1 ? (slipView === "pct" ? pctTxt(mm.chance) : fmtOdds(mm.american)) : slipPrice(parlayLegs[0]);
+    var title = slipNote || (n > 1 ? n + "-pick parlay" : "1 pick");
+    var chips = '<div class="chips">' + parlayLegs.map(function(l, i){
+      return '<span class="chip">' + escapeHtml(l.desc || "") + ' <i>' + escapeHtml(slipPrice(l)) + '</i><button type="button" data-rm="' + i +
+        '" aria-label="Remove ' + escapeHtml(l.desc || "pick") + '">✕</button></span>';
+    }).join("") + '</div>';
+    var bySport = {}, order = [];
+    parlayLegs.forEach(function(l, i){ var sp = l.sport || "Picks"; if(!bySport[sp]){ bySport[sp] = []; order.push(sp); } bySport[sp].push([l, i]); });
+    var picks = '<div class="picks"><div class="ph">' +
+      '<button type="button" class="pill-tab' + (slipView === "odds" ? " active" : "") + '" data-view="odds">Odds</button>' +
+      '<button type="button" class="pill-tab' + (slipView === "pct" ? " active" : "") + '" data-view="pct">%</button>' +
+      '<button type="button" class="clr">Clear all</button></div>' +
+      order.map(function(sp){
+        return '<div class="sp">' + escapeHtml(sp) + '</div>' + bySport[sp].map(function(x){
+          var l = x[0];
+          return '<div class="pk"><div style="min-width:0"><div class="d">' + escapeHtml(pickLine(l)) + '</div><div class="m">' +
+            escapeHtml([l.when, l.book].filter(Boolean).join(" · ")) + '</div></div><span class="v">' + escapeHtml(slipPrice(l)) +
+            '</span><button type="button" data-rm="' + x[1] + '" aria-label="Remove ' + escapeHtml(l.desc || "pick") + '">✕</button></div>';
+        }).join("");
+      }).join("") + '</div>';
+    slipBar.innerHTML = '<button type="button" class="grab" aria-label="' + (slipOpen ? "Hide" : "Show") + ' every pick" aria-expanded="' + slipOpen + '"></button>' +
+      '<div class="top"><span class="n">' + n + '</span><b>' + escapeHtml(title) + '</b><span class="o">' + escapeHtml(price) + '</span></div>' +
+      chips + picks +
+      '<div class="foot"><div class="t">$' + escapeHtml(String(Math.round(stake * 100) / 100)) + ' pays' +
+      '<b><em>$' + (stake * mm.mult).toFixed(2) + '</em></b></div>' +
+      '<button type="button" class="primary go">Review & track</button></div>';
+  }
+  // the island shows what just changed for a moment, instead of a separate pop-up
+  function slipFlash(msg){
+    slipNote = msg; renderSlipBar();
+    slipBar.classList.remove("pop"); void slipBar.offsetWidth; slipBar.classList.add("pop");   // the payout pulses
+    clearTimeout(slipNoteTimer);
+    slipNoteTimer = setTimeout(function(){ slipNote = ""; renderSlipBar(); }, 2200);
+  }
+  function openSlip(){
+    if(!parlayLegs.length){ slipToast("Tap any odds to add a pick"); return; }
+    renderParlay();
+    slipShade.hidden = false; slipSheet.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeSlip(){
+    slipShade.hidden = true; slipSheet.hidden = true;
+    document.body.style.overflow = "";
+  }
+  document.addEventListener("keydown", function(ev){ if(ev.key === "Escape" && !slipSheet.hidden) closeSlip(); });
 
   function addParlayLeg(leg){
+    if(parlayLegs.some(function(l){ return l.desc === leg.desc && l.game === leg.game; })) return;
     parlayLegs.push(leg);
-    renderParlay();
+    saveSlip();
+    if(!slipSheet.hidden) renderParlay();
   }
-
   function removeParlayLeg(idx){
     parlayLegs.splice(idx, 1);
-    renderParlay();
-    if(gamesPickerOpen) renderGamesPicker();
+    saveSlip();
+    if(!parlayLegs.length) closeSlip(); else if(!slipSheet.hidden) renderParlay();
+    refreshSlipMarks();
+  }
+  // keep the highlighted odds on the page in step with the slip
+  function refreshSlipMarks(){
+    document.querySelectorAll(".sb-btn[data-leg], .sb-btn[data-legg]").forEach(function(b){
+      try{ b.classList.toggle("in-slip", slipHas(JSON.parse(b.getAttribute("data-leg") || b.getAttribute("data-legg")))); }catch(e){}
+    });
   }
 
   function renderParlay(){
-    parlayLegsCard.hidden = parlayLegs.length === 0;
-    parlayLegsList.innerHTML = "";
+    var legs = parlayLegs, mm = slipMath(legs), games = {};
+    legs.forEach(function(l){ var k = String(l.game || "").trim().toLowerCase(); if(k) games[k] = (games[k] || 0) + 1; });
+    var sameGame = Object.keys(games).some(function(k){ return games[k] > 1; });
+    var payout = slipStake * mm.mult;
+    var h = '<div class="slip-head"><h3>Bet slip · ' + legs.length + ' pick' + (legs.length === 1 ? '' : 's') + '</h3>' +
+      '<div class="slip-view" role="group" aria-label="Show prices as">' +
+      '<button type="button" data-view="odds" aria-pressed="' + (slipView === "odds") + '">Odds</button>' +
+      '<button type="button" data-view="pct" aria-pressed="' + (slipView === "pct") + '">%</button></div>' +
+      '<button type="button" class="slip-x" aria-label="Close">✕</button></div>';
+    legs.forEach(function(l, i){
+      var flag = l.game && games[String(l.game).trim().toLowerCase()] > 1;
+      h += '<div class="slip-leg"><div style="min-width:0"><div class="d">' + escapeHtml(l.desc || ("Pick " + (i + 1))) +
+        (flag ? ' <span class="pill bad">same game</span>' : '') + '</div>' +
+        '<div class="m">' + escapeHtml([l.game, l.when, l.book].filter(Boolean).join(" · ")) + '</div></div>' +
+        '<div class="v">' + escapeHtml(slipPrice(l)) + '</div>' +
+        '<button type="button" data-rm="' + i + '" aria-label="Remove ' + escapeHtml(l.desc || "pick") + '">✕</button></div>';
+    });
+    var price = slipView === "pct"
+      ? '<span class="v tabular">' + pctTxt(mm.chance) + ' chance</span>'
+      : '<span class="v tabular">' + fmtOdds(mm.american) + '</span>';
+    h += '<div class="stat-row" style="margin-top:8px"><span class="muted">' + (legs.length > 1 ? "Parlay" : "Price") + (slipView === "pct" ? " · all hit" : "") + '</span>' + price + '</div>' +
+      '<div class="row" style="margin-top:8px; align-items:end"><div class="field"><label for="slipStake">Stake ($)</label>' +
+      '<input id="slipStake" inputmode="decimal" value="' + escapeHtml(String(slipStake)) + '"></div>' +
+      '<div class="field"><label>Pays if every pick hits</label><div class="v tabular" id="slipPays" style="font-size:20px; font-weight:700; padding:8px 0">$' + payout.toFixed(2) + '</div></div></div>';
+    if(slipView === "pct") h += '<div class="faint">% = the win chance each price implies (fees and vig included, so a little high). Multiplied together, assuming the picks are independent.</div>';
+    if(sameGame) h += '<div class="faint" style="color:var(--bad); margin-top:6px">Two or more picks share a game. Books price same-game parlays lower than this, because the picks aren\'t independent.</div>';
+    if(legs.some(function(l){ return l.kind === "prop"; })) h += '<div class="faint" style="margin-top:6px">Prop prices are Kalshi\'s (fee included); Kalshi doesn\'t sell them as one parlay, so the combined price is a guide.</div>';
+    h += '<div class="slip-btns"><button type="button" class="secondary" data-clear>Clear</button>' +
+      '<button type="button" class="primary" data-track>Track ' + (legs.length > 1 ? "parlay" : "pick") + '</button></div>' +
+      '<div class="faint" style="margin-top:8px">DeVig doesn\'t place bets. Place it at your book; DeVig follows every pick under Parlay → Tracked parlays.</div>';
+    slipSheet.innerHTML = h;
+    var stakeEl = slipSheet.querySelector("#slipStake");
+    stakeEl.addEventListener("input", function(){
+      var v = parseFloat(String(stakeEl.value).replace(/[$,]/g, ""));
+      slipStake = isFinite(v) && v > 0 ? v : 0;
+      slipSheet.querySelector("#slipPays").textContent = "$" + (slipStake * slipMath(parlayLegs).mult).toFixed(2);
+      try{ localStorage.setItem(SLIP_KEY, JSON.stringify({legs: parlayLegs, stake: slipStake, view: slipView})); }catch(e){}
+      renderSlipBar();
+    });
+  }
+  slipSheet.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(t.closest(".slip-x")) return closeSlip();
+    var v = t.closest("[data-view]");
+    if(v){ slipView = v.getAttribute("data-view"); saveSlip(); renderParlay(); return; }
+    var rm = t.closest("[data-rm]");
+    if(rm) return removeParlayLeg(Number(rm.getAttribute("data-rm")));
+    if(t.closest("[data-clear]")){ parlayLegs = []; saveSlip(); closeSlip(); refreshSlipMarks(); return; }
+    if(t.closest("[data-track]")) trackSlip();
+  });
+  // Odds on the game cards: one tap adds the pick, another removes it (a capture listener, so the card doesn't open)
+  function onGameLeg(ev){
+    var b = ev.target.closest && ev.target.closest(".sb-btn[data-legg]");
+    if(!b) return;
+    if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+    ev.preventDefault(); ev.stopPropagation();
+    try{ toggleSlipLeg(JSON.parse(b.getAttribute("data-legg")), b); }catch(e){}
+  }
+  document.addEventListener("click", onGameLeg, true);
+  document.addEventListener("keydown", onGameLeg, true);
+
+  // ---------- Tracked parlays ----------
+  function trackedParlays(){
+    var ps = (tracked.parlays && typeof tracked.parlays === "object") ? tracked.parlays : {};
+    return Object.keys(ps).map(function(id){ return Object.assign({id: id}, ps[id]); })
+      .filter(function(x){ return !x.removed && Array.isArray(x.legs); })
+      .sort(function(a, b){ return String(b.at || "").localeCompare(String(a.at || "")); });
+  }
+  function saveTracked(){
+    tracked.updated = Date.now();
+    try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+    prefsChanged();
+  }
+  function trackSlip(){
     if(!parlayLegs.length) return;
-
-    // flag legs that share the same game -- correlated legs price worse than naive multiplication
-    var gameCounts = {};
-    parlayLegs.forEach(function(l){
-      if(l.game){
-        var k = l.game.trim().toLowerCase();
-        if(k) gameCounts[k] = (gameCounts[k] || 0) + 1;
-      }
-    });
-    var hasCorrelated = Object.keys(gameCounts).some(function(k){ return gameCounts[k] > 1; });
-
-    parlayLegs.forEach(function(leg, idx){
-      var correlatedFlag = leg.game && gameCounts[leg.game.trim().toLowerCase()] > 1;
-      var row = el("div", "line-row");
-      var metaBits = [];
-      if(leg.book) metaBits.push(leg.book + (leg.kind === "prop" ? " price, fee included" : ""));
-      if(leg.tier) metaBits.push(leg.tier + " label");
-      if(leg.model != null) metaBits.push("model " + leg.model + "%");
-      if(leg.game) metaBits.push(leg.game);
-      if(leg.when) metaBits.push(leg.when);
-      row.innerHTML =
-        '<div><div class="label">' + escapeHtml(leg.desc || ("Leg " + (idx+1))) +
-          (correlatedFlag ? ' <span class="pill bad">same game</span>' : '') + '</div>' +
-        '<div class="book">' + escapeHtml(metaBits.join(" · ")) + '</div></div>' +
-        '<div></div>' +
-        '<div class="odds tabular">' + fmtOdds(leg.odds) + '</div>';
-      parlayLegsList.appendChild(row);
-      var rmBtn = el("button", "ghost", "Remove");
-      rmBtn.style.display = "block";
-      rmBtn.style.margin = "-6px 0 4px";
-      rmBtn.addEventListener("click", function(){ removeParlayLeg(idx); });
-      parlayLegsList.appendChild(rmBtn);
-    });
-
-    var combinedMultiplier = 1;
-    var validCount = 0;
-    parlayLegs.forEach(function(leg){
-      var pm = payoutMultiplier(leg.odds);
-      if(pm != null){ combinedMultiplier *= pm; validCount++; }
-    });
-
-    var stake = parseFloat(pStake.value);
-    var hasStake = isFinite(stake) && stake > 0;
-    var combinedAmerican = combinedMultiplier >= 2
-      ? (combinedMultiplier - 1) * 100
-      : -100 / (combinedMultiplier - 1);
-
-    var html = "";
-    html += '<div class="stat-row"><span class="muted">Legs</span><span class="v tabular">' + validCount + '</span></div>';
-    html += '<div class="stat-row"><span class="muted">Combined odds (naive)</span><span class="v tabular">' + fmtOdds(combinedAmerican) + '</span></div>';
-    html += '<div class="stat-row"><span class="muted">Payout multiplier</span><span class="v tabular">' + combinedMultiplier.toFixed(2) + '&times;</span></div>';
-    if(hasStake){
-      var payout = stake * combinedMultiplier;
-      var profit = payout - stake;
-      html += '<div class="stat-row"><span class="muted">Stake</span><span class="v tabular">$' + stake.toFixed(2) + '</span></div>';
-      html += '<div class="stat-row"><span class="muted">Payout if every leg hits</span><span class="v tabular">$' + payout.toFixed(2) + '</span></div>';
-      html += '<div class="stat-row"><span class="muted">Profit</span><span class="v tabular">$' + profit.toFixed(2) + '</span></div>';
-    }
-    parlaySummary.innerHTML = html;
-
-    if(parlayLegs.some(function(l){ return l.kind === "prop"; })){
-      var pn = el("div", "faint");
-      pn.style.marginTop = "10px";
-      pn.textContent = "Prop legs use Kalshi's price (fee included). Kalshi doesn't sell these as one parlay, and sportsbooks price player-prop parlays differently, so treat the combined odds as a guide and check your book's real price.";
-      parlaySummary.appendChild(pn);
-    }
-    if(hasCorrelated){
-      var warn = el("div", "faint");
-      warn.style.marginTop = "12px";
-      warn.style.color = "var(--bad)";
-      warn.textContent = "Two or more legs share the same game -- books price correlated same-game parlays worse than this naive multiplication, because the legs aren't independent. Treat this payout as an upper bound, not the real price a book would give you.";
-      parlaySummary.appendChild(warn);
-    }
+    if(window.devigCanTrack && !window.devigCanTrack()) return;
+    var mm = slipMath(parlayLegs), id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    tracked.parlays = tracked.parlays && typeof tracked.parlays === "object" ? tracked.parlays : {};
+    tracked.parlays[id] = {at: new Date().toISOString(), stake: slipStake, odds: mm.american, legs: parlayLegs.slice(0, 15)};
+    saveTracked();
+    parlayLegs = []; saveSlip(); closeSlip(); refreshSlipMarks();
+    slipToast("Tracked: see Parlay → Tracked parlays");
+    renderTrackedParlays();
   }
-
-  pStake.addEventListener("input", renderParlay);
-
-  document.getElementById("addLegBtn").addEventListener("click", function(){
-    var desc = document.getElementById("p-desc").value.trim();
-    var odds = parseFloat(document.getElementById("p-odds").value);
-    var book = document.getElementById("p-book").value.trim();
-    var game = document.getElementById("p-game").value.trim();
-    if(!isFinite(odds) || odds === 0) return;
-    addParlayLeg({desc: desc, odds: odds, book: book, game: game});
-    document.getElementById("p-desc").value = "";
-    document.getElementById("p-odds").value = "";
-    document.getElementById("p-book").value = "";
-    document.getElementById("p-game").value = "";
-  });
-
-  // ---------- parlay: pull a leg in from saved history (any book) ----------
-  var historyPickerWrap = document.getElementById("historyPickerWrap");
-  var historyPickerOpen = false;
-  var historyEnsured = false;
-
-  async function ensureHistoryLoaded(){
-    if(historyEnsured) return;
-    historyEnsured = true;
-    if(!dbApi) return;
-    try{
-      var snap = await dbApi.collection("scans").orderBy("savedAt", "desc").limit(50).get();
-      lastSavedEntries = snap.docs.map(function(d){ return d.data(); });
-    }catch(e){ /* leave lastSavedEntries as whatever was already loaded */ }
-  }
-
-  function renderHistoryPicker(){
-    historyPickerWrap.innerHTML = "";
-    if(!dbApi){
-      historyPickerWrap.innerHTML = '<div class="faint">History isn\'t available in this view.</div>';
-      return;
+  // One pick's state from the live data the app already has: won / lost / push / live / pending / unknown.
+  function legState(l){
+    if(!l.mk || !l.away || !l.home) return {st: "unknown"};
+    var g = boardDocs().filter(function(x){ return l.gkey && gameKey(x) === l.gkey; })[0] ||
+      {sport: l.sport, away_team: l.away, home_team: l.home, kickoff_time: l.kickoff};
+    var lg = liveFor(g);
+    if(!lg || lg.state === "pre" || lg.away_score == null || lg.home_score == null) return {st: "pending"};
+    var a = Number(lg.away_score), hs = Number(lg.home_score), fin = lg.state === "post", score = l.away + " " + a + " – " + l.home + " " + hs;
+    if(l.mk === "prop"){
+      var cur = boxStat(lg, l.player, l.stat), ps = propLiveState(l.side, Number(l.line), cur, lg.state);
+      return {st: ps.status === "won" || ps.status === "lost" ? ps.status : (fin ? "pending" : "live"), note: cur != null ? "now " + cur : score};
     }
-    if(!lastSavedEntries.length){
-      historyPickerWrap.innerHTML = '<div class="faint">Nothing saved yet -- scan and save a line first.</div>';
-      return;
-    }
-    lastSavedEntries.forEach(function(data){
-      var game = (data.matchup && (data.matchup.away || data.matchup.home))
-        ? (data.matchup.away||"?") + " @ " + (data.matchup.home||"?") : "";
-      (data.lines || []).forEach(function(line){
-        var pointTxt = (line.point !== null && line.point !== undefined && line.point !== "") ? " " + line.point : "";
-        var desc = (line.side || line.market || "line") + pointTxt;
-        var item = el("div", "history-item");
-        item.innerHTML = '<div><div style="font-weight:600">'+escapeHtml(desc)+(game?' <span class="faint">('+escapeHtml(game)+')</span>':'')+'</div>' +
-          '<div class="meta">'+escapeHtml(data.book||"unlisted book")+'</div></div>' +
-          '<div class="odds tabular">'+fmtOdds(line.odds)+'</div>';
-        item.addEventListener("click", function(){
-          addParlayLeg({desc: desc, odds: line.odds, book: data.book || "", game: game});
-        });
-        historyPickerWrap.appendChild(item);
-      });
-    });
+    var x;
+    if(l.mk === "ml") x = l.side === "home" ? hs - a : a - hs;
+    else if(l.mk === "spread") x = (l.side === "home" ? hs - a : a - hs) + Number(l.point);
+    else if(l.mk === "total") x = l.side === "over" ? a + hs - Number(l.point) : Number(l.point) - (a + hs);
+    else return {st: "unknown"};
+    if(!fin) return {st: "live", note: score + " · " + (lg.detail || "live"), ahead: x > 0};
+    return {st: x > 0 ? "won" : x < 0 ? "lost" : "push", note: score};
   }
-
-  document.getElementById("pickFromHistoryBtn").addEventListener("click", async function(){
-    historyPickerOpen = !historyPickerOpen;
-    if(!historyPickerOpen){ historyPickerWrap.innerHTML = ""; return; }
-    historyPickerWrap.innerHTML = '<div class="faint">Loading saved lines…</div>';
-    await ensureHistoryLoaded();
-    renderHistoryPicker();
-  });
-
-  // ---------- pick legs from the app's own games ----------
-  var gamesPickerWrap = document.getElementById("gamesPickerWrap");
-  var gamesPickerOpen = false, gamesPickerSport = "ALL";
-  function legChip(tag){
-    if(/^model's (ML|spread) pick/.test(tag)) return ['model pick', 'good'];
-    if(/SKIPPED/.test(tag)) return ['skip -- player out', 'bad'];
-    if(/live test -- HIGH/.test(tag)) return ['high', 'neutral'];
-    if(/live test -- MEDIUM/.test(tag)) return ['medium', 'neutral'];
-    if(/LOW confidence|live test/.test(tag)) return ['low', 'neutral'];
-    if(/no demonstrated edge/.test(tag)) return ['no edge', 'neutral'];
-    var pm = /^player prop -- (HIGH|MEDIUM) label/.exec(tag);
-    if(pm) return ['prop · ' + pm[1].toLowerCase(), 'neutral'];
-    return null;
-  }
-  function renderGamesPicker(){
-    gamesPickerWrap.innerHTML = "";
-    var all = gatherParlayCandidates();
-    var sports = {};
-    all.forEach(function(c){ var m = /\(([^()]+)\)\s*$/.exec(c.game || ""); c.sport = m ? m[1] : "NFL"; sports[c.sport] = true; });
-    var pills = el("div", "chips");
-    pills.style.margin = "4px 0 8px";
-    ["ALL"].concat(Object.keys(sports).sort(function(a, b){ return historySportRank(a) - historySportRank(b); })).forEach(function(sp){
-      var b = el("button", "pill-tab" + (sp === gamesPickerSport ? " active" : ""), sp === "ALL" ? "All sports" : sp);
-      b.type = "button";
-      b.addEventListener("click", function(){ gamesPickerSport = sp; renderGamesPicker(); });
-      pills.appendChild(b);
-    });
-    gamesPickerWrap.appendChild(pills);
-    var list = all.filter(function(c){ return gamesPickerSport === "ALL" || c.sport === gamesPickerSport; });
+  var LEG_MARK = {won: ["✓", "tp-won"], lost: ["✕", "tp-lost"], push: ["↺", ""], live: ["●", "tp-live"], pending: ["○", "faint"], unknown: ["?", "faint"]};
+  function renderTrackedParlays(){
+    var box = document.getElementById("trackedParlays");
+    if(!box) return;
+    var list = trackedParlays();
     if(!list.length){
-      gamesPickerWrap.appendChild(el("div", "faint", "No games with synced odds on the board right now."));
+      box.innerHTML = '<div class="empty"><div class="icon">🎟</div>No tracked parlays yet.<br><span class="faint">Tap odds on Home to build a slip, then Track it.</span></div>';
       return;
     }
-    var byGame = {}, order = [];
-    list.forEach(function(c){ var k = c.gkey || c.game; if(!byGame[k]){ byGame[k] = []; order.push(k); } byGame[k].push(c); });
-    order.sort(function(a, b){
-      var ka = byGame[a][0].kick ? new Date(byGame[a][0].kick).getTime() : Infinity, kb = byGame[b][0].kick ? new Date(byGame[b][0].kick).getTime() : Infinity;
-      return ka - kb;
-    });
-    order.forEach(function(k){
-      var legs = byGame[k], first = legs[0];
-      var box = el("div", null);
-      box.style.cssText = "border-top:1px solid var(--line); padding:8px 0";
-      box.appendChild(el("div", null, '<div style="font-weight:700">' + escapeHtml(first.game) + '</div><div class="faint">' + escapeHtml(lsWhen(first.kick)) + '</div>'));
-      legs.forEach(function(c){
-        var chip = legChip(c.tag || "");
-        var inTicket = parlayLegs.some(function(l){ return l.desc === c.desc && l.game === c.game; });
-        var item = el("button", "pick-row");
-        item.type = "button";
-        item.innerHTML = '<div style="min-width:0"><div style="font-weight:600">' + escapeHtml(c.desc) +
-          (chip ? ' <span class="pill ' + chip[1] + '">' + escapeHtml(chip[0]) + '</span>' : '') + '</div>' +
-          '<div class="meta">' + escapeHtml([c.book, inTicket ? "added to your parlay" : ""].filter(Boolean).join(" · ")) + '</div></div>' +
-          '<div class="odds tabular" style="font-weight:700">' + fmtOdds(c.odds) + '</div>';
-        item.addEventListener("click", function(){
-          if(parlayLegs.some(function(l){ return l.desc === c.desc && l.game === c.game; })) return;
-          addParlayLeg({desc: c.desc, odds: c.odds, book: c.book, game: c.game, when: lsWhen(c.kick), kind: c.kind, model: c.model, tier: c.tier});
-          renderGamesPicker();
-        });
-        box.appendChild(item);
-      });
-      gamesPickerWrap.appendChild(box);
-    });
-    gamesPickerWrap.appendChild(el("div", "faint", "Tap a line to add it. Two legs from the same game get flagged, since books price those lower."));
+    box.innerHTML = list.slice(0, 30).map(function(p){
+      var states = p.legs.map(legState), counted = [], mult = 1;
+      p.legs.forEach(function(l, i){ if(states[i].st !== "push"){ counted.push(l); var pm = payoutMultiplier(l.odds); if(pm != null) mult *= pm; } });
+      var lost = states.some(function(s){ return s.st === "lost"; }), allDone = states.every(function(s){ return s.st === "won" || s.st === "push"; });
+      var live = states.some(function(s){ return s.st === "live"; });
+      var status = lost ? ["Lost", "tp-lost"] : allDone ? ["Won", "tp-won"] : live ? ["Live", "tp-live"] : ["Pending", "faint"];
+      var stake = Number(p.stake) || 0, wonCount = states.filter(function(s){ return s.st === "won"; }).length;
+      var when = p.at ? new Date(p.at).toLocaleDateString([], {month: "short", day: "numeric"}) : "";
+      return '<div class="tp-card"><div class="tp-top"><div><b>' + p.legs.length + '-pick ' + (p.legs.length > 1 ? 'parlay' : 'bet') + '</b> <span class="faint">' +
+        escapeHtml(fmtOdds(p.odds)) + ' · ' + escapeHtml(when) + '</span><div class="faint" style="font-size:12.5px">$' + stake.toFixed(2) +
+        (lost ? ' lost' : ' pays $' + (stake * mult).toFixed(2)) + ' · ' + wonCount + ' of ' + p.legs.length + ' won</div></div>' +
+        '<div style="display:flex; align-items:center; gap:4px"><b class="' + status[1] + '">' + status[0] + '</b>' +
+        '<button type="button" class="tp-rm" data-tp-rm="' + escapeHtml(p.id) + '" aria-label="Stop tracking this parlay">✕</button></div></div>' +
+        p.legs.map(function(l, i){
+          var s = states[i], mk = LEG_MARK[s.st] || LEG_MARK.unknown;
+          return '<div class="tp-leg"><span class="st ' + mk[1] + '" aria-label="' + s.st + '">' + mk[0] + '</span><span class="d">' + escapeHtml(l.desc || "") +
+            '<br><span class="faint" style="font-size:12px">' + escapeHtml(s.note || [l.game, l.when].filter(Boolean).join(" · ")) + '</span></span>' +
+            '<span class="o">' + escapeHtml(fmtOdds(l.odds)) + '</span></div>';
+        }).join("") + '</div>';
+    }).join("") + '<div class="faint" style="margin-top:8px">Graded from the final score (props from the box score) as soon as the app has it. Pushes drop out of the payout, like at a book.</div>';
   }
-  document.getElementById("pickFromGamesBtn").addEventListener("click", function(){
-    gamesPickerOpen = !gamesPickerOpen;
-    this.textContent = gamesPickerOpen ? "Hide the game list" : "+ Pick legs from the app's games";
-    if(!gamesPickerOpen){ gamesPickerWrap.innerHTML = ""; return; }
-    renderGamesPicker();
+  document.getElementById("trackedParlays").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-tp-rm]");
+    if(!b || !confirm("Stop tracking this parlay?")) return;
+    var id = b.getAttribute("data-tp-rm");
+    if(tracked.parlays && tracked.parlays[id]) tracked.parlays[id] = {removed: Date.now()};
+    saveTracked(); renderTrackedParlays();
   });
+  renderSlipBar();
 
   // ---------- best parlay: the model's most confident fairly-priced picks, one per game ----------
   var bpSport = "ALL";
@@ -4245,11 +4918,9 @@
         pg.legs.forEach(function(x){
           var desc = x.team + " to win";
           if(parlayLegs.some(function(l){ return l.desc === desc && l.game === x.game; })) return;
-          addParlayLeg({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)});
+          addParlayLeg(Object.assign({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)}, {mk: "ml", side: x.team === x.g.home_team ? "home" : "away"}, legMeta(x.g)));
         });
-        var ps = document.getElementById("p-stake");
-        if(ps && !ps.value) ps.value = String(bpStake());
-        parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+        slipStake = bpStake(); saveSlip(); openSlip();
       });
     });
   }
@@ -4288,7 +4959,7 @@
         if(d.action === "SKIP" && mm.winner_side === team) return; // model pick on a team whose QB is out
         var dec = payoutMultiplier(odds);
         out.push({team: team, odds: odds, dec: dec, fair: fair, value: fair * dec, game: gameLabel, sport: sp,
-          book: m.book || "", modelPick: d.action === "ML" && mm.winner_side === team, kick: g.kickoff_time || null});
+          book: m.book || "", modelPick: d.action === "ML" && mm.winner_side === team, kick: g.kickoff_time || null, g: g});
       });
     });
     out.sort(function(a, b){ return b.value - a.value; });
@@ -4311,7 +4982,7 @@
             if(!(cost >= 0.15 && cost <= 0.85)) return;   // skip near-sure and near-hopeless lines (they only pad the ticket)
             var dec = 1 / cost, leg = propLeg(r, x[0], priceAmerican(cost), "Kalshi", g, null);
             propPool.push({team: leg.desc, odds: leg.odds, dec: dec, fair: x[2], value: x[2] * dec, game: gameLabel, sport: sp,
-              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true});
+              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true, leg: leg});
           });
         });
       });
@@ -4390,13 +5061,15 @@
       '<div class="stat-row"><span class="muted">Book\'s edge on this ticket</span><span class="v tabular">' + (edge * 100).toFixed(1) + '%</span></div>' +
       '<div class="stat-row"><span class="muted">Average cost per ticket</span><span class="v tabular">$' + Math.max(0, stake * edge).toFixed(2) + '</span></div>';
     card.innerHTML = html;
-    var btn = el("button", "secondary", "Load into parlay below");
+    var btn = el("button", "secondary", "Add to my slip");
     btn.style.marginTop = "8px";
     btn.addEventListener("click", function(){
-      legsByTime.forEach(function(l){ addParlayLeg({desc: l.prop ? l.team : l.team + " ML", odds: l.odds, book: l.book, game: l.game, when: lsWhen(l.kick), kind: l.prop ? "prop" : undefined}); });
-      pStake.value = String(stake);
-      renderParlay();
-      parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+      legsByTime.forEach(function(l){
+        if(l.prop && l.leg) return addParlayLeg(Object.assign({}, l.leg));
+        addParlayLeg(Object.assign({desc: l.team + " ML", odds: l.odds, book: l.book, game: l.game, when: lsWhen(l.kick)},
+          l.g ? Object.assign({mk: "ml", side: l.team === l.g.home_team ? "home" : "away"}, legMeta(l.g)) : {}));
+      });
+      slipStake = stake; saveSlip(); openSlip();
     });
     card.appendChild(btn);
     return card;
@@ -4508,7 +5181,7 @@
           .sort(function(a, b){ return b.e.ev - a.e.ev; }).slice(0, 4).forEach(function(x){
             var leg = propLeg(x.r, x.e.side, exOdds(x.e.price, true), "Kalshi", g, x.e);
             candidates.push({desc: leg.desc, odds: leg.odds, book: "Kalshi", game: gameLabel, kind: "prop", model: leg.model, tier: x.e.tier,
-              tag: "player prop -- " + x.e.tier + " label: model " + Math.round(x.e.chance * 100) + "% vs needs " + needsPct(x.e.price, true) +
+              tag: "player prop -- " + propTierTxt(x.e.tier) + " vs Kalshi: model " + Math.round(x.e.chance * 100) + "% vs needs " + needsPct(x.e.price, true) +
                 "% at Kalshi's price; UNPROVEN (paper test running), Kalshi exchange price not a sportsbook price"});
           });
       }
@@ -4518,107 +5191,6 @@
     return candidates;
   }
 
-  document.getElementById("aiParlayBtn").addEventListener("click", async function(){
-    var statusEl = document.getElementById("aiParlayStatus");
-    var reasonEl = document.getElementById("aiParlayReasoning");
-    reasonEl.innerHTML = "";
-    if(!sampleApi){
-      statusEl.textContent = "Asking DeVig.AI isn't available in this view.";
-      statusEl.className = "status err";
-      return;
-    }
-    await ensureHistoryLoaded();
-    var candidates = gatherParlayCandidates();
-    if(!candidates.length){
-      statusEl.textContent = "No games with synced odds on the board right now -- wait for the next sync.";
-      statusEl.className = "status err";
-      return;
-    }
-
-    statusEl.textContent = "Asking DeVig.AI…";
-    statusEl.className = "status";
-
-    var sportsPresent = {};
-    candidates.forEach(function(c){
-      var m = /\(([^()]+)\)\s*$/.exec(c.game || "");
-      if(m) sportsPresent[m[1]] = true;
-    });
-    var sportsPresentList = Object.keys(sportsPresent).sort(function(a, b){
-      return historySportRank(a) - historySportRank(b);
-    });
-
-    var listForPrompt = candidates.map(function(c, i){
-      return i + ": " + c.desc + " (" + fmtOdds(c.odds) + ") -- " + c.game + " [" + c.tag + "]";
-    }).join("\n");
-    var prompt = "You are choosing which of the following candidate bets to combine into ONE parlay, for a personal " +
-      "betting app that is deliberately honest about not overselling itself.\n\n" +
-      "Candidates (index: description (American odds) -- game [tag]):\n" + listForPrompt + "\n\n" +
-      "Rules:\n" +
-      "1. Strongly prefer candidates tagged \"model's ML pick\" or \"model's spread pick -- real signal\" over " +
-      "anything else -- both mean this project's own testing validated real predictive accuracy for that " +
-      "confidence tier (ML, each sport's own validated tiers: NFL ~77%/~71% vs a 66% baseline, MLB 61.1%/58.9% vs 55.9%, " +
-      "NBA 77.7%/71.7% vs 63.5%, none benchmarked against real market prices; MLB spread: high " +
-      "confidence 70.51%, moderate 67.64%, against a 63.54% baseline -- note the MLB spread number is NOT " +
-      "benchmarked against a real market price, only against the model's own held-out accuracy, so mention that " +
-      "distinction if you pick one). Never choose a candidate tagged 'no demonstrated edge' or 'no model " +
-      "agreement' unless there are fewer than 2 validated-pick candidates available and you say so plainly in " +
-      "your reasoning.\n" +
-      "1b. Next best are the NFL live-test legs: \"weather O/U live test\" and \"key-number spread live test\". Use " +
-      "HIGH confidence ones freely as legs, MEDIUM only if needed, and NEVER LOW confidence or \"NO PICK\" ones. Avoid " +
-      "longshot legs (odds +200 or longer) unless the user is clearly after a big payout.\n" +
-      "1c. Candidates tagged \"player prop\" are player props where the app's prop model disagrees with Kalshi's price " +
-      "(HIGH = model 10+ points above what the odds need, MEDIUM = 5-10). They are UNPROVEN: a paper test is running and " +
-      "a big gap can mean the market knows something the model can't see (injury, role change). You may use them, " +
-      "preferring HIGH over MEDIUM, at most 2 props per parlay, and say they are priced on Kalshi, not at a sportsbook. " +
-      "Prefer validated ML picks over props when both are available.\n" +
-      "2. Never include two candidates from the same game -- the game name is the text right after \"--\" and before " +
-      "the bracketed tag (e.g. \"CIN @ ATL (MLB)\"); it always names the sport in parentheses too, since the same " +
-      "team code can mean a different team in a different sport (e.g. \"SF\" is the 49ers in NFL and the Giants in " +
-      "MLB) -- treat two candidates as the same game only when that exact game text, sport included, matches.\n" +
-      "3. This candidate list spans every sport currently synced (" + (sportsPresentList.join(", ") || "none") + "), " +
-      "not just one -- do not default to a single sport out of habit. Judge every candidate on its own tag and odds " +
-      "regardless of which sport it's from, and if strong (validated-pick-tagged) candidates exist in more than one " +
-      "sport, prefer building a parlay that draws from more than one over stacking legs from just one, all else " +
-      "being equal. Never include a weaker candidate from one sport just to force sport variety, though -- rule 1 " +
-      "(prefer validated picks) still comes first.\n" +
-      "4. Choose between 2 and 4 legs total, fewer if there simply aren't enough good candidates -- do not pad with " +
-      "weak picks just to hit a number.\n" +
-      "5. Reply with ONLY JSON of this exact shape: {\"chosen_indices\": [integers, indices from the list above], " +
-      "\"reasoning\": \"2-4 honest sentences: why these, what you skipped and why, and a plain reminder that " +
-      "combining picks multiplies risk even when each one is individually reasonable\"}.\n" +
-      "Do not invent new bets, odds, or descriptions -- choose only from the given indices.";
-
-    try{
-      var data = await sampleApi.json(prompt, {modelTier: "default"});
-      var idxs = Array.isArray(data && data.chosen_indices) ? data.chosen_indices : [];
-      var seen = {}, added = 0;
-      idxs.forEach(function(i){
-        var c = candidates[i];
-        if(!c) return;
-        var gkey = (c.game || "").toLowerCase();
-        if(gkey && seen[gkey]) return; // enforce no-same-game even if the reply slipped
-        if(gkey) seen[gkey] = true;
-        addParlayLeg({desc: c.desc, odds: c.odds, book: c.book, game: c.game, kind: c.kind, model: c.model, tier: c.tier});
-        added++;
-      });
-      statusEl.textContent = "";
-      if(added === 0){
-        statusEl.textContent = "DeVig.AI didn't return any usable picks -- try again, or add legs yourself.";
-        statusEl.className = "status err";
-        return;
-      }
-      var card = el("div", "card");
-      card.appendChild(el("h3", null, "Why these"));
-      card.appendChild(el("div", "muted", escapeHtml(data.reasoning || "")));
-      reasonEl.appendChild(card);
-    }catch(e){
-      statusEl.className = "status err";
-      if(e && e.code === "not_granted") statusEl.textContent = "You'll need to allow DeVig.AI access to use this.";
-      else if(e && e.code === "invalid_json") statusEl.textContent = "Got back something that wasn't usable -- try again.";
-      else if(e && e.code === "rate_limited") statusEl.textContent = "Too many requests right now -- wait a moment and try again.";
-      else statusEl.textContent = "Something went wrong asking DeVig.AI. You can try again or add legs yourself.";
-    }
-  });
 
   // ---------- Ask tab: chat about the synced picks ----------
   // Claude sees ONLY what this function packs up from the synced data, plus
@@ -4701,7 +5273,10 @@
       nba_graded: nba ? (nba.paper_picks_graded || 0) : 0, nba_wins: nba ? (nba.wins || 0) : 0,
       games_with_prices: propsDocs.length,
       graded: r ? (r.paper_picks_graded || 0) : 0, wins: r ? (r.wins || 0) : 0,
-      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null, locked_paper_picks: window.devigAskCompact ? picks.slice(0, 40) : picks};
+      roi: r && r.roi != null ? Math.round(r.roi * 1000) / 10 + "%" : null,
+      record_so_far: ["NFL", "NBA"].map(function(sp){ var x = propsRecord(sp); return x ? sp + " " + x.label.toLowerCase() + ": won " + x.w + " of " + x.n + ", needed " + (Math.round(x.need * 1000) / 10) + "% to break even" : null; }).filter(Boolean),
+      labels: "Big gap / Gap / Small gap = how far the model is from Kalshi's price, not confidence; never call them high-confidence or locks.",
+      locked_paper_picks: window.devigAskCompact ? picks.slice(0, 40) : picks};
   }
   function whenTxt(iso){
     var t = new Date(iso);

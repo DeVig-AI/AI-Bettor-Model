@@ -1,0 +1,16 @@
+{
+  "sources": {
+    "games": "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv",
+    "pbp": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz"
+  },
+  "seasons": [
+    1999,
+    2024
+  ],
+  "sha256": {
+    "games": "cb7b640d019dc890e8887250b46fa78305b7895868c4516b1aa75ea1fc3979ed",
+    "team_games": "8259cef9b02f03a58598c1114ead8e408d06afc086ea88de78038e68f1eb48d9",
+    "qb_games": "e5e2f28a32fef8925189971c1f2927ab29c23746e0fdef1f927db615f9f1fab9"
+  },
+  "note": "Lab cache (Constitution B1). Seasons 2002-2024 only; 2025 is sealed and never stored here."
+}

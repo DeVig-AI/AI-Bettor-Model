@@ -1,0 +1,2708 @@
+{
+ "updated_at": "2026-10-20T22:08:49Z",
+ "scope": "NFL",
+ "effect_name": "Edge beyond the closing line",
+ "effect_unit": "pts",
+ "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+ "exam_name": "Sealed 2025 exam",
+ "sport": "NFL",
+ "sport_name": "NFL",
+ "attempts": {
+  "this_sport": 20,
+  "all_sports": 20,
+  "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
+ },
+ "constitution": {
+  "version": "v9",
+  "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
+ },
+ "links": {
+  "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+  "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/LEDGER.csv",
+  "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/LESSONS.md"
+ },
+ "counts": {
+  "tried": 20,
+  "running": 0,
+  "lab_pass": 0,
+  "exam_pass": 0,
+  "exam_budget_left": 3,
+  "exam_budget_total": 3
+ },
+ "candidates": [
+  {
+   "id": "elo-538",
+   "name": "538-style combination",
+   "market": "spread",
+   "family": "Elo family · combo",
+   "reason": "All of the 538 ideas at once: margin multiplier, bye bonus, travel, QB adjustment and a playoff ×1.2 (538's published playoff multiplier).",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.39,
+     "ci": [
+      -0.94,
+      1.7
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.82,
+     "ci": [
+      -2.26,
+      0.67
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.63,
+     "ci": [
+      -0.78,
+      2.01
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.07,
+    "ci": [
+     -0.75,
+     0.87
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 1.6267,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.4905,
+    "break_even": 0.5175,
+    "roi": -0.0522
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.29,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.38,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.8,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.82 pts); pooled +0.07 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:00Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-538.json",
+   "updated_at": "2026-10-19T04:34:00Z"
+  },
+  {
+   "id": "elo-base",
+   "name": "Plain Elo",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "The simplest team rating: win/loss Elo with a fixed home edge, turned into a point spread. Everything else in the Elo family is measured against it.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.25,
+     "ci": [
+      -1.02,
+      1.48
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.87,
+     "ci": [
+      -2.24,
+      0.53
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.89,
+     "ci": [
+      -0.4,
+      2.13
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.1,
+    "ci": [
+     -0.66,
+     0.85
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 3.5636,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5058,
+    "break_even": 0.5175,
+    "roi": -0.0226
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.42,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.57,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.09,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.87 pts); pooled +0.10 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:01Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-base.json",
+   "updated_at": "2026-10-19T04:34:01Z"
+  },
+  {
+   "id": "elo-bye",
+   "name": "+ Rest / bye bonus",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Teams coming off a bye have had extra rest and preparation: +25 Elo for a team whose rest is 13+ days (not week 1).",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.33,
+     "ci": [
+      -0.93,
+      1.55
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.89,
+     "ci": [
+      -2.26,
+      0.5
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.89,
+     "ci": [
+      -0.4,
+      2.13
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.12,
+    "ci": [
+     -0.64,
+     0.88
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 2.6759,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5058,
+    "break_even": 0.5175,
+    "roi": -0.0226
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.38,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.57,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.07,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.89 pts); pooled +0.12 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:01Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-bye.json",
+   "updated_at": "2026-10-19T04:34:01Z"
+  },
+  {
+   "id": "elo-hfa-trend",
+   "name": "+ Home field that changes over time",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Home-field advantage has shrunk over the years: use the average home margin of the previous three seasons instead of a fixed 65 Elo.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.23,
+     "ci": [
+      -1.04,
+      1.46
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.48,
+     "ci": [
+      -1.76,
+      0.83
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.49,
+     "ci": [
+      -0.65,
+      1.61
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.09,
+    "ci": [
+     -0.62,
+     0.79
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 2.1342,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.51,
+    "break_even": 0.5175,
+    "roi": -0.0146
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.44,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.56,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.16,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.48 pts); pooled +0.09 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:02Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-hfa-trend.json",
+   "updated_at": "2026-10-19T04:34:02Z"
+  },
+  {
+   "id": "elo-k10",
+   "name": "Plain Elo, slower (K 10)",
+   "market": "spread",
+   "family": "Elo family · variant",
+   "reason": "Pre-declared variant: ratings that react half as fast.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.38,
+     "ci": [
+      -0.87,
+      1.62
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.58,
+     "ci": [
+      -1.94,
+      0.78
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.89,
+     "ci": [
+      -0.34,
+      2.1
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.24,
+    "ci": [
+     -0.49,
+     0.98
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 2.3461,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5091,
+    "break_even": 0.5175,
+    "roi": -0.0162
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.3,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.9,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.81,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.58 pts); pooled +0.24 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:02Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-k10.json",
+   "updated_at": "2026-10-19T04:34:02Z"
+  },
+  {
+   "id": "elo-k30",
+   "name": "Plain Elo, faster (K 30)",
+   "market": "spread",
+   "family": "Elo family · variant",
+   "reason": "Pre-declared variant: ratings that react 50% faster.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.22,
+     "ci": [
+      -1.07,
+      1.47
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.84,
+     "ci": [
+      -2.23,
+      0.6
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.49,
+     "ci": [
+      -0.78,
+      1.75
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.04,
+    "ci": [
+     -0.81,
+     0.72
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 2.1986,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5008,
+    "break_even": 0.5175,
+    "roi": -0.0322
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.37,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.28,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.54,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.84 pts); pooled -0.04 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:03Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-k30.json",
+   "updated_at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "id": "elo-market",
+   "name": "+ Learn from the market line",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Let ratings learn from the market: after each game, update against a 50/50 blend of the Elo spread and the closing line instead of the Elo spread alone. nfelo regresses toward the market; its exact formula is not in its public code, so this uses a plain 50/50 blend.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.19,
+     "ci": [
+      -1.06,
+      1.42
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.79,
+     "ci": [
+      -2.15,
+      0.6
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 1.08,
+     "ci": [
+      -0.19,
+      2.3
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.17,
+    "ci": [
+     -0.58,
+     0.91
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 5.7215,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5062,
+    "break_even": 0.5175,
+    "roi": -0.0218
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.38,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.7,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.16,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.79 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:03Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-market.json",
+   "updated_at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "id": "elo-mov",
+   "name": "+ Margin-of-victory multiplier",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Bigger wins should move ratings more, damped when a favourite wins big (538's multiplier ln(margin+1)·2.2/(winner's Elo edge·0.001+2.2)).",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.32,
+     "ci": [
+      -0.99,
+      1.6
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -1.04,
+     "ci": [
+      -2.45,
+      0.44
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.28,
+     "ci": [
+      -1.05,
+      1.61
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.15,
+    "ci": [
+     -0.93,
+     0.63
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 0.8544,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.4896,
+    "break_even": 0.5175,
+    "roi": -0.0538
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.39,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.08,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.3,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -1.04 pts); pooled -0.15 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:03Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-mov.json",
+   "updated_at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "id": "elo-nfelo",
+   "name": "nfelo-style combination",
+   "market": "spread",
+   "family": "Elo family · combo",
+   "reason": "The nfelo ideas at once: ratings move by the margin versus the spread (K 9.114, log base 10), market-resistant K, learn from the market line, stronger reversion, playoff ×1.1, changing home field, QB adjustment.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.44,
+     "ci": [
+      -0.8,
+      1.68
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.69,
+     "ci": [
+      -1.97,
+      0.62
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.67,
+     "ci": [
+      -0.5,
+      1.82
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.14,
+    "ci": [
+     -0.57,
+     0.86
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 1.513,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5066,
+    "break_even": 0.5175,
+    "roi": -0.021
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.27,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.7,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.41,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.69 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:04Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-nfelo.json",
+   "updated_at": "2026-10-19T04:34:04Z"
+  },
+  {
+   "id": "elo-playoff",
+   "name": "+ Playoff boost",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Rating gaps may matter more in the playoffs, when teams play their best: playoff Elo gaps ×1.1.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.25,
+     "ci": [
+      -1.02,
+      1.48
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.8,
+     "ci": [
+      -2.17,
+      0.61
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.93,
+     "ci": [
+      -0.36,
+      2.18
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.13,
+    "ci": [
+     -0.63,
+     0.89
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 3.7335,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5062,
+    "break_even": 0.5175,
+    "roi": -0.0218
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.43,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.63,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.28,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.80 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:04Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-playoff.json",
+   "updated_at": "2026-10-19T04:34:04Z"
+  },
+  {
+   "id": "elo-qb",
+   "name": "+ Quarterback adjustment",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Who starts at quarterback matters more than any other player: adjust by 3.3 Elo per point the starter's rolling VALUE is above or below his team's rolling VALUE (538's QB VALUE formula).",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.1,
+     "ci": [
+      -1.15,
+      1.32
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -1.0,
+     "ci": [
+      -2.38,
+      0.4
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.93,
+     "ci": [
+      -0.37,
+      2.2
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.02,
+    "ci": [
+     -0.74,
+     0.78
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 9.0566,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.4967,
+    "break_even": 0.5175,
+    "roi": -0.0402
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.51,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.63,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.69,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -1.00 pts); pooled +0.02 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:05Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-qb.json",
+   "updated_at": "2026-10-19T04:34:05Z"
+  },
+  {
+   "id": "elo-resist",
+   "name": "+ Market-resistant K",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "When the market called a game better than the model, the model should move further: K grows by |model error − market error| / 1.5039 points when the model's error is the larger one.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.88,
+     "ci": [
+      -0.43,
+      2.18
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.39,
+     "ci": [
+      -1.86,
+      1.1
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.69,
+     "ci": [
+      -0.66,
+      2.03
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.39,
+    "ci": [
+     -0.4,
+     1.18
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 0.7811,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5112,
+    "break_even": 0.5175,
+    "roi": -0.0122
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": 0.16,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.57,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 0.95,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.39 pts); pooled +0.39 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:05Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-resist.json",
+   "updated_at": "2026-10-19T04:34:05Z"
+  },
+  {
+   "id": "elo-revert",
+   "name": "+ Stronger preseason reversion",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Rosters turn over: pull ratings about halfway (0.5263) back to average each offseason instead of a third, after centering on the league median.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.45,
+     "ci": [
+      -0.82,
+      1.67
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.68,
+     "ci": [
+      -2.03,
+      0.68
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 1.25,
+     "ci": [
+      0.01,
+      2.46
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.35,
+    "ci": [
+     -0.4,
+     1.09
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 2.7957,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5137,
+    "break_even": 0.5175,
+    "roi": -0.0074
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.22,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.92,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.34,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:06Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-revert.json",
+   "updated_at": "2026-10-19T04:34:06Z"
+  },
+  {
+   "id": "elo-travel",
+   "name": "+ Travel distance",
+   "market": "spread",
+   "family": "Elo family",
+   "reason": "Long trips may cost the travelling team: −4 Elo per 1,000 miles travelled to the game site, for each team.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.06,
+     "ci": [
+      -1.22,
+      1.3
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.74,
+     "ci": [
+      -2.12,
+      0.68
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": 0.82,
+     "ci": [
+      -0.47,
+      2.08
+     ],
+     "games": 854,
+     "passed": true
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": 0.06,
+    "ci": [
+     -0.71,
+     0.83
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": 14.0239,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2412,
+    "win_rate": 0.5062,
+    "break_even": 0.5175,
+    "roi": -0.0218
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.47,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.56,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": 1.06,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:06Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/elo-travel.json",
+   "updated_at": "2026-10-19T04:34:06Z"
+  },
+  {
+   "id": "s-e27628a8",
+   "name": "Blend of 2: s-3770bfc8 + s-6f3641ca",
+   "market": "spread",
+   "family": "Blend · search",
+   "reason": "Found by search round 1: on 2006–2016 it beat the line by +1.18 pts a game (t = 3.47), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "failed",
+   "fail_reason": "gate_3",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": 0.55,
+     "ci": [
+      -0.58,
+      1.69
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2020–22",
+     "effect": 0.73,
+     "ci": [
+      -0.24,
+      1.69
+     ],
+     "games": 838,
+     "passed": true
+    },
+    {
+     "name": "2023–24",
+     "effect": -1.3,
+     "ci": [
+      -2.51,
+      -0.14
+     ],
+     "games": 570,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2017–24",
+    "effect": 0.14,
+    "ci": [
+     -0.48,
+     0.76
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": -2.3603,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2150,
+    "win_rate": 0.4967,
+    "break_even": 0.5175,
+    "roi": -0.0401
+   },
+   "rule_split": [
+    {
+     "label": "2017–20",
+     "effect": 0.82,
+     "note": "1070 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": -0.4,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -0.8,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T06:27:06Z",
+   "run_number": 5,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39208787262",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/s-e27628a8.json",
+   "updated_at": "2026-10-19T06:27:06Z"
+  },
+  {
+   "id": "s-f369d5f7",
+   "name": "Blend of 2: s-473e5379 + s-8a5f816b",
+   "market": "spread",
+   "family": "Blend · search",
+   "reason": "Found by search round 1: on 2006–2016 it beat the line by +1.12 pts a game (t = 3.32), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "failed",
+   "fail_reason": "gate_3",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": 0.62,
+     "ci": [
+      -0.5,
+      1.73
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2020–22",
+     "effect": 0.0,
+     "ci": [
+      -1.02,
+      1.04
+     ],
+     "games": 838,
+     "passed": true
+    },
+    {
+     "name": "2023–24",
+     "effect": -0.83,
+     "ci": [
+      -2.1,
+      0.4
+     ],
+     "games": 570,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2017–24",
+    "effect": 0.01,
+    "ci": [
+     -0.63,
+     0.64
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": -1.3485,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2150,
+    "win_rate": 0.4967,
+    "break_even": 0.5175,
+    "roi": -0.0401
+   },
+   "rule_split": [
+    {
+     "label": "2017–20",
+     "effect": 0.72,
+     "note": "1070 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": -0.86,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -0.04,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T06:27:06Z",
+   "run_number": 5,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39208787262",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/s-f369d5f7.json",
+   "updated_at": "2026-10-19T06:27:06Z"
+  },
+  {
+   "id": "tot-epa",
+   "name": "+ EPA per play as efficiency",
+   "market": "total",
+   "family": "Pace × efficiency",
+   "reason": "Expected points added per play is a steadier measure of offence and defence than raw points per play; map it to points with a fit on 2006–15.",
+   "state": "failed",
+   "fail_reason": "gate_1",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": -0.68,
+     "ci": [
+      -2.17,
+      0.77
+     ],
+     "games": 801,
+     "passed": false
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.32,
+     "ci": [
+      -1.82,
+      1.13
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": -1.33,
+     "ci": [
+      -2.51,
+      -0.2
+     ],
+     "games": 854,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.78,
+    "ci": [
+     -1.57,
+     0.0
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2453,
+    "win_rate": 0.4884,
+    "break_even": 0.5175,
+    "roi": -0.0563
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.89,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": -0.38,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -1.49,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:07Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/tot-epa.json",
+   "updated_at": "2026-10-19T04:34:07Z"
+  },
+  {
+   "id": "tot-pe-fast",
+   "name": "Pace × efficiency, fast (half-life 4)",
+   "market": "total",
+   "family": "Pace × efficiency · variant",
+   "reason": "Pre-declared variant: weight recent games more.",
+   "state": "failed",
+   "fail_reason": "gate_2",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": 0.13,
+     "ci": [
+      -1.31,
+      1.54
+     ],
+     "games": 801,
+     "passed": true
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.75,
+     "ci": [
+      -2.21,
+      0.69
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": -0.18,
+     "ci": [
+      -1.28,
+      0.88
+     ],
+     "games": 854,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.27,
+    "ci": [
+     -1.03,
+     0.5
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": -1.4489,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2453,
+    "win_rate": 0.5022,
+    "break_even": 0.5175,
+    "roi": -0.0295
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.5,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.39,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -1.21,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 2 (2020–22: -0.75 pts); pooled -0.27 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:08Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/tot-pe-fast.json",
+   "updated_at": "2026-10-19T04:34:08Z"
+  },
+  {
+   "id": "tot-pe-slow",
+   "name": "Pace × efficiency, slow (half-life 16)",
+   "market": "total",
+   "family": "Pace × efficiency · variant",
+   "reason": "Pre-declared variant: weight recent games less.",
+   "state": "failed",
+   "fail_reason": "gate_1",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": -0.39,
+     "ci": [
+      -1.74,
+      0.92
+     ],
+     "games": 801,
+     "passed": false
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.41,
+     "ci": [
+      -1.64,
+      0.84
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": -0.13,
+     "ci": [
+      -1.01,
+      0.71
+     ],
+     "games": 854,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.31,
+    "ci": [
+     -0.97,
+     0.35
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2453,
+    "win_rate": 0.499,
+    "break_even": 0.5175,
+    "roi": -0.0358
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.66,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.4,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -0.8,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.31 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:09Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/tot-pe-slow.json",
+   "updated_at": "2026-10-19T04:34:09Z"
+  },
+  {
+   "id": "tot-pe",
+   "name": "Pace × efficiency totals",
+   "market": "total",
+   "family": "Pace × efficiency",
+   "reason": "Points = plays × points per play for each offence, against the defence it faces: rolling (half-life 8 games) plays per game and points per play, offence and defence, relative to the league, calibrated once on 2006–15.",
+   "state": "failed",
+   "fail_reason": "gate_1",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2016–18",
+     "effect": -0.39,
+     "ci": [
+      -1.8,
+      1.0
+     ],
+     "games": 801,
+     "passed": false
+    },
+    {
+     "name": "2019–21",
+     "effect": -0.81,
+     "ci": [
+      -2.13,
+      0.5
+     ],
+     "games": 821,
+     "passed": false
+    },
+    {
+     "name": "2022–24",
+     "effect": -0.3,
+     "ci": [
+      -1.33,
+      0.7
+     ],
+     "games": 854,
+     "passed": false
+    }
+   ],
+   "pooled": {
+    "name": "Pooled 2016–24",
+    "effect": -0.5,
+    "ci": [
+     -1.21,
+     0.23
+    ],
+    "adj_p": 1.0,
+    "adj_p_all_sports": 1.0
+   },
+   "attempts": 20,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": {
+    "picks": 2453,
+    "win_rate": 0.4969,
+    "break_even": 0.5175,
+    "roi": -0.0397
+   },
+   "rule_split": [
+    {
+     "label": "2016–20",
+     "effect": -0.77,
+     "note": "1337 games · before the 17-game season"
+    },
+    {
+     "label": "2021–23",
+     "effect": 0.04,
+     "note": "854 games · 17 games, from 2021"
+    },
+    {
+     "label": "2024",
+     "effect": -0.83,
+     "note": "285 games · new kickoff rule"
+    }
+   ],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.50 pts, Holm-adjusted p = 1.000 over 20 attempts.",
+   "graded_at": "2026-10-19T04:34:10Z",
+   "run_number": 1,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/tot-pe.json",
+   "updated_at": "2026-10-19T04:34:10Z"
+  }
+ ],
+ "lessons": [
+  {
+   "text": "Plain Elo, slower (K 10) vs Plain Elo: helped in every gate (+0.13 / +0.30 / +0.01 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "helped",
+   "candidates": [
+    "elo-k10"
+   ],
+   "at": "2026-10-19T04:34:02Z"
+  },
+  {
+   "text": "+ Stronger preseason reversion vs Plain Elo: helped in every gate (+0.20 / +0.20 / +0.36 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "helped",
+   "candidates": [
+    "elo-revert"
+   ],
+   "at": "2026-10-19T04:34:06Z"
+  },
+  {
+   "text": "Pace × efficiency, fast (half-life 4) vs Pace × efficiency totals: helped in every gate (+0.51 / +0.06 / +0.11 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "helped",
+   "candidates": [
+    "tot-pe-fast"
+   ],
+   "at": "2026-10-19T04:34:10Z"
+  },
+  {
+   "text": "538-style combination vs Plain Elo: helped in 2016–18, then faded (+0.14 / +0.05 / -0.26 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "faded",
+   "candidates": [
+    "elo-538"
+   ],
+   "at": "2026-10-19T04:34:01Z"
+  },
+  {
+   "text": "+ Rest / bye bonus vs Plain Elo: helped in 2016–18, then faded (+0.08 / -0.02 / +0.00 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "faded",
+   "candidates": [
+    "elo-bye"
+   ],
+   "at": "2026-10-19T04:34:01Z"
+  },
+  {
+   "text": "+ Margin-of-victory multiplier vs Plain Elo: helped in 2016–18, then faded (+0.07 / -0.17 / -0.61 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "faded",
+   "candidates": [
+    "elo-mov"
+   ],
+   "at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "text": "nfelo-style combination vs Plain Elo: helped in 2016–18, then faded (+0.19 / +0.18 / -0.22 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "faded",
+   "candidates": [
+    "elo-nfelo"
+   ],
+   "at": "2026-10-19T04:34:04Z"
+  },
+  {
+   "text": "+ Market-resistant K vs Plain Elo: helped in 2016–18, then faded (+0.63 / +0.48 / -0.20 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "faded",
+   "candidates": [
+    "elo-resist"
+   ],
+   "at": "2026-10-19T04:34:05Z"
+  },
+  {
+   "text": "Blend of 2: s-3770bfc8 + s-6f3641ca vs the line-only baseline: helped in 2017–19, then faded (+0.55 / +0.73 / -1.30 pts in 2017–19 / 2020–22 / 2023–24).",
+   "kind": "faded",
+   "candidates": [
+    "s-e27628a8"
+   ],
+   "at": "2026-10-19T06:27:06Z"
+  },
+  {
+   "text": "Blend of 2: s-473e5379 + s-8a5f816b vs the line-only baseline: helped in 2017–19, then faded (+0.62 / +0.00 / -0.83 pts in 2017–19 / 2020–22 / 2023–24).",
+   "kind": "faded",
+   "candidates": [
+    "s-f369d5f7"
+   ],
+   "at": "2026-10-19T06:27:06Z"
+  },
+  {
+   "text": "Plain Elo vs the line-only baseline: no consistent effect (+0.25 / -0.87 / +0.89 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-base"
+   ],
+   "at": "2026-10-19T04:34:01Z"
+  },
+  {
+   "text": "+ Home field that changes over time vs Plain Elo: no consistent effect (-0.02 / +0.40 / -0.39 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-hfa-trend"
+   ],
+   "at": "2026-10-19T04:34:02Z"
+  },
+  {
+   "text": "Plain Elo, faster (K 30) vs Plain Elo: no consistent effect (-0.03 / +0.04 / -0.40 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-k30"
+   ],
+   "at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "text": "+ Learn from the market line vs Plain Elo: no consistent effect (-0.06 / +0.09 / +0.19 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-market"
+   ],
+   "at": "2026-10-19T04:34:03Z"
+  },
+  {
+   "text": "+ Playoff boost vs Plain Elo: no consistent effect (+0.00 / +0.07 / +0.04 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-playoff"
+   ],
+   "at": "2026-10-19T04:34:04Z"
+  },
+  {
+   "text": "+ Quarterback adjustment vs Plain Elo: no consistent effect (-0.15 / -0.13 / +0.04 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-qb"
+   ],
+   "at": "2026-10-19T04:34:05Z"
+  },
+  {
+   "text": "+ Travel distance vs Plain Elo: no consistent effect (-0.19 / +0.14 / -0.06 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "elo-travel"
+   ],
+   "at": "2026-10-19T04:34:06Z"
+  },
+  {
+   "text": "+ EPA per play as efficiency vs Pace × efficiency totals: no consistent effect (-0.29 / +0.49 / -1.04 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "tot-epa"
+   ],
+   "at": "2026-10-19T04:34:10Z"
+  },
+  {
+   "text": "Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "tot-pe-slow"
+   ],
+   "at": "2026-10-19T04:34:10Z"
+  },
+  {
+   "text": "Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).",
+   "kind": "no_effect",
+   "candidates": [
+    "tot-pe"
+   ],
+   "at": "2026-10-19T04:34:10Z"
+  }
+ ],
+ "promoted": [],
+ "runs": [
+  {
+   "kind": "search",
+   "name": "Search round 94",
+   "started_at": "2026-10-20T07:56:29Z",
+   "finished_at": "2026-10-20T07:56:29Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39389626918",
+   "summary": "561 models scored → 67 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 561
+    },
+    {
+     "label": "consistent",
+     "count": 67
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 93",
+   "started_at": "2026-10-20T07:52:45Z",
+   "finished_at": "2026-10-20T07:52:45Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39389176447",
+   "summary": "667 models scored → 91 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 667
+    },
+    {
+     "label": "consistent",
+     "count": 91
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 92",
+   "started_at": "2026-10-20T07:49:00Z",
+   "finished_at": "2026-10-20T07:49:00Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39388868131",
+   "summary": "686 models scored → 84 consistent → 1 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 686
+    },
+    {
+     "label": "consistent",
+     "count": 84
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 1
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 91",
+   "started_at": "2026-10-20T07:46:01Z",
+   "finished_at": "2026-10-20T07:46:01Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39388393279",
+   "summary": "716 models scored → 83 consistent → 2 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 716
+    },
+    {
+     "label": "consistent",
+     "count": 83
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 2
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 90",
+   "started_at": "2026-10-20T07:42:07Z",
+   "finished_at": "2026-10-20T07:42:07Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39388035796",
+   "summary": "669 models scored → 78 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 669
+    },
+    {
+     "label": "consistent",
+     "count": 78
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 89",
+   "started_at": "2026-10-20T07:38:45Z",
+   "finished_at": "2026-10-20T07:38:45Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39387684713",
+   "summary": "682 models scored → 92 consistent → 1 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 682
+    },
+    {
+     "label": "consistent",
+     "count": 92
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 1
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 88",
+   "started_at": "2026-10-20T07:35:31Z",
+   "finished_at": "2026-10-20T07:35:31Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39387318068",
+   "summary": "711 models scored → 89 consistent → 2 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 711
+    },
+    {
+     "label": "consistent",
+     "count": 89
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 2
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 87",
+   "started_at": "2026-10-20T07:32:19Z",
+   "finished_at": "2026-10-20T07:32:19Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39387013956",
+   "summary": "790 models scored → 115 consistent → 1 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 790
+    },
+    {
+     "label": "consistent",
+     "count": 115
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 1
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 86",
+   "started_at": "2026-10-20T07:29:42Z",
+   "finished_at": "2026-10-20T07:29:42Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39386590149",
+   "summary": "805 models scored → 99 consistent → 1 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 805
+    },
+    {
+     "label": "consistent",
+     "count": 99
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 1
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 85",
+   "started_at": "2026-10-20T07:25:54Z",
+   "finished_at": "2026-10-20T07:25:54Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39386162228",
+   "summary": "823 models scored → 123 consistent → 1 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 823
+    },
+    {
+     "label": "consistent",
+     "count": 123
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 1
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  }
+ ],
+ "by_sport": {
+  "CFB": {
+   "updated_at": "2026-10-20T22:08:49Z",
+   "scope": "CFB",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+   "exam_name": "Sealed 2025 exam",
+   "sport": "CFB",
+   "sport_name": "College football",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 20,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v9",
+    "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/cfb/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/cfb/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 110",
+     "started_at": "2026-10-20T22:08:49Z",
+     "finished_at": "2026-10-20T22:08:49Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39505465914",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 109",
+     "started_at": "2026-10-20T21:10:10Z",
+     "finished_at": "2026-10-20T21:10:10Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39497537425",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 108",
+     "started_at": "2026-10-20T20:06:37Z",
+     "finished_at": "2026-10-20T20:06:37Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39488707122",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 107",
+     "started_at": "2026-10-20T19:17:55Z",
+     "finished_at": "2026-10-20T19:17:55Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39481659399",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 106",
+     "started_at": "2026-10-20T18:08:53Z",
+     "finished_at": "2026-10-20T18:08:53Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39471697785",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 105",
+     "started_at": "2026-10-20T17:16:41Z",
+     "finished_at": "2026-10-20T17:16:41Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39464037594",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 104",
+     "started_at": "2026-10-20T16:15:54Z",
+     "finished_at": "2026-10-20T16:15:54Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39455257557",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 103",
+     "started_at": "2026-10-20T15:15:07Z",
+     "finished_at": "2026-10-20T15:15:07Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39446148843",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 102",
+     "started_at": "2026-10-20T14:19:21Z",
+     "finished_at": "2026-10-20T14:19:21Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39437384607",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 101",
+     "started_at": "2026-10-20T13:23:44Z",
+     "finished_at": "2026-10-20T13:23:44Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39429391466",
+     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 0
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    }
+   ]
+  }
+ },
+ "sports": [
+  {
+   "key": "NFL",
+   "name": "NFL"
+  },
+  {
+   "key": "CFB",
+   "name": "College football"
+  }
+ ]
+}

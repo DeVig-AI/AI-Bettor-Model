@@ -1,0 +1,32 @@
+# Research Lab candidate elo-nfelo -- registered before it runs (Constitution A3). Never edit after it has run.
+id: elo-nfelo
+name: nfelo-style combination
+market: spread
+family: Elo family · combo
+parent: elo-base
+reason: 'The nfelo ideas at once: ratings move by the margin versus the spread (K 9.114, log base 10), market-resistant K,
+  learn from the market line, stronger reversion, playoff ×1.1, changing home field, QB adjustment.'
+source: nfelo's public code (greerreNFL/nfelo, config nfelo_v4.3.1)
+model:
+  type: elo
+  params:
+    k: 9.114
+    hfa_elo: 65
+    revert: 0.5263
+    revert_center: median
+    mean: 1505
+    elo_per_point: 25
+    mov: nfelo
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    playoff_mult: 1.1
+    qb: '538'
+    hfa_mode: rolling
+    market_blend: 0.5
+    market_resist: 1.5039
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
