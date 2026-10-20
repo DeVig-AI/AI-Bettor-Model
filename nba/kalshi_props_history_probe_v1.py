@@ -71,6 +71,11 @@ while pages < 400:
     if not cursor or not d.get("markets"):
         break
 out["live_series_scan_KXNBA3PT_settled_by_month"] = dict(months)
+LABEL = ("ticker", "title", "yes_sub_title", "no_sub_title", "strike_type", "floor_strike", "cap_strike", "custom_strike",
+         "functional_strike", "market_type", "result", "status")
+for name, et in (("old", OLD), ("new", NEW)):
+    code, d = get("/historical/markets", {"event_ticker": et, "limit": 1000})
+    out[name + ":labels"] = [{k: m.get(k) for k in LABEL} for m in (d.get("markets") or [])[:6]] if isinstance(d, dict) else [code, d]
 os.makedirs("nba/props_history/probe", exist_ok=True)
 json.dump(out, open("nba/props_history/probe/probe_v1.json", "w"), indent=1, default=str)
 print(json.dumps(out, indent=1, default=str)[:6000])

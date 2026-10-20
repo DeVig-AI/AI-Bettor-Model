@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [nba-kalshi-props-backtest-v1]
-    paths: ['.github/workflows/nba_kalshi_props_probe.yml']
+    paths: ['.github/workflows/nba_kalshi_props_probe.yml']  # v2
 permissions:
   contents: write
 jobs:
