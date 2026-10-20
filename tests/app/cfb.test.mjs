@@ -96,7 +96,7 @@ test("college football tab on a phone", async (t) => {
       assert.match(await u.pg.locator(".cfb-soon").innerText(), /under construction/i);
       assert.equal(await u.pg.locator(".cfb-card").count(), 0);
       await u.pg.screenshot({path: OUT + "cfb-soon.png"});
-      await u.pg.locator('nav.tabs button[data-tab="models"]').click();
+      await u.pg.locator('nav.tabs button[data-tab="more"]').click(); await u.pg.locator('#panel-more [data-go="models"]').click();
       await u.pg.locator('#mdSport [data-md-sport="CFB"]').click();
       assert.match(await u.pg.locator("#mdGames").innerText(), /under construction/i);
       await u.pg.locator('nav.tabs button[data-tab="scan"]').click();
@@ -130,7 +130,7 @@ test("college football tab on a phone", async (t) => {
       await pg.locator(".cfb-card[open]").screenshot({path: OUT + "cfb-open.png"});
     });
     await t.test("models tab lists CFB", async () => {
-      await pg.locator('nav.tabs button[data-tab="models"]').click();
+      await pg.locator('nav.tabs button[data-tab="more"]').click(); await pg.locator('#panel-more [data-go="models"]').click();
       await pg.locator('#mdSport [data-md-sport="CFB"]').waitFor();
     });
     await t.test("history: CFB finals vs Kalshi", async () => {
