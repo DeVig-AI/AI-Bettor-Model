@@ -1,6 +1,6 @@
 # Research Lab -- lessons, College football (EXPLORATORY)
 
-_Generated 2026-10-20T01:52:31Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-20T01:52:55Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 
@@ -16,10 +16,10 @@ _Generated 2026-10-20T01:52:31Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## What the search learned (4,662 configurations, 2018–2021 only)
+## What the search learned (4,664 configurations, 2018–2021 only)
 
-- spread · elo · `k`: best 40 (median t -0.72), worst 10 (-1.07) over 2046 configurations
-- spread · elo · `mov`: best 538 (median t -0.66), worst none (-1.21) over 2046 configurations
+- spread · elo · `k`: best 40 (median t -0.72), worst 10 (-1.07) over 2048 configurations
+- spread · elo · `mov`: best 538 (median t -0.66), worst none (-1.21) over 2048 configurations
 - spread · ppa · `carry`: best 0.8 (median t -0.36), worst 0.6 (-0.82) over 128 configurations
 - spread · ppa · `garbage_time`: best exclude (median t -0.46), worst include (-0.76) over 128 configurations
 - spread · ppa · `prior_w`: best 6 (median t -0.52), worst 0.5 (-0.80) over 128 configurations

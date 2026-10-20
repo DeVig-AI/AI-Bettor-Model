@@ -1,10 +1,10 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-20T01:48:17Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-20T01:52:55Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-4662 configurations scored so far.
+4664 configurations scored so far.
 
-## Spread -- top 25 of 4042
+## Spread -- top 25 of 4044
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -66,8 +66,8 @@ _Generated 2026-10-20T01:48:17Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `k`: best 40 (median t -0.72), worst 10 (-1.07) over 2046 configurations
-- spread · elo · `mov`: best 538 (median t -0.66), worst none (-1.21) over 2046 configurations
+- spread · elo · `k`: best 40 (median t -0.72), worst 10 (-1.07) over 2048 configurations
+- spread · elo · `mov`: best 538 (median t -0.66), worst none (-1.21) over 2048 configurations
 - spread · ppa · `carry`: best 0.8 (median t -0.36), worst 0.6 (-0.82) over 128 configurations
 - spread · ppa · `garbage_time`: best exclude (median t -0.46), worst include (-0.76) over 128 configurations
 - spread · ppa · `prior_w`: best 6 (median t -0.52), worst 0.5 (-0.80) over 128 configurations
