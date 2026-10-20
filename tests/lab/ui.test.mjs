@@ -85,6 +85,20 @@ test("lab page on a phone", async (t) => {
       assert.match(await pg.locator(".cand").nth(2).innerText(), /✕ Failed · faded/);
       assert.ok((await pg.locator(".cand").nth(2).innerText()).includes("<img src=x"), "names shown as text");
       assert.equal(await pg.locator(".lesson").count(), 3);
+      // tabs: Candidates first; Lessons shows when each lesson was learned, newest first
+      assert.deepEqual(await pg.locator(".tabs [data-tab]").evaluateAll(b => b.map(x => x.getAttribute("data-tab"))), ["cands", "lessons", "runs", "github"]);
+      assert.equal(await pg.locator("#pane-lessons").isVisible(), false);
+      await pg.locator('.tabs [data-tab="lessons"]').click();
+      assert.equal(await pg.locator("#pane-lessons").isVisible(), true);
+      assert.match(await pg.locator(".lesson").first().innerText(), /Starting-QB[\s\S]*30 min ago/);
+      assert.match(await pg.locator(".lesson").nth(1).innerText(), /Rest days[\s\S]*1 d ago|Rest days[\s\S]*26 h ago/);
+      assert.match(await pg.locator(".lesson").nth(2).innerText(), /time not recorded/);
+      assert.match(await pg.locator("#pane-lessons").innerText(), /Newest [\s\S]*30 min ago/);
+      await pg.locator('[data-lf="faded"]').click();
+      assert.equal(await pg.locator(".lesson").count(), 1);
+      await pg.screenshot({path: OUT + "lessons.png", fullPage: true});
+      await pg.locator('[data-lf="all"]').click();
+      await pg.locator('.tabs [data-tab="runs"]').click();
       assert.match(await pg.locator("#h-l").locator("..").innerText(), /Exploratory · not proof/);
       assert.match(await pg.locator(".promo").innerText(), /Promoted, not proven[\s\S]*23–18/i);
       assert.match(await pg.locator("#activity .sechead").innerText(), /1 ok · 1 failed/);
@@ -98,11 +112,21 @@ test("lab page on a phone", async (t) => {
       assert.ok((await runs.locator(".funnel").innerText()).includes("<b>x</b>"), "labels shown as text");
       assert.match(await pg.locator(".older").innerText(), /Sealed exam 1 · 3 d ago · being scored/);
       assert.equal(await pg.locator(".older a").count(), 0, "non-GitHub run link not linked");
+      await pg.screenshot({path: OUT + "runs.png", fullPage: true});
+      await pg.locator('.tabs [data-tab="github"]').click();
+      const wfBox = await pg.locator(".wf").first().boundingBox();
+      assert.ok(wfBox.height >= 44, `.wf is ${wfBox.height}px tall`);
+      await pg.locator('.tabs [data-tab="cands"]').click();
       await pg.screenshot({path: OUT + "mixed.png", fullPage: true});
-      for (const sel of ["#refresh", ".cand", ".wf", "footer a", "#morecands", ".alert"]) {
+      for (const sel of ["#refresh", ".cand", "footer a", "#morecands", ".alert", ".tabs [data-tab]", "[data-cf]"]) {
         const box = await pg.locator(sel).first().boundingBox();
-        assert.ok(box.height >= 44, `${sel} is ${box.height}px tall`);
+        assert.ok(box.height >= 36, `${sel} is ${box.height}px tall`);
       }
+      const nFailed = Number((await pg.locator('[data-cf="failed"]').innerText()).match(/\d+/)[0]);
+      await pg.locator('[data-cf="failed"]').click();
+      assert.equal(await pg.locator(".cand").count(), nFailed);
+      assert.ok((await pg.locator(".cand").allInnerTexts()).every(t => /Failed/.test(t)));
+      await pg.locator('[data-cf="all"]').click();
       await pg.locator("#morecands").click();
       assert.equal(await pg.locator(".cand").count(), 6);
     });

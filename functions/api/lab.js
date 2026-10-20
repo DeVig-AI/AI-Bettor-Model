@@ -226,7 +226,7 @@ export function cleanStatus(s, nested = false) {
       };
     }),
     lessons: arr(s.lessons, 100).filter(x => x && typeof x === "object").map(x => ({
-      text: str(x.text, 600), kind: KINDS.includes(x.kind) ? x.kind : "no_effect",
+      text: str(x.text, 600), kind: KINDS.includes(x.kind) ? x.kind : "no_effect", at: iso(x.at),
       candidates: arr(x.candidates, 20).map(v => str(v, 80))})),
     runs: arr(s.runs, 10).filter(x => x && typeof x === "object").map(x => ({
       kind: ["lab", "exam", "review", "paper", "search"].includes(x.kind) ? x.kind : "lab", name: str(x.name, 80),

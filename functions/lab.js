@@ -134,8 +134,24 @@ export const PAGE = `<!doctype html>
   .btn:hover{color:var(--ink);border-color:var(--ink-faint)}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;min-height:48px;font-size:15px}
   .btn.primary:hover{color:var(--accent-ink)}
-  .lessons{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
-  .lesson{flex:0 0 250px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;
+  .tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;padding:6px 0;margin:4px 0 2px;background:var(--bg);overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:1 1 0;min-width:0;background:none;border:1px solid var(--line);border-radius:999px;color:var(--ink-soft);font:inherit;font-size:13px;
+    font-weight:600;padding:0 6px;min-height:44px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#1A1206}
+  .tabs .ct{font-family:var(--mono);font-weight:500;opacity:.75;margin-left:3px}
+  .tabs .nw{display:inline-block;min-width:18px;border-radius:9px;background:var(--good);color:#06150c;font-size:11px;padding:1px 5px;margin-left:5px}
+  .filt{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+  .filt::-webkit-scrollbar{display:none}
+  .filt button{flex:none;background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;color:var(--ink-soft);font:inherit;font-size:13px;
+    padding:0 12px;min-height:36px;cursor:pointer}
+  .filt button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+  .pane[hidden]{display:none}
+  .lessons{display:flex;flex-direction:column;gap:8px}
+  .lesson .when{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-faint);margin-top:8px}
+  .lesson .new{background:var(--good);color:#06150c;border-radius:6px;font-size:10.5px;font-weight:700;padding:1px 6px;letter-spacing:.04em}
+  .lesson a{color:var(--accent);text-decoration:none}
+  .lesson{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;
           display:flex;flex-direction:column;gap:8px}
   .lesson .k{font-size:11px;font-weight:600;letter-spacing:.06em}
   .lesson .t{font-size:14px;line-height:1.45}
@@ -224,6 +240,12 @@ export const PAGE = `<!doctype html>
   var KEY = "devig-lab-last", REFRESH_MS = 60000, REPO = "https://github.com/DeVig-AI/AI-Bettor-Model";
   var data = null, loadedAt = 0, loading = false, timer = null, problem = {};
   var showAllCands = false, showAllWf = false, showAllSteps = false, REFRESH_LIVE = 15000;
+  // the overview's tabs and filters (remembered on this device); lessons newer than the last visit are marked New
+  function getLS(k, d){ try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
+  function setLS(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  var labTab = getLS("labTab", "cands"), candFilter = "all", lessonFilter = "all";
+  var lessonsSeen = getLS("labLessonsSeen", "");          // what "New" is measured from during this visit
+  var lessonsSeenNext = lessonsSeen;
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -388,9 +410,18 @@ export const PAGE = `<!doctype html>
       '<div class="chips"><span class="chip">' + marketName(c.market) + '</span>' + stateChip(c) + '</div></div>' + pips(c) + '</div>' +
       bottom + '</a>';
   }
+  var CF = {passed: ["lab_pass", "exam_pass", "promoted"], failed: ["failed", "exam_fail", "stopped"], waiting: ["running", "queued"]};
   function viewCandidates(s){
-    var cands = sorted(s.candidates || []);
-    if (!cands.length) return "";
+    var all = sorted(s.candidates || []);
+    if (!all.length) return "";
+    var cnt = {all: all.length, passed: 0, failed: 0, waiting: 0};
+    all.forEach(function(c){ Object.keys(CF).forEach(function(k){ if (CF[k].indexOf(c.state) >= 0) cnt[k]++; }); });
+    var cands = all.filter(function(c){ return candFilter === "all" || (CF[candFilter] || []).indexOf(c.state) >= 0; });
+    var filt = '<div class="filt" role="group" aria-label="Show candidates">' + [["all", "All"], ["passed", "Passed"], ["failed", "Failed"], ["waiting", "Running / queued"]].map(function(f){
+      return '<button type="button" data-cf="' + f[0] + '" aria-pressed="' + (candFilter === f[0]) + '">' + f[1] + ' ' + cnt[f[0]] + '</button>';
+    }).join("") + '</div>';
+    if (!cands.length) return '<section class="stack" aria-labelledby="h-c"><div class="sechead"><h2 id="h-c">Candidates</h2></div>' + filt +
+      '<div class="small" style="padding:0 4px">None in this group.</div></section>';
     var scale = scaleOf(cands, 1), unit = s.effect_unit || "pts", SHOW = 4;
     var shown = showAllCands ? cands : cands.slice(0, SHOW), rest = cands.slice(SHOW);
     var gnames = ((cands[0].gates || []).slice(0, 3)).map(function(g){ return g.name; }).filter(Boolean);
@@ -401,7 +432,7 @@ export const PAGE = `<!doctype html>
         Object.keys(by).map(function(k){ return by[k] + " " + k; }).join(", ") + '</button>';
     }
     return '<section class="stack" aria-labelledby="h-c"><div class="sechead"><h2 id="h-c">Candidates</h2>' +
-      (gnames.length ? '<div class="r">gates ' + esc(gnames.join(" · ")) + '</div>' : "") + '</div>' +
+      (gnames.length ? '<div class="r">gates ' + esc(gnames.join(" · ")) + '</div>' : "") + '</div>' + filt +
       shown.map(function(c){ return candCard(c, scale, unit); }).join("") + more + '</section>';
   }
   function clock(iso){
@@ -444,18 +475,32 @@ export const PAGE = `<!doctype html>
       '<div class="r">counts only</div></div><div class="card runs">' + head + list + more + '</div>' +
       (older ? '<div class="older"><div class="small">Earlier</div>' + older + '</div>' : "") + '</section>';
   }
+  function when(iso){
+    var t = Date.parse(iso); if (!t) return "";
+    return new Date(t).toLocaleString([], {month: "short", day: "numeric", hour: "numeric", minute: "2-digit"});
+  }
+  function isNew(l){ return !!(lessonsSeen && l.at && l.at > lessonsSeen); }
   function viewLessons(s){
-    var les = s.lessons || [];
-    if (!les.length) return "";
+    var les = (s.lessons || []).slice().sort(function(a, b){ return String(b.at || "").localeCompare(String(a.at || "")); });
     var names = {}; (s.candidates || []).forEach(function(c){ names[c.id] = c.name; });
     var K = {helped: "▲ HELPED", faded: "▼ FADED", no_effect: "● NO EFFECT"};
+    var cnt = {all: les.length, helped: 0, faded: 0, no_effect: 0};
+    les.forEach(function(l){ cnt[l.kind] = (cnt[l.kind] || 0) + 1; });
+    var shown = les.filter(function(l){ return lessonFilter === "all" || l.kind === lessonFilter; });
+    var newest = les.length && les[0].at ? les[0].at : null;
+    var filt = '<div class="filt" role="group" aria-label="Show lessons">' + [["all", "All"], ["helped", "Helped"], ["faded", "Faded"], ["no_effect", "No effect"]].map(function(f){
+      return '<button type="button" data-lf="' + f[0] + '" aria-pressed="' + (lessonFilter === f[0]) + '">' + f[1] + ' ' + n(cnt[f[0]]) + '</button>';
+    }).join("") + '</div>';
     return '<section class="stack" aria-labelledby="h-l"><div class="sechead"><h2 id="h-l">Lessons</h2>' +
       '<div class="r" style="color:var(--accent);font-weight:600">Exploratory · not proof</div></div>' +
-      '<div class="lessons" tabindex="0" aria-label="Lessons, scrolls sideways">' + les.map(function(l){
-        var from = (l.candidates || []).map(function(id){ return names[id] || id; }).filter(Boolean);
+      '<div class="small" style="padding:0 4px">' + (newest ? "Newest " + esc(when(newest)) + " · " + esc(ago(newest)) : "No lessons yet") +
+      " · lab status " + esc(ago(s.updated_at)) + '</div>' + (les.length ? filt : "") +
+      '<div class="lessons" aria-label="Lessons, newest first">' + shown.map(function(l){
+        var from = (l.candidates || []).map(function(id){ return '<a href="#c/' + encodeURIComponent(id) + '">' + esc(names[id] || id) + '</a>'; });
         return '<div class="lesson"><div class="k k-' + esc(l.kind) + '">' + (K[l.kind] || K.no_effect) + '</div><div class="t">' + esc(l.text) + '</div>' +
-          (from.length ? '<div class="small">from ' + esc(from.join(", ")) + '</div>' : "") + '</div>';
-      }).join("") + '</div></section>';
+          '<div class="when"><span>' + (from.length ? "from " + from.join(", ") : "") + '</span><span>' + (isNew(l) ? '<span class="new">NEW</span> ' : "") +
+          (l.at ? esc(when(l.at)) + " · " + esc(ago(l.at)) : "time not recorded") + '</span></div></div>';
+      }).join("") + (les.length && !shown.length ? '<div class="small">None in this group.</div>' : "") + '</div></section>';
   }
   function viewPromoted(s){
     var pro = s.promoted || [];
@@ -558,11 +603,37 @@ export const PAGE = `<!doctype html>
     if (!s) return '<section class="card empty" aria-label="Research"><div class="kicker">Research</div><b>Lab hasn’t run yet</b>' +
       '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
     return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
-      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewRuns(s) + viewCandidates(s) + viewLessons(s) + viewPromoted(s);
+      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewTabs(s, data.github);
+  }
+  function viewTabs(s, g){
+    var nNew = (s.lessons || []).filter(isNew).length;
+    var bad = g && g.workflows ? g.workflows.filter(function(w){ return w.last && w.last.state === "failed" && !w.disabled; }).length : 0;
+    var running = (s.candidates || []).filter(function(c){ return c.state === "running"; }).length || (s.runs && s.runs[0] && !s.runs[0].finished_at ? 1 : 0);
+    var T = [["cands", "Candidates", ""],                         // its count is on the "All" filter below
+             ["lessons", "Lessons", '<span class="ct">' + n((s.lessons || []).length) + '</span>' + (nNew ? '<span class="nw">' + nNew + ' new</span>' : "")],
+             ["runs", "Runs", running ? '<span class="nw" style="background:var(--accent)">live</span>' : ""],
+             ["github", "GitHub", bad ? '<span class="nw" style="background:var(--bad)">' + bad + '</span>' : ""]];
+    if (!T.some(function(t){ return t[0] === labTab; })) labTab = "cands";
+    return '<div class="tabs" role="tablist" aria-label="Lab sections">' + T.map(function(t){
+      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (labTab === t[0]) + '" aria-controls="pane-' + t[0] + '">' + t[1] + t[2] + '</button>';
+    }).join("") + '</div>' +
+      '<div class="pane" id="pane-cands" role="tabpanel"' + (labTab === "cands" ? "" : " hidden") + '>' + viewCandidates(s) + '</div>' +
+      '<div class="pane" id="pane-lessons" role="tabpanel"' + (labTab === "lessons" ? "" : " hidden") + '>' + viewLessons(s) + '</div>' +
+      '<div class="pane" id="pane-runs" role="tabpanel"' + (labTab === "runs" ? "" : " hidden") + '>' + viewRuns(s) + viewPromoted(s) +
+        ((s.runs || []).length || (s.promoted || []).length ? "" : '<div class="card empty"><p>No runs yet.</p></div>') + '</div>' +
+      '<div class="pane" id="pane-github" role="tabpanel"' + (labTab === "github" ? "" : " hidden") + '>' + viewGithub(g) + '</div>';
+  }
+  function markLessonsSeen(){                      // remember the newest lesson seen; "New" stays on for this visit
+    var s = sportStatus(data && data.research && data.research.status);
+    var newest = ((s && s.lessons) || []).reduce(function(m, l){ return l.at && l.at > m ? l.at : m; }, "");
+    if (!lessonsSeen) lessonsSeen = newest || "0";  // first visit: nothing counts as new
+    if (newest > lessonsSeenNext){ lessonsSeenNext = newest; setLS("labLessonsSeen", newest); }
   }
   function viewOverview(){
     var s = data && data.research && data.research.status;
-    return viewNotes() + viewAlert(data.github) + viewResearchBlock(data.research) + viewGithub(data.github) + viewFooter(s);
+    var h = viewNotes() + viewAlert(data.github) + viewResearchBlock(data.research);
+    if (!sportStatus(s)) h += viewGithub(data.github);   // no lab status yet: still show GitHub
+    return h + viewFooter(s);
   }
 
   // ---- candidate detail --------------------------------------------------------------------------------------------
@@ -646,6 +717,7 @@ export const PAGE = `<!doctype html>
     }
     var id = route();
     $("main").innerHTML = id ? viewDetail(id) : viewOverview();
+    if (!id && labTab === "lessons") markLessonsSeen();
   }
   function tick(){
     $("when").textContent = loadedAt ? "Updated " + ago(new Date(loadedAt).toISOString()).replace("just now", "just now") + (busy() ? " · checking every 15 s" : " · auto-refresh on") :
@@ -681,7 +753,20 @@ export const PAGE = `<!doctype html>
   }
 
   $("refresh").addEventListener("click", function(){ load(true); });
+  function showTab(t){
+    labTab = t; setLS("labTab", t);
+    document.querySelectorAll(".tabs [data-tab]").forEach(function(b){ b.setAttribute("aria-selected", String(b.getAttribute("data-tab") === t)); });
+    document.querySelectorAll(".pane").forEach(function(p){ p.hidden = p.id !== "pane-" + t; });
+    if (t === "lessons") markLessonsSeen();
+  }
   $("main").addEventListener("click", function(e){
+    var tb = e.target.closest(".tabs [data-tab]");
+    if (tb){ showTab(tb.getAttribute("data-tab")); return; }
+    var cf = e.target.closest("[data-cf]");
+    if (cf){ candFilter = cf.getAttribute("data-cf"); showAllCands = candFilter !== "all"; render(); return; }
+    var lf = e.target.closest("[data-lf]");
+    if (lf){ lessonFilter = lf.getAttribute("data-lf"); render(); return; }
+    if (e.target.closest(".alert") && !e.target.closest("#alertx")){ e.preventDefault(); showTab("github"); var a0 = $("activity"); if (a0) a0.scrollIntoView(); return; }
     if (e.target.closest("#morecands")){ showAllCands = true; render(); }
     var sp = e.target.closest(".sports [data-sport]");
     if (sp){ labSport = sp.getAttribute("data-sport"); try { localStorage.setItem("labSport", labSport); } catch (x) {} showAllCands = false; render(); }
@@ -697,7 +782,7 @@ export const PAGE = `<!doctype html>
     var id = route();
     render();
     if (id || location.hash === "" || location.hash === "#") window.scrollTo(0, 0);
-    else if (location.hash === "#activity"){ var a = $("activity"); if (a) a.scrollIntoView(); }
+    else if (location.hash === "#activity"){ showTab("github"); var a = $("activity"); if (a) a.scrollIntoView(); }
   });
   document.addEventListener("visibilitychange", function(){
     if (document.visibilityState === "visible" && Date.now() - loadedAt > REFRESH_MS) load();
