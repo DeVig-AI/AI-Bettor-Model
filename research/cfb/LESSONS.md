@@ -1,6 +1,6 @@
 # Research Lab -- lessons, College football (EXPLORATORY)
 
-_Generated 2026-10-20T00:06:43Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-20T00:15:50Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 
@@ -16,24 +16,26 @@ _Generated 2026-10-20T00:06:43Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## What the search learned (1,542 configurations, 2018–2021 only)
+## What the search learned (1,974 configurations, 2018–2021 only)
 
-- spread · elo · `mov`: best 538 (median t -0.61), worst none (-0.97) over 576 configurations
-- spread · ppa · `carry`: best 0.8 (median t -0.36), worst 0.3 (-0.77) over 60 configurations
-- spread · ppa · `garbage_time`: best exclude (median t -0.43), worst include (-0.73) over 60 configurations
-- spread · srs · `carry`: best 0.2 (median t +0.74), worst 0.4 (-0.35) over 257 configurations
-- spread · srs · `hfa_pts`: best 1.5 (median t +0.60), worst 3.0 (+0.00) over 257 configurations
-- spread · srs · `margin_cap`: best None (median t +0.51), worst 28 (-0.28) over 257 configurations
-- spread · srs · `prior_w`: best 0.5 (median t +0.86), worst 10 (-0.45) over 257 configurations
-- spread · team_rating · `def_weight`: best 1.0 (median t +0.18), worst 0.5 (-0.13) over 119 configurations
-- spread · team_rating · `halflife`: best 2 (median t +0.60), worst 8 (-0.30) over 119 configurations
-- spread · team_rating · `metric`: best points (median t +0.32), worst epa (-0.43) over 119 configurations
-- spread · team_rating · `season_carry`: best 0.2 (median t +0.69), worst 0.7 (-0.40) over 119 configurations
-- total · pace_eff · `efficiency`: best epa (median t +0.71), worst points (+0.10) over 133 configurations
-- total · pace_eff · `halflife`: best 2 (median t +1.58), worst 3 (-0.11) over 133 configurations
-- total · pace_eff · `pace`: best True (median t +0.71), worst False (+0.08) over 133 configurations
-- total · pace_eff · `season_carry`: best 0.2 (median t +1.48), worst 0.3 (-0.05) over 133 configurations
-- total · team_rating · `halflife`: best 4 (median t +1.33), worst 2 (+0.79) over 61 configurations
-- total · team_rating · `metric`: best epa (median t +1.17), worst points (+0.07) over 61 configurations
-- total · team_rating · `pace`: best plays (median t +1.19), worst none (+0.17) over 61 configurations
-- total · team_rating · `season_carry`: best 0.6 (median t +1.36), worst 0.7 (+0.67) over 61 configurations
+- spread · elo · `mov`: best 538 (median t -0.62), worst none (-0.97) over 666 configurations
+- spread · ppa · `carry`: best 0.9 (median t -0.28), worst 0.6 (-0.82) over 104 configurations
+- spread · ppa · `garbage_time`: best exclude (median t -0.46), worst include (-0.74) over 104 configurations
+- spread · ppa · `prior_w`: best 6 (median t -0.49), worst 10 (-0.75) over 104 configurations
+- spread · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (median t -inf), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (-inf) over 7 configurations
+- spread · srs · `carry`: best 0.9 (median t +0.25), worst 0.4 (-0.38) over 349 configurations
+- spread · srs · `hfa_pts`: best 1.5 (median t +0.36), worst 3.5 (-0.26) over 349 configurations
+- spread · srs · `margin_cap`: best None (median t +0.49), worst 21 (-0.69) over 349 configurations
+- spread · srs · `prior_w`: best 0.5 (median t +0.64), worst 10 (-0.51) over 349 configurations
+- spread · team_rating · `halflife`: best 2 (median t +0.58), worst 20 (-0.41) over 189 configurations
+- spread · team_rating · `metric`: best points (median t +0.25), worst epa (-0.44) over 189 configurations
+- spread · team_rating · `season_carry`: best 0.4 (median t +0.27), worst 0.7 (-0.38) over 189 configurations
+- total · pace_eff · `efficiency`: best epa (median t +0.63), worst points (+0.03) over 181 configurations
+- total · pace_eff · `halflife`: best 14 (median t +0.47), worst 2 (-0.27) over 181 configurations
+- total · pace_eff · `pace`: best True (median t +0.58), worst False (+0.03) over 181 configurations
+- total · pace_eff · `season_carry`: best 0.5 (median t +0.53), worst 0.2 (-0.21) over 181 configurations
+- total · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (median t -inf), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (-inf) over 14 configurations
+- total · team_rating · `halflife`: best 4 (median t +1.21), worst 2 (+0.67) over 104 configurations
+- total · team_rating · `metric`: best epa (median t +1.14), worst points (+0.07) over 104 configurations
+- total · team_rating · `pace`: best plays (median t +1.17), worst none (+0.14) over 104 configurations
+- total · team_rating · `season_carry`: best 0.6 (median t +1.18), worst 0.3 (+0.65) over 104 configurations
