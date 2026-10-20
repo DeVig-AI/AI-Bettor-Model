@@ -816,7 +816,7 @@
     </div>
     <div class="card">
       <h3>College football</h3>
-      <p>The CFB tab shows every FBS game Kalshi lists: ESPN's live score, Kalshi's win chance, moneyline, main spread and total, every spread line, and the win-chance graph from Kalshi's price history. History shows finished games against Kalshi's last price before kickoff. DeVig has no college football model, so nothing on the CFB tab is a pick. Games are matched between Kalshi and ESPN by school name.</p>
+      <p><strong>Under construction.</strong> When it opens, the CFB tab will show every FBS game Kalshi lists: ESPN's live score, Kalshi's win chance, moneyline, main spread and total, every spread line, and the win-chance graph from Kalshi's price history, and History will show finished games against Kalshi's last price before kickoff. DeVig has no college football model, so nothing on the CFB tab is a pick. Games are matched between Kalshi and ESPN by school name.</p>
     </div>
     <div class="card" id="donateCard" hidden>
       <h3>Keep DeVig free</h3>
@@ -1325,6 +1325,13 @@
   // No DeVig model picks CFB games. The board is built from the lines file (tools/game_lines.py: Kalshi's
   // KXNCAAF* markets matched to ESPN's FBS scoreboard), with scores from the fast feed (/api/live?sport=cfb).
   var CFB_IDS = {}, cfbOpen = {}, cfbHistory = null;
+  // The CFB tab is under construction: tapping it shows a notice instead of the board (and History / Models leave
+  // CFB out). Set to false to switch the board on; window.devigCfbPreview = true shows it anyway (tests, previews).
+  var CFB_UNDER_CONSTRUCTION = !window.devigCfbPreview;
+  function cfbConstructionHtml(){
+    return '<div class="empty"><div class="icon">🚧</div><b>College football is under construction</b><br>' +
+      '<span class="faint">Games, live scores, Kalshi prices and the win-chance graph are coming soon.</span></div>';
+  }
   function cfbGames(){
     TEAM_COLORS.CFB = TEAM_COLORS.CFB || {};          // filled from the lines file: ESPN's colour for each school
     return ((linesDoc && linesDoc.games) || []).filter(function(x){ return x.sport === "CFB" && x.kickoff; }).map(function(x){
@@ -1394,6 +1401,11 @@
   }
   function renderCfbBoard(wrap, statusEl, syncedEl){
     var noteEl = document.getElementById("confFilterNote");
+    if(CFB_UNDER_CONSTRUCTION){
+      noteEl.textContent = ""; statusEl.textContent = ""; statusEl.className = "status"; syncedEl.textContent = "";
+      wrap.appendChild(el("div", "card cfb-soon", cfbConstructionHtml()));
+      return;
+    }
     var all = cfbGames(), games = all.filter(cfbOnBoard);
     if(currentConfKey === "tracked") games = games.filter(function(g){ return followsGame(g); });
     noteEl.textContent = currentConfKey === "top25" || currentConfKey === "top50" ? "Confidence bars are for DeVig's models; college football has none yet, so every game is shown." : "";
@@ -1421,6 +1433,7 @@
   }
   // History: each finished game with Kalshi's last numbers before kickoff (live/cfb_history.json)
   function cfbFinals(){
+    if(CFB_UNDER_CONSTRUCTION) return [];
     var gs = (cfbHistory && cfbHistory.games) || {};
     return Object.keys(gs).map(function(k){ return Object.assign({espn_id: k}, gs[k]); })
       .filter(function(h){ return h.final && h.pre && h.kickoff; });
@@ -1513,6 +1526,12 @@
       return '<button type="button" role="tab" class="pill-tab' + (b[0] === mdBet ? ' active' : '') + '" aria-selected="' + (b[0] === mdBet) + '" data-md-bet="' + b[0] + '">' + b[1] + '</button>';
     }).join("");
     var table = document.getElementById("mdTable"), noteEl = document.getElementById("mdNote");
+    if(mdSport === "CFB" && CFB_UNDER_CONSTRUCTION){
+      table.innerHTML = ""; noteEl.textContent = "";
+      document.getElementById("mdGamesTitle").textContent = "CFB";
+      document.getElementById("mdGames").innerHTML = cfbConstructionHtml();
+      return;
+    }
     var rows = r && r.sports && r.sports[mdSport] ? r.sports[mdSport][mdBet] || [] : [];
     if(!rows.length){
       table.innerHTML = "";
