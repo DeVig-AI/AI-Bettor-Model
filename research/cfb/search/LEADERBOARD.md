@@ -1,6 +1,6 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-20T04:13:47Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-20T04:19:55Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
 4664 configurations scored so far.
 
