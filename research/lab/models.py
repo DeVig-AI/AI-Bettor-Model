@@ -14,6 +14,11 @@ import pandas as pd
 
 from . import config as C
 
+
+class Diverged(ValueError):
+    """A setting whose ratings run away to infinity (e.g. nfelo margins with a market-resistant K: a big miss raises K,
+    which makes the next miss bigger). It has no usable forecasts; the search logs it as diverged."""
+
 FRANCHISE = {"STL": "LA", "SD": "LAC", "OAK": "LV"}          # relocations keep one rating
 
 # Approximate stadium coordinates (lat, lon) by nflverse stadium_id, for travel distance.
@@ -203,6 +208,8 @@ def run_elo(p, data):
             shift = k * mult * (res - pu)
         R[h] += shift
         R[a] -= shift
+        if not (math.isfinite(R[h]) and math.isfinite(R[a])):
+            raise Diverged(f"Elo ratings ran away to infinity in {g.season} week {g.week}")
         if p["qb"] == "538":
             for side, t, opp in (("h", h, a), ("a", a, h)):
                 qid = starters.get(side)

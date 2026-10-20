@@ -259,7 +259,7 @@ def SR_path(name):
 def search_runs(cands, v):
     from . import search as SR
     out = []
-    rows = SR.read_csv(SR.path("SCORES.csv"))
+    rows = SR.read_scores()
     try:
         bar = SR.load_menu()["search"]["shortlist_min_t"]
     except (OSError, KeyError):
@@ -274,6 +274,13 @@ def search_runs(cands, v):
         out.append({"kind": "search", "name": f"Search round {rd['round']}", "started_at": rd["at"],
                     "finished_at": rd["at"], "duration_s": None, "run_number": None, "run_url": rd["run_url"] or None,
                     "summary": funnel_text(funnel), "funnel": funnel, "steps": []})
+    st = SR.read_state()
+    if st.get("exhausted"):                            # the search has stopped itself: nothing new on its menu
+        out.append({"kind": "search", "name": "Search paused: menu exhausted", "started_at": st.get("since"),
+                    "finished_at": st.get("since"), "duration_s": None, "run_number": None, "run_url": None,
+                    "summary": f"all {st.get('scored_total', 0):,} configurations on the menu scored; "
+                               "waiting for new menu values or signals",
+                    "funnel": [{"label": "models scored", "count": int(st.get("scored_total", 0))}], "steps": []})
     return out
 
 
@@ -399,7 +406,7 @@ def lessons_md(s):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
     from . import search as SR
-    rows = SR.read_csv(SR.path("SCORES.csv"))
+    rows = SR.read_scores()
     if rows:
         lines += [f"## What the search learned ({len(rows):,} configurations, {C.SEARCH[0]}–{C.SEARCH[1]} only)", ""]
         lines += [f"- {x}" for x in SR.learned(rows)] + [""]

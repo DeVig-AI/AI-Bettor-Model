@@ -281,7 +281,7 @@ class Search(unittest.TestCase):
     def test_rounds_shortlist_and_refine(self):
         self.small_menu()
         picks = self.SR.run_round(force=True, log=lambda *_: None)
-        rows = self.SR.read_csv(self.SR.path("SCORES.csv"))
+        rows = self.SR.read_scores()
         singles = [r for r in rows if r["type"] != "blend"]
         self.assertEqual(len(singles), 4 + 3 + 3, "grid, then 2 learned and 1 random sample")
         self.assertTrue(any(r["type"] == "blend" for r in rows))
@@ -301,11 +301,81 @@ class Search(unittest.TestCase):
             yaml.safe_dump(m, f)
         self.assertFalse(self.SR.run_round(log=lambda *_: None), "a menu gap between rounds is respected")
         self.SR.run_round(force=True, log=lambda *_: None)
-        rows2 = self.SR.read_csv(self.SR.path("SCORES.csv"))
+        rows2 = self.SR.read_scores()
         ids = [r["id"] for r in rows2]
         self.assertEqual(len(ids), len(set(ids)), "nothing scored twice")
         self.assertGreater(len(rows2), len(rows), "round 2 adds neighbours")
         self.assertEqual([r["round"] for r in self.SR.read_csv(self.SR.path("ROUNDS.csv"))], ["1", "2"])
+
+    def test_scores_one_file_per_round(self):
+        self.small_menu()
+        self.SR.run_round(force=True, log=lambda *_: None)
+        self.SR.run_round(force=True, log=lambda *_: None)
+        files = sorted(os.listdir(self.SR.scores_dir()))
+        self.assertEqual(files, ["round-0001.csv.gz", "round-0002.csv.gz"])
+        self.assertFalse(os.path.exists(self.SR.path("SCORES.csv")), "no single growing file")
+        rows = self.SR.read_scores()
+        self.assertEqual(sorted({r["round"] for r in rows}), ["1", "2"])
+        with open(self.SR.round_scores_path(1), "rb") as f:
+            first = f.read()
+        self.SR.write_round_scores(1, [r for r in rows if r["round"] == "1"])
+        with open(self.SR.round_scores_path(1), "rb") as f:
+            self.assertEqual(f.read(), first, "same rows, same bytes")
+
+    def test_migrate_scores(self):
+        rows = [{"round": rd, "id": f"s-{i}", "market": "spread", "type": "srs", "label": "x", "games": 1,
+                 "effect": 0.1, "t": 1.0, "p1": 1, "p2": 1, "p3": 1, "eligible": "true", "config": "{}"}
+                for i, rd in enumerate([1, 1, 2, 3, 3])]
+        self.SR.append_rows(self.SR.path("SCORES.csv"), self.SR.SCORE_COLS, rows)
+        before = self.SR.read_scores()
+        self.assertEqual(self.SR.migrate_scores(log=lambda *_: None), 5)
+        self.assertFalse(os.path.exists(self.SR.path("SCORES.csv")))
+        self.assertEqual(len(os.listdir(self.SR.scores_dir())), 3)
+        self.assertEqual(self.SR.read_scores(), before, "same rows, same order")
+
+    def test_exhausted_menu_stops_and_resumes(self):
+        self.small_menu()
+        m = self.SR.load_menu()
+        m["search"].update(learned_samples=0, random_samples=0, neighbours_of_best=0)
+        m["ladders"] = {}
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.run_round(force=True, log=lambda *_: None)
+        n_rows, n_rounds = len(self.SR.read_scores()), len(self.SR.read_csv(self.SR.path("ROUNDS.csv")))
+        seen = []
+        self.assertEqual(self.SR.run_round(force=True, log=lambda *_: None, progress=lambda *a: seen.append(a)), [])
+        self.assertEqual(seen, [], "no progress post for a round that does not run")
+        self.assertEqual(len(self.SR.read_scores()), n_rows)
+        self.assertEqual(len(self.SR.read_csv(self.SR.path("ROUNDS.csv"))), n_rounds, "no empty round logged")
+        st = self.SR.read_state()
+        self.assertTrue(st["exhausted"])
+        self.SR.run_round(force=True, log=lambda *_: None)
+        self.assertEqual(self.SR.read_state()["since"], st["since"], "the date it stopped is kept")
+        r = next(x for x in report.write_all()["runs"] if x["name"] == "Search paused: menu exhausted")
+        self.assertIn("waiting for new menu values or signals", r["summary"])
+        m["families"][0]["grid"]["halflife"].append(16)      # a new idea on the menu: the search resumes
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.run_round(force=True, log=lambda *_: None)
+        self.assertEqual(self.SR.read_state(), {})
+        self.assertEqual(len(self.SR.read_csv(self.SR.path("ROUNDS.csv"))), n_rounds + 1)
+
+    def test_diverged_setting_logged_as_diverged(self):
+        self.small_menu()
+        real = self.SR.forecasts
+
+        def boom(cfg, data):
+            if cfg["params"].get("halflife") == 4:
+                raise self.SR.models.Diverged("Elo ratings ran away to infinity in 2010 week 5")
+            return real(cfg, data)
+        self.SR.forecasts = boom
+        try:
+            self.SR.run_round(force=True, log=lambda *_: None)
+        finally:
+            self.SR.forecasts = real
+        bad = [r for r in self.SR.read_scores() if r["label"].endswith("(diverged)")]
+        self.assertTrue(bad)
+        self.assertTrue(all(r["t"] == "-inf" and r["eligible"] == "false" for r in bad))
 
     def test_progress_callback(self):
         self.small_menu()
@@ -322,10 +392,10 @@ class Search(unittest.TestCase):
         with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
         p1 = self.SR.run_round(force=True, log=lambda *_: None)
-        r1 = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        r1 = [r for r in self.SR.read_scores() if r["type"] != "blend"]
         self.assertEqual(len(r1), 3, "the cap holds")
         p2 = self.SR.run_round(force=True, log=lambda *_: None)
-        r2 = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        r2 = [r for r in self.SR.read_scores() if r["type"] != "blend"]
         grid_ids = [self.SR.config_id(c) for c in self.SR.grid(m)]
         self.assertEqual([r["id"] for r in r2][:len(grid_ids)], grid_ids[:len(r2)], "the grid resumes in order")
         by = {}
@@ -361,7 +431,7 @@ class Search(unittest.TestCase):
         with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
             yaml.safe_dump(m, f)
         self.SR.run_round(force=True, log=lambda *_: None)
-        rows = [r for r in self.SR.read_csv(self.SR.path("SCORES.csv")) if r["type"] != "blend"]
+        rows = [r for r in self.SR.read_scores() if r["type"] != "blend"]
         self.assertEqual(len(rows), 2)
         self.assertEqual(sum("(same as " in r["label"] for r in rows), 1, "the second is flagged as the same model")
         self.assertEqual([r["t"] for r in rows if "(same as " in r["label"]], ["-inf"])
@@ -510,7 +580,7 @@ class Reports(unittest.TestCase):
                  "effect": 0.1, "t": t, "p1": 1, "p2": 1, "p3": 1, "eligible": e,
                  "config": SR.config_key({"market": "spread", "type": "srs", "params": {"carry": 0.1 * i}})}
                 for i, (t, e) in enumerate([(3.0, "true"), (2.6, "true"), (1.0, "true"), (3.5, "false")])]
-        SR.append_rows(SR.path("SCORES.csv"), SR.SCORE_COLS, rows)
+        SR.write_round_scores(1, rows)
         SR.append_rows(SR.path("ROUNDS.csv"), SR.ROUND_COLS, [{"round": 1, "at": "2026-10-20T06:00:00Z",
                                                                "scored_new": 4, "scored_total": 4, "shortlisted": "s-0"}])
         r = next(x for x in report.write_all()["runs"] if x["kind"] == "search")

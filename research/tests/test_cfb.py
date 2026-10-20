@@ -160,7 +160,7 @@ class CFB(unittest.TestCase):
                                                                                     margin_cap=None)}, sd)
             self.assertNotIn(2020, set(L.between(L.score(out), *C.SEARCH).season))
             picks = SR.run_round(force=True, log=lambda *_: None)
-            self.assertTrue(os.path.exists(os.path.join(C.SEARCH_DIR, "SCORES.csv")))
+            self.assertTrue(os.path.exists(os.path.join(C.SEARCH_DIR, "scores", "round-0001.csv.gz")))
             self.assertLessEqual(len(picks), 4)
             for cid in picks:
                 self.assertIn("search", L.load_candidates()[cid])

@@ -275,8 +275,10 @@ search:
   max_disagreement_corr: 0.95
   learned_samples: 1500
   random_samples: 500
-  signal_pairs_of: 6
-  signal_trios_of: 4
+  # 2026-10-20: pairs / trios were of the best 6 / 4 signals. SRS and team-rating values were all scored by round 10,
+  # so later rounds were all Elo (median t +0.5) while signals (median t +2.55 on SRS) had only 130 tries.
+  signal_pairs_of: 12
+  signal_trios_of: 8
 signal_bases:
   spread:
   - type: team_rating
@@ -291,6 +293,12 @@ signal_bases:
       hfa_pts: 2.0
       carry: 0.5
       prior_w: 3
+      margin_cap: null
+  - type: srs                  # 2026-10-20: the best single SRS setting in the search (s-d1c4226b, t 3.95 on 2006-16)
+    params:
+      hfa_pts: 3.5
+      carry: 0.7
+      prior_w: 4
       margin_cap: null
   total:
   - type: team_rating
