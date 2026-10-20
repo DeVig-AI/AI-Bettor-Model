@@ -21,6 +21,11 @@ OUT = os.path.join(HERE, "live", "props_live.json")
 # Finished games are also kept here for good (the live file only holds the current week), so the app's History can
 # show how each day's prop picks did. Display only: official grading still happens from play-by-play.
 ARCHIVE = os.path.join(HERE, "live", "props_results.json")
+# Each game's main prop lines (every priced player and stat, picked or not), saved before kickoff because Kalshi closes
+# the markets once the game starts. The archive copies them, so History can show how every prop ended, not just picks.
+LINES = os.path.join(HERE, "live", "props_lines.json")
+BOX_STATS = ("passing_yards", "passing_tds", "passing_completions", "passing_attempts", "interceptions", "rushing_yards",
+             "rushing_attempts", "receptions", "receiving_yards", "rush_rec_yards", "touchdowns")   # what box_stats() reads
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/nfl"
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 UA = "nfl-props-live/1.0 (personal research; read-only)"
@@ -214,8 +219,45 @@ def win_line(ticker, kickoff, now, max_points=150):
     return pts or None
 
 
-def archive_finished(out_games):
-    """Add every finished game with prop picks or player stats to ARCHIVE (kept across weeks)."""
+def main_lines(rows):
+    """[[player, stat, line, Kalshi over chance]]: per player and stat, the line Kalshi priced closest to 50-50."""
+    best = {}
+    for r in rows:
+        mid = r.get("k_mid")
+        if (r.get("stat") not in BOX_STATS or mid is None or r.get("line") is None or not r.get("player")
+                or "D/ST" in r["player"]):                 # a defense has no box score line
+            continue
+        k = (r["player"], r["stat"])
+        if k not in best or abs(mid - 0.5) < abs(best[k][3] - 0.5):
+            best[k] = [r["player"], r["stat"], r["line"], round(float(mid), 3)]
+    return sorted(best.values(), key=lambda x: (BOX_STATS.index(x[1]), x[0]))
+
+
+def save_lines(games, live_state):
+    """Keep each game's main lines from its last pre-game run (later runs only see the markets that are still open)."""
+    try:
+        saved = json.load(open(LINES))
+    except Exception:
+        saved = {"games": {}}
+    sv, changed = saved.setdefault("games", {}), False
+    for g in games:
+        ln = main_lines(g.get("rows") or [])
+        if ln and live_state.get(g["game_key"], "pre") == "pre" and ln != sv.get(g["game_key"], {}).get("lines"):
+            sv[g["game_key"]] = {"kickoff": g.get("kickoff_time"), "lines": ln}
+            changed = True
+    cutoff = iso(datetime.now(timezone.utc) - timedelta(days=21))
+    for k in [k for k, v in sv.items() if (v.get("kickoff") or "") < cutoff]:   # the archive keeps them after that
+        del sv[k]
+        changed = True
+    if changed:
+        os.makedirs(os.path.dirname(LINES), exist_ok=True)
+        with open(LINES, "w") as f:
+            json.dump(saved, f, separators=(",", ":"), allow_nan=False)
+    return sv
+
+
+def archive_finished(out_games, saved_lines=None):
+    """Add every finished game with prop picks or player stats to ARCHIVE (kept across weeks), with its main lines."""
     try:
         arch = json.load(open(ARCHIVE))
     except Exception:
@@ -230,7 +272,8 @@ def archive_finished(out_games):
             "away_score": g.get("away_score"), "home_score": g.get("home_score"),
             "picks": [{k: p.get(k) for k in ("player", "stat", "line", "side", "price", "model_p", "current", "status")}
                       for p in g.get("picks") or []],
-            "stats": g.get("stats"), "kalshi_line": g.get("kalshi_line")}
+            "stats": g.get("stats"), "kalshi_line": g.get("kalshi_line"), "espn_id": g.get("espn_id"),
+            "lines": ((saved_lines or {}).get(g["game_key"]) or {}).get("lines") or (games.get(g["game_key"]) or {}).get("lines")}
         added += 1
     if added:
         arch["updated"] = iso(datetime.now(timezone.utc))
@@ -250,6 +293,8 @@ def main():
     sb = scoreboard()
     odds = live_game_odds()
     out_games, n_picks = [], 0
+    saved_lines = save_lines(games, {g["game_key"]: (sb.get((g["game_date"], g["away_team"], g["home_team"])) or {}).get("state", "pre")
+                                     for g in games})
     try:                                           # keep a finished game's line after Kalshi closes its market
         prev_lines = {g["game_key"]: g.get("kalshi_line") for g in json.load(open(OUT)).get("games", [])}
     except Exception:
@@ -268,7 +313,7 @@ def main():
         picks = g.get("paper_picks") or []
         tick = {(r["player"], r["stat"], r["line"]): (r.get("k") or {}).get("t") for r in g.get("rows") or []}
         rows = g.get("rows") or []
-        box = box_stats(live["espn_id"]) if (picks or rows) and live.get("state") in ("in", "post") and live.get("espn_id") else {}
+        box = box_stats(live["espn_id"]) if (picks or rows or saved_lines.get(g["game_key"])) and live.get("state") in ("in", "post") and live.get("espn_id") else {}
         out_picks = []
         for p in picks:
             st = {}
@@ -281,10 +326,11 @@ def main():
             t = tick.get((p["player"], p["stat"], p["line"]))
             out_picks.append(dict(p, ticker=t, current=cur, status=ps, to_go=need,
                                   kalshi_now=kalshi_now(t) if t and state != "post" else None))
-        # every priced player's stat so far, so the app can follow any prop someone tracks, not just the locked picks
+        # every priced player's stat so far (the open markets plus the lines saved before kickoff), so the app can
+        # follow any prop someone tracks and History can show how every prop ended, not just the locked picks
         stats = {}
         if box:
-            for r in rows:
+            for r in rows + [{"player": x[0], "stat": x[1]} for x in (saved_lines.get(g["game_key"]) or {}).get("lines") or []]:
                 st = {}
                 for t in (g["away_team"], g["home_team"]):
                     st = box.get((t, norm(r["player"]))) or st
@@ -314,7 +360,7 @@ def main():
            "report": {k: report.get(k) for k in ("paper_picks_graded", "wins", "profit_per_1_contract_sum", "cost_sum", "roi")},
            "n_picks": n_picks, "errors": log[:30], "games": out_games}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    archive_finished(out_games)
+    archive_finished(out_games, saved_lines)
     with open(OUT, "w") as f:
         json.dump(out, f, separators=(",", ":"), allow_nan=False)
     print(json.dumps({k: v for k, v in out.items() if k != "games"}, indent=1))
