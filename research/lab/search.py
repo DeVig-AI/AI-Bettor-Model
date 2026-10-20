@@ -12,7 +12,10 @@ at most 2 per market per 7 days. Nothing is scored twice. Everything scored is l
 import argparse
 import csv
 import datetime as dt
+import glob
+import gzip
 import hashlib
+import io
 import itertools
 import json
 import os
@@ -322,6 +325,80 @@ def read_csv(path):
         return list(csv.DictReader(f))
 
 
+# Every configuration scored, one gzipped CSV per round in the sport's search/scores/ folder (a single SCORES.csv
+# passed GitHub's 100 MB file limit, so pushes failed). SCORES.csv is still read if it exists (older checkouts).
+def scores_dir():
+    return path("scores")
+
+
+def round_scores_path(n_round):
+    return os.path.join(scores_dir(), f"round-{int(n_round):04d}.csv.gz")
+
+
+def read_scores():
+    rows = read_csv(path("SCORES.csv"))
+    for p in sorted(glob.glob(os.path.join(scores_dir(), "round-*.csv.gz"))):
+        with gzip.open(p, "rt", newline="") as f:
+            rows += list(csv.DictReader(f))
+    return rows
+
+
+def write_round_scores(n_round, rows):
+    """One round's scores. gzip with mtime 0, so the same rows always give the same bytes."""
+    if not rows:
+        return
+    os.makedirs(scores_dir(), exist_ok=True)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=SCORE_COLS, lineterminator="\n")
+    w.writeheader()
+    for r in rows:
+        w.writerow({k: r.get(k, "") for k in SCORE_COLS})
+    with open(round_scores_path(n_round), "wb") as raw, \
+            gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as f:
+        f.write(buf.getvalue().encode())
+
+
+def migrate_scores(log=print):
+    """One time: split SCORES.csv into per-round files under scores/ and delete it. Same rows, same order."""
+    src = path("SCORES.csv")
+    rows = read_csv(src)
+    if not rows:
+        log(f"migrate: no {src}")
+        return 0
+    by = {}
+    for r in rows:
+        by.setdefault(int(r["round"]), []).append(r)
+    for n_round, rs in sorted(by.items()):
+        if os.path.exists(round_scores_path(n_round)):
+            raise RuntimeError(f"{round_scores_path(n_round)} already exists")
+        write_round_scores(n_round, rs)
+    os.remove(src)
+    log(f"migrate: {len(rows)} rows from {src} into {len(by)} round files in {scores_dir()}")
+    return len(rows)
+
+
+# The search stops itself when its menu has nothing left to score (every grid value, neighbour, sample, signal and
+# blend tried): no empty rounds are run or committed. STATE.json says so on /lab until the menu or signals change.
+def read_state():
+    try:
+        with open(path("STATE.json")) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def write_state(state):
+    if state == read_state():
+        return
+    if not state:
+        if os.path.exists(path("STATE.json")):
+            os.remove(path("STATE.json"))
+        return
+    with open(path("STATE.json"), "w") as f:
+        json.dump(state, f, indent=1)
+        f.write("\n")
+
+
 def append_rows(path, cols, rows):
     new = not os.path.exists(path)
     with open(path, "a", newline="") as f:
@@ -360,8 +437,7 @@ def run_round(force=False, log=print, progress=None):
         log(f"search: last round {rounds[-1]['at']}; the next one after {S['round_every_hours']} hours")
         return []
     n_round = len(rounds) + 1
-    scored = {r["id"]: r for r in read_csv(path("SCORES.csv"))}
-    data = search_data()
+    scored = {r["id"]: r for r in read_scores()}
     # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
     # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
     # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round
@@ -391,9 +467,11 @@ def run_round(force=False, log=print, progress=None):
             out = forecasts(cfg, data)
             sc = score_out(out)
         except Exception as e:                         # a setting that breaks is logged, never shortlisted
-            log(f"search: {cid} {label(cfg)}: {type(e).__name__}: {e}")
+            diverged = isinstance(e, models.Diverged)
+            if not diverged:
+                log(f"search: {cid} {label(cfg)}: {type(e).__name__}: {e}")
             rows.append({"round": n_round, "id": cid, "market": cfg["market"], "type": cfg["type"],
-                         "label": label(cfg) + " (error)", "games": 0, "effect": "nan", "t": "-inf", "p1": "nan",
+                         "label": label(cfg) + (" (diverged)" if diverged else " (error)"), "games": 0, "effect": "nan", "t": "-inf", "p1": "nan",
                          "p2": "nan", "p3": "nan", "eligible": "false", "config": config_key(cfg)})
             return
         fp = fingerprint(out)
@@ -411,7 +489,19 @@ def run_round(force=False, log=print, progress=None):
                      **{k: sc[k] for k in ("games", "effect", "t", "p1", "p2", "p3")},
                      "eligible": "true" if sc["eligible"] else "false", "config": config_key(cfg)})
 
-    planned = min(cap, len(todo))
+    fresh = len({config_id(c) for c in todo} - seen)
+    if not fresh:                                      # nothing new on the menu: blends of the same best are scored too
+        st = read_state()
+        write_state({"exhausted": True, "since": st.get("since") if st.get("exhausted") else L.now(),
+                     "scored_total": len(scored), "rounds": len(rounds),
+                     "note": "Every configuration the menu allows has been scored. The search resumes when new values, "
+                             "families or signals are added to MENU.yaml or SIGNALS.yaml."})
+        log(f"search: nothing new to score ({len(scored)} configurations scored in {len(rounds)} rounds); menu "
+            "exhausted, no round run")
+        return []
+    write_state({})
+    data = search_data()
+    planned = min(cap, fresh)
     if progress:
         progress(n_round, 0, planned)
     for cfg in todo:
@@ -447,7 +537,7 @@ def run_round(force=False, log=print, progress=None):
                 fit = ((outs[0].season >= C.TRAIN[0]) & (outs[0].season <= C.SEARCH[1])
                        & ~outs[0].season.isin(C.SKIP_SEASONS)).values & ~np.isnan(y)
                 add(blend_cfg(pool[:k], fit_weights(F[fit], y[fit]), market))
-    append_rows(path("SCORES.csv"), SCORE_COLS, rows)
+    write_round_scores(n_round, rows)
     append_rows(path("FINGERPRINTS.csv"), ["id", "fingerprint", "same_as"], fp_rows)
     allrows = list(scored.values()) + rows
     picks = shortlist(allrows, data, S, fc)
@@ -568,12 +658,15 @@ def learned(allrows):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["round"])
+    ap.add_argument("cmd", choices=["round", "migrate-scores"])
     ap.add_argument("--force", action="store_true", help="run a round even if the last one was under 20 hours ago")
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
     ap.add_argument("--progress", action="store_true", help="post the round's progress to /lab (GitHub Actions)")
     a = ap.parse_args(argv)
     C.use(a.sport)
+    if a.cmd == "migrate-scores":
+        migrate_scores()
+        return 0
     run_round(force=a.force, progress=Progress() if a.progress else None)
     return 0
 
