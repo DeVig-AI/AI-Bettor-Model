@@ -15,7 +15,8 @@ const OUT = new URL("./out/", import.meta.url).pathname;
 mkdirSync(OUT, {recursive: true});
 
 const now = Date.now(), iso = ms => new Date(ms).toISOString().replace(/\.\d+Z$/, "Z");
-const kLive = now - 70 * 60e3, kTmr = now + 20 * 3600e3;
+const tmrNoon = new Date(); tmrNoon.setHours(36, 0, 0, 0);                         // noon tomorrow
+const kLive = now - 70 * 60e3, kTmr = tmrNoon.getTime();
 const LINES = {generated_at: iso(now - 300e3), errors: [], games: [
   {sport: "MLB", date: "2026-10-19", event: "KXMLBGAME-WS1", home_ticker: "KXMLBGAME-WS1-TB", away: "CLE", home: "TB",
    spreads: {TB: [[-1.5, 150], [1.5, -180]], CLE: [[-1.5, 165], [1.5, -200]]}, kickoff: iso(kLive), espn_id: "401",
@@ -54,13 +55,18 @@ test("a game with no model pick still shows, live", async (t) => {
     pg.on("pageerror", e => errors.push(String(e)));
     await pg.goto(base + "/");
     await pg.locator("#splash").waitFor({state: "detached", timeout: 15000});
-    await t.test("MLB: both World Series games with Kalshi odds", async () => {
+    await t.test("MLB: today's World Series game with Kalshi odds, tomorrow's on its own tab", async () => {
       await pg.locator('#sportPills [data-sport="MLB"]').click();
       await pg.locator("#homeSlate .card.game").first().waitFor();
-      assert.equal(await pg.locator("#homeSlate .card.game").count(), 2);
+assert.equal(await pg.locator("#homeSlate .card.game").count(), 1);
+      assert.match(await pg.locator("#homeSlate").innerText(), /Other games[\s\S]*no pick · Kalshi odds/i);
       const first = await pg.locator("#homeSlate .card.game").first().innerText();
-      assert.match(first, /No model pick · Kalshi odds/);
       assert.match(first, /CLE[\s\S]*\+108[\s\S]*TB[\s\S]*-125/);
+      assert.match(await pg.locator("#dayTabs").innerText(), /Today[\s\S]*Tomorrow[\s\S]*Tracked/);
+      await pg.locator('#dayTabs button', {hasText: "Tomorrow"}).click();
+      assert.equal(await pg.locator("#homeSlate .card.game").count(), 1);
+      assert.match(await pg.locator("#homeSlate .card.game").innerText(), /-110/);
+      await pg.locator('#dayTabs button', {hasText: "Today"}).click();
     });
     await t.test("the live game gets its score and graph from the fast feed", async () => {
       await pg.waitForFunction(() => /\b3\b/.test(document.querySelector("#homeSlate .card.game").innerText) &&
@@ -68,8 +74,9 @@ test("a game with no model pick still shows, live", async (t) => {
       await pg.screenshot({path: OUT + "mlb-board.png", fullPage: true});
     });
     await t.test("its odds can go on the slip (the upcoming game)", async () => {
+      await pg.locator('#dayTabs button', {hasText: "Tomorrow"}).click();
       const b = pg.locator('.sb-btn[data-legg*="CLE ML"]');
-      assert.equal(await b.count(), 1, "only the game that hasn't started is tappable");
+      assert.equal(await b.count(), 1, "the game that hasn't started is tappable");
       await b.click();
       assert.match(await pg.locator(".slip-bar").innerText(), /Added CLE ML[\s\S]*\$10 pays/i);
     });

@@ -609,6 +609,61 @@
   @media (prefers-reduced-motion: reduce){ #splash .dv-logo{animation:none;} }
   .about-logo{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
   .about-logo .dv-logo{width:44px; height:44px;}
+  /* Home: sport tabs, one day at a time, picks first */
+  #homeStatusCard{margin:4px 0 6px;}
+  .seg{margin-top:4px; display:flex; gap:2px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:3px; overflow-x:auto; scrollbar-width:none; min-width:0;}
+  .seg:empty{display:none;}
+  .seg::-webkit-scrollbar{display:none;}
+  .seg button{flex:none; min-height:34px; padding:0 13px; border-radius:9px; font-size:13px; font-weight:500; color:var(--ink-soft); background:none; border:none; white-space:nowrap;}
+  .seg button[aria-selected="true"]{background:var(--surface-2); color:var(--ink); font-weight:600;}
+  #homeSyncedAt{margin-left:auto; font-size:12px; padding-bottom:8px;}
+  #confFilterNote:empty, #homeStatus:empty{display:none;}
+  .home-sec{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin:18px 2px 8px;}
+  .home-sec b{font-size:17px; font-weight:600;}
+  .home-sec .faint{font-size:12px;}
+  .home-empty{padding:14px 16px; font-size:14px;}
+  .home-more{display:block; width:100%; min-height:44px; margin:-4px 0 10px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
+    color:var(--accent); font-size:13px; font-weight:600; text-align:left; padding:0 14px;}
+  .home-fold{margin:0 0 10px;}
+  .home-fold > summary{list-style:none; cursor:pointer; min-height:44px; display:flex; align-items:center; padding:0 14px; border:1px dashed var(--line-strong);
+    border-radius:12px; font-size:13px; color:var(--ink-soft);}
+  .home-fold > summary::-webkit-details-marker{display:none;}
+  .home-fold > summary b{color:var(--ink); margin-right:4px;}
+  .home-fold[open] > summary{margin-bottom:10px;}
+  .card.game.slim .game-head{padding:10px 14px;}
+  .card.game.slim .game-sum{display:none;}
+  .card.game.slim .sb-top{font-size:12.5px;}
+  .card.game.slim .sb-top .trk-btn{min-height:0;}
+  .card.game.slim .sb-grid.one{grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr) 64px !important; align-items:center; gap:0 8px; margin-top:6px;}
+  .card.game.slim .sb-grid.one > div:first-child, .card.game.slim .sb-grid.one > .sb-colh{display:none;}
+  .card.game.slim .sb-grid.one .sb-team.has-badge{grid-template-columns:24px minmax(0,1fr); column-gap:7px;}
+  .card.game.slim .sb-grid.one .tm-badge{width:24px; height:24px; font-size:8px;}
+  .card.game.slim .sb-grid.one .sb-team b{font-size:14px;}
+  .card.game.slim .sb-grid.one .sb-team small{display:none;}
+  .card.game.slim{margin-bottom:8px;}
+  /* More: Models, Testing, About and Profile */
+  .more-tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px;}
+  .more-tile{display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-height:96px; padding:14px; border-radius:14px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); text-align:left;}
+  .more-tile svg{width:22px; height:22px; color:var(--accent); margin-bottom:auto;}
+  .more-tile b{font-size:15px; font-weight:600;}
+  .more-tile span{font-size:12px; color:var(--ink-soft);}
+  .back-more{display:inline-flex; align-items:center; gap:4px; min-height:44px; padding:0 8px 0 0; background:none; border:none; color:var(--ink-soft); font-size:14px;}
+  .back-more svg{width:18px; height:18px;}
+  details.fold > summary, .ab-sec > summary{list-style:none; cursor:pointer; min-height:48px; display:flex; align-items:center; justify-content:space-between;
+    font-weight:600; font-size:15px; color:var(--ink);}
+  details.fold > summary::-webkit-details-marker, .ab-sec > summary::-webkit-details-marker{display:none;}
+  details.fold > summary::after, .ab-sec > summary::after{content:"+"; font-size:20px; font-weight:400; color:var(--ink-faint);}
+  details.fold[open] > summary::after, .ab-sec[open] > summary::after{content:"−"; color:var(--accent);}
+  .ab-sec{border-bottom:1px solid var(--line);}
+  .ab-sec:last-child{border-bottom:none;}
+  .ab-sec[open]{padding-bottom:10px;}
+  #labMore{margin-top:12px;}
+  .tr-fine{border-bottom:none; margin-top:4px;}
+  .tr-fine > summary{min-height:40px; font-size:13px; color:var(--accent);}
+  [data-mode-switch]{text-align:left;}
+  #labMore > summary{padding:0 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); font-size:14px;}
+  #labMore[open] > summary{margin-bottom:6px;}
 </style>
 
 <div id="splash" role="status" aria-label="Loading DeVig"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div class="word">DeVig</div></div>
@@ -624,33 +679,21 @@
       <button role="tab" aria-selected="false" data-tab="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask</button>
       <button role="tab" aria-selected="false" data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
       <button role="tab" aria-selected="false" data-tab="parlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Parlay</button>
-      <button role="tab" aria-selected="false" data-tab="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg>Models</button>
-      <button role="tab" aria-selected="false" data-tab="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Testing</button>
-      <button role="tab" aria-selected="false" data-tab="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>About</button>
+      <button role="tab" aria-selected="false" data-tab="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</button>
     </nav>
   </header>
 
   <section class="panel" id="panel-home">
-    <div class="card" id="homeStatusCard">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap">
-        <h3>Today's board<span class="faint" id="homeHi" style="font-family:var(--font-sans); font-weight:500; margin-left:8px"></span></h3>
-        <span class="faint" id="homeSyncedAt"></span>
-      </div>
-      <div id="sportPills" style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; align-items:center">
+    <div id="homeStatusCard">
+      <div id="sportPills" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center">
         <button class="pill-tab active" data-sport="NFL">NFL</button>
         <button class="pill-tab" data-sport="MLB">MLB</button>
         <button class="pill-tab" data-sport="NBA">NBA</button>
         <button class="pill-tab" data-sport="CFB">CFB</button>
-        <button type="button" class="ios-switch" role="switch" aria-checked="false" data-mode-switch style="margin-left:auto"><span class="knob" aria-hidden="true"></span>Advanced</button>
+        <span class="faint" id="homeSyncedAt"></span>
       </div>
-      <div class="faint" style="margin-top:10px">Show games:</div>
-      <div id="confFilterPills" style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
-        <button class="pill-tab active" data-conf="all">All games</button>
-        <button class="pill-tab adv-only" data-conf="top50">Top 50% confident</button>
-        <button class="pill-tab adv-only" data-conf="top25">Top 25% confident</button>
-        <button class="pill-tab" data-conf="tracked">★ Tracked</button>
-      </div>
-      <div class="faint" id="confFilterNote" style="margin-top:6px"></div>
+      <div class="seg" id="dayTabs" role="tablist" aria-label="Pick a day"></div>
+      <div class="faint" id="confFilterNote"></div>
       <div class="status" id="homeStatus">Loading…</div>
     </div>
     <div id="homeSlate"></div>
@@ -750,9 +793,12 @@
   <section class="panel" id="panel-lab" hidden>
     <div class="card">
       <h3 style="margin-bottom:6px">Testing</h3>
-      <p class="faint" style="margin:0">Every pick on Home is what a model thinks. This tab is where those models are checked: each one's record so far, the rules it was locked with before its first pick, and the experiments still running. None of the models has been proven to beat the betting odds yet; About sums up what testing has found.</p>
+      <p class="faint" style="margin:0">Every pick is locked before the game and graded from the final score. None of the models has been proven to beat the betting odds yet.</p>
     </div>
     <div id="testingRecords"></div>
+    <details class="fold" id="labMore">
+    <summary>Every test and backtest</summary>
+    <div id="testingMore"></div>
     <div class="bb-sec" style="margin-top:18px">Model comparison · NFL</div>
     <div class="card">
       <h3 style="margin-bottom:6px">Model Lab</h3>
@@ -779,6 +825,7 @@
       <h3 style="margin-bottom:4px">Limits</h3>
       <ul class="lab-list" id="labLimits"></ul>
     </div>
+    </details>
   </section>
 
   <section class="panel" id="panel-me" hidden>
@@ -796,6 +843,18 @@
     <div class="card">
       <h3 style="margin-bottom:4px">Tracking</h3>
       <div id="meTracking"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-more" hidden>
+    <div class="more-tiles">
+      <button type="button" class="more-tile" data-go="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg><b>Models</b><span>What each sport runs on</span></button>
+      <button type="button" class="more-tile" data-go="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg><b>Testing</b><span>How the picks have done</span></button>
+      <button type="button" class="more-tile" data-go="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><b>About</b><span>How DeVig works, plainly</span></button>
+      <button type="button" class="more-tile" data-go="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><b>Profile</b><span>Name, favorite teams</span></button>
+    </div>
+    <div class="card">
+      <button type="button" class="ios-switch" role="switch" aria-checked="false" data-mode-switch><span class="knob" aria-hidden="true"></span>Show spreads, totals and every test (Advanced)</button>
     </div>
   </section>
 
@@ -967,11 +1026,14 @@
     lab: document.getElementById("panel-lab"),
     models: document.getElementById("panel-models"),
     me: document.getElementById("panel-me"),
+    more: document.getElementById("panel-more"),
     about: document.getElementById("panel-about")
   };
+  var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1};
   var meBtn = document.getElementById("meBtn");
   function showPanel(name){
-    tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === name)); });
+    var navTab = UNDER_MORE[name] ? "more" : name;
+    tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === navTab)); });
     meBtn.setAttribute("aria-pressed", String(name === "me"));
     Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
     if(name === "scan"){ loadHistory(); renderPast(); }
@@ -980,8 +1042,37 @@
     if(name === "models") renderModels();
   }
   tabs.forEach(function(btn){
-    btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); });
+    btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); window.scrollTo(0, 0); });
   });
+  document.querySelectorAll("#panel-more [data-go]").forEach(function(b){
+    b.addEventListener("click", function(){ showPanel(b.dataset.go); window.scrollTo(0, 0); });
+  });
+  ["models", "lab", "about", "me"].forEach(function(k){                 // pages under More get a way back
+    var back = el("button", "back-more", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>More');
+    back.type = "button";
+    back.addEventListener("click", function(){ showPanel("more"); window.scrollTo(0, 0); });
+    panels[k].insertBefore(back, panels[k].firstChild);
+  });
+  // About: each heading becomes a section you tap open (the first one starts open)
+  (function(){
+    var first = true;
+    panels.about.querySelectorAll(".card").forEach(function(card){
+      if(card.id === "donateCard") return;
+      var kids = Array.prototype.slice.call(card.children), cur = null;
+      kids.forEach(function(k){
+        if(k.tagName === "H3"){
+          cur = document.createElement("details");
+          cur.className = "ab-sec";
+          if(first){ cur.open = true; first = false; }
+          var sm = document.createElement("summary");
+          sm.textContent = k.textContent;
+          cur.appendChild(sm);
+          card.insertBefore(cur, k);
+          card.removeChild(k);
+        } else if(cur) cur.appendChild(k);
+      });
+    });
+  })();
   // The profile button (top right) opens profile and settings; tapping it again goes back Home.
   meBtn.addEventListener("click", function(){ showPanel(panels.me.hidden ? "me" : "home"); });
   window.devigShowProfile = function(){ showPanel("me"); window.scrollTo(0, 0); };
@@ -1119,12 +1210,40 @@
   // Re-render once a minute so games drop off on their own while the page
   // stays open, without waiting for the next sync.
   setInterval(function(){ if(homeDocs.length) renderHome(); }, 60 * 1000);
-  var currentConfKey = "all"; // "all" | "top50" | "top25" -- resolved to a real probability per sport at render time
+  var currentConfKey = "all"; // "all" | "tracked"
+  // Home shows one day at a time (tabs for each day with games, plus ★ Tracked)
+  var currentDay = null, dayPicked = false, showAllPicks = false;
+  function boardDay(g){
+    var t = g.kickoff_time ? new Date(g.kickoff_time) : null;
+    if(!t || !isFinite(t.getTime())) return "later";
+    return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+  }
+  function dayLabel(k){
+    if(k === "later") return "Later";
+    var now = new Date(), tm = new Date(now.getTime() + 86400e3);
+    if(k === boardDay({kickoff_time: now.toISOString()})) return "Today";
+    if(k === boardDay({kickoff_time: tm.toISOString()})) return "Tomorrow";
+    var p = k.split("-");
+    var dt = new Date(+p[0], +p[1] - 1, +p[2]);
+    return dt.toLocaleDateString([], {weekday: "short"}) + " " + dt.getDate();
+  }
+  function agoTxt(iso){
+    var m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if(!isFinite(m)) return "";
+    return m < 1 ? "just now" : m < 60 ? m + "m ago" : m < 1440 ? Math.round(m / 60) + "h ago" : new Date(iso).toLocaleDateString();
+  }
+  function renderDayTabs(days){
+    var box = document.getElementById("dayTabs");
+    box.innerHTML = days.concat(["tracked"]).map(function(k){
+      return '<button type="button" role="tab" data-day="' + k + '" aria-selected="' + (k === currentDay) + '">' +
+        (k === "tracked" ? "★ Tracked" : escapeHtml(dayLabel(k))) + '</button>';
+    }).join("");
+  }
 
   document.querySelectorAll("#sportPills .pill-tab").forEach(function(btn){
     btn.addEventListener("click", function(){
       if(btn.disabled) return;
-      currentSport = btn.dataset.sport;
+      currentSport = btn.dataset.sport; dayPicked = false; showAllPicks = false;
       document.querySelectorAll("#sportPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
       renderHome();
       // renderDecisionHistoryCard is intentionally NOT re-run here -- it shows
@@ -1133,12 +1252,13 @@
     });
   });
 
-  document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      currentConfKey = btn.dataset.conf || "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b === btn); });
-      renderHome();
-    });
+  document.getElementById("dayTabs").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-day]");
+    if(!b) return;
+    currentDay = b.dataset.day; dayPicked = true;
+    currentConfKey = currentDay === "tracked" ? "tracked" : "all";
+    showAllPicks = false;
+    renderHome();
   });
 
   var splashGone = false;
@@ -1165,16 +1285,12 @@
       return;
     }
 
-    var hiEl = document.getElementById("homeHi");
-    if(hiEl) hiEl.textContent = "";                    // the greeting lives in the header now
-    if(currentSport === "CFB"){ renderCfbBoard(wrap, statusEl, syncedEl); return; }
+    if(currentSport === "CFB"){ document.getElementById("dayTabs").innerHTML = ""; renderCfbBoard(wrap, statusEl, syncedEl); return; }
     var allSynced = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
     var noteEl = document.getElementById("confFilterNote");
-    var finishedNote = nFinished
-      ? nFinished + " finished game" + (nFinished === 1 ? "" : "s") + " moved off the board -- picks and results are in the Track record and under History."
-      : "";
+    var finishedNote = nFinished ? "Finished games are under History." : "";
 
     if(!forSport.length){
       statusEl.textContent = "";
@@ -1182,6 +1298,7 @@
       syncedEl.textContent = "";
       noteEl.textContent = "";
       renderTesting();
+      renderDayTabs([]);
       var emptyMsg;
       if(currentSport === "NFL"){
         emptyMsg = "The model's pick gets locked close to kickoff, not days in advance. Games show up here on their own once the week's picks are locked and synced — no re-opening or refreshing needed.";
@@ -1199,44 +1316,76 @@
       return;
     }
 
-    var confTh = CONF_THRESHOLDS[currentSport] || CONF_THRESHOLDS.NFL;
-    var currentConfThreshold = currentConfKey === "top25" ? confTh.top25 : (currentConfKey === "top50" ? confTh.top50 : 0);
-    if(currentConfKey === "tracked"){
-      forSport = forSport.filter(followsGame);
-      noteEl.textContent = "Games you track plus your favorite teams' games. Tap ☆ Track on a game card, or pick favorite teams in your profile (top right).";
-    } else if(currentConfThreshold > 0){
-      forSport = forSport.filter(function(g){
-        return g.model && g.model.available && g.model.winner_prob != null && g.model.winner_prob >= currentConfThreshold;
-      });
-      var barAcc = currentConfKey === "top25" ? confTh.top25AccPct : confTh.top50AccPct;
-      noteEl.textContent = confTh.filterNote.replace("{acc}", barAcc);
-    } else {
-      noteEl.textContent = "";
-    }
-
-    if(!forSport.length){
-      statusEl.textContent = "";
-      syncedEl.textContent = "";
-      wrap.innerHTML = currentConfKey === "tracked"
-        ? '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
-          '<span class="faint">Switch to All games and tap ☆ Track, or add favorite teams in your profile (top right).</span></div></div>'
-        : '<div class="card"><div class="empty"><div class="icon">—</div>No games clear this confidence bar this week.<br>' +
-          '<span class="faint">Try a lower bar, or switch back to All games.</span></div></div>';
-      return;
-    }
-    statusEl.textContent = finishedNote;
+    var days = forSport.map(boardDay).filter(function(k, i, arr){ return arr.indexOf(k) === i; }).sort();
+    var today = boardDay({kickoff_time: new Date().toISOString()});
+    if(!dayPicked || (currentDay !== "tracked" && days.indexOf(currentDay) < 0))   // until a day is tapped: today, else the next day with games
+      currentDay = days.indexOf(today) >= 0 ? today : days[0];
+    currentConfKey = currentDay === "tracked" ? "tracked" : "all";
+    renderDayTabs(days);
+    noteEl.textContent = "";
+    statusEl.textContent = "";
     statusEl.className = "status";
     var latest = forSport.reduce(function(a, b){ return (a.synced_at || "") > (b.synced_at || "") ? a : b; }, forSport[0]);
-    syncedEl.textContent = latest.synced_at ? "synced " + new Date(latest.synced_at).toLocaleString() : "";
+    syncedEl.textContent = latest.synced_at ? "Updated " + agoTxt(latest.synced_at) : "";
+    var allOnBoard = forSport.slice();
 
-    var allOnBoard = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport && isOnBoard(g); });
-    var myCard = renderTrackedCard(allOnBoard);
-    if(myCard) wrap.appendChild(myCard);
-    wrap.appendChild(renderBestBetsCard(allOnBoard));
-    var gamesHead = el("div", "bb-sec", "All games · tap one for the full breakdown");
-    wrap.appendChild(gamesHead);
-    var sortedGames = forSport.slice().sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
-    sortedGames.forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
+    if(currentDay === "tracked"){
+      var myCard = renderTrackedCard(allOnBoard);
+      if(myCard) wrap.appendChild(myCard);
+      var mine = forSport.filter(followsGame);
+      if(!mine.length){
+        wrap.innerHTML = '<div class="card"><div class="empty"><div class="icon">☆</div>You aren\'t tracking any ' + escapeHtml(currentSport) + ' games on the board.<br>' +
+          '<span class="faint">Open a game and tap ☆ Track, or add favorite teams under More › Profile.</span></div></div>';
+        return;
+      }
+      mine.sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); })
+        .forEach(function(g){ wrap.appendChild(renderGameCard(g)); });
+      renderTesting();
+      return;
+    }
+
+    var dayGames = forSport.filter(function(g){ return boardDay(g) === currentDay; })
+      .sort(function(a, b){ return (a.kickoff_time || "").localeCompare(b.kickoff_time || ""); });
+    var picks = [], passed = [], others = [];
+    dayGames.forEach(function(g){
+      var d = computeDecision(g), pc = priceCheck(g);
+      if(d.action === "ML" && !g.trial) (pc && pc.steep ? passed : picks).push(g);
+      else if(d.action === "SKIP") passed.push(g);
+      else others.push(g);
+    });
+    function byChance(a, b){ return ((b.model || {}).winner_prob || 0) - ((a.model || {}).winner_prob || 0); }
+    picks.sort(byChance); passed.sort(byChance);
+    var SHOW = 4;
+    wrap.appendChild(el("div", "home-sec", '<b>DeVig\'s picks</b><span class="faint">' +
+      (picks.length ? picks.length + ' pick' + (picks.length === 1 ? '' : 's') + ' · most likely first' : '') + '</span>'));
+    if(!picks.length) wrap.appendChild(el("div", "card home-empty faint", "No pick clears the bar " + (dayLabel(currentDay) === "Today" ? "today" : "this day") + "."));
+    picks.forEach(function(g, i){
+      var c = renderGameCard(g);
+      if(i >= SHOW && !showAllPicks) c.hidden = true;
+      wrap.appendChild(c);
+    });
+    if(picks.length > SHOW && !showAllPicks){
+      var moreBtn = el("button", "home-more", (picks.length - SHOW) + " more pick" + (picks.length - SHOW === 1 ? "" : "s") + " · " +
+        escapeHtml(picks.slice(SHOW).map(function(g){ return (g.model || {}).winner_side; }).join(", ")));
+      moreBtn.type = "button";
+      moreBtn.addEventListener("click", function(){ showAllPicks = true; renderHome(); });
+      wrap.appendChild(moreBtn);
+    }
+    if(passed.length){
+      var pf = el("details", "home-fold");
+      pf.innerHTML = '<summary><b>' + passed.length + ' passed</b> · ' + escapeHtml(passed.map(function(g){ return (g.model || {}).winner_side; }).join(", ")) +
+        ' · liked, but the price is too steep</summary>';
+      passed.forEach(function(g){ pf.appendChild(renderGameCard(g)); });
+      wrap.appendChild(pf);
+    }
+    if(!isSimple()){
+      var adv = renderBestBetsCard(allOnBoard, {noMoneyline: true});
+      if(adv) wrap.appendChild(adv);
+    }
+    if(others.length){
+      wrap.appendChild(el("div", "home-sec", '<b>Other games</b><span class="faint">no pick · Kalshi odds</span>'));
+      others.forEach(function(g){ var c = renderGameCard(g); c.classList.add("slim"); wrap.appendChild(c); });
+    }
     renderTesting();
 
     // Teaser candidates are independent of the moneyline confidence filter above --
@@ -1893,10 +2042,6 @@
     var b = ev.target.closest && ev.target.closest("[data-mode-switch]");
     if(!b) return;
     prefs.mode = isSimple() ? "advanced" : "simple";
-    if(isSimple() && (currentConfKey === "top50" || currentConfKey === "top25")){        // that filter is hidden now
-      currentConfKey = "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(x){ x.classList.toggle("active", x.dataset.conf === "all"); });
-    }
     savePrefs(); applyMode(); renderHome();
   });
   applyMode();
@@ -2086,10 +2231,12 @@
     }
     return card;
   }
-  function renderBestBetsCard(games){
+  function renderBestBetsCard(games, opts){
+    opts = opts || {};
     var card = el("div", "card");
     var bets = collectBets(games);
-    card.innerHTML = '<div class="bb-head"><h3>Best bets</h3><span class="faint">' + escapeHtml(currentSport) + ' · tap a bet for details</span></div>';
+    if(opts.noMoneyline && !bets.spreads.length && !bets.totals.length) return null;
+    card.innerHTML = '<div class="bb-head"><h3>' + (opts.noMoneyline ? 'Spreads and totals' : 'Best bets') + '</h3><span class="faint">' + escapeHtml(currentSport) + ' · tap a bet for details</span></div>';
     // Upcoming week synced early (slate model.status "preview"): say so up top.
     var prevGames = games.filter(isPreviewGame);
     if(prevGames.length){
@@ -2106,14 +2253,14 @@
       if(list.length) list.forEach(function(b){ card.appendChild(betRow(b)); });
       else card.appendChild(el("div", "bb-empty", emptyTxt));
     }
-    section("Moneyline · model picks", bets.picks, "No game clears the confidence bar right now.");
+    if(!opts.noMoneyline) section("Moneyline · model picks", bets.picks, "No game clears the confidence bar right now.");
     var isNFL = currentSport === "NFL";
     var trAll = computeTrackRecord(decisionsDocs.filter(function(d){ return (d.sport || "NFL") === currentSport; }));
     var spRec = isNFL ? {w: trAll.ladder.w + trAll.lowdog.w, l: trAll.ladder.l + trAll.lowdog.l} : trAll.spreadDecision;
     section("Spreads" + (currentSport === "NBA" ? "" : recTxt(spRec)), bets.spreads, isNFL ? "No spread pick right now." : "");
     section("Over/Under" + (isNFL ? recTxt(trAll.weather) : ""), bets.totals, isNFL ? "No over/under pick right now." : "");
-    section("Avoid", bets.avoid, "");
-    card.appendChild(el("p", "faint", "% = chance to win. Moneyline: the model's estimate. Spreads: how often that exact line covered in past games. Over/Under: the weather model's estimate. " +
+    if(!opts.noMoneyline) section("Avoid", bets.avoid, "");
+    if(!opts.noMoneyline) card.appendChild(el("p", "faint", "% = chance to win. Moneyline: the model's estimate. Spreads: how often that exact line covered in past games. Over/Under: the weather model's estimate. " +
       "\"Preview\" on a game = that week's picks, synced before it's played. \"Early read\" on an over/under = from today's forecast; the final pick comes about 3 hours before kickoff."));
     return card;
   }
@@ -2122,13 +2269,14 @@
     openGames[k] = true;
     var target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
     if(!target){
-      // the game is hidden by the confidence filter -- show everything
-      currentConfKey = "all";
-      document.querySelectorAll("#confFilterPills .pill-tab").forEach(function(b){ b.classList.toggle("active", b.dataset.conf === "all"); });
+      // the game is on another day, or behind "more picks"
+      currentDay = boardDay(g); dayPicked = true; currentConfKey = "all"; showAllPicks = true;
       renderHome();
       target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
     }
     if(!target) return;
+    var fold = target.closest("details");
+    if(fold) fold.open = true;
     var det = target.querySelector(".game-details"), head = target.querySelector(".game-head");
     if(det){ det.hidden = false; head.setAttribute("aria-expanded", "true"); head.querySelector(".game-more").textContent = "Hide details"; }
     target.scrollIntoView({behavior: "smooth", block: "start"});
@@ -2556,7 +2704,7 @@
     if(m.total_line != null && !isSimple()) cols.push("Total");
     if(m.moneyline_home != null || m.moneyline_away != null) cols.push("Money");
     if(!cols.length) return "";
-    var html = '<div class="sb-grid" style="grid-template-columns:minmax(0,1fr) repeat(' + cols.length + ', minmax(58px, 72px))">' +
+    var html = '<div class="sb-grid' + (cols.length === 1 ? ' one' : '') + '" style="grid-template-columns:minmax(0,1fr) repeat(' + cols.length + ', minmax(58px, 72px))">' +
       '<div></div>' + cols.map(function(c){ return '<div class="sb-colh">' + c + '</div>'; }).join("");
     var open = !g.trial && (!lg || lg.state === "pre") && (!g.kickoff_time || new Date(g.kickoff_time).getTime() > Date.now());
     function cell(h, leg, od){
@@ -4187,17 +4335,28 @@
   function renderTesting(){
     var box = document.getElementById("testingRecords");
     if(!box) return;
-    box.innerHTML = "";
+    var more = document.getElementById("testingMore");
+    box.innerHTML = ""; more.innerHTML = "";
+    // the record up top, its fine print folded; prop tests and ended tests sit under "Every test and backtest"
     ["NFL", "MLB", "NBA"].forEach(function(sp){
       var tr = renderTrackRecordCard(sp), pt = (sp === "NFL" || sp === "NBA") ? propsTestCard(sp) : null;
-      if(!tr && !pt) return;
-      box.appendChild(el("div", "bb-sec", sp));
-      if(tr) box.appendChild(tr);
-      if(pt) box.appendChild(pt);
+      if(tr){
+        var ps = tr.querySelectorAll(":scope > p");
+        if(ps.length){
+          var fine = document.createElement("details");
+          fine.className = "ab-sec tr-fine";
+          fine.innerHTML = "<summary>How to read this</summary>";
+          ps.forEach(function(p){ fine.appendChild(p); });
+          tr.appendChild(fine);
+        }
+        box.appendChild(el("div", "bb-sec", sp));
+        box.appendChild(tr);
+      }
+      if(pt){ more.appendChild(el("div", "bb-sec", sp + " props")); more.appendChild(pt); }
     });
     var ended = el("div", "card");
     ended.innerHTML = '<h3>Ended tests</h3><p class="faint" style="margin:6px 0 0">The first NFL weather over/under, key-number ladder and low-total dog tests were priced at Pinnacle, DraftKings and Hard Rock through a paid odds feed. They ended on Oct 18, 2026 when the app moved to free Kalshi prices, with their results kept as they were: weather 1-5, key-number ladder 7-5 (+9.6 units), low-total dog 0-1. None reached the size where it would be judged. Each restarted the same day on Kalshi prices with new pre-registered rules.</p>';
-    box.appendChild(ended);
+    more.appendChild(ended);
   }
 
   // Full game-by-game decision + outcome log -- lives under the History tab

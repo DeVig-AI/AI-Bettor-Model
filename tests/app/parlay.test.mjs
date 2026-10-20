@@ -15,7 +15,8 @@ const OUT = new URL("./out/", import.meta.url).pathname;
 mkdirSync(OUT, {recursive: true});
 
 const now = Date.now(), iso = ms => new Date(ms).toISOString().replace(/\.\d+Z$/, "Z");
-const kUp = now + 30 * 3600e3, kDone = now - 4 * 3600e3;
+const noon = new Date(); noon.setHours(12, 0, 0, 0);
+const kUp = noon.getTime() + 2 * 86400e3, kDone = now - 4 * 3600e3;          // both upcoming games on the same day
 const game = (id, away, home, kick, market) => ({collection: "slate", doc_id: id, data: {game_id: id, sport: "NFL", season: 2026,
   away_team: away, home_team: home, kickoff_time: iso(kick), market: Object.assign({book: "Kalshi"}, market),
   model: {available: false}, synced_at: iso(now - 600e3)}});
