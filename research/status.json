@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T01:03:28Z",
+ "updated_at": "2026-10-20T01:03:59Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2057,6 +2057,27 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 9 (NFL, running)",
+   "started_at": "2026-10-20T01:03:58Z",
+   "finished_at": null,
+   "duration_s": null,
+   "run_number": 14,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39351295673",
+   "summary": "0 of 2,988 models scored on 2006–2016",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 0
+    },
+    {
+     "label": "planned this round",
+     "count": 2988
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 8",
    "started_at": "2026-10-20T01:00:58Z",
    "finished_at": "2026-10-20T01:00:58Z",
@@ -2323,48 +2344,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "lab",
-   "name": "Research Lab #1",
-   "started_at": "2026-10-19T04:34:00Z",
-   "finished_at": "2026-10-19T04:34:10Z",
-   "duration_s": 10,
-   "run_number": 1,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
-   "summary": "18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
-   "funnel": [
-    {
-     "label": "tested",
-     "count": 18
-    },
-    {
-     "label": "past gate 1",
-     "count": 15
-    },
-    {
-     "label": "past gate 2",
-     "count": 0
-    },
-    {
-     "label": "passed the lab",
-     "count": 0
-    },
-    {
-     "label": "passed the exam",
-     "count": 0
-    },
-    {
-     "label": "promoted",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-20T01:03:28Z",
+   "updated_at": "2026-10-20T01:03:59Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
