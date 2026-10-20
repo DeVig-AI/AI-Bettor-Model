@@ -80,19 +80,34 @@ test("bet slip and tracked parlays on a phone", async (t) => {
       const jaxMl = pg.locator('.sb-btn[data-legg*="\\"desc\\":\\"JAX ML\\""]');
       await jaxMl.click();
       await pg.locator('.sb-btn[data-legg*="\\"desc\\":\\"Over 48.5\\""]').click();
-      assert.match(await pg.locator(".slip-bar").innerText(), /2\s*2-pick parlay/);
+      assert.match(await pg.locator(".slip-bar").innerText(), /Added Over 48\.5[\s\S]*\$10 pays\s*\$\d+\.\d\d/i);
       assert.ok(await jaxMl.evaluate(e => e.classList.contains("in-slip")));
       await jaxMl.click();                                                  // second tap takes it out
-      assert.match(await pg.locator(".slip-bar").innerText(), /1\s*Bet slip[\s\S]*Removed JAX ML/);
+      assert.match(await pg.locator(".slip-bar").innerText(), /Removed JAX ML/i);
       await jaxMl.click();
-      assert.match(await pg.locator(".slip-bar").innerText(), /2-pick parlay[\s\S]*Added JAX ML[\s\S]*\+\d+/);
-      await pg.waitForFunction(() => /JAX ML · Over|Over 48\.5 · JAX ML/.test(document.querySelector(".slip-bar").innerText), null, {timeout: 4000});
+      assert.match(await pg.locator(".slip-bar").innerText(), /Added JAX ML/i);
+      await pg.waitForFunction(() => /2-pick parlay\s*\+\d+/i.test(document.querySelector(".slip-bar").innerText), null, {timeout: 4000});
+      // the picks show right on the drawer, each with its price and an x
+      assert.equal(await pg.locator(".slip-bar .chip").count(), 2);
+      assert.match(await pg.locator(".slip-bar .chips").innerText(), /Over 48\.5\s*-105[\s\S]*JAX ML\s*-145/);
+      await pg.screenshot({path: OUT + "slip-drawer.png"});
+      // pull the drawer up: every pick with its game time, and the odds / % switch
+      await pg.locator(".slip-bar .grab").click();
+      await pg.locator(".slip-bar .pk").first().waitFor();
+      assert.match(await pg.locator(".slip-bar .picks").innerText(), /NFL[\s\S]*Over 48\.5 \(BUF @ KC\)[\s\S]*JAX to win \(vs HOU\)/i);
+      await pg.screenshot({path: OUT + "slip-drawer-open.png"});
+      // the drawer stays when you switch tabs
+      await pg.locator('nav.tabs button[data-tab="parlay"]').click();
+      assert.ok(await pg.locator(".slip-bar").isVisible());
+      assert.match(await pg.locator(".slip-bar").innerText(), /2-pick parlay/i);
+      await pg.locator('nav.tabs button[data-tab="home"]').click();
+      await pg.locator(".slip-bar .grab").click();
       const box = await pg.locator(".slip-bar").boundingBox();
       assert.ok(box.height >= 44 && box.x >= 0 && box.x + box.width <= 390);
       await pg.screenshot({path: OUT + "slip-bar.png"});
     });
     await t.test("review the slip; switch odds to %", async () => {
-      await pg.locator(".slip-bar").click();
+      await pg.locator(".slip-bar .go").click();
       await pg.locator(".slip-sheet .slip-leg").first().waitFor();
       assert.equal(await pg.locator(".slip-sheet .slip-leg").count(), 2);
       assert.match(await pg.locator(".slip-sheet").innerText(), /JAX ML[\s\S]*−145|JAX ML[\s\S]*-145/);
