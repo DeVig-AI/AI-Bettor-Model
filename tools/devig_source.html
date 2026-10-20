@@ -659,6 +659,13 @@
   .ab-sec:last-child{border-bottom:none;}
   .ab-sec[open]{padding-bottom:10px;}
   #labMore{margin-top:12px;}
+  .rc-box{border-top:1px solid var(--line); padding-top:4px; margin-top:12px;}
+  .rc-team{padding:6px 0; border-bottom:1px solid var(--line);}
+  .rc-h{display:flex; justify-content:space-between; gap:8px; font-size:14px;}
+  .rc-h .bad{color:var(--bad); font-size:12.5px;} .rc-h .faint{font-size:12.5px;}
+  .rc-l{font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.45;}
+  .rc-l > span{font-weight:700; color:var(--ink-faint); text-transform:uppercase; font-size:11px; letter-spacing:.04em; margin-right:2px;}
+  .rc-box > .faint{font-size:12px; margin-top:8px;}
   .tr-fine{border-bottom:none; margin-top:4px;}
   .tr-fine > summary{min-height:40px; font-size:13px; color:var(--accent);}
   [data-mode-switch]{text-align:left;}
@@ -2598,6 +2605,7 @@
     if(adv && lp && lp.isBet && !lp.longshot) chips.push('<span class="pill ' + (lp.tier === "HIGH" ? "good" : "neutral") + '">' + escapeHtml(lp.pick.team + " " + (Number(lp.pick.point) > 0 ? "+" : "") + lp.pick.point) + '</span>');
     if(adv && g.lowtotal_dog && g.lowtotal_dog.team) chips.push('<span class="pill neutral">' + escapeHtml(g.lowtotal_dog.team + " +" + g.lowtotal_dog.point) + (g.lowtotal_dog.preview ? ' · early' : '') + '</span>');
     if(adv && computeTeaserSignal(g)) chips.push('<span class="pill neutral">Teaser</span>');
+    if(d.action === "ML" && rosterChanged(g)) chips.push('<span class="pill neutral">Roster changed</span>');
     var injBad = pickInjuries(g);
     if(d.action === "ML" && injBad && injBad.others.length) chips.push('<span class="pill bad">Injury caution</span>');
     var pcS = priceCheck(g);
@@ -2638,6 +2646,11 @@
     if(lpb){
       var read = gamePane.querySelector(".model-read");
       if(read) read.parentNode.insertBefore(lpb, read.nextSibling); else gamePane.insertBefore(lpb, gamePane.firstChild);
+    }
+    var rcEl = rosterChangesEl(g);
+    if(rcEl){
+      var read2 = gamePane.querySelector(".model-read");
+      if(read2) read2.parentNode.insertBefore(rcEl, read2.nextSibling); else gamePane.appendChild(rcEl);
     }
     var swEl = !over && !isSimple() ? spreadWheelEl(g) : null;
     if(swEl) gamePane.appendChild(swEl);
@@ -3366,6 +3379,7 @@
           if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
           if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
           if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
+          if(x && x.doc === "NBA_ROSTERS"){ nbaRosters = x; setTimeout(renderHome, 0); }
         });
         liveLoaded = true; renderLive();
       });
@@ -3797,6 +3811,41 @@
   // clock and player stats replaced by the fast feed (/api/live, ~20 seconds) when the website has it.
   // Finished NFL games kept for good by the live bot (nfl/live/props_results.json): final score, prop picks, stats, graph.
   var propsArchive = null;
+  // How each NBA roster changed since last season (nba/roster_changes.json, from nba/nba_roster_changes_v1.py).
+  // Shown on NBA games until Dec 1: the model's form numbers still lean on last season's last 10 games until then.
+  var nbaRosters = null, ROSTER_TURNOVER = 60;            // under 60% of those minutes back = "Roster changed"
+  function rosterFor(g){
+    if(!nbaRosters || (g.sport || "NFL") !== "NBA" || !g.kickoff_time) return null;
+    var k = new Date(g.kickoff_time), y = k.getMonth() >= 8 ? k.getFullYear() : k.getFullYear() - 1;
+    if(k >= new Date(y, 11, 1) || String(nbaRosters.season || "").indexOf(String(y)) !== 0) return null;
+    var t = nbaRosters.teams || {}, a = t[g.away_team], h = t[g.home_team];
+    return a || h ? {away: a, home: h} : null;
+  }
+  function rosterChanged(g){
+    var r = rosterFor(g);
+    return !!r && [r.away, r.home].some(function(x){ return x && x.returning_min_pct != null && x.returning_min_pct < ROSTER_TURNOVER; });
+  }
+  function rosterChangesEl(g){
+    var r = rosterFor(g);
+    if(!r) return null;
+    var box = el("div", "rc-box");
+    box.appendChild(el("div", "pp-stat", "Summer roster changes"));
+    [[g.away_team, r.away], [g.home_team, r.home]].forEach(function(x){
+      var team = x[0], c = x[1];
+      if(!c) return;
+      function list(ps, word){
+        return ps.length ? '<div class="rc-l"><span>' + word + '</span> ' + ps.map(function(p){
+          return '<b>' + escapeHtml(p.name) + '</b> ' + p.ppg + ' ppg' + (p.team ? ' (' + (word === "In" ? "from " : "to ") + escapeHtml(p.team) + ')' : '');
+        }).join(", ") + '</div>' : '';
+      }
+      box.appendChild(el("div", "rc-team", '<div class="rc-h"><b>' + escapeHtml(team) + '</b><span class="' +
+        (c.returning_min_pct != null && c.returning_min_pct < ROSTER_TURNOVER ? 'bad' : 'faint') + '">' +
+        (c.returning_min_pct != null ? Math.round(c.returning_min_pct) + '% of its late-season minutes back' : '') + '</span></div>' +
+        list(c.arrivals || [], "In") + list(c.departures || [], "Out")));
+    });
+    box.appendChild(el("div", "faint", "Early in the season the model's form numbers still include last season's final games, and it doesn't know about roster moves. Treat picks for teams that changed a lot with extra care."));
+    return box;
+  }
   function archiveFor(g){
     if(!propsArchive || (g.sport || "NFL") !== "NFL") return null;
     var games = propsArchive.games || {};

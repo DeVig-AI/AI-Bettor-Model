@@ -1,0 +1,33 @@
+name: NBA roster changes (display only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '47 13 * * *'   # daily, before the 11am ET pick lock; public data only, no keys
+permissions:
+  contents: write
+concurrency:
+  group: nba-roster
+  cancel-in-progress: false
+jobs:
+  rosters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas
+        run: pip install pandas
+      - name: How each roster changed since last season
+        run: python3 nba/nba_roster_changes_v1.py
+      - name: Save it
+        run: |
+          [ -f nba/roster_changes.json ] || exit 0
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nba/roster_changes.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NBA roster changes $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1
