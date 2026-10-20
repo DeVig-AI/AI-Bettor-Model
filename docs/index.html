@@ -659,6 +659,17 @@
   .ab-sec:last-child{border-bottom:none;}
   .ab-sec[open]{padding-bottom:10px;}
   #labMore{margin-top:12px;}
+  .pp-others{margin-top:10px; border-top:1px solid var(--line);}
+  .pp-others > summary{list-style:none; cursor:pointer; min-height:44px; display:flex; align-items:center; justify-content:space-between;
+    font-size:13.5px; font-weight:600; color:var(--accent);}
+  .pp-others > summary::-webkit-details-marker{display:none;}
+  .pp-others > summary::after{content:"+"; font-size:18px; font-weight:400; color:var(--ink-faint);}
+  .pp-others[open] > summary::after{content:"−";}
+  .pp-o{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid var(--line);}
+  .pp-o .who{font-weight:600; font-size:14px;}
+  .pp-o .what{font-size:12.5px; color:var(--ink-soft);}
+  .pp-o .end{font-size:12.5px; color:var(--ink-soft); text-align:right;}
+  .pp-o .end b{color:var(--ink); font-size:14px;}
   .lv-pk .ended{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
   .lv-pk .ended b{color:var(--ink); font-weight:700;}
   .tr-fine{border-bottom:none; margin-top:4px;}
@@ -3817,6 +3828,10 @@
     var sport = g.sport || "NFL";
     var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : null;
     if(!base || (base.state === "pre" && !base.away_score)) base = archiveFor(g) || base;
+    if(base && base.state === "post" && !base.lines){                  // still in this week's live file: take the archive's lines
+      var ar = archiveFor(g);
+      if(ar && ar.lines) base = Object.assign({}, base, {lines: ar.lines, stats: Object.assign({}, ar.stats || {}, base.stats || {})});
+    }
     var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
     if(!f || (base && base.state === "post" && f.state !== "post")) return base;      // never step back from a final
     var o = Object.assign({}, base || {picks: []}, {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score,
@@ -4012,8 +4027,10 @@
   function propPicksBox(g, lg){
     var doc = propsDocFor(g), picks = (doc && doc.paper_picks) || [];
     if(!picks.length && lg && lg.picks && lg.picks.length) picks = lg.picks;       // an archived game: its picks with results
-    if(!picks.length) return null;
+    var others = otherPropsEl(lg, picks);
+    if(!picks.length && !others) return null;
     var box = el("div", "lv-picks");
+    if(!picks.length){ box.style.cssText = "border-top:1px solid var(--line); padding:4px 0 0; margin-top:12px"; box.appendChild(others); return box; }
     box.style.cssText = "border-top:1px solid var(--line); padding:4px 0 0; margin-top:12px";
     box.appendChild(el("div", "stat-row", '<span class="muted">Prop picks</span><span class="v tabular">' + picks.length + '</span>'));
     var byStat = {};
@@ -4025,8 +4042,37 @@
         box.appendChild(livePickEl(lv || Object.assign({}, p, {status: "pending"}), doc ? pickTrackKey(doc, p) : null));
       });
     });
+    if(others) box.appendChild(others);
     if(liveStarted(lg)) box.appendChild(el("div", "faint", "Live stats are ESPN's unofficial box score; the final grade uses official play-by-play after the game."));
     return box;
+  }
+  // A finished game's other props (every main line Kalshi priced before kickoff that the model didn't pick) with how
+  // each one ended. Lines come from the live bot's archive (nfl/live/props_results.json "lines").
+  function otherPropsEl(lg, picks){
+    if(!lg || lg.state !== "post" || !lg.lines || !lg.lines.length) return null;
+    var picked = {};
+    (picks || []).forEach(function(p){ picked[p.player + "|" + p.stat] = 1; });
+    var rows = lg.lines.filter(function(x){ return !picked[x[0] + "|" + x[1]]; }).map(function(x){
+      var st = (lg.stats || {})[x[0]] || {}, cur = st[x[1]];
+      if(cur == null && lg._box) cur = boxStat(lg, x[0], x[1]);
+      return {player: x[0], stat: x[1], line: x[2], over: x[3], cur: cur};
+    }).filter(function(r){ return r.cur != null; });
+    if(!rows.length) return null;
+    var det = el("details", "pp-others");
+    det.innerHTML = '<summary>Props it didn\'t pick · ' + rows.length + '</summary>';
+    var byStat = {};
+    rows.forEach(function(r){ (byStat[r.stat] = byStat[r.stat] || []).push(r); });
+    Object.keys(byStat).sort(function(a, b){ return PROP_ORDER.indexOf(a) - PROP_ORDER.indexOf(b); }).forEach(function(st){
+      det.appendChild(el("div", "pp-stat", escapeHtml(propStat(st))));
+      byStat[st].sort(function(a, b){ return b.cur - a.cur; }).forEach(function(r){
+        var hit = r.cur > r.line;
+        det.appendChild(el("div", "pp-o", '<div style="min-width:0"><div class="who">' + escapeHtml(r.player) + '</div>' +
+          '<div class="what">' + escapeHtml(propLineTxt(r.stat, r.line)) + (r.over != null ? ' · Kalshi had it ' + Math.round(r.over * 100) + '%' : '') + '</div></div>' +
+          '<div class="end">Ended with <b class="tabular">' + r.cur + '</b></div>' +
+          '<span class="pill ' + (hit ? 'good">' : 'neutral">') + (r.stat === "touchdowns" ? (hit ? 'Hit' : 'Missed') : (hit ? 'Over hit' : 'Under hit')) + '</span>'));
+      });
+    });
+    return det;
   }
 
 
