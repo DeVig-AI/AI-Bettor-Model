@@ -360,12 +360,48 @@
   .sb-btn.edge-med .tg{color:var(--accent-strong);}
   .sb-btn.edge-lean .tg{color:var(--ink-soft);}
   .sb-btn.empty{background:none; border-style:dashed;}
-  .sb-btn[data-leg]{cursor:pointer;}
-  .sb-btn[data-leg]:active{transform:scale(.97);}
-  .sb-btn[data-leg].in-slip{outline:2px solid var(--accent); outline-offset:1px;}
-  .slip-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom, 0px)); z-index:50;
+  .sb-btn[data-leg], .sb-btn[data-legg]{cursor:pointer;}
+  .sb-btn[data-leg]:active, .sb-btn[data-legg]:active{transform:scale(.97);}
+  .sb-btn[data-leg].in-slip, .sb-btn[data-legg].in-slip{outline:2px solid var(--accent); outline-offset:1px; background:var(--accent-wash);}
+  .slip-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(128px + env(safe-area-inset-bottom, 0px)); z-index:50; white-space:nowrap;
     background:var(--ink); color:var(--bg); font-family:var(--font-sans); font-size:13.5px; font-weight:600; padding:9px 14px; border-radius:999px;
     box-shadow:0 4px 18px rgba(0,0,0,.25); max-width:calc(100vw - 32px);}
+  .slip-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(74px + env(safe-area-inset-bottom, 0px)); z-index:40;
+    width:calc(100% - 24px); max-width:520px; min-height:58px; display:flex; align-items:center; gap:12px; padding:8px 16px 8px 9px;
+    border-radius:30px; border:1px solid rgba(255,255,255,.08); cursor:pointer; text-align:left; color:#fff;
+    background:rgba(14,14,17,.92); -webkit-backdrop-filter:blur(18px) saturate(1.4); backdrop-filter:blur(18px) saturate(1.4);
+    font-family:var(--font-sans); box-shadow:0 10px 30px rgba(0,0,0,.45); transition:transform .25s ease;}
+  .slip-bar[hidden]{display:none;}
+  body.has-slip .panel{padding-bottom:76px;}            /* room under the last card for the island */
+  .slip-bar.pop{animation:slipPop .35s ease;}
+  @keyframes slipPop{0%{transform:translateX(-50%) scale(1)} 40%{transform:translateX(-50%) scale(1.04)} 100%{transform:translateX(-50%) scale(1)}}
+  .slip-bar .n{flex:none; width:40px; height:40px; border-radius:50%; background:var(--accent); color:#111; font-weight:800; font-size:17px;
+    display:inline-flex; align-items:center; justify-content:center;}
+  .slip-bar .t{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2;}
+  .slip-bar .t b{font-size:15px;}
+  .slip-bar .t span{font-size:12.5px; color:rgba(255,255,255,.62); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slip-bar .o{flex:none; font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--accent);}
+  .slip-bar .c{flex:none; color:rgba(255,255,255,.5); font-size:20px; margin-left:-4px;}
+  .slip-shade{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60;}
+  .slip-shade[hidden], .slip-sheet[hidden]{display:none;}
+  .slip-sheet{position:fixed; left:0; right:0; bottom:0; z-index:61; max-height:86vh; overflow-y:auto; background:var(--surface);
+    border-radius:18px 18px 0 0; padding:12px 16px calc(18px + env(safe-area-inset-bottom, 0px)); box-shadow:0 -8px 30px rgba(0,0,0,.4);}
+  .slip-head{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .slip-head h3{margin:0; flex:1;}
+  .slip-x{background:none; border:none; color:var(--ink-soft); font-size:22px; min-width:44px; min-height:44px; cursor:pointer;}
+  .slip-view{display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden;}
+  .slip-view button{background:none; border:none; color:var(--ink-soft); font:inherit; font-size:13px; font-weight:600; padding:0 14px; min-height:36px; cursor:pointer;}
+  .slip-view button[aria-pressed="true"]{background:var(--accent); color:#111;}
+  .slip-leg{display:grid; grid-template-columns:minmax(0,1fr) auto 44px; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--line);}
+  .slip-leg .d{font-weight:600;} .slip-leg .m{font-size:12.5px; color:var(--ink-soft);}
+  .slip-leg .v{font-family:var(--font-mono); font-weight:700; font-size:16px;}
+  .slip-leg button, .tp-rm{background:none; border:none; color:var(--ink-faint); font-size:18px; min-width:44px; min-height:44px; cursor:pointer;}
+  .slip-btns{display:flex; gap:8px; margin-top:12px;} .slip-btns .primary{flex:1;}
+  .tp-card{border:1px solid var(--line); border-radius:12px; padding:8px 12px; margin-top:10px;}
+  .tp-top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .tp-leg{display:flex; gap:8px; align-items:baseline; padding:6px 0; border-top:1px solid var(--line); font-size:14px;}
+  .tp-leg .st{min-width:18px; text-align:center; font-weight:700;} .tp-leg .d{flex:1; min-width:0;} .tp-leg .o{font-family:var(--font-mono); color:var(--ink-soft);}
+  .tp-won{color:var(--good);} .tp-lost{color:var(--bad);} .tp-live{color:var(--accent);}
   .slip-toast button{background:none; border:none; color:var(--accent); font:inherit; margin-left:8px; cursor:pointer; text-decoration:underline;}
   .sb-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
   .sb-tabs{display:flex; gap:6px; overflow-x:auto; padding:12px 0 2px; scrollbar-width:none; margin-top:4px;}
@@ -657,6 +693,11 @@
   </section>
 
   <section class="panel" id="panel-parlay" hidden>
+    <div class="card" id="trackedParlaysCard">
+      <h3 style="margin-bottom:6px">Tracked parlays</h3>
+      <p class="faint" style="margin:0 0 10px">Tap the odds on any game or prop to add picks to your slip, then open the slip and track it. DeVig doesn't place bets: it follows each leg here as the games play out.</p>
+      <div id="trackedParlays"></div>
+    </div>
     <div class="card" id="bestParlayCard">
       <h3 style="margin-bottom:6px">Best parlay</h3>
       <p class="faint" style="margin:0 0 14px">Built from the model's own picks: one leg per game, games that haven't started, fairly priced picks first and the most confident first. Swipe for bigger parlays: more legs pay more and hit less.</p>
@@ -684,40 +725,6 @@
       <div id="lsResult"></div>
     </div>
 
-    <div class="card">
-      <h3 style="margin-bottom:6px">Build a parlay</h3>
-      <p class="faint" style="margin:0 0 12px">Pick legs from the games already in the app (every sport, games not started yet), with the odds the app synced. This just multiplies the honest payout math; it does not tell you whether the bet is good.</p>
-
-      <button class="primary" id="pickFromGamesBtn" style="margin-bottom:8px">+ Pick legs from the app's games</button>
-      <div id="gamesPickerWrap"></div>
-
-      <button class="secondary" id="aiParlayBtn" style="width:100%; margin:8px 0">Ask DeVig.AI for its best parlay</button>
-      <p class="faint" style="margin:0 0 12px">DeVig.AI picks only from the games in the app, across every sport it has synced — NFL, MLB, and NBA together, not just one — favoring picks tagged "real signal" over anything flagged as unproven, and never combines two legs from the same game. It explains its reasoning below — it is not a guarantee, and combining picks always multiplies risk.</p>
-      <div class="status" id="aiParlayStatus"></div>
-      <div id="aiParlayReasoning"></div>
-
-      <details style="margin-top:6px">
-      <summary class="faint" style="cursor:pointer; padding:6px 0">Other ways to add a leg (saved scans or by hand)</summary>
-      <button class="secondary" id="pickFromHistoryBtn" style="width:100%; margin:8px 0 14px">+ Add a leg from history</button>
-      <div id="historyPickerWrap"></div>
-
-      <h3 style="margin:16px 0 10px; font-size:14px">Or add a leg by hand</h3>
-      <div class="field"><label>Description</label><input id="p-desc" placeholder="e.g. Bills -3.5"></div>
-      <div class="row">
-        <div class="field"><label>Odds (American)</label><input id="p-odds" inputmode="numeric" placeholder="-110"></div>
-        <div class="field"><label>Book (optional)</label><input id="p-book" placeholder="e.g. Kalshi"></div>
-      </div>
-      <div class="field"><label>Game (optional — for correlation check)</label><input id="p-game" placeholder="e.g. Bills @ Chiefs"></div>
-      <button class="primary" id="addLegBtn">+ Add this leg</button>
-      </details>
-    </div>
-
-    <div class="card" id="parlayLegsCard" hidden>
-      <h3 style="margin-bottom:10px">Your parlay</h3>
-      <div id="parlayLegsList"></div>
-      <div class="field" style="margin-top:14px"><label>Stake</label><input id="p-stake" inputmode="decimal" placeholder="20"></div>
-      <div id="parlaySummary"></div>
-    </div>
   </section>
 
   <section class="panel" id="panel-lab" hidden>
@@ -948,7 +955,7 @@
     meBtn.setAttribute("aria-pressed", String(name === "me"));
     Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
     if(name === "scan"){ loadHistory(); renderPast(); }
-    if(name === "parlay") renderBestParlay();
+    if(name === "parlay"){ renderTrackedParlays(); renderBestParlay(); }
     if(name === "me") renderMe();
     if(name === "models") renderModels();
   }
@@ -1931,7 +1938,7 @@
         savePrefs(); renderMe(); renderHome(); return;
       }
       if(ev.target.id === "meClear" && confirm("Stop tracking every game and pick?")){
-        tracked = {g: {}, p: {}, updated: Date.now()};
+        tracked = {g: {}, p: {}, parlays: tracked.parlays, updated: Date.now()};   // tracked parlays stay (Parlay tab)
         try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
         prefsChanged(); renderMe(); renderHome();
       }
@@ -2329,7 +2336,7 @@
     }
     row.appendChild(left); row.appendChild(figs);
     if(onAdd){
-      var addBtn = el("button", "ghost", "+ parlay");
+      var addBtn = el("button", "ghost", "+ slip");
       addBtn.style.marginLeft = "4px";
       addBtn.addEventListener("click", onAdd);
       row.appendChild(addBtn);
@@ -2505,6 +2512,13 @@
     if(!cols.length) return "";
     var html = '<div class="sb-grid" style="grid-template-columns:minmax(0,1fr) repeat(' + cols.length + ', minmax(58px, 72px))">' +
       '<div></div>' + cols.map(function(c){ return '<div class="sb-colh">' + c + '</div>'; }).join("");
+    var open = !g.trial && (!lg || lg.state === "pre") && (!g.kickoff_time || new Date(g.kickoff_time).getTime() > Date.now());
+    function cell(h, leg, od){
+      if(!open || od == null) return h;
+      leg = Object.assign(leg, {odds: od, book: m.book || "", game: gameLabelFor(g), when: lsWhen(g.kickoff_time)}, legMeta(g));
+      if(slipHas(leg)) h = h.replace('class="sb-btn', 'class="sb-btn in-slip');
+      return h.replace('<div class="sb-btn', '<div role="button" tabindex="0" aria-label="Add ' + escapeHtml(leg.desc) + ' to the slip" data-legg="' + escapeHtml(JSON.stringify(leg)) + '" class="sb-btn');
+    }
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
@@ -2515,13 +2529,16 @@
         (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
       cols.forEach(function(c){
         if(c === "Spread"){
-          var pt = side === "home" ? m.spread_home : -m.spread_home;
-          html += sbBtn(fmtHalfPoint(pt), side === "home" ? m.spread_home_odds : m.spread_away_odds);
+          var pt = side === "home" ? m.spread_home : -m.spread_home, spo = side === "home" ? m.spread_home_odds : m.spread_away_odds;
+          html += cell(sbBtn(fmtHalfPoint(pt), spo), {desc: team + " " + (pt > 0 ? "+" : "") + pt, mk: "spread", side: side, point: pt}, spo);
         } else if(c === "Total"){
-          html += sbBtn((side === "away" ? "O " : "U ") + m.total_line, side === "away" ? m.over_odds : m.under_odds);
+          var tod = side === "away" ? m.over_odds : m.under_odds;
+          html += cell(sbBtn((side === "away" ? "O " : "U ") + m.total_line, tod),
+            {desc: (side === "away" ? "Over " : "Under ") + m.total_line, mk: "total", side: side === "away" ? "over" : "under", point: m.total_line}, tod);
         } else {
           var isPick = d && d.action === "ML" && mm.winner_side === team;
-          html += sbBtn(null, side === "home" ? m.moneyline_home : m.moneyline_away, isPick ? "pick" : "", isPick ? "PICK" : "");
+          var mlo = side === "home" ? m.moneyline_home : m.moneyline_away;
+          html += cell(sbBtn(null, mlo, isPick ? "pick" : "", isPick ? "PICK" : ""), {desc: team + " ML", mk: "ml", side: side}, mlo);
         }
       });
     });
@@ -2666,21 +2683,22 @@
   }
   function propLeg(r, side, odds, book, g, e){
     var desc = r.player + " " + (side === "OVER" ? propLineTxt(r.stat, r.line) : "Under " + r.line + " " + propStat(r.stat, true));
-    var leg = {desc: desc, odds: Math.round(odds), book: book, game: gameLabelFor(g), when: lsWhen(g.kickoff_time), kind: "prop"};
+    var leg = Object.assign({desc: desc, odds: Math.round(odds), book: book, game: gameLabelFor(g), when: lsWhen(g.kickoff_time), kind: "prop",
+      mk: "prop", player: r.player, stat: r.stat, line: r.line, side: side}, legMeta(g));
     if(r.mp != null) leg.model = Math.round((side === "OVER" ? r.mp : 1 - r.mp) * 100);
     if(e && e.side === side) leg.tier = e.tier;
     return leg;
+  }
+  // What a slip leg needs to be followed after it is tracked: the game, the market and the side.
+  function legMeta(g){
+    return {sport: g.sport || "NFL", away: g.away_team, home: g.home_team, kickoff: g.kickoff_time || null, gkey: gameKey(g)};
   }
   function slipHas(leg){ return parlayLegs.some(function(l){ return l.desc === leg.desc && l.game === leg.game; }); }
   var slipToastEl = null, slipToastTimer = null;
   function slipToast(msg){
     if(!slipToastEl){ slipToastEl = el("div", "slip-toast"); document.body.appendChild(slipToastEl); }
-    slipToastEl.innerHTML = escapeHtml(msg) + '<button type="button">View parlay</button>';
-    slipToastEl.querySelector("button").onclick = function(){
-      document.querySelector('nav.tabs button[data-tab="parlay"]').click();
-      setTimeout(function(){ parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"}); }, 50);
-      slipToastEl.hidden = true;
-    };
+    slipToastEl.innerHTML = escapeHtml(msg) + '<button type="button">View slip</button>';
+    slipToastEl.querySelector("button").onclick = function(){ slipToastEl.hidden = true; openSlip(); };
     slipToastEl.hidden = false;
     clearTimeout(slipToastTimer);
     slipToastTimer = setTimeout(function(){ slipToastEl.hidden = true; }, 3500);
@@ -2688,10 +2706,10 @@
   function toggleSlipLeg(leg, btn){
     var i = -1;
     parlayLegs.forEach(function(l, j){ if(l.desc === leg.desc && l.game === leg.game) i = j; });
-    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); slipToast("Removed from parlay"); return; }
+    if(i >= 0){ removeParlayLeg(i); if(btn) btn.classList.remove("in-slip"); if(parlayLegs.length) slipFlash("Removed " + leg.desc); return; }
     addParlayLeg(leg);
     if(btn) btn.classList.add("in-slip");
-    slipToast("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
+    slipFlash("Added " + leg.desc + " (" + fmtOdds(leg.odds) + ")");
   }
   function ppMainLine(rs){
     // the line the market is closest to a coin flip on (like a sportsbook's main line)
@@ -2839,10 +2857,10 @@
         mWrap.appendChild(el("div", "mkt-label", "Moneyline"));
         var mlBox = el("div", "mkt-box");
         mlBox.appendChild(mktSelection(g.away_team || "Away", null, m.moneyline_away, function(){
-          addParlayLeg({desc: (g.away_team || "Away") + " ML", odds: m.moneyline_away, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.away_team || "Away") + " ML", odds: m.moneyline_away, book: m.book || "", game: gameLabel, mk: "ml", side: "away"}, legMeta(g)));
         }));
         mlBox.appendChild(mktSelection(g.home_team || "Home", null, m.moneyline_home, function(){
-          addParlayLeg({desc: (g.home_team || "Home") + " ML", odds: m.moneyline_home, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.home_team || "Home") + " ML", odds: m.moneyline_home, book: m.book || "", game: gameLabel, mk: "ml", side: "home"}, legMeta(g)));
         }));
         mWrap.appendChild(mlBox);
       }
@@ -2856,10 +2874,10 @@
         var spreadBox = el("div", "mkt-box");
         var awayPoint = -m.spread_home;
         spreadBox.appendChild(mktSelection(g.away_team || "Away", fmtHalfPoint(awayPoint), m.spread_away_odds, function(){
-          addParlayLeg({desc: (g.away_team || "Away") + " " + (awayPoint > 0 ? "+" : "") + awayPoint, odds: m.spread_away_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.away_team || "Away") + " " + (awayPoint > 0 ? "+" : "") + awayPoint, odds: m.spread_away_odds, book: m.book || "", game: gameLabel, mk: "spread", side: "away", point: awayPoint}, legMeta(g)));
         }));
         spreadBox.appendChild(mktSelection(g.home_team || "Home", fmtHalfPoint(m.spread_home), m.spread_home_odds, function(){
-          addParlayLeg({desc: (g.home_team || "Home") + " " + (m.spread_home > 0 ? "+" : "") + m.spread_home, odds: m.spread_home_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: (g.home_team || "Home") + " " + (m.spread_home > 0 ? "+" : "") + m.spread_home, odds: m.spread_home_odds, book: m.book || "", game: gameLabel, mk: "spread", side: "home", point: m.spread_home}, legMeta(g)));
         }));
         mWrap.appendChild(spreadBox);
       }
@@ -2867,10 +2885,10 @@
         mWrap.appendChild(el("div", "mkt-label", "Total"));
         var totalBox = el("div", "mkt-box");
         totalBox.appendChild(mktSelection("Over", String(m.total_line), m.over_odds, function(){
-          addParlayLeg({desc: "Over " + m.total_line, odds: m.over_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: "Over " + m.total_line, odds: m.over_odds, book: m.book || "", game: gameLabel, mk: "total", side: "over", point: m.total_line}, legMeta(g)));
         }));
         totalBox.appendChild(mktSelection("Under", String(m.total_line), m.under_odds, function(){
-          addParlayLeg({desc: "Under " + m.total_line, odds: m.under_odds, book: m.book || "", game: gameLabel});
+          toggleSlipLeg(Object.assign({desc: "Under " + m.total_line, odds: m.under_odds, book: m.book || "", game: gameLabel, mk: "total", side: "under", point: m.total_line}, legMeta(g)));
         }));
         mWrap.appendChild(totalBox);
       }
@@ -3812,7 +3830,7 @@
   }
 
 
-  function renderLive(){ if(homeDocs.length){ renderHome(); renderPast(); } }
+  function renderLive(){ if(homeDocs.length){ renderHome(); renderPast(); } if(!panels.parlay.hidden) renderTrackedParlays(); }
 
 
   // ---------- Lab: experimental NFL model comparison (read-only, synced by Claude) ----------
@@ -4337,238 +4355,233 @@
   }
 
   // ---------- parlay tab ----------
-  var parlayLegs = []; // {desc, odds, book, game}
-  var parlayLegsCard = document.getElementById("parlayLegsCard");
-  var parlayLegsList = document.getElementById("parlayLegsList");
-  var parlaySummary = document.getElementById("parlaySummary");
-  var pStake = document.getElementById("p-stake");
+  // ---------- Bet slip: tap odds anywhere to add picks; the floating button opens the slip; "Track parlay" keeps it ----------
+  // The slip lives in this browser (devig.slip.v1). Tracked parlays live with the other tracking (devig.tracked.v1,
+  // tracked.parlays), so on the website they follow the account. DeVig never places a bet.
+  var SLIP_KEY = "devig.slip.v1";
+  var parlayLegs = [], slipStake = 10, slipView = "odds";   // slipView: "odds" | "pct"
+  (function(){
+    try{
+      var sj = JSON.parse(localStorage.getItem(SLIP_KEY) || "null");
+      if(sj && Array.isArray(sj.legs)) parlayLegs = sj.legs.slice(0, 15);
+      if(sj && sj.stake > 0) slipStake = sj.stake;
+      if(sj && sj.view === "pct") slipView = "pct";
+    }catch(e){}
+  })();
+  function saveSlip(){
+    try{ localStorage.setItem(SLIP_KEY, JSON.stringify({legs: parlayLegs, stake: slipStake, view: slipView})); }catch(e){}
+    renderSlipBar();
+  }
+  var slipBar = el("button", "slip-bar"), slipShade = el("div", "slip-shade"), slipSheet = el("div", "slip-sheet");
+  slipBar.type = "button"; slipBar.hidden = true; slipBar.setAttribute("aria-haspopup", "dialog");
+  slipShade.hidden = true; slipSheet.hidden = true;
+  slipSheet.setAttribute("role", "dialog"); slipSheet.setAttribute("aria-modal", "true"); slipSheet.setAttribute("aria-label", "Bet slip");
+  document.body.appendChild(slipBar); document.body.appendChild(slipShade); document.body.appendChild(slipSheet);
+  slipBar.addEventListener("click", openSlip);
+  slipShade.addEventListener("click", closeSlip);
+
+  function legChance(l){ return impliedProb(l.odds); }       // what the price says: the win chance it implies
+  function pctTxt(p){ return p == null ? "—" : (p >= 0.995 ? ">99" : p < 0.005 ? "<1" : Math.round(p * 100)) + "%"; }
+  function slipMath(legs){
+    var mult = 1, chance = 1, n = 0;
+    legs.forEach(function(l){ var pm = payoutMultiplier(l.odds), p = legChance(l); if(pm != null && p != null){ mult *= pm; chance *= p; n++; } });
+    var american = mult >= 2 ? (mult - 1) * 100 : -100 / (mult - 1);
+    return {n: n, mult: mult, chance: chance, american: n ? Math.round(american) : null};
+  }
+  function slipPrice(l){ return slipView === "pct" ? pctTxt(legChance(l)) : fmtOdds(l.odds); }
+  var slipNote = "", slipNoteTimer = null;
+  function renderSlipBar(){
+    var n = parlayLegs.length;
+    slipBar.hidden = n === 0;
+    document.body.classList.toggle("has-slip", n > 0);
+    if(!n) return;
+    var mm = slipMath(parlayLegs);
+    var sub = slipNote || parlayLegs.map(function(l){ return l.desc; }).join(" · ");
+    slipBar.setAttribute("aria-label", "Bet slip: " + n + " pick" + (n === 1 ? "" : "s") + ". Open to review");
+    slipBar.innerHTML = '<span class="n">' + n + '</span><span class="t"><b>' + (n > 1 ? n + "-pick parlay" : "Bet slip") + '</b><span>' +
+      escapeHtml(sub) + '</span></span><span class="o">' + (slipView === "pct" ? pctTxt(mm.chance) : fmtOdds(mm.american)) +
+      '</span><span class="c" aria-hidden="true">›</span>';
+  }
+  // the island shows what just changed for a moment, instead of a separate pop-up
+  function slipFlash(msg){
+    slipNote = msg; renderSlipBar();
+    slipBar.classList.remove("pop"); void slipBar.offsetWidth; slipBar.classList.add("pop");
+    clearTimeout(slipNoteTimer);
+    slipNoteTimer = setTimeout(function(){ slipNote = ""; renderSlipBar(); }, 2200);
+  }
+  function openSlip(){
+    if(!parlayLegs.length){ slipToast("Tap any odds to add a pick"); return; }
+    renderParlay();
+    slipShade.hidden = false; slipSheet.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeSlip(){
+    slipShade.hidden = true; slipSheet.hidden = true;
+    document.body.style.overflow = "";
+  }
+  document.addEventListener("keydown", function(ev){ if(ev.key === "Escape" && !slipSheet.hidden) closeSlip(); });
 
   function addParlayLeg(leg){
+    if(parlayLegs.some(function(l){ return l.desc === leg.desc && l.game === leg.game; })) return;
     parlayLegs.push(leg);
-    renderParlay();
+    saveSlip();
+    if(!slipSheet.hidden) renderParlay();
   }
-
   function removeParlayLeg(idx){
     parlayLegs.splice(idx, 1);
-    renderParlay();
-    if(gamesPickerOpen) renderGamesPicker();
+    saveSlip();
+    if(!parlayLegs.length) closeSlip(); else if(!slipSheet.hidden) renderParlay();
+    refreshSlipMarks();
+  }
+  // keep the highlighted odds on the page in step with the slip
+  function refreshSlipMarks(){
+    document.querySelectorAll(".sb-btn[data-leg], .sb-btn[data-legg]").forEach(function(b){
+      try{ b.classList.toggle("in-slip", slipHas(JSON.parse(b.getAttribute("data-leg") || b.getAttribute("data-legg")))); }catch(e){}
+    });
   }
 
   function renderParlay(){
-    parlayLegsCard.hidden = parlayLegs.length === 0;
-    parlayLegsList.innerHTML = "";
+    var legs = parlayLegs, mm = slipMath(legs), games = {};
+    legs.forEach(function(l){ var k = String(l.game || "").trim().toLowerCase(); if(k) games[k] = (games[k] || 0) + 1; });
+    var sameGame = Object.keys(games).some(function(k){ return games[k] > 1; });
+    var payout = slipStake * mm.mult;
+    var h = '<div class="slip-head"><h3>Bet slip · ' + legs.length + ' pick' + (legs.length === 1 ? '' : 's') + '</h3>' +
+      '<div class="slip-view" role="group" aria-label="Show prices as">' +
+      '<button type="button" data-view="odds" aria-pressed="' + (slipView === "odds") + '">Odds</button>' +
+      '<button type="button" data-view="pct" aria-pressed="' + (slipView === "pct") + '">%</button></div>' +
+      '<button type="button" class="slip-x" aria-label="Close">✕</button></div>';
+    legs.forEach(function(l, i){
+      var flag = l.game && games[String(l.game).trim().toLowerCase()] > 1;
+      h += '<div class="slip-leg"><div style="min-width:0"><div class="d">' + escapeHtml(l.desc || ("Pick " + (i + 1))) +
+        (flag ? ' <span class="pill bad">same game</span>' : '') + '</div>' +
+        '<div class="m">' + escapeHtml([l.game, l.when, l.book].filter(Boolean).join(" · ")) + '</div></div>' +
+        '<div class="v">' + escapeHtml(slipPrice(l)) + '</div>' +
+        '<button type="button" data-rm="' + i + '" aria-label="Remove ' + escapeHtml(l.desc || "pick") + '">✕</button></div>';
+    });
+    var price = slipView === "pct"
+      ? '<span class="v tabular">' + pctTxt(mm.chance) + ' chance</span>'
+      : '<span class="v tabular">' + fmtOdds(mm.american) + '</span>';
+    h += '<div class="stat-row" style="margin-top:8px"><span class="muted">' + (legs.length > 1 ? "Parlay" : "Price") + (slipView === "pct" ? " · all hit" : "") + '</span>' + price + '</div>' +
+      '<div class="row" style="margin-top:8px; align-items:end"><div class="field"><label for="slipStake">Stake ($)</label>' +
+      '<input id="slipStake" inputmode="decimal" value="' + escapeHtml(String(slipStake)) + '"></div>' +
+      '<div class="field"><label>Pays if every pick hits</label><div class="v tabular" id="slipPays" style="font-size:20px; font-weight:700; padding:8px 0">$' + payout.toFixed(2) + '</div></div></div>';
+    if(slipView === "pct") h += '<div class="faint">% = the win chance each price implies (fees and vig included, so a little high). Multiplied together, assuming the picks are independent.</div>';
+    if(sameGame) h += '<div class="faint" style="color:var(--bad); margin-top:6px">Two or more picks share a game. Books price same-game parlays lower than this, because the picks aren\'t independent.</div>';
+    if(legs.some(function(l){ return l.kind === "prop"; })) h += '<div class="faint" style="margin-top:6px">Prop prices are Kalshi\'s (fee included); Kalshi doesn\'t sell them as one parlay, so the combined price is a guide.</div>';
+    h += '<div class="slip-btns"><button type="button" class="secondary" data-clear>Clear</button>' +
+      '<button type="button" class="primary" data-track>Track ' + (legs.length > 1 ? "parlay" : "pick") + '</button></div>' +
+      '<div class="faint" style="margin-top:8px">DeVig doesn\'t place bets. Place it at your book; DeVig follows every pick under Parlay → Tracked parlays.</div>';
+    slipSheet.innerHTML = h;
+    var stakeEl = slipSheet.querySelector("#slipStake");
+    stakeEl.addEventListener("input", function(){
+      var v = parseFloat(String(stakeEl.value).replace(/[$,]/g, ""));
+      slipStake = isFinite(v) && v > 0 ? v : 0;
+      slipSheet.querySelector("#slipPays").textContent = "$" + (slipStake * slipMath(parlayLegs).mult).toFixed(2);
+      try{ localStorage.setItem(SLIP_KEY, JSON.stringify({legs: parlayLegs, stake: slipStake, view: slipView})); }catch(e){}
+    });
+  }
+  slipSheet.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(t.closest(".slip-x")) return closeSlip();
+    var v = t.closest("[data-view]");
+    if(v){ slipView = v.getAttribute("data-view"); saveSlip(); renderParlay(); return; }
+    var rm = t.closest("[data-rm]");
+    if(rm) return removeParlayLeg(Number(rm.getAttribute("data-rm")));
+    if(t.closest("[data-clear]")){ parlayLegs = []; saveSlip(); closeSlip(); refreshSlipMarks(); return; }
+    if(t.closest("[data-track]")) trackSlip();
+  });
+  // Odds on the game cards: one tap adds the pick, another removes it (a capture listener, so the card doesn't open)
+  function onGameLeg(ev){
+    var b = ev.target.closest && ev.target.closest(".sb-btn[data-legg]");
+    if(!b) return;
+    if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+    ev.preventDefault(); ev.stopPropagation();
+    try{ toggleSlipLeg(JSON.parse(b.getAttribute("data-legg")), b); }catch(e){}
+  }
+  document.addEventListener("click", onGameLeg, true);
+  document.addEventListener("keydown", onGameLeg, true);
+
+  // ---------- Tracked parlays ----------
+  function trackedParlays(){
+    var ps = (tracked.parlays && typeof tracked.parlays === "object") ? tracked.parlays : {};
+    return Object.keys(ps).map(function(id){ return Object.assign({id: id}, ps[id]); })
+      .filter(function(x){ return !x.removed && Array.isArray(x.legs); })
+      .sort(function(a, b){ return String(b.at || "").localeCompare(String(a.at || "")); });
+  }
+  function saveTracked(){
+    tracked.updated = Date.now();
+    try{ localStorage.setItem(TRACK_KEY, JSON.stringify(tracked)); }catch(e){}
+    prefsChanged();
+  }
+  function trackSlip(){
     if(!parlayLegs.length) return;
-
-    // flag legs that share the same game -- correlated legs price worse than naive multiplication
-    var gameCounts = {};
-    parlayLegs.forEach(function(l){
-      if(l.game){
-        var k = l.game.trim().toLowerCase();
-        if(k) gameCounts[k] = (gameCounts[k] || 0) + 1;
-      }
-    });
-    var hasCorrelated = Object.keys(gameCounts).some(function(k){ return gameCounts[k] > 1; });
-
-    parlayLegs.forEach(function(leg, idx){
-      var correlatedFlag = leg.game && gameCounts[leg.game.trim().toLowerCase()] > 1;
-      var row = el("div", "line-row");
-      var metaBits = [];
-      if(leg.book) metaBits.push(leg.book + (leg.kind === "prop" ? " price, fee included" : ""));
-      if(leg.tier) metaBits.push(leg.kind === "prop" ? propTierTxt(leg.tier).toLowerCase() + " vs Kalshi" : leg.tier + " label");
-      if(leg.model != null) metaBits.push("model " + leg.model + "%");
-      if(leg.game) metaBits.push(leg.game);
-      if(leg.when) metaBits.push(leg.when);
-      row.innerHTML =
-        '<div><div class="label">' + escapeHtml(leg.desc || ("Leg " + (idx+1))) +
-          (correlatedFlag ? ' <span class="pill bad">same game</span>' : '') + '</div>' +
-        '<div class="book">' + escapeHtml(metaBits.join(" · ")) + '</div></div>' +
-        '<div></div>' +
-        '<div class="odds tabular">' + fmtOdds(leg.odds) + '</div>';
-      parlayLegsList.appendChild(row);
-      var rmBtn = el("button", "ghost", "Remove");
-      rmBtn.style.display = "block";
-      rmBtn.style.margin = "-6px 0 4px";
-      rmBtn.addEventListener("click", function(){ removeParlayLeg(idx); });
-      parlayLegsList.appendChild(rmBtn);
-    });
-
-    var combinedMultiplier = 1;
-    var validCount = 0;
-    parlayLegs.forEach(function(leg){
-      var pm = payoutMultiplier(leg.odds);
-      if(pm != null){ combinedMultiplier *= pm; validCount++; }
-    });
-
-    var stake = parseFloat(pStake.value);
-    var hasStake = isFinite(stake) && stake > 0;
-    var combinedAmerican = combinedMultiplier >= 2
-      ? (combinedMultiplier - 1) * 100
-      : -100 / (combinedMultiplier - 1);
-
-    var html = "";
-    html += '<div class="stat-row"><span class="muted">Legs</span><span class="v tabular">' + validCount + '</span></div>';
-    html += '<div class="stat-row"><span class="muted">Combined odds (naive)</span><span class="v tabular">' + fmtOdds(combinedAmerican) + '</span></div>';
-    html += '<div class="stat-row"><span class="muted">Payout multiplier</span><span class="v tabular">' + combinedMultiplier.toFixed(2) + '&times;</span></div>';
-    if(hasStake){
-      var payout = stake * combinedMultiplier;
-      var profit = payout - stake;
-      html += '<div class="stat-row"><span class="muted">Stake</span><span class="v tabular">$' + stake.toFixed(2) + '</span></div>';
-      html += '<div class="stat-row"><span class="muted">Payout if every leg hits</span><span class="v tabular">$' + payout.toFixed(2) + '</span></div>';
-      html += '<div class="stat-row"><span class="muted">Profit</span><span class="v tabular">$' + profit.toFixed(2) + '</span></div>';
-    }
-    parlaySummary.innerHTML = html;
-
-    if(parlayLegs.some(function(l){ return l.kind === "prop"; })){
-      var pn = el("div", "faint");
-      pn.style.marginTop = "10px";
-      pn.textContent = "Prop legs use Kalshi's price (fee included). Kalshi doesn't sell these as one parlay, and sportsbooks price player-prop parlays differently, so treat the combined odds as a guide and check your book's real price.";
-      parlaySummary.appendChild(pn);
-    }
-    if(hasCorrelated){
-      var warn = el("div", "faint");
-      warn.style.marginTop = "12px";
-      warn.style.color = "var(--bad)";
-      warn.textContent = "Two or more legs share the same game -- books price correlated same-game parlays worse than this naive multiplication, because the legs aren't independent. Treat this payout as an upper bound, not the real price a book would give you.";
-      parlaySummary.appendChild(warn);
-    }
+    if(window.devigCanTrack && !window.devigCanTrack()) return;
+    var mm = slipMath(parlayLegs), id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    tracked.parlays = tracked.parlays && typeof tracked.parlays === "object" ? tracked.parlays : {};
+    tracked.parlays[id] = {at: new Date().toISOString(), stake: slipStake, odds: mm.american, legs: parlayLegs.slice(0, 15)};
+    saveTracked();
+    parlayLegs = []; saveSlip(); closeSlip(); refreshSlipMarks();
+    slipToast("Tracked: see Parlay → Tracked parlays");
+    renderTrackedParlays();
   }
-
-  pStake.addEventListener("input", renderParlay);
-
-  document.getElementById("addLegBtn").addEventListener("click", function(){
-    var desc = document.getElementById("p-desc").value.trim();
-    var odds = parseFloat(document.getElementById("p-odds").value);
-    var book = document.getElementById("p-book").value.trim();
-    var game = document.getElementById("p-game").value.trim();
-    if(!isFinite(odds) || odds === 0) return;
-    addParlayLeg({desc: desc, odds: odds, book: book, game: game});
-    document.getElementById("p-desc").value = "";
-    document.getElementById("p-odds").value = "";
-    document.getElementById("p-book").value = "";
-    document.getElementById("p-game").value = "";
-  });
-
-  // ---------- parlay: pull a leg in from saved history (any book) ----------
-  var historyPickerWrap = document.getElementById("historyPickerWrap");
-  var historyPickerOpen = false;
-  var historyEnsured = false;
-
-  async function ensureHistoryLoaded(){
-    if(historyEnsured) return;
-    historyEnsured = true;
-    if(!dbApi) return;
-    try{
-      var snap = await dbApi.collection("scans").orderBy("savedAt", "desc").limit(50).get();
-      lastSavedEntries = snap.docs.map(function(d){ return d.data(); });
-    }catch(e){ /* leave lastSavedEntries as whatever was already loaded */ }
-  }
-
-  function renderHistoryPicker(){
-    historyPickerWrap.innerHTML = "";
-    if(!dbApi){
-      historyPickerWrap.innerHTML = '<div class="faint">History isn\'t available in this view.</div>';
-      return;
+  // One pick's state from the live data the app already has: won / lost / push / live / pending / unknown.
+  function legState(l){
+    if(!l.mk || !l.away || !l.home) return {st: "unknown"};
+    var g = homeDocs.filter(function(x){ return l.gkey && gameKey(x) === l.gkey; })[0] ||
+      {sport: l.sport, away_team: l.away, home_team: l.home, kickoff_time: l.kickoff};
+    var lg = liveFor(g);
+    if(!lg || lg.state === "pre" || lg.away_score == null || lg.home_score == null) return {st: "pending"};
+    var a = Number(lg.away_score), hs = Number(lg.home_score), fin = lg.state === "post", score = l.away + " " + a + " – " + l.home + " " + hs;
+    if(l.mk === "prop"){
+      var cur = boxStat(lg, l.player, l.stat), ps = propLiveState(l.side, Number(l.line), cur, lg.state);
+      return {st: ps.status === "won" || ps.status === "lost" ? ps.status : (fin ? "pending" : "live"), note: cur != null ? "now " + cur : score};
     }
-    if(!lastSavedEntries.length){
-      historyPickerWrap.innerHTML = '<div class="faint">Nothing saved yet -- scan and save a line first.</div>';
-      return;
-    }
-    lastSavedEntries.forEach(function(data){
-      var game = (data.matchup && (data.matchup.away || data.matchup.home))
-        ? (data.matchup.away||"?") + " @ " + (data.matchup.home||"?") : "";
-      (data.lines || []).forEach(function(line){
-        var pointTxt = (line.point !== null && line.point !== undefined && line.point !== "") ? " " + line.point : "";
-        var desc = (line.side || line.market || "line") + pointTxt;
-        var item = el("div", "history-item");
-        item.innerHTML = '<div><div style="font-weight:600">'+escapeHtml(desc)+(game?' <span class="faint">('+escapeHtml(game)+')</span>':'')+'</div>' +
-          '<div class="meta">'+escapeHtml(data.book||"unlisted book")+'</div></div>' +
-          '<div class="odds tabular">'+fmtOdds(line.odds)+'</div>';
-        item.addEventListener("click", function(){
-          addParlayLeg({desc: desc, odds: line.odds, book: data.book || "", game: game});
-        });
-        historyPickerWrap.appendChild(item);
-      });
-    });
+    var x;
+    if(l.mk === "ml") x = l.side === "home" ? hs - a : a - hs;
+    else if(l.mk === "spread") x = (l.side === "home" ? hs - a : a - hs) + Number(l.point);
+    else if(l.mk === "total") x = l.side === "over" ? a + hs - Number(l.point) : Number(l.point) - (a + hs);
+    else return {st: "unknown"};
+    if(!fin) return {st: "live", note: score + " · " + (lg.detail || "live"), ahead: x > 0};
+    return {st: x > 0 ? "won" : x < 0 ? "lost" : "push", note: score};
   }
-
-  document.getElementById("pickFromHistoryBtn").addEventListener("click", async function(){
-    historyPickerOpen = !historyPickerOpen;
-    if(!historyPickerOpen){ historyPickerWrap.innerHTML = ""; return; }
-    historyPickerWrap.innerHTML = '<div class="faint">Loading saved lines…</div>';
-    await ensureHistoryLoaded();
-    renderHistoryPicker();
-  });
-
-  // ---------- pick legs from the app's own games ----------
-  var gamesPickerWrap = document.getElementById("gamesPickerWrap");
-  var gamesPickerOpen = false, gamesPickerSport = "ALL";
-  function legChip(tag){
-    if(/^model's (ML|spread) pick/.test(tag)) return ['model pick', 'good'];
-    if(/SKIPPED/.test(tag)) return ['skip -- player out', 'bad'];
-    if(/live test -- HIGH/.test(tag)) return ['high', 'neutral'];
-    if(/live test -- MEDIUM/.test(tag)) return ['medium', 'neutral'];
-    if(/LOW confidence|live test/.test(tag)) return ['low', 'neutral'];
-    if(/no demonstrated edge/.test(tag)) return ['no edge', 'neutral'];
-    var pm = /^player prop -- (Big gap|Gap) vs Kalshi/.exec(tag);
-    if(pm) return ['prop · ' + pm[1].toLowerCase(), 'neutral'];
-    return null;
-  }
-  function renderGamesPicker(){
-    gamesPickerWrap.innerHTML = "";
-    var all = gatherParlayCandidates();
-    var sports = {};
-    all.forEach(function(c){ var m = /\(([^()]+)\)\s*$/.exec(c.game || ""); c.sport = m ? m[1] : "NFL"; sports[c.sport] = true; });
-    var pills = el("div", "chips");
-    pills.style.margin = "4px 0 8px";
-    ["ALL"].concat(Object.keys(sports).sort(function(a, b){ return historySportRank(a) - historySportRank(b); })).forEach(function(sp){
-      var b = el("button", "pill-tab" + (sp === gamesPickerSport ? " active" : ""), sp === "ALL" ? "All sports" : sp);
-      b.type = "button";
-      b.addEventListener("click", function(){ gamesPickerSport = sp; renderGamesPicker(); });
-      pills.appendChild(b);
-    });
-    gamesPickerWrap.appendChild(pills);
-    var list = all.filter(function(c){ return gamesPickerSport === "ALL" || c.sport === gamesPickerSport; });
+  var LEG_MARK = {won: ["✓", "tp-won"], lost: ["✕", "tp-lost"], push: ["↺", ""], live: ["●", "tp-live"], pending: ["○", "faint"], unknown: ["?", "faint"]};
+  function renderTrackedParlays(){
+    var box = document.getElementById("trackedParlays");
+    if(!box) return;
+    var list = trackedParlays();
     if(!list.length){
-      gamesPickerWrap.appendChild(el("div", "faint", "No games with synced odds on the board right now."));
+      box.innerHTML = '<div class="empty"><div class="icon">🎟</div>No tracked parlays yet.<br><span class="faint">Tap odds on Home to build a slip, then Track it.</span></div>';
       return;
     }
-    var byGame = {}, order = [];
-    list.forEach(function(c){ var k = c.gkey || c.game; if(!byGame[k]){ byGame[k] = []; order.push(k); } byGame[k].push(c); });
-    order.sort(function(a, b){
-      var ka = byGame[a][0].kick ? new Date(byGame[a][0].kick).getTime() : Infinity, kb = byGame[b][0].kick ? new Date(byGame[b][0].kick).getTime() : Infinity;
-      return ka - kb;
-    });
-    order.forEach(function(k){
-      var legs = byGame[k], first = legs[0];
-      var box = el("div", null);
-      box.style.cssText = "border-top:1px solid var(--line); padding:8px 0";
-      box.appendChild(el("div", null, '<div style="font-weight:700">' + escapeHtml(first.game) + '</div><div class="faint">' + escapeHtml(lsWhen(first.kick)) + '</div>'));
-      legs.forEach(function(c){
-        var chip = legChip(c.tag || "");
-        var inTicket = parlayLegs.some(function(l){ return l.desc === c.desc && l.game === c.game; });
-        var item = el("button", "pick-row");
-        item.type = "button";
-        item.innerHTML = '<div style="min-width:0"><div style="font-weight:600">' + escapeHtml(c.desc) +
-          (chip ? ' <span class="pill ' + chip[1] + '">' + escapeHtml(chip[0]) + '</span>' : '') + '</div>' +
-          '<div class="meta">' + escapeHtml([c.book, inTicket ? "added to your parlay" : ""].filter(Boolean).join(" · ")) + '</div></div>' +
-          '<div class="odds tabular" style="font-weight:700">' + fmtOdds(c.odds) + '</div>';
-        item.addEventListener("click", function(){
-          if(parlayLegs.some(function(l){ return l.desc === c.desc && l.game === c.game; })) return;
-          addParlayLeg({desc: c.desc, odds: c.odds, book: c.book, game: c.game, when: lsWhen(c.kick), kind: c.kind, model: c.model, tier: c.tier});
-          renderGamesPicker();
-        });
-        box.appendChild(item);
-      });
-      gamesPickerWrap.appendChild(box);
-    });
-    gamesPickerWrap.appendChild(el("div", "faint", "Tap a line to add it. Two legs from the same game get flagged, since books price those lower."));
+    box.innerHTML = list.slice(0, 30).map(function(p){
+      var states = p.legs.map(legState), counted = [], mult = 1;
+      p.legs.forEach(function(l, i){ if(states[i].st !== "push"){ counted.push(l); var pm = payoutMultiplier(l.odds); if(pm != null) mult *= pm; } });
+      var lost = states.some(function(s){ return s.st === "lost"; }), allDone = states.every(function(s){ return s.st === "won" || s.st === "push"; });
+      var live = states.some(function(s){ return s.st === "live"; });
+      var status = lost ? ["Lost", "tp-lost"] : allDone ? ["Won", "tp-won"] : live ? ["Live", "tp-live"] : ["Pending", "faint"];
+      var stake = Number(p.stake) || 0, wonCount = states.filter(function(s){ return s.st === "won"; }).length;
+      var when = p.at ? new Date(p.at).toLocaleDateString([], {month: "short", day: "numeric"}) : "";
+      return '<div class="tp-card"><div class="tp-top"><div><b>' + p.legs.length + '-pick ' + (p.legs.length > 1 ? 'parlay' : 'bet') + '</b> <span class="faint">' +
+        escapeHtml(fmtOdds(p.odds)) + ' · ' + escapeHtml(when) + '</span><div class="faint" style="font-size:12.5px">$' + stake.toFixed(2) +
+        (lost ? ' lost' : ' pays $' + (stake * mult).toFixed(2)) + ' · ' + wonCount + ' of ' + p.legs.length + ' won</div></div>' +
+        '<div style="display:flex; align-items:center; gap:4px"><b class="' + status[1] + '">' + status[0] + '</b>' +
+        '<button type="button" class="tp-rm" data-tp-rm="' + escapeHtml(p.id) + '" aria-label="Stop tracking this parlay">✕</button></div></div>' +
+        p.legs.map(function(l, i){
+          var s = states[i], mk = LEG_MARK[s.st] || LEG_MARK.unknown;
+          return '<div class="tp-leg"><span class="st ' + mk[1] + '" aria-label="' + s.st + '">' + mk[0] + '</span><span class="d">' + escapeHtml(l.desc || "") +
+            '<br><span class="faint" style="font-size:12px">' + escapeHtml(s.note || [l.game, l.when].filter(Boolean).join(" · ")) + '</span></span>' +
+            '<span class="o">' + escapeHtml(fmtOdds(l.odds)) + '</span></div>';
+        }).join("") + '</div>';
+    }).join("") + '<div class="faint" style="margin-top:8px">Graded from the final score (props from the box score) as soon as the app has it. Pushes drop out of the payout, like at a book.</div>';
   }
-  document.getElementById("pickFromGamesBtn").addEventListener("click", function(){
-    gamesPickerOpen = !gamesPickerOpen;
-    this.textContent = gamesPickerOpen ? "Hide the game list" : "+ Pick legs from the app's games";
-    if(!gamesPickerOpen){ gamesPickerWrap.innerHTML = ""; return; }
-    renderGamesPicker();
+  document.getElementById("trackedParlays").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest("[data-tp-rm]");
+    if(!b || !confirm("Stop tracking this parlay?")) return;
+    var id = b.getAttribute("data-tp-rm");
+    if(tracked.parlays && tracked.parlays[id]) tracked.parlays[id] = {removed: Date.now()};
+    saveTracked(); renderTrackedParlays();
   });
+  renderSlipBar();
 
   // ---------- best parlay: the model's most confident fairly-priced picks, one per game ----------
   var bpSport = "ALL";
@@ -4648,11 +4661,9 @@
         pg.legs.forEach(function(x){
           var desc = x.team + " to win";
           if(parlayLegs.some(function(l){ return l.desc === desc && l.game === x.game; })) return;
-          addParlayLeg({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)});
+          addParlayLeg(Object.assign({desc: desc, odds: x.odds, book: (x.g.market || {}).book || "", game: x.game, when: lsWhen(x.g.kickoff_time), kind: "ml", model: Math.round(x.p * 100)}, {mk: "ml", side: x.team === x.g.home_team ? "home" : "away"}, legMeta(x.g)));
         });
-        var ps = document.getElementById("p-stake");
-        if(ps && !ps.value) ps.value = String(bpStake());
-        parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+        slipStake = bpStake(); saveSlip(); openSlip();
       });
     });
   }
@@ -4691,7 +4702,7 @@
         if(d.action === "SKIP" && mm.winner_side === team) return; // model pick on a team whose QB is out
         var dec = payoutMultiplier(odds);
         out.push({team: team, odds: odds, dec: dec, fair: fair, value: fair * dec, game: gameLabel, sport: sp,
-          book: m.book || "", modelPick: d.action === "ML" && mm.winner_side === team, kick: g.kickoff_time || null});
+          book: m.book || "", modelPick: d.action === "ML" && mm.winner_side === team, kick: g.kickoff_time || null, g: g});
       });
     });
     out.sort(function(a, b){ return b.value - a.value; });
@@ -4714,7 +4725,7 @@
             if(!(cost >= 0.15 && cost <= 0.85)) return;   // skip near-sure and near-hopeless lines (they only pad the ticket)
             var dec = 1 / cost, leg = propLeg(r, x[0], priceAmerican(cost), "Kalshi", g, null);
             propPool.push({team: leg.desc, odds: leg.odds, dec: dec, fair: x[2], value: x[2] * dec, game: gameLabel, sport: sp,
-              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true});
+              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true, leg: leg});
           });
         });
       });
@@ -4793,13 +4804,15 @@
       '<div class="stat-row"><span class="muted">Book\'s edge on this ticket</span><span class="v tabular">' + (edge * 100).toFixed(1) + '%</span></div>' +
       '<div class="stat-row"><span class="muted">Average cost per ticket</span><span class="v tabular">$' + Math.max(0, stake * edge).toFixed(2) + '</span></div>';
     card.innerHTML = html;
-    var btn = el("button", "secondary", "Load into parlay below");
+    var btn = el("button", "secondary", "Add to my slip");
     btn.style.marginTop = "8px";
     btn.addEventListener("click", function(){
-      legsByTime.forEach(function(l){ addParlayLeg({desc: l.prop ? l.team : l.team + " ML", odds: l.odds, book: l.book, game: l.game, when: lsWhen(l.kick), kind: l.prop ? "prop" : undefined}); });
-      pStake.value = String(stake);
-      renderParlay();
-      parlayLegsCard.scrollIntoView({behavior: "smooth", block: "start"});
+      legsByTime.forEach(function(l){
+        if(l.prop && l.leg) return addParlayLeg(Object.assign({}, l.leg));
+        addParlayLeg(Object.assign({desc: l.team + " ML", odds: l.odds, book: l.book, game: l.game, when: lsWhen(l.kick)},
+          l.g ? Object.assign({mk: "ml", side: l.team === l.g.home_team ? "home" : "away"}, legMeta(l.g)) : {}));
+      });
+      slipStake = stake; saveSlip(); openSlip();
     });
     card.appendChild(btn);
     return card;
@@ -4921,108 +4934,6 @@
     return candidates;
   }
 
-  document.getElementById("aiParlayBtn").addEventListener("click", async function(){
-    var statusEl = document.getElementById("aiParlayStatus");
-    var reasonEl = document.getElementById("aiParlayReasoning");
-    reasonEl.innerHTML = "";
-    if(!sampleApi){
-      statusEl.textContent = "Asking DeVig.AI isn't available in this view.";
-      statusEl.className = "status err";
-      return;
-    }
-    await ensureHistoryLoaded();
-    var candidates = gatherParlayCandidates();
-    if(!candidates.length){
-      statusEl.textContent = "No games with synced odds on the board right now -- wait for the next sync.";
-      statusEl.className = "status err";
-      return;
-    }
-
-    statusEl.textContent = "Asking DeVig.AI…";
-    statusEl.className = "status";
-
-    var sportsPresent = {};
-    candidates.forEach(function(c){
-      var m = /\(([^()]+)\)\s*$/.exec(c.game || "");
-      if(m) sportsPresent[m[1]] = true;
-    });
-    var sportsPresentList = Object.keys(sportsPresent).sort(function(a, b){
-      return historySportRank(a) - historySportRank(b);
-    });
-
-    var listForPrompt = candidates.map(function(c, i){
-      return i + ": " + c.desc + " (" + fmtOdds(c.odds) + ") -- " + c.game + " [" + c.tag + "]";
-    }).join("\n");
-    var prompt = "You are choosing which of the following candidate bets to combine into ONE parlay, for a personal " +
-      "betting app that is deliberately honest about not overselling itself.\n\n" +
-      "Candidates (index: description (American odds) -- game [tag]):\n" + listForPrompt + "\n\n" +
-      "Rules:\n" +
-      "1. Strongly prefer candidates tagged \"model's ML pick\" or \"model's spread pick -- real signal\" over " +
-      "anything else -- both mean this project's own testing validated real predictive accuracy for that " +
-      "confidence tier (ML, each sport's own validated tiers: NFL ~77%/~71% vs a 66% baseline, MLB 61.1%/58.9% vs 55.9%, " +
-      "NBA 77.7%/71.7% vs 63.5%, none benchmarked against real market prices; MLB spread: high " +
-      "confidence 70.51%, moderate 67.64%, against a 63.54% baseline -- note the MLB spread number is NOT " +
-      "benchmarked against a real market price, only against the model's own held-out accuracy, so mention that " +
-      "distinction if you pick one). Never choose a candidate tagged 'no demonstrated edge' or 'no model " +
-      "agreement' unless there are fewer than 2 validated-pick candidates available and you say so plainly in " +
-      "your reasoning.\n" +
-      "1b. Next best are the NFL live-test legs: \"weather O/U live test\" and \"key-number spread live test\". Use " +
-      "HIGH confidence ones freely as legs, MEDIUM only if needed, and NEVER LOW confidence or \"NO PICK\" ones. Avoid " +
-      "longshot legs (odds +200 or longer) unless the user is clearly after a big payout.\n" +
-      "1c. Candidates tagged \"player prop\" are player props where the app's prop model disagrees with Kalshi's price " +
-      "(\"Big gap\" = model 10+ points above what the odds need, \"Gap\" = 5-10). The labels measure disagreement, not " +
-      "confidence: so far the big gaps have won about as often as their price needed. They are UNPROVEN: a paper test is running and " +
-      "a big gap can mean the market knows something the model can't see (injury, role change). You may use them, " +
-      "preferring Big gap over Gap, at most 2 props per parlay, and say they are priced on Kalshi, not at a sportsbook. " +
-      "Prefer validated ML picks over props when both are available.\n" +
-      "2. Never include two candidates from the same game -- the game name is the text right after \"--\" and before " +
-      "the bracketed tag (e.g. \"CIN @ ATL (MLB)\"); it always names the sport in parentheses too, since the same " +
-      "team code can mean a different team in a different sport (e.g. \"SF\" is the 49ers in NFL and the Giants in " +
-      "MLB) -- treat two candidates as the same game only when that exact game text, sport included, matches.\n" +
-      "3. This candidate list spans every sport currently synced (" + (sportsPresentList.join(", ") || "none") + "), " +
-      "not just one -- do not default to a single sport out of habit. Judge every candidate on its own tag and odds " +
-      "regardless of which sport it's from, and if strong (validated-pick-tagged) candidates exist in more than one " +
-      "sport, prefer building a parlay that draws from more than one over stacking legs from just one, all else " +
-      "being equal. Never include a weaker candidate from one sport just to force sport variety, though -- rule 1 " +
-      "(prefer validated picks) still comes first.\n" +
-      "4. Choose between 2 and 4 legs total, fewer if there simply aren't enough good candidates -- do not pad with " +
-      "weak picks just to hit a number.\n" +
-      "5. Reply with ONLY JSON of this exact shape: {\"chosen_indices\": [integers, indices from the list above], " +
-      "\"reasoning\": \"2-4 honest sentences: why these, what you skipped and why, and a plain reminder that " +
-      "combining picks multiplies risk even when each one is individually reasonable\"}.\n" +
-      "Do not invent new bets, odds, or descriptions -- choose only from the given indices.";
-
-    try{
-      var data = await sampleApi.json(prompt, {modelTier: "default"});
-      var idxs = Array.isArray(data && data.chosen_indices) ? data.chosen_indices : [];
-      var seen = {}, added = 0;
-      idxs.forEach(function(i){
-        var c = candidates[i];
-        if(!c) return;
-        var gkey = (c.game || "").toLowerCase();
-        if(gkey && seen[gkey]) return; // enforce no-same-game even if the reply slipped
-        if(gkey) seen[gkey] = true;
-        addParlayLeg({desc: c.desc, odds: c.odds, book: c.book, game: c.game, kind: c.kind, model: c.model, tier: c.tier});
-        added++;
-      });
-      statusEl.textContent = "";
-      if(added === 0){
-        statusEl.textContent = "DeVig.AI didn't return any usable picks -- try again, or add legs yourself.";
-        statusEl.className = "status err";
-        return;
-      }
-      var card = el("div", "card");
-      card.appendChild(el("h3", null, "Why these"));
-      card.appendChild(el("div", "muted", escapeHtml(data.reasoning || "")));
-      reasonEl.appendChild(card);
-    }catch(e){
-      statusEl.className = "status err";
-      if(e && e.code === "not_granted") statusEl.textContent = "You'll need to allow DeVig.AI access to use this.";
-      else if(e && e.code === "invalid_json") statusEl.textContent = "Got back something that wasn't usable -- try again.";
-      else if(e && e.code === "rate_limited") statusEl.textContent = "Too many requests right now -- wait a moment and try again.";
-      else statusEl.textContent = "Something went wrong asking DeVig.AI. You can try again or add legs yourself.";
-    }
-  });
 
   // ---------- Ask tab: chat about the synced picks ----------
   // Claude sees ONLY what this function packs up from the synced data, plus
