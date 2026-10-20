@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-20T06:12:26Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-20T06:16:01Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 
@@ -33,12 +33,12 @@ _Generated 2026-10-20T06:12:26Z by research/lab/report.py after each run. **Expl
 - Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).
 
-## What the search learned (132,035 configurations, 2006–2016 only)
+## What the search learned (133,486 configurations, 2006–2016 only)
 
-- spread · elo · `k`: best 30 (median t +0.78), worst 6 (-0.24) over 124945 configurations
-- spread · elo · `market_resist`: best 1.5039 (median t +0.54), worst 0.0 (+0.06) over 124945 configurations
-- spread · elo · `mov`: best nfelo (median t +0.66), worst none (-0.12) over 124945 configurations
-- spread · elo · `revert`: best 0.2 (median t +0.85), worst 0.7 (-0.22) over 124945 configurations
+- spread · elo · `k`: best 30 (median t +0.78), worst 6 (-0.25) over 126396 configurations
+- spread · elo · `market_resist`: best 1.5039 (median t +0.53), worst 0.0 (+0.05) over 126396 configurations
+- spread · elo · `mov`: best nfelo (median t +0.66), worst none (-0.12) over 126396 configurations
+- spread · elo · `revert`: best 0.2 (median t +0.85), worst 0.7 (-0.23) over 126396 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.5, 'hfa_pts': 2.0, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (median t +2.55), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.63) over 92 configurations
 - spread · signals · `signals`: best [{'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'field': 'rest_diff', 'id': 'rest-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Extra days of rest help recovery and preparation.'}] (median t +2.00), worst [{'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-success', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Success rate allowed: how often a defense lets opponents stay on schedule.', 'side': 'defense'}, {'field': 'div_game', 'id': 'div-game', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Division rivals know each other well, which may narrow the home edge.'}] (+1.25) over 92 configurations
 - spread · srs · `carry`: best 0.8 (median t +1.87), worst 0.2 (+1.48) over 1920 configurations
