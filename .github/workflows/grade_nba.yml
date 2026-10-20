@@ -67,12 +67,18 @@ jobs:
         working-directory: nba
         run: python3 nba_live_tracker_lock.py --odds live/NBA_ODDS_LIVE.csv
 
+      - name: Export the app's NBA games (locked picks and results)
+        if: always()
+        working-directory: nba
+        run: python3 export_lineboard_nba.py
+
       - name: Commit and push if the database changed
         if: always()           # keep any grading/locking that succeeded even if a later step failed
         run: |
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           git add nba/NBA_PROSPECTIVE_TRACKER_V1.sqlite3
+          if [ -f nba/lineboard_export.json ]; then git add nba/lineboard_export.json; fi
           git diff --cached --quiet || git commit -m "NBA automated run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           # another bot may have pushed since checkout: rebase onto it and retry. A conflict aborts the rebase and fails the
           # step (never a half-rebased push); the step only passes once the results are on main.
