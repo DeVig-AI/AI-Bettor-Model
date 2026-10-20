@@ -142,9 +142,11 @@ def lessons(cands, res, v):
             kind, word = "no_effect", "no consistent effect"
         txt = (f"{c['name']} {vs}: {word} ({' / '.join(f'{x:+.2f}' for x in d)} pts in "
                f"{' / '.join(names)}).")
-        out.append({"text": txt, "kind": kind, "candidates": [cid]})
+        # when this lesson was learned: the later of the two runs it compares
+        at = max([x for x in (r.get("ran_at"), (res.get(par) or {}).get("ran_at") if par else None) if x] or [None])
+        out.append({"text": txt, "kind": kind, "candidates": [cid], "at": at})
     order = {"helped": 0, "faded": 1, "no_effect": 2}
-    return sorted(out, key=lambda x: order[x["kind"]])
+    return sorted(out, key=lambda x: (order[x["kind"]], "" if not x["at"] else "~" + x["at"]), reverse=False)
 
 
 MAX_RUNS = 10

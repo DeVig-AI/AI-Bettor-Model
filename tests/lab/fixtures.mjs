@@ -52,8 +52,8 @@ export const STATUS = {
     {id: "f1", name: "Failed one", market: "total", state: "failed"},
     {id: "q1", name: "Queued one", market: "props", state: "queued"},
   ],
-  lessons: [{text: "Starting-QB changes added signal in all three eras.", kind: "helped", candidates: ["qb-adj"]},
-            {text: "Rest days helped in 2016–18, then vanished.", kind: "faded", candidates: ["rest"]},
+  lessons: [{text: "Starting-QB changes added signal in all three eras.", kind: "helped", candidates: ["qb-adj"], at: iso(30 * 60e3)},
+            {text: "Rest days helped in 2016–18, then vanished.", kind: "faded", candidates: ["rest"], at: iso(26 * 3600e3)},
             {text: "Margin-of-victory weighting changed nothing.", kind: "no_effect", candidates: []}],
   runs: [
     {kind: "lab", name: "Research Lab #12", started_at: iso(40 * 60e3), finished_at: iso(40 * 60e3 - 11e3), duration_s: 11,
