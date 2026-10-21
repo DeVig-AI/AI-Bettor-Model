@@ -28,4 +28,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add nfl/props_history
           git diff --cached --quiet || git commit -m "Kalshi props history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase -q && git push
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1
