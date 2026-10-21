@@ -44,6 +44,28 @@ raw_samples = {}
 T0 = time.time()
 
 
+def anytime(m):
+    """Before about February 2026 Kalshi worded the 1+ goal market "Name: Anytime Goalscorer" (structured,
+    floor_strike 0.5): the same Over 0.5 goals market as the later "Name: 1+ goals". Returns the player or None."""
+    t = str(m.get("title") or "")
+    try:
+        ok = m.get("strike_type") == "structured" and abs(float(m.get("floor_strike")) - 0.5) < 1e-9
+    except (TypeError, ValueError):
+        ok = False
+    if ok and t.lower().endswith(": anytime goalscorer"):
+        return t[: -len(": anytime goalscorer")].strip()
+    return None
+
+
+def label_line(m, series):
+    """(player, Over line, wording) for an "N+" market, or an old "Anytime Goalscorer" goals market as 1+ goals."""
+    if K.is_over_market(m):
+        return K.label(m)[0], K.line_of(m), "N+"
+    if series == "KXNHLGOAL" and anytime(m):
+        return anytime(m), 0.5, "anytime"
+    return None, None, None
+
+
 def settled_events(series):
     seen = set()
     cursor = None
@@ -157,7 +179,7 @@ def main():
             if g["game_type"] not in GAME_TYPES:
                 stats["not_nhl_game_type"] += 1; done.add(et); continue
             all_ms, src = markets_for_event(ev)
-            ms = [m for m in all_ms if K.is_over_market(m)]
+            ms = [m for m in all_ms if label_line(m, series)[0]]
             if not ms:
                 stats["no_markets"] += 1; K.log.append(f"no markets {et}"); continue
             stats["markets_from"][src] = stats["markets_from"].get(src, 0) + 1
@@ -170,9 +192,11 @@ def main():
             w = writer(g["date"][:7])
             n_written = 0
             for m in ms:
-                player, line = K.label(m)[0], K.line_of(m)
+                player, line, wording = label_line(m, series)
                 if not player or line is None:
                     continue
+                if wording == "anytime":
+                    stats["anytime_goalscorer_markets"] = stats.get("anytime_goalscorer_markets", 0) + 1
                 best = None
                 for c in cs.get(m["ticker"]) or []:
                     end = c.get("end_period_ts")
