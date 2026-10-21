@@ -1,8 +1,8 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-21T00:51:16Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-21T00:57:27Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-4694 configurations scored so far.
+4699 configurations scored so far.
 
 ## Spread -- top 25 of 4062
 
@@ -34,7 +34,7 @@ _Generated 2026-10-21T00:51:16Z by research/lab/search.py. Scores are on the sea
 | 24 | `s-9bbc454e` | Blend of 3: s-f6daf271 + s-a7145f73 + s-8e51930a | +0.57 | 1.32 | +1.01 | +1.21 | -0.51 |
 | 25 | `s-8c0631d8` | Blend of 10: s-f6daf271 + s-a7145f73 + s-1820246c + s-325971d0 + s-e7f7a4ef + s-8e51930a + s-e7be1359 + s-370124f1 + s-4dbfc84f + s-d40c8095 | +0.56 | 1.32 | +0.87 | +1.18 | -0.35 |
 
-## Total -- top 25 of 632
+## Total -- top 25 of 637
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -83,7 +83,7 @@ _Generated 2026-10-21T00:51:16Z by research/lab/search.py. Scores are on the sea
 - total · pace_eff · `halflife`: best 14 (median t +0.48), worst 2 (-0.33) over 224 configurations
 - total · pace_eff · `pace`: best True (median t +0.55), worst False (-0.09) over 224 configurations
 - total · pace_eff · `season_carry`: best 0.5 (median t +0.53), worst 0.2 (-0.25) over 224 configurations
-- total · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (median t +0.43), worst [{'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-points-per-play', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': 'Points per play (tempo-free scoring, as in public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.', 'side': 'offense'}] (-0.24) over 26 configurations
+- total · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense'}] (median t +0.43), worst [{'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'off-points-per-play', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': 'Points per play (tempo-free scoring, as in public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.', 'side': 'offense'}] (-0.24) over 31 configurations
 - total · team_rating · `halflife`: best 4 (median t +1.37), worst 8 (+0.58) over 163 configurations
 - total · team_rating · `metric`: best epa (median t +1.14), worst points (+0.16) over 163 configurations
 - total · team_rating · `pace`: best plays (median t +1.15), worst none (+0.51) over 163 configurations
