@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T01:06:34Z",
+ "updated_at": "2026-10-21T01:08:29Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2077,21 +2077,29 @@
  "runs": [
   {
    "kind": "search",
-   "name": "Search round 112 (NFL, running)",
-   "started_at": "2026-10-21T01:06:18Z",
-   "finished_at": null,
+   "name": "Search round 112",
+   "started_at": "2026-10-21T01:08:25Z",
+   "finished_at": "2026-10-21T01:08:25Z",
    "duration_s": null,
-   "run_number": 141,
+   "run_number": null,
    "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39525310692",
-   "summary": "0 of 607 models scored on 2006–2016",
+   "summary": "607 models scored → 22 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
      "label": "models scored",
+     "count": 607
+    },
+    {
+     "label": "consistent",
+     "count": 22
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
      "count": 0
     },
     {
-     "label": "planned this round",
-     "count": 607
+     "label": "sent to confirmation",
+     "count": 0
     }
    ],
    "steps": []
@@ -2360,7 +2368,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-21T01:06:44Z",
+   "updated_at": "2026-10-21T01:08:39Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
