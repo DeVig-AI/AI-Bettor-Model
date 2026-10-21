@@ -33,4 +33,5 @@ jobs:
           [ -f nfl/props_model_export.json ] && git add nfl/props_model_export.json
           [ -f nfl/PROPS_MODEL_V1_LOG.sqlite3 ] && git add nfl/PROPS_MODEL_V1_LOG.sqlite3
           git diff --cached --quiet || git commit -m "NFL props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase -q && git push
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1

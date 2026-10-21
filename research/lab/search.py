@@ -685,16 +685,19 @@ def main(argv=None):
 
 
 class Progress:
-    """Posts a running search round to /lab: once at the start, then at most every `every` seconds (status.json only
-    changes; the scores are written when the round ends). A failed push never stops the search."""
+    """Posts a running search round to /lab once it has run `every` seconds, then at most every `every` seconds
+    (status.json only changes; the scores are written when the round ends). Rounds shorter than that post nothing
+    here: back to back, a start post each minute or two only crowded main for the other bots. A failed push never
+    stops the search."""
 
     def __init__(self, every=600):
-        self.every, self.last, self.started = every, 0.0, L.now()
+        import time
+        self.every, self.last, self.started = every, time.time(), L.now()
 
     def __call__(self, n_round, done, planned):
         import time
         now = time.time()
-        if done and now - self.last < self.every:
+        if now - self.last < self.every:
             return
         self.last = now
         from . import report
