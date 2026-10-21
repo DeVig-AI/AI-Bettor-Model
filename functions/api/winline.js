@@ -40,7 +40,7 @@ export async function handle(request, fetcher = fetch) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
   const q = new URL(request.url).searchParams;
   const ticker = String(q.get("ticker") || "");
-  const m = /^(KX(?:NFL|NBA|MLB)GAME)-[A-Z0-9]{6,30}-[A-Z]{2,5}$/.exec(ticker);
+  const m = /^(KX(?:NFL|NBA|MLB|NCAAF)GAME)-[A-Z0-9]{6,30}-[A-Z]{2,6}$/.exec(ticker);
   if (!m) return json({error: "bad ticker"}, 400);
   const now = Math.floor(Date.now() / 1000);
   let start = parseInt(q.get("start"), 10);

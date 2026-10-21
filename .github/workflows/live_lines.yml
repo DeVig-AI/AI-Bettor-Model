@@ -1,0 +1,33 @@
+name: Live lines -- NBA, MLB and college football scores and win-chance graph (display only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '2-59/5 * * * *'   # quick no-op outside game windows; public data only, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: live-lines
+  cancel-in-progress: true
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build the live file (ESPN scores, Kalshi win-chance lines)
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: python3 tools/live_lines.py
+      - name: Save it
+        run: |
+          [ -f live/live_lines.json ] || exit 0
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add live/live_lines.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Live lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1

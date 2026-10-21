@@ -12,6 +12,7 @@
   // every: minutes between refreshes while the app is open (raw.githubusercontent.com caches up to ~5 minutes)
   var SOURCES = [
     {path: "nfl/live/props_live.json", every: 2, live: true},
+    {path: "live/live_lines.json", every: 2, live: "LIVE_LINES"},
     {path: "live/game_lines.json", every: 10, live: "GAME_LINES"},
     {path: "live/cfb_history.json", every: 15, live: "CFB_HISTORY"},
     {path: "nfl/live/props_results.json", every: 15, live: "PROPS_ARCHIVE"},
