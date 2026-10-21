@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T01:00:11Z",
+ "updated_at": "2026-10-21T01:00:42Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2368,7 +2368,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-21T01:00:19Z",
+   "updated_at": "2026-10-21T01:00:42Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -2402,6 +2402,23 @@
    "lessons": [],
    "promoted": [],
    "runs": [
+    {
+     "kind": "search",
+     "name": "Search paused: menu exhausted",
+     "started_at": "2026-10-21T01:00:41Z",
+     "finished_at": "2026-10-21T01:00:41Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": null,
+     "summary": "all 4,699 configurations on the menu scored; waiting for new menu values or signals",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 4699
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 114",
@@ -2642,35 +2659,6 @@
      "duration_s": null,
      "run_number": null,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39471697785",
-     "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 0
-      },
-      {
-       "label": "consistent",
-       "count": 0
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 105",
-     "started_at": "2026-10-20T17:16:41Z",
-     "finished_at": "2026-10-20T17:16:41Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39464037594",
      "summary": "0 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
