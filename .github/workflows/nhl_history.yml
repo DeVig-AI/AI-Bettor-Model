@@ -1,0 +1,47 @@
+name: NHL -- player box-score history (NHL public API, read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [nhl-props-v1]
+    paths: ['.github/workflows/nhl_history.yml']
+permissions:
+  contents: write
+concurrency:
+  group: nhl-history
+  cancel-in-progress: false
+env:
+  SAVE: |
+    git config user.name "sports-tracker-bot"
+    git config user.email "actions@users.noreply.github.com"
+    git add nhl/data
+    git diff --cached --quiet && exit 0
+    git commit -q -m "NHL box-score history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    for i in 1 2 3 4; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i * 5)); done
+    exit 1
+jobs:
+  collect1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Collect every NHL player box score since 2010-11 (no prices, no keys)
+        env: {MAX_MINUTES: '310'}
+        run: python3 nhl/nhl_boxscores_v1.py
+      - if: always()
+        run: bash -c "$SAVE"
+  collect2:
+    needs: collect1
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - env: {MAX_MINUTES: '310'}
+        run: python3 nhl/nhl_boxscores_v1.py
+      - if: always()
+        run: bash -c "$SAVE"
