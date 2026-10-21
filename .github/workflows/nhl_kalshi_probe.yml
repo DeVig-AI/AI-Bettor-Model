@@ -1,0 +1,26 @@
+name: NHL -- Kalshi prop wording probe (diagnostic, read-only, no prices)
+on:
+  workflow_dispatch:
+  push:
+    branches: [nhl-props-v1]
+    paths: ['.github/workflows/nhl_kalshi_probe.yml']
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python3 nhl/kalshi_props_history_probe_v1.py
+      - if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nhl/props_history/probe
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NHL Kalshi wording probe $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep 5; done
