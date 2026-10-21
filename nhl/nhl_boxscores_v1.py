@@ -164,6 +164,34 @@ def collect(start, pool, final):
     return have + new, len({r["game_id"] for r in new})
 
 
+def fill_names(pool):
+    """Every row gets the player's full name: from any season where his roster entry was read, else from his NHL API
+    player page. (Some team-roster requests fail during a big collection, which left names blank.)"""
+    seasons = sorted(int(os.path.basename(p)[13:17]) for p in os.listdir(OUT) if p.startswith("player_games_"))
+    data = {s: read_season(s) for s in seasons}
+    names = {}
+    for rows in data.values():
+        for r in rows:
+            if r.get("first_name") and r.get("last_name"):
+                names[str(r["player_id"])] = (r["first_name"], r["last_name"])
+    missing = sorted({str(r["player_id"]) for rows in data.values() for r in rows} - set(names))
+    for pid, d in zip(missing, pool.map(lambda pid: get(f"/player/{pid}/landing"), missing)):
+        if d:
+            names[pid] = ((d.get("firstName") or {}).get("default") or "", (d.get("lastName") or {}).get("default") or "")
+    fixed = 0
+    for s, rows in data.items():
+        changed = False
+        for r in rows:
+            if not (r.get("first_name") and r.get("last_name")) and str(r["player_id"]) in names:
+                r["first_name"], r["last_name"] = names[str(r["player_id"])]
+                changed, fixed = True, fixed + 1
+        if changed:
+            write_season(s, rows)
+    left = sum(1 for rows in data.values() for r in rows if not (r.get("first_name") and r.get("last_name")))
+    print(f"names: {fixed} rows filled ({len(missing)} players looked up); {left} rows still without a name", flush=True)
+    return {"filled_rows": fixed, "looked_up": len(missing), "still_missing_rows": left}
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     done = set(open(DONE).read().split()) if os.path.exists(DONE) else set()
@@ -186,6 +214,7 @@ def main():
                 done.add(str(start))
                 open(DONE, "w").write("\n".join(sorted(done)) + "\n")
             print(start, summary[start], flush=True)
+        summary["names"] = fill_names(pool)
     json.dump({"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "seasons": summary,
                "errors": log[:200]}, open(os.path.join(OUT, "collect_summary.json"), "w"), indent=1, default=str)
 
