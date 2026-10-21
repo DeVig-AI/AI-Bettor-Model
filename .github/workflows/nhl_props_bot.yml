@@ -1,0 +1,38 @@
+name: NHL props bot -- prices + model (paper only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */2 * * *'   # every 2 hours; public data only, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: nhl-props-bot
+  cancel-in-progress: false
+jobs:
+  props:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pandas numpy
+      - name: Refresh this season's NHL box scores (NHL public API)
+        env: {MAX_MINUTES: '20'}
+        run: python3 nhl/nhl_boxscores_v1.py
+        continue-on-error: true
+      - name: Pull NHL player-prop prices from Kalshi's public API
+        run: python3 nhl/nhl_props_exchanges_v1.py
+      - name: Score props with the frozen model, paper-lock, grade
+        continue-on-error: true
+        run: python3 nhl/nhl_props_model_v1_live.py
+      - name: Save the box scores, exports and the paper log
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nhl/data
+          for f in nhl/props_exchanges_export.json nhl/props_model_export.json nhl/NHL_PROPS_MODEL_V1_LOG.sqlite3; do [ -f "$f" ] && git add "$f"; done
+          git diff --cached --quiet || git commit -q -m "NHL props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1

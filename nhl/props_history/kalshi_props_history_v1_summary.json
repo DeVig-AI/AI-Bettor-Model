@@ -1,0 +1,321 @@
+{
+ "generated_at": "2026-10-21T17:24:39Z",
+ "stats": {
+  "events_seen": 193,
+  "events_done_now": 186,
+  "markets_written_now": 10505,
+  "no_candle": 102,
+  "no_game": 0,
+  "not_nhl_game_type": 0,
+  "after_cutoff": 6,
+  "no_markets": 0,
+  "markets_from": {
+   "/markets": 145,
+   "/historical/markets": 41
+  },
+  "candles_by_endpoint": {
+   "batch": 7908,
+   "historical": 2495
+  },
+  "minutes": 15.0,
+  "complete": false,
+  "events_done_total": 186
+ },
+ "errors": [],
+ "raw_candle_samples": {
+  "market_/markets": {
+   "can_close_early": true,
+   "close_time": "2026-10-21T01:58:44Z",
+   "created_time": "2026-10-20T11:05:37.813706Z",
+   "custom_strike": {
+    "hockey_player": "4644eeb3-9fe3-429c-b423-3365cf2d0c1d",
+    "hockey_team": "f61f9daa-407b-4c46-96e8-feee19cd6f51"
+   },
+   "early_close_condition": "This market will close and expire early if the event occurs.",
+   "event_ticker": "KXNHLGOAL-26OCT20TORCBJ",
+   "exchange_index": 0,
+   "expected_expiration_time": "2026-10-21T02:00:00Z",
+   "expiration_time": "2026-10-22T23:00:00Z",
+   "expiration_value": "0",
+   "floor_strike": 0.5,
+   "last_price_dollars": "0.0800",
+   "latest_expiration_time": "2026-10-22T23:00:00Z",
+   "market_type": "binary",
+   "no_ask_dollars": "1.0000",
+   "no_bid_dollars": "0.0000",
+   "no_sub_title": "Brandon Duhaime: 1+",
+   "notional_value_dollars": "1.0000",
+   "occurrence_datetime": "2026-10-21T02:00:00Z",
+   "open_interest_fp": "587.18",
+   "open_time": "2026-10-20T11:06:00Z",
+   "previous_price_dollars": "0.0000",
+   "previous_yes_ask_dollars": "0.0800",
+   "previous_yes_bid_dollars": "0.0400",
+   "price_level_structure": "linear_cent",
+   "price_ranges": [
+    {
+     "end": "1.0000",
+     "start": "0.0000",
+     "step": "0.0100"
+    }
+   ],
+   "primary_participant_key": "hockey_player",
+   "result": "no",
+   "rules_primary": "If Brandon Duhaime records 1+ goals in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals recorded.",
+   "settlement_bounds_type": "default",
+   "settlement_timer_seconds": 120,
+   "settlement_ts": "2026-10-21T02:01:46.7815Z",
+   "settlement_value_dollars": "0.0000",
+   "status": "finalized",
+   "strike_type": "greater",
+   "ticker": "KXNHLGOAL-26OCT20TORCBJ-TORBDUHAIME24-1",
+   "title": "Brandon Duhaime: 1+ goals",
+   "updated_time": "2026-10-21T02:01:47.149844Z",
+   "volume_24h_fp": "587.18",
+   "volume_fp": "587.18",
+   "yes_ask_dollars": "1.0000",
+   "yes_ask_size_fp": "0.00",
+   "yes_bid_dollars": "0.0000",
+   "yes_bid_size_fp": "0.00",
+   "yes_sub_title": "Brandon Duhaime: 1+"
+  },
+  "market_/historical/markets": {
+   "can_close_early": true,
+   "close_time": "2026-06-15T03:40:52Z",
+   "created_time": "2026-06-14T23:45:29.943129Z",
+   "custom_strike": {
+    "hockey_player": "360cf5b6-6c66-4455-bd59-4d412e600899",
+    "hockey_team": "d599b5cc-5e06-4679-9303-4d5dad7c4cce"
+   },
+   "early_close_condition": "This market will close and expire early if the event occurs.",
+   "event_ticker": "KXNHLGOAL-26JUN14CARVGK",
+   "exchange_index": 0,
+   "expected_expiration_time": "2026-06-15T03:00:00Z",
+   "expiration_time": "2026-06-29T00:00:00Z",
+   "expiration_value": "goal_count",
+   "floor_strike": 0.5,
+   "last_price_dollars": "0.0300",
+   "latest_expiration_time": "2026-06-29T00:00:00Z",
+   "market_type": "binary",
+   "no_ask_dollars": "1.0000",
+   "no_bid_dollars": "0.0000",
+   "no_sub_title": "Kaedan Korczak: 1+",
+   "notional_value_dollars": "1.0000",
+   "occurrence_datetime": "2026-06-15T03:00:00Z",
+   "open_interest_fp": "0.00",
+   "open_time": "2026-06-14T23:50:00Z",
+   "previous_price_dollars": "0.0300",
+   "previous_yes_ask_dollars": "1.0000",
+   "previous_yes_bid_dollars": "0.0000",
+   "price_level_structure": "linear_cent",
+   "price_ranges": [
+    {
+     "end": "1.0000",
+     "start": "0.0000",
+     "step": "0.0100"
+    }
+   ],
+   "primary_participant_key": "hockey_player",
+   "result": "no",
+   "rules_primary": "If Kaedan Korczak records at least 1+ goals in the CAR Hurricanes vs VGK Golden Knights professional hockey game originally scheduled for Jun 14, 2026, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the CAR Hurricanes vs VGK Golden Knights professional hockey game originally scheduled for Jun 14, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals recorded.",
+   "settlement_bounds_type": "default",
+   "settlement_timer_seconds": 300,
+   "settlement_ts": "2026-06-15T03:46:53.448027Z",
+   "settlement_value_dollars": "0.0000",
+   "status": "finalized",
+   "strike_type": "structured",
+   "ticker": "KXNHLGOAL-26JUN14CARVGK-VGKKKORCZAK6-1",
+   "title": "Kaedan Korczak: 1+ goals",
+   "updated_time": "2026-06-15T03:46:53.471936Z",
+   "volume_24h_fp": "0.00",
+   "volume_fp": "2.00",
+   "yes_ask_dollars": "1.0000",
+   "yes_ask_size_fp": "0.00",
+   "yes_bid_dollars": "0.0000",
+   "yes_bid_size_fp": "0.00",
+   "yes_sub_title": "Kaedan Korczak: 1+"
+  },
+  "historical": {
+   "candlesticks": [
+    {
+     "end_period_ts": 1781452800,
+     "open_interest": "5669.00",
+     "price": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "mean": "0.0400",
+      "open": "0.0400",
+      "previous": "0.0300"
+     },
+     "volume": "25.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781460000,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781463600,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781467200,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781470800,
+     "open_interest": "6669.00",
+     "price": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "mean": "0.0400",
+      "open": "0.0400",
+      "previous": "0.0400"
+     },
+     "volume": "1000.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781474400,
+     "open_interest": "6669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781478000,
+     "open_interest": "6669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    }
+   ],
+   "ticker": "KXNHLGOAL-26JUN14CARVGK-VGKTHERTL48-2"
+  }
+ }
+}
