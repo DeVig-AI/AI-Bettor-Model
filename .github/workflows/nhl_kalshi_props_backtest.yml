@@ -1,0 +1,81 @@
+name: NHL props -- Kalshi back-test (pre-registered; collect past prices, then run once)
+on:
+  workflow_dispatch:
+  push:
+    branches: [nhl-props-v1]
+    paths: ['.github/workflows/nhl_kalshi_props_backtest.yml']
+permissions:
+  contents: write
+concurrency:
+  group: nhl-kalshi-props-history
+  cancel-in-progress: false
+env:
+  SAVE: |
+    git config user.name "sports-tracker-bot"
+    git config user.email "actions@users.noreply.github.com"
+    git add nhl/props_history
+    git diff --cached --quiet && exit 0
+    git commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    for i in 1 2 3 4; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i * 5)); done
+    exit 1
+jobs:
+  collect1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Collect settled Kalshi NHL goals / assists / points props + pre-puck-drop prices (no keys, nothing bet)
+        env: {MAX_MINUTES: '320'}
+        run: python3 nhl/kalshi_props_history_v1.py
+      - if: always()
+        env: {MSG: NHL Kalshi props history}
+        run: bash -c "$SAVE"
+  collect2:
+    needs: collect1
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - env: {MAX_MINUTES: '320'}
+        run: python3 nhl/kalshi_props_history_v1.py
+      - if: always()
+        env: {MSG: NHL Kalshi props history}
+        run: bash -c "$SAVE"
+  collect3:
+    needs: collect2
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - env: {MAX_MINUTES: '320'}
+        run: python3 nhl/kalshi_props_history_v1.py
+      - if: always()
+        env: {MSG: NHL Kalshi props history}
+        run: bash -c "$SAVE"
+  backtest:
+    needs: collect3
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: '${{ github.ref_name }}'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pandas numpy
+      - name: Collection must be complete (every settled event read, none with unreadable markets)
+        run: |
+          python3 -c "import json,sys; s=json.load(open('nhl/props_history/kalshi_props_history_v1_summary.json'))['stats']; print(s); sys.exit(0 if s.get('complete') and not s.get('no_markets') else 'collection not complete: run the workflow again')"
+      - name: Run the pre-registered back-test (NHL_PROPS_KALSHI_BACKTEST_V1)
+        run: python3 nhl/kalshi_props_backtest_v1.py
+      - if: always()
+        env: {MSG: NHL Kalshi props back-test}
+        run: bash -c "$SAVE"
