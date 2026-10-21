@@ -3,11 +3,14 @@ shaped like the real ones.
 
     python3 -m unittest discover -s tests/tools
 """
+import io
 import json
 import os
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from unittest import mock
 from datetime import datetime, timedelta, timezone
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -43,7 +46,7 @@ class LiveLines(unittest.TestCase):
         LL.LINES, LL.OUT = os.path.join(self.tmp, "game_lines.json"), os.path.join(self.tmp, "live_lines.json")
         with open(LL.LINES, "w") as f:
             json.dump(LINES, f)
-        self.state, self.calls = "in", []
+        self.state, self.calls, self.moved = "in", [], False
         LL.KG.get = self.fake_get
         LL.KG.log.clear()
 
@@ -56,6 +59,8 @@ class LiveLines(unittest.TestCase):
             return {"events": [espn(self.state, 2, 3, "401")]} if "baseball" in url else {"events": []}
         self.assertIn("/candlesticks", url)
         self.assertEqual(params["start_ts"], int((KICK - timedelta(hours=2)).timestamp()))
+        if self.moved and "/historical/" not in url:           # Kalshi moved the settled market
+            return {"candlesticks": []}
         return candles(400, KICK - timedelta(hours=2))
 
     def run_at(self, t):
@@ -108,6 +113,28 @@ class LiveLines(unittest.TestCase):
         g = self.run_at(KICK - timedelta(hours=2))
         self.assertEqual(self.calls, [])
         self.assertEqual(g[("MLB", "401")]["kalshi_game"]["moneyline"], {"home": -125, "away": 108})
+
+    def test_a_game_left_live_gets_its_final_however_late(self):
+        self.run_at(KICK + timedelta(minutes=70))                            # seen live...
+        self.state, self.moved = "post", True                                # ...then no run for hours
+        g = self.run_at(KICK + timedelta(hours=18))
+        mlb = g[("MLB", "401")]
+        self.assertEqual((mlb["state"], mlb["line_final"]), ("post", True))
+        self.assertTrue(any("/historical/markets/" in u for u in self.calls))
+        self.assertEqual(len(mlb["kalshi_line"]["points"]), 150)
+
+    def test_unchanged_file_is_not_rewritten_and_loop_hint(self):
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.run_at(KICK - timedelta(hours=3))
+        self.assertEqual(json.loads(out.getvalue().splitlines()[-1]),
+                         {"working": 0, "next_s": int(timedelta(hours=2, minutes=30).total_seconds()), "wrote": True})
+        before = os.stat(LL.OUT).st_mtime_ns
+        out = io.StringIO()
+        with redirect_stdout(out), mock.patch.dict(os.environ, {"FORCE": "1"}):
+            self.run_at(KICK - timedelta(hours=2, minutes=59))               # nothing new: no write, no commit
+        self.assertFalse(json.loads(out.getvalue().splitlines()[-1])["wrote"])
+        self.assertEqual(os.stat(LL.OUT).st_mtime_ns, before)
 
 
 if __name__ == "__main__":
