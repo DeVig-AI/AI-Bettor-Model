@@ -96,11 +96,15 @@ def board_fields(sport, g):
 
 
 def espn_cfb(now):
-    """ESPN's FBS games from 3 days ago to 9 days ahead: {espn_id: game}."""
-    a, b = (now - timedelta(days=3)).strftime("%Y%m%d"), (now + timedelta(days=9)).strftime("%Y%m%d")
-    d = KG.get(ESPN_CFB, {"groups": 80, "limit": 500, "dates": f"{a}-{b}"}) or {}
+    """ESPN's FBS games from 3 days ago to 9 days ahead: {espn_id: game}. One request per day: ESPN answers HTTP 400
+    to this 13-day range (every run from 2026-10-20 on matched no CFB game), while single days are what the app's
+    live feed and the coverage probe read."""
+    events = []
+    for i in range(-3, 10):
+        d = KG.get(ESPN_CFB, {"groups": 80, "limit": 500, "dates": (now + timedelta(days=i)).strftime("%Y%m%d")}) or {}
+        events += d.get("events") or []
     out = {}
-    for ev in d.get("events") or []:
+    for ev in events:
         comp = (ev.get("competitions") or [{}])[0]
         side = {c.get("homeAway"): c for c in comp.get("competitors") or []}
         if "home" not in side or "away" not in side:

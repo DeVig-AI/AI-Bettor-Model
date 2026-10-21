@@ -72,6 +72,22 @@ class CFBLines(unittest.TestCase):
         self.assertIn("MOST", g["spreads"])
         self.assertTrue(any("1 Kalshi games with no FBS match" in x for x in GL.KG.log))
 
+    def test_espn_read_one_day_at_a_time(self):
+        asked = []
+
+        def by_day(url, params=None, **kw):
+            if "espn" in url:
+                asked.append(params["dates"])
+                return ESPN if params["dates"] in ("20261020", "20261021") else {"events": []}   # seen on two days
+            return fake_get(url, params)
+        GL.KG.get = by_day
+        cfb, espn = GL.cfb_games(NOW)
+        self.assertEqual(len(asked), 13)
+        self.assertTrue(all(len(d) == 8 for d in asked), asked)               # never a "from-to" range
+        self.assertEqual((asked[0], asked[-1]), ("20261017", "20261029"))
+        self.assertEqual(len(cfb), 1)                                          # the same game once
+        self.assertEqual(list(espn), ["401"])
+
     def test_history_pre_then_final(self):
         cfb, espn = GL.cfb_games(NOW)
         GL.update_history(NOW, cfb, espn)
