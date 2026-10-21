@@ -215,6 +215,11 @@ def main():
            "data_files": {os.path.basename(p): sha(p) for p in sorted(glob.glob(DATA_GLOB))},
            "frozen_tables_sha256": sha(TABLES), "params": P, "funnel": {}}
     funnel = out["funnel"]
+    summ = os.path.join(HERE, "props_history", "kalshi_props_history_v1_summary.json")
+    if os.path.exists(summ):                             # events with no NHL game found are reported, not dropped silently
+        st = json.load(open(summ))["stats"]
+        out["collection"] = {k: st.get(k) for k in ("events_done_total", "no_game", "not_nhl_game_type", "after_cutoff",
+                                                       "no_markets", "no_candle", "complete")}
     rows = load_rows(funnel)
     cov = {}
     for r in rows:
@@ -278,7 +283,7 @@ def main():
           + (f" · refit reproduces the frozen tables: {out.get('refit_reproduces_frozen_tables')}"
              if "refit_reproduces_frozen_tables" in out else ""), "",
           f"Kalshi NHL prop history found: {out['coverage_total_games']} games. Coverage: {j(out['coverage'])}", "",
-          f"Funnel: {j(funnel)}", "",
+          f"Collection: {j(out.get('collection'))} · Funnel: {j(funnel)}", "",
           f"## Test 1 (primary): {test1['verdict']}",
           f"Main set {test1['rows']} rows / {test1['games']} games. Model log loss {test1.get('model_logloss')}, "
           f"Kalshi mid {test1.get('kalshi_logloss')}, difference {test1.get('diff_model_minus_kalshi')} "

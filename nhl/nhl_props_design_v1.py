@@ -20,7 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import nhl_props_model_lib_v1 as L  # noqa: E402
 
-SPANS = [(5, 20), (10, 40), (20, 80)]
+SPANS = [(5, 20), (10, 40), (20, 80), (40, 160)]   # 40/160 added after the first run chose the longest (20/80)
 SHRINKS = [3.0, 10.0]
 METHODS = ["poisson", "ratio"]
 TEST_SEASONS = range(2016, 2025)
