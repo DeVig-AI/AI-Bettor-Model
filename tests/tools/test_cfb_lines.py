@@ -84,9 +84,9 @@ class CFBLines(unittest.TestCase):
             return fake_get(url, params)
         GL.KG.get = by_day
         cfb, espn = GL.cfb_games(NOW)
-        self.assertEqual(len(asked), 13)
+        self.assertEqual(len(asked), 18)
         self.assertTrue(all(len(d) == 8 for d in asked), asked)               # never a "from-to" range
-        self.assertEqual((asked[0], asked[-1]), ("20261017", "20261029"))
+        self.assertEqual((asked[0], asked[-1]), ("20261017", "20261103"))
         self.assertEqual(len(cfb), 1)                                          # the same game once
         self.assertEqual(list(espn), ["401"])
 

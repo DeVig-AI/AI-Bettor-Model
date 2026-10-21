@@ -41,6 +41,7 @@ SPORTS = ("NFL", "NBA", "MLB", "NHL", "WNBA")
 ET = ZoneInfo("America/New_York")
 ESPN_CFB = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard"
 HISTORY_DAYS = 120
+CFB_BACK, CFB_AHEAD = 3, 14     # ESPN days read; Kalshi lists FBS games up to ~2 weeks out (dated a day early at times)
 
 
 def ladders(g):
@@ -96,11 +97,11 @@ def board_fields(sport, g):
 
 
 def espn_cfb(now):
-    """ESPN's FBS games from 3 days ago to 9 days ahead: {espn_id: game}. One request per day: ESPN answers HTTP 400
-    to this 13-day range (every run from 2026-10-20 on matched no CFB game), while single days are what the app's
-    live feed and the coverage probe read."""
+    """ESPN's FBS games from CFB_BACK days ago to CFB_AHEAD days ahead: {espn_id: game}. One request per day: ESPN
+    answers HTTP 400 to a range (every run from 2026-10-20 to 10-21 matched no CFB game), while single days are what
+    the app's live feed and the coverage probe read."""
     events = []
-    for i in range(-3, 10):
+    for i in range(-CFB_BACK, CFB_AHEAD + 1):
         d = KG.get(ESPN_CFB, {"groups": 80, "limit": 500, "dates": (now + timedelta(days=i)).strftime("%Y%m%d")}) or {}
         events += d.get("events") or []
     out = {}
@@ -147,7 +148,7 @@ CFB_UNMATCHED = []      # Kalshi CFB games with no ESPN FBS game (written to the
 def cfb_games(now):
     kal = KG.kalshi_games("NCAAF")
     espn = espn_cfb(now)
-    lo, hi = (now - timedelta(days=3)).strftime("%Y-%m-%d"), (now + timedelta(days=9)).strftime("%Y-%m-%d")
+    lo, hi = (now - timedelta(days=CFB_BACK)).strftime("%Y-%m-%d"), (now + timedelta(days=CFB_AHEAD)).strftime("%Y-%m-%d")
     out = []
     CFB_UNMATCHED.clear()
     for kg in kal.values():
