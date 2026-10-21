@@ -437,7 +437,14 @@ def run_round(force=False, log=print, progress=None):
         log(f"search: last round {rounds[-1]['at']}; the next one after {S['round_every_hours']} hours")
         return []
     n_round = len(rounds) + 1
-    scored = {r["id"]: r for r in read_scores()}
+    # a configuration whose only record is one crash ("(error)": no score) is tried once more, in case the cause was a
+    # bug since fixed; a second crash is final, as are diverged settings and look-alikes
+    allscores = read_scores()
+    crashes = {}
+    for r in allscores:
+        if r["label"].endswith(" (error)"):
+            crashes[r["id"]] = crashes.get(r["id"], 0) + 1
+    scored = {r["id"]: r for r in allscores if not r["label"].endswith(" (error)") or crashes[r["id"]] >= 2}
     # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
     # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
     # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round

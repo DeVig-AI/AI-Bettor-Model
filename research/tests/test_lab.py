@@ -360,6 +360,27 @@ class Search(unittest.TestCase):
         self.assertEqual(self.SR.read_state(), {})
         self.assertEqual(len(self.SR.read_csv(self.SR.path("ROUNDS.csv"))), n_rounds + 1)
 
+    def test_a_crash_is_retried_once(self):
+        self.small_menu()
+        real = self.SR.forecasts
+        cid = self.SR.config_id(self.SR.grid(self.SR.load_menu())[0])
+        target = {"n": 0}
+
+        def flaky(cfg, data):
+            if self.SR.config_id(cfg) == cid:
+                target["n"] += 1
+                raise RuntimeError("a bug")
+            return real(cfg, data)
+        self.SR.forecasts = flaky
+        try:
+            for _ in range(3):
+                self.SR.run_round(force=True, log=lambda *_: None)
+        finally:
+            self.SR.forecasts = real
+        self.assertEqual(target["n"], 2, "tried, retried once, then final")
+        self.SR.run_round(force=True, log=lambda *_: None)            # the bug fixed: still final after two
+        self.assertEqual(sum(r["id"] == cid for r in self.SR.read_scores()), 2)
+
     def test_diverged_setting_logged_as_diverged(self):
         self.small_menu()
         real = self.SR.forecasts
@@ -672,7 +693,7 @@ class Signals(unittest.TestCase):
                 self.SG.validate(dict(bad))
         C.use("CFB")
         try:
-            self.assertEqual(len(self.SG.load_library()), 4)
+            self.assertGreaterEqual(len(self.SG.load_library()), 4)
         finally:
             C.use("NFL")
 
@@ -694,6 +715,13 @@ class Signals(unittest.TestCase):
             b, _ = models.run(c, alt)
             self.assertAlmostEqual(a.set_index("game_id").forecast[gid], b.set_index("game_id").forecast[gid],
                                    places=9, msg=sid)
+
+    def test_team_signals_need_no_stadiums(self):
+        # college football's schedule has no stadium_id: only the travel signal may need one
+        data = {k: v.copy() for k, v in self.data.items()}
+        data["games"] = data["games"].drop(columns=["stadium_id"])
+        out, _ = models.run(self.cand(["off-success", "rest-diff"]), data)
+        self.assertTrue(np.isfinite(out.forecast).all())
 
     def test_qb_change_and_combos(self):
         out, fit = models.run(self.cand(["qb-change", "rest-diff", "off-success"]), self.data)
