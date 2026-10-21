@@ -444,11 +444,17 @@ def run_round(force=False, log=print, progress=None):
     for r in allscores:
         if r["label"].endswith(" (error)"):
             crashes[r["id"]] = crashes.get(r["id"], 0) + 1
-    scored = {r["id"]: r for r in allscores if not r["label"].endswith(" (error)") or crashes[r["id"]] >= 2}
+    # crashed settings stay in `scored`, so the samplers never draw them again (left out, the learned sampler kept
+    # redrawing runaway Elo settings: 741 of 1,115 in NFL round 107); only the grid and signal lists retry one crash
+    scored = {}
+    for r in allscores:
+        if r["id"] not in scored or not r["label"].endswith(" (error)"):
+            scored[r["id"]] = r
+    retry = {cid for cid, r in scored.items() if r["label"].endswith(" (error)") and crashes[cid] < 2}
     # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
     # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
     # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round
-    todo = [c for c in grid(menu) if config_id(c) not in scored]
+    todo = [c for c in grid(menu) if config_id(c) not in scored or config_id(c) in retry]
     todo += signal_configs(menu, list(scored.values()))
     todo += focus(menu, list(scored.values()))
     for market in ("spread", "total"):
@@ -460,7 +466,7 @@ def run_round(force=False, log=print, progress=None):
     todo += samples(menu, list(scored.values()), S.get("learned_samples", 0), seed, learned=True)
     todo += samples(menu, list(scored.values()), S.get("random_samples", 0), seed + 1, learned=False)
     rows, fc = [], {}
-    seen = set(scored)
+    seen = set(scored) - retry
     fps = {r["fingerprint"]: r["id"] for r in read_csv(path("FINGERPRINTS.csv")) if not r["same_as"]}
     fp_rows = []
     cap = S.get("max_new_per_round") or len(todo) + 1
