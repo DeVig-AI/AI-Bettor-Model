@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Build the lines file (Kalshi spreads for NFL, NBA, MLB and college football)
+      - name: Build the lines file (Kalshi spreads for NFL, NBA, MLB, NHL, WNBA and college football)
         run: python3 tools/game_lines.py
       - name: Save it
         run: |

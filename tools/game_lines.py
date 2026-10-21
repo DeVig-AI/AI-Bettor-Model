@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-game_lines.py -- every Kalshi spread line for both teams of every open NFL, NBA, MLB and college football game, for
+game_lines.py -- every Kalshi spread line for both teams of every open NFL, NBA, MLB, NHL, WNBA and college football game, for
 the app's spread wheel and its college football board. Display only: nothing here feeds a model, a pick or a test.
 
 Kalshi lists "TEAM wins by over X" markets. Buying YES is TEAM -X; buying NO is the other team +X. Both are written,
@@ -30,9 +30,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import kalshi_games_v1 as KG  # noqa: E402
 import cfb_teams  # noqa: E402
 
+# kalshi_games_v1.py is a locked paper-test file (FROZEN.sha256) that knows ESPN's NFL, NBA and MLB scoreboards only.
+# This display-only script adds NHL and WNBA here, so the locked file and the tests that use it stay as they are.
+KG.ESPN.setdefault("NHL", "hockey/nhl")
+KG.ESPN.setdefault("WNBA", "basketball/wnba")
+
 OUT = os.path.join(os.path.dirname(__file__), "..", "live", "game_lines.json")
 CFB_HISTORY = os.path.join(os.path.dirname(__file__), "..", "live", "cfb_history.json")
-SPORTS = ("NFL", "NBA", "MLB")
+SPORTS = ("NFL", "NBA", "MLB", "NHL", "WNBA")
 ET = ZoneInfo("America/New_York")
 ESPN_CFB = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard"
 HISTORY_DAYS = 120
@@ -60,7 +65,7 @@ def ladders(g):
 
 def board_fields(sport, g):
     """What the app needs to show a game the model has no pick on: ESPN's start time and Kalshi's win chance,
-    moneylines, main spread (MLB: the 1.5 run line) and main total. Any part that can't be read is left out."""
+    moneylines, main spread (MLB / NHL: the 1.5 run / puck line) and main total. Any part that can't be read is left out."""
     a, h = g["away_code"], g["home_code"]
     th, ta = g["teams"][h], g["teams"][a]
     out = {}
@@ -68,13 +73,20 @@ def board_fields(sport, g):
         e = KG.match_espn(sport, g)
         if e and e.get("kickoff"):
             out.update(kickoff=e["kickoff"], espn_id=e.get("espn_id"))
+        if e and e.get("teams"):                  # ESPN's team colours, for sports the app has no colour table for
+            ea, eh = e["teams"]["away"], e["teams"]["home"]
+            if e.get("swapped"):
+                ea, eh = eh, ea
+            col = {k: "#" + t["color"] for k, t in (("away", ea), ("home", eh)) if t.get("color")}
+            if col:
+                out["colors"] = col
     except Exception as ex:                       # no start time: the app just won't show this game on its own
         KG.log.append(f"{sport} {g.get('event')}: ESPN {type(ex).__name__}")
     mh, ma = KG._mid(th), KG._mid(ta)
     if mh is not None and ma is not None and mh + ma > 0:
         out["home_wp"] = round(mh / (mh + ma), 4)
     out["ml"] = {"home": KG.american(th["ask"]), "away": KG.american(ta["ask"])}
-    ms = KG.spread_at(g, a, h, 1.5) if sport == "MLB" else KG.main_spread(g, a, h)
+    ms = KG.spread_at(g, a, h, 1.5) if sport in ("MLB", "NHL") else KG.main_spread(g, a, h)   # run line / puck line
     if ms:
         out["spread"] = {"home_point": ms[0], "home": ms[1], "away": ms[2]}
     mt = KG.main_total(g)
