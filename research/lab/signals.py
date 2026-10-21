@@ -101,7 +101,7 @@ def features(sigs, data, market):
     from .models import FRANCHISE, STADIUMS, home_bases, miles, ordered, played, slots
     games = ordered(data["games"])
     rows = team_frame(data)
-    bases = home_bases(games)
+    bases = home_bases(games) if any(s.get("field") == "travel_diff" for s in sigs) else {}   # CFB has no stadiums
     team_sigs = [s for s in sigs if s["kind"] == "team"]
     lam = {s["id"]: 0.5 ** (1 / float(s["halflife"])) for s in team_sigs}
     val = {s["id"]: defaultdict(lambda: None) for s in team_sigs}          # team -> rolling value
