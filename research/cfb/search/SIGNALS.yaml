@@ -43,3 +43,34 @@ signals:
   reason: 'Plays per game: tempo drives the number of possessions.'
   markets:
   - total
+- id: def-finishing
+  kind: team
+  side: defense
+  num:
+    points: 1
+    epa: -1
+  den: null
+  halflife: 6
+  carry: 0.4
+  reason: 'Points allowed beyond what PPA allowed explains: red-zone stands and short fields given up are partly luck
+    and tend to even out.'
+- id: off-points-per-play
+  kind: team
+  side: offense
+  num:
+    points: 1
+  den: plays
+  halflife: 6
+  carry: 0.4
+  reason: 'Points per play (tempo-free scoring, as in public college analytics): college tempos vary widely, so points
+    per game overrate fast offenses and underrate slow ones.'
+- id: def-points-per-play
+  kind: team
+  side: defense
+  num:
+    points: 1
+  den: plays
+  halflife: 6
+  carry: 0.4
+  reason: 'Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with
+    how many snaps its own offense''s tempo hands the opponent.'
