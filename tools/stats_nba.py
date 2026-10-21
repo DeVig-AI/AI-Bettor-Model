@@ -33,6 +33,29 @@ COLS = {"minutes": "min", "points": "pts", "rebounds": "reb", "assists": "ast", 
         "three_point_field_goals_attempted": "fg3a", "free_throws_made": "ftm", "free_throws_attempted": "fta"}
 
 
+# What the app's Research pages show for this sport (they read it from index.json, so each sport is just data).
+CONFIG = {
+    "rating_unit": "points",
+    "search_cols": ["PTS", "REB", "AST"],
+    "team_rows": [["Record", "record"], ["Points per game", "ppg", 1], ["Allowed per game", "oppg", 1],
+                  ["Average margin", "margin", 1, True], ["Points per 100 possessions", "ortg", 1],
+                  ["Allowed per 100 possessions", "drtg", 1], ["Possessions per game", "pace", 1], ["Field goal %", "fg_pct", 1],
+                  ["3-point %", "fg3_pct", 1], ["Free throw %", "ft_pct", 1], ["Home", "home"], ["Away", "away"],
+                  ["Last 10", "last10"]],
+    "roster_cols": [["GP", "gp", 0], ["MIN", "min", 0], ["PTS", "pts", 1], ["REB", "reb", 1], ["AST", "ast", 1]],
+    "player_cols": [["GP", "gp", 0], ["MIN", "min", 1], ["PTS", "pts", 1], ["REB", "reb", 1], ["AST", "ast", 1], ["3PM", "fg3m", 1],
+                    ["STL", "stl", 1], ["BLK", "blk", 1], ["TOV", "tov", 1], ["FG%", "fg_pct", 1], ["3P%", "fg3_pct", 1],
+                    ["FT%", "ft_pct", 1]],
+    "player_note": "Per game, regular season.",
+    "log_show": [["MIN", "min"], ["PTS", "pts"], ["REB", "reb"], ["AST", "ast"], ["3PM", "fg3m"]],
+    "hit_stats": [["points", "Points", ["pts"]], ["rebounds", "Rebounds", ["reb"]], ["assists", "Assists", ["ast"]],
+                  ["threes", "3-pointers", ["fg3m"]], ["pts_reb_ast", "Pts + Reb + Ast", ["pts", "reb", "ast"]],
+                  ["pts_reb", "Pts + Reb", ["pts", "reb"]], ["pts_ast", "Pts + Ast", ["pts", "ast"]],
+                  ["reb_ast", "Reb + Ast", ["reb", "ast"]], ["steals", "Steals", ["stl"]], ["blocks", "Blocks", ["blk"]],
+                  ["stl_blk", "Steals + Blocks", ["stl", "blk"]], ["turnovers", "Turnovers", ["tov"]]],
+}
+
+
 def season_of(now):
     """sportsdataverse names a season by the year it ends: 2026-27 is 2027."""
     return now.year + 1 if now.month >= 8 else now.year
@@ -103,7 +126,7 @@ def team_season(t):
         def rec(d):
             return f"{int((d.team_score > d.o_team_score).sum())}-{int((d.team_score < d.o_team_score).sum())}"
         out[team] = {
-            "gp": n, "w": w, "l": l, "last10": l10, "streak": streak, "home": rec(home), "away": rec(away),
+            "gp": n, "w": w, "l": l, "record": f"{w}-{l}", "last10": l10, "streak": streak, "home": rec(home), "away": rec(away),
             "ppg": S.r1(reg.team_score.mean()) if n else None, "oppg": S.r1(reg.o_team_score.mean()) if n else None,
             "margin": S.r1((reg.team_score - reg.o_team_score).mean()) if n else None,
             "ortg": S.r1(100 * reg.team_score.sum() / poss.sum()) if n and poss.sum() else None,
@@ -182,7 +205,7 @@ def build(now, cache):
         s = ts_this.get(k) or {}
         teams.append({"code": k, "name": names.get(k, k), "color": colors.get(k), "rank": rank[k], "rating": S.r1(rating[k]),
                       "rating_this": S.r1(r_this.get(k)) if gp_this.get(k) else None, "rating_last": S.r1(r_last.get(k)),
-                      **{f: s.get(f) for f in ("gp", "w", "l", "last10", "streak", "ppg", "oppg", "margin", "ortg", "drtg")}})
+                      **{f: s.get(f) for f in ("gp", "w", "l", "record", "last10", "streak", "ppg", "oppg", "margin", "ortg", "drtg")}})
     for k in TEAMS:
         roster[k].sort(key=lambda pl: -((pl["this"] or {}).get("min") or (pl["last"] or {}).get("min") or 0))
         this, last = ts_this.get(k), ts_last.get(k)
@@ -200,7 +223,7 @@ def build(now, cache):
                         f"the season last season's rating counts as {S.PRIOR_GAMES} games, pulled "
                         f"{round((1 - S.CARRY) * 100)}% toward average."),
         "source": "ESPN box scores (via sportsdataverse). Unofficial; regular season and playoffs only.",
-        "log_cols": ["date", "opp", "ha"] + STATS + ["starter", "type", "season"],
+        "log_cols": ["date", "opp", "ha"] + STATS + ["starter", "type", "season"], **CONFIG,
         "teams": teams, "players": search})
     return len(search)
 

@@ -1796,14 +1796,11 @@
 
   // ---------- Research: power rankings, team and player stats to check for yourself (display only) ----------
   // Files from tools/stats_<sport>.py (stats/<sport>/index.json and team_<CODE>.json), read straight from the repo.
-  // Descriptive only: averages, game logs and how often a line was cleared, always with the number of games.
+  // Each sport's index.json also says what to show (team_rows, roster_cols, player_cols, log_show, hit_stats), so a
+  // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
+  // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA"];
-  var RS_LOG = {min: 3, pts: 4, reb: 5, ast: 6, fg3m: 7, stl: 8, blk: 9, tov: 10, starter: 11, type: 12, season: 13};
-  var RS_STATS = {NBA: [["points", "Points", ["pts"]], ["rebounds", "Rebounds", ["reb"]], ["assists", "Assists", ["ast"]],
-    ["threes", "3-pointers", ["fg3m"]], ["pts_reb_ast", "Pts + Reb + Ast", ["pts", "reb", "ast"]], ["pts_reb", "Pts + Reb", ["pts", "reb"]],
-    ["pts_ast", "Pts + Ast", ["pts", "ast"]], ["reb_ast", "Reb + Ast", ["reb", "ast"]], ["steals", "Steals", ["stl"]],
-    ["blocks", "Blocks", ["blk"]], ["stl_blk", "Steals + Blocks", ["stl", "blk"]], ["turnovers", "Turnovers", ["tov"]]]};
+  var RS_SPORTS = ["NBA", "NHL"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
   function rsGet(path){
     if(!rsCache[path]) rsCache[path] = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / 6e5), {cache: "no-store"})
@@ -1811,6 +1808,8 @@
       .catch(function(e){ delete rsCache[path]; throw e; });
     return rsCache[path];
   }
+  function rsIndex(sp){ return rsGet(sp.toLowerCase() + "/index.json"); }
+  function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + code + ".json"); }
   function rsHasSport(sp){ return RS_SPORTS.indexOf(sp) >= 0; }
   // Open Research at a page: {page: "team", sport, code} or {page: "player", sport, team | teams, id | name, stat, line}.
   function openResearch(route){
@@ -1824,6 +1823,7 @@
   function rsLink(route, text, cls){
     return '<button type="button" class="' + (cls || "rs-link") + '" data-rs="' + escapeHtml(JSON.stringify(route)) + '">' + escapeHtml(text) + '</button>';
   }
+  function rsRow(route){ return ' data-rs="' + escapeHtml(JSON.stringify(route)) + '"'; }
   document.addEventListener("click", function(ev){                     // Research links anywhere in the app
     var b = ev.target.closest && ev.target.closest("[data-rs]");
     if(!b) return;
@@ -1833,9 +1833,11 @@
   }, true);
   function rsNum(v, d){ return v == null ? "—" : Number(v).toFixed(d == null ? 1 : d); }
   function rsSigned(v){ return v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1); }
+  function rsCell(v, c){ return c[3] ? rsSigned(v) : c[2] == null ? (v == null ? "—" : String(v)) : rsNum(v, c[2]); }   // [label, field, decimals, signed]
   function rsSeasonYear(label){ return parseInt(String(label).slice(0, 4), 10) + 1; }   // "2026-27" -> 2027
   function rsShort(label){ return String(label).replace(/^20/, "").replace("-", "–"); }   // "26–27"
   function rsDate(d){ var p = String(d).split("-"); return +p[1] + "/" + +p[2]; }
+  function rsLogIdx(idx){ var m = {}; (idx.log_cols || []).forEach(function(c, i){ m[c] = i; }); return m; }
   function renderResearch(){
     var root = document.getElementById("rsRoot");
     if(!root || panels.research.hidden) return;
@@ -1857,30 +1859,31 @@
       '<div class="md-tabs">' + tabs.map(function(t){
         return '<button type="button" class="pill-tab' + (t[0] === rsTab ? ' active' : '') + '" data-rs-tab="' + t[0] + '">' + t[1] + '</button>'; }).join("") + '</div>' +
       '<div id="rsBody"><div class="faint">Loading…</div></div>';
-    card.querySelectorAll("[data-rs-sport]").forEach(function(b){ b.addEventListener("click", function(){ rsSport = b.dataset.rsSport; renderResearch(); }); });
+    card.querySelectorAll("[data-rs-sport]").forEach(function(b){ b.addEventListener("click", function(){ rsSport = b.dataset.rsSport; rsQuery = ""; renderResearch(); }); });
     card.querySelectorAll("[data-rs-tab]").forEach(function(b){ b.addEventListener("click", function(){ rsTab = b.dataset.rsTab; renderResearch(); }); });
-    rsGet(rsSport.toLowerCase() + "/index.json").then(function(idx){
+    var sp = rsSport;
+    rsIndex(sp).then(function(idx){
       var body = document.getElementById("rsBody");
-      if(!body) return;
-      if(rsTab === "players") return rsPlayersList(body, idx);
-      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Team</th><th>W–L</th><th>Last 10</th><th>Rating</th></tr>';
+      if(!body || sp !== rsSport) return;
+      if(rsTab === "players") return rsPlayersList(body, idx, sp);
+      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Team</th><th>Record</th><th>Last 10</th><th>Rating</th></tr>';
       idx.teams.forEach(function(t){
-        html += '<tr data-rs="' + escapeHtml(JSON.stringify({page: "team", sport: rsSport, code: t.code})) + '"><td><span class="rs-team"><span class="rk">' + t.rank + '</span>' + teamBadge(rsSport, t.code) + '<span class="nm">' + escapeHtml(t.name) + '</span></span></td>' +
-          '<td>' + (t.gp ? t.w + '–' + t.l : '0–0') + '</td><td>' + escapeHtml(t.last10 || "—") + '</td><td>' + rsSigned(t.rating) + '</td></tr>';
+        html += '<tr' + rsRow({page: "team", sport: sp, code: t.code}) + '><td><span class="rs-team"><span class="rk">' + t.rank + '</span>' + teamBadge(sp, t.code) + '<span class="nm">' + escapeHtml(t.name) + '</span></span></td>' +
+          '<td>' + escapeHtml(t.record || "0-0").replace(/-/g, "–") + '</td><td>' + escapeHtml(t.last10 || "—") + '</td><td>' + rsSigned(t.rating) + '</td></tr>';
       });
       body.innerHTML = html + '</table></div><p class="faint" style="margin:10px 0 0"><b>Rating</b>: ' + escapeHtml(idx.rating_note) + ' ' + escapeHtml(idx.source) + ' Updated ' + escapeHtml(whenTxt(idx.generated_at)) + '.</p>';
     }).catch(fail);
   }
-  function rsPlayersList(body, idx){
+  function rsPlayersList(body, idx, sp){
     body.innerHTML = '<div class="field" style="margin:0 0 8px"><input id="rsSearch" type="search" placeholder="Search players" autocomplete="off" value="' + escapeHtml(rsQuery) + '"></div><div id="rsPlayers"></div>';
-    var cur = rsSeasonYear(idx.season);
+    var cur = rsSeasonYear(idx.season), sc = idx.search_cols || [];
     function draw(){
       var q = propNorm(rsQuery), rows = idx.players.filter(function(p){ return !q || propNorm(p[1]).indexOf(q) >= 0; }).slice(0, 40);
-      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th></tr>';
+      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + sc.map(function(c){ return '<th>' + escapeHtml(c) + '</th>'; }).join("") + '</tr>';
       rows.forEach(function(p){
-        html += '<tr data-rs="' + escapeHtml(JSON.stringify({page: "player", sport: rsSport, team: p[2], id: p[0]})) + '"><td><span class="rs-team">' + teamBadge(rsSport, p[2]) + '<span class="nm">' + escapeHtml(p[1]) +
+        html += '<tr' + rsRow({page: "player", sport: sp, team: p[2], id: p[0]}) + '><td><span class="rs-team">' + teamBadge(sp, p[2]) + '<span class="nm">' + escapeHtml(p[1]) +
           ' <span class="faint">' + escapeHtml(p[3] || "") + (p[8] !== cur ? ' · ' + escapeHtml(rsShort(idx.last_season)) : '') + '</span></span></span></td>' +
-          '<td>' + rsNum(p[5]) + '</td><td>' + rsNum(p[6]) + '</td><td>' + rsNum(p[7]) + '</td></tr>';
+          sc.map(function(c, i){ return '<td>' + rsNum(p[5 + i]) + '</td>'; }).join("") + '</tr>';
       });
       document.getElementById("rsPlayers").innerHTML = rows.length ? html + '</table></div><p class="faint" style="margin:8px 0 0">Per game this season (' + escapeHtml(rsShort(idx.season)) + '), or last season for players who haven\'t played yet.</p>' : '<div class="bb-empty">No player matches.</div>';
     }
@@ -1888,38 +1891,34 @@
     draw();
   }
   function rsTeam(card, r, fail){
-    rsGet(r.sport.toLowerCase() + "/team_" + r.code + ".json").then(function(t){
-      var a = t.this || {}, b = t.last || {}, cs = rsShort(t.season), ls = rsShort(t.last_season);
-      var rows = [["Record", a.gp ? a.w + "–" + a.l : "0–0", b.gp ? b.w + "–" + b.l : "—"], ["Points per game", rsNum(a.ppg), rsNum(b.ppg)],
-        ["Allowed per game", rsNum(a.oppg), rsNum(b.oppg)], ["Average margin", rsSigned(a.margin), rsSigned(b.margin)],
-        ["Points per 100 possessions", rsNum(a.ortg), rsNum(b.ortg)], ["Allowed per 100 possessions", rsNum(a.drtg), rsNum(b.drtg)],
-        ["Possessions per game", rsNum(a.pace), rsNum(b.pace)], ["Field goal %", rsNum(a.fg_pct), rsNum(b.fg_pct)],
-        ["3-point %", rsNum(a.fg3_pct), rsNum(b.fg3_pct)], ["Free throw %", rsNum(a.ft_pct), rsNum(b.ft_pct)],
-        ["Home", a.home || "—", b.home || "—"], ["Away", a.away || "—", b.away || "—"], ["Last 10", a.last10 || "—", b.last10 || "—"]];
+    Promise.all([rsIndex(r.sport), rsTeamFile(r.sport, r.code)]).then(function(x){
+      var idx = x[0], t = x[1], a = t.this || {}, b = t.last || {}, ls = rsShort(t.last_season);
       var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(t.name) + '</h3><div class="faint">#' + t.rank +
         ' in DeVig\'s power rankings · rating ' + rsSigned(t.rating) + '</div></div></div>' +
-        '<div class="lab-scroll"><table class="lab-table"><tr><th></th><th>' + escapeHtml(cs) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
-        rows.map(function(x){ return '<tr><td>' + x[0] + '</td><td>' + escapeHtml(x[1]) + '</td><td>' + escapeHtml(x[2]) + '</td></tr>'; }).join("") + '</table></div>';
+        '<div class="lab-scroll"><table class="lab-table"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
+        (idx.team_rows || []).map(function(c){
+          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c) : '—') + '</td><td>' + (t.last ? rsCell(b[c[1]], c) : '—') + '</td></tr>';
+        }).join("").replace(/(\d)-(\d)/g, "$1–$2") + '</table></div>';
       var games = (t.games || []).slice(0, 10);
       if(games.length){
         html += '<div class="bb-sec">Recent games</div><div class="lab-scroll"><table class="lab-table">' + games.map(function(g){
           return '<tr><td>' + rsDate(g[0]) + ' ' + (g[2] === "H" ? "vs" : "@") + ' ' + escapeHtml(g[1]) + (g[6] === "P" ? ' <span class="faint">playoffs</span>' : '') + '</td>' +
-            '<td>' + g[3] + '–' + g[4] + '</td><td><span class="pill ' + (g[5] === "W" ? "good" : "bad") + '">' + g[5] + '</span></td></tr>';
+            '<td>' + g[3] + '–' + g[4] + (g[8] ? ' <span class="faint">' + escapeHtml(g[8]) + '</span>' : '') + '</td><td><span class="pill ' + (g[5] === "W" ? "good" : "bad") + '">' + g[5] + '</span></td></tr>';
         }).join("") + '</table></div>';
       }
-      html += '<div class="bb-sec">Roster</div><div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th></tr>' +
+      var rc = idx.roster_cols || [];
+      html += '<div class="bb-sec">Roster</div><div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + rc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
         (t.players || []).map(function(p){
           var s = p.this || p.last || {}, old = !p.this;
-          return '<tr data-rs="' + escapeHtml(JSON.stringify({page: "player", sport: r.sport, team: t.code, id: p.id})) + '"><td>' + escapeHtml(p.name) + ' <span class="faint">' + escapeHtml(p.pos || "") + (old ? ' · ' + escapeHtml(ls) : '') + '</span></td>' +
-            '<td>' + (s.gp || 0) + '</td><td>' + rsNum(s.min, 0) + '</td><td>' + rsNum(s.pts) + '</td><td>' + rsNum(s.reb) + '</td><td>' + rsNum(s.ast) + '</td></tr>';
-        }).join("") + '</table></div><p class="faint" style="margin:8px 0 0">Per game, regular season. A player\'s team is the team of his latest game. ' +
-        'Updated ' + escapeHtml(whenTxt(t.generated_at)) + '.</p>';
+          return '<tr' + rsRow({page: "player", sport: r.sport, team: t.code, id: p.id}) + '><td>' + escapeHtml(p.name) + ' <span class="faint">' + escapeHtml(p.pos || "") + (old ? ' · ' + escapeHtml(ls) : '') + '</span></td>' +
+            rc.map(function(c){ return '<td>' + rsCell(s[c[1]], c) + '</td>'; }).join("") + '</tr>';
+        }).join("") + '</table></div><p class="faint" style="margin:8px 0 0">' + escapeHtml(idx.player_note || "") + ' A player\'s team is the team of his latest game. Updated ' + escapeHtml(whenTxt(t.generated_at)) + '.</p>';
       card.innerHTML = html;
     }).catch(fail);
   }
   function rsFindPlayer(r){
     var teams = r.team ? [r.team] : (r.teams || []);
-    return Promise.all(teams.map(function(c){ return rsGet(r.sport.toLowerCase() + "/team_" + c + ".json").catch(function(){ return null; }); }))
+    return Promise.all(teams.map(function(c){ return rsTeamFile(r.sport, c).catch(function(){ return null; }); }))
       .then(function(files){
         var want = r.name ? propNorm(r.name) : null;
         for(var i = 0; i < files.length; i++){
@@ -1932,63 +1931,62 @@
       });
   }
   function rsPlayer(card, r, fail){
-    rsFindPlayer(r).then(function(found){
+    Promise.all([rsIndex(r.sport), rsFindPlayer(r)]).then(function(x){
+      var idx = x[0], found = x[1];
       if(!found){ card.innerHTML = '<div class="bb-empty">No stats for ' + escapeHtml(r.name || "this player") + ' yet.</div>'; return; }
-      var t = found.team, p = found.player, cur = rsSeasonYear(t.season), stats = RS_STATS[r.sport] || [];
+      var t = found.team, p = found.player, cur = rsSeasonYear(t.season), stats = idx.hit_stats || [], L = rsLogIdx(idx);
       // a prop's own stat and line win the first time its link opens the page; after that, what was last typed here
-      var key = r.sport + "|" + p.id, fromProp = !r.seen && stats.some(function(x){ return x[0] === r.stat; });
+      var key = r.sport + "|" + p.id, fromProp = !r.seen && stats.some(function(s){ return s[0] === r.stat; });
       var st = fromProp ? {stat: r.stat, line: r.line} : (rsHit[key] || {});
       r.seen = true;
-      var statKey = st.stat || "points";
-      var def = stats.filter(function(x){ return x[0] === statKey; })[0] || stats[0];
-      function val(g, cols){ var v = 0; for(var i = 0; i < cols.length; i++){ var x = g[RS_LOG[cols[i]]]; if(x == null) return null; v += x; } return v; }
+      var def = stats.filter(function(s){ return s[0] === st.stat; })[0] || stats[0];
       var avgSrc = p.this || p.last || {};
-      var line = st.line != null ? st.line : Math.floor(def[2].reduce(function(m, c){ return m + (avgSrc[c] || 0); }, 0)) + 0.5;
-      var cols = [["GP", "gp", 0], ["MIN", "min", 1], ["PTS", "pts", 1], ["REB", "reb", 1], ["AST", "ast", 1], ["3PM", "fg3m", 1],
-        ["STL", "stl", 1], ["BLK", "blk", 1], ["TOV", "tov", 1], ["FG%", "fg_pct", 1], ["3P%", "fg3_pct", 1], ["FT%", "ft_pct", 1]];
+      function avgLine(d){ return Math.floor(d[2].reduce(function(m, c){ return m + (avgSrc[c] || 0); }, 0)) + 0.5; }
+      function val(g, cols){ var v = 0; for(var i = 0; i < cols.length; i++){ var y = g[L[cols[i]]]; if(y == null) return null; v += y; } return v; }
+      var line = st.line != null ? st.line : avgLine(def), pc = idx.player_cols || [], show = idx.log_show || [];
       var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(p.name) + '</h3><div class="faint">' + escapeHtml(t.name) + (p.pos ? ' · ' + escapeHtml(p.pos) : '') + '</div></div></div>' +
-        '<div class="lab-scroll"><table class="lab-table"><tr><th>Season</th>' + cols.map(function(c){ return '<th>' + c[0] + '</th>'; }).join("") + '</tr>' +
-        [[rsShort(t.season), p.this], [rsShort(t.last_season), p.last]].map(function(x){
-          return '<tr><td>' + escapeHtml(x[0]) + '</td>' + cols.map(function(c){ return '<td>' + (x[1] ? rsNum(x[1][c[1]], c[2]) : '—') + '</td>'; }).join("") + '</tr>';
-        }).join("") + '</table></div><p class="faint" style="margin:6px 0 0">Per game, regular season.</p>';
+        '<div class="lab-scroll"><table class="lab-table"><tr><th>Season</th>' + pc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
+        [[rsShort(t.season), p.this], [rsShort(t.last_season), p.last]].map(function(y){
+          return '<tr><td>' + escapeHtml(y[0]) + '</td>' + pc.map(function(c){ return '<td>' + (y[1] ? rsCell(y[1][c[1]], c) : '—') + '</td>'; }).join("") + '</tr>';
+        }).join("") + '</table></div><p class="faint" style="margin:6px 0 0">' + escapeHtml(idx.player_note || "") + '</p>';
       html += '<div class="bb-sec">How often he cleared a line</div><div class="rs-form"><div class="field"><label for="rsStat">Stat</label><select id="rsStat">' +
-        stats.map(function(x){ return '<option value="' + x[0] + '"' + (x[0] === statKey ? ' selected' : '') + '>' + escapeHtml(x[1]) + '</option>'; }).join("") +
-        '</select></div><div class="field" style="max-width:110px"><label for="rsLine">Over</label><input id="rsLine" inputmode="decimal" value="' + escapeHtml(String(line)) + '"></div></div><div id="rsHits"></div>';
-      var log = p.log || [];
-      html += '<div class="bb-sec">Game log</div><div class="lab-scroll"><table class="lab-table" id="rsLog"></table></div>' +
-        '<p class="faint" style="margin:8px 0 0">' + escapeHtml("ESPN box scores, unofficial. Updated " + whenTxt(t.generated_at) + ".") + '</p>';
+        stats.map(function(s){ return '<option value="' + s[0] + '"' + (s === def ? ' selected' : '') + '>' + escapeHtml(s[1]) + '</option>'; }).join("") +
+        '</select></div><div class="field" style="max-width:110px"><label for="rsLine">Over</label><input id="rsLine" inputmode="decimal" value="' + escapeHtml(String(line)) + '"></div></div><div id="rsHits"></div>' +
+        '<div class="bb-sec">Game log</div><div class="lab-scroll"><table class="lab-table" id="rsLog"></table></div>' +
+        '<p class="faint" style="margin:8px 0 0">' + escapeHtml(idx.source + " Updated " + whenTxt(t.generated_at) + ".") + '</p>';
       card.innerHTML = html;
+      var log = p.log || [];
       function draw(){
         var ln = parseFloat(String(document.getElementById("rsLine").value).replace(",", "."));
-        var d = stats.filter(function(x){ return x[0] === document.getElementById("rsStat").value; })[0] || def;
+        var d = stats.filter(function(s){ return s[0] === document.getElementById("rsStat").value; })[0] || def;
         rsHit[key] = {stat: d[0], line: isFinite(ln) ? ln : null};
         function count(games){
           var n = 0, o = 0;
-          games.forEach(function(g){ var v = val(g, d[2]); if(v == null) return; n++; if(isFinite(ln) && v > ln) o++; });
+          games.forEach(function(g){ var v = val(g, d[2]); if(v == null) return; n++; if(v > ln) o++; });
           return [o, n];
         }
         var groups = [["Last 5 games", log.slice(0, 5)], ["Last 10 games", log.slice(0, 10)],
-          ["This season (" + rsShort(t.season) + ")", log.filter(function(g){ return g[RS_LOG.season] === cur && g[RS_LOG.type] === "R"; })],
-          ["Last season (" + rsShort(t.last_season) + ")", log.filter(function(g){ return g[RS_LOG.season] === cur - 1 && g[RS_LOG.type] === "R"; })]];
+          ["This season (" + rsShort(t.season) + ")", log.filter(function(g){ return g[L.season] === cur && g[L.type] === "R"; })],
+          ["Last season (" + rsShort(t.last_season) + ")", log.filter(function(g){ return g[L.season] === cur - 1 && g[L.type] === "R"; })]];
         document.getElementById("rsHits").innerHTML = isFinite(ln) ? '<div class="rs-hit">' + groups.map(function(gr){
           var c = count(gr[1]);
           return '<span>' + escapeHtml(gr[0]) + '</span><span class="v">' + (c[1] ? c[0] + ' of ' + c[1] : '—') + '</span>' +
             '<div class="rs-bar"><i style="width:' + (c[1] ? Math.round(c[0] / c[1] * 100) : 0) + '%"></i></div>';
         }).join("") + '</div><p class="faint" style="margin:6px 0 0">Counts, not chances: 5 or 10 games is a small sample, and Kalshi\'s price already knows about his recent form. On a prop, compare with the model %.</p>'
           : '<div class="faint">Type a line, like 22.5.</div>';
-        var rows = log.slice(0, 20), prevSeason = null;
-        document.getElementById("rsLog").innerHTML = '<tr><th>Date</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>3PM</th><th>' + escapeHtml(d[1]) + '</th></tr>' +
+        var rows = log.slice(0, 20), prevSeason = null, ncol = show.length + 2;
+        document.getElementById("rsLog").innerHTML = '<tr><th>Date</th>' + show.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '<th>' + escapeHtml(d[1]) + '</th></tr>' +
           rows.map(function(g){
             var v = val(g, d[2]), sep = "";
-            if(g[RS_LOG.season] !== prevSeason){ prevSeason = g[RS_LOG.season]; sep = '<tr><td colspan="7" class="faint" style="font-weight:600">' + escapeHtml(prevSeason === cur ? rsShort(t.season) : rsShort(t.last_season)) + '</td></tr>'; }
-            return sep + '<tr><td>' + rsDate(g[0]) + ' ' + (g[2] === "H" ? "vs" : "@") + ' ' + escapeHtml(g[1]) + (g[RS_LOG.type] === "P" ? ' <span class="faint">P</span>' : '') + '</td>' +
-              ['min', 'pts', 'reb', 'ast', 'fg3m'].map(function(c){ var x = g[RS_LOG[c]]; return '<td>' + (x == null ? '—' : x) + '</td>'; }).join("") +
+            if(g[L.season] !== prevSeason){ prevSeason = g[L.season]; sep = '<tr><td colspan="' + ncol + '" class="faint" style="font-weight:600">' + escapeHtml(prevSeason === cur ? rsShort(t.season) : rsShort(t.last_season)) + '</td></tr>'; }
+            return sep + '<tr><td>' + rsDate(g[0]) + ' ' + (g[2] === "H" ? "vs" : "@") + ' ' + escapeHtml(g[1]) + (g[L.type] === "P" ? ' <span class="faint">P</span>' : '') + '</td>' +
+              show.map(function(c){ var y = g[L[c[1]]]; return '<td>' + (y == null ? '—' : y) + '</td>'; }).join("") +
               '<td class="' + (v != null && isFinite(ln) && v > ln ? 'rs-over' : '') + '">' + (v == null ? '—' : v) + '</td></tr>';
-          }).join("") + (log.length > 20 ? '<tr><td colspan="7" class="faint">Showing the last 20 of ' + log.length + ' games.</td></tr>' : '');
+          }).join("") + (log.length > 20 ? '<tr><td colspan="' + ncol + '" class="faint">Showing the last 20 of ' + log.length + ' games.</td></tr>' : '');
       }
       document.getElementById("rsStat").addEventListener("change", function(){
-        var d = stats.filter(function(x){ return x[0] === document.getElementById("rsStat").value; })[0];
-        document.getElementById("rsLine").value = Math.floor(d[2].reduce(function(m, c){ return m + (avgSrc[c] || 0); }, 0)) + 0.5;
+        var d = stats.filter(function(s){ return s[0] === document.getElementById("rsStat").value; })[0];
+        document.getElementById("rsLine").value = avgLine(d);
         draw();
       });
       document.getElementById("rsLine").addEventListener("input", draw);

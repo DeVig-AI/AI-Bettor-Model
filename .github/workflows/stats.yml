@@ -20,6 +20,8 @@ jobs:
       - run: pip install pandas numpy
       - name: NBA (ESPN box scores via sportsdataverse)
         run: python3 tools/stats_nba.py
+      - name: NHL (the props model's box scores + final scores from the NHL API)
+        run: python3 tools/stats_nhl.py
       - name: Save them
         run: |
           git config user.name "sports-tracker-bot"
