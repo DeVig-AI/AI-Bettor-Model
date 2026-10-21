@@ -29,7 +29,8 @@ MAX_MINUTES = float(os.getenv("MAX_MINUTES", "300"))
 CUTOFF = datetime(2026, 10, 21, tzinfo=timezone.utc)
 SNAP_BEFORE, SNAP_SEARCH = timedelta(minutes=40), timedelta(hours=8)
 GAME_TYPES = {2, 3}
-THREADS = 16
+THREADS = 6                                             # with K.MIN_GAP below: ~8 requests/s (16 and 12/s drew 429s)
+K.MIN_GAP = 1 / 8.0
 OUT_DIR = os.path.join(HERE, "props_history")
 CSV_DIR = os.path.join(OUT_DIR, "kalshi")
 DONE = os.path.join(OUT_DIR, "done_events.txt")
@@ -90,12 +91,14 @@ def markets_for_event(ev):
 def one_market_candles(series, t, start_ts, end_ts, historical):
     paths = ((f"/historical/markets/{t}/candlesticks", "historical"),
              (f"/series/{series}/markets/{t}/candlesticks", "per_market"))
+    answered = False
     for path, name in (paths if historical else paths[::-1]):
         d = K.get(K.KALSHI + path, {"start_ts": start_ts, "end_ts": end_ts, "period_interval": 60})
+        answered = answered or d is not None
         if d and d.get("candlesticks"):
             raw_samples.setdefault(name, d if len(json.dumps(d)) < 20000 else {"truncated": True})
             return name, d["candlesticks"]
-    return None, []
+    return (None if answered else "failed"), []        # "failed": no endpoint answered (e.g. rate limit) -- retry later
 
 
 def candles(series, tickers, start_ts, end_ts, pool, historical):
@@ -110,11 +113,13 @@ def candles(series, tickers, start_ts, end_ts, pool, historical):
     ce = stats["candles_by_endpoint"]
     ce["batch"] = ce.get("batch", 0) + len(out)
     rest = [t for t in tickers if t not in out]
+    failed = False
     for t, (name, cs) in zip(rest, pool.map(lambda t: one_market_candles(series, t, start_ts, end_ts, historical), rest)):
         out[t] = cs
-        if name:
+        failed = failed or name == "failed"
+        if name and name != "failed":
             ce[name] = ce.get(name, 0) + 1
-    return out
+    return None if failed else out
 
 
 def main():
@@ -160,6 +165,8 @@ def main():
             start_ts, end_ts = int((snap - SNAP_SEARCH).timestamp()), int(snap.timestamp())
             cs = candles(series, [m["ticker"] for m in ms if m.get("ticker")], start_ts, end_ts, pool,
                          historical=src == "/historical/markets")
+            if cs is None:                              # a price request was refused: not written, retried next run
+                stats["candles_failed"] = stats.get("candles_failed", 0) + 1; continue
             w = writer(g["date"][:7])
             n_written = 0
             for m in ms:
