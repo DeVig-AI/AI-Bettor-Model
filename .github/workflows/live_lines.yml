@@ -1,4 +1,4 @@
-name: Live lines -- NBA, MLB and college football scores and win-chance graph (display only)
+name: Live lines -- NBA, MLB, NHL, WNBA and college football scores and win-chance graph (display only)
 # GitHub skips most runs of a 5-minute schedule, so this runs as a loop instead: every 3 minutes while a game is on
 # or about to start, and asleep until the next game's window when that opens before the job's time is up. A loop that
 # reaches its time limit with games on queues its next run (as the Research Lab loop does). When the next game is

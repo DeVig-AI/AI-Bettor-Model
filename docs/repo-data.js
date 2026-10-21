@@ -24,7 +24,8 @@
     {path: "nfl/comparison_lineboard_export.json", every: 30},
     {path: "live/models_export.json", every: 15},
     {path: "nfl/props_model_export.json", every: 15, props: true},
-    {path: "nba/props_model_export.json", every: 15, props: true}
+    {path: "nba/props_model_export.json", every: 15, props: true},
+    {path: "nhl/props_model_export.json", every: 15, props: true}
   ];
   var SCANS_KEY = "devig_free_scans";
   var store = {};      // collection -> {source path -> [doc data]}

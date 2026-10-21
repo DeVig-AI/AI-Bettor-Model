@@ -74,7 +74,7 @@ async function open(browser, base, logos, preview = true) {
     return r.fulfill({status: 404, body: ""});
   });
   if (logos) await ctx.addInitScript(() => { Object.defineProperty(window, "devigLogos", {get: () => true, set: () => {}}); });
-  if (preview) await ctx.addInitScript(() => { window.devigCfbPreview = true; });   // the board behind "under construction"
+  if (preview) await ctx.addInitScript(() => { window.devigCfbPreview = true; });   // no effect now the board is on
   await ctx.addInitScript(() => { try { localStorage.setItem("devig.installTip.v1", "1"); } catch (e) {} });   // no install tip
   const pg = await ctx.newPage();
   const errors = [];
@@ -90,18 +90,13 @@ test("college football tab on a phone", async (t) => {
   const browser = await chromium.launch({executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"});
   try {
     const u = await open(browser, base, false, false);
-    await t.test("default: CFB is under construction", async () => {
+    await t.test("default: the CFB board is on (no preview switch)", async () => {
       await u.pg.locator('#sportPills [data-sport="CFB"]').click();
-      await u.pg.locator(".cfb-soon").waitFor();
-      assert.match(await u.pg.locator(".cfb-soon").innerText(), /under construction/i);
-      assert.equal(await u.pg.locator(".cfb-card").count(), 0);
-      await u.pg.screenshot({path: OUT + "cfb-soon.png"});
+      await u.pg.locator(".cfb-card").first().waitFor();
+      assert.equal(await u.pg.locator(".cfb-soon").count(), 0);
       await u.pg.locator('nav.tabs button[data-tab="more"]').click(); await u.pg.locator('#panel-more [data-go="models"]').click();
       await u.pg.locator('#mdSport [data-md-sport="CFB"]').click();
-      assert.match(await u.pg.locator("#mdGames").innerText(), /under construction/i);
-      await u.pg.locator('nav.tabs button[data-tab="scan"]').click();
-      await u.pg.waitForTimeout(300);
-      assert.equal(await u.pg.locator('#pastSportPills [data-past-sport="CFB"]').count(), 0, "no CFB in History yet");
+      assert.doesNotMatch(await u.pg.locator("#mdGames").innerText(), /under construction/i);
     });
     assert.deepEqual(u.errors, []);
     await u.ctx.close();
