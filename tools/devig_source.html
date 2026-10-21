@@ -1564,11 +1564,17 @@
       return Object.assign({}, x, {away_team: x.away, home_team: x.home, kickoff_time: x.kickoff});
     });
   }
-  // ESPN's fast feed when the website has it, else the score the lines file saw when it was built
+  // ESPN's fast feed when the website has it, else the live bot's file (tools/live_lines.py), else the score the lines
+  // file saw when it was built. The bot's win-chance line comes along either way.
   function cfbState(g){
     var f = (fastScores.CFB || []).filter(function(y){ return String(y.id) === String(g.espn_id); })[0];
-    return f ? {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score, possession: f.possession}
-             : {state: g.state || "pre", detail: g.detail || "", away_score: g.away_score, home_score: g.home_score};
+    var b = otherLive ? (otherLive.games || []).filter(function(y){ return y.sport === "CFB" && String(y.espn_id) === String(g.espn_id); })[0] : null;
+    var o = f ? {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score, possession: f.possession}
+      : b ? {state: b.state, detail: b.detail, away_score: b.away_score, home_score: b.home_score}
+      : {state: g.state || "pre", detail: g.detail || "", away_score: g.away_score, home_score: g.home_score};
+    if(f && b && b.state === "post" && f.state !== "post") o = {state: b.state, detail: b.detail, away_score: b.away_score, home_score: b.home_score};
+    o.kalshi_line = b ? b.kalshi_line : null;
+    return o;
   }
   function cfbOnBoard(g){
     var st = cfbState(g).state, k = new Date(g.kickoff_time).getTime();
@@ -1597,8 +1603,8 @@
       '<div class="cfb-lines"><span>Spread <b>' + escapeHtml(fav) + '</b></span><span>Total <b>' + (tot ? escapeHtml(String(tot.line)) : '—') + '</b></span>' +
       '<span>Money <b>' + escapeHtml(g.away) + ' ' + fmtOdds(ml.away) + '</b> · <b>' + escapeHtml(g.home) + ' ' + fmtOdds(ml.home) + '</b></span></div></summary>';
     var body = el("div", "cfb-body");
-    var fl = fastLines[gameKey(g)];
-    var chart = fl && fl.points && fl.points.length > 1 ? liveChartEl(Object.assign({}, g, {market: {}}), {state: lg.state, kalshi_line: {team: g.home, points: fl.points}}) : "";
+    var fl = fastLines[gameKey(g)], pts = fl && fl.points && fl.points.length > 1 ? fl.points : lg.kalshi_line && lg.kalshi_line.points;
+    var chart = pts && pts.length > 1 ? liveChartEl(Object.assign({}, g, {market: {}}), {state: lg.state, kalshi_line: {team: g.home, points: pts}}) : "";
     body.innerHTML = chart || '<div class="faint" style="margin:8px 0">' + (g.home_ticker ? 'Loading the win-chance graph…' : 'No Kalshi win market for this game.') + '</div>';
     var wheel = spreadWheelEl(g);
     if(wheel) body.appendChild(wheel);
@@ -3390,6 +3396,7 @@
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
           if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
+          if(x && x.doc === "LIVE_LINES") otherLive = x;
           if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
           if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
           if(x && x.doc === "NBA_ROSTERS"){ nbaRosters = x; setTimeout(renderHome, 0); }
@@ -3768,6 +3775,19 @@
   // Written by the GitHub bot nfl/nfl_props_live_v1.py (ESPN scores and box scores, Kalshi prices) and copied into
   // the "live" collection. Display only: picks, locks and official grades never change here.
   var liveDoc = null, liveLoaded = false;
+  // NBA, MLB and college football get the same from tools/live_lines.py (live/live_lines.json): ESPN scores, Kalshi's
+  // live moneyline and the win-chance line, kept after the final, so the graph shows without /api/live or /api/winline.
+  var otherLive = null;
+  function otherLiveFor(g){
+    var sport = g.sport || "NFL", kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN, best = null, gap = Infinity;
+    if(!otherLive || sport === "NFL") return null;
+    (otherLive.games || []).forEach(function(x){             // closest start wins (MLB doubleheaders)
+      if(x.sport !== sport || !sameGame(g, x.away, x.home, x.kickoff)) return;
+      var d = isFinite(kt) ? Math.abs(new Date(x.kickoff).getTime() - kt) : 0;
+      if(d < gap){ gap = d; best = x; }
+    });
+    return best ? Object.assign({picks: []}, best) : null;
+  }
   function liveBadge(p){
     if(p.status === "won") return ["good", "WON"];
     if(p.status === "lost") return ["bad", "LOST"];
@@ -3871,7 +3891,7 @@
   function liveFor(g){
     if(g.trial) return null;
     var sport = g.sport || "NFL";
-    var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : null;
+    var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : otherLiveFor(g);
     if(!base || (base.state === "pre" && !base.away_score)) base = archiveFor(g) || base;
     if(base && base.state === "post" && !base.lines){                  // still in this week's live file: take the archive's lines
       var ar = archiveFor(g);
