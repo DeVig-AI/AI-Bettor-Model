@@ -70,7 +70,9 @@ class CFBLines(unittest.TestCase):
         self.assertEqual(g["total"]["line"], 51.5)
         self.assertIn("DEL", g["spreads"])
         self.assertIn("MOST", g["spreads"])
-        self.assertTrue(any("1 Kalshi games with no FBS match" in x for x in GL.KG.log))
+        self.assertTrue(any("1 Kalshi games not matched to ESPN's FBS games: 1 no FBS match" in x for x in GL.KG.log))
+        self.assertEqual(GL.CFB_UNMATCHED, [{"date": "2026-10-20", "event": "KXNCAAFGAME-26OCT20ABCXYZ",
+                                             "away": "Other FCS", "home": "Some FCS U", "why": "no FBS match"}])
 
     def test_espn_read_one_day_at_a_time(self):
         asked = []
@@ -82,9 +84,9 @@ class CFBLines(unittest.TestCase):
             return fake_get(url, params)
         GL.KG.get = by_day
         cfb, espn = GL.cfb_games(NOW)
-        self.assertEqual(len(asked), 13)
+        self.assertEqual(len(asked), 18)
         self.assertTrue(all(len(d) == 8 for d in asked), asked)               # never a "from-to" range
-        self.assertEqual((asked[0], asked[-1]), ("20261017", "20261029"))
+        self.assertEqual((asked[0], asked[-1]), ("20261017", "20261103"))
         self.assertEqual(len(cfb), 1)                                          # the same game once
         self.assertEqual(list(espn), ["401"])
 
