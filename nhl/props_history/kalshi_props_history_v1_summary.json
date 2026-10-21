@@ -1,57 +1,27 @@
 {
- "generated_at": "2026-10-21T22:45:00Z",
+ "generated_at": "2026-10-21T23:14:01Z",
  "stats": {
-  "events_seen": 2140,
-  "events_done_now": 1425,
-  "markets_written_now": 67539,
-  "no_candle": 3916,
-  "no_game": 2,
+  "events_seen": 1454,
+  "events_done_now": 128,
+  "markets_written_now": 7055,
+  "no_candle": 954,
+  "no_game": 1,
   "not_nhl_game_type": 0,
   "after_cutoff": 12,
   "no_markets": 514,
   "markets_from": {
-   "/historical/markets": 1280,
-   "/markets": 145
+   "/markets": 96,
+   "/historical/markets": 32
   },
   "candles_by_endpoint": {
-   "batch": 5850,
-   "historical": 57773
+   "batch": 5392,
+   "historical": 709
   },
-  "minutes": 320.1,
+  "minutes": 15.3,
   "complete": false,
-  "events_done_total": 1611
+  "events_done_total": 1499
  },
  "errors": [
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR18OTTCAR-OTTSPINTO12-1/candlesticks?start_ts=1776507600&end_ts=1776536400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR18OTTCAR-OTTJSANDERSON85-1/candlesticks?start_ts=1776507600&end_ts=1776536400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR18OTTCAR-OTTBTKACHUK7-2/candlesticks?start_ts=1776507600&end_ts=1776536400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09NSHUTA-UTALCOOLEY92-3/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09NSHUTA-UTAKYAMAMOTO56-2/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09NSHUTA-UTAJPETERKA77-3/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09NSHUTA-UTAJPETERKA77-2/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09NSHUTA-UTADGUENTHER11-3/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09NSHUTA-UTACKELLER9-3/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09MINDAL-MINMZUCCARELLO36-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09MINDAL-MINMFOLIGNO17-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09MINDAL-MINMBOLDY12-2/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09MINDAL-MINKKAPRIZOV97-3/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09MINDAL-MINJSPURGEON46-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CGYCOL-COLRCOLTON20-2/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CGYCOL-COLNMACKINNON29-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09CGYCOL-COLJMANSON42-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CGYCOL-COLJDRURY18-2/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09CGYCOL-COLBNELSON11-1/candlesticks?start_ts=1775751600&end_ts=1775780400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CARCHI-CHIRGREENE20-2/candlesticks?start_ts=1775749800&end_ts=1775778600&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CARCHI-CHIKKORCHINSKI14-1/candlesticks?start_ts=1775749800&end_ts=1775778600&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09CARCHI-CARTHALL71-3/candlesticks?start_ts=1775749800&end_ts=1775778600&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09CARCHI-CARTHALL71-1/candlesticks?start_ts=1775749800&end_ts=1775778600&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09WPGSTL-WPGKCONNOR81-2/candlesticks?start_ts=1775748000&end_ts=1775776800&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09WPGSTL-WPGJTOEWS19-1/candlesticks?start_ts=1775748000&end_ts=1775776800&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09WPGSTL-WPGGVILARDI13-3/candlesticks?start_ts=1775748000&end_ts=1775776800&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26APR09WPGSTL-WPGDSAMBERG54-1/candlesticks?start_ts=1775748000&end_ts=1775776800&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26APR09WPGSTL-WPGDDEMELO2-1/candlesticks?start_ts=1775748000&end_ts=1775776800&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/series/KXNHLGOAL/markets/KXNHLGOAL-26FEB28PITNYR-PITEMALKIN71-2/candlesticks?start_ts=1772268600&end_ts=1772297400&period_interval=60",
-  "HTTP 429 https://api.elections.kalshi.com/trade-api/v2/historical/markets/KXNHLGOAL-26FEB28PITNYR-PITCDEWAR19-1/candlesticks?start_ts=1772268600&end_ts=1772297400&period_interval=60",
   "no markets KXNHLGOAL-26FEB05LAVGK",
   "no markets KXNHLGOAL-26FEB05FLATB",
   "no markets KXNHLGOAL-26FEB05PITBUF",
@@ -321,36 +291,123 @@
   "no markets KXNHLGOAL-26JAN02SEAVAN",
   "no markets KXNHLGOAL-26JAN02MINANA",
   "no markets KXNHLGOAL-26JAN02NYRFLA",
-  "no markets KXNHLGOAL-26JAN02VGKSTL"
+  "no markets KXNHLGOAL-26JAN02VGKSTL",
+  "no markets KXNHLGOAL-26JAN01NSHSEA",
+  "no markets KXNHLGOAL-26JAN01DALCHI",
+  "no markets KXNHLGOAL-26JAN01WPGTOR",
+  "no markets KXNHLGOAL-26JAN01TBLA",
+  "no markets KXNHLGOAL-26JAN01MTLCAR",
+  "no markets KXNHLGOAL-26JAN01DETPIT",
+  "no markets KXNHLGOAL-26JAN01UTANYI",
+  "no markets KXNHLGOAL-26JAN01WSHOTT",
+  "no markets KXNHLGOAL-25DEC31PHICGY",
+  "no markets KXNHLGOAL-25DEC31BOSEDM",
+  "no markets KXNHLGOAL-25DEC31STLCOL",
+  "no markets KXNHLGOAL-25DEC31BUFDAL",
+  "no markets KXNHLGOAL-25DEC31NJCBJ",
+  "no markets KXNHLGOAL-25DEC31WPGDET",
+  "no markets KXNHLGOAL-25DEC31TBANA",
+  "no markets KXNHLGOAL-25DEC31MINSJ",
+  "no markets KXNHLGOAL-25DEC31NSHVGK",
+  "no markets KXNHLGOAL-25DEC31NYRWSH",
+  "no markets KXNHLGOAL-25DEC30PHIVAN",
+  "no markets KXNHLGOAL-25DEC30NYICHI",
+  "no markets KXNHLGOAL-25DEC30NJTOR",
+  "no markets KXNHLGOAL-25DEC30MTLFLA",
+  "no markets KXNHLGOAL-25DEC30CARPIT",
+  "no markets KXNHLGOAL-25DEC29VANSEA",
+  "no markets KXNHLGOAL-25DEC29SJANA",
+  "no markets KXNHLGOAL-25DEC29MINVGK",
+  "no markets KXNHLGOAL-25DEC29NSHUTA",
+  "no markets KXNHLGOAL-25DEC29LACOL",
+  "no markets KXNHLGOAL-25DEC29BOSCGY",
+  "no markets KXNHLGOAL-25DEC29BUFSTL"
  ],
  "raw_candle_samples": {
-  "market_/historical/markets": {
+  "market_/markets": {
    "can_close_early": true,
-   "close_time": "2026-05-01T05:20:44Z",
-   "created_time": "2026-04-30T18:01:04.226173Z",
+   "close_time": "2026-10-21T01:58:44Z",
+   "created_time": "2026-10-20T11:05:37.813706Z",
    "custom_strike": {
-    "hockey_player": "2c3d67df-721b-4ea4-8aee-dea4a9715c82",
-    "hockey_team": "e8b67c82-f465-450d-aef9-c8414f2ae83a"
+    "hockey_player": "4644eeb3-9fe3-429c-b423-3365cf2d0c1d",
+    "hockey_team": "f61f9daa-407b-4c46-96e8-feee19cd6f51"
    },
    "early_close_condition": "This market will close and expire early if the event occurs.",
-   "event_ticker": "KXNHLGOAL-26APR30EDMANA",
+   "event_ticker": "KXNHLGOAL-26OCT20TORCBJ",
    "exchange_index": 0,
-   "expected_expiration_time": "2026-05-01T05:00:00Z",
-   "expiration_time": "2026-05-15T02:00:00Z",
-   "expiration_value": "goal_count",
-   "floor_strike": 2.5,
-   "last_price_dollars": "0.0100",
-   "latest_expiration_time": "2026-05-15T02:00:00Z",
+   "expected_expiration_time": "2026-10-21T02:00:00Z",
+   "expiration_time": "2026-10-22T23:00:00Z",
+   "expiration_value": "0",
+   "floor_strike": 0.5,
+   "last_price_dollars": "0.0800",
+   "latest_expiration_time": "2026-10-22T23:00:00Z",
    "market_type": "binary",
    "no_ask_dollars": "1.0000",
-   "no_bid_dollars": "0.1900",
-   "no_sub_title": "Zach Hyman: 3+",
+   "no_bid_dollars": "0.0000",
+   "no_sub_title": "Brandon Duhaime: 1+",
    "notional_value_dollars": "1.0000",
-   "occurrence_datetime": "2026-05-01T05:00:00Z",
+   "occurrence_datetime": "2026-10-21T02:00:00Z",
+   "open_interest_fp": "587.18",
+   "open_time": "2026-10-20T11:06:00Z",
+   "previous_price_dollars": "0.0000",
+   "previous_yes_ask_dollars": "0.0800",
+   "previous_yes_bid_dollars": "0.0600",
+   "price_level_structure": "linear_cent",
+   "price_ranges": [
+    {
+     "end": "1.0000",
+     "start": "0.0000",
+     "step": "0.0100"
+    }
+   ],
+   "primary_participant_key": "hockey_player",
+   "result": "no",
+   "rules_primary": "If Brandon Duhaime records 1+ goals in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals recorded.",
+   "settlement_bounds_type": "default",
+   "settlement_timer_seconds": 120,
+   "settlement_ts": "2026-10-21T02:01:46.7815Z",
+   "settlement_value_dollars": "0.0000",
+   "status": "finalized",
+   "strike_type": "greater",
+   "ticker": "KXNHLGOAL-26OCT20TORCBJ-TORBDUHAIME24-1",
+   "title": "Brandon Duhaime: 1+ goals",
+   "updated_time": "2026-10-21T02:01:47.149844Z",
+   "volume_24h_fp": "587.18",
+   "volume_fp": "587.18",
+   "yes_ask_dollars": "1.0000",
+   "yes_ask_size_fp": "0.00",
+   "yes_bid_dollars": "0.0000",
+   "yes_bid_size_fp": "0.00",
+   "yes_sub_title": "Brandon Duhaime: 1+"
+  },
+  "market_/historical/markets": {
+   "can_close_early": true,
+   "close_time": "2026-06-15T03:40:52Z",
+   "created_time": "2026-06-14T23:45:29.943129Z",
+   "custom_strike": {
+    "hockey_player": "360cf5b6-6c66-4455-bd59-4d412e600899",
+    "hockey_team": "d599b5cc-5e06-4679-9303-4d5dad7c4cce"
+   },
+   "early_close_condition": "This market will close and expire early if the event occurs.",
+   "event_ticker": "KXNHLGOAL-26JUN14CARVGK",
+   "exchange_index": 0,
+   "expected_expiration_time": "2026-06-15T03:00:00Z",
+   "expiration_time": "2026-06-29T00:00:00Z",
+   "expiration_value": "goal_count",
+   "floor_strike": 0.5,
+   "last_price_dollars": "0.0300",
+   "latest_expiration_time": "2026-06-29T00:00:00Z",
+   "market_type": "binary",
+   "no_ask_dollars": "1.0000",
+   "no_bid_dollars": "0.0000",
+   "no_sub_title": "Kaedan Korczak: 1+",
+   "notional_value_dollars": "1.0000",
+   "occurrence_datetime": "2026-06-15T03:00:00Z",
    "open_interest_fp": "0.00",
-   "open_time": "2026-04-30T18:05:00Z",
-   "previous_price_dollars": "0.0100",
-   "previous_yes_ask_dollars": "0.8100",
+   "open_time": "2026-06-14T23:50:00Z",
+   "previous_price_dollars": "0.0300",
+   "previous_yes_ask_dollars": "1.0000",
    "previous_yes_bid_dollars": "0.0000",
    "price_level_structure": "linear_cent",
    "price_ranges": [
@@ -362,261 +419,204 @@
    ],
    "primary_participant_key": "hockey_player",
    "result": "no",
-   "rules_primary": "If Zach Hyman records at least 3+ goals in the EDM Oilers vs ANA Ducks professional hockey game originally scheduled for Apr 30, 2026, then the market resolves to Yes.",
-   "rules_secondary": "The following market refers to a player in the EDM Oilers vs ANA Ducks professional hockey game originally scheduled for Apr 30, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals recorded.",
+   "rules_primary": "If Kaedan Korczak records at least 1+ goals in the CAR Hurricanes vs VGK Golden Knights professional hockey game originally scheduled for Jun 14, 2026, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the CAR Hurricanes vs VGK Golden Knights professional hockey game originally scheduled for Jun 14, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals recorded.",
    "settlement_bounds_type": "default",
    "settlement_timer_seconds": 300,
-   "settlement_ts": "2026-05-01T05:26:46.74546Z",
+   "settlement_ts": "2026-06-15T03:46:53.448027Z",
    "settlement_value_dollars": "0.0000",
    "status": "finalized",
    "strike_type": "structured",
-   "ticker": "KXNHLGOAL-26APR30EDMANA-EDMZHYMAN18-3",
-   "title": "Zach Hyman: 3+ goals",
-   "updated_time": "2026-05-01T05:26:46.791929Z",
+   "ticker": "KXNHLGOAL-26JUN14CARVGK-VGKKKORCZAK6-1",
+   "title": "Kaedan Korczak: 1+ goals",
+   "updated_time": "2026-06-15T03:46:53.471936Z",
    "volume_24h_fp": "0.00",
-   "volume_fp": "281.00",
-   "yes_ask_dollars": "0.8100",
-   "yes_ask_size_fp": "-7.00",
-   "yes_bid_dollars": "0.0000",
-   "yes_bid_size_fp": "0.00",
-   "yes_sub_title": "Zach Hyman: 3+"
-  },
-  "historical": {
-   "candlesticks": [
-    {
-     "end_period_ts": 1777575600,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.0200",
-      "high": "1.0000",
-      "low": "0.0200",
-      "open": "1.0000"
-     },
-     "yes_bid": {
-      "close": "0.0100",
-      "high": "0.0100",
-      "low": "0.0100",
-      "open": "0.0100"
-     }
-    },
-    {
-     "end_period_ts": 1777579200,
-     "open_interest": "5.00",
-     "price": {
-      "close": "0.0200",
-      "high": "0.0200",
-      "low": "0.0200",
-      "mean": "0.0200",
-      "open": "0.0200",
-      "previous": null
-     },
-     "volume": "5.00",
-     "yes_ask": {
-      "close": "0.0200",
-      "high": "0.0200",
-      "low": "0.0200",
-      "open": "0.0200"
-     },
-     "yes_bid": {
-      "close": "0.0100",
-      "high": "0.0100",
-      "low": "0.0100",
-      "open": "0.0100"
-     }
-    },
-    {
-     "end_period_ts": 1777582800,
-     "open_interest": "5.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": "0.0200"
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.0100",
-      "high": "0.0200",
-      "low": "0.0100",
-      "open": "0.0200"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0100",
-      "low": "0.0000",
-      "open": "0.0100"
-     }
-    },
-    {
-     "end_period_ts": 1777586400,
-     "open_interest": "205.00",
-     "price": {
-      "close": "0.0200",
-      "high": "0.0200",
-      "low": "0.0200",
-      "mean": "0.0200",
-      "open": "0.0200",
-      "previous": "0.0200"
-     },
-     "volume": "200.00",
-     "yes_ask": {
-      "close": "0.0100",
-      "high": "0.0200",
-      "low": "0.0100",
-      "open": "0.0100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777590000,
-     "open_interest": "205.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": "0.0200"
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.0100",
-      "high": "0.0200",
-      "low": "0.0100",
-      "open": "0.0100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777593600,
-     "open_interest": "281.00",
-     "price": {
-      "close": "0.0100",
-      "high": "0.0100",
-      "low": "0.0100",
-      "mean": "0.0100",
-      "open": "0.0100",
-      "previous": "0.0200"
-     },
-     "volume": "76.00",
-     "yes_ask": {
-      "close": "0.0100",
-      "high": "0.0200",
-      "low": "0.0100",
-      "open": "0.0100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    },
-    {
-     "end_period_ts": 1777597200,
-     "open_interest": "281.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": "0.0100"
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "0.0200",
-      "high": "0.0200",
-      "low": "0.0100",
-      "open": "0.0100"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
-      "low": "0.0000",
-      "open": "0.0000"
-     }
-    }
-   ],
-   "ticker": "KXNHLGOAL-26APR30EDMANA-EDMZHYMAN18-3"
-  },
-  "market_/markets": {
-   "can_close_early": true,
-   "close_time": "2026-10-21T01:59:08Z",
-   "created_time": "2026-10-20T11:06:07.251101Z",
-   "custom_strike": {
-    "hockey_player": "7d2d2b1c-e7b9-49b5-8ed7-9c8d5d7ef134",
-    "hockey_team": "253e2161-4b9b-4580-88e7-a25b9f6cf8af"
-   },
-   "early_close_condition": "This market will close and expire early if the event occurs.",
-   "event_ticker": "KXNHLPTS-26OCT20TORCBJ",
-   "exchange_index": 0,
-   "expected_expiration_time": "2026-10-21T02:00:00Z",
-   "expiration_time": "2026-10-22T23:00:00Z",
-   "expiration_value": "0",
-   "floor_strike": 0.5,
-   "last_price_dollars": "0.0100",
-   "latest_expiration_time": "2026-10-22T23:00:00Z",
-   "market_type": "binary",
-   "no_ask_dollars": "1.0000",
-   "no_bid_dollars": "0.0000",
-   "no_sub_title": "Adam Fantilli: 1+",
-   "notional_value_dollars": "1.0000",
-   "occurrence_datetime": "2026-10-21T02:00:00Z",
-   "open_interest_fp": "11.82",
-   "open_time": "2026-10-20T11:07:00Z",
-   "previous_price_dollars": "0.0000",
-   "previous_yes_ask_dollars": "0.6300",
-   "previous_yes_bid_dollars": "0.6100",
-   "price_level_structure": "linear_cent",
-   "price_ranges": [
-    {
-     "end": "1.0000",
-     "start": "0.0000",
-     "step": "0.0100"
-    }
-   ],
-   "primary_participant_key": "hockey_player",
-   "result": "no",
-   "rules_primary": "If Adam Fantilli records 1+ points in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026, then the market resolves to Yes.",
-   "rules_secondary": "The following market refers to a player in the Toronto vs Columbus NHL game originally scheduled for Oct 20, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's points recorded.",
-   "settlement_bounds_type": "default",
-   "settlement_timer_seconds": 120,
-   "settlement_ts": "2026-10-21T02:02:11.776123Z",
-   "settlement_value_dollars": "0.0000",
-   "status": "finalized",
-   "strike_type": "greater",
-   "ticker": "KXNHLPTS-26OCT20TORCBJ-CBJAFANTILLI19-1",
-   "title": "Adam Fantilli: 1+ points",
-   "updated_time": "2026-10-21T02:02:12.149393Z",
-   "volume_24h_fp": "11.82",
-   "volume_fp": "11.82",
+   "volume_fp": "2.00",
    "yes_ask_dollars": "1.0000",
    "yes_ask_size_fp": "0.00",
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
-   "yes_sub_title": "Adam Fantilli: 1+"
+   "yes_sub_title": "Kaedan Korczak: 1+"
+  },
+  "historical": {
+   "candlesticks": [
+    {
+     "end_period_ts": 1781452800,
+     "open_interest": "5669.00",
+     "price": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "mean": "0.0400",
+      "open": "0.0400",
+      "previous": "0.0300"
+     },
+     "volume": "25.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781460000,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781463600,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781467200,
+     "open_interest": "5669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781470800,
+     "open_interest": "6669.00",
+     "price": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "mean": "0.0400",
+      "open": "0.0400",
+      "previous": "0.0400"
+     },
+     "volume": "1000.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781474400,
+     "open_interest": "6669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    },
+    {
+     "end_period_ts": 1781478000,
+     "open_interest": "6669.00",
+     "price": {
+      "close": null,
+      "high": null,
+      "low": null,
+      "mean": null,
+      "open": null,
+      "previous": "0.0400"
+     },
+     "volume": "0.00",
+     "yes_ask": {
+      "close": "0.0400",
+      "high": "0.0400",
+      "low": "0.0400",
+      "open": "0.0400"
+     },
+     "yes_bid": {
+      "close": "0.0300",
+      "high": "0.0300",
+      "low": "0.0300",
+      "open": "0.0300"
+     }
+    }
+   ],
+   "ticker": "KXNHLGOAL-26JUN14CARVGK-VGKTHERTL48-2"
   }
  }
 }
