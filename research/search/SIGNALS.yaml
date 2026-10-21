@@ -134,3 +134,24 @@ signals:
 - id: qb-change
   kind: qb_change
   reason: A new starting quarterback changes a team more than any other player.
+- id: def-finishing
+  kind: team
+  side: defense
+  num:
+    points: 1
+    epa: -1
+  den: null
+  halflife: 8
+  carry: 0.5
+  reason: 'Points allowed beyond what EPA allowed explains (red-zone stands, short fields given up): red-zone defense is
+    one of the least stable parts of defense from year to year, so it is partly luck that may not repeat.'
+- id: def-early-epa
+  kind: team
+  side: defense
+  num:
+    early_epa: 1
+  den: early_plays
+  halflife: 8
+  carry: 0.5
+  reason: 'Early-down EPA allowed per play: defenses that win first and second down force obvious passing downs, and
+    early-down efficiency is steadier than third-down results.'
