@@ -234,14 +234,14 @@ def build(now, fetch_results=results):
         this, last = this_ts.get(k), last_ts.get(k)
         S.write(os.path.join(OUT, f"team_{k}.json"), {
             "generated_at": stamp, "code": k, "name": NAMES[k], "color": col.get(k), "rank": rank[k],
-            "rating": S.r1(rating[k], 2), "season": label(st), "last_season": label(st - 1),
+            "rating": S.r1(rating[k], 2), "season": label(st), "last_season": label(st - 1), "season_year": st + 1,
             "this": {f: v for f, v in (this or {}).items() if f != "games"} or None,
             "last": {f: v for f, v in (last or {}).items() if f != "games"} or None,
             "games": (this or {}).get("games", []) + (last or {}).get("games", []),
             "players": roster[k]})
     search.sort(key=lambda r: -(r[7] or 0))
     S.write(os.path.join(OUT, "index.json"), {
-        "generated_at": stamp, "sport": "NHL", "season": label(st), "last_season": label(st - 1),
+        "generated_at": stamp, "sport": "NHL", "season": label(st), "last_season": label(st - 1), "season_year": st + 1,
         "rating_note": (f"Goals per game better than an average team, adjusted for who each team played (SRS, shootout "
                         f"goal included). Early in the season last season's rating counts as {S.PRIOR_GAMES} games, "
                         f"pulled {round((1 - S.CARRY) * 100)}% toward average."),

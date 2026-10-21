@@ -5,6 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
 import { mkdirSync, readFileSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import path from "node:path";
 
@@ -17,6 +18,27 @@ const OUT = new URL("./out/", import.meta.url).pathname;
 mkdirSync(OUT, {recursive: true});
 
 const nyk = JSON.parse(readFileSync(ROOT + "stats/nba/team_NYK.json", "utf8"));
+// NHL: built here from the real skater files, with each game's score taken from its skaters' goals (the bot reads
+// real scores from the NHL API, which this test can't reach). Written under tests/app/out/, never committed.
+const NHL_OUT = OUT + "stats/nhl/";
+execFileSync("python3", ["-c", `
+import sys, pandas as pd
+sys.path.insert(0, "tools")
+import stats_nhl as H
+from datetime import datetime, timezone
+H.OUT = sys.argv[1]
+def fake(start):
+    d = H.skaters(start)
+    out = {}
+    for gid, x in d.groupby("game_id"):
+        h, a = x[x.home == 1], x[x.home == 0]
+        if not len(h) or not len(a): continue
+        hs, as_ = int(h.g.sum()), int(a.g.sum())
+        out[int(gid)] = {"date": str(x.game_date.iloc[0]), "type": int(x.game_type.iloc[0]), "home": h.team.iloc[0],
+                         "away": a.team.iloc[0], "hs": hs + (hs == as_), "as": as_, "last": "SO" if hs == as_ else "REG"}
+    return out
+H.build(datetime.now(timezone.utc), fetch_results=fake)
+`, NHL_OUT], {cwd: ROOT});
 const star = nyk.players[0];                                          // most minutes: has a game log
 const now = Date.now(), iso = ms => new Date(ms).toISOString().replace(/\.\d+Z$/, "Z");
 const kick = now + 3 * 3600e3;
@@ -47,6 +69,8 @@ test("Research section on a phone", async (t) => {
     await ctx.route(/fonts\.(googleapis|gstatic)\.com|espncdn/, r => r.abort());
     await ctx.route(/raw\.githubusercontent\.com/, r => {
       const p = new URL(r.request().url()).pathname;
+      const n = p.match(/\/main\/stats\/nhl\/(.+\.json)$/);
+      if (n) return existsSync(NHL_OUT + n[1]) ? r.fulfill({path: NHL_OUT + n[1], contentType: "application/json"}) : r.fulfill({status: 404, body: ""});
       const m = p.match(/\/main\/(stats\/.+\.json)$/);
       if (m && existsSync(ROOT + m[1])) return r.fulfill({path: ROOT + m[1], contentType: "application/json"});
       if (p.endsWith("/live/game_lines.json")) return r.fulfill({json: LINES});
@@ -117,6 +141,24 @@ test("Research section on a phone", async (t) => {
       assert.equal(await pg.locator("#rsStat").inputValue(), "points");
       assert.equal(await pg.locator("#rsLine").inputValue(), "24.5");
     });
+    for (const [sp, teams, last, statLabel] of [["NFL", 32, "Last 5", "Passing yards"], ["NHL", 32, "Last 10", "Goals"]]) {
+      await t.test(`${sp}: rankings, a team, a player and its own stats`, async () => {
+        await pg.locator('nav.tabs button[data-tab="more"]').click();
+        await pg.locator('#panel-more [data-go="research"]').click();
+        await pg.locator(`[data-rs-sport="${sp}"]`).click();
+        await pg.locator('[data-rs-tab="rank"]').click();
+        await pg.waitForFunction(n => document.querySelectorAll("#rsCard .rs-table tr[data-rs]").length === n, teams);
+        assert.match(await pg.locator("#rsCard .rs-table tr").first().innerText(), new RegExp(last, "i"));
+        await pg.locator("#rsCard .rs-table tr[data-rs]").first().click();
+        await pg.locator("#rsCard .rs-head").waitFor();
+        await pg.locator("#rsCard .rs-table tr[data-rs]").first().click();       // the roster's first player
+        await pg.locator("#rsHits .rs-hit").waitFor();
+        assert.ok((await pg.locator("#rsStat option").allInnerTexts()).includes(statLabel));
+        await pg.locator("#rsLine").fill("999.5");
+        assert.match(await pg.locator("#rsHits").innerText(), /Last 5 games\s*0 of \d+/);
+        await pg.screenshot({path: OUT + `research-${sp.toLowerCase()}-player.png`, fullPage: true});
+      });
+    }
     assert.deepEqual(errors, []);
   } finally {
     await browser.close();

@@ -30,9 +30,9 @@ def srs(games, teams, ridge=1.0):
     return {t: float(r[idx[t]]) for t in teams}, float(beta[n])
 
 
-def blend(this, last, gp):
-    """This season's rating, with last season's (times CARRY) counting as PRIOR_GAMES games early on."""
-    w = gp / (gp + PRIOR_GAMES)
+def blend(this, last, gp, prior=PRIOR_GAMES):
+    """This season's rating, with last season's (times CARRY) counting as `prior` games early on."""
+    w = gp / (gp + prior)
     return w * this + (1 - w) * CARRY * last
 
 

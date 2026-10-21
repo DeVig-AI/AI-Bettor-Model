@@ -22,6 +22,8 @@ jobs:
         run: python3 tools/stats_nba.py
       - name: NHL (the props model's box scores + final scores from the NHL API)
         run: python3 tools/stats_nhl.py
+      - name: NFL (nflverse weekly stats and schedule)
+        run: python3 tools/stats_nfl.py
       - name: Save them
         run: |
           git config user.name "sports-tracker-bot"

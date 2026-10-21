@@ -955,7 +955,7 @@
     </div>
     <div class="card">
       <h3>Research</h3>
-      <p>More → Research has DeVig's power rankings and each team's and player's stats, so you can check a game or a prop for yourself: season averages (this season and last), recent games, game logs, and how often a player cleared a line. Game cards link to both teams, and each prop links to the player with its line filled in. It shows counts, not chances: a short streak is a small sample, and Kalshi's price already reflects a player's recent form. The NBA comes first, then the NHL and NFL. Stats are ESPN's box scores (unofficial), updated twice a day.</p>
+      <p>More → Research has DeVig's power rankings and each team's and player's stats, so you can check a game or a prop for yourself: season averages (this season and last), recent games, game logs, and how often a player cleared a line. Game cards link to both teams, and each prop links to the player with its line filled in. It shows counts, not chances: a short streak is a small sample, and Kalshi's price already reflects a player's recent form. It covers the NBA, NHL and NFL. Stats are ESPN's box scores (NBA), the NHL's (NHL) and nflverse's (NFL), unofficial, updated twice a day.</p>
     </div>
     <div class="card">
       <h3>NHL and WNBA</h3>
@@ -1109,7 +1109,10 @@
     btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); window.scrollTo(0, 0); });
   });
   document.querySelectorAll("#panel-more [data-go]").forEach(function(b){
-    b.addEventListener("click", function(){ showPanel(b.dataset.go); window.scrollTo(0, 0); });
+    b.addEventListener("click", function(){
+      if(b.dataset.go === "research") rsStack = [{page: "home"}];        // the tile always opens Research's front page
+      showPanel(b.dataset.go); window.scrollTo(0, 0);
+    });
   });
   ["models", "lab", "about", "me", "research"].forEach(function(k){     // pages under More get a way back
     var back = el("button", "back-more", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>More');
@@ -1800,7 +1803,7 @@
   // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
   // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA", "NHL"];
+  var RS_SPORTS = ["NBA", "NHL", "NFL"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
   function rsGet(path){
     if(!rsCache[path]) rsCache[path] = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / 6e5), {cache: "no-store"})
@@ -1808,7 +1811,13 @@
       .catch(function(e){ delete rsCache[path]; throw e; });
     return rsCache[path];
   }
-  function rsIndex(sp){ return rsGet(sp.toLowerCase() + "/index.json"); }
+  function rsIndex(sp){
+    return rsGet(sp.toLowerCase() + "/index.json").then(function(idx){
+      var tc = TEAM_COLORS[sp] = TEAM_COLORS[sp] || {};            // colours for sports the app has no table for (NHL)
+      (idx.teams || []).forEach(function(t){ if(!tc[t.code] && /^#[0-9a-f]{6}$/i.test(t.color || "")) tc[t.code] = t.color; });
+      return idx;
+    });
+  }
   function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + code + ".json"); }
   function rsHasSport(sp){ return RS_SPORTS.indexOf(sp) >= 0; }
   // Open Research at a page: {page: "team", sport, code} or {page: "player", sport, team | teams, id | name, stat, line}.
@@ -1834,8 +1843,8 @@
   function rsNum(v, d){ return v == null ? "—" : Number(v).toFixed(d == null ? 1 : d); }
   function rsSigned(v){ return v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1); }
   function rsCell(v, c){ return c[3] ? rsSigned(v) : c[2] == null ? (v == null ? "—" : String(v)) : rsNum(v, c[2]); }   // [label, field, decimals, signed]
-  function rsSeasonYear(label){ return parseInt(String(label).slice(0, 4), 10) + 1; }   // "2026-27" -> 2027
-  function rsShort(label){ return String(label).replace(/^20/, "").replace("-", "–"); }   // "26–27"
+  function rsSeasonYear(f){ return f.season_year || parseInt(String(f.season).slice(0, 4), 10) + 1; }   // the year it ends
+  function rsShort(label){ var l = String(label); return l.indexOf("-") < 0 ? l : l.replace(/^20/, "").replace("-", "–"); }   // "26–27", NFL "2026"
   function rsDate(d){ var p = String(d).split("-"); return +p[1] + "/" + +p[2]; }
   function rsLogIdx(idx){ var m = {}; (idx.log_cols || []).forEach(function(c, i){ m[c] = i; }); return m; }
   function renderResearch(){
@@ -1866,7 +1875,7 @@
       var body = document.getElementById("rsBody");
       if(!body || sp !== rsSport) return;
       if(rsTab === "players") return rsPlayersList(body, idx, sp);
-      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Team</th><th>Record</th><th>Last 10</th><th>Rating</th></tr>';
+      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Team</th><th>Record</th><th>' + escapeHtml(idx.rank_last || "Last 10") + '</th><th>Rating</th></tr>';
       idx.teams.forEach(function(t){
         html += '<tr' + rsRow({page: "team", sport: sp, code: t.code}) + '><td><span class="rs-team"><span class="rk">' + t.rank + '</span>' + teamBadge(sp, t.code) + '<span class="nm">' + escapeHtml(t.name) + '</span></span></td>' +
           '<td>' + escapeHtml(t.record || "0-0").replace(/-/g, "–") + '</td><td>' + escapeHtml(t.last10 || "—") + '</td><td>' + rsSigned(t.rating) + '</td></tr>';
@@ -1876,7 +1885,7 @@
   }
   function rsPlayersList(body, idx, sp){
     body.innerHTML = '<div class="field" style="margin:0 0 8px"><input id="rsSearch" type="search" placeholder="Search players" autocomplete="off" value="' + escapeHtml(rsQuery) + '"></div><div id="rsPlayers"></div>';
-    var cur = rsSeasonYear(idx.season), sc = idx.search_cols || [];
+    var cur = rsSeasonYear(idx), sc = idx.search_cols || [];
     function draw(){
       var q = propNorm(rsQuery), rows = idx.players.filter(function(p){ return !q || propNorm(p[1]).indexOf(q) >= 0; }).slice(0, 40);
       var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + sc.map(function(c){ return '<th>' + escapeHtml(c) + '</th>'; }).join("") + '</tr>';
@@ -1934,7 +1943,7 @@
     Promise.all([rsIndex(r.sport), rsFindPlayer(r)]).then(function(x){
       var idx = x[0], found = x[1];
       if(!found){ card.innerHTML = '<div class="bb-empty">No stats for ' + escapeHtml(r.name || "this player") + ' yet.</div>'; return; }
-      var t = found.team, p = found.player, cur = rsSeasonYear(t.season), stats = idx.hit_stats || [], L = rsLogIdx(idx);
+      var t = found.team, p = found.player, cur = rsSeasonYear(t), stats = idx.hit_stats || [], L = rsLogIdx(idx);
       // a prop's own stat and line win the first time its link opens the page; after that, what was last typed here
       var key = r.sport + "|" + p.id, fromProp = !r.seen && stats.some(function(s){ return s[0] === r.stat; });
       var st = fromProp ? {stat: r.stat, line: r.line} : (rsHit[key] || {});
