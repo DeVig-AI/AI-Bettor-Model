@@ -141,14 +141,22 @@ def match_cfb(kg, espn):
     return None, None
 
 
+CFB_UNMATCHED = []      # Kalshi CFB games with no ESPN FBS game (written to the lines file so names can be added)
+
+
 def cfb_games(now):
     kal = KG.kalshi_games("NCAAF")
     espn = espn_cfb(now)
-    out, unmatched = [], 0
+    lo, hi = (now - timedelta(days=3)).strftime("%Y-%m-%d"), (now + timedelta(days=9)).strftime("%Y-%m-%d")
+    out = []
+    CFB_UNMATCHED.clear()
     for kg in kal.values():
         e, codes = match_cfb(kg, espn)
         if not e:
-            unmatched += 1
+            d = kg.get("date") or ""
+            CFB_UNMATCHED.append({"date": d, "event": kg.get("event"),
+                                  "away": kg["teams"][kg["away_code"]]["name"], "home": kg["teams"][kg["home_code"]]["name"],
+                                  "why": "after the window" if d > hi else "before the window" if d and d < lo else "no FBS match"})
             continue
         k_home = next(k for k, v in codes.items() if v == e["home"])
         k_away = next(k for k, v in codes.items() if v == e["away"])
@@ -171,8 +179,12 @@ def cfb_games(now):
                     "ml": {"home": KG.american(th["ask"]), "away": KG.american(ta["ask"])},
                     "spread": {"home_point": ms[0], "home": ms[1], "away": ms[2]} if ms else None,
                     "total": {"line": mt[0], "over": mt[1], "under": mt[2]} if mt else None})
-    if unmatched:
-        KG.log.append(f"CFB: {unmatched} Kalshi games with no FBS match on ESPN in the window (FCS, or a name to add)")
+    if CFB_UNMATCHED:
+        why = {}
+        for u in CFB_UNMATCHED:
+            why[u["why"]] = why.get(u["why"], 0) + 1
+        KG.log.append(f"CFB: {len(CFB_UNMATCHED)} Kalshi games not matched to ESPN's FBS games: "
+                      + ", ".join(f"{n} {w}" for w, n in sorted(why.items())) + " (list: cfb_unmatched)")
     return out, espn
 
 
@@ -229,7 +241,7 @@ def main():
         KG.log.append(f"CFB: {type(e).__name__}: {e}")
     games.sort(key=lambda x: (x["sport"], x["date"] or "", x["away"]))
     out = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "games": games,
-           "errors": KG.log[:20]}
+           "errors": KG.log[:20], "cfb_unmatched": sorted(CFB_UNMATCHED, key=lambda u: (u["why"], u["date"], u["away"]))}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
         json.dump(out, f, separators=(",", ":"))

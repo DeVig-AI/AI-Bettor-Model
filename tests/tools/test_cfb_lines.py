@@ -70,7 +70,9 @@ class CFBLines(unittest.TestCase):
         self.assertEqual(g["total"]["line"], 51.5)
         self.assertIn("DEL", g["spreads"])
         self.assertIn("MOST", g["spreads"])
-        self.assertTrue(any("1 Kalshi games with no FBS match" in x for x in GL.KG.log))
+        self.assertTrue(any("1 Kalshi games not matched to ESPN's FBS games: 1 no FBS match" in x for x in GL.KG.log))
+        self.assertEqual(GL.CFB_UNMATCHED, [{"date": "2026-10-20", "event": "KXNCAAFGAME-26OCT20ABCXYZ",
+                                             "away": "Other FCS", "home": "Some FCS U", "why": "no FBS match"}])
 
     def test_espn_read_one_day_at_a_time(self):
         asked = []
