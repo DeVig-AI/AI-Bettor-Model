@@ -1,10 +1,10 @@
 # Research Lab search (NFL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-21T01:24:10Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-21T01:26:01Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-169484 configurations scored so far.
+169761 configurations scored so far.
 
-## Spread -- top 25 of 167426
+## Spread -- top 25 of 167703
 
 | # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |
 |---|---|---|---|---|---|---|---|
@@ -66,10 +66,10 @@ _Generated 2026-10-21T01:24:10Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `k`: best 30 (median t +0.73), worst 6 (-0.30) over 161361 configurations
-- spread · elo · `market_resist`: best 1.5039 (median t +0.43), worst 0.0 (-0.12) over 161361 configurations
-- spread · elo · `mov`: best nfelo (median t +0.59), worst none (-0.20) over 161361 configurations
-- spread · elo · `revert`: best 0.2 (median t +0.78), worst 0.7 (-0.29) over 161361 configurations
+- spread · elo · `k`: best 30 (median t +0.72), worst 6 (-0.30) over 161638 configurations
+- spread · elo · `market_resist`: best 1.5039 (median t +0.43), worst 0.0 (-0.13) over 161638 configurations
+- spread · elo · `mov`: best nfelo (median t +0.58), worst none (-0.20) over 161638 configurations
+- spread · elo · `revert`: best 0.2 (median t +0.78), worst 0.7 (-0.29) over 161638 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.79), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.68) over 791 configurations
 - spread · signals · `signals`: best [{'carry': 0.5, 'den': 'early_plays', 'halflife': 8, 'id': 'def-early-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'early_epa': 1}, 'reason': 'Early-down EPA allowed per play: defenses that win first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.', 'side': 'defense'}, {'field': 'rest_diff', 'id': 'rest-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Extra days of rest help recovery and preparation.'}] (median t +3.04), worst [{'field': 'rest_diff', 'id': 'rest-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Extra days of rest help recovery and preparation.'}, {'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 791 configurations
 - spread · srs · `carry`: best 0.8 (median t +1.87), worst 0.2 (+1.48) over 1920 configurations
