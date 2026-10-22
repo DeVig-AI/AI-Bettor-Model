@@ -45,8 +45,9 @@ T0 = time.time()
 
 
 def anytime(m):
-    """Before about February 2026 Kalshi worded the 1+ goal market "Name: Anytime Goalscorer" (structured,
-    floor_strike 0.5): the same Over 0.5 goals market as the later "Name: 1+ goals". Returns the player or None."""
+    """Before about February 2026 Kalshi worded the 1+ goal market "Name: Anytime Goalscorer", and before about
+    mid-January "AWAY at HOME: Anytime Goal: Name" (both structured, floor_strike 0.5): the same Over 0.5 goals market
+    as the later "Name: 1+ goals". Returns the player or None."""
     t = str(m.get("title") or "")
     try:
         ok = m.get("strike_type") == "structured" and abs(float(m.get("floor_strike")) - 0.5) < 1e-9
@@ -54,6 +55,9 @@ def anytime(m):
         ok = False
     if ok and t.lower().endswith(": anytime goalscorer"):
         return t[: -len(": anytime goalscorer")].strip()
+    i = t.lower().rfind(": anytime goal: ")                  # earliest wording: "AWAY at HOME: Anytime Goal: Name"
+    if ok and i >= 0 and t[i + len(": anytime goal: "):].strip():
+        return t[i + len(": anytime goal: "):].strip()
     return None
 
 
