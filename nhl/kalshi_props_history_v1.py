@@ -101,15 +101,16 @@ def markets_for_event(ev):
     """(markets, where from): nested, else the live list, else the historical list."""
     if ev.get("markets"):
         return ev["markets"], ("/historical/markets" if ev.get("_historical") else "nested")
-    answered = 0
+    n_log = len(K.log)
     for path in ("/historical/markets", "/markets"):
         d = K.get(K.KALSHI + path, {"event_ticker": ev.get("event_ticker"), "limit": 1000})
-        answered += d is not None
         ms = (d or {}).get("markets") or []
         if ms:
             raw_samples.setdefault("market_" + path, ms[0])
             return ms, path
-    return [], ("empty" if answered == 2 else None)     # "empty": both lists answered and Kalshi has no market
+    # "empty": both lists answered with no market (an empty list or HTTP 404, which K.get does not log); any other
+    # failure is logged by K.get, and then the event is retried rather than called empty
+    return [], ("empty" if len(K.log) == n_log else None)
 
 
 def one_market_candles(series, t, start_ts, end_ts, historical):
