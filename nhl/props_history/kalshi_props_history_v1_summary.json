@@ -1,25 +1,24 @@
 {
- "generated_at": "2026-10-22T03:28:09Z",
+ "generated_at": "2026-10-22T03:56:21Z",
  "stats": {
   "events_seen": 3392,
-  "events_done_now": 10,
-  "markets_written_now": 505,
-  "no_candle": 452,
+  "events_done_now": 2,
+  "markets_written_now": 102,
+  "no_candle": 102,
   "no_game": 3,
   "not_nhl_game_type": 0,
   "after_cutoff": 24,
   "no_markets": 348,
   "markets_from": {
-   "/historical/markets": 13
+   "/historical/markets": 3
   },
   "candles_by_endpoint": {
-   "batch": 0,
-   "historical": 53
+   "batch": 0
   },
-  "candles_failed": 3,
-  "minutes": 7.5,
+  "candles_failed": 1,
+  "minutes": 3.3,
   "complete": true,
-  "events_done_total": 3014
+  "events_done_total": 3016
  },
  "errors": [
   "no game KXNHLGOAL-26JAN26LACBJ",
@@ -379,36 +378,6 @@
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
    "yes_sub_title": "Tom Willander"
-  },
-  "historical": {
-   "candlesticks": [
-    {
-     "end_period_ts": 1772146800,
-     "open_interest": "0.00",
-     "price": {
-      "close": null,
-      "high": null,
-      "low": null,
-      "mean": null,
-      "open": null,
-      "previous": null
-     },
-     "volume": "0.00",
-     "yes_ask": {
-      "close": "1.0000",
-      "high": "1.0000",
-      "low": "1.0000",
-      "open": "1.0000"
-     },
-     "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0100",
-      "low": "0.0000",
-      "open": "0.0100"
-     }
-    }
-   ],
-   "ticker": "KXNHLPTS-26FEB26TORFLA-TORWNYLANDER88-1"
   }
  }
 }
