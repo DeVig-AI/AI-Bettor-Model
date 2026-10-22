@@ -274,6 +274,33 @@
   .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .gp-st .gp-nm{font-weight:600;}
   .ct{margin-top:12px;}
+  /* Big moments over the game page's summary (touchdown, field goal, a three...) */
+  .gp-head{position:relative;}
+  .fx{position:absolute; inset:0; z-index:5; pointer-events:none; display:grid; place-items:center;
+    background:rgba(8,9,11,.93); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); border-radius:var(--radius); animation:fxShade var(--fx-total, 4s) ease both;}
+  .fx-stage{grid-area:1 / 1; display:flex; flex-direction:column; align-items:center; gap:8px; opacity:0;
+    animation-name:fxStage; animation-timing-function:ease-out; animation-fill-mode:both;}
+  .fx-word{font-size:34px; font-weight:800; letter-spacing:.02em; color:var(--fx); text-shadow:0 2px 18px rgba(0,0,0,.6);}
+  .fx-sub{font-family:var(--font-mono); font-size:14px; font-weight:600; color:var(--ink);}
+  .fx-art{width:220px; height:auto; overflow:visible;}
+  .fx-posts{width:120px;}
+  .fx-left{transform:scaleX(-1);}
+  .fx-ball{animation:fxRun .9s .15s cubic-bezier(.3,.1,.3,1) both;}
+  .fx-kick{transform-box:fill-box; transform-origin:center; animation:fxKick .9s .15s cubic-bezier(.2,.6,.3,1) both;}
+  .fx-num{position:relative; font-size:96px; line-height:1; font-weight:800; color:var(--fx); font-family:var(--font-mono);
+    text-shadow:0 2px 24px rgba(0,0,0,.6);}
+  .fx-ring{position:absolute; left:50%; top:50%; width:110px; height:110px; margin:-55px 0 0 -55px; border-radius:50%;
+    border:3px solid var(--fx); animation:fxRing .9s ease-out both;}
+  .fx-hoop .fx-sub{font-family:var(--font-sans); font-size:16px; font-weight:800; letter-spacing:.12em; color:var(--fx);}
+  @keyframes fxStage{0%{opacity:0; transform:scale(.6);} 14%{opacity:1; transform:scale(1.08);} 24%{transform:scale(1);} 82%{opacity:1;} 100%{opacity:0;}}
+  @keyframes fxShade{0%{opacity:0;} 6%{opacity:1;} 92%{opacity:1;} 100%{opacity:0;}}
+  @keyframes fxRun{from{transform:translateX(0);} to{transform:translateX(162px);}}
+  @keyframes fxKick{from{transform:translateY(0) scale(1.4);} to{transform:translateY(-78px) scale(.55);}}
+  @keyframes fxRing{from{transform:scale(.4); opacity:1;} to{transform:scale(1.6); opacity:0;}}
+  @media (prefers-reduced-motion: reduce){
+    .fx-stage{animation-name:fxFade;} .fx-ball, .fx-kick, .fx-ring{animation:none;} .fx-ring{display:none;}
+  }
+  @keyframes fxFade{0%{opacity:0;} 10%{opacity:1;} 85%{opacity:1;} 100%{opacity:0;}}
   .ct-court{display:block; width:100%; height:auto;}
   .ct-key{display:inline-flex; align-items:center; gap:5px; font-weight:600;}
   .ct-key i{width:9px; height:9px; border-radius:50%; display:inline-block;}
@@ -3018,7 +3045,7 @@
     playsAll = false;
     renderGamePage(true);
     window.scrollTo(0, 0);
-    loadGameDetail().then(function(){ renderGamePage(); });
+    loadGameDetail().then(function(){ renderGamePage(); armMoments(); });
   }
   function closeGamePage(){
     if(!gamePage) return;
@@ -3069,8 +3096,86 @@
     card.appendChild(el("div", "game-head gp-head", sum.html));
     card.appendChild(gameDetailsEl(g, gamePageTabs(g, lg, gd)));
     root.appendChild(card);
+    checkMoments(g, gd, card);
     requestAnimationFrame(initWheels);
     if(!force) window.scrollTo(0, y);
+  }
+
+  // ---------- Big moments: a short animation over the game page's summary when a new play is a big one ----------
+  // Only plays that arrive while the page is open (opening a game never replays old ones); the biggest one per update.
+  function checkMoments(g, gd, card){
+    var plays = gd && gd.plays;
+    if(!plays || !plays.length) return;
+    var newest = plays[0].id, seen = gamePage.seen;
+    gamePage.seen = newest;
+    if(!gamePage.armed || seen === newest) return;
+    var fresh = [];
+    for(var i = 0; i < plays.length && plays[i].id !== seen; i++) fresh.push(plays[i]);
+    if(seen && fresh.length === plays.length) fresh = [plays[0]];      // the last one seen scrolled off: just the newest
+    var best = null;
+    fresh.forEach(function(p){ var m = playMoment(g, p); if(m && (!best || m.rank > best.rank)) best = m; });
+    if(best) showMoment(g, best, card.querySelector(".gp-head"));
+  }
+  function armMoments(){
+    if(!gamePage) return;
+    var gd = gameDetailFor(liveFor(gamePage.g));
+    gamePage.seen = gd && gd.plays && gd.plays[0] ? gd.plays[0].id : null;
+    gamePage.armed = true;
+  }
+  // A play -> {kind, word, sub, team, rank} or null. NFL from ESPN's play type and text; NBA from points and the shot.
+  function playMoment(g, p){
+    var sport = g.sport || "NFL", t = (p.type || "") + " " + (p.text || "");
+    var other = p.team === g.away_team ? g.home_team : g.away_team;
+    var score = p.away_score != null && p.home_score != null ? g.away_team + " " + p.away_score + " – " + p.home_score + " " + g.home_team : "";
+    if(sport === "NBA"){
+      if(!(p.pts >= 2)) return null;                                  // free throws stay quiet
+      return {kind: "hoop", word: String(p.pts), sub: /dunk/i.test(t) ? "DUNK" : p.pts === 3 ? "THREE" : "BUCKET", team: p.team, rank: p.pts, score: score};
+    }
+    if(sport !== "NFL") return null;
+    var turnover = /intercept|fumble/i.test(t);
+    if(/touchdown/i.test(t) && p.scoring !== false){
+      var scorer = turnover ? other : p.team;
+      var pat = /\([^)]*kick\)|extra point is good/i.test(p.text) && !/blocked|no good|failed|missed/i.test(p.text);
+      return {kind: "td", word: "TOUCHDOWN", team: scorer, rank: 10, score: score, pat: pat};
+    }
+    if(/two-point|2-pt|2 pt/i.test(t) && /succeeds|is good|\bgood\b/i.test(t)) return {kind: "word", word: "2-PT GOOD", team: p.team, rank: 8, score: score};
+    if(/field goal (is )?good/i.test(t)) return {kind: "kick", word: "FIELD GOAL", team: p.team, rank: 9, score: score};
+    if(/extra point (is )?good/i.test(t)) return {kind: "kick", word: "EXTRA POINT", team: p.team, rank: 7, score: score};
+    if(/safety/i.test(t) && p.scoring) return {kind: "word", word: "SAFETY", team: other, rank: 8, score: score};
+    if(/intercept/i.test(t)) return {kind: "word", word: "INTERCEPTED", team: other, rank: 6};
+    if(/fumble recovery \(opponent\)/i.test(p.type || "")) return {kind: "word", word: "FUMBLE", team: other, rank: 6};
+    if(/sacked/i.test(t)) return {kind: "word", word: "SACK", team: other, rank: 3};
+    if(p.yards != null && p.yards >= 25) return {kind: "word", word: "BIG PLAY", sub: "+" + p.yards + " yds", team: p.team, rank: 2};
+    return null;
+  }
+  var MOMENT_MS = {td: 2000, kick: 2000, hoop: 1800, word: 1800};
+  function momentStage(kind, word, sub, toRight){
+    var art = "";
+    if(kind === "td") art = '<svg class="fx-art fx-field' + (toRight ? '' : ' fx-left') + '" viewBox="0 0 200 44" aria-hidden="true">' +
+      '<rect x="0" y="4" width="200" height="36" rx="6" fill="var(--surface-2)"/><rect x="172" y="4" width="28" height="36" fill="var(--fx)"/>' +
+      '<g stroke="var(--line-strong)">' + [40, 72, 104, 136].map(function(x){ return '<line x1="' + x + '" x2="' + x + '" y1="8" y2="36"/>'; }).join("") + '</g>' +
+      '<ellipse class="fx-ball" cx="22" cy="22" rx="9" ry="5.5" fill="#8B4A1C" stroke="var(--ink)" stroke-width="1.2"/></svg>';
+    if(kind === "kick") art = '<svg class="fx-art fx-posts" viewBox="0 0 120 96" aria-hidden="true">' +
+      '<path d="M30 8 V58 H90 V8 M60 58 V92" fill="none" stroke="var(--fx)" stroke-width="5" stroke-linecap="round"/>' +
+      '<ellipse class="fx-kick" cx="60" cy="86" rx="7" ry="4.5" fill="#8B4A1C" stroke="var(--ink)" stroke-width="1.2"/></svg>';
+    if(kind === "hoop") art = '<div class="fx-num">' + escapeHtml(word) + '<i class="fx-ring"></i></div>';
+    return art + (kind === "hoop" ? '' : '<div class="fx-word">' + escapeHtml(word) + '</div>') + (sub ? '<div class="fx-sub">' + escapeHtml(sub) + '</div>' : '');
+  }
+  function showMoment(g, m, host){
+    if(!host) return;
+    var sport = g.sport || "NFL", c = (TEAM_COLORS[sport] || {})[m.team];
+    var color = chartColor(m.team, "var(--accent)", sport);
+    var stages = [momentStage(m.kind, m.word, m.kind === "hoop" ? m.sub : (m.sub || m.score), m.team === g.away_team)];
+    if(m.pat) stages.push(momentStage("kick", "EXTRA POINT", m.score));
+    var fx = el("div", "fx fx-" + m.kind, stages.map(function(h, i){
+      return '<div class="fx-stage" style="animation-delay:' + (i * MOMENT_MS.kick) + 'ms; animation-duration:' + MOMENT_MS[i ? "kick" : m.kind] + 'ms">' + h + '</div>';
+    }).join(""));
+    fx.setAttribute("role", "status");
+    fx.setAttribute("aria-label", [m.word, m.kind === "hoop" ? m.sub : "", m.pat ? "extra point" : "", m.score || ""].filter(Boolean).join(", "));
+    fx.style.setProperty("--fx", c ? color : "var(--accent)");
+    fx.style.setProperty("--fx-total", ((stages.length - 1) * MOMENT_MS.kick + MOMENT_MS[stages.length > 1 ? "kick" : m.kind]) + "ms");
+    host.appendChild(fx);
+    setTimeout(function(){ if(fx.parentNode) fx.parentNode.removeChild(fx); }, stages.length * MOMENT_MS.kick + 200);
   }
   // Games that have started get Plays (first) and Box, plus Scoring (NFL) or Quarters (NBA), from the fast feed.
   function gamePageTabs(g, lg, gd){

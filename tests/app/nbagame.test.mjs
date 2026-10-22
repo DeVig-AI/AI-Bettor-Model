@@ -67,6 +67,7 @@ test("NBA game page with the shot chart", async (t) => {
       assert.equal(await card.locator(".ct").count(), 0, "the chart is on the game page only");
       await card.locator(".game-head").click();
       await page.locator(".ct").waitFor({timeout: 10000});
+      assert.equal(await page.locator(".fx").count(), 0, "opening the page replays nothing");
       assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Quarters"]);
       assert.equal(await page.locator(".ct-shot").count(), 5, "five shots with a spot (no free throw, no foul)");
       assert.equal(await page.locator(".ct-shot.made").count(), 4);
@@ -94,6 +95,10 @@ test("NBA game page with the shot chart", async (t) => {
       assert.equal(await page.locator(".ct-run").count(), 0);
       assert.equal(await page.locator(".ct-shot").count(), 6);
       assert.equal(await page.locator(".ct-new").getAttribute("cx"), (24 * 7.2).toFixed(1));
+      const fx = page.locator(".fx.fx-hoop");
+      assert.equal(await fx.count(), 1, "the dunk pops up");
+      assert.equal(await fx.locator(".fx-num").innerText(), "2");
+      assert.equal(await fx.locator(".fx-sub").innerText(), "DUNK");
       await pg.screenshot({path: OUT + "nba-game-next.png", fullPage: true});
     });
     assert.deepEqual(errors, []);
