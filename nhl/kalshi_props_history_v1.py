@@ -101,13 +101,15 @@ def markets_for_event(ev):
     """(markets, where from): nested, else the live list, else the historical list."""
     if ev.get("markets"):
         return ev["markets"], ("/historical/markets" if ev.get("_historical") else "nested")
+    answered = 0
     for path in ("/historical/markets", "/markets"):
         d = K.get(K.KALSHI + path, {"event_ticker": ev.get("event_ticker"), "limit": 1000})
+        answered += d is not None
         ms = (d or {}).get("markets") or []
         if ms:
             raw_samples.setdefault("market_" + path, ms[0])
             return ms, path
-    return [], None
+    return [], ("empty" if answered == 2 else None)     # "empty": both lists answered and Kalshi has no market
 
 
 def one_market_candles(series, t, start_ts, end_ts, historical):
@@ -179,6 +181,9 @@ def main():
             if g["game_type"] not in GAME_TYPES:
                 stats["not_nhl_game_type"] += 1; done.add(et); continue
             all_ms, src = markets_for_event(ev)
+            if not all_ms and src == "empty":           # an event Kalshi lists with no market at all: nothing to price
+                stats["empty_at_kalshi"] = stats.get("empty_at_kalshi", 0) + 1
+                K.log.append(f"empty at Kalshi {et}"); done.add(et); continue
             ms = [m for m in all_ms if label_line(m, series)[0]]
             if not ms:
                 stats["no_markets"] += 1; K.log.append(f"no markets {et}"); continue
