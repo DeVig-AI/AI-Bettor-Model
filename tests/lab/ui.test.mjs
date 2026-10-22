@@ -92,7 +92,7 @@ test("lab page on a phone", async (t) => {
       assert.equal(await pg.locator("#pane-lessons").isVisible(), true);
       assert.match(await pg.locator(".lesson").first().innerText(), /Starting-QB[\s\S]*30 min ago/);
       assert.match(await pg.locator(".lesson").nth(1).innerText(), /Rest days[\s\S]*1 d ago|Rest days[\s\S]*26 h ago/);
-      assert.match(await pg.locator(".lesson").nth(2).innerText(), /time not recorded/);
+      assert.match(await pg.locator(".lesson").nth(2).innerText(), /from search · 2006–2016 only[\s\S]*time not recorded/);
       assert.match(await pg.locator("#pane-lessons").innerText(), /Newest [\s\S]*30 min ago/);
       await pg.locator('[data-lf="faded"]').click();
       assert.equal(await pg.locator(".lesson").count(), 1);
@@ -133,8 +133,11 @@ test("lab page on a phone", async (t) => {
     await t.test("sport switch (college football)", async () => {
       scenario = "sports";
       await pg.getByRole("button", {name: "Refresh"}).click();
-      await pg.locator(".sports").waitFor();
-      assert.deepEqual(await pg.locator(".sports .chip").allInnerTexts(), ["NFL", "College football"]);
+      await pg.getByRole("tab", {name: "College football"}).waitFor();
+      assert.deepEqual(await pg.locator(".sports .chip").allInnerTexts(), ["NFL", "College football", "MLB", "NBA", "NHL"]);
+      await pg.getByRole("tab", {name: "NBA"}).click();
+      assert.match(await pg.locator("main").innerText(), /NBA testing chamber[\s\S]*Under construction/i);
+      assert.equal(await pg.locator(".sumcard").count(), 0);
       await pg.getByRole("tab", {name: "College football"}).click();
       assert.match(await pg.locator(".sumcard .kicker").innerText(), /Research · CFB/i);
       assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["2", "0", "0"]);

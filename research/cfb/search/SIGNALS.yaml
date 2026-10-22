@@ -1,6 +1,6 @@
 # Research Lab signal library, college football (Constitution v9 A3.3e). Each signal is tested by the search on top of the
 # menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons only.
-# Allowed: kind team (columns: plays, epa, points (CFB data has no other columns)), schedule (none (CFB data has no rest or travel)), qb_change. Anything else is rejected by the code.
+# Allowed: kind team (columns: plays, epa, points, and comp_plays / comp_epa = the same with garbage time excluded (CFB data has no other columns)), schedule (none (CFB data has no rest or travel)), qb_change. Anything else is rejected by the code.
 # New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
 # football reason; no known betting angles or situational spots (A3.5).
 signals:
@@ -74,3 +74,35 @@ signals:
   carry: 0.4
   reason: 'Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with
     how many snaps its own offense''s tempo hands the opponent.'
+- id: off-comp-ppa
+  kind: team
+  side: offense
+  num:
+    comp_epa: 1
+  den: comp_plays
+  halflife: 6
+  carry: 0.4
+  reason: 'Offensive PPA per play with garbage time removed: college blowouts are common, and plays against backups
+    in a decided game say little about how good an offense is.'
+- id: def-comp-ppa
+  kind: team
+  side: defense
+  num:
+    comp_epa: 1
+  den: comp_plays
+  halflife: 6
+  carry: 0.4
+  reason: 'PPA per play allowed with garbage time removed: a defense resting starters late in a blowout gives up
+    yards that do not reflect its strength.'
+- id: off-garbage-ppa
+  kind: team
+  side: offense
+  num:
+    epa: 1
+    comp_epa: -1
+  den: null
+  halflife: 6
+  carry: 0.4
+  reason: 'PPA a team piles up in garbage time each game: it inflates points-based ratings (SRS, Elo margins) without
+    saying much about the next close game, so it may be overrated by them.'
+

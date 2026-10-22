@@ -53,6 +53,8 @@ Times are ISO 8601. Links are shown only if they start with `https://github.com/
     "text": "Rest days helped in 2016–18, then vanished.",
     "kind": "faded",                           // helped | faded | no_effect
     "candidates": ["rest"],                    // ids; shown as "from <name>"
+    "source": "search", "from": "search · 2006–2016 only",   // optional: a lesson from the search itself (v10), no
+                                               // candidates; shown as "from <from>"
     "at": "2026-10-19T07:41:00Z"               // when it was learned (the later of the two runs it compares); the page
                                                // shows the date and time and marks lessons newer than the last visit
   }],

@@ -19,7 +19,7 @@ private `/lab` page, which reads `status.json` (contract: `STATUS_SCHEMA.md`).
 | File | What it is |
 |---|---|
 | `RESEARCH_LAB_CONSTITUTION.md` | The rules: data split, pricing, metric, multiple-testing rule, exam budget, promotion and stop rules. Hash-locked in `FROZEN.sha256`; changes = a new version, logged in `CONSTITUTION_LOG.md` and `FROZEN_CHANGES.md`. |
-| `search/` | The menu, every configuration scored (`scores/round-NNNN.csv.gz`, one gzipped CSV per round: one file passed GitHub's 100 MB limit), each round (`ROUNDS.csv`), `LEADERBOARD.md` with what the search learned, and `STATE.json` while the search has paused itself because nothing new is left on its menu (it resumes when values, families or signals are added). |
+| `search/` | The menu, every configuration scored (`scores/round-NNNN.csv.gz`, one gzipped CSV per round: one file passed GitHub's 100 MB limit), each round (`ROUNDS.csv`), `LEADERBOARD.md` with what the search learned, `AUTO.yaml`, the search's own widenings of its menu (since v10: when it runs short of new configurations it adds values around the best settings, signal variants, new signal bases and bigger signal sets, instead of pausing), and `STATE.json` only if even a widening added nothing. |
 | `queue/NNN-<id>.yaml` | Hand-written ideas waiting to be confirmed directly (each costs an attempt). |
 | `candidates/*.yaml` | One file per idea sent to confirmation (by the search, the queue or by hand); locked once it has run. |
 | `LEDGER.csv` | Every attempt, never edited or deleted (append-only; the frozen guard checks it). |

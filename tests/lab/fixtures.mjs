@@ -54,7 +54,7 @@ export const STATUS = {
   ],
   lessons: [{text: "Starting-QB changes added signal in all three eras.", kind: "helped", candidates: ["qb-adj"], at: iso(30 * 60e3)},
             {text: "Rest days helped in 2016–18, then vanished.", kind: "faded", candidates: ["rest"], at: iso(26 * 3600e3)},
-            {text: "Margin-of-victory weighting changed nothing.", kind: "no_effect", candidates: []}],
+            {text: "Margin-of-victory weighting changed nothing.", kind: "no_effect", candidates: [], source: "search", from: "search · 2006–2016 only"}],
   runs: [
     {kind: "lab", name: "Research Lab #12", started_at: iso(40 * 60e3), finished_at: iso(40 * 60e3 - 11e3), duration_s: 11,
      run_number: 12, run_url: "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/88",
