@@ -1,8 +1,8 @@
 // DeVig live scores: GET /api/live?sport=nfl|nba|mlb|nhl|wnba|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
 // with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
-// (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}, and NFL with &game=1 also returns
+// (any sport) returns that game's box score as {players: {name: {stat: value}}} (NFL, CFB, NBA, WNBA), and &game=1 also returns
 // game: {plays, drive, situation, scoring, team_stats, box} for the game page (NBA: {plays with shot spots, run,
-// linescore, box}). NFL scoreboard games in progress carry
+// linescore, box}; NHL and MLB: {plays, linescore, box}). NFL and CFB scoreboard games in progress carry
 // situation (down, distance, field spot) for the field tracker. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
@@ -18,6 +18,8 @@ const ALIASES = {
   nba: {GS: "GSW", NO: "NOP", NY: "NYK", SA: "SAS", UTAH: "UTA", WSH: "WAS", PHO: "PHX", BRK: "BKN", CHO: "CHA"},
 };
 const SCORE_TTL = 15, BOX_TTL = 25;          // seconds
+// each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
+const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", nhl: "hockey", mlb: "baseball"};
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -59,7 +61,8 @@ export function scoreboard(d, sport) {
       out.away_id = String((a.team || {}).id || ""); out.home_id = String((h.team || {}).id || "");
       out.away_name = (a.team || {}).location || ""; out.home_name = (h.team || {}).location || "";
     }
-    if (sport === "nfl" && out.state === "in" && comp.situation) out.situation = nflSituation(comp.situation, out, code);
+    if ((sport === "nfl" || sport === "cfb") && out.state === "in" && comp.situation) out.situation = nflSituation(comp.situation, out, code);
+    if (sport === "mlb" && out.state === "in" && comp.situation) out.situation = mlbSituation(comp.situation);
     return out;
   }).filter(Boolean);
 }
@@ -251,6 +254,63 @@ export function nbaGame(d, code = x => String(x || "").toUpperCase()) {
   return out;
 }
 
+// ---------- NHL and MLB game pages: plays, period/inning scores, box ----------
+// One table per team and stat group, the columns ESPN labels (the app picks which to show).
+function groupBox(d, teamOf, keep = 6) {
+  const out = [];
+  ((d.boxscore || {}).players || []).forEach(tm => {
+    (tm.statistics || []).forEach(g => {
+      const labels = (g.labels || g.names || []).map(String);
+      const rows = (g.athletes || []).filter(a => a.athlete && a.athlete.displayName && (a.stats || []).length)
+        .slice(0, keep).map(a => ({name: a.athlete.displayName, stats: a.stats.map(x => String(x == null ? "" : x))}));
+      const name = String(g.text || g.name || g.type || "");
+      if (rows.length) out.push({team: teamOf(tm.team), group: name.charAt(0).toUpperCase() + name.slice(1), labels, rows});
+    });
+  });
+  return out;
+}
+function header(d, code) {
+  const comp = ((d.header || {}).competitions || [])[0] || {};
+  const idTeam = {}, side = {}, lines = {};
+  (comp.competitors || []).forEach(c => {
+    const t = code((c.team || {}).abbreviation);
+    idTeam[String((c.team || {}).id)] = t; side[c.homeAway] = t;
+    lines[c.homeAway] = (c.linescores || []).map(l => num(l.displayValue != null ? l.displayValue : l.value));
+  });
+  const teamOf = t => t ? (idTeam[String(t.id)] || (t.abbreviation ? code(t.abbreviation) : null)) : null;
+  const linescore = (lines.away || []).length || (lines.home || []).length ? {away: lines.away || [], home: lines.home || []} : undefined;
+  return {away: side.away, home: side.home, teamOf, linescore};
+}
+const playOf = (p, teamOf) => ({id: String(p.id || p.sequenceNumber || ""), team: teamOf(p.team), q: num((p.period || {}).number),
+  half: (p.period || {}).type || "", clock: (p.clock || {}).displayValue || "", text: String(p.text), type: (p.type || {}).text || "",
+  scoring: !!p.scoringPlay, pts: p.scoringPlay ? (num(p.scoreValue) || 0) : 0, away_score: num(p.awayScore), home_score: num(p.homeScore)});
+
+// NHL: goals, penalties, shots and period ends (faceoffs, hits and stoppages left out), newest first.
+const NHL_KEEP = /goal|penalty|shot|period|shootout|challenge/i, NHL_DROP = /blocked|missed/i;
+export function nhlGame(d, code = x => String(x || "").toUpperCase()) {
+  const h = header(d, code);
+  const plays = (d.plays || []).filter(p => p && p.text && NHL_KEEP.test(((p.type || {}).text || "") + " " + p.text) &&
+    !NHL_DROP.test((p.type || {}).text || "")).map(p => playOf(p, h.teamOf));
+  return {away: h.away, home: h.home, plays: plays.slice(-NBA_PLAYS_KEPT).reverse(), linescore: h.linescore, box: groupBox(d, h.teamOf, 8)};
+}
+
+// MLB: at-bat results and scoring plays (each pitch left out), newest first.
+const MLB_PITCH = /^(ball|strike|foul|pitch|pickoff|mound visit|.* pitches to )/i;
+export function mlbGame(d, code = x => String(x || "").toUpperCase()) {
+  const h = header(d, code);
+  const plays = (d.plays || []).filter(p => p && p.text && (p.scoringPlay || /result/i.test((p.type || {}).type || (p.type || {}).text || "") ||
+    !MLB_PITCH.test(String(p.text)))).map(p => playOf(p, h.teamOf));
+  return {away: h.away, home: h.home, plays: plays.slice(-NBA_PLAYS_KEPT).reverse(), linescore: h.linescore, box: groupBox(d, h.teamOf, 9)};
+}
+// The scoreboard's situation for a game in progress: count, outs, runners, pitcher and batter, the last play.
+export function mlbSituation(s) {
+  const who = x => ((x || {}).athlete || {}).shortName || ((x || {}).athlete || {}).displayName || "";
+  const out = {balls: num(s.balls), strikes: num(s.strikes), outs: num(s.outs),
+    bases: [!!s.onFirst, !!s.onSecond, !!s.onThird], pitcher: who(s.pitcher), batter: who(s.batter)};
+  if (s.lastPlay && s.lastPlay.text) out.last_play = String(s.lastPlay.text);
+  return out;
+}
+
 // NBA box score -> {display name: {stat: value}}, with the NBA props model's stat names
 export function nbaBox(d) {
   const out = {};
@@ -284,10 +344,10 @@ export async function handle(request, fetcher = fetch) {
   if (!SPORTS[sport]) return json({error: "unknown sport"}, 400);
   try {
     if (event) {
-      if ((sport !== "nfl" && sport !== "nba") || !/^\d{1,12}$/.test(event)) return json({error: "box scores are NFL and NBA only"}, 400);
-      const d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
-      const body = {sport, event, at: new Date().toISOString(), players: sport === "nba" ? nbaBox(d) : nflBox(d)};
-      if (q.get("game") === "1") body.game = sport === "nba" ? nbaGame(d, teamCode(sport)) : nflGame(d, teamCode(sport));
+      if (!/^\d{1,12}$/.test(event)) return json({error: "bad event"}, 400);
+      const kind = KIND[sport], d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
+      const body = {sport, event, at: new Date().toISOString(), players: kind === "hoops" ? nbaBox(d) : kind === "football" ? nflBox(d) : {}};
+      if (q.get("game") === "1") body.game = GAME[kind](d, teamCode(sport));
       return json(body, 200, 10);
     }
     const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${QUERY[sport] || ""}`, SCORE_TTL, fetcher);
@@ -300,3 +360,5 @@ export async function handle(request, fetcher = fetch) {
 export async function onRequest(context) {
   return handle(context.request);
 }
+
+const GAME = {football: (d, c) => nflGame(d, c), hoops: (d, c) => nbaGame(d, c), hockey: (d, c) => nhlGame(d, c), baseball: (d, c) => mlbGame(d, c)};

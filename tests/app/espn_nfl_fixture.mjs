@@ -4,10 +4,10 @@
 const SF = {id: "25", abbreviation: "SF"}, SEA = {id: "26", abbreviation: "SEA"};
 
 // next: one play later (G.Kittle for 19 yards: 1st & 10 at the SEA 18); td: then C.McCaffrey's touchdown (SF 28-26)
-export function scoreboard(kickoffIso, {state = "in", situation = true, next = false, td = false} = {}) {
+export function scoreboard(kickoffIso, {state = "in", situation = true, next = false, td = false, fg = false} = {}) {
   return {events: [{id: "401", date: kickoffIso, status: {type: {state, shortDetail: state === "in" ? "4th - 11:49" : "Final"}},
     competitions: [{
-      competitors: [{homeAway: "home", score: "26", team: SEA}, {homeAway: "away", score: td ? "28" : "21", team: SF}],
+      competitors: [{homeAway: "home", score: "26", team: SEA}, {homeAway: "away", score: fg ? "31" : td ? "28" : "21", team: SF}],
       situation: !situation || td ? undefined : next
         ? {down: 1, distance: 10, shortDownDistanceText: "1st & 10", possessionText: "SEA 18", isRedZone: true,
            homeTimeouts: 3, awayTimeouts: 2, possession: "25", lastPlay: {text: KITTLE}}
@@ -22,7 +22,7 @@ const play = (id, team, text, extra = {}) => Object.assign({id, text, type: {tex
   start: {down: 1, distance: 10, shortDownDistanceText: "1st & 10", team: {id: team.id}}}, extra);
 
 const KITTLE = "(Shotgun) B.Purdy pass short middle to G.Kittle to SEA 18 for 19 yards.";
-export function summary({next = false, td = false} = {}) {
+export function summary({next = false, td = false, fg = false} = {}) {
   const d = {
     header: {competitions: [{competitors: [{homeAway: "home", team: SEA}, {homeAway: "away", team: SF}]}]},
     drives: {
@@ -58,9 +58,11 @@ export function summary({next = false, td = false} = {}) {
   if (next || td) d.drives.current.plays.push(play("p5", SF, KITTLE, {clock: {displayValue: "11:12"}, statYardage: 19,
     start: {down: 3, distance: 14, shortDownDistanceText: "3rd & 14", team: {id: "25"}},
     end: {down: 1, distance: 10, shortDownDistanceText: "1st & 10", possessionText: "SEA 18", yardsToEndzone: 18, team: {id: "25"}}}));
-  if (td) d.drives.current.plays.push(play("p6", SF, "C.McCaffrey right tackle for 18 yards, TOUCHDOWN. (J.Moody Kick)",
+  if (td || fg) d.drives.current.plays.push(play("p6", SF, "C.McCaffrey right tackle for 18 yards, TOUCHDOWN. (J.Moody Kick)",
     {type: {text: "Rushing Touchdown"}, clock: {displayValue: "10:40"}, statYardage: 18, scoringPlay: true, awayScore: 28, homeScore: 26,
      start: {down: 1, distance: 10, shortDownDistanceText: "1st & 10", team: {id: "25"}}}));
+  if (fg) d.drives.current.plays.push(play("p7", SF, "J.Moody 41 yard field goal is GOOD, Center-T.Pepper, Holder-T.Morstead.",
+    {type: {text: "Field Goal Good"}, clock: {displayValue: "4:02"}, scoringPlay: true, awayScore: 31, homeScore: 26}));
   return d;
 }
 

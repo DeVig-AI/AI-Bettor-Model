@@ -1,10 +1,11 @@
 // /api/live's NFL game page data: field spots, the scoreboard's situation and the summary's plays, drive, scoring
-// and team stats; NBA plays with shot spots, the run, quarter scores and the box.   node --test tests/app/live_api.test.mjs
+// and team stats; NBA plays with shot spots, the run, quarter scores and the box; NHL and MLB plays, periods and box.   node --test tests/app/live_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { nflSpot, nflGame, nbaShot, nbaGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
+import { nflSpot, nflGame, nbaShot, nbaGame, nhlGame, mlbGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
 import { scoreboard as espnScoreboard, summary, espnFetcher } from "./espn_nfl_fixture.mjs";
 import { summary as nbaSummary } from "./espn_nba_fixture.mjs";
+import { nhlSummary, mlbSummary, mlbScoreboard } from "./espn_more_fixture.mjs";
 
 test("field spots are yards from the away goal line", () => {
   assert.equal(nflSpot("SEA 37", null, "SF", "SF", "SEA"), 63);       // in the home team's half
@@ -76,4 +77,32 @@ test("the NBA summary becomes plays with shots, the run, quarter scores and the 
   assert.deepEqual(d.box[0].rows.map(r => r.name), ["Luka Doncic", "LeBron James"], "no row for a player who didn't play");
   assert.equal(d.box[0].rows[0].stats[1], "26");
   assert.equal(nbaGame(nbaSummary({next: true})).run, undefined, "a Lakers bucket ends the run");
+});
+
+// ---------- NHL, MLB, and the other sports' event answers ----------
+test("NHL: goals, penalties and shots kept (faceoffs, hits, blocked shots left out), periods and box", () => {
+  const d = nhlGame(nhlSummary({goal: true}), teamCode("nhl"));
+  assert.deepEqual(d.plays.map(p => p.id), ["h7", "h4", "h3", "h2"]);
+  assert.equal(d.plays[0].scoring, true); assert.equal(d.plays[0].home_score, 3);
+  assert.deepEqual(d.linescore, {away: [0, 1], home: [1, 2]});
+  assert.deepEqual(d.box.map(b => b.group), ["Forwards", "Goalies"]);
+});
+
+test("MLB: at-bat results and scoring plays (pitches left out), innings, box and the scoreboard's situation", () => {
+  const d = mlbGame(mlbSummary({hr: true}), teamCode("mlb"));
+  assert.deepEqual(d.plays.map(p => p.id), ["b7", "b5", "b2", "b1"]);
+  assert.equal(d.plays[0].pts, 3); assert.equal(d.plays[0].half, "Bottom");
+  assert.equal(d.linescore.home.length, 7);
+  assert.deepEqual(d.box[1].labels.slice(0, 3), ["IP", "H", "R"]);
+  const [g] = scoreboard(mlbScoreboard("2026-10-22T23:08:00Z"), "mlb");
+  assert.deepEqual(g.situation, {balls: 2, strikes: 1, outs: 1, bases: [true, true, false], pitcher: "B. Treinen", batter: "A. Judge",
+    last_play: "Stanton walked, Soto to second."});
+});
+
+test("every sport answers an event with its game page data", async () => {
+  const body = (sport, d) => async url => ({ok: true, status: 200, json: async () => /summary/.test(url) ? d : {events: []}});
+  for (const [sport, d, n] of [["nhl", nhlSummary(), 3], ["mlb", mlbSummary(), 3], ["wnba", nbaSummary(), 7], ["cfb", summary(), 4]]) {
+    const r = await (await handle(new Request(`https://x/api/live?sport=${sport}&event=9${n}${sport.length}&game=1`), body(sport, d))).json();
+    assert.equal(r.game.plays.length, n, sport);
+  }
 });

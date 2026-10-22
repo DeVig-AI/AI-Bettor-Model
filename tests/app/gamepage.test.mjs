@@ -25,7 +25,7 @@ const NFL = {sport: "NFL", generated_at: iso(now), docs: [{collection: "slate", 
   market: {book: "Kalshi", moneyline_away: 125, moneyline_home: -145},
   model: {available: true, status: "locked", winner_side: "SEA", winner_prob: 0.66, note: "test"}}}]};
 // The fast feed, built by the real /api/live code from ESPN-shaped data (no cache, so the test can move the game on).
-let next = false, td = false, finished = false;
+let next = false, td = false, fg = false, finished = false;
 const PROPS_LIVE = {generated_at: iso(now), games: [{away: "SF", home: "SEA", kickoff: iso(kLive), state: "post", detail: "Final",
   espn_id: "401", away_score: 21, home_score: 26, picks: []}]};
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
@@ -35,10 +35,10 @@ const server = http.createServer((req, res) => {
   if (u.pathname === "/api/live") {
     if (u.searchParams.get("sport") !== "nfl") return j({games: []});
     if (u.searchParams.get("event") === "401") {
-      const d = summary({next, td});
+      const d = summary({next, td, fg});
       return j(Object.assign({sport: "nfl", event: "401", players: nflBox(d)}, u.searchParams.get("game") === "1" ? {game: nflGame(d)} : {}));
     }
-    return j({sport: "nfl", games: finished ? [] : scoreboard(espnScoreboard(iso(kLive), {next, td}), "nfl")});
+    return j({sport: "nfl", games: finished ? [] : scoreboard(espnScoreboard(iso(kLive), {next, td, fg}), "nfl")});
   }
   if (u.pathname.startsWith("/api/")) { res.writeHead(404); return res.end("{}"); }
   const f = path.join(DOCS, u.pathname === "/" ? "index.html" : u.pathname);
@@ -121,7 +121,7 @@ test("NFL game page with the live field", async (t) => {
 
     await t.test("a touchdown plays its moment: TOUCHDOWN, then the extra point", async () => {
       td = true;
-      const fx = page.locator(".fx.fx-td");
+      const fx = page.locator(".fx.fx-m-td");
       await fx.waitFor({state: "attached", timeout: 45000});
       assert.equal(await fx.getAttribute("aria-label"), "TOUCHDOWN, extra point, SF 28 – 26 SEA");
       assert.deepEqual(await fx.locator(".fx-word").allTextContents(), ["TOUCHDOWN", "EXTRA POINT"]);
@@ -130,6 +130,17 @@ test("NFL game page with the live field", async (t) => {
       await pg.screenshot({path: OUT + "nfl-moment-td.png"});
       await pg.waitForTimeout(2000);
       await pg.screenshot({path: OUT + "nfl-moment-pat.png"});
+      await fx.waitFor({state: "detached", timeout: 6000});
+    });
+
+    await t.test("a field goal plays FIELD GOAL, and its overlay stays over the summary", async () => {
+      fg = true;
+      const fx = page.locator(".fx.fx-m-kick");
+      await fx.waitFor({state: "attached", timeout: 45000});
+      assert.match(await fx.innerText(), /FIELD GOAL[\s\S]*SF 31 – 26 SEA/);
+      await pg.waitForTimeout(900);                         // well into the kick: the ball moves, the overlay doesn't
+      const [o, h] = [await fx.boundingBox(), await page.locator(".gp-head").boundingBox()];
+      assert.deepEqual([Math.round(o.x), Math.round(o.y), Math.round(o.width)], [Math.round(h.x), Math.round(h.y), Math.round(h.width)]);
       await fx.waitFor({state: "detached", timeout: 6000});
     });
 

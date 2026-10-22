@@ -114,15 +114,21 @@ test("college football tab on a phone", async (t) => {
       await pg.screenshot({path: OUT + "cfb-home.png", fullPage: true});
       const w = await pg.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(w <= 390, `page is ${w}px wide`);
-      const box = await pg.locator(".cfb-card summary").first().boundingBox();
+      const box = await pg.locator(".cfb-card .cfb-open").first().boundingBox();
       assert.ok(box.height >= 44);
     });
-    await t.test("open a game: win-chance graph and spread wheel", async () => {
-      await pg.locator(".cfb-card summary").nth(1).click();
-      await pg.locator(".cfb-card[open] .lv-chart").waitFor({timeout: 5000});
-      assert.match(await pg.locator(".cfb-card[open] .lv-chart").innerText(), /Win chance · Kalshi/);
-      assert.ok(await pg.locator(".cfb-card[open] .sw-wheel").count() >= 1);
-      await pg.locator(".cfb-card[open]").screenshot({path: OUT + "cfb-open.png"});
+    await t.test("open a game: its game page, with the win-chance graph and spread wheel", async () => {
+      await pg.locator(".cfb-card .cfb-open").nth(1).click();
+      const page = pg.locator("#panel-game");
+      await page.waitFor({state: "visible"});
+      assert.match(await page.locator(".gp-title").innerText(), /Michigan @ Indiana|Indiana @ Michigan/);
+      await page.locator(".lv-chart").waitFor({timeout: 5000});
+      assert.match(await page.locator(".lv-chart").innerText(), /Win chance · Kalshi/);
+      assert.ok(await page.locator(".sw-wheel").count() >= 1);
+      assert.match(await page.locator(".gp-head").innerText(), /Kalshi \d+%/, "Kalshi's chance under each school");
+      await pg.screenshot({path: OUT + "cfb-open.png", fullPage: true});
+      await page.locator(".back-more").click();
+      await pg.locator("#panel-home").waitFor({state: "visible"});
     });
     await t.test("models tab lists CFB", async () => {
       await pg.locator('nav.tabs button[data-tab="more"]').click(); await pg.locator('#panel-more [data-go="models"]').click();
