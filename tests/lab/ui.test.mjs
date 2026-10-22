@@ -92,7 +92,7 @@ test("lab page on a phone", async (t) => {
       assert.equal(await pg.locator("#pane-lessons").isVisible(), true);
       assert.match(await pg.locator(".lesson").first().innerText(), /Starting-QB[\s\S]*30 min ago/);
       assert.match(await pg.locator(".lesson").nth(1).innerText(), /Rest days[\s\S]*1 d ago|Rest days[\s\S]*26 h ago/);
-      assert.match(await pg.locator(".lesson").nth(2).innerText(), /time not recorded/);
+      assert.match(await pg.locator(".lesson").nth(2).innerText(), /from search · 2006–2016 only[\s\S]*time not recorded/);
       assert.match(await pg.locator("#pane-lessons").innerText(), /Newest [\s\S]*30 min ago/);
       await pg.locator('[data-lf="faded"]').click();
       assert.equal(await pg.locator(".lesson").count(), 1);

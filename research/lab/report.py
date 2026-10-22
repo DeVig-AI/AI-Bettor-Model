@@ -9,6 +9,7 @@ import datetime as dt
 import json
 import os
 
+import numpy as np
 import yaml
 
 from . import config as C
@@ -147,6 +148,50 @@ def lessons(cands, res, v):
         out.append({"text": txt, "kind": kind, "candidates": [cid], "at": at})
     order = {"helped": 0, "faded": 1, "no_effect": 2}
     return sorted(out, key=lambda x: (order[x["kind"]], "" if not x["at"] else "~" + x["at"]), reverse=False)
+
+
+def period_names(periods):
+    return [str(a) if a == b else f"{a}–{str(b)[2:]}" for a, b in periods]
+
+
+def search_lessons(rows):
+    """Lessons from the search itself (EXPLORATORY, search seasons only), refreshed every round: for each signal, the
+    signal on a base model vs that base alone, search period by search period, over every base it was scored on."""
+    from . import search as SR
+    by_id = {r["id"]: r for r in rows if r["t"] != "-inf"}
+    at = {r["round"]: r["at"] for r in SR.read_csv(SR.path("ROUNDS.csv"))}
+    names = period_names(C.SEARCH_PERIODS)
+    per = {}
+    for r in rows:
+        if r["type"] != "signals" or r["t"] == "-inf":
+            continue
+        p = json.loads(r["config"])["params"]
+        if len(p["signals"]) != 1:
+            continue
+        b = by_id.get(SR.config_id({"market": r["market"], "type": p["base"]["type"], "params": p["base"]["params"]}))
+        if not b:
+            continue
+        d = [float(r[k]) - float(b[k]) for k in ("p1", "p2", "p3")]
+        if any(x != x for x in d):                     # a period with no games
+            continue
+        per.setdefault((p["signals"][0]["id"], r["market"]), []).append((d, max(at.get(r["round"], ""), at.get(b["round"], ""))))
+    out = []
+    for (sid, market), xs in sorted(per.items()):
+        n = len(xs)
+        k = sum(all(x > 0 for x in d) for d, _ in xs)
+        avg = [float(np.mean([d[i] for d, _ in xs])) for i in range(3)]
+        if 2 * k > n:
+            kind, word = "helped", f"helped in all three search periods on {k} of {n} base model{'s' * (n != 1)}"
+        elif avg[0] > 0 and avg[2] < C.FADE_NEEDED * avg[0]:
+            kind, word = "faded", f"helped in {names[0]}, then faded (helped in all three on {k} of {n})"
+        else:
+            kind, word = "no_effect", f"no consistent effect (helped in all three on {k} of {n})"
+        out.append({"text": f"Signal {sid} ({market}) on top of a base model: {word}; on average "
+                            f"{' / '.join(f'{x:+.2f}' for x in avg)} pts in {' / '.join(names)}.",
+                    "kind": kind, "candidates": [], "source": "search",
+                    "from": f"search · {C.SEARCH[0]}–{C.SEARCH[1]} only", "at": max(a for _, a in xs) or None})
+    order = {"helped": 0, "faded": 1, "no_effect": 2}
+    return sorted(out, key=lambda x: (order[x["kind"]], x["text"]))
 
 
 MAX_RUNS = 10
@@ -331,7 +376,7 @@ def build(running=(), started_at=None, gate_now=1, live=None):
                    "lab_pass": sum(s in PASSED_LAB for s in states), "exam_pass": sum(s in PASSED_EXAM for s in states),
                    "exam_budget_left": max(0, C.EXAM_BUDGET - used), "exam_budget_total": C.EXAM_BUDGET},
         "candidates": entries,
-        "lessons": lessons(cands, res, v),
+        "lessons": lessons(cands, res, v) + search_lessons(search_rows()),
         "promoted": paper_summary(),
         "runs": runs(ledger, cands, v),
     }
@@ -394,6 +439,20 @@ def status_md(s, ledger):
     return "\n".join(lines) + "\n"
 
 
+_ROWS = {}
+
+
+def search_rows():
+    """The sport's search scores, read once per set of score files (build and lessons_md both use them)."""
+    from . import search as SR
+    import glob
+    key = (C.SPORT, C.SEARCH_DIR, tuple((p, os.path.getmtime(p)) for p in sorted(glob.glob(os.path.join(SR.scores_dir(), "*")))))
+    if key not in _ROWS:
+        _ROWS.clear()
+        _ROWS[key] = SR.read_scores()
+    return _ROWS[key]
+
+
 def lessons_md(s):
     lines = [f"# Research Lab -- lessons, {SPORT_NAMES.get(C.SPORT, C.SPORT)} (EXPLORATORY)", "",
              f"_Generated {s['updated_at']} by research/lab/report.py after each run. **Exploratory, not proof**: each "
@@ -401,12 +460,15 @@ def lessons_md(s):
              "comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._", "",
              "- **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half "
              "as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a "
-             "parent that ran under the same Constitution version (same seasons).", ""]
+             "parent that ran under the same Constitution version (same seasons).",
+             f"- Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs "
+             f"that base alone in each search period ({C.SEARCH[0]}–{C.SEARCH[1]} only); **helped** = better in all "
+             "three periods on most of the bases it was tried on.", ""]
     for kind, title in (("helped", "Helped"), ("faded", "Faded"), ("no_effect", "No effect")):
         xs = [x for x in s["lessons"] if x["kind"] == kind]
         lines += [f"## {title} ({len(xs)})", ""] + ([f"- {x['text']}" for x in xs] or ["- none"]) + [""]
     from . import search as SR
-    rows = SR.read_scores()
+    rows = search_rows()
     if rows:
         lines += [f"## What the search learned ({len(rows):,} configurations, {C.SEARCH[0]}–{C.SEARCH[1]} only)", ""]
         lines += [f"- {x}" for x in SR.learned(rows)] + [""]

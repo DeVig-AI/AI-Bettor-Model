@@ -1,4 +1,4 @@
-"""Research Lab search (Constitution v9 A3.3c): find candidates automatically, deterministically, with no AI.
+"""Research Lab search (Constitution v10 A3.3c): find candidates automatically, deterministically, with no AI.
 
     python3 -m research.lab.search round [--force] [--sport CFB]   # one round if 20 hours have passed (or --force)
 
@@ -45,9 +45,164 @@ METRIC_NAMES = {"points": "Points", "epa": "EPA", "pass_epa": "Passing-EPA", "ea
 
 
 # ---- configurations ---------------------------------------------------------------------------------------------------
-def load_menu(menu_path=None):
+def load_menu(menu_path=None, auto=True):
+    """The sport's MENU.yaml plus, unless auto=False or a menu file is named, every widening in AUTO.yaml."""
     with open(menu_path or path("MENU.yaml")) as f:
-        return yaml.safe_load(f)
+        menu = yaml.safe_load(f)
+    return with_auto(menu, read_auto()) if auto and not menu_path else menu
+
+
+# ---- automatic widening (Constitution v10 A3.3c) ------------------------------------------------------------------
+# When a round would have fewer than the menu's `widen_below` configurations left to score, the search widens its own
+# menu instead of stopping: one generation at a time, deterministically, from its own search-season scores only. Each
+# generation is appended to the sport's AUTO.yaml (never edited) and adds
+#   1. ladder values: the midpoints next to the 2 best values of each numeric setting (by median search t) and, when a
+#      best value is at the end of its ladder, one step beyond it (within the setting's bounds);
+#   2. signal variants: the 6 best team signals not varied before, each with its half-life halved and doubled and its
+#      season carry 0.2 lower and higher (same columns, same football reason);
+#   3. signal bases: the best single model per market that is not a base yet;
+#   4. bigger signal sets: pairs of 4 more and trios of 2 more of the best signals.
+BOUNDS = {"season_carry": (0.0, 1.0), "carry": (0.0, 1.0), "revert": (0.0, 1.0), "market_blend": (0.0, 1.0),
+          "def_weight": (0.0, 2.0), "k": (1, 100), "halflife": (1, 64), "prior_w": (0.1, 50), "hfa_pts": (0.0, 6.0),
+          "margin_cap": (7, 60), "market_resist": (0.0, 6.0), "bye_elo": (0, 100), "travel_elo_per_1000mi": (0, 20)}
+AUTO_COLS = ("ladders", "signals", "signal_bases", "signal_sets")
+
+
+def read_auto():
+    try:
+        with open(path("AUTO.yaml")) as f:
+            return yaml.safe_load(f) or {}
+    except OSError:
+        return {}
+
+
+def with_auto(menu, auto):
+    gens = auto.get("generations") or []
+    lad = menu.setdefault("ladders", {})
+    for g in gens:
+        for name, vals in (g.get("ladders") or {}).items():
+            lad[name] = sorted(set(lad.get(name, [])) | set(vals))
+        for market, bl in (g.get("signal_bases") or {}).items():
+            menu.setdefault("signal_bases", {}).setdefault(market, []).extend(bl)
+    S = menu["search"]
+    n = sum(int(g.get("signal_sets") or 0) for g in gens)
+    S["signal_pairs_of"] = S.get("signal_pairs_of", 0) + 4 * n
+    S["signal_trios_of"] = S.get("signal_trios_of", 0) + 2 * n
+    return menu
+
+
+def auto_signals():
+    """The signal variants every widening added, in order (signals.load_library adds them to the library)."""
+    return [x for g in read_auto().get("generations") or [] for x in g.get("signals") or []]
+
+
+def tidy(x, ints):
+    return int(round(x)) if ints else float(f"{x:.4g}")
+
+
+def widen_ladders(menu, scored_rows):
+    """New ladder values next to each numeric setting's 2 best values (median search t, values seen 3+ times)."""
+    med = {}
+    for r in scored_rows:
+        if r["type"] in ("blend", "signals") or r["t"] == "-inf":
+            continue
+        for k, v in json.loads(r["config"])["params"].items():
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                med.setdefault(k, {}).setdefault(v, []).append(float(r["t"]))
+    out = {}
+    for name, ladder in sorted((menu.get("ladders") or {}).items()):
+        lad = sorted(set(ladder))
+        if len(lad) < 2:
+            continue
+        ints = all(float(v).is_integer() for v in lad) and name not in ("season_carry", "carry", "revert")
+        lo, hi = BOUNDS.get(name, (0, float("inf")))
+        judged = {v: float(np.median(ts)) for v, ts in med.get(name, {}).items() if len(ts) >= 3 and v in lad}
+        best = sorted(judged, key=lambda v: (-judged[v], v))[:2]
+        new = set()
+        for v in best:
+            i = lad.index(v)
+            if i > 0:
+                new.add(tidy((lad[i - 1] + v) / 2, ints))
+            if i < len(lad) - 1:
+                new.add(tidy((v + lad[i + 1]) / 2, ints))
+            if i == 0:
+                new.add(tidy(v - (lad[1] - v), ints))
+            if i == len(lad) - 1:
+                new.add(tidy(v + (v - lad[-2]), ints))
+        new = sorted(x for x in new if lo <= x <= hi and x not in lad)
+        if new:
+            out[name] = new
+    return out
+
+
+def widen_signals(scored_rows, n=6):
+    """Half-life and carry variants of the n best team signals (best single-signal search t) not varied before."""
+    from . import signals as SG
+    lib = SG.load_library()
+    have = {x["id"] for x in lib}
+    varied = {x.get("variant_of") for x in auto_signals()}
+    best = {}
+    for r in scored_rows:
+        if r["type"] == "signals" and r["t"] != "-inf":
+            ids = [x["id"] for x in json.loads(r["config"])["params"]["signals"]]
+            if len(ids) == 1:
+                best[ids[0]] = max(best.get(ids[0], -np.inf), float(r["t"]))
+    pool = sorted((x for x in lib if x["kind"] == "team" and x["id"] not in varied and x["id"] in best),
+                  key=lambda x: (-best[x["id"]], x["id"]))[:n]
+    out = []
+    for sig in pool:
+        h, c = float(sig.get("halflife", 8)), float(sig.get("carry", 0.5))
+        for tag, h2, c2 in (("h", max(1, round(h / 2)), c), ("h", min(64, round(h * 2)), c),
+                            ("c", h, round(max(0.0, c - 0.2), 2)), ("c", h, round(min(1.0, c + 0.2), 2))):
+            if (h2, c2) == (h, c):
+                continue
+            v = {k: x for k, x in sig.items() if k != "markets"}
+            v.update(id=f"{sig['id']}~{tag}{h2 if tag == 'h' else c2:g}", halflife=h2, carry=c2, variant_of=sig["id"],
+                     markets=list(sig["markets"]),
+                     reason=f"Automatic variant of {sig['id']} (half-life {h2:g}, carry {c2:g}): {sig['reason']}")
+            if v["id"] not in have:
+                have.add(v["id"])
+                out.append(v)
+    return out
+
+
+def widen_bases(menu, scored_rows):
+    """The best single model per market (by search t) that is not a signal base yet."""
+    bases = menu.get("signal_bases") or {}
+    out = {}
+    for market in sorted(bases):
+        cur = [json.dumps({"type": b["type"], "params": b["params"]}, sort_keys=True) for b in bases[market]]
+        rows = sorted((r for r in scored_rows if r["market"] == market and r["type"] not in ("blend", "signals")
+                       and r["t"] != "-inf" and "(same as" not in r["label"]), key=lambda r: (-float(r["t"]), r["id"]))
+        for r in rows:
+            cfg = json.loads(r["config"])
+            b = {"type": cfg["type"], "params": cfg["params"]}
+            if json.dumps(b, sort_keys=True) not in cur:
+                out[market] = [b]
+                break
+    return out
+
+
+def widen(menu, scored_rows, n_round, log=print):
+    """Append one generation to AUTO.yaml. Returns it ({} if there was nothing at all to add)."""
+    from . import signals as SG
+    room = menu.get("signal_bases") and menu["search"].get("signal_pairs_of", 0) < len(SG.load_library())
+    gen = {"ladders": widen_ladders(menu, scored_rows), "signals": widen_signals(scored_rows),
+           "signal_bases": widen_bases(menu, scored_rows), "signal_sets": 1 if room else 0}
+    gen = {k: v for k, v in gen.items() if v}
+    if not gen:
+        return {}
+    auto = read_auto()
+    gens = auto.setdefault("generations", [])
+    gen = {"generation": len(gens) + 1, "at": L.now(), "round": n_round, **gen}
+    gens.append(gen)
+    with open(path("AUTO.yaml"), "w") as f:
+        f.write(f"# Research Lab search ({C.SPORT}) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 "
+                "A3.3c).\n# Written by research/lab/search.py from search-season scores only; append-only, never edit.\n")
+        yaml.safe_dump(auto, f, sort_keys=False, allow_unicode=True, width=120)
+    log(f"search: widened the menu (generation {gen['generation']}): " + ", ".join(
+        f"{len(v) if not isinstance(v, int) else '+'} {k}" for k, v in gen.items() if k in AUTO_COLS))
+    return gen
 
 
 def config_key(cfg):
@@ -454,19 +609,32 @@ def run_round(force=False, log=print, progress=None):
     # 1) every grid configuration not scored yet, in order (a big grid spreads over several rounds), 2) the focus
     # step: every combination of the best values of each setting so far, 3) neighbours of the best, 4) samples
     # weighted by what past rounds learned, 5) uniform samples (exploration) -- 4 and 5 with a seed fixed by round
-    todo = [c for c in grid(menu) if config_id(c) not in scored or config_id(c) in retry]
-    todo += signal_configs(menu, list(scored.values()))
-    todo += focus(menu, list(scored.values()))
-    for market in ("spread", "total"):
-        singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
-                         key=lambda r: (-float(r["t"]), r["id"]))
-        for r in singles[:S["neighbours_of_best"]]:
-            todo += neighbours(json.loads(r["config"]), menu["ladders"])
-    seed = zlib.crc32(f"{C.SPORT}-{n_round}".encode())
-    todo += samples(menu, list(scored.values()), S.get("learned_samples", 0), seed, learned=True)
-    todo += samples(menu, list(scored.values()), S.get("random_samples", 0), seed + 1, learned=False)
-    rows, fc = [], {}
+    def plan(menu):
+        todo = [c for c in grid(menu) if config_id(c) not in scored or config_id(c) in retry]
+        todo += signal_configs(menu, list(scored.values()))
+        todo += focus(menu, list(scored.values()))
+        for market in ("spread", "total"):
+            singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
+                             key=lambda r: (-float(r["t"]), r["id"]))
+            for r in singles[:menu["search"]["neighbours_of_best"]]:
+                todo += neighbours(json.loads(r["config"]), menu["ladders"])
+        seed = zlib.crc32(f"{C.SPORT}-{n_round}".encode())
+        todo += samples(menu, list(scored.values()), menu["search"].get("learned_samples", 0), seed, learned=True)
+        todo += samples(menu, list(scored.values()), menu["search"].get("random_samples", 0), seed + 1, learned=False)
+        return todo
+
+    todo = plan(menu)
     seen = set(scored) - retry
+    # v10: running short of new configurations widens the menu (a generation at a time) instead of stopping
+    for _ in range(S.get("max_widenings_per_round", 0)):
+        if len({config_id(c) for c in todo} - seen) >= S.get("widen_below", 1):
+            break
+        if not widen(menu, list(scored.values()), n_round, log=log):
+            break
+        menu = load_menu()
+        S = menu["search"]
+        todo = plan(menu)
+    rows, fc = [], {}
     fps = {r["fingerprint"]: r["id"] for r in read_csv(path("FINGERPRINTS.csv")) if not r["same_as"]}
     fp_rows = []
     cap = S.get("max_new_per_round") or len(todo) + 1
@@ -507,8 +675,8 @@ def run_round(force=False, log=print, progress=None):
         st = read_state()
         write_state({"exhausted": True, "since": st.get("since") if st.get("exhausted") else L.now(),
                      "scored_total": len(scored), "rounds": len(rounds),
-                     "note": "Every configuration the menu allows has been scored. The search resumes when new values, "
-                             "families or signals are added to MENU.yaml or SIGNALS.yaml."})
+                     "note": "Every configuration the menu allows has been scored and widening added nothing new. The "
+                             "search resumes when new values, families or signals are added to MENU.yaml or SIGNALS.yaml."})
         log(f"search: nothing new to score ({len(scored)} configurations scored in {len(rounds)} rounds); menu "
             "exhausted, no round run")
         return []
@@ -517,13 +685,20 @@ def run_round(force=False, log=print, progress=None):
     planned = min(cap, fresh)
     if progress:
         progress(n_round, 0, planned)
-    for cfg in todo:
-        done = sum(1 for r in rows if r["type"] != "blend")
-        if done >= cap:
-            break
-        add(cfg)
-        if progress:
-            progress(n_round, done + 1, planned)
+    # v10: first pass, no model type takes more than max_share_per_type of the round; second pass fills what is left
+    per_type = {}
+    type_cap = max(1, int(S.get("max_share_per_type", 1.0) * cap))
+    for limit in (type_cap, cap):
+        for cfg in todo:
+            done = sum(1 for r in rows if r["type"] != "blend")
+            if done >= cap:
+                break
+            if per_type.get(cfg["type"], 0) >= limit or config_id(cfg) in seen:
+                continue
+            per_type[cfg["type"]] = per_type.get(cfg["type"], 0) + 1
+            add(cfg)
+            if progress:
+                progress(n_round, done + 1, planned)
     # blends of the best singles so far (this round's and earlier rounds')
     allrows = list(scored.values()) + rows
     for market in ("spread", "total"):
@@ -612,7 +787,7 @@ def write_candidate(cfg, r, n_round):
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
                     f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": f"automatic search ({C.SPORT}, Constitution v9 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution v10 A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
                     "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"]),
                     "sent_at": L.now()},

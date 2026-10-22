@@ -63,14 +63,21 @@ def validate(sig):
     return sig
 
 
-def load_library(path=None):
+def load_library(path=None, auto=True):
+    """The sport's SIGNALS.yaml plus, unless auto=False or a file is named, the variants the search's automatic widening
+    added (AUTO.yaml, Constitution v10 A3.3c): same kinds and columns, so validated by the same rules."""
+    named = path is not None
     path = path or os.path.join(C.SEARCH_DIR, "SIGNALS.yaml")
-    if not os.path.exists(path):
-        return []
-    with open(path) as f:
-        lib = yaml.safe_load(f) or {}
+    lib = {}
+    if os.path.exists(path):
+        with open(path) as f:
+            lib = yaml.safe_load(f) or {}
+    extra = []
+    if auto and not named:
+        from .search import auto_signals
+        extra = auto_signals()
     out, seen = [], set()
-    for s in lib.get("signals") or []:
+    for s in (lib.get("signals") or []) + extra:
         s = validate(dict(s))
         if s["id"] in seen:
             raise SignalError(f"duplicate signal id {s['id']}")
@@ -80,7 +87,8 @@ def load_library(path=None):
 
 
 def team_frame(data):
-    """team_games plus each team's points in that game (from the schedule), keyed by franchise code."""
+    """team_games plus each team's points in that game (from the schedule), keyed by franchise code; for college
+    football, comp_plays / comp_epa come from team_games_ngt (garbage time excluded)."""
     from .models import FRANCHISE
     g = data["games"]
     pts = {}
@@ -93,6 +101,12 @@ def team_frame(data):
         t = FRANCHISE.get(r["team"], r["team"])
         r["points"] = pts.get((r["game_id"], t))
         rows[(r["game_id"], t)] = r
+    ngt = data.get("team_games_ngt")                   # CFB: garbage time excluded = the competitive columns
+    if ngt is not None and "comp_epa" not in data["team_games"].columns:
+        for r in ngt.to_dict("records"):
+            x = rows.get((r["game_id"], FRANCHISE.get(r["team"], r["team"])))
+            if x is not None:
+                x["comp_plays"], x["comp_epa"] = r["plays"], r["epa"]
     return rows
 
 

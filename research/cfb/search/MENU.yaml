@@ -247,6 +247,11 @@ ladders:
   - 28
   - 35
 search:
+  # v10 (A3.3c): fewer than widen_below new configurations left -> the search widens its own menu (AUTO.yaml), up to
+  # max_widenings_per_round generations a round; no model type takes more than max_share_per_type of a round's cap.
+  widen_below: 200
+  max_widenings_per_round: 3
+  max_share_per_type: 0.5
   max_new_per_round: 800
   round_every_hours: 0
   neighbours_of_best: 30

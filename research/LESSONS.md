@@ -1,8 +1,9 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-21T07:23:01Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-22T23:28:39Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
+- Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2006–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
 
 ## Helped (3)
 
@@ -33,25 +34,8 @@ _Generated 2026-10-21T07:23:01Z by research/lab/report.py after each run. **Expl
 - Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).
 
-## What the search learned (182,581 configurations, 2006–2016 only)
+## What the search learned (21 configurations, 2006–2016 only)
 
-- spread · elo · `k`: best 30 (median t +0.64), worst 6 (-0.33) over 174458 configurations
-- spread · elo · `market_resist`: best 1.5039 (median t +0.35), worst 0.0 (-0.21) over 174458 configurations
-- spread · elo · `mov`: best nfelo (median t +0.50), worst none (-0.25) over 174458 configurations
-- spread · elo · `revert`: best 0.2 (median t +0.73), worst 0.7 (-0.35) over 174458 configurations
-- spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.79), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.68) over 791 configurations
-- spread · signals · `signals`: best [{'carry': 0.5, 'den': 'early_plays', 'halflife': 8, 'id': 'def-early-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'early_epa': 1}, 'reason': 'Early-down EPA allowed per play: defenses that win first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.', 'side': 'defense'}, {'field': 'rest_diff', 'id': 'rest-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Extra days of rest help recovery and preparation.'}] (median t +3.04), worst [{'field': 'rest_diff', 'id': 'rest-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Extra days of rest help recovery and preparation.'}, {'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 791 configurations
-- spread · srs · `carry`: best 0.8 (median t +1.87), worst 0.2 (+1.48) over 1920 configurations
-- spread · srs · `margin_cap`: best 35 (median t +1.92), worst 14 (+0.71) over 1920 configurations
-- spread · srs · `prior_w`: best 2 (median t +2.13), worst 15 (+0.29) over 1920 configurations
-- spread · team_rating · `def_weight`: best 0.25 (median t +0.33), worst 1.25 (-0.30) over 2835 configurations
-- spread · team_rating · `halflife`: best 32 (median t +0.37), worst 2 (-0.48) over 2835 configurations
-- spread · team_rating · `metric`: best points (median t +1.18), worst success (-0.46) over 2835 configurations
-- spread · team_rating · `season_carry`: best 0.9 (median t +0.32), worst 0.2 (-0.33) over 2835 configurations
-- total · pace_eff · `halflife`: best 6 (median t -1.45), worst 32 (-1.70) over 162 configurations
-- total · pace_eff · `season_carry`: best 0.4 (median t -1.51), worst 0.9 (-1.87) over 162 configurations
-- total · signals · `signals`: best [{'carry': 0.5, 'den': 'pass_plays', 'halflife': 8, 'id': 'def-pass-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'pass_epa': 1}, 'reason': 'Pass defense efficiency matters more than run defense in modern football.', 'side': 'defense'}, {'carry': 0.5, 'den': 'early_plays', 'halflife': 8, 'id': 'off-early-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'early_epa': 1}, 'reason': "Early-down efficiency shows a team's real offense with less third-down noise.", 'side': 'offense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'off-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'EPA lost to turnovers per play: turnovers are noisy and tend to even out, so recent turnover luck may mislead the rating.', 'side': 'offense'}] (median t -0.90), worst [{'carry': 0.5, 'den': 'early_plays', 'halflife': 8, 'id': 'def-early-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'early_epa': 1}, 'reason': 'Early-down EPA allowed per play: defenses that win first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.', 'side': 'defense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-success', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Success rate allowed: how often a defense lets opponents stay on schedule.', 'side': 'defense'}, {'carry': 0.5, 'den': 'pass_plays', 'halflife': 8, 'id': 'off-pass-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'pass_epa': 1}, 'reason': 'Passing efficiency is the most stable and predictive part of offense.', 'side': 'offense'}] (-2.52) over 203 configurations
-- total · team_rating · `def_weight`: best 0.25 (median t -0.58), worst 1.0 (-1.47) over 1317 configurations
-- total · team_rating · `halflife`: best 24 (median t -1.14), worst 2 (-1.64) over 1317 configurations
-- total · team_rating · `metric`: best early_epa (median t -1.13), worst epa (-1.80) over 1317 configurations
-- total · team_rating · `season_carry`: best 0.9 (median t -1.18), worst 0.2 (-1.53) over 1317 configurations
+- spread · team_rating · `halflife`: best 8 (median t +0.98), worst 4 (+0.59) over 4 configurations
+- total · team_rating · `metric`: best points (median t +9.59), worst epa (+9.31) over 3 configurations
+- total · team_rating · `pace`: best none (median t +9.59), worst plays (+9.21) over 3 configurations

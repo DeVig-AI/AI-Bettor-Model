@@ -497,6 +497,7 @@ export const PAGE = `<!doctype html>
       " · lab status " + esc(ago(s.updated_at)) + '</div>' + (les.length ? filt : "") +
       '<div class="lessons" aria-label="Lessons, newest first">' + shown.map(function(l){
         var from = (l.candidates || []).map(function(id){ return '<a href="#c/' + encodeURIComponent(id) + '">' + esc(names[id] || id) + '</a>'; });
+        if (!from.length && l.from) from = [esc(l.from)];          // search lessons: no candidate, the search's seasons
         return '<div class="lesson"><div class="k k-' + esc(l.kind) + '">' + (K[l.kind] || K.no_effect) + '</div><div class="t">' + esc(l.text) + '</div>' +
           '<div class="when"><span>' + (from.length ? "from " + from.join(", ") : "") + '</span><span>' + (isNew(l) ? '<span class="new">NEW</span> ' : "") +
           (l.at ? esc(when(l.at)) + " · " + esc(ago(l.at)) : "time not recorded") + '</span></div></div>';

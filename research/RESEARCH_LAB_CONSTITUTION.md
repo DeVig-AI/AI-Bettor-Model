@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v9
+# DeVig Research Lab -- Constitution v10
 
-Version: **v9** · adopted 2026-10-20 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v8 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v8.md`; v7 to v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v8" at the end)
+Version: **v10** · adopted 2026-10-22 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
+replaces v9 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v9.md`; v8 to v1 alongside it;
+what changed: sections "Changes from v1" to "Changes from v9" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -72,7 +72,20 @@ result, and it will be reported exactly like a success: every number, plainly.
      and 10, and blends of the best 5 and best 8 with non-negative weights summing to 1 fit on the training and search
      seasons. Nothing already scored is scored again, and a configuration whose
      search-season forecasts are identical to one already scored is logged as the same model and never ranked,
-     blended or shortlisted.
+     blended or shortlisted. Since v10 no model type takes more than the menu's `max_share_per_type` (one half) of a
+     round's cap while other types still have configurations to score; what is left of the cap is then filled in the
+     same order.
+   - **Automatic widening (since v10):** when fewer than the menu's `widen_below` configurations are left to score,
+     the search widens its own menu instead of stopping, one generation at a time (at most
+     `max_widenings_per_round` a round), deterministically and from its own search-season scores only. A generation
+     adds (1) for each numeric setting, the midpoints between its 2 best ladder values (by median search t, values
+     scored at least 3 times) and their ladder neighbours, and one step past the end of the ladder when a best value
+     is at an end, within the setting's bounds in `research/lab/search.py`; (2) variants of the 6 best team signals
+     not varied before, with the half-life halved and doubled and the season carry 0.2 lower and higher (same
+     columns and football reason, so A3.3e and A3.5 still hold); (3) the best single model per market that is not yet
+     a signal base, as a new base; (4) pairs of 4 more and trios of 2 more of the best signals. Each generation is
+     appended to the sport's `AUTO.yaml` (never edited); `MENU.yaml` and `SIGNALS.yaml` are not changed by it. The
+     search pauses only if a generation adds nothing at all.
    - **Search seasons only:** the search code is given data only up to the last search season (B2, C2); it never sees
      the confirmation seasons or the sealed season. Search scores are the A5 effect on the search seasons with
      t = effect ÷ (standard deviation ÷ √games). Every configuration scored is logged in the sport's search folder.
@@ -458,3 +471,17 @@ The owner asked for a researcher that keeps adding reasonable new signals to tes
 
 Unchanged: every scoring, testing, correction, exam and promotion rule.
 
+## Changes from v9 (2026-10-22)
+
+The owner asked for a search that never stalls: both sports' searches had scored every configuration their menus
+allowed (NFL 179,929 on 2026-10-21, college football 4,705) and paused until someone edited a menu by hand, and in
+the NFL Elo settings had taken about 166,000 of the scores. v10:
+1. **Automatic widening (A3.3c):** when fewer than `widen_below` new configurations are left, the search adds ladder
+   values around the best settings, half-life and carry variants of the best signals, new signal bases and larger
+   signal sets, logged in each sport's `AUTO.yaml`. It reads only search-season scores, as before.
+2. **Share per model type (A3.3c):** no type takes more than half of a round while others still have work.
+
+Unchanged: the search and confirmation seasons, the shortlist (t ≥ 2.5, positive in every search period, correlation
+at most 0.95 with earlier candidates, at most 2 per market in any 7 days), and so the rate of attempts; every
+scoring, testing, correction, exam and promotion rule. No rule is loosened (A1.4): more configurations are searched,
+but the number of attempts and the bar each must clear are the same.

@@ -360,6 +360,70 @@ class Search(unittest.TestCase):
         self.assertEqual(self.SR.read_state(), {})
         self.assertEqual(len(self.SR.read_csv(self.SR.path("ROUNDS.csv"))), n_rounds + 1)
 
+    def test_short_menu_widens_instead_of_stopping(self):
+        self.small_menu()
+        m = self.SR.load_menu()
+        m["search"].update(learned_samples=40, random_samples=0, neighbours_of_best=0, widen_below=1,
+                           max_widenings_per_round=2)
+        m["ladders"] = {"halflife": [4, 8]}
+        with open(os.path.join(C.SEARCH_DIR, "MENU.yaml"), "w") as f:
+            yaml.safe_dump(m, f)
+        self.SR.run_round(force=True, log=lambda *_: None)   # the grid and the samples use up the whole menu
+        self.assertFalse(os.path.exists(self.SR.path("AUTO.yaml")), "no widening while the menu has work")
+        n1 = len(self.SR.read_scores())
+        self.SR.run_round(force=True, log=lambda *_: None)
+        auto = self.SR.read_auto()
+        g = auto["generations"][0]
+        self.assertEqual((g["generation"], g["round"]), (1, 2))
+        self.assertTrue(set(g["ladders"]["halflife"]) <= {2, 6, 12} and g["ladders"]["halflife"])
+        self.assertEqual(self.SR.read_state(), {}, "not paused")
+        rows = self.SR.read_scores()
+        self.assertGreater(len(rows), n1, "the widened menu was scored in the same round")
+        self.assertEqual(len({r["id"] for r in rows}), len(rows), "nothing scored twice")
+        self.assertEqual(self.SR.load_menu()["ladders"]["halflife"][:3], sorted(self.SR.load_menu()["ladders"]["halflife"])[:3])
+        self.assertNotIn(2, self.SR.load_menu(auto=False)["ladders"]["halflife"], "MENU.yaml itself is never edited")
+
+    def test_widen_ladders_and_signal_variants(self):
+        rows = [{"id": f"s-{i}", "market": "spread", "type": "srs", "label": "x", "t": str(t),
+                 "config": json.dumps({"params": {"carry": c, "prior_w": 3}})}
+                for i, (c, t) in enumerate([(0.3, 1), (0.3, 1.1), (0.3, 0.9), (0.9, 3), (0.9, 2), (0.9, 2.5),
+                                            (0.5, 0), (0.5, 0.1), (0.5, -1)])]
+        got = self.SR.widen_ladders({"ladders": {"carry": [0.3, 0.5, 0.9], "prior_w": [1, 3]}}, rows)
+        self.assertEqual(got["carry"], [0.1, 0.4, 0.7], "midpoints by the 2 best, one step past each end, within 0-1 (1.3 is not)")
+        self.assertEqual(got["prior_w"], [2, 5], "whole-number ladders stay whole numbers")
+        with open(os.path.join(C.SEARCH_DIR, "SIGNALS.yaml"), "w") as f:
+            yaml.safe_dump({"signals": [{"id": "off-x", "kind": "team", "side": "offense", "num": {"epa": 1},
+                                         "den": "plays", "halflife": 8, "carry": 0.5, "reason": "r"},
+                                        {"id": "rest", "kind": "schedule", "field": "rest_diff", "reason": "r"}]}, f)
+        sig = [{"id": "s-a", "market": "spread", "type": "signals", "label": "x", "t": "1.5",
+                "config": json.dumps({"params": {"signals": [{"id": "off-x"}]}})}]
+        v = self.SR.widen_signals(sig)
+        self.assertEqual([x["id"] for x in v], ["off-x~h4", "off-x~h16", "off-x~c0.3", "off-x~c0.7"])
+        self.assertTrue(all(x["num"] == {"epa": 1} and x["variant_of"] == "off-x" for x in v))
+        with open(self.SR.path("AUTO.yaml"), "w") as f:
+            yaml.safe_dump({"generations": [{"generation": 1, "signals": v}]}, f)
+        from research.lab import signals as SG
+        self.assertEqual(len(SG.load_library()), 6, "the library includes the variants")
+        self.assertEqual(self.SR.widen_signals(sig), [], "a signal is varied once")
+
+    def test_search_lessons_per_signal(self):
+        base = {"type": "srs", "params": {"carry": 0.5}}
+        bid = self.SR.config_id({"market": "spread", **base})
+        row = lambda cid, typ, cfg, p, rnd: {"id": cid, "market": "spread", "type": typ, "label": "x", "round": rnd,
+                                             "t": "1", "p1": p[0], "p2": p[1], "p3": p[2], "config": json.dumps(cfg)}
+        sigcfg = lambda sid: {"params": {"base": base, "signals": [{"id": sid}], "ridge": 1.0}}
+        rows = [row(bid, "srs", base, (0.1, 0.1, 0.1), "1"),
+                row("s-a", "signals", sigcfg("good"), (0.3, 0.2, 0.4), "2"),
+                row("s-b", "signals", sigcfg("fade"), (0.5, 0.1, 0.1), "2"),
+                row("s-c", "signals", sigcfg("nil"), (0.0, 0.2, 0.1), "2")]
+        self.SR.append_rows(self.SR.path("ROUNDS.csv"), self.SR.ROUND_COLS,
+                            [{"round": 1, "at": "2026-10-01T00:00:00Z"}, {"round": 2, "at": "2026-10-02T00:00:00Z"}])
+        got = {x["text"].split()[1]: x for x in report.search_lessons(rows)}
+        self.assertEqual({k: v["kind"] for k, v in got.items()}, {"good": "helped", "fade": "faded", "nil": "no_effect"})
+        self.assertIn("+0.20 / +0.10 / +0.30 pts", got["good"]["text"])
+        self.assertEqual((got["good"]["at"], got["good"]["source"], got["good"]["candidates"]),
+                         ("2026-10-02T00:00:00Z", "search", []))
+
     def test_a_crash_is_retried_once(self):
         self.small_menu()
         real = self.SR.forecasts
@@ -722,6 +786,24 @@ class Signals(unittest.TestCase):
         data["games"] = data["games"].drop(columns=["stadium_id"])
         out, _ = models.run(self.cand(["off-success", "rest-diff"]), data)
         self.assertTrue(np.isfinite(out.forecast).all())
+
+    def test_cfb_competitive_columns_from_no_garbage_time(self):
+        from research.lab import signals as SG
+        data = {k: v.copy() for k, v in self.data.items()}
+        tg = data["team_games"].drop(columns=["comp_plays", "comp_epa"])
+        data["team_games"] = tg
+        ngt = tg[["season", "game_id", "team", "plays", "epa"]].copy()
+        ngt["plays"], ngt["epa"] = ngt.plays * 0.8, ngt.epa - 1.0      # garbage time removed: different numbers
+        data["team_games_ngt"] = ngt
+        sig = lambda num, den: SG.validate({"id": "x", "kind": "team", "side": "offense", "num": num, "den": den,
+                                             "halflife": 6, "carry": 0.4, "reason": "r"})
+        comp = SG.features([sig({"comp_epa": 1}, "comp_plays")], data, "spread")
+        full = SG.features([sig({"epa": 1}, "plays")], data, "spread")
+        self.assertTrue(all(np.isfinite(v[0]) for v in comp.values()))
+        self.assertNotEqual([v[0] for v in comp.values()], [v[0] for v in full.values()])
+        rows = SG.team_frame(data)
+        r = next(iter(rows.values()))
+        self.assertEqual((r["comp_plays"], r["comp_epa"]), (r["plays"] * 0.8, r["epa"] - 1.0))
 
     def test_qb_change_and_combos(self):
         out, fit = models.run(self.cand(["qb-change", "rest-diff", "off-success"]), self.data)
