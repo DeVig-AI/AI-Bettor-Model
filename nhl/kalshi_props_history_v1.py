@@ -29,7 +29,8 @@ MAX_MINUTES = float(os.getenv("MAX_MINUTES", "300"))
 CUTOFF = datetime(2026, 10, 21, tzinfo=timezone.utc)
 SNAP_BEFORE, SNAP_SEARCH = timedelta(minutes=40), timedelta(hours=8)
 GAME_TYPES = {2, 3}
-THREADS = 16
+THREADS = 6                                             # with K.MIN_GAP below: ~8 requests/s (16 and 12/s drew 429s)
+K.MIN_GAP = 1 / 8.0
 OUT_DIR = os.path.join(HERE, "props_history")
 CSV_DIR = os.path.join(OUT_DIR, "kalshi")
 DONE = os.path.join(OUT_DIR, "done_events.txt")
@@ -41,6 +42,33 @@ stats = {"events_seen": 0, "events_done_now": 0, "markets_written_now": 0, "no_c
          "not_nhl_game_type": 0, "after_cutoff": 0, "no_markets": 0, "markets_from": {}, "candles_by_endpoint": {}}
 raw_samples = {}
 T0 = time.time()
+
+
+def anytime(m):
+    """Before about February 2026 Kalshi worded the 1+ goal market "Name: Anytime Goalscorer", and before about
+    mid-January "AWAY at HOME: Anytime Goal: Name" (both structured, floor_strike 0.5): the same Over 0.5 goals market
+    as the later "Name: 1+ goals". Returns the player or None."""
+    t = str(m.get("title") or "")
+    try:
+        ok = m.get("strike_type") == "structured" and abs(float(m.get("floor_strike")) - 0.5) < 1e-9
+    except (TypeError, ValueError):
+        ok = False
+    if ok and t.lower().endswith(": anytime goalscorer"):
+        return t[: -len(": anytime goalscorer")].strip()
+    i = t.lower().rfind(": anytime goal: ")                  # earliest wording: "AWAY at HOME: Anytime Goal: Name"
+    early = m.get("strike_type") == "structured" and m.get("floor_strike") is None   # the first weeks: no strike set
+    if (ok or early) and i >= 0 and t[i + len(": anytime goal: "):].strip():
+        return t[i + len(": anytime goal: "):].strip()
+    return None
+
+
+def label_line(m, series):
+    """(player, Over line, wording) for an "N+" market, or an old "Anytime Goalscorer" goals market as 1+ goals."""
+    if K.is_over_market(m):
+        return K.label(m)[0], K.line_of(m), "N+"
+    if series == "KXNHLGOAL" and anytime(m):
+        return anytime(m), 0.5, "anytime"
+    return None, None, None
 
 
 def settled_events(series):
@@ -78,24 +106,29 @@ def markets_for_event(ev):
     """(markets, where from): nested, else the live list, else the historical list."""
     if ev.get("markets"):
         return ev["markets"], ("/historical/markets" if ev.get("_historical") else "nested")
+    n_log = len(K.log)
     for path in ("/historical/markets", "/markets"):
         d = K.get(K.KALSHI + path, {"event_ticker": ev.get("event_ticker"), "limit": 1000})
         ms = (d or {}).get("markets") or []
         if ms:
             raw_samples.setdefault("market_" + path, ms[0])
             return ms, path
-    return [], None
+    # "empty": both lists answered with no market (an empty list or HTTP 404, which K.get does not log); any other
+    # failure is logged by K.get, and then the event is retried rather than called empty
+    return [], ("empty" if len(K.log) == n_log else None)
 
 
 def one_market_candles(series, t, start_ts, end_ts, historical):
     paths = ((f"/historical/markets/{t}/candlesticks", "historical"),
              (f"/series/{series}/markets/{t}/candlesticks", "per_market"))
+    answered = False
     for path, name in (paths if historical else paths[::-1]):
         d = K.get(K.KALSHI + path, {"start_ts": start_ts, "end_ts": end_ts, "period_interval": 60})
+        answered = answered or d is not None
         if d and d.get("candlesticks"):
             raw_samples.setdefault(name, d if len(json.dumps(d)) < 20000 else {"truncated": True})
             return name, d["candlesticks"]
-    return None, []
+    return (None if answered else "failed"), []        # "failed": no endpoint answered (e.g. rate limit) -- retry later
 
 
 def candles(series, tickers, start_ts, end_ts, pool, historical):
@@ -110,11 +143,13 @@ def candles(series, tickers, start_ts, end_ts, pool, historical):
     ce = stats["candles_by_endpoint"]
     ce["batch"] = ce.get("batch", 0) + len(out)
     rest = [t for t in tickers if t not in out]
+    failed = False
     for t, (name, cs) in zip(rest, pool.map(lambda t: one_market_candles(series, t, start_ts, end_ts, historical), rest)):
         out[t] = cs
-        if name:
+        failed = failed or name == "failed"
+        if name and name != "failed":
             ce[name] = ce.get(name, 0) + 1
-    return out
+    return None if failed else out
 
 
 def main():
@@ -152,7 +187,10 @@ def main():
             if g["game_type"] not in GAME_TYPES:
                 stats["not_nhl_game_type"] += 1; done.add(et); continue
             all_ms, src = markets_for_event(ev)
-            ms = [m for m in all_ms if K.is_over_market(m)]
+            if not all_ms and src == "empty":           # an event Kalshi lists with no market at all: nothing to price
+                stats["empty_at_kalshi"] = stats.get("empty_at_kalshi", 0) + 1
+                K.log.append(f"empty at Kalshi {et}"); done.add(et); continue
+            ms = [m for m in all_ms if label_line(m, series)[0]]
             if not ms:
                 stats["no_markets"] += 1; K.log.append(f"no markets {et}"); continue
             stats["markets_from"][src] = stats["markets_from"].get(src, 0) + 1
@@ -160,12 +198,16 @@ def main():
             start_ts, end_ts = int((snap - SNAP_SEARCH).timestamp()), int(snap.timestamp())
             cs = candles(series, [m["ticker"] for m in ms if m.get("ticker")], start_ts, end_ts, pool,
                          historical=src == "/historical/markets")
+            if cs is None:                              # a price request was refused: not written, retried next run
+                stats["candles_failed"] = stats.get("candles_failed", 0) + 1; continue
             w = writer(g["date"][:7])
             n_written = 0
             for m in ms:
-                player, line = K.label(m)[0], K.line_of(m)
+                player, line, wording = label_line(m, series)
                 if not player or line is None:
                     continue
+                if wording == "anytime":
+                    stats["anytime_goalscorer_markets"] = stats.get("anytime_goalscorer_markets", 0) + 1
                 best = None
                 for c in cs.get(m["ticker"]) or []:
                     end = c.get("end_period_ts")
