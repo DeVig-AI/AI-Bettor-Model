@@ -1,11 +1,12 @@
-// DeVig live scores: GET /api/live?sport=nfl|nba|mlb|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
+// DeVig live scores: GET /api/live?sport=nfl|nba|mlb|nhl|wnba|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
 // with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
 // (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
-const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", cfb: "football/college-football"};
+const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
+                cfb: "football/college-football"};
 const QUERY = {cfb: "?groups=80&limit=500"};       // every FBS game, not just ESPN's featured ones
 // ESPN codes -> the app's team codes (same table as kalshi_games_v1.ALIASES, ESPN side)
 const ALIASES = {

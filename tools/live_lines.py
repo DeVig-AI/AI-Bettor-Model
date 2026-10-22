@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-live_lines.py -- the live file for NBA, MLB and college football, as nfl/nfl_props_live_v1.py is for the NFL: for
-each game Kalshi lists (live/game_lines.json), ESPN's score and state, Kalshi's live moneyline, and the win-chance
-line (Kalshi price history from 2 hours before the start) while the game is on. A finished game keeps its line, so
-the app shows the graph after the final too, and in the apps that have no /api/live or /api/winline.
+live_lines.py -- the live file for NBA, MLB, NHL, WNBA and college football, as nfl/nfl_props_live_v1.py is for
+the NFL: for each game Kalshi lists (live/game_lines.json), ESPN's score and state, Kalshi's live moneyline, and the
+win-chance line (Kalshi price history from 2 hours before the start) while the game is on. A finished game keeps its
+line, so the app shows the graph after the final too, and in the apps that have no /api/live or /api/winline.
 
 Output: live/live_lines.json
   {generated_at, active, errors, games: [{sport, away, home, kickoff, espn_id, home_ticker, state, detail,
@@ -12,7 +12,8 @@ Output: live/live_lines.json
   Finished games stay KEEP_DAYS after the start; upcoming ones are listed from a day ahead.
 
 Display only: nothing here feeds a model, a pick or a test. Keyless: Kalshi and ESPN public endpoints only.
-Runs every 5 minutes from GitHub Actions; does nothing outside game windows unless FORCE=1.
+Run by .github/workflows/live_lines.yml in a loop (every 3 minutes while games are on); does nothing outside game
+windows unless FORCE=1. The last line of output is {working, next_s, wrote} for that loop.
 """
 import json
 import os
@@ -27,8 +28,9 @@ import kalshi_games_v1 as KG  # noqa: E402  keyless get(), canon(), american()
 HERE = os.path.dirname(os.path.abspath(__file__))
 LINES = os.path.join(HERE, "..", "live", "game_lines.json")
 OUT = os.path.join(HERE, "..", "live", "live_lines.json")
-SPORTS = ("NBA", "MLB", "CFB")
-ESPN = {"NBA": "basketball/nba", "MLB": "baseball/mlb", "CFB": "football/college-football"}
+SPORTS = ("NBA", "MLB", "NHL", "WNBA", "CFB")
+ESPN = {"NBA": "basketball/nba", "MLB": "baseball/mlb", "NHL": "hockey/nhl", "WNBA": "basketball/wnba",
+        "CFB": "football/college-football"}
 ESPN_Q = {"CFB": {"groups": 80, "limit": 500}}         # every FBS game, not just ESPN's featured ones
 ET = ZoneInfo("America/New_York")
 WINDOW_BEFORE, WINDOW_AFTER = timedelta(minutes=30), timedelta(hours=6)
@@ -81,10 +83,11 @@ def win_line(ticker, kickoff, end, max_points=150):
     bid/ask midpoint), as in nfl/nfl_props_live_v1.py."""
     if not ticker or not kickoff:
         return None, None
-    series = ticker.split("-", 1)[0]
-    d = KG.get(f"{KG.KALSHI}/series/{series}/markets/{urllib.parse.quote(ticker)}/candlesticks",
-               {"start_ts": int((kickoff - timedelta(hours=2)).timestamp()), "end_ts": int(end.timestamp()),
-                "period_interval": 1}) or {}
+    series, q = ticker.split("-", 1)[0], {"start_ts": int((kickoff - timedelta(hours=2)).timestamp()),
+                                          "end_ts": int(end.timestamp()), "period_interval": 1}
+    d = KG.get(f"{KG.KALSHI}/series/{series}/markets/{urllib.parse.quote(ticker)}/candlesticks", q) or {}
+    if not d.get("candlesticks"):                  # Kalshi moves settled markets to /historical after a while
+        d = KG.get(f"{KG.KALSHI}/historical/markets/{urllib.parse.quote(ticker)}/candlesticks", q) or {}
     pts, last = [], None
     for c in d.get("candlesticks") or []:
         b, a = _close(c, "yes_bid"), _close(c, "yes_ask")
@@ -127,11 +130,24 @@ def candidates(now, lines, prev):
 
 
 def needs_work(g, now):
-    """A game under way, about to start, or finished without its full line yet."""
+    """A game under way (however late: a missed run must not leave it live for good), about to start, or finished
+    without its full line yet."""
     k = parse_t(g["kickoff"])
     if g.get("state") == "post":
         return not g.get("line_final")
-    return k - WINDOW_BEFORE <= now <= k + WINDOW_AFTER
+    return g.get("state") == "in" or k - WINDOW_BEFORE <= now <= k + WINDOW_AFTER
+
+
+def next_window(games, now):
+    """Seconds until the next game's window opens (None if no game is coming within the file's day ahead)."""
+    ks = [parse_t(g["kickoff"]) - WINDOW_BEFORE for g in games.values() if g.get("state") == "pre"]
+    ks = [k for k in ks if k > now]
+    return int((min(ks) - now).total_seconds()) if ks else None
+
+
+def summary(**kw):
+    """The last line of output: what the workflow's loop reads to decide when to run again."""
+    print(json.dumps(kw))
 
 
 def main(now=None):
@@ -141,7 +157,8 @@ def main(now=None):
     work = {k: g for k, g in games.items() if needs_work(g, now)}
     stale = len(games) < len(prev.get("games") or [])          # old games to drop: write the file anyway
     if not work and not stale and os.getenv("FORCE") != "1" and os.path.exists(OUT):
-        print("no game window now; nothing to do"); return 0
+        summary(working=0, next_s=next_window(games, now), wrote=False)
+        return 0
     for sport in SPORTS:
         mine = {k: g for k, g in work.items() if k[0] == sport}
         if not mine:
@@ -175,11 +192,14 @@ def main(now=None):
     out = {"generated_at": iso(now), "active": bool(work), "errors": KG.log[:30],
            "note": "Scores are ESPN's, unofficial. Win-chance lines are Kalshi's price history. Display only.",
            "games": sorted(games.values(), key=lambda g: (g["kickoff"], g["sport"], g["away"]))}
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w") as f:
-        json.dump(out, f, separators=(",", ":"), allow_nan=False)
-    print(json.dumps({"games": len(out["games"]), "working": len(work),
-                      "with_line": sum(1 for g in out["games"] if g.get("kalshi_line")), "errors": out["errors"][:5]}))
+    same = {k: v for k, v in out.items() if k != "generated_at"} == {k: v for k, v in prev.items() if k != "generated_at"}
+    if not same:                                   # unchanged: no write, so no commit
+        os.makedirs(os.path.dirname(OUT), exist_ok=True)
+        with open(OUT, "w") as f:
+            json.dump(out, f, separators=(",", ":"), allow_nan=False)
+    print(json.dumps({"games": len(out["games"]), "with_line": sum(1 for g in out["games"] if g.get("kalshi_line")),
+                      "errors": out["errors"][:5]}))
+    summary(working=len(work), next_s=next_window(games, now), wrote=not same)
     return 0
 
 

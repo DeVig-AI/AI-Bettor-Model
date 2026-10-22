@@ -259,6 +259,28 @@
   .lab-table td{padding:7px 6px; border-bottom:1px solid var(--line); text-align:right; font-family:var(--font-mono); white-space:nowrap;}
   .lab-table td:first-child{font-family:var(--font-sans); font-weight:600; white-space:normal;}
   .lab-table tr.bench td{color:var(--ink-soft);}
+  /* Research: power rankings, team and player pages */
+  .rs-table tr[data-rs]{cursor:pointer;}
+  .rs-table tr[data-rs]:hover td{background:var(--surface-2);}
+  .rs-team{display:flex; align-items:center; gap:8px; min-width:0;}
+  .rs-team .rk{min-width:18px; color:var(--ink-faint); font-family:var(--font-mono); font-weight:500; text-align:right;}
+  .rs-team .nm{min-width:0; line-height:1.25;}
+  .rs-team .tm-badge{flex:none;}
+  .rs-head{display:flex; align-items:center; gap:10px; margin:2px 0 6px;}
+  .rs-head h3{margin:0;}
+  .rs-back{background:none; border:none; color:var(--accent); font:inherit; font-size:14px; padding:6px 0; cursor:pointer;}
+  .rs-link{background:none; border:1px solid var(--line-strong); color:var(--ink-soft); border-radius:999px; font-size:11.5px;
+    padding:2px 8px; margin-left:6px; cursor:pointer; vertical-align:middle;}
+  .rs-link:hover{color:var(--ink); border-color:var(--accent);}
+  .rs-links{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0 2px; font-size:12.5px; color:var(--ink-faint);}
+  .rs-hit{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 10px; align-items:center; margin:10px 0 4px; font-size:13.5px;}
+  .rs-hit .v{font-family:var(--font-mono); font-weight:600; text-align:right;}
+  .rs-bar{grid-column:1 / -1; height:5px; border-radius:3px; background:var(--line); overflow:hidden;}
+  .rs-bar i{display:block; height:100%; background:var(--accent);}
+  .rs-form{display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;}
+  .rs-form .field{margin:0;}
+  .rs-form select, .rs-form input{min-width:0;}
+  td.rs-over{color:var(--good);}
   .md-tabs{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 8px;}
   .md-game{padding:10px 0; border-top:1px solid var(--line);}
   .md-game:first-of-type{border-top:none;}
@@ -709,6 +731,8 @@
         <button class="pill-tab active" data-sport="NFL">NFL</button>
         <button class="pill-tab" data-sport="MLB">MLB</button>
         <button class="pill-tab" data-sport="NBA">NBA</button>
+        <button class="pill-tab" data-sport="NHL">NHL</button>
+        <button class="pill-tab" data-sport="WNBA">WNBA</button>
         <button class="pill-tab" data-sport="CFB">CFB</button>
         <span class="faint" id="homeSyncedAt"></span>
       </div>
@@ -868,6 +892,7 @@
 
   <section class="panel" id="panel-more" hidden>
     <div class="more-tiles">
+      <button type="button" class="more-tile" data-go="research"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><b>Research</b><span>Rankings, team and player stats</span></button>
       <button type="button" class="more-tile" data-go="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg><b>Models</b><span>What each sport runs on</span></button>
       <button type="button" class="more-tile" data-go="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg><b>Testing</b><span>How the picks have done</span></button>
       <button type="button" class="more-tile" data-go="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><b>About</b><span>How DeVig works, plainly</span></button>
@@ -897,6 +922,10 @@
     </div>
   </section>
 
+  <section class="panel" id="panel-research" hidden>
+    <div id="rsRoot"></div>
+  </section>
+
   <section class="panel about" id="panel-about" hidden>
     <div class="card">
       <div class="about-logo"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div><b style="font-size:18px">DeVig</b><div class="faint">odds, read straight</div></div></div>
@@ -922,7 +951,16 @@
     </div>
     <div class="card">
       <h3>College football</h3>
-      <p><strong>Under construction.</strong> When it opens, the CFB tab will show every FBS game Kalshi lists: ESPN's live score, Kalshi's win chance, moneyline, main spread and total, every spread line, and the win-chance graph from Kalshi's price history, and History will show finished games against Kalshi's last price before kickoff. DeVig has no college football model, so nothing on the CFB tab is a pick. Games are matched between Kalshi and ESPN by school name.</p>
+      <p>The CFB tab shows every FBS game Kalshi lists: ESPN's live score, Kalshi's win chance, moneyline, main spread and total, every spread line, and the win-chance graph from Kalshi's price history. History shows finished games against Kalshi's last price before kickoff. DeVig has no college football model, so nothing on the CFB tab is a pick. Games are matched between Kalshi and ESPN by school name.</p>
+    </div>
+    <div class="card">
+      <h3>Research</h3>
+      <p>More → Research has DeVig's power rankings and each team's and player's stats, so you can check a game or a prop for yourself: season averages (this season and last), recent games, game logs, and how often a player cleared a line. Game cards link to both teams, and each prop links to the player with its line filled in. It shows counts, not chances: a short streak is a small sample, and Kalshi's price already reflects a player's recent form. It covers the NBA, NHL and NFL. Stats are ESPN's box scores (NBA), the NHL's (NHL) and nflverse's (NFL), unofficial, updated twice a day.</p>
+    </div>
+    <div class="card">
+      <h3>NHL and WNBA</h3>
+      <p>The NHL and WNBA tabs show every game Kalshi lists, with ESPN's live score, Kalshi's moneyline, main spread (the 1.5 puck line for the NHL) and total, every spread line, and the win-chance graph. DeVig has no NHL or WNBA game model, so there are no game picks. NHL player props (goals, assists, points) have their own pre-registered paper test, shown on each game and under Testing; nothing is bet.</p>
+      <p>A sport's tab only shows while it is in season (a game in the last 3 days or the next 3 weeks), so the row of tabs stays short in the off-season.</p>
     </div>
     <div class="card" id="donateCard" hidden>
       <h3>Keep DeVig free</h3>
@@ -1049,11 +1087,12 @@
     parlay: document.getElementById("panel-parlay"),
     lab: document.getElementById("panel-lab"),
     models: document.getElementById("panel-models"),
+    research: document.getElementById("panel-research"),
     me: document.getElementById("panel-me"),
     more: document.getElementById("panel-more"),
     about: document.getElementById("panel-about")
   };
-  var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1};
+  var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1, research: 1};
   var meBtn = document.getElementById("meBtn");
   function showPanel(name){
     var navTab = UNDER_MORE[name] ? "more" : name;
@@ -1064,14 +1103,18 @@
     if(name === "parlay"){ renderTrackedParlays(); renderBestParlay(); }
     if(name === "me") renderMe();
     if(name === "models") renderModels();
+    if(name === "research") renderResearch();
   }
   tabs.forEach(function(btn){
     btn.addEventListener("click", function(){ showPanel(btn.dataset.tab); window.scrollTo(0, 0); });
   });
   document.querySelectorAll("#panel-more [data-go]").forEach(function(b){
-    b.addEventListener("click", function(){ showPanel(b.dataset.go); window.scrollTo(0, 0); });
+    b.addEventListener("click", function(){
+      if(b.dataset.go === "research") rsStack = [{page: "home"}];        // the tile always opens Research's front page
+      showPanel(b.dataset.go); window.scrollTo(0, 0);
+    });
   });
-  ["models", "lab", "about", "me"].forEach(function(k){                 // pages under More get a way back
+  ["models", "lab", "about", "me", "research"].forEach(function(k){     // pages under More get a way back
     var back = el("button", "back-more", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>More');
     back.type = "button";
     back.addEventListener("click", function(){ showPanel("more"); window.scrollTo(0, 0); });
@@ -1264,6 +1307,30 @@
     }).join("");
   }
 
+  // A sport's tab shows only while it is in season: a game (with a model pick or only Kalshi's prices) in the last
+  // 3 days or the next 3 weeks. Off-season sports drop off the row until their games come back.
+  var IN_SEASON_BACK_DAYS = 3, IN_SEASON_AHEAD_DAYS = 21;
+  var NO_GAME_MODEL = {NHL: true, WNBA: true};             // Kalshi's odds only: no "DeVig's picks" section
+  function sportsInSeason(){
+    var lo = Date.now() - IN_SEASON_BACK_DAYS * 864e5, hi = Date.now() + IN_SEASON_AHEAD_DAYS * 864e5, on = {};
+    boardDocs().concat(cfbGames()).forEach(function(g){
+      var k = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
+      if(isFinite(k) && k >= lo && k <= hi) on[g.sport || "NFL"] = true;
+    });
+    return on;
+  }
+  function updateSportTabs(){
+    if(!linesDoc && !homeDocs.length) return;              // nothing synced yet: keep every tab until we know
+    var on = sportsInSeason(), btns = [].slice.call(document.querySelectorAll("#sportPills .pill-tab"));
+    if(!btns.some(function(b){ return on[b.dataset.sport]; })) on = null;   // nothing in season at all: show them all
+    btns.forEach(function(b){ b.hidden = !!on && !on[b.dataset.sport]; });
+    var cur = btns.filter(function(b){ return b.dataset.sport === currentSport; })[0];
+    var first = btns.filter(function(b){ return !b.hidden; })[0];
+    if(cur && cur.hidden && first){
+      currentSport = first.dataset.sport; dayPicked = false;
+      btns.forEach(function(b){ b.classList.toggle("active", b === first); });
+    }
+  }
   document.querySelectorAll("#sportPills .pill-tab").forEach(function(btn){
     btn.addEventListener("click", function(){
       if(btn.disabled) return;
@@ -1309,6 +1376,7 @@
       return;
     }
 
+    updateSportTabs();
     if(currentSport === "CFB"){ document.getElementById("dayTabs").innerHTML = ""; renderCfbBoard(wrap, statusEl, syncedEl); return; }
     var allSynced = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
@@ -1330,6 +1398,8 @@
         emptyMsg = "Picks lock at 10:30am and 4pm ET when both starting pitchers are announced; in the postseason there are only one or two games a day, and games Kalshi lists show up here with its odds even without a pick. See About for the honest MLB track record.";
       } else if(currentSport === "NBA"){
         emptyMsg = "Picks lock automatically every morning (11am ET) for games in the next 3 days and show up here on their own once synced. The 2026-27 regular season starts October 20. See About for the NBA track record.";
+      } else if(currentSport === "NHL" || currentSport === "WNBA"){
+        emptyMsg = "DeVig has no " + currentSport + " game model, so there are no picks: games show up here with Kalshi's odds once Kalshi lists them." + (currentSport === "NHL" ? " Player props have a paper test (see Testing)." : "");
       } else {
         emptyMsg = currentSport + " isn't built yet — this project doesn't have a reliable historical-odds data source for it. See the project notes for why.";
       }
@@ -1379,10 +1449,10 @@
     });
     function byChance(a, b){ return ((b.model || {}).winner_prob || 0) - ((a.model || {}).winner_prob || 0); }
     picks.sort(byChance); passed.sort(byChance);
-    var SHOW = 4;
-    wrap.appendChild(el("div", "home-sec", '<b>DeVig\'s picks</b><span class="faint">' +
+    var SHOW = 4, noModel = NO_GAME_MODEL[currentSport];       // no game model: no picks section, just the games
+    if(!noModel) wrap.appendChild(el("div", "home-sec", '<b>DeVig\'s picks</b><span class="faint">' +
       (picks.length ? picks.length + ' pick' + (picks.length === 1 ? '' : 's') + ' · most likely first' : '') + '</span>'));
-    if(!picks.length) wrap.appendChild(el("div", "card home-empty faint", "No pick clears the bar " + (dayLabel(currentDay) === "Today" ? "today" : "this day") + "."));
+    if(!picks.length && !noModel) wrap.appendChild(el("div", "card home-empty faint", "No pick clears the bar " + (dayLabel(currentDay) === "Today" ? "today" : "this day") + "."));
     picks.forEach(function(g, i){
       var c = renderGameCard(g);
       if(i >= SHOW && !showAllPicks) c.hidden = true;
@@ -1407,7 +1477,7 @@
       if(adv) wrap.appendChild(adv);
     }
     if(others.length){
-      wrap.appendChild(el("div", "home-sec", '<b>Other games</b><span class="faint">no pick · Kalshi odds</span>'));
+      wrap.appendChild(el("div", "home-sec", '<b>' + (noModel ? 'Games' : 'Other games') + '</b><span class="faint">' + (noModel ? 'Kalshi odds' : 'no pick · Kalshi odds') + '</span>'));
       others.forEach(function(g){ var c = renderGameCard(g); c.classList.add("slim"); wrap.appendChild(c); });
     }
     renderTesting();
@@ -1457,7 +1527,12 @@
     }).map(function(x){
       var ml = x.ml || {}, sp = x.spread || {}, tot = x.total || {};
       var why = x.sport === "MLB" ? "The MLB model locks a pick at 10:30am and 4pm ET only when both starting pitchers are announced; this game didn't get one."
+        : x.sport === "NHL" || x.sport === "WNBA" ? "DeVig has no " + x.sport + " game model."
         : "The model hasn't locked a pick for this game (yet).";
+      if(x.colors){                                         // ESPN's colours for sports with no table (NHL, WNBA)
+        var tc = TEAM_COLORS[x.sport] = TEAM_COLORS[x.sport] || {};
+        ["away", "home"].forEach(function(k){ if(!tc[x[k]] && /^#[0-9a-f]{6}$/i.test(x.colors[k] || "")) tc[x[k]] = x.colors[k]; });
+      }
       return {game_id: "kalshi:" + (x.event || x.away + x.home + x.kickoff), sport: x.sport, away_team: x.away, home_team: x.home,
         kickoff_time: x.kickoff, game_date: x.date, marketOnly: true,
         market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
@@ -1550,9 +1625,9 @@
   // No DeVig model picks CFB games. The board is built from the lines file (tools/game_lines.py: Kalshi's
   // KXNCAAF* markets matched to ESPN's FBS scoreboard), with scores from the fast feed (/api/live?sport=cfb).
   var CFB_IDS = {}, cfbOpen = {}, cfbHistory = null;
-  // The CFB tab is under construction: tapping it shows a notice instead of the board (and History / Models leave
-  // CFB out). Set to false to switch the board on; window.devigCfbPreview = true shows it anyway (tests, previews).
-  var CFB_UNDER_CONSTRUCTION = !window.devigCfbPreview;
+  // Set to true to put the CFB tab back under construction: tapping it then shows a notice instead of the board (and
+  // History / Models leave CFB out).
+  var CFB_UNDER_CONSTRUCTION = false;
   function cfbConstructionHtml(){
     return '<div class="empty"><div class="icon">🚧</div><b>College football is under construction</b><br>' +
       '<span class="faint">Games, live scores, Kalshi prices and the win-chance graph are coming soon.</span></div>';
@@ -1720,6 +1795,212 @@
         (p.total ? '<span>Total <b>' + escapeHtml(String(p.total.line)) + '</b> ' + ((h.final.home + h.final.away) > p.total.line ? 'went over' : (h.final.home + h.final.away) < p.total.line ? 'stayed under' : 'push') + '</span>' : '') + '</div>';
       wrap.appendChild(c);
     });
+  }
+
+  // ---------- Research: power rankings, team and player stats to check for yourself (display only) ----------
+  // Files from tools/stats_<sport>.py (stats/<sport>/index.json and team_<CODE>.json), read straight from the repo.
+  // Each sport's index.json also says what to show (team_rows, roster_cols, player_cols, log_show, hit_stats), so a
+  // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
+  // cleared, always with the number of games.
+  var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
+  var RS_SPORTS = ["NBA", "NHL", "NFL"];
+  var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
+  function rsGet(path){
+    if(!rsCache[path]) rsCache[path] = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / 6e5), {cache: "no-store"})
+      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .catch(function(e){ delete rsCache[path]; throw e; });
+    return rsCache[path];
+  }
+  function rsIndex(sp){
+    return rsGet(sp.toLowerCase() + "/index.json").then(function(idx){
+      var tc = TEAM_COLORS[sp] = TEAM_COLORS[sp] || {};            // colours for sports the app has no table for (NHL)
+      (idx.teams || []).forEach(function(t){ if(!tc[t.code] && /^#[0-9a-f]{6}$/i.test(t.color || "")) tc[t.code] = t.color; });
+      return idx;
+    });
+  }
+  function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + code + ".json"); }
+  function rsHasSport(sp){ return RS_SPORTS.indexOf(sp) >= 0; }
+  // Open Research at a page: {page: "team", sport, code} or {page: "player", sport, team | teams, id | name, stat, line}.
+  function openResearch(route){
+    rsStack = [{page: "home"}];
+    if(route && route.page !== "home"){ rsSport = route.sport || rsSport; rsStack.push(route); }
+    showPanel("research");
+    window.scrollTo(0, 0);
+  }
+  window.devigOpenResearch = openResearch;
+  function rsGo(route){ rsStack.push(route); renderResearch(); window.scrollTo(0, 0); }
+  function rsLink(route, text, cls){
+    return '<button type="button" class="' + (cls || "rs-link") + '" data-rs="' + escapeHtml(JSON.stringify(route)) + '">' + escapeHtml(text) + '</button>';
+  }
+  function rsRow(route){ return ' data-rs="' + escapeHtml(JSON.stringify(route)) + '"'; }
+  document.addEventListener("click", function(ev){                     // Research links anywhere in the app
+    var b = ev.target.closest && ev.target.closest("[data-rs]");
+    if(!b) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var route = JSON.parse(b.getAttribute("data-rs"));
+    if(!panels.research.hidden) rsGo(route); else openResearch(route);
+  }, true);
+  function rsNum(v, d){ return v == null ? "—" : Number(v).toFixed(d == null ? 1 : d); }
+  function rsSigned(v){ return v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1); }
+  function rsCell(v, c){ return c[3] ? rsSigned(v) : c[2] == null ? (v == null ? "—" : String(v)) : rsNum(v, c[2]); }   // [label, field, decimals, signed]
+  function rsSeasonYear(f){ return f.season_year || parseInt(String(f.season).slice(0, 4), 10) + 1; }   // the year it ends
+  function rsShort(label){ var l = String(label); return l.indexOf("-") < 0 ? l : l.replace(/^20/, "").replace("-", "–"); }   // "26–27", NFL "2026"
+  function rsDate(d){ var p = String(d).split("-"); return +p[1] + "/" + +p[2]; }
+  function rsLogIdx(idx){ var m = {}; (idx.log_cols || []).forEach(function(c, i){ m[c] = i; }); return m; }
+  function renderResearch(){
+    var root = document.getElementById("rsRoot");
+    if(!root || panels.research.hidden) return;
+    var r = rsStack[rsStack.length - 1];
+    var back = rsStack.length > 1 ? '<button type="button" class="rs-back" id="rsBack">‹ Back</button>' : '';
+    root.innerHTML = back + '<div class="card" id="rsCard"><div class="faint">Loading…</div></div>';
+    if(back) document.getElementById("rsBack").addEventListener("click", function(){ rsStack.pop(); renderResearch(); window.scrollTo(0, 0); });
+    var card = document.getElementById("rsCard");
+    function fail(){ card.innerHTML = '<div class="bb-empty">These stats aren\'t available right now. They load from the DeVig repo; check your connection and try again.</div>'; }
+    if(r.page === "team") rsTeam(card, r, fail);
+    else if(r.page === "player") rsPlayer(card, r, fail);
+    else rsHome(card, fail);
+  }
+  function rsHome(card, fail){
+    var tabs = [["rank", "Power rankings"], ["players", "Players"]];
+    card.innerHTML = '<h3 style="margin-bottom:6px">Research</h3><p class="faint" style="margin:0 0 12px">Power rankings, team and player stats to check for yourself. Numbers only, no picks: a player\'s hot streak is usually already in the price.</p>' +
+      (RS_SPORTS.length > 1 ? '<div class="md-tabs">' + RS_SPORTS.map(function(sp){
+        return '<button type="button" class="pill-tab' + (sp === rsSport ? ' active' : '') + '" data-rs-sport="' + sp + '">' + sp + '</button>'; }).join("") + '</div>' : '') +
+      '<div class="md-tabs">' + tabs.map(function(t){
+        return '<button type="button" class="pill-tab' + (t[0] === rsTab ? ' active' : '') + '" data-rs-tab="' + t[0] + '">' + t[1] + '</button>'; }).join("") + '</div>' +
+      '<div id="rsBody"><div class="faint">Loading…</div></div>';
+    card.querySelectorAll("[data-rs-sport]").forEach(function(b){ b.addEventListener("click", function(){ rsSport = b.dataset.rsSport; rsQuery = ""; renderResearch(); }); });
+    card.querySelectorAll("[data-rs-tab]").forEach(function(b){ b.addEventListener("click", function(){ rsTab = b.dataset.rsTab; renderResearch(); }); });
+    var sp = rsSport;
+    rsIndex(sp).then(function(idx){
+      var body = document.getElementById("rsBody");
+      if(!body || sp !== rsSport) return;
+      if(rsTab === "players") return rsPlayersList(body, idx, sp);
+      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Team</th><th>Record</th><th>' + escapeHtml(idx.rank_last || "Last 10") + '</th><th>Rating</th></tr>';
+      idx.teams.forEach(function(t){
+        html += '<tr' + rsRow({page: "team", sport: sp, code: t.code}) + '><td><span class="rs-team"><span class="rk">' + t.rank + '</span>' + teamBadge(sp, t.code) + '<span class="nm">' + escapeHtml(t.name) + '</span></span></td>' +
+          '<td>' + escapeHtml(t.record || "0-0").replace(/-/g, "–") + '</td><td>' + escapeHtml(t.last10 || "—") + '</td><td>' + rsSigned(t.rating) + '</td></tr>';
+      });
+      body.innerHTML = html + '</table></div><p class="faint" style="margin:10px 0 0"><b>Rating</b>: ' + escapeHtml(idx.rating_note) + ' ' + escapeHtml(idx.source) + ' Updated ' + escapeHtml(whenTxt(idx.generated_at)) + '.</p>';
+    }).catch(fail);
+  }
+  function rsPlayersList(body, idx, sp){
+    body.innerHTML = '<div class="field" style="margin:0 0 8px"><input id="rsSearch" type="search" placeholder="Search players" autocomplete="off" value="' + escapeHtml(rsQuery) + '"></div><div id="rsPlayers"></div>';
+    var cur = rsSeasonYear(idx), sc = idx.search_cols || [];
+    function draw(){
+      var q = propNorm(rsQuery), rows = idx.players.filter(function(p){ return !q || propNorm(p[1]).indexOf(q) >= 0; }).slice(0, 40);
+      var html = '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + sc.map(function(c){ return '<th>' + escapeHtml(c) + '</th>'; }).join("") + '</tr>';
+      rows.forEach(function(p){
+        html += '<tr' + rsRow({page: "player", sport: sp, team: p[2], id: p[0]}) + '><td><span class="rs-team">' + teamBadge(sp, p[2]) + '<span class="nm">' + escapeHtml(p[1]) +
+          ' <span class="faint">' + escapeHtml(p[3] || "") + (p[8] !== cur ? ' · ' + escapeHtml(rsShort(idx.last_season)) : '') + '</span></span></span></td>' +
+          sc.map(function(c, i){ return '<td>' + rsNum(p[5 + i]) + '</td>'; }).join("") + '</tr>';
+      });
+      document.getElementById("rsPlayers").innerHTML = rows.length ? html + '</table></div><p class="faint" style="margin:8px 0 0">Per game this season (' + escapeHtml(rsShort(idx.season)) + '), or last season for players who haven\'t played yet.</p>' : '<div class="bb-empty">No player matches.</div>';
+    }
+    document.getElementById("rsSearch").addEventListener("input", function(ev){ rsQuery = ev.target.value; draw(); });
+    draw();
+  }
+  function rsTeam(card, r, fail){
+    Promise.all([rsIndex(r.sport), rsTeamFile(r.sport, r.code)]).then(function(x){
+      var idx = x[0], t = x[1], a = t.this || {}, b = t.last || {}, ls = rsShort(t.last_season);
+      var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(t.name) + '</h3><div class="faint">#' + t.rank +
+        ' in DeVig\'s power rankings · rating ' + rsSigned(t.rating) + '</div></div></div>' +
+        '<div class="lab-scroll"><table class="lab-table"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
+        (idx.team_rows || []).map(function(c){
+          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c) : '—') + '</td><td>' + (t.last ? rsCell(b[c[1]], c) : '—') + '</td></tr>';
+        }).join("").replace(/(\d)-(\d)/g, "$1–$2") + '</table></div>';
+      var games = (t.games || []).slice(0, 10);
+      if(games.length){
+        html += '<div class="bb-sec">Recent games</div><div class="lab-scroll"><table class="lab-table">' + games.map(function(g){
+          return '<tr><td>' + rsDate(g[0]) + ' ' + (g[2] === "H" ? "vs" : "@") + ' ' + escapeHtml(g[1]) + (g[6] === "P" ? ' <span class="faint">playoffs</span>' : '') + '</td>' +
+            '<td>' + g[3] + '–' + g[4] + (g[8] ? ' <span class="faint">' + escapeHtml(g[8]) + '</span>' : '') + '</td><td><span class="pill ' + (g[5] === "W" ? "good" : "bad") + '">' + g[5] + '</span></td></tr>';
+        }).join("") + '</table></div>';
+      }
+      var rc = idx.roster_cols || [];
+      html += '<div class="bb-sec">Roster</div><div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + rc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
+        (t.players || []).map(function(p){
+          var s = p.this || p.last || {}, old = !p.this;
+          return '<tr' + rsRow({page: "player", sport: r.sport, team: t.code, id: p.id}) + '><td>' + escapeHtml(p.name) + ' <span class="faint">' + escapeHtml(p.pos || "") + (old ? ' · ' + escapeHtml(ls) : '') + '</span></td>' +
+            rc.map(function(c){ return '<td>' + rsCell(s[c[1]], c) + '</td>'; }).join("") + '</tr>';
+        }).join("") + '</table></div><p class="faint" style="margin:8px 0 0">' + escapeHtml(idx.player_note || "") + ' A player\'s team is the team of his latest game. Updated ' + escapeHtml(whenTxt(t.generated_at)) + '.</p>';
+      card.innerHTML = html;
+    }).catch(fail);
+  }
+  function rsFindPlayer(r){
+    var teams = r.team ? [r.team] : (r.teams || []);
+    return Promise.all(teams.map(function(c){ return rsTeamFile(r.sport, c).catch(function(){ return null; }); }))
+      .then(function(files){
+        var want = r.name ? propNorm(r.name) : null;
+        for(var i = 0; i < files.length; i++){
+          var t = files[i];
+          if(!t) continue;
+          var p = (t.players || []).filter(function(x){ return r.id != null ? x.id === r.id : propNorm(x.name) === want; })[0];
+          if(p) return {team: t, player: p};
+        }
+        return null;
+      });
+  }
+  function rsPlayer(card, r, fail){
+    Promise.all([rsIndex(r.sport), rsFindPlayer(r)]).then(function(x){
+      var idx = x[0], found = x[1];
+      if(!found){ card.innerHTML = '<div class="bb-empty">No stats for ' + escapeHtml(r.name || "this player") + ' yet.</div>'; return; }
+      var t = found.team, p = found.player, cur = rsSeasonYear(t), stats = idx.hit_stats || [], L = rsLogIdx(idx);
+      // a prop's own stat and line win the first time its link opens the page; after that, what was last typed here
+      var key = r.sport + "|" + p.id, fromProp = !r.seen && stats.some(function(s){ return s[0] === r.stat; });
+      var st = fromProp ? {stat: r.stat, line: r.line} : (rsHit[key] || {});
+      r.seen = true;
+      var def = stats.filter(function(s){ return s[0] === st.stat; })[0] || stats[0];
+      var avgSrc = p.this || p.last || {};
+      function avgLine(d){ return Math.floor(d[2].reduce(function(m, c){ return m + (avgSrc[c] || 0); }, 0)) + 0.5; }
+      function val(g, cols){ var v = 0; for(var i = 0; i < cols.length; i++){ var y = g[L[cols[i]]]; if(y == null) return null; v += y; } return v; }
+      var line = st.line != null ? st.line : avgLine(def), pc = idx.player_cols || [], show = idx.log_show || [];
+      var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(p.name) + '</h3><div class="faint">' + escapeHtml(t.name) + (p.pos ? ' · ' + escapeHtml(p.pos) : '') + '</div></div></div>' +
+        '<div class="lab-scroll"><table class="lab-table"><tr><th>Season</th>' + pc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
+        [[rsShort(t.season), p.this], [rsShort(t.last_season), p.last]].map(function(y){
+          return '<tr><td>' + escapeHtml(y[0]) + '</td>' + pc.map(function(c){ return '<td>' + (y[1] ? rsCell(y[1][c[1]], c) : '—') + '</td>'; }).join("") + '</tr>';
+        }).join("") + '</table></div><p class="faint" style="margin:6px 0 0">' + escapeHtml(idx.player_note || "") + '</p>';
+      html += '<div class="bb-sec">How often he cleared a line</div><div class="rs-form"><div class="field"><label for="rsStat">Stat</label><select id="rsStat">' +
+        stats.map(function(s){ return '<option value="' + s[0] + '"' + (s === def ? ' selected' : '') + '>' + escapeHtml(s[1]) + '</option>'; }).join("") +
+        '</select></div><div class="field" style="max-width:110px"><label for="rsLine">Over</label><input id="rsLine" inputmode="decimal" value="' + escapeHtml(String(line)) + '"></div></div><div id="rsHits"></div>' +
+        '<div class="bb-sec">Game log</div><div class="lab-scroll"><table class="lab-table" id="rsLog"></table></div>' +
+        '<p class="faint" style="margin:8px 0 0">' + escapeHtml(idx.source + " Updated " + whenTxt(t.generated_at) + ".") + '</p>';
+      card.innerHTML = html;
+      var log = p.log || [];
+      function draw(){
+        var ln = parseFloat(String(document.getElementById("rsLine").value).replace(",", "."));
+        var d = stats.filter(function(s){ return s[0] === document.getElementById("rsStat").value; })[0] || def;
+        rsHit[key] = {stat: d[0], line: isFinite(ln) ? ln : null};
+        function count(games){
+          var n = 0, o = 0;
+          games.forEach(function(g){ var v = val(g, d[2]); if(v == null) return; n++; if(v > ln) o++; });
+          return [o, n];
+        }
+        var groups = [["Last 5 games", log.slice(0, 5)], ["Last 10 games", log.slice(0, 10)],
+          ["This season (" + rsShort(t.season) + ")", log.filter(function(g){ return g[L.season] === cur && g[L.type] === "R"; })],
+          ["Last season (" + rsShort(t.last_season) + ")", log.filter(function(g){ return g[L.season] === cur - 1 && g[L.type] === "R"; })]];
+        document.getElementById("rsHits").innerHTML = isFinite(ln) ? '<div class="rs-hit">' + groups.map(function(gr){
+          var c = count(gr[1]);
+          return '<span>' + escapeHtml(gr[0]) + '</span><span class="v">' + (c[1] ? c[0] + ' of ' + c[1] : '—') + '</span>' +
+            '<div class="rs-bar"><i style="width:' + (c[1] ? Math.round(c[0] / c[1] * 100) : 0) + '%"></i></div>';
+        }).join("") + '</div><p class="faint" style="margin:6px 0 0">Counts, not chances: 5 or 10 games is a small sample, and Kalshi\'s price already knows about his recent form. On a prop, compare with the model %.</p>'
+          : '<div class="faint">Type a line, like 22.5.</div>';
+        var rows = log.slice(0, 20), prevSeason = null, ncol = show.length + 2;
+        document.getElementById("rsLog").innerHTML = '<tr><th>Date</th>' + show.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '<th>' + escapeHtml(d[1]) + '</th></tr>' +
+          rows.map(function(g){
+            var v = val(g, d[2]), sep = "";
+            if(g[L.season] !== prevSeason){ prevSeason = g[L.season]; sep = '<tr><td colspan="' + ncol + '" class="faint" style="font-weight:600">' + escapeHtml(prevSeason === cur ? rsShort(t.season) : rsShort(t.last_season)) + '</td></tr>'; }
+            return sep + '<tr><td>' + rsDate(g[0]) + ' ' + (g[2] === "H" ? "vs" : "@") + ' ' + escapeHtml(g[1]) + (g[L.type] === "P" ? ' <span class="faint">P</span>' : '') + '</td>' +
+              show.map(function(c){ var y = g[L[c[1]]]; return '<td>' + (y == null ? '—' : y) + '</td>'; }).join("") +
+              '<td class="' + (v != null && isFinite(ln) && v > ln ? 'rs-over' : '') + '">' + (v == null ? '—' : v) + '</td></tr>';
+          }).join("") + (log.length > 20 ? '<tr><td colspan="' + ncol + '" class="faint">Showing the last 20 of ' + log.length + ' games.</td></tr>' : '');
+      }
+      document.getElementById("rsStat").addEventListener("change", function(){
+        var d = stats.filter(function(s){ return s[0] === document.getElementById("rsStat").value; })[0];
+        document.getElementById("rsLine").value = avgLine(d);
+        draw();
+      });
+      document.getElementById("rsLine").addEventListener("input", draw);
+      draw();
+    }).catch(fail);
   }
 
   // ---------- Models: DeVig next to published open-source models, graded the same way (comparison only) ----------
@@ -2677,6 +2958,10 @@
     }
     var swEl = !over && !isSimple() ? spreadWheelEl(g) : null;
     if(swEl) gamePane.appendChild(swEl);
+    if(rsHasSport(g.sport || "NFL") && !g.trial)
+      gamePane.appendChild(el("div", "rs-links", "Research" + [g.away_team, g.home_team].map(function(c){
+        return rsLink({page: "team", sport: g.sport || "NFL", code: c}, c);
+      }).join("")));
     if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
     else det.appendChild(gamePane);
     det.hidden = !isOpen;
@@ -2718,7 +3003,7 @@
   function logoUrl(sport, code){
     if(!window.devigLogos || !code) return null;
     if(sport === "CFB") return CFB_IDS[code] ? "https://a.espncdn.com/i/teamlogos/ncaa/500/" + encodeURIComponent(CFB_IDS[code]) + ".png" : null;
-    var lg = {NFL: "nfl", NBA: "nba", MLB: "mlb"}[sport];
+    var lg = {NFL: "nfl", NBA: "nba", MLB: "mlb", NHL: "nhl", WNBA: "wnba"}[sport];
     if(!lg) return null;
     var f = (LOGO_CODES[sport] || {})[code] || String(code).toLowerCase();
     return "https://a.espncdn.com/i/teamlogos/" + lg + "/500/" + f + ".png";
@@ -2793,11 +3078,16 @@
     {key: "defense", label: "Steals + Blocks", stats: ["steals", "blocks", "stl_blk"]},
     {key: "tov", label: "Turnovers", stats: ["turnovers"]}
   ];
-  function propCats(doc){ return docSport(doc) === "NBA" ? PROP_CATS_NBA : PROP_CATS; }
+  var PROP_CATS_NHL = [
+    {key: "goals", label: "Goals", stats: ["goals"]},
+    {key: "assists", label: "Assists", stats: ["assists"]},
+    {key: "points", label: "Points", stats: ["points"]}
+  ];
+  function propCats(doc){ var sp = docSport(doc); return sp === "NBA" ? PROP_CATS_NBA : sp === "NHL" ? PROP_CATS_NHL : PROP_CATS; }
   var openTabs = {};
   function propsDocFor(g){
     var sp = g.sport || "NFL";
-    if((sp !== "NFL" && sp !== "NBA") || g.trial || !propsDocs.length) return null;
+    if((sp !== "NFL" && sp !== "NBA" && sp !== "NHL") || g.trial || !propsDocs.length) return null;
     var kt = g.kickoff_time ? new Date(g.kickoff_time).getTime() : NaN;
     return propsDocs.filter(function(d){
       if(docSport(d) !== sp) return false;
@@ -2812,7 +3102,7 @@
     if(propBestCache && propBestCache.has(doc)) return propBestCache.get(doc);
     var inj = propInjuries(doc), best = {};
     propRows(doc).forEach(function(r){
-      var e = propEdge(r, inj);
+      var e = propEdge(r, inj, docSport(doc));
       if(!e) return;
       var k = r.player + "|" + r.stat;
       if(!best[k] || e.ev > best[k].e.ev) best[k] = {r: r, e: e};
@@ -2963,7 +3253,7 @@
       sr.forEach(function(r){ if(!byP[r.player]){ byP[r.player] = []; order.push(r.player); } byP[r.player].push(r); });
       var bestEv = {};
       order.forEach(function(n){
-        bestEv[n] = byP[n].reduce(function(m, r){ var e = propEdge(r, inj); return e ? Math.max(m, e.ev) : m; }, 0);
+        bestEv[n] = byP[n].reduce(function(m, r){ var e = propEdge(r, inj, docSport(doc)); return e ? Math.max(m, e.ev) : m; }, 0);
       });
       order.sort(function(a, b){
         if(bestEv[b] !== bestEv[a]) return bestEv[b] - bestEv[a];
@@ -2982,20 +3272,21 @@
         if(!propKalshiTwoSided(main) && main.pp != null) sub.push("Polymarket" + ((main.pliq == null || main.pliq < 500) ? ", thin" : ""));
         if(injSt) sub.push(escapeHtml(injSt));
         var row = el("div", "pp-row");
-        row.innerHTML = '<div style="min-width:0"><div class="pp-name">' + escapeHtml(stat === "touchdowns" ? name : name) + '</div><div class="pp-sub">' + sub.join(" · ") + '</div></div>' +
+        var rsBtn = rsHasSport(docSport(doc)) ? rsLink({page: "player", sport: docSport(doc), teams: [doc.away_team, doc.home_team], name: name, stat: stat, line: main.line}, "Stats") : "";
+        row.innerHTML = '<div style="min-width:0"><div class="pp-name">' + escapeHtml(name) + rsBtn + '</div><div class="pp-sub">' + sub.join(" · ") + '</div></div>' +
           ppSideBtn(main, "OVER", e, g) + ppSideBtn(main, "UNDER", e, g);
         box.appendChild(row);
         var alts = rs.filter(function(r){ return r !== main; });
         if(alts.length){
           var dt = document.createElement("details");
           dt.className = "pp-alt";
-          var labeled = alts.filter(function(r){ return propEdge(r, inj); }).length;
+          var labeled = alts.filter(function(r){ return propEdge(r, inj, docSport(doc)); }).length;
           dt.innerHTML = '<summary>Other lines (' + alts.length + ')' + (labeled ? ' · ' + labeled + ' labeled' : '') + '</summary>';
           dt.addEventListener("toggle", function(){
             if(!dt.open || dt.__drawn) return;
             dt.__drawn = true;
             alts.forEach(function(r){
-              var ea = propEdge(r, inj);
+              var ea = propEdge(r, inj, docSport(doc));
               var ar = el("div", "pp-row");
               ar.innerHTML = '<div class="pp-sub" style="color:var(--ink-soft)">' + escapeHtml(propLineTxt(r.stat, r.line)) +
                 (r.mp != null ? '<br>model ' + Math.round(r.mp * 100) + '% over' : '') + '</div>' + ppSideBtn(r, "OVER", ea, g) + ppSideBtn(r, "UNDER", ea, g);
@@ -3014,7 +3305,7 @@
     d.innerHTML = '<summary class="faint" style="cursor:pointer">How to read props' + (doc.prices_fetched ? ' · prices as of ' + escapeHtml(whenTxt(doc.prices_fetched)) : '') + '</summary>' +
       '<p style="margin-top:8px"><b>Odds</b> are Kalshi\'s price shown as sportsbook odds, with Kalshi\'s fee included (Polymarket when Kalshi has no price; "thin" means little money behind it). Any odds have a <b>needs %</b>: how often the bet must win to break even. −150 needs 60%.</p>' +
       '<p><b>Model %</b> is our model\'s chance, from the player\'s own recent games only. It doesn\'t know about injuries, teammates, weather or game plans.</p>' +
-      '<p><b>Labels</b> (<span class="pr-tier high">Big gap</span> <span class="pr-tier med">Gap</span> <span class="pr-tier lean">Small gap</span>) are not confidence and not the chance it hits. They show how far the model % is above the needs % at Kalshi\'s price: 10+ points, 5–10, or 2–5. So far the big gaps have won about as often as their price needed, no more. ' + (docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
+      '<p><b>Labels</b> (<span class="pr-tier high">Big gap</span> <span class="pr-tier med">Gap</span> <span class="pr-tier lean">Small gap</span>) are not confidence and not the chance it hits. They show how far the model % is above the needs % at Kalshi\'s price: 10+ points, 5–10, or 2–5. So far the big gaps have won about as often as their price needed, no more. ' + (docSport(doc) === "NHL" ? 'Only skaters with 40+ games, a game in the last 30 days and busy markets get one; never players listed Out, Day-To-Day, on IR or suspended.' : docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
       '<p>A big gap can mean the market knows something the model doesn\'t. Prices move: check the live price first.</p>';
     return d;
   }
@@ -3422,7 +3713,7 @@
     fantasy_points: ["Fantasy points", "fantasy pts"], longest_reception: ["Longest catch", "longest catch"],
     points: ["Points", "pts"], rebounds: ["Rebounds", "reb"], assists: ["Assists", "ast"], threes: ["3-pointers made", "threes"],
     pts_reb_ast: ["Pts + Reb + Ast", "PRA"], pts_reb: ["Pts + Reb", "pts+reb"], pts_ast: ["Pts + Ast", "pts+ast"],
-    reb_ast: ["Reb + Ast", "reb+ast"], steals: ["Steals", "stl"], blocks: ["Blocks", "blk"], stl_blk: ["Steals + Blocks", "stl+blk"],
+    reb_ast: ["Reb + Ast", "reb+ast"], goals: ["Goals", "goals"], steals: ["Steals", "stl"], blocks: ["Blocks", "blk"], stl_blk: ["Steals + Blocks", "stl+blk"],
     turnovers: ["Turnovers", "TO"]
   };
   function docSport(d){ return (d && d.sport) || "NFL"; }
@@ -3517,7 +3808,7 @@
     order.forEach(function(name){
       bestBy[name] = 0;
       byPlayer[name].forEach(function(r){
-        var e = propEdge(r, inj);
+        var e = propEdge(r, inj, docSport(doc));
         if(e){ edges[r.player + "|" + r.stat + "|" + r.line] = e; bestBy[name] = Math.max(bestBy[name], e.ev); }
       });
     });
@@ -3536,7 +3827,7 @@
         return (PROP_ORDER.indexOf(a.stat) - PROP_ORDER.indexOf(b.stat)) || (a.line - b.line);
       });
       var n = rs.reduce(function(m, r){ return Math.max(m, r.n || 0); }, 0);
-      box.appendChild(el("h4", null, escapeHtml(name)));
+      box.appendChild(el("h4", null, escapeHtml(name) + (rsHasSport(docSport(doc)) ? rsLink({page: "player", sport: docSport(doc), teams: [doc.away_team, doc.home_team], name: name, stat: rs[0].stat, line: rs[0].line}, "Stats") : "")));
       if(n) box.appendChild(el("div", "faint", "Model built from his last " + n + " games in this role (2023 on)" + (n < 21 ? " · too few games for a pick" : "")));
       var injSt = inj[propNorm(name)];
       if(injSt) box.appendChild(el("div", "faint", "Injury report: " + escapeHtml(injSt)));
@@ -3552,12 +3843,13 @@
   var PROP_PICK_STATS = {passing_yards:1, passing_tds:1, passing_attempts:1, passing_completions:1, interceptions:1,
     rushing_yards:1, rushing_attempts:1, receiving_yards:1, receptions:1, rush_rec_yards:1};
   var PROP_PICK_STATS_NBA = {points:1, rebounds:1, assists:1, threes:1, pts_reb_ast:1, pts_reb:1, pts_ast:1, reb_ast:1};
+  var NHL_PICK_STATS = {goals:1, assists:1, points:1};
   var NBA_STATS = {points:1, rebounds:1, assists:1, threes:1, pts_reb_ast:1, pts_reb:1, pts_ast:1, reb_ast:1, steals:1, blocks:1, stl_blk:1, turnovers:1};
   function propNorm(s){ return String(s || "").toLowerCase().replace(/[.'’-]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim(); }
   // Key-player injury statuses from the synced NFL game cards (ESPN), matched by teams.
   function propInjuries(doc){
     var out = {};
-    if(docSport(doc) === "NBA"){   // NBA rows carry ESPN's injury status from lock-time scoring
+    if(docSport(doc) === "NBA" || docSport(doc) === "NHL"){   // NBA and NHL rows carry ESPN's injury status from scoring
       propRows(doc).forEach(function(r){ if(r.inj) out[propNorm(r.player)] = r.inj; });
       return out;
     }
@@ -3570,14 +3862,17 @@
     return out;
   }
   // Same screen as the pre-registered paper test: 21+ games, no TDs, 100+ open interest, model within 20 pts of the market mid.
-  function propEdge(r, inj){
+  // NHL (sport "NHL"): its own pre-registered screen, 40+ games, a game in the last 30 days, a spread of 0.10 or less,
+  // and no one listed Out, Day-To-Day, on IR / LTIR or suspended.
+  function propEdge(r, inj, sport){
     if(r.mp == null || r.kb == null || r.ka == null || !(r.ka > 0 && r.ka < 1)) return null;
-    var isNba = !!NBA_STATS[r.stat];
-    if(isNba ? (!PROP_PICK_STATS_NBA[r.stat] || (r.n || 0) < 40 || r.stale) : (!PROP_PICK_STATS[r.stat] || (r.n || 0) < 21)) return null;
+    var nhl = sport === "NHL", isNba = !nhl && !!NBA_STATS[r.stat];
+    if(nhl ? (!NHL_PICK_STATS[r.stat] || (r.n || 0) < 40 || r.stale || r.ka - r.kb > 0.10)
+       : isNba ? (!PROP_PICK_STATS_NBA[r.stat] || (r.n || 0) < 40 || r.stale) : (!PROP_PICK_STATS[r.stat] || (r.n || 0) < 21)) return null;
     if((r.koi || 0) < 100) return null;
     if(Math.abs(r.mp - (r.kb + r.ka) / 2) > 0.20) return null;
     var st = inj && inj[propNorm(r.player)];
-    if(st && /^(out|doubtful|injured reserve|suspen)/i.test(st)) return null;
+    if(st && (nhl ? /^(out|day.to.day|ir|ltir|injured reserve|suspen)/i : /^(out|doubtful|injured reserve|suspen)/i).test(st)) return null;
     var noAsk = Math.round((1 - r.kb) * 10000) / 10000;
     var eo = r.mp - r.ka - propFee(r.ka), eu = (1 - r.mp) - noAsk - propFee(noAsk);
     var side = eo >= eu ? "OVER" : "UNDER", ev = Math.max(eo, eu);
@@ -3630,7 +3925,7 @@
     if(propStarted(doc)){ box.appendChild(el("div", "bb-empty", "This game has started, so these prices are old.")); return; }
     var best = {};
     propRows(doc).forEach(function(r){
-      var e = propEdge(r, inj);
+      var e = propEdge(r, inj, docSport(doc));
       if(!e) return;
       var k = r.player + "|" + r.stat;   // one line per player per stat, like the paper test
       if(!best[k] || e.ev > best[k].e.ev) best[k] = {r: r, e: e};
@@ -3694,12 +3989,14 @@
   function propsTestCard(sport){
     var r = propsReports[sport + "_PROPS_MODEL_V1"] || (sport === "NFL" ? propsReport : null);
     if(!r && !propsDocs.some(function(d){ return docSport(d) === sport; })) return null;
-    var target = sport === "NBA" ? 500 : 300;
+    var target = sport === "NBA" || sport === "NHL" ? 500 : 300;
     var graded = r ? (r.paper_picks_graded || 0) : 0;
     var card = el("div", "card");
     var html = '<h3>' + sport + ' prop picks · test</h3>' +
       '<p class="faint" style="margin:6px 0 8px">Rules were locked before the first pick (pre-registered, sha ' + escapeHtml(String((r && r.prereg_sha256) || "").slice(0, 10)) + '…). ' +
-      (sport === "NBA"
+      (sport === "NHL"
+        ? 'About 6 hours to 30 minutes before each puck drop the model locks picks on goals, assists and points only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for skaters with 40+ games and a game in the last 30 days, skipping injured players and thin markets. Graded by Kalshi\'s own settlement. Judged at 500 picks or season end.'
+        : sport === "NBA"
         ? 'About 6 hours to 30 minutes before each tip-off the model locks picks only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for established players (40+ games), skipping steals, blocks, turnovers, injured players and thin markets. Graded by Kalshi\'s own settlement. Judged at 500 picks or season end.'
         : 'About 6 hours to 40 minutes before each kickoff the model locks picks only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for established players (21+ games), skipping touchdowns, injured players and thin markets. Graded from official play-by-play. Judged at 300 picks or season end.') + ' Nothing is bet.</p>';
     if(graded){
@@ -4459,8 +4756,8 @@
     var more = document.getElementById("testingMore");
     box.innerHTML = ""; more.innerHTML = "";
     // the record up top, its fine print folded; prop tests and ended tests sit under "Every test and backtest"
-    ["NFL", "MLB", "NBA"].forEach(function(sp){
-      var tr = renderTrackRecordCard(sp), pt = (sp === "NFL" || sp === "NBA") ? propsTestCard(sp) : null;
+    ["NFL", "MLB", "NBA", "NHL"].forEach(function(sp){
+      var tr = renderTrackRecordCard(sp), pt = (sp === "NFL" || sp === "NBA" || sp === "NHL") ? propsTestCard(sp) : null;
       if(tr){
         var ps = tr.querySelectorAll(":scope > p");
         if(ps.length){
@@ -4638,7 +4935,7 @@
   // matches the Home tab's pill-tab order (NFL, MLB, NBA) so the two stay
   // consistent. Anything unrecognized sorts last under "Other" rather than
   // being silently merged into NFL.
-  var HISTORY_SPORT_ORDER = ["NFL", "MLB", "NBA", "CFB"];
+  var HISTORY_SPORT_ORDER = ["NFL", "MLB", "NBA", "NHL", "WNBA", "CFB"];
   function historySportRank(s){
     var i = HISTORY_SPORT_ORDER.indexOf(s);
     return i === -1 ? HISTORY_SPORT_ORDER.length : i;

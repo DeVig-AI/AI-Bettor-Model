@@ -1,33 +1,60 @@
-name: Live lines -- NBA, MLB and college football scores and win-chance graph (display only)
+name: Live lines -- NBA, MLB, NHL, WNBA and college football scores and win-chance graph (display only)
+# GitHub skips most runs of a 5-minute schedule, so this runs as a loop instead: every 3 minutes while a game is on
+# or about to start, and asleep until the next game's window when that opens before the job's time is up. A loop that
+# reaches its time limit with games on queues its next run (as the Research Lab loop does). When the next game is
+# further off, the job ends and the hourly schedule starts the next loop.
 on:
   workflow_dispatch:
   schedule:
-    - cron: '2-59/5 * * * *'   # quick no-op outside game windows; public data only, no keys, nothing bet
+    - cron: '4 * * * *'      # safety net only: the loop queues itself; public data only, no keys, nothing bet
 permissions:
   contents: write
+  actions: write             # the loop queues its next run
 concurrency:
   group: live-lines
-  cancel-in-progress: true
+  cancel-in-progress: false  # never cut a running loop short; a new run waits for it
 jobs:
   live:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Build the live file (ESPN scores, Kalshi win-chance lines)
+      - name: Live loop (ESPN scores, Kalshi win-chance lines)
         env:
           FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
-        run: python3 tools/live_lines.py
-      - name: Save it
+          GH_TOKEN: ${{ github.token }}
         run: |
-          [ -f live/live_lines.json ] || exit 0
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add live/live_lines.json
-          git diff --cached --quiet && exit 0
-          git commit -q -m "Live lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
-          exit 1
+          end=$((SECONDS + 330 * 60)); next=""
+          while :; do
+            git pull --rebase -q || git rebase --abort 2>/dev/null || true
+            out=$(python3 tools/live_lines.py) || { echo "::warning::live_lines.py failed"; out='{"working":0,"next_s":180}'; }
+            FORCE=0
+            echo "$out"
+            hint=$(printf '%s\n' "$out" | tail -n 1)
+            working=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1]).get("working") or 0)' "$hint")
+            next=$(python3 -c 'import json,sys; n=json.loads(sys.argv[1]).get("next_s"); print("" if n is None else n)' "$hint")
+            if [ -f live/live_lines.json ]; then
+              git add live/live_lines.json
+              if ! git diff --cached --quiet; then
+                git commit -q -m "Live lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                pushed=0
+                for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && { pushed=1; break; }; sleep $((i * 7)); done
+                [ $pushed = 1 ] || echo "::warning::could not push this round; the next round tries again"
+              fi
+            fi
+            if [ "$working" -gt 0 ]; then wait=180
+            elif [ -n "$next" ] && [ "$next" -lt $((end - SECONDS)) ]; then wait=$(( next < 60 ? 60 : next ))
+            else break; fi                                      # next game further off: the hourly schedule takes over
+            left=$((end - SECONDS))
+            if [ "$wait" -ge "$left" ]; then                    # out of time with games on: hand over to a new run
+              sleep $(( left > 0 ? left : 0 ))
+              gh workflow run live_lines.yml --ref main && echo "queued the next run"
+              break
+            fi
+            sleep "$wait"
+          done

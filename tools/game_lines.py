@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-game_lines.py -- every Kalshi spread line for both teams of every open NFL, NBA, MLB and college football game, for
+game_lines.py -- every Kalshi spread line for both teams of every open NFL, NBA, MLB, NHL, WNBA and college football game, for
 the app's spread wheel and its college football board. Display only: nothing here feeds a model, a pick or a test.
 
 Kalshi lists "TEAM wins by over X" markets. Buying YES is TEAM -X; buying NO is the other team +X. Both are written,
@@ -30,12 +30,18 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import kalshi_games_v1 as KG  # noqa: E402
 import cfb_teams  # noqa: E402
 
+# kalshi_games_v1.py is a locked paper-test file (FROZEN.sha256) that knows ESPN's NFL, NBA and MLB scoreboards only.
+# This display-only script adds NHL and WNBA here, so the locked file and the tests that use it stay as they are.
+KG.ESPN.setdefault("NHL", "hockey/nhl")
+KG.ESPN.setdefault("WNBA", "basketball/wnba")
+
 OUT = os.path.join(os.path.dirname(__file__), "..", "live", "game_lines.json")
 CFB_HISTORY = os.path.join(os.path.dirname(__file__), "..", "live", "cfb_history.json")
-SPORTS = ("NFL", "NBA", "MLB")
+SPORTS = ("NFL", "NBA", "MLB", "NHL", "WNBA")
 ET = ZoneInfo("America/New_York")
 ESPN_CFB = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard"
 HISTORY_DAYS = 120
+CFB_BACK, CFB_AHEAD = 3, 14     # ESPN days read; Kalshi lists FBS games up to ~2 weeks out (dated a day early at times)
 
 
 def ladders(g):
@@ -60,7 +66,7 @@ def ladders(g):
 
 def board_fields(sport, g):
     """What the app needs to show a game the model has no pick on: ESPN's start time and Kalshi's win chance,
-    moneylines, main spread (MLB: the 1.5 run line) and main total. Any part that can't be read is left out."""
+    moneylines, main spread (MLB / NHL: the 1.5 run / puck line) and main total. Any part that can't be read is left out."""
     a, h = g["away_code"], g["home_code"]
     th, ta = g["teams"][h], g["teams"][a]
     out = {}
@@ -68,13 +74,20 @@ def board_fields(sport, g):
         e = KG.match_espn(sport, g)
         if e and e.get("kickoff"):
             out.update(kickoff=e["kickoff"], espn_id=e.get("espn_id"))
+        if e and e.get("teams"):                  # ESPN's team colours, for sports the app has no colour table for
+            ea, eh = e["teams"]["away"], e["teams"]["home"]
+            if e.get("swapped"):
+                ea, eh = eh, ea
+            col = {k: "#" + t["color"] for k, t in (("away", ea), ("home", eh)) if t.get("color")}
+            if col:
+                out["colors"] = col
     except Exception as ex:                       # no start time: the app just won't show this game on its own
         KG.log.append(f"{sport} {g.get('event')}: ESPN {type(ex).__name__}")
     mh, ma = KG._mid(th), KG._mid(ta)
     if mh is not None and ma is not None and mh + ma > 0:
         out["home_wp"] = round(mh / (mh + ma), 4)
     out["ml"] = {"home": KG.american(th["ask"]), "away": KG.american(ta["ask"])}
-    ms = KG.spread_at(g, a, h, 1.5) if sport == "MLB" else KG.main_spread(g, a, h)
+    ms = KG.spread_at(g, a, h, 1.5) if sport in ("MLB", "NHL") else KG.main_spread(g, a, h)   # run line / puck line
     if ms:
         out["spread"] = {"home_point": ms[0], "home": ms[1], "away": ms[2]}
     mt = KG.main_total(g)
@@ -84,11 +97,15 @@ def board_fields(sport, g):
 
 
 def espn_cfb(now):
-    """ESPN's FBS games from 3 days ago to 9 days ahead: {espn_id: game}."""
-    a, b = (now - timedelta(days=3)).strftime("%Y%m%d"), (now + timedelta(days=9)).strftime("%Y%m%d")
-    d = KG.get(ESPN_CFB, {"groups": 80, "limit": 500, "dates": f"{a}-{b}"}) or {}
+    """ESPN's FBS games from CFB_BACK days ago to CFB_AHEAD days ahead: {espn_id: game}. One request per day: ESPN
+    answers HTTP 400 to a range (every run from 2026-10-20 to 10-21 matched no CFB game), while single days are what
+    the app's live feed and the coverage probe read."""
+    events = []
+    for i in range(-CFB_BACK, CFB_AHEAD + 1):
+        d = KG.get(ESPN_CFB, {"groups": 80, "limit": 500, "dates": (now + timedelta(days=i)).strftime("%Y%m%d")}) or {}
+        events += d.get("events") or []
     out = {}
-    for ev in d.get("events") or []:
+    for ev in events:
         comp = (ev.get("competitions") or [{}])[0]
         side = {c.get("homeAway"): c for c in comp.get("competitors") or []}
         if "home" not in side or "away" not in side:
@@ -125,14 +142,22 @@ def match_cfb(kg, espn):
     return None, None
 
 
+CFB_UNMATCHED = []      # Kalshi CFB games with no ESPN FBS game (written to the lines file so names can be added)
+
+
 def cfb_games(now):
     kal = KG.kalshi_games("NCAAF")
     espn = espn_cfb(now)
-    out, unmatched = [], 0
+    lo, hi = (now - timedelta(days=CFB_BACK)).strftime("%Y-%m-%d"), (now + timedelta(days=CFB_AHEAD)).strftime("%Y-%m-%d")
+    out = []
+    CFB_UNMATCHED.clear()
     for kg in kal.values():
         e, codes = match_cfb(kg, espn)
         if not e:
-            unmatched += 1
+            d = kg.get("date") or ""
+            CFB_UNMATCHED.append({"date": d, "event": kg.get("event"),
+                                  "away": kg["teams"][kg["away_code"]]["name"], "home": kg["teams"][kg["home_code"]]["name"],
+                                  "why": "after the window" if d > hi else "before the window" if d and d < lo else "no FBS match"})
             continue
         k_home = next(k for k, v in codes.items() if v == e["home"])
         k_away = next(k for k, v in codes.items() if v == e["away"])
@@ -155,8 +180,12 @@ def cfb_games(now):
                     "ml": {"home": KG.american(th["ask"]), "away": KG.american(ta["ask"])},
                     "spread": {"home_point": ms[0], "home": ms[1], "away": ms[2]} if ms else None,
                     "total": {"line": mt[0], "over": mt[1], "under": mt[2]} if mt else None})
-    if unmatched:
-        KG.log.append(f"CFB: {unmatched} Kalshi games with no FBS match on ESPN in the window (FCS, or a name to add)")
+    if CFB_UNMATCHED:
+        why = {}
+        for u in CFB_UNMATCHED:
+            why[u["why"]] = why.get(u["why"], 0) + 1
+        KG.log.append(f"CFB: {len(CFB_UNMATCHED)} Kalshi games not matched to ESPN's FBS games: "
+                      + ", ".join(f"{n} {w}" for w, n in sorted(why.items())) + " (list: cfb_unmatched)")
     return out, espn
 
 
@@ -213,7 +242,7 @@ def main():
         KG.log.append(f"CFB: {type(e).__name__}: {e}")
     games.sort(key=lambda x: (x["sport"], x["date"] or "", x["away"]))
     out = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "games": games,
-           "errors": KG.log[:20]}
+           "errors": KG.log[:20], "cfb_unmatched": sorted(CFB_UNMATCHED, key=lambda u: (u["why"], u["date"], u["away"]))}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
         json.dump(out, f, separators=(",", ":"))
