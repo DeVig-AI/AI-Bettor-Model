@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-22T23:28:39Z",
+ "updated_at": "2026-10-21T07:23:01Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
  },
  "constitution": {
-  "version": "v10",
-  "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+  "version": "v9",
+  "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -1347,61 +1347,6 @@
    "updated_at": "2026-10-19T04:34:06Z"
   },
   {
-   "id": "s-2d757889",
-   "name": "Blend of 2: s-3a502c4f + s-0827df0a",
-   "market": "total",
-   "family": "Blend · search",
-   "reason": "Found by search round 1: on 2006–2016 it beat the line by +2.44 pts a game (t = 9.67), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
-   "state": "queued",
-   "fail_reason": "",
-   "gate_now": null,
-   "started_at": null,
-   "eta_at": null,
-   "gates": [
-    {
-     "name": "2017–19",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    },
-    {
-     "name": "2020–22",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    },
-    {
-     "name": "2023–24",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    }
-   ],
-   "pooled": null,
-   "attempts": 20,
-   "p_bar": 0.05,
-   "fade_ratio": null,
-   "fade_needed": 0.5,
-   "kalshi": null,
-   "rule_split": [],
-   "exam": {
-    "state": "not_taken",
-    "effect": null,
-    "ci": null,
-    "taken_at": null,
-    "note": ""
-   },
-   "verdict": "Registered; runs in the next nightly lab run.",
-   "graded_at": null,
-   "run_number": null,
-   "run_url": null,
-   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/../../../tmp/tmprccaeuui/cands/s-2d757889.yaml",
-   "updated_at": null
-  },
-  {
    "id": "s-e27628a8",
    "name": "Blend of 2: s-3770bfc8 + s-6f3641ca",
    "market": "spread",
@@ -2132,119 +2077,277 @@
  "runs": [
   {
    "kind": "search",
-   "name": "Search round 1",
-   "started_at": "2026-10-22T23:28:39Z",
-   "finished_at": "2026-10-22T23:28:39Z",
+   "name": "Search paused: menu exhausted",
+   "started_at": "2026-10-21T07:23:00Z",
+   "finished_at": "2026-10-21T07:23:00Z",
    "duration_s": null,
    "run_number": null,
    "run_url": null,
-   "summary": "21 models scored → 19 consistent → 19 strong (t ≥ -99) → 1 sent to confirmation",
+   "summary": "all 179,929 configurations on the menu scored; waiting for new menu values or signals",
    "funnel": [
     {
      "label": "models scored",
-     "count": 21
-    },
-    {
-     "label": "consistent",
-     "count": 19
-    },
-    {
-     "label": "strong (t ≥ -99)",
-     "count": 19
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 1
+     "count": 179929
     }
    ],
    "steps": []
   },
   {
    "kind": "search",
-   "name": "Search paused: menu exhausted",
-   "started_at": "2026-10-22T23:28:39Z",
-   "finished_at": "2026-10-22T23:28:39Z",
+   "name": "Search round 297",
+   "started_at": "2026-10-21T07:21:17Z",
+   "finished_at": "2026-10-21T07:21:17Z",
    "duration_s": null,
    "run_number": null,
-   "run_url": null,
-   "summary": "all 21 configurations on the menu scored; waiting for new menu values or signals",
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39561309873",
+   "summary": "3 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
      "label": "models scored",
-     "count": 21
-    }
-   ],
-   "steps": []
-  },
-  {
-   "kind": "lab",
-   "name": "Research Lab #5",
-   "started_at": "2026-10-19T06:27:06Z",
-   "finished_at": "2026-10-19T06:27:06Z",
-   "duration_s": 0,
-   "run_number": 5,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39208787262",
-   "summary": "2 tested → 2 past gate 1 → 2 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
-   "funnel": [
-    {
-     "label": "tested",
-     "count": 2
+     "count": 3
     },
     {
-     "label": "past gate 1",
-     "count": 2
-    },
-    {
-     "label": "past gate 2",
-     "count": 2
-    },
-    {
-     "label": "passed the lab",
+     "label": "consistent",
      "count": 0
     },
     {
-     "label": "passed the exam",
+     "label": "strong (t ≥ 2.5)",
      "count": 0
     },
     {
-     "label": "promoted",
+     "label": "sent to confirmation",
      "count": 0
     }
    ],
    "steps": []
   },
   {
-   "kind": "lab",
-   "name": "Research Lab #1",
-   "started_at": "2026-10-19T04:34:00Z",
-   "finished_at": "2026-10-19T04:34:10Z",
-   "duration_s": 10,
-   "run_number": 1,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
-   "summary": "18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
+   "kind": "search",
+   "name": "Search round 296",
+   "started_at": "2026-10-21T07:19:33Z",
+   "finished_at": "2026-10-21T07:19:33Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39561123380",
+   "summary": "3 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
-     "label": "tested",
-     "count": 18
+     "label": "models scored",
+     "count": 3
     },
     {
-     "label": "past gate 1",
-     "count": 15
-    },
-    {
-     "label": "past gate 2",
+     "label": "consistent",
      "count": 0
     },
     {
-     "label": "passed the lab",
+     "label": "strong (t ≥ 2.5)",
      "count": 0
     },
     {
-     "label": "passed the exam",
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 295",
+   "started_at": "2026-10-21T07:17:48Z",
+   "finished_at": "2026-10-21T07:17:48Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39560896004",
+   "summary": "4 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 4
+    },
+    {
+     "label": "consistent",
      "count": 0
     },
     {
-     "label": "promoted",
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 294",
+   "started_at": "2026-10-21T07:16:01Z",
+   "finished_at": "2026-10-21T07:16:01Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39560724061",
+   "summary": "2 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 293",
+   "started_at": "2026-10-21T07:14:15Z",
+   "finished_at": "2026-10-21T07:14:15Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39560490964",
+   "summary": "1 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 1
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 292",
+   "started_at": "2026-10-21T07:12:13Z",
+   "finished_at": "2026-10-21T07:12:13Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39560256654",
+   "summary": "7 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 7
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 291",
+   "started_at": "2026-10-21T07:10:06Z",
+   "finished_at": "2026-10-21T07:10:06Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39560019037",
+   "summary": "11 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 11
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 290",
+   "started_at": "2026-10-21T07:07:58Z",
+   "finished_at": "2026-10-21T07:07:58Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39559784580",
+   "summary": "5 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 5
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 289",
+   "started_at": "2026-10-21T07:05:53Z",
+   "finished_at": "2026-10-21T07:05:53Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39559542866",
+   "summary": "2 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2
+    },
+    {
+     "label": "consistent",
+     "count": 0
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 0
+    },
+    {
+     "label": "sent to confirmation",
      "count": 0
     }
    ],
@@ -2253,7 +2356,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-22T23:28:39Z",
+   "updated_at": "2026-10-21T07:23:14Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -2267,8 +2370,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
    },
    "constitution": {
-    "version": "v10",
-    "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+    "version": "v9",
+    "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -2284,112 +2387,7 @@
     "exam_budget_total": 3
    },
    "candidates": [],
-   "lessons": [
-    {
-     "text": "Signal def-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
-     "kind": "helped",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal def-points-per-play (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
-     "kind": "helped",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal def-ppa (spread) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.26 / +0.02 / +0.00 pts in 2018 / 2019 / 2021.",
-     "kind": "helped",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.07 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
-     "kind": "helped",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal def-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.07 / +0.16 / -0.13 pts in 2018 / 2019 / 2021.",
-     "kind": "faded",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal def-points-per-play (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.24 / +0.27 / -0.12 pts in 2018 / 2019 / 2021.",
-     "kind": "faded",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.04 / -0.02 / -0.06 pts in 2018 / 2019 / 2021.",
-     "kind": "faded",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-points-per-play (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.05 / +0.16 / -0.03 pts in 2018 / 2019 / 2021.",
-     "kind": "faded",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.37 / +0.45 / -0.28 pts in 2018 / 2019 / 2021.",
-     "kind": "faded",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal def-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.03 / +0.00 / +0.11 pts in 2018 / 2019 / 2021.",
-     "kind": "no_effect",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.04 / +0.00 pts in 2018 / 2019 / 2021.",
-     "kind": "no_effect",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-points-per-play (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.06 / -0.07 / -0.53 pts in 2018 / 2019 / 2021.",
-     "kind": "no_effect",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    },
-    {
-     "text": "Signal off-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / +0.01 / -0.69 pts in 2018 / 2019 / 2021.",
-     "kind": "no_effect",
-     "candidates": [],
-     "source": "search",
-     "from": "search · 2018–2021 only",
-     "at": "2026-10-21T00:51:16Z"
-    }
-   ],
+   "lessons": [],
    "promoted": [],
    "runs": [
     {
