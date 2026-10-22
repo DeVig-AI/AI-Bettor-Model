@@ -1,0 +1,122 @@
+{
+ "test": "NFL_MODEL1_PLUS_INJURIES_V1",
+ "run_at": "2026-10-22T22:22:17Z",
+ "games": 2227,
+ "games_with_injury_features": 2227,
+ "model_1_0_refit_max_prob_diff": 2.3727242393078996e-11,
+ "injury_coverage": {
+  "report_rows_with_status": 23725,
+  "report_rows_matched_to_snap_counts": 23651,
+  "team_weeks_with_roster": 4994,
+  "games": 2494,
+  "games_with_snap_counts": 2494
+ },
+ "seasons": {
+  "2020": {
+   "model_1_0": {
+    "games": 269,
+    "log_loss": 0.64612,
+    "brier": 0.22775,
+    "accuracy": 0.6171
+   },
+   "plus_injuries": {
+    "games": 269,
+    "log_loss": 0.6473,
+    "brier": 0.22809,
+    "accuracy": 0.6171
+   }
+  },
+  "2021": {
+   "model_1_0": {
+    "games": 285,
+    "log_loss": 0.66729,
+    "brier": 0.23613,
+    "accuracy": 0.607
+   },
+   "plus_injuries": {
+    "games": 285,
+    "log_loss": 0.6584,
+    "brier": 0.23256,
+    "accuracy": 0.6175
+   }
+  },
+  "2022": {
+   "model_1_0": {
+    "games": 284,
+    "log_loss": 0.62185,
+    "brier": 0.21556,
+    "accuracy": 0.669
+   },
+   "plus_injuries": {
+    "games": 284,
+    "log_loss": 0.61229,
+    "brier": 0.2114,
+    "accuracy": 0.6761
+   }
+  },
+  "2023": {
+   "model_1_0": {
+    "games": 285,
+    "log_loss": 0.66942,
+    "brier": 0.23785,
+    "accuracy": 0.6281
+   },
+   "plus_injuries": {
+    "games": 285,
+    "log_loss": 0.6673,
+    "brier": 0.23646,
+    "accuracy": 0.607
+   }
+  },
+  "2024": {
+   "model_1_0": {
+    "games": 285,
+    "log_loss": 0.61171,
+    "brier": 0.21147,
+    "accuracy": 0.6982
+   },
+   "plus_injuries": {
+    "games": 285,
+    "log_loss": 0.59781,
+    "brier": 0.20539,
+    "accuracy": 0.7158
+   }
+  },
+  "2025": {
+   "model_1_0": {
+    "games": 285,
+    "log_loss": 0.62508,
+    "brier": 0.21859,
+    "accuracy": 0.6526
+   },
+   "plus_injuries": {
+    "games": 285,
+    "log_loss": 0.62631,
+    "brier": 0.21897,
+    "accuracy": 0.6316
+   }
+  }
+ },
+ "pooled": {
+  "model_1_0": {
+   "games": 1693,
+   "log_loss": 0.6402,
+   "brier": 0.22453,
+   "accuracy": 0.6456
+  },
+  "plus_injuries": {
+   "games": 1693,
+   "log_loss": 0.6348,
+   "brier": 0.22209,
+   "accuracy": 0.6444
+  }
+ },
+ "log_loss_change": -0.0054,
+ "log_loss_change_ci95": [
+  -0.01007,
+  -0.00066
+ ],
+ "seasons_better": 4,
+ "seasons_tested": 6,
+ "better": true
+}
