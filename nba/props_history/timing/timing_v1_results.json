@@ -1,0 +1,590 @@
+{
+ "doc": "NBA_PROPS_TIMING_V1",
+ "prereg_sha256": "0bf802a1e25471694665f6e7bf6f2ca23693932834bef720544582925b34af0e",
+ "script_sha256": "d66fe55af217a1ef11039e3f71d39cdeb54265ec6f9139d6bce19db1ff0944b3",
+ "rows_file_sha256": "9be3e0ce9aba7251ad3bd9f13f4105809cb9092bc272a5c65eae5dde988410ed",
+ "early_file_sha256": "d6eef83b4b97e6c2d5a3983a39a3ebee765fbff4f0953c6189d5f48069f63469",
+ "by_horizon": {
+  "24.0": {
+   "priced_rows": 2072,
+   "test1_v2_vs_kalshi_primary": {
+    "rows": 1646,
+    "games": 94,
+    "v2_p_logloss": 0.53659,
+    "mid_h_logloss": 0.54174,
+    "diff": -0.00516,
+    "diff_95ci": [
+     -0.01904,
+     0.00793
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "test2_v2_picks_primary": {
+    "count": 364,
+    "games": 81,
+    "win_rate": 0.4615,
+    "avg_cost": 0.4032,
+    "avg_ev": 0.095,
+    "profit_sum": 21.238,
+    "cost_sum": 146.762,
+    "roi": 0.1447,
+    "roi_95ci": [
+     0.0354,
+     0.2617
+    ],
+    "verdict": "PROFITABLE"
+   },
+   "test3_kalshi_h_vs_40min": {
+    "rows": 2072,
+    "games": 113,
+    "mid_h_logloss": 0.55428,
+    "mid40_logloss": 0.55447,
+    "diff": -0.00019,
+    "diff_95ci": [
+     -0.00362,
+     0.00302
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "v1_vs_kalshi_all_rows": {
+    "rows": 2072,
+    "games": 113,
+    "v1_p_logloss": 0.57721,
+    "mid_h_logloss": 0.55428,
+    "diff": 0.02292,
+    "diff_95ci": [
+     0.00134,
+     0.04759
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "v2_vs_kalshi_newly_out_rows": {
+    "rows": 426,
+    "games": 47,
+    "v2_p_logloss": 0.62395,
+    "mid_h_logloss": 0.60275,
+    "diff": 0.0212,
+    "diff_95ci": [
+     -0.02166,
+     0.07696
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "by_stat_primary": {
+    "points": {
+     "rows": 763,
+     "games": 90,
+     "v2_p_logloss": 0.53288,
+     "mid_h_logloss": 0.52754,
+     "diff": 0.00535,
+     "diff_95ci": [
+      -0.00917,
+      0.02092
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "rebounds": {
+     "rows": 267,
+     "games": 60,
+     "v2_p_logloss": 0.55584,
+     "mid_h_logloss": 0.58365,
+     "diff": -0.02781,
+     "diff_95ci": [
+      -0.06617,
+      0.01243
+     ],
+     "verdict": "INCONCLUSIVE"
+    },
+    "assists": {
+     "rows": 200,
+     "games": 62,
+     "v2_p_logloss": 0.56011,
+     "mid_h_logloss": 0.56621,
+     "diff": -0.0061,
+     "diff_95ci": [
+      -0.03793,
+      0.02891
+     ],
+     "verdict": "INCONCLUSIVE"
+    },
+    "threes": {
+     "rows": 416,
+     "games": 67,
+     "v2_p_logloss": 0.51971,
+     "mid_h_logloss": 0.52913,
+     "diff": -0.00942,
+     "diff_95ci": [
+      -0.03433,
+      0.01362
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    }
+   }
+  },
+  "12.0": {
+   "priced_rows": 6741,
+   "test1_v2_vs_kalshi_primary": {
+    "rows": 4546,
+    "games": 354,
+    "v2_p_logloss": 0.55641,
+    "mid_h_logloss": 0.554,
+    "diff": 0.00241,
+    "diff_95ci": [
+     -0.00535,
+     0.01046
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "test2_v2_picks_primary": {
+    "count": 849,
+    "games": 219,
+    "win_rate": 0.4441,
+    "avg_cost": 0.431,
+    "avg_ev": 0.0946,
+    "profit_sum": 11.105,
+    "cost_sum": 365.895,
+    "roi": 0.0303,
+    "roi_95ci": [
+     -0.0416,
+     0.0988
+    ],
+    "verdict": "NOT SHOWN PROFITABLE"
+   },
+   "test3_kalshi_h_vs_40min": {
+    "rows": 6741,
+    "games": 559,
+    "mid_h_logloss": 0.56679,
+    "mid40_logloss": 0.56428,
+    "diff": 0.00251,
+    "diff_95ci": [
+     0.00024,
+     0.00493
+    ],
+    "verdict": "40-MIN PRICE MORE RIGHT"
+   },
+   "v1_vs_kalshi_all_rows": {
+    "rows": 6741,
+    "games": 559,
+    "v1_p_logloss": 0.60025,
+    "mid_h_logloss": 0.56679,
+    "diff": 0.03345,
+    "diff_95ci": [
+     0.02234,
+     0.04525
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "v2_vs_kalshi_newly_out_rows": {
+    "rows": 2195,
+    "games": 338,
+    "v2_p_logloss": 0.61497,
+    "mid_h_logloss": 0.59329,
+    "diff": 0.02168,
+    "diff_95ci": [
+     0.00899,
+     0.03548
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "by_stat_primary": {
+    "points": {
+     "rows": 2221,
+     "games": 306,
+     "v2_p_logloss": 0.54412,
+     "mid_h_logloss": 0.53889,
+     "diff": 0.00523,
+     "diff_95ci": [
+      -0.00499,
+      0.01553
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "rebounds": {
+     "rows": 793,
+     "games": 198,
+     "v2_p_logloss": 0.59685,
+     "mid_h_logloss": 0.59706,
+     "diff": -0.00021,
+     "diff_95ci": [
+      -0.02219,
+      0.02154
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "assists": {
+     "rows": 586,
+     "games": 174,
+     "v2_p_logloss": 0.56889,
+     "mid_h_logloss": 0.56588,
+     "diff": 0.00301,
+     "diff_95ci": [
+      -0.01693,
+      0.02317
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "threes": {
+     "rows": 946,
+     "games": 176,
+     "v2_p_logloss": 0.54363,
+     "mid_h_logloss": 0.54603,
+     "diff": -0.0024,
+     "diff_95ci": [
+      -0.0157,
+      0.01027
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    }
+   }
+  },
+  "6.0": {
+   "priced_rows": 13102,
+   "test1_v2_vs_kalshi_primary": {
+    "rows": 8172,
+    "games": 504,
+    "v2_p_logloss": 0.55951,
+    "mid_h_logloss": 0.55436,
+    "diff": 0.00515,
+    "diff_95ci": [
+     -0.00025,
+     0.01062
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "test2_v2_picks_primary": {
+    "count": 1515,
+    "games": 373,
+    "win_rate": 0.433,
+    "avg_cost": 0.4272,
+    "avg_ev": 0.0928,
+    "profit_sum": 8.823,
+    "cost_sum": 647.177,
+    "roi": 0.0136,
+    "roi_95ci": [
+     -0.0422,
+     0.0703
+    ],
+    "verdict": "NOT SHOWN PROFITABLE"
+   },
+   "test3_kalshi_h_vs_40min": {
+    "rows": 13102,
+    "games": 792,
+    "mid_h_logloss": 0.56797,
+    "mid40_logloss": 0.56661,
+    "diff": 0.00135,
+    "diff_95ci": [
+     0.00011,
+     0.0027
+    ],
+    "verdict": "40-MIN PRICE MORE RIGHT"
+   },
+   "v1_vs_kalshi_all_rows": {
+    "rows": 13102,
+    "games": 792,
+    "v1_p_logloss": 0.6058,
+    "mid_h_logloss": 0.56797,
+    "diff": 0.03784,
+    "diff_95ci": [
+     0.02936,
+     0.04672
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "v2_vs_kalshi_newly_out_rows": {
+    "rows": 4930,
+    "games": 514,
+    "v2_p_logloss": 0.60639,
+    "mid_h_logloss": 0.59052,
+    "diff": 0.01587,
+    "diff_95ci": [
+     0.0075,
+     0.02494
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "by_stat_primary": {
+    "points": {
+     "rows": 3693,
+     "games": 460,
+     "v2_p_logloss": 0.54475,
+     "mid_h_logloss": 0.53694,
+     "diff": 0.00781,
+     "diff_95ci": [
+      0.00056,
+      0.01517
+     ],
+     "verdict": "KALSHI"
+    },
+    "rebounds": {
+     "rows": 1612,
+     "games": 348,
+     "v2_p_logloss": 0.59112,
+     "mid_h_logloss": 0.58872,
+     "diff": 0.0024,
+     "diff_95ci": [
+      -0.01114,
+      0.01618
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "assists": {
+     "rows": 1256,
+     "games": 327,
+     "v2_p_logloss": 0.57862,
+     "mid_h_logloss": 0.56829,
+     "diff": 0.01034,
+     "diff_95ci": [
+      -0.00288,
+      0.02406
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "threes": {
+     "rows": 1611,
+     "games": 283,
+     "v2_p_logloss": 0.54682,
+     "mid_h_logloss": 0.54904,
+     "diff": -0.00222,
+     "diff_95ci": [
+      -0.0121,
+      0.00779
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    }
+   }
+  },
+  "3.0": {
+   "priced_rows": 18677,
+   "test1_v2_vs_kalshi_primary": {
+    "rows": 11008,
+    "games": 567,
+    "v2_p_logloss": 0.56145,
+    "mid_h_logloss": 0.55721,
+    "diff": 0.00424,
+    "diff_95ci": [
+     -0.0006,
+     0.00902
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "test2_v2_picks_primary": {
+    "count": 1882,
+    "games": 428,
+    "win_rate": 0.4437,
+    "avg_cost": 0.4268,
+    "avg_ev": 0.0928,
+    "profit_sum": 31.685,
+    "cost_sum": 803.315,
+    "roi": 0.0394,
+    "roi_95ci": [
+     -0.0138,
+     0.091
+    ],
+    "verdict": "NOT SHOWN PROFITABLE"
+   },
+   "test3_kalshi_h_vs_40min": {
+    "rows": 18677,
+    "games": 886,
+    "mid_h_logloss": 0.56795,
+    "mid40_logloss": 0.56681,
+    "diff": 0.00114,
+    "diff_95ci": [
+     0.00034,
+     0.00202
+    ],
+    "verdict": "40-MIN PRICE MORE RIGHT"
+   },
+   "v1_vs_kalshi_all_rows": {
+    "rows": 18677,
+    "games": 886,
+    "v1_p_logloss": 0.60616,
+    "mid_h_logloss": 0.56795,
+    "diff": 0.03821,
+    "diff_95ci": [
+     0.03052,
+     0.04639
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "v2_vs_kalshi_newly_out_rows": {
+    "rows": 7669,
+    "games": 593,
+    "v2_p_logloss": 0.59643,
+    "mid_h_logloss": 0.58337,
+    "diff": 0.01306,
+    "diff_95ci": [
+     0.00588,
+     0.02096
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "by_stat_primary": {
+    "points": {
+     "rows": 4774,
+     "games": 536,
+     "v2_p_logloss": 0.54132,
+     "mid_h_logloss": 0.53529,
+     "diff": 0.00603,
+     "diff_95ci": [
+      -0.00053,
+      0.01271
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "rebounds": {
+     "rows": 2336,
+     "games": 434,
+     "v2_p_logloss": 0.59958,
+     "mid_h_logloss": 0.59857,
+     "diff": 0.001,
+     "diff_95ci": [
+      -0.01006,
+      0.01222
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "assists": {
+     "rows": 1791,
+     "games": 407,
+     "v2_p_logloss": 0.58669,
+     "mid_h_logloss": 0.57578,
+     "diff": 0.01091,
+     "diff_95ci": [
+      -0.00054,
+      0.02293
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "threes": {
+     "rows": 2107,
+     "games": 348,
+     "v2_p_logloss": 0.54336,
+     "mid_h_logloss": 0.54524,
+     "diff": -0.00188,
+     "diff_95ci": [
+      -0.01105,
+      0.00694
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    }
+   }
+  },
+  "1.5": {
+   "priced_rows": 22327,
+   "test1_v2_vs_kalshi_primary": {
+    "rows": 12974,
+    "games": 591,
+    "v2_p_logloss": 0.55643,
+    "mid_h_logloss": 0.55127,
+    "diff": 0.00516,
+    "diff_95ci": [
+     0.00076,
+     0.00967
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "test2_v2_picks_primary": {
+    "count": 2105,
+    "games": 455,
+    "win_rate": 0.4342,
+    "avg_cost": 0.4289,
+    "avg_ev": 0.0928,
+    "profit_sum": 11.138,
+    "cost_sum": 902.862,
+    "roi": 0.0123,
+    "roi_95ci": [
+     -0.0352,
+     0.0604
+    ],
+    "verdict": "NOT SHOWN PROFITABLE"
+   },
+   "test3_kalshi_h_vs_40min": {
+    "rows": 22327,
+    "games": 927,
+    "mid_h_logloss": 0.56094,
+    "mid40_logloss": 0.56058,
+    "diff": 0.00036,
+    "diff_95ci": [
+     -8e-05,
+     0.00082
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "v1_vs_kalshi_all_rows": {
+    "rows": 22327,
+    "games": 927,
+    "v1_p_logloss": 0.60138,
+    "mid_h_logloss": 0.56094,
+    "diff": 0.04045,
+    "diff_95ci": [
+     0.0332,
+     0.04821
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "v2_vs_kalshi_newly_out_rows": {
+    "rows": 9353,
+    "games": 631,
+    "v2_p_logloss": 0.59007,
+    "mid_h_logloss": 0.57436,
+    "diff": 0.01571,
+    "diff_95ci": [
+     0.00898,
+     0.02318
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "by_stat_primary": {
+    "points": {
+     "rows": 5462,
+     "games": 568,
+     "v2_p_logloss": 0.53579,
+     "mid_h_logloss": 0.52695,
+     "diff": 0.00884,
+     "diff_95ci": [
+      0.00254,
+      0.01527
+     ],
+     "verdict": "KALSHI"
+    },
+    "rebounds": {
+     "rows": 2843,
+     "games": 471,
+     "v2_p_logloss": 0.59232,
+     "mid_h_logloss": 0.59197,
+     "diff": 0.00034,
+     "diff_95ci": [
+      -0.00987,
+      0.01057
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "assists": {
+     "rows": 2174,
+     "games": 446,
+     "v2_p_logloss": 0.57897,
+     "mid_h_logloss": 0.5696,
+     "diff": 0.00937,
+     "diff_95ci": [
+      -0.00158,
+      0.02054
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    },
+    "threes": {
+     "rows": 2495,
+     "games": 380,
+     "v2_p_logloss": 0.54107,
+     "mid_h_logloss": 0.54213,
+     "diff": -0.00107,
+     "diff_95ci": [
+      -0.00979,
+      0.00741
+     ],
+     "verdict": "TOO CLOSE TO CALL"
+    }
+   }
+  }
+ },
+ "decision": "NO CHANGE: NOT SHOWN PROFITABLE AT 6 HOURS"
+}

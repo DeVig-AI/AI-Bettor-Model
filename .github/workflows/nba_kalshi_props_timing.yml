@@ -1,0 +1,33 @@
+name: NBA Kalshi props -- earlier prices for the timing study (read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [nba-timing-v1]
+    paths: ['.github/workflows/nba_kalshi_props_timing.yml']
+permissions:
+  contents: write
+concurrency:
+  group: nba-kalshi-timing
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect earlier Kalshi prices (24h / 12h / 6h / 3h / 1.5h before tip-off; v1 earlier-price collection)
+        env:
+          MAX_MINUTES: '320'
+        run: python3 nba/kalshi_props_timing_v1.py
+      - name: Save
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nba/props_history/timing
+          git diff --cached --quiet || git commit -m "NBA Kalshi props timing prices $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
