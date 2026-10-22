@@ -68,7 +68,7 @@ test("NBA game page with the shot chart", async (t) => {
       await card.locator(".game-head").click();
       await page.locator(".ct").waitFor({timeout: 10000});
       assert.equal(await page.locator(".fx").count(), 0, "opening the page replays nothing");
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Quarters"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Quarters"]);
       assert.equal(await page.locator(".ct-shot").count(), 5, "five shots with a spot (no free throw, no foul)");
       assert.equal(await page.locator(".ct-shot.made").count(), 4);
       // the newest shot (White's three from the far half, folded to x 4, y 20) gets the ring

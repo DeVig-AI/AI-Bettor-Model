@@ -107,7 +107,7 @@ test("MLB, NHL and WNBA game pages", async (t) => {
       assert.match(await card.locator(".sb-grid").innerText(), /Kalshi \d+%/);
       await card.locator(".game-head").click();
       await page.locator(".gp-play").first().waitFor({timeout: 10000});
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Periods"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Periods"]);
       assert.doesNotMatch(await page.locator(".sb-pane").innerText(), /faceoff|blocked/i);
       assert.match(await page.locator(".ft-last").innerText(), /Last play · 11:02 · Mitch Marner Wrist Shot saved by Jeremy Swayman/);
       await page.locator('.sb-tabs button[data-k="box"]').click();

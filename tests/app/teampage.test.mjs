@@ -130,6 +130,22 @@ test("team page from a logo: ranks, offense and defense, lines with recent hits"
       assert.equal(await pg.locator("#rsStat").inputValue(), "passing_yards");
       assert.equal(await pg.locator("#rsLine").inputValue(), "244.5");
     });
+    await t.test("the game page's Matchup tab and the prop rows' recent-form chips", async () => {
+      await pg.locator('nav.tabs button[data-tab="home"]').click();
+      await pg.locator('#sportPills [data-sport="NFL"]').click();
+      await pg.locator('#homeSlate .card.game', {hasText: "SEA"}).first().locator(".game-head").click();
+      const page = pg.locator("#panel-game");
+      await page.locator('.sb-tabs button[data-k="matchup"]').click();
+      await page.locator(".mu-tbl").waitFor({timeout: 10000});
+      const ppg = page.locator(".mu-r", {hasText: /^.*Points per game/});
+      assert.match(await ppg.first().innerText(), /31\.0\s*1st\s+Points per game\s+20\.7\s*2nd/);
+      assert.equal(await ppg.first().locator(".mu-v.better").count(), 1, "SF's is the better one");
+      assert.match(await page.locator(".sb-pane").innerText(), /San Francisco 49ers · lines in this game[\s\S]*Brock Purdy[\s\S]*Passing yards 244\.5 · over in 2 of last 3/i);
+      await page.locator(".sb-tabs button", {hasText: "Passing"}).click();
+      await page.locator(".rs-form").first().waitFor({timeout: 10000});
+      assert.match(await page.locator(".pp-row", {hasText: "Brock Purdy"}).first().locator(".rs-form").innerText(), /^L3 2\/3$/);
+      await page.locator(".back-more").click();
+    });
     await t.test("a stats file read over 10 minutes ago is read again", async () => {
       sfOverride = Object.assign(JSON.parse(readFileSync(STATS + "nfl/team_SF.json", "utf8")), {rank: 9});
       const open = () => pg.evaluate(() => window.devigOpenResearch({page: "team", sport: "NFL", code: "SF"}));

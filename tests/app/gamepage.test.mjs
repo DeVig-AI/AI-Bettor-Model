@@ -87,7 +87,7 @@ test("NFL game page with the live field", async (t) => {
       assert.match(await page.locator(".gp-title").innerText(), /SF @ SEA/);
       await page.locator(".gp-play", {hasText: "B.Aiyuk"}).waitFor({timeout: 10000});
       assert.match(await page.locator(".sb-tabs .pill-tab.active").innerText(), /Plays/);
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Scoring"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Scoring"]);
       const plays = page.locator(".gp-play");
       assert.match(await plays.first().innerText(), /Pass Incompletion[\s\S]*2nd & 14[\s\S]*11:49[\s\S]*incomplete/, "newest first");
       assert.match(await page.locator(".gp-play.big").innerText(), /\+28 yds/);
