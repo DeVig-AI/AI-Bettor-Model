@@ -1,0 +1,31 @@
+name: MLB bullpen study (pre-registered, run on demand)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mlb-bullpen-study
+  cancel-in-progress: false
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pandas, numpy, scikit-learn
+        run: pip install pandas numpy scikit-learn
+      - name: Run the pre-registered study (MLB_BULLPEN_STUDY_V1)
+        run: python3 mlb/research/mlb_bullpen_study_v1.py
+      - name: Save results
+        if: always()
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add mlb/research/bullpen_v1_results.json mlb/research/bullpen_v1_results.md 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "MLB bullpen study v1 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
