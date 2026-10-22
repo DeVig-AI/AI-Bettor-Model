@@ -127,7 +127,7 @@ test("MLB, NHL and WNBA game pages", async (t) => {
       const card = await openSport("WNBA", "BOS");
       await card.locator(".game-head").click();
       await page.locator(".ct").waitFor({timeout: 10000});
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Quarters"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Quarters"]);
       assert.equal(await page.locator(".ct-shot").count(), 5);
     });
     assert.deepEqual(errors, []);

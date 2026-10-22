@@ -302,7 +302,9 @@
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .mu-teams .tm-badge{width:22px; height:22px; font-size:8px;}
   .mu-list[hidden]{display:none;}
-  .mu-p{padding:8px 0; border-top:1px solid var(--line);} .mu-p > div{margin-top:6px;}
+  .mu-p{padding:8px 0; border-top:1px solid var(--line);}
+  .mu-avg{margin-top:4px; font-family:var(--font-mono); font-size:12.5px; color:var(--ink-soft);}
+  .mu-p .rs-link.mu-pn{font-weight:700; font-size:15px; padding:0; border:none; background:none; color:var(--ink); min-height:0;} .mu-p > div{margin-top:6px;}
   .ct{margin-top:12px;}
   /* Big moments over the game page's summary (touchdown, field goal, a three...) */
   .gp-head{position:relative;}
@@ -1918,7 +1920,7 @@
   // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
   // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA", "NHL", "NFL"];
+  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
   var RS_FRESH = 6e5;          // a file read more than 10 minutes ago is read again (the bot rebuilds them during the day)
   function rsGet(path){
@@ -2025,7 +2027,10 @@
   function rsNextProps(sp, code){
     var d = propsDocs.filter(function(x){ return docSport(x) === sp && (x.away_team === code || x.home_team === code) && !propStarted(x) && x.rows && x.rows.length; })
       .sort(function(a, b){ return String(a.kickoff_time || "9").localeCompare(String(b.kickoff_time || "9")); })[0];
-    if(!d) return null;
+    return d ? rsPropLines(d, code) : null;
+  }
+  // a props doc -> each player's main line per stat, as seen by team `code` (whose opponent and venue it names)
+  function rsPropLines(d, code){
     var lines = {};
     propRows(d).forEach(function(r){
       if(r.line == null || !r.player) return;
@@ -3412,24 +3417,36 @@
           var a = ra[c[1]], h = rh[c[1]];
           return '<div class="mu-r">' + cell(A, ra, c, a && h && a < h) + '<span class="mu-l">' + escapeHtml(c[0]) + '</span>' + cell(H, rh, c, a && h && h < a) + '</div>';
         }).join("") + '</div>';
-      // players with a line in this game: one team at a time, a switch between the two (remembered per game)
+      // players with a line in this game (its own props, before or after it starts): one team at a time, a switch between them
+      var doc = propsDocFor(g);
+      // a team with no lines here (no props for the sport or the game): its key players and their season averages
+      var avgCols = (idx.roster_cols || []).filter(function(c){ return c[1] !== "gp"; });
+      function keyPlayers(t){
+        return (t.players || []).filter(function(p){ return p.this; }).slice(0, 6).map(function(p){
+          var bits = avgCols.map(function(c){ var v = p.this[c[1]]; return v == null ? null : c[0] + " " + rsCell(v, c); }).filter(Boolean);
+          return '<div class="mu-p">' + rsLink({page: "player", sport: sp, team: t.code, id: p.id}, p.name, "rs-link mu-pn") + ' <span class="faint">' + escapeHtml(p.pos || "") + '</span>' +
+            '<div class="mu-avg">' + escapeHtml(bits.join(" · ")) + '</div></div>';
+        }).join("");
+      }
+      var anyLines = false;
       var lists = [A, H].map(function(t){
-        var next = rsNextProps(sp, t.code);
+        var next = doc && doc.rows && doc.rows.length ? rsPropLines(doc, t.code) : null;
         var withLines = (t.players || []).map(function(p){ return {p: p, notes: rsNotes(idx, sp, t, p, next)}; })
           .filter(function(x){ return x.notes; }).slice(0, 8);
-        return {t: t, html: withLines.map(function(x){
+        if(withLines.length) anyLines = true;
+        return {t: t, html: withLines.length ? withLines.map(function(x){
           return '<div class="mu-p"><b>' + escapeHtml(x.p.name) + '</b> <span class="faint">' + escapeHtml(x.p.pos || "") + '</span><div>' + x.notes + '</div></div>';
-        }).join("")};
+        }).join("") : keyPlayers(t)};
       }).filter(function(x){ return x.html; });
       if(lists.length){
         var gk = gameKey(g), on = lists.filter(function(x){ return x.t.code === muTeam[gk]; })[0] || lists[0];
-        html += '<div class="bb-sec">Lines in this game</div><div class="md-tabs mu-teams">' + lists.map(function(x){
+        html += '<div class="bb-sec">' + (anyLines ? 'Lines in this game' : 'Key players · per game this season') + '</div><div class="md-tabs mu-teams">' + lists.map(function(x){
           return '<button type="button" class="pill-tab' + (x === on ? ' active' : '') + '" data-mu-team="' + escapeHtml(x.t.code) + '">' +
             teamBadge(sp, x.t.code) + escapeHtml(x.t.name) + '</button>'; }).join("") + '</div>' +
           lists.map(function(x){ return '<div class="mu-list" data-mu-list="' + escapeHtml(x.t.code) + '"' + (x === on ? '' : ' hidden') + '>' + x.html + '</div>'; }).join("");
       }
       html += '<p class="faint" style="margin:10px 0 0">Season numbers and ranks among all ' + n + ' teams (1st = best). Green rank: top 5; red: bottom 5; bold: the better of the two. ' +
-        'Lines: Kalshi\'s main line and how often the player went over it in his last 5 games. Counts, not chances.</p>';
+        (anyLines ? 'Lines: Kalshi\'s main line and how often the player went over it in his last 5 games. Counts, not chances.' : 'No player lines for this game; tap a player for his game log.') + '</p>';
       pane.innerHTML = html;
       pane.querySelectorAll("[data-mu-team]").forEach(function(b){
         b.addEventListener("click", function(ev){
