@@ -297,6 +297,11 @@
   .mu-v{font-family:var(--font-mono); white-space:nowrap;} .mu-r .mu-v:last-child{text-align:right;}
   .mu-v.better{font-weight:700; color:var(--ink);} .mu-v:not(.better){color:var(--ink-soft);}
   .mu-v i{font-style:normal; margin-left:4px;}
+  .md-tabs.mu-teams{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:6px;}
+  .mu-teams .pill-tab{display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; min-width:0; padding:5px 8px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mu-teams .tm-badge{width:22px; height:22px; font-size:8px;}
+  .mu-list[hidden]{display:none;}
   .mu-p{padding:8px 0; border-top:1px solid var(--line);} .mu-p > div{margin-top:6px;}
   .ct{margin-top:12px;}
   /* Big moments over the game page's summary (touchdown, field goal, a three...) */
@@ -3387,6 +3392,7 @@
   }
   // Matchup: each team-stat row for both teams with its league rank (the better one marked), the stats each team ranks
   // best and worst in, then each team's players who have a line in this game, with how often they went over it lately.
+  var muTeam = {};                                   // game key -> the team whose players the Matchup tab shows
   function matchupEl(pane, g){
     var sp = g.sport || "NFL";
     pane.appendChild(el("div", "bb-empty", "Loading both teams' stats…"));
@@ -3406,19 +3412,33 @@
           var a = ra[c[1]], h = rh[c[1]];
           return '<div class="mu-r">' + cell(A, ra, c, a && h && a < h) + '<span class="mu-l">' + escapeHtml(c[0]) + '</span>' + cell(H, rh, c, a && h && h < a) + '</div>';
         }).join("") + '</div>';
-      var next = {};
-      [A, H].forEach(function(t){ next[t.code] = rsNextProps(sp, t.code); });
-      [A, H].forEach(function(t){
-        var withLines = (t.players || []).map(function(p){ return {p: p, notes: rsNotes(idx, sp, t, p, next[t.code])}; })
-          .filter(function(x){ return x.notes; }).slice(0, 6);
-        if(!withLines.length) return;
-        html += '<div class="bb-sec">' + escapeHtml(t.name) + ' · lines in this game</div>' + withLines.map(function(x){
+      // players with a line in this game: one team at a time, a switch between the two (remembered per game)
+      var lists = [A, H].map(function(t){
+        var next = rsNextProps(sp, t.code);
+        var withLines = (t.players || []).map(function(p){ return {p: p, notes: rsNotes(idx, sp, t, p, next)}; })
+          .filter(function(x){ return x.notes; }).slice(0, 8);
+        return {t: t, html: withLines.map(function(x){
           return '<div class="mu-p"><b>' + escapeHtml(x.p.name) + '</b> <span class="faint">' + escapeHtml(x.p.pos || "") + '</span><div>' + x.notes + '</div></div>';
-        }).join("");
-      });
+        }).join("")};
+      }).filter(function(x){ return x.html; });
+      if(lists.length){
+        var gk = gameKey(g), on = lists.filter(function(x){ return x.t.code === muTeam[gk]; })[0] || lists[0];
+        html += '<div class="bb-sec">Lines in this game</div><div class="md-tabs mu-teams">' + lists.map(function(x){
+          return '<button type="button" class="pill-tab' + (x === on ? ' active' : '') + '" data-mu-team="' + escapeHtml(x.t.code) + '">' +
+            teamBadge(sp, x.t.code) + escapeHtml(x.t.name) + '</button>'; }).join("") + '</div>' +
+          lists.map(function(x){ return '<div class="mu-list" data-mu-list="' + escapeHtml(x.t.code) + '"' + (x === on ? '' : ' hidden') + '>' + x.html + '</div>'; }).join("");
+      }
       html += '<p class="faint" style="margin:10px 0 0">Season numbers and ranks among all ' + n + ' teams (1st = best). Green rank: top 5; red: bottom 5; bold: the better of the two. ' +
         'Lines: Kalshi\'s main line and how often the player went over it in his last 5 games. Counts, not chances.</p>';
       pane.innerHTML = html;
+      pane.querySelectorAll("[data-mu-team]").forEach(function(b){
+        b.addEventListener("click", function(ev){
+          ev.stopPropagation();
+          muTeam[gameKey(g)] = b.dataset.muTeam;
+          pane.querySelectorAll("[data-mu-team]").forEach(function(x){ x.classList.toggle("active", x === b); });
+          pane.querySelectorAll("[data-mu-list]").forEach(function(l){ l.hidden = l.dataset.muList !== b.dataset.muTeam; });
+        });
+      });
     }).catch(function(){ pane.innerHTML = '<div class="bb-empty">Team stats aren\'t available for this matchup right now.</div>'; });
   }
   function qName(q, kind, half){
