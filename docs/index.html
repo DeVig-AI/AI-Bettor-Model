@@ -913,6 +913,11 @@
       <div class="faint" id="mdNote" style="margin-top:8px"></div>
     </div>
     <div class="card">
+      <h3 style="margin-bottom:6px">Beat the closing line?</h3>
+      <div class="lab-scroll"><table class="lab-table" id="mdClose"></table></div>
+      <div class="faint" style="margin-top:8px">The test professional bettors use. For each pick: Kalshi's price for the picked team when the pick was made, then its last price before the game. If the price keeps moving toward a model's picks, the market is coming round to it, which is the best early sign of a real edge. Win-loss records take hundreds of games to mean anything; this shows sooner. Points = percentage points of win chance (vig removed); "Moved our way" counts picks where the price moved toward the pick.</div>
+    </div>
+    <div class="card">
       <h3 style="margin-bottom:6px" id="mdGamesTitle">Picks</h3>
       <div id="mdGames"></div>
     </div>
@@ -2073,6 +2078,14 @@
       var since = r.tracking_since ? new Date(r.tracking_since) : null;
       noteEl.textContent = notes[mdBet] + " Pushes and ties don't count." + (since && !isNaN(since) && mdBet !== "props" ? " Tracking since " + since.toLocaleDateString([], {month: "short", day: "numeric", year: "numeric"}) + "; earlier games aren't counted." : "") + " — means the model doesn't make this kind of pick.";
     }
+    var cl = r && r.sports && r.sports[mdSport] ? r.sports[mdSport].close || [] : [];
+    document.getElementById("mdClose").innerHTML = !cl.length ? '<tr><td class="faint">' + (mdLoaded ? "Nothing to show yet." : "Loading…") + '</td></tr>' :
+      '<tr><th>Model</th><th>Picks</th><th>Moved our way</th><th>Avg move</th></tr>' + cl.map(function(m){
+        var col = m.avg == null ? "inherit" : m.avg > 0 ? "var(--good)" : m.avg < 0 ? "var(--bad)" : "inherit";
+        var avg = m.avg == null ? "—" : (m.avg > 0 ? "+" : m.avg < 0 ? "\u2212" : "") + (Math.abs(m.avg) * 100).toFixed(1) + " pts";
+        return '<tr><td>' + escapeHtml(m.name) + '</td><td>' + (m.n || 0) + '</td><td>' + (m.n ? m.beat + " of " + m.n : "—") + '</td>' +
+          '<td style="color:' + col + '">' + avg + '</td></tr>';
+      }).join("");
     // this sport's games: upcoming first, then the last few days' finals
     var gw = document.getElementById("mdGames");
     var names = {};

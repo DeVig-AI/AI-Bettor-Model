@@ -1,0 +1,94 @@
+{
+ "study": "NFL_INJURY_STUDY_V1",
+ "run_at": "2026-10-22T21:23:38Z",
+ "coverage": {
+  "report_rows_with_status": 30806,
+  "report_rows_matched_to_snap_counts": 30734,
+  "team_weeks_with_roster": 6668,
+  "games": 3277,
+  "games_with_snap_counts": 3277
+ },
+ "question_a": {
+  "coef_points": {
+   "intercept": 0.145,
+   "d_qb": -1.9406,
+   "d_out": -0.3257,
+   "d_q": 0.038
+  },
+  "fit_games": 1602,
+  "test_games": 1675,
+  "baseline_side": 1.0,
+  "effect_pts": 0.6582,
+  "ci95": [
+   -0.1451,
+   1.4603
+  ],
+  "p_one_sided": 0.0562,
+  "passes": false,
+  "picks": 1451,
+  "w": 705,
+  "l": 706,
+  "push": 40,
+  "win_pct": 0.4996,
+  "breakeven": 0.5175,
+  "roi": -0.0345,
+  "effect_by_period": {
+   "2019-2021": 1.2138,
+   "2022-2024": 0.1241
+  }
+ },
+ "question_b": {
+  "base": {
+   "coef": {
+    "intercept": 0.36334,
+    "d_form": 0.07613,
+    "d_rest": 0.02624
+   },
+   "log_loss": 0.65199,
+   "brier": 0.2299,
+   "accuracy": 0.618
+  },
+  "base_plus_injuries": {
+   "coef": {
+    "intercept": 0.36656,
+    "d_form": 0.07333,
+    "d_rest": 0.02392,
+    "d_qb": -0.551,
+    "d_out": -0.06691,
+    "d_q": -0.0195
+   },
+   "log_loss": 0.64376,
+   "brier": 0.22634,
+   "accuracy": 0.6293
+  },
+  "log_loss_change": -0.00823,
+  "log_loss_change_ci95": [
+   -0.01282,
+   -0.00347
+  ],
+  "helps": true,
+  "fit_games": 1596,
+  "test_games": 1670,
+  "margin_points": {
+   "intercept": 2.564,
+   "d_form": 0.478,
+   "d_rest": 0.086,
+   "d_qb": -3.788,
+   "d_out": -0.509,
+   "d_q": -0.085
+  },
+  "closing_line_points": {
+   "intercept": 2.42,
+   "d_form": 0.454,
+   "d_rest": 0.169,
+   "d_qb": -1.924,
+   "d_out": -0.196,
+   "d_q": -0.118
+  }
+ },
+ "feature_counts": {
+  "games_home_qb_out": 130,
+  "games_away_qb_out": 132,
+  "games_any_regular_out": 2297
+ }
+}
