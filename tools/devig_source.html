@@ -980,6 +980,7 @@
       <h3>The Home tab: track record, honestly</h3>
       <p>Home shows what a real prediction model actually says about this week's games, alongside the market's own line, synced in from this project's testing pipeline. It is not a black box making a fresh claim every week — every number on it traces back to a specific, dated test, and the results have mostly been negative. Here is the full, honest record:</p>
       <p><strong>Moneyline (who wins)</strong> — the one piece with real, held-out evidence behind it: 65.85% accuracy on a clean holdout test the model never trained on.</p>
+      <p><strong>Model 2.0 (from week 7, 2026): Model 1.0 plus who is out.</strong> It adds three things from each week's injury reports and rosters: whether last game's quarterback is out, how many regular starters are out, and how many are questionable. In a test fixed in advance (each season 2020-2025 predicted only from earlier seasons), it gave more accurate win chances than Model 1.0 (log loss 0.6348 vs 0.6402) while picking winners about as often (64.4% vs 64.6%). It passed, narrowly. Injuries alone did <strong>not</strong> beat the betting line (the market already prices them), so this makes the model better, not the market beaten. Model 1.0 keeps being tracked beside it; each card shows what Model 1.0 said, and if Model 1.0 does better over the first two weeks, the app switches back.</p>
       <p><strong>Spread (margin of victory)</strong> — tested and found to have <strong>no real edge</strong>: its edge estimate correlates with actual cover outcomes at essentially 0.03, indistinguishable from noise, and roughly 20 separate attempts at a genuinely different spread system (different features, different architectures, different theories of the edge) all failed the same way. On real held-out games it lands at 54.55% against the spread (2024-2025 combined, n=88) — barely above a coin flip. This app keeps showing it anyway, deliberately: not as a pick, but as information and as filler for a parlay leg when you already like a game for other reasons.</p>
       <p><strong>Totals (over/under)</strong> — tested three separate ways (two earlier prototypes, then a rigorous walk-forward re-test), and all three lost to the market, the third one by a statistically significant margin. A fourth attempt, built around how real NFL scores cluster on specific numbers rather than a smooth curve, is either in progress or has closed the same way — check the project notes for the current status.</p>
       <p><strong>Other angles tried and found to add nothing:</strong> whether the starting QB changed, weather (wind/temperature/dome) for sides, and a QB-specific trailing performance rating. An automated decider that would pick between markets was also tested and found to make things worse, not better, than just trusting the frozen models directly.</p>
@@ -2725,6 +2726,7 @@
   function computeDecision(g){
     var d = computeDecisionBase(g);
     if(d.action !== "ML") return d;
+    if(g.model && g.model.sees_injuries) return d;      // NFL Model 2.0 already counts who is out
     var pi = pickInjuries(g);
     if(pi && pi.qb.length){
       return {action: "SKIP", cls: "bad", detail: "Key player out: " + g.model.winner_side + " QB " + pi.qb[0].name + " is " +
@@ -3434,8 +3436,12 @@
       modelWrap.style.paddingTop = "10px";
       var rows = "";
       if(mm.winner_side){
-        rows += '<div class="stat-row"><span class="muted">Moneyline read</span>' +
+        rows += '<div class="stat-row"><span class="muted">Moneyline read' + (mm.version === "2.0" ? ' <span class="pill neutral">Model 2.0</span>' : '') + '</span>' +
           '<span class="v tabular">' + escapeHtml(mm.winner_side) + " " + fmtPct(mm.winner_prob) + '</span></div>';
+        if(mm.model_1_0 && mm.model_1_0.side){
+          rows += '<div class="stat-row"><span class="muted">Model 1.0 said</span>' +
+            '<span class="v tabular faint">' + escapeHtml(mm.model_1_0.side) + " " + fmtPct(mm.model_1_0.prob) + '</span></div>';
+        }
       }
       // Playoff series chance -- information only, never a pick. Worked out by
       // the exporter from this game's per-game probability applied to every
@@ -3628,7 +3634,9 @@
       var asOfTxt = (asOf && !isNaN(asOf)) ? asOf.toLocaleString([], {weekday:"short", hour:"numeric", minute:"2-digit"}) : "";
       irBox.innerHTML = '<div style="font-weight:700;margin-bottom:4px">Disclaimer — Injury report</div>' +
         (lines || '<div class="muted">No key starters on the injury report.</div>') +
-        '<div class="faint" style="margin-top:6px">The pick above was made without injury news. Check before betting — if a starting QB or star is out, skip or re-think this game.' +
+        '<div class="faint" style="margin-top:6px">' + (g.model && g.model.sees_injuries
+          ? 'The pick above (Model 2.0) already counts who is listed out, as of its last update. Late news can still change things.'
+          : 'The pick above was made without injury news. Check before betting — if a starting QB or star is out, skip or re-think this game.') +
         (asOfTxt ? ' Updated ' + escapeHtml(asOfTxt) + '.' : '') + ' Key player = plays 60%+ of snaps (QB 50%+). Source: ESPN.</div>';
       card.appendChild(irBox);
     }
@@ -5741,7 +5749,7 @@
   var ASK_RULES = [
     "You are the assistant inside DeVig.AI, a personal sports-betting model app. The user is on a phone. Answer in plain, short language (a few sentences or a short list; at most ~6 lines per list).",
     "Use ONLY the JSON data below. Never invent games, odds, injuries, stats or results. If something isn't in the data, say it isn't synced yet.",
-    "How to read it: app_call ML = the model's pick cleared a tested confidence bar; PASS = not confident enough; SKIP = the model picked a team whose starting QB is out (the model can't see injuries) -- treat SKIP as do-not-bet. Other key players out = caution.",
+    "How to read it: app_call ML = the model's pick cleared a tested confidence bar; PASS = not confident enough; SKIP = a Model 1.0 pick on a team whose starting QB is out (Model 1.0 can't see injuries; Model 2.0 can, so its picks are never SKIPped for this) -- treat SKIP as do-not-bet. Other key players out = caution.",
     "Accuracy tiers from held-out testing: NFL ~77% (top 25%) / ~71% (top 50%) vs ~66% overall; MLB 61.1% / 58.9% vs 55.9%; NBA 77.7% / 71.7% vs 63.5%. These are win rates, NOT profit.",
     "Be honest about money: when tested against real betting odds, the app's picks did NOT beat the market (MLB about -3% ROI, NBA about -3%), and injury news is already priced into lines. Favorites win often but pay little. Compare model_win_prob with market_no_vig_prob_for_model_side: a bigger gap is where the model disagrees most with the market, but that gap has not been proven profitable.",
     "'Best bets' = ML calls with the highest model_win_prob that are not SKIP and have no caution, mentioning the price. If a pick's price needs a higher win rate to break even than model_win_prob (e.g. -900 needs 90%), say the price is too steep: it loses money over time even if the model is right. Prefer fewer, stronger picks. Never combine two legs from the same game in a parlay, and say parlays multiply risk.",
@@ -5750,7 +5758,7 @@
     "SAY WHERE EVERY NUMBER COMES FROM, in a few words: (model) = our frozen model's win chance; (market) = the betting odds with the book's cut removed; (past test) = a historical test result; (price math) = break-even from the odds. When odds or injuries matter, say when they were last updated (each game's 'sources'). Keep 'what the app's data says' separate from general advice, and label general advice as such.",
     "PRICE CHECK: when you mention a pick, give its break-even win rate vs the model's number from 'price_check'. If the verdict is TOO STEEP, say so plainly.",
     "PAST PICKS: 'pick_history' holds every logged game (newest first), including passes (call PASS/SKIP, result 'no pick'). Use it for questions like 'how did we do on the Bills' or 'show my Week 4 picks'. Count records yourself from the rows; a TIE is neither a win nor a loss; never count preseason_trial rows. On a pass, model_pct is the chance for model_lean (the team it leaned to), not for the home team.",
-    "WHAT THE MODELS USE (answer 'what stats do you look at' with this): NFL Model 1.0 = 63 past-game team stats (EPA-style efficiency: offense/defense, pass/rush, success and explosive rates, recent form) plus rest days; it does NOT see injuries, QB changes, weather or betting lines, and it was frozen before 2026. MLB = 10 trailing stats (team runs scored/allowed, starting pitcher ERA and K-BB over recent games). NBA = 8 stats (points scored/allowed over the last 10 games, rest days, back-to-backs). Already tested and FAILED to beat the betting market (don't suggest them as new): QB changes, backup QBs, injuries/key players out (the market prices them), weather for sides, rest/travel/time zones, turnover and red-zone luck, pass-rush mismatch, pass offense vs pass defense, garbage-time filtering, referees, line movement, betting against public teams, blending the model with the market, and betting when the model disagrees with the market. Not testable with free data: paid film grades (PFF), player tracking (Next Gen), betting splits.",
+    "WHAT THE MODELS USE (answer 'what stats do you look at' with this): NFL picks come from Model 2.0 since week 7 of 2026 (game cards say which model): Model 1.0's 63 past-game team stats (EPA-style efficiency: offense/defense, pass/rush, success and explosive rates, recent form) plus rest days, PLUS who is out (last game's QB unavailable, regular starters out, regulars questionable, from injury reports and rosters). It made win chances more accurate than Model 1.0 in a pre-registered 2020-2025 test, but injuries did NOT beat the betting market on their own. Neither model sees weather or betting lines. Model 1.0 (no injuries) is still tracked beside it, and the app switches back if Model 1.0 does better. MLB = 10 trailing stats (team runs scored/allowed, starting pitcher ERA and K-BB over recent games). NBA = 8 stats (points scored/allowed over the last 10 games, rest days, back-to-backs). Already tested and FAILED to beat the betting market (don't suggest them as new): QB changes, backup QBs, injuries/key players out (the market prices them), weather for sides, rest/travel/time zones, turnover and red-zone luck, pass-rush mismatch, pass offense vs pass defense, garbage-time filtering, referees, line movement, betting against public teams, blending the model with the market, and betting when the model disagrees with the market. Not testable with free data: paid film grades (PFF), player tracking (Next Gen), betting splits.",
     "PLAYER PROPS (NFL and NBA): each matchup's prop tabs show Kalshi/Polymarket prices plus a new NFL prop model (each player's recent games only; no injuries, depth charts or weather). Its paper test is in 'player_props_paper_test'. It has NOT been shown to beat Kalshi's prices; on past seasons it only beat a simple player hit rate, and it was no better on touchdowns. Never present a prop as a recommended bet; call any prop pick a paper test.",
   ].join("\n");
 
