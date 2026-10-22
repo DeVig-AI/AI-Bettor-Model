@@ -51,6 +51,22 @@ def record(results):
     return w, len(results) - w, f"{l10.count('W')}-{l10.count('L')}", streak
 
 
+def league_ranks(this_by_team, rows, low=(), skip=()):
+    """Each team's league rank in every numeric team row this season: {team: {field: rank}}, 1 = best. Fields in `low`
+    rank lower-is-better (points allowed); `skip` has no better direction (pace). Ties share the better rank; a team
+    with no value for a field gets no rank for it."""
+    out = {t: {} for t in this_by_team}
+    for row in rows:
+        f = row[1]
+        if len(row) < 3 or f in skip:                       # text rows: record, home, away, last 10
+            continue
+        vals = {t: s[f] for t, s in this_by_team.items() if s and isinstance(s.get(f), (int, float)) and s[f] == s[f]}
+        sign = 1 if f in low else -1
+        for t, v in vals.items():
+            out[t][f] = 1 + sum(1 for x in vals.values() if sign * x < sign * v)
+    return out
+
+
 def r1(x, d=1):
     return None if x is None or x != x else round(float(x), d)
 

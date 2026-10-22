@@ -43,6 +43,7 @@ STATS = ["toi", "g", "a", "p", "sog", "ppg"]
 CONFIG = {
     "rating_unit": "goals",
     "search_cols": ["G", "A", "P"],
+    "rank_low": ["ga", "sa"], "rank_skip": [],                    # league ranks: lower is better / no better direction
     "team_rows": [["Record (W–L–OT)", "record"], ["Standings points", "pts", 0], ["Goals per game", "gf", 2],
                   ["Allowed per game", "ga", 2], ["Average margin", "margin", 2, True], ["Shots per game", "sf", 1],
                   ["Shots allowed per game", "sa", 1], ["Shooting %", "sh_pct", 1], ["Power-play goals per game", "ppg", 2],
@@ -229,13 +230,14 @@ def build(now, fetch_results=results):
                       "rating_this": S.r1(ratings[st].get(k), 2) if gp_this.get(k) else None,
                       "rating_last": S.r1(ratings[st - 1].get(k), 2),
                       **{f: s.get(f) for f in ("gp", "w", "l", "otl", "record", "pts", "last10", "streak", "gf", "ga", "margin")}})
+    ranks = S.league_ranks(this_ts, CONFIG["team_rows"], CONFIG["rank_low"], CONFIG["rank_skip"])
     for k in TEAMS:
         roster[k].sort(key=lambda pl: -((pl["this"] or {}).get("toi") or (pl["last"] or {}).get("toi") or 0))
         this, last = this_ts.get(k), last_ts.get(k)
         S.write(os.path.join(OUT, f"team_{k}.json"), {
             "generated_at": stamp, "code": k, "name": NAMES[k], "color": col.get(k), "rank": rank[k],
             "rating": S.r1(rating[k], 2), "season": label(st), "last_season": label(st - 1), "season_year": st + 1,
-            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None,
+            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None, "ranks": ranks.get(k) or None,
             "last": {f: v for f, v in (last or {}).items() if f != "games"} or None,
             "games": (this or {}).get("games", []) + (last or {}).get("games", []),
             "players": roster[k]})

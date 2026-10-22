@@ -273,6 +273,17 @@
   .gp-box .gp-tr span:not(:first-child){text-align:right;}
   .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .gp-st .gp-nm{font-weight:600;}
+  /* Research team page: league ranks, position groups, betting notes under a player */
+  .rs-rank{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:700;
+    background:var(--surface-2); color:var(--ink-soft); font-family:var(--font-sans);}
+  .rs-rank.good{background:var(--good-wash); color:var(--good);} .rs-rank.bad{background:var(--bad-wash); color:var(--bad);}
+  .rs-best{margin:10px 0 4px; font-size:13.5px; color:var(--ink-soft);} .rs-best b{color:var(--good);}
+  .rs-grp{font-size:12px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; margin:14px 0 6px;}
+  tr.rs-notes td{padding-top:0; border-top:none;}
+  .rs-note{display:inline-block; margin:0 6px 6px 0; padding:4px 9px; border-radius:999px; border:1px solid var(--line); background:var(--surface-2);
+    font:inherit; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer; text-align:left;}
+  .rs-note.good{border-color:var(--good); color:var(--good);} .rs-note.bad{border-color:var(--bad); color:var(--bad);}
+  .tm-link{display:inline-flex; cursor:pointer; border-radius:50%;}
   .ct{margin-top:12px;}
   /* Big moments over the game page's summary (touchdown, field goal, a three...) */
   .gp-head{position:relative;}
@@ -1965,15 +1976,69 @@
     document.getElementById("rsSearch").addEventListener("input", function(ev){ rsQuery = ev.target.value; draw(); });
     draw();
   }
+  function rsOrd(n){ var v = n % 100, x = ["th", "st", "nd", "rd"]; return n + (x[(v - 20) % 10] || x[v] || x[0]); }
+  function rsDefGroup(idx, grp){ var u = idx.roster_units; return !!(u && u[1] && u[1][1].indexOf(grp) >= 0 && idx.player_cols_def); }
+  // A team's next game with prop lines: each player's main line per stat (the Kalshi rung priced nearest 50/50).
+  function rsNextProps(sp, code){
+    var d = propsDocs.filter(function(x){ return docSport(x) === sp && (x.away_team === code || x.home_team === code) && !propStarted(x) && x.rows && x.rows.length; })
+      .sort(function(a, b){ return String(a.kickoff_time || "9").localeCompare(String(b.kickoff_time || "9")); })[0];
+    if(!d) return null;
+    var lines = {};
+    propRows(d).forEach(function(r){
+      if(r.line == null || !r.player) return;
+      var gap = r.kb != null && r.ka != null ? Math.abs((r.kb + r.ka) / 2 - 0.5) : 1;
+      var k = propNorm(r.player), b = lines[k] = lines[k] || {};
+      if(!b[r.stat] || gap < b[r.stat].gap) b[r.stat] = {line: r.line, gap: gap};
+    });
+    return {doc: d, lines: lines, opp: d.away_team === code ? d.home_team : d.away_team, home: d.home_team === code};
+  }
+  var RS_NOTE_ORDER = ["passing_yards", "rushing_yards", "receiving_yards", "receptions", "points", "rebounds", "assists", "threes",
+    "goals", "shots_on_goal", "passing_tds", "touchdowns", "rush_rec_yards"];
+  // "Receiving yards 59.5 · over in 4 of last 5 · avg 63.2" for a player's lines (at most two), tappable to his page.
+  function rsNotes(idx, sp, t, p, next){
+    var mine = next && next.lines[propNorm(p.name)];
+    if(!mine) return "";
+    var L = rsLogIdx(idx), stats = idx.hit_stats || [], src = p.this || p.last || {}, log = p.log || [];
+    var have = stats.filter(function(s){ return mine[s[0]]; }).sort(function(a, b){
+      var ia = RS_NOTE_ORDER.indexOf(a[0]), ib = RS_NOTE_ORDER.indexOf(b[0]);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    }).slice(0, 2);
+    return have.map(function(s){
+      var line = mine[s[0]].line, o = 0, n = 0;
+      log.slice(0, 5).forEach(function(g){
+        var v = 0;
+        for(var i = 0; i < s[2].length; i++){ var y = g[L[s[2][i]]]; if(y == null){ v = null; break; } v += y; }
+        if(v == null) return;
+        n++; if(v > line) o++;
+      });
+      var avg = s[2].reduce(function(m, c){ return m + (src[c] || 0); }, 0);
+      var cls = n && o / n >= 0.8 ? "good" : n && o / n <= 0.2 ? "bad" : "neutral";
+      return rsLink({page: "player", sport: sp, team: t.code, id: p.id, stat: s[0], line: line},
+        s[1] + " " + line + (n ? " · over in " + o + " of last " + n : "") + " · avg " + avg.toFixed(1), "rs-note " + cls);
+    }).join("");
+  }
+  var rsUnit = {};                                  // sport -> the open roster tab (Offense / Defense)
   function rsTeam(card, r, fail){
     Promise.all([rsIndex(r.sport), rsTeamFile(r.sport, r.code)]).then(function(x){
-      var idx = x[0], t = x[1], a = t.this || {}, b = t.last || {}, ls = rsShort(t.last_season);
+      var idx = x[0], t = x[1], a = t.this || {}, b = t.last || {}, ls = rsShort(t.last_season), ranks = t.ranks || {};
+      var nTeams = (idx.teams || []).length || 32;
+      function rankChip(f){
+        var k = ranks[f];
+        if(!k) return '';
+        return ' <span class="rs-rank ' + (k <= 5 ? 'good' : k > nTeams - 5 ? 'bad' : '') + '">' + rsOrd(k) + '</span>';
+      }
+      var best = (idx.team_rows || []).filter(function(c){ return ranks[c[1]]; })
+        .sort(function(p, q){ return ranks[p[1]] - ranks[q[1]]; }).slice(0, 3);
       var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(t.name) + '</h3><div class="faint">#' + t.rank +
         ' in DeVig\'s power rankings · rating ' + rsSigned(t.rating) + '</div></div></div>' +
-        '<div class="lab-scroll"><table class="lab-table"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
+        (best.length && t.this ? '<div class="rs-best">Best: ' + best.map(function(c){
+          return '<b>' + rsOrd(ranks[c[1]]) + '</b> in ' + escapeHtml(c[0].charAt(0).toLowerCase() + c[0].slice(1)); }).join(" · ") + '</div>' : '') +
+        '<div class="lab-scroll"><table class="lab-table rs-stats"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
         (idx.team_rows || []).map(function(c){
-          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c) : '—') + '</td><td>' + (t.last ? rsCell(b[c[1]], c) : '—') + '</td></tr>';
-        }).join("").replace(/(\d)-(\d)/g, "$1–$2") + '</table></div>';
+          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") + rankChip(c[1]) : '—') + '</td><td>' +
+            (t.last ? rsCell(b[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") : '—') + '</td></tr>';
+        }).join("") + '</table></div>' +
+        (t.ranks ? '<p class="faint" style="margin:6px 0 0">Rank: where this season\'s number stands among all ' + nTeams + ' teams (1st = best; for points and yards allowed and giveaways, fewest is best).</p>' : '');
       var games = (t.games || []).slice(0, 10);
       if(games.length){
         html += '<div class="bb-sec">Recent games</div><div class="lab-scroll"><table class="lab-table">' + games.map(function(g){
@@ -1981,14 +2046,39 @@
             '<td>' + g[3] + '–' + g[4] + (g[8] ? ' <span class="faint">' + escapeHtml(g[8]) + '</span>' : '') + '</td><td><span class="pill ' + (g[5] === "W" ? "good" : "bad") + '">' + g[5] + '</span></td></tr>';
         }).join("") + '</table></div>';
       }
-      var rc = idx.roster_cols || [];
-      html += '<div class="bb-sec">Roster</div><div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + rc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
-        (t.players || []).map(function(p){
-          var s = p.this || p.last || {}, old = !p.this;
+      var next = rsNextProps(r.sport, t.code);
+      html += '<div class="bb-sec">Roster</div>' + (next ? '<p class="faint" style="margin:-2px 0 8px">Lines: ' + (next.home ? 'vs ' : '@ ') + escapeHtml(next.opp) + ', ' +
+        escapeHtml(shortTime(next.doc)) + ' · Kalshi\'s main line (priced nearest 50/50), and how often he went over it in his last 5 games.</p>' : '');
+      function playerRows(list, cols, ncol){
+        return list.map(function(p){
+          var s = p.this || p.last || {}, old = !p.this, notes = rsNotes(idx, r.sport, t, p, next);
           return '<tr' + rsRow({page: "player", sport: r.sport, team: t.code, id: p.id}) + '><td>' + escapeHtml(p.name) + ' <span class="faint">' + escapeHtml(p.pos || "") + (old ? ' · ' + escapeHtml(ls) : '') + '</span></td>' +
-            rc.map(function(c){ return '<td>' + rsCell(s[c[1]], c) + '</td>'; }).join("") + '</tr>';
-        }).join("") + '</table></div><p class="faint" style="margin:8px 0 0">' + escapeHtml(idx.player_note || "") + ' A player\'s team is the team of his latest game. Updated ' + escapeHtml(whenTxt(t.generated_at)) + '.</p>';
+            cols.map(function(c){ return '<td>' + rsCell(s[c[1]], c) + '</td>'; }).join("") + '</tr>' +
+            (notes ? '<tr class="rs-notes"><td colspan="' + ncol + '">' + notes + '</td></tr>' : '');
+        }).join("");
+      }
+      var units = idx.roster_units;
+      if(units){
+        var unit = rsUnit[r.sport] || units[0][0];
+        html += '<div class="md-tabs" id="rsUnits">' + units.map(function(u){
+          return '<button type="button" class="pill-tab' + (u[0] === unit ? ' active' : '') + '" data-rs-unit="' + escapeHtml(u[0]) + '">' + escapeHtml(u[0]) + '</button>'; }).join("") + '</div>';
+        (units.filter(function(u){ return u[0] === unit; })[0] || units[0])[1].forEach(function(grp){
+          var list = (t.players || []).filter(function(p){ return p.grp === grp; }), cols = (idx.group_cols || {})[grp] || idx.roster_cols || [];
+          if(!list.length) return;
+          html += '<div class="rs-grp">' + escapeHtml((idx.group_names || {})[grp] || grp) + '</div><div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' +
+            cols.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' + playerRows(list, cols, cols.length + 1) + '</table></div>';
+        });
+      } else {
+        var rc = idx.roster_cols || [];
+        html += '<div class="lab-scroll"><table class="lab-table rs-table"><tr><th>Player</th>' + rc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
+          playerRows(t.players || [], rc, rc.length + 1) + '</table></div>';
+      }
+      var onDef = units && units[1] && (rsUnit[r.sport] || units[0][0]) === units[1][0] && idx.player_note_def;
+      html += '<p class="faint" style="margin:8px 0 0">' + escapeHtml((onDef ? idx.player_note_def : idx.player_note) || "") + ' A player\'s team is the team of his latest game. Updated ' + escapeHtml(whenTxt(t.generated_at)) + '.</p>';
       card.innerHTML = html;
+      card.querySelectorAll("[data-rs-unit]").forEach(function(btn){
+        btn.addEventListener("click", function(){ rsUnit[r.sport] = btn.dataset.rsUnit; var y = window.scrollY; renderResearch(); window.scrollTo(0, y); });
+      });
     }).catch(fail);
   }
   function rsFindPlayer(r){
@@ -2009,7 +2099,8 @@
     Promise.all([rsIndex(r.sport), rsFindPlayer(r)]).then(function(x){
       var idx = x[0], found = x[1];
       if(!found){ card.innerHTML = '<div class="bb-empty">No stats for ' + escapeHtml(r.name || "this player") + ' yet.</div>'; return; }
-      var t = found.team, p = found.player, cur = rsSeasonYear(t), stats = idx.hit_stats || [], L = rsLogIdx(idx);
+      var t = found.team, p = found.player, cur = rsSeasonYear(t), L = rsLogIdx(idx), isDef = rsDefGroup(idx, p.grp);
+      var stats = (isDef ? idx.hit_stats_def : idx.hit_stats) || [];
       // a prop's own stat and line win the first time its link opens the page; after that, what was last typed here
       var key = r.sport + "|" + p.id, fromProp = !r.seen && stats.some(function(s){ return s[0] === r.stat; });
       var st = fromProp ? {stat: r.stat, line: r.line} : (rsHit[key] || {});
@@ -2018,12 +2109,12 @@
       var avgSrc = p.this || p.last || {};
       function avgLine(d){ return Math.floor(d[2].reduce(function(m, c){ return m + (avgSrc[c] || 0); }, 0)) + 0.5; }
       function val(g, cols){ var v = 0; for(var i = 0; i < cols.length; i++){ var y = g[L[cols[i]]]; if(y == null) return null; v += y; } return v; }
-      var line = st.line != null ? st.line : avgLine(def), pc = idx.player_cols || [], show = idx.log_show || [];
+      var line = st.line != null ? st.line : avgLine(def), pc = (isDef ? idx.player_cols_def : idx.player_cols) || [], show = (isDef ? idx.log_show_def : idx.log_show) || [];
       var html = '<div class="rs-head">' + teamBadge(r.sport, t.code) + '<div><h3>' + escapeHtml(p.name) + '</h3><div class="faint">' + escapeHtml(t.name) + (p.pos ? ' · ' + escapeHtml(p.pos) : '') + '</div></div></div>' +
         '<div class="lab-scroll"><table class="lab-table"><tr><th>Season</th>' + pc.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '</tr>' +
         [[rsShort(t.season), p.this], [rsShort(t.last_season), p.last]].map(function(y){
           return '<tr><td>' + escapeHtml(y[0]) + '</td>' + pc.map(function(c){ return '<td>' + (y[1] ? rsCell(y[1][c[1]], c) : '—') + '</td>'; }).join("") + '</tr>';
-        }).join("") + '</table></div><p class="faint" style="margin:6px 0 0">' + escapeHtml(idx.player_note || "") + '</p>';
+        }).join("") + '</table></div><p class="faint" style="margin:6px 0 0">' + escapeHtml((isDef ? idx.player_note_def : idx.player_note) || "") + '</p>';
       html += '<div class="bb-sec">How often he cleared a line</div><div class="rs-form"><div class="field"><label for="rsStat">Stat</label><select id="rsStat">' +
         stats.map(function(s){ return '<option value="' + s[0] + '"' + (s === def ? ' selected' : '') + '>' + escapeHtml(s[1]) + '</option>'; }).join("") +
         '</select></div><div class="field" style="max-width:110px"><label for="rsLine">Over</label><input id="rsLine" inputmode="decimal" value="' + escapeHtml(String(line)) + '"></div></div><div id="rsHits"></div>' +
@@ -3415,7 +3506,10 @@
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
       var sc = lg ? (side === "home" ? lg.home_score : lg.away_score) : null, osc = lg ? (side === "home" ? lg.away_score : lg.home_score) : null;
-      html += '<div class="sb-team has-badge' + (sc != null ? ' with-sc' + (sc < osc ? ' trail' : '') : '') + '">' + teamBadge(g.sport || "NFL", team) +
+      var badge = teamBadge(g.sport || "NFL", team);
+      if(rsHasSport(g.sport || "NFL") && !g.trial && x[1])          // the logo opens the team's stats (Research)
+        badge = '<span class="tm-link" title="' + escapeHtml(team) + ' team stats"' + rsRow({page: "team", sport: g.sport || "NFL", code: team}) + '>' + badge + '</span>';
+      html += '<div class="sb-team has-badge' + (sc != null ? ' with-sc' + (sc < osc ? ' trail' : '') : '') + '">' + badge +
         '<b>' + escapeHtml(team) + (lg && lg.state === "in" && lg.possession === team ? ' <span class="lv-poss" title="Has the ball" style="display:inline-block; vertical-align:middle"></span>' : '') + '</b>' +
         (pct != null ? '<small>model ' + Math.round(pct * 100) + '%' + (lg ? ' · locked lines' : '') + '</small>' : '<small></small>') +
         (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
