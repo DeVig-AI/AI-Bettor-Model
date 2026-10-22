@@ -25,7 +25,9 @@ const NFL = {sport: "NFL", generated_at: iso(now), docs: [{collection: "slate", 
   market: {book: "Kalshi", moneyline_away: 125, moneyline_home: -145},
   model: {available: true, status: "locked", winner_side: "SEA", winner_prob: 0.66, note: "test"}}}]};
 // The fast feed, built by the real /api/live code from ESPN-shaped data (no cache, so the test can move the game on).
-let next = false;
+let next = false, finished = false;
+const PROPS_LIVE = {generated_at: iso(now), games: [{away: "SF", home: "SEA", kickoff: iso(kLive), state: "post", detail: "Final",
+  espn_id: "401", away_score: 21, home_score: 26, picks: []}]};
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
 const server = http.createServer((req, res) => {
   const u = new URL(req.url, "http://x");
@@ -36,7 +38,7 @@ const server = http.createServer((req, res) => {
       const d = summary({next});
       return j(Object.assign({sport: "nfl", event: "401", players: nflBox(d)}, u.searchParams.get("game") === "1" ? {game: nflGame(d)} : {}));
     }
-    return j({sport: "nfl", games: scoreboard(espnScoreboard(iso(kLive), {next}), "nfl")});
+    return j({sport: "nfl", games: finished ? [] : scoreboard(espnScoreboard(iso(kLive), {next}), "nfl")});
   }
   if (u.pathname.startsWith("/api/")) { res.writeHead(404); return res.end("{}"); }
   const f = path.join(DOCS, u.pathname === "/" ? "index.html" : u.pathname);
@@ -53,8 +55,12 @@ test("NFL game page with the live field", async (t) => {
   try {
     const ctx = await browser.newContext({viewport: {width: 390, height: 844}, deviceScaleFactor: 2, isMobile: true, hasTouch: true});
     await ctx.route(/fonts\.(googleapis|gstatic)\.com|espncdn/, r => r.abort());
-    await ctx.route(/raw\.githubusercontent\.com/, r => new URL(r.request().url()).pathname.endsWith("/nfl/lineboard_export.json")
-      ? r.fulfill({json: NFL}) : r.fulfill({status: 404, body: ""}));
+    await ctx.route(/raw\.githubusercontent\.com/, r => {
+      const p = new URL(r.request().url()).pathname;
+      if (p.endsWith("/nfl/lineboard_export.json")) return r.fulfill({json: NFL});
+      if (finished && p.endsWith("/nfl/live/props_live.json")) return r.fulfill({json: PROPS_LIVE});
+      return r.fulfill({status: 404, body: ""});
+    });
     await ctx.addInitScript(() => { try { localStorage.setItem("devig.installTip.v1", "1"); } catch (e) {} });
     const pg = await ctx.newPage();
     const errors = [];
@@ -121,6 +127,23 @@ test("NFL game page with the live field", async (t) => {
       await pg.goBack();
       await pg.locator("#panel-home").waitFor({state: "visible"});
       assert.ok(await page.isHidden());
+    });
+    await t.test("a finished game (only in the live bot's file) still gets its plays, box and scoring", async () => {
+      finished = true;
+      await pg.reload();
+      await pg.locator("#splash").waitFor({state: "detached", timeout: 15000});
+      await pg.locator('[role="tab"][data-tab="scan"], nav.tabs button[data-tab="scan"]').first().click();   // History
+      await pg.locator('#pastSportPills [data-past-sport="NFL"]').click();
+      const past = pg.locator("#pastGames .card.game", {hasText: "SEA"}).first();
+      await past.locator(".game-head").click();
+      await page.locator(".gp-play", {hasText: "B.Aiyuk"}).waitFor({timeout: 10000});
+      assert.equal(await page.locator(".ft").count(), 0, "no field once it's over");
+      assert.match(await page.locator(".game-head").innerText(), /FINAL/);
+      await page.locator('.sb-tabs button[data-k="box"]').click();
+      assert.match(await page.locator(".gp-box").innerText(), /Brock Purdy/);
+      await pg.screenshot({path: OUT + "nfl-game-final.png", fullPage: true});
+      await page.locator(".back-more").click();
+      await pg.locator("#panel-scan").waitFor({state: "visible"});              // back to History, where it came from
     });
     assert.deepEqual(errors, []);
   } finally {
