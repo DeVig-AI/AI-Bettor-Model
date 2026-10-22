@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-stats_nfl.py -- the Research section's NFL files: DeVig's power rankings, team stats and every offensive player's
-(QB, RB, WR, TE) averages and game log, this season and last, from nflverse's public weekly stats and schedule (the
+stats_nfl.py -- the Research section's NFL files: DeVig's power rankings, team stats with league ranks, and every
+offensive (QB, RB, WR, TE) and defensive (DL, LB, DB) player's averages and game log, this season and last, from nflverse's public weekly stats and schedule (the
 same family of data as the NFL models). Display only: nothing here feeds a model, a pick or a test.
 
 Output (stats/nfl/): index.json and team_<CODE>.json, the same layout as stats/nba/ (tools/stats_nba.py). nflverse's
@@ -23,9 +23,13 @@ REL = "https://github.com/nflverse/nflverse-data/releases/download/"
 URLS = {"games": REL + "schedules/games.csv", "player": REL + "stats_player/stats_player_week_{y}.csv",
         "team": REL + "stats_team/stats_team_week_{y}.csv"}
 PRIOR = 4                                       # a 17-game season: last season's rating counts as 4 games
-GROUPS = {"QB", "RB", "WR", "TE"}               # offensive players (the ones with props)
+OFFENSE, DEFENSE = ["QB", "RB", "WR", "TE"], ["DL", "LB", "DB"]   # nflverse position groups, in roster order
+GROUPS = set(OFFENSE + DEFENSE)
 TYPES = {"REG": "R", "WC": "P", "DIV": "P", "CON": "P", "SB": "P"}
 LOG = ["cmp", "att", "pass_yds", "pass_td", "int", "car", "rush_yds", "rush_td", "rec", "tgt", "rec_yds", "rec_td"]
+DLOG = ["tkl", "sk", "int_d", "pd", "tfl", "qbh", "ff"]        # defense: tackles (solo + assists), sacks, INT, ...
+DCOLS = {"def_sacks": "sk", "def_interceptions": "int_d", "def_pass_defended": "pd", "def_tackles_for_loss": "tfl",
+         "def_qb_hits": "qbh", "def_fumbles_forced": "ff"}
 COLS = {"completions": "cmp", "attempts": "att", "passing_yards": "pass_yds", "passing_tds": "pass_td",
         "passing_interceptions": "int", "carries": "car", "rushing_yards": "rush_yds", "rushing_tds": "rush_td",
         "receptions": "rec", "targets": "tgt", "receiving_yards": "rec_yds", "receiving_tds": "rec_td"}
@@ -38,8 +42,30 @@ NAMES = {"ARI": "Arizona Cardinals", "ATL": "Atlanta Falcons", "BAL": "Baltimore
          "NYJ": "New York Jets", "PHI": "Philadelphia Eagles", "PIT": "Pittsburgh Steelers", "SEA": "Seattle Seahawks",
          "SF": "San Francisco 49ers", "TB": "Tampa Bay Buccaneers", "TEN": "Tennessee Titans", "WAS": "Washington Commanders"}
 TEAMS = set(NAMES)
+POS_COLS = {
+    "QB": [["GP", "gp", 0], ["PASS", "pass_yds", 1], ["TD", "pass_td", 2], ["INT", "int", 2], ["RUSH", "rush_yds", 1]],
+    "RB": [["GP", "gp", 0], ["CAR", "car", 1], ["RUSH", "rush_yds", 1], ["REC", "rec", 1], ["TD", "td_tot", 0]],
+    "WR": [["GP", "gp", 0], ["TGT", "tgt", 1], ["REC", "rec", 1], ["REC YDS", "rec_yds", 1], ["TD", "td_tot", 0]],
+    "DL": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["QB HIT", "qbh", 2]],
+    "LB": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["PD", "pd", 2]],
+    "DB": [["GP", "gp", 0], ["TKL", "tkl", 1], ["INT", "int_d", 2], ["PD", "pd", 2], ["TFL", "tfl", 2]],
+}
+POS_COLS["TE"] = POS_COLS["WR"]
 CONFIG = {
     "rating_unit": "points",
+    "rank_low": ["oppg", "oypg", "give"], "rank_skip": [],        # league ranks: lower is better / no better direction
+    # the team page: Offense and Defense tabs, a section per position group with its own columns
+    "roster_units": [["Offense", OFFENSE], ["Defense", DEFENSE]],
+    "group_names": {"QB": "Quarterbacks", "RB": "Running backs", "WR": "Wide receivers", "TE": "Tight ends",
+                    "DL": "Defensive line", "LB": "Linebackers", "DB": "Secondary"},
+    "group_cols": POS_COLS,
+    # a defensive player's own page
+    "player_cols_def": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["QB HIT", "qbh", 2],
+                        ["INT", "int_d", 2], ["PD", "pd", 2], ["FF", "ff", 2]],
+    "player_note_def": "Per game, regular season (TKL: solo tackles plus assists).",
+    "log_show_def": [["TKL", "tkl"], ["SACK", "sk"], ["TFL", "tfl"], ["INT", "int_d"], ["PD", "pd"]],
+    "hit_stats_def": [["tackles", "Tackles + assists", ["tkl"]], ["sacks", "Sacks", ["sk"]],
+                      ["def_interceptions", "Interceptions", ["int_d"]], ["passes_defended", "Passes defended", ["pd"]]],
     "search_cols": ["PASS", "RUSH", "REC YDS"],
     "team_rows": [["Record", "record"], ["Points per game", "ppg", 1], ["Allowed per game", "oppg", 1],
                   ["Average margin", "margin", 1, True], ["Yards per game", "ypg", 1], ["Passing yards per game", "pypg", 1],
@@ -139,15 +165,23 @@ def team_season(res, tw):
     return out
 
 
-def player_season(x):
+def player_season(x, defense=False):
     reg = x[x.season_type == "REG"]
     n = len(reg)
     if not n:
         return None
+    if defense:
+        return {"gp": n, **{s: S.r1(reg[s].mean(), 1 if s == "tkl" else 2) for s in DLOG}}
     out = {"gp": n, "td_tot": int(reg.rush_td.sum() + reg.rec_td.sum())}
     for s in LOG:
         out[s] = S.r1(reg[s].mean(), 2 if s in ("pass_td", "int", "rush_td", "rec_td") else 1)
     return out
+
+
+def num(v):
+    """A game-log value: whole numbers as ints (half sacks stay 0.5)."""
+    v = float(v)
+    return int(v) if v == int(v) else v
 
 
 def load_players(cache, y, sched):
@@ -155,9 +189,13 @@ def load_players(cache, y, sched):
     if not path:
         return pd.DataFrame()
     p = pd.read_csv(path, low_memory=False)
-    p = p[p.position_group.isin(GROUPS) & p.team.isin(TEAMS)].rename(columns=COLS)
-    for c in LOG:
-        p[c] = p[c].fillna(0)
+    p = p[p.position_group.isin(GROUPS) & p.team.isin(TEAMS)].rename(columns=COLS).rename(columns=DCOLS).copy()
+    for c in ("def_tackles_solo", "def_tackle_assists"):
+        if c not in p:
+            p[c] = 0
+    p["tkl"] = p.def_tackles_solo.fillna(0) + p.def_tackle_assists.fillna(0)
+    for c in LOG + DLOG:
+        p[c] = p[c].fillna(0) if c in p else 0
     meta = sched.set_index("game_id")[["gameday", "home_team", "game_type"]]
     p = p.join(meta, on="game_id")
     p = p[p.gameday.notna()]
@@ -192,11 +230,12 @@ def build(now, cache):
         players = players.sort_values(["gameday", "game_id"])
         for pid, x in players.groupby("player_id"):
             latest = x.iloc[-1]
-            this, last = player_season(x[x.season == y + 1]), player_season(x[x.season == y])
-            log = [[str(r.gameday), r.opponent_team, "H" if r.home_team == r.team else "A"] + [int(getattr(r, c)) for c in LOG]
+            grp, d = latest.position_group, latest.position_group in DEFENSE
+            this, last = player_season(x[x.season == y + 1], d), player_season(x[x.season == y], d)
+            log = [[str(r.gameday), r.opponent_team, "H" if r.home_team == r.team else "A"] + [num(getattr(r, c)) for c in LOG + DLOG]
                    + [TYPES.get(r.game_type, "R"), int(r.season)] for r in x.itertuples()][::-1]
             pl = {"id": str(pid), "name": latest.player_display_name, "pos": latest.position if isinstance(latest.position, str) else "",
-                  "this": this, "last": last, "log": log}
+                  "grp": grp, "this": this, "last": last, "log": log}
             if this or gp.get(latest.team, 0) < PRIOR:
                 roster[latest.team].append(pl)
             cur = this or last or {}
@@ -210,14 +249,19 @@ def build(now, cache):
         teams.append({"code": k, "name": NAMES[k], "rank": rank[k], "rating": S.r1(rating[k]),
                       "rating_this": S.r1(ratings[y].get(k)) if gp.get(k) else None, "rating_last": S.r1(ratings[y - 1].get(k)),
                       "last10": s.get("last5"), **{f: s.get(f) for f in ("gp", "w", "l", "t", "record", "streak", "ppg", "oppg", "margin")}})
-    order_pos = {"QB": 0, "RB": 1, "WR": 2, "TE": 3}
+    order_grp = {g: i for i, g in enumerate(OFFENSE + DEFENSE)}
+
+    def depth(pl):                                  # within a position: who plays most (defense: who makes most tackles)
+        s = pl["this"] or pl["last"] or {}
+        return -(s.get("tkl") or 0) if pl["grp"] in DEFENSE else -(s.get("gp") or 0)
+    ranks = S.league_ranks(ts[y], CONFIG["team_rows"], CONFIG["rank_low"], CONFIG["rank_skip"])
     for k in TEAMS:
-        roster[k].sort(key=lambda pl: (order_pos.get(pl["pos"], 4), -((pl["this"] or pl["last"] or {}).get("gp") or 0)))
+        roster[k].sort(key=lambda pl: (order_grp.get(pl["grp"], 9), depth(pl)))
         this, last = ts[y].get(k), ts[y - 1].get(k)
         S.write(os.path.join(OUT, f"team_{k}.json"), {
             "generated_at": stamp, "code": k, "name": NAMES[k], "rank": rank[k], "rating": S.r1(rating[k]),
             "season": label(y), "last_season": label(y - 1), "season_year": y + 1,
-            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None,
+            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None, "ranks": ranks.get(k) or None,
             "last": {f: v for f, v in (last or {}).items() if f != "games"} or None,
             "games": (this or {}).get("games", []) + (last or {}).get("games", []),
             "players": roster[k]})
@@ -228,8 +272,8 @@ def build(now, cache):
         "rating_note": (f"Points per game better than an average team, adjusted for who each team played (SRS). Early in "
                         f"the season last season's rating counts as {PRIOR} games, pulled {round((1 - S.CARRY) * 100)}% "
                         f"toward average."),
-        "source": "nflverse weekly stats and schedule. Regular season and playoffs; offensive players only.",
-        "log_cols": ["date", "opp", "ha"] + LOG + ["type", "season"], **CONFIG,
+        "source": "nflverse weekly stats and schedule. Regular season and playoffs.",
+        "log_cols": ["date", "opp", "ha"] + LOG + DLOG + ["type", "season"], **CONFIG,
         "teams": teams, "players": search})
     return len(search)
 

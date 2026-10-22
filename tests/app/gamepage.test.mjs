@@ -25,7 +25,7 @@ const NFL = {sport: "NFL", generated_at: iso(now), docs: [{collection: "slate", 
   market: {book: "Kalshi", moneyline_away: 125, moneyline_home: -145},
   model: {available: true, status: "locked", winner_side: "SEA", winner_prob: 0.66, note: "test"}}}]};
 // The fast feed, built by the real /api/live code from ESPN-shaped data (no cache, so the test can move the game on).
-let next = false, finished = false;
+let next = false, td = false, finished = false;
 const PROPS_LIVE = {generated_at: iso(now), games: [{away: "SF", home: "SEA", kickoff: iso(kLive), state: "post", detail: "Final",
   espn_id: "401", away_score: 21, home_score: 26, picks: []}]};
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
@@ -35,10 +35,10 @@ const server = http.createServer((req, res) => {
   if (u.pathname === "/api/live") {
     if (u.searchParams.get("sport") !== "nfl") return j({games: []});
     if (u.searchParams.get("event") === "401") {
-      const d = summary({next});
+      const d = summary({next, td});
       return j(Object.assign({sport: "nfl", event: "401", players: nflBox(d)}, u.searchParams.get("game") === "1" ? {game: nflGame(d)} : {}));
     }
-    return j({sport: "nfl", games: finished ? [] : scoreboard(espnScoreboard(iso(kLive), {next}), "nfl")});
+    return j({sport: "nfl", games: finished ? [] : scoreboard(espnScoreboard(iso(kLive), {next, td}), "nfl")});
   }
   if (u.pathname.startsWith("/api/")) { res.writeHead(404); return res.end("{}"); }
   const f = path.join(DOCS, u.pathname === "/" ? "index.html" : u.pathname);
@@ -115,7 +115,22 @@ test("NFL game page with the live field", async (t) => {
       assert.equal(Number(await page.locator(".ft-ball").getAttribute("cx")), +X(82).toFixed(1));
       assert.match(await page.locator(".ft").innerText(), /Red zone/);
       assert.match(await page.locator(".sb-tabs .pill-tab.active").innerText(), /Plays/, "keeps the tab");
+      assert.equal(await page.locator(".fx").count(), 0, "a 19-yard catch isn't a big moment, and opening the page replays nothing");
       await pg.screenshot({path: OUT + "nfl-game-next.png", fullPage: true});
+    });
+
+    await t.test("a touchdown plays its moment: TOUCHDOWN, then the extra point", async () => {
+      td = true;
+      const fx = page.locator(".fx.fx-td");
+      await fx.waitFor({state: "attached", timeout: 45000});
+      assert.equal(await fx.getAttribute("aria-label"), "TOUCHDOWN, extra point, SF 28 – 26 SEA");
+      assert.deepEqual(await fx.locator(".fx-word").allTextContents(), ["TOUCHDOWN", "EXTRA POINT"]);
+      assert.equal(await fx.locator(".fx-field.fx-left").count(), 0, "SF (away) runs it into the right end zone");
+      await pg.waitForTimeout(600);
+      await pg.screenshot({path: OUT + "nfl-moment-td.png"});
+      await pg.waitForTimeout(2000);
+      await pg.screenshot({path: OUT + "nfl-moment-pat.png"});
+      await fx.waitFor({state: "detached", timeout: 6000});
     });
 
     await t.test("Back, and the phone's back, return to the board", async () => {

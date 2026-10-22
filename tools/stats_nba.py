@@ -37,6 +37,7 @@ COLS = {"minutes": "min", "points": "pts", "rebounds": "reb", "assists": "ast", 
 CONFIG = {
     "rating_unit": "points",
     "search_cols": ["PTS", "REB", "AST"],
+    "rank_low": ["oppg", "drtg"], "rank_skip": ["pace"],          # league ranks: lower is better / no better direction
     "team_rows": [["Record", "record"], ["Points per game", "ppg", 1], ["Allowed per game", "oppg", 1],
                   ["Average margin", "margin", 1, True], ["Points per 100 possessions", "ortg", 1],
                   ["Allowed per 100 possessions", "drtg", 1], ["Possessions per game", "pace", 1], ["Field goal %", "fg_pct", 1],
@@ -206,13 +207,14 @@ def build(now, cache):
         teams.append({"code": k, "name": names.get(k, k), "color": colors.get(k), "rank": rank[k], "rating": S.r1(rating[k]),
                       "rating_this": S.r1(r_this.get(k)) if gp_this.get(k) else None, "rating_last": S.r1(r_last.get(k)),
                       **{f: s.get(f) for f in ("gp", "w", "l", "record", "last10", "streak", "ppg", "oppg", "margin", "ortg", "drtg")}})
+    ranks = S.league_ranks(ts_this, CONFIG["team_rows"], CONFIG["rank_low"], CONFIG["rank_skip"])
     for k in TEAMS:
         roster[k].sort(key=lambda pl: -((pl["this"] or {}).get("min") or (pl["last"] or {}).get("min") or 0))
         this, last = ts_this.get(k), ts_last.get(k)
         S.write(os.path.join(OUT, f"team_{k}.json"), {
             "generated_at": stamp, "code": k, "name": names.get(k, k), "color": colors.get(k), "rank": rank[k],
             "rating": S.r1(rating[k]), "season": label(y), "last_season": label(y - 1), "season_year": y,
-            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None,
+            "this": {f: v for f, v in (this or {}).items() if f != "games"} or None, "ranks": ranks.get(k) or None,
             "last": {f: v for f, v in (last or {}).items() if f != "games"} or None,
             "games": (this or {}).get("games", []) + (last or {}).get("games", []),
             "players": roster[k]})

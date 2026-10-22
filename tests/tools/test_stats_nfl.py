@@ -1,5 +1,5 @@
 """tools/stats_nfl.py on small files shaped like nflverse's schedule and weekly stats: records with ties, ratings with
-a 4-game prior, offense-only rosters, season numbering by the year the season ends, logs newest first.
+a 4-game prior, rosters in position order (offense, then defense), season numbering by the year the season ends, logs newest first.
 
     python3 -m unittest discover -s tests/tools
 """
@@ -79,7 +79,7 @@ class StatsNFL(unittest.TestCase):
         self.assertEqual((self.kc["this"]["ypg"], self.kc["this"]["give"], self.kc["this"]["sacks"]), (350.0, 2.0, 3.0))
 
     def test_players(self):
-        self.assertEqual([p["pos"] for p in self.kc["players"]], ["QB"])         # offense only
+        self.assertEqual([p["pos"] for p in self.kc["players"]], ["QB", "LB"])   # offense, then defense
         qb = self.kc["players"][0]
         self.assertEqual((qb["this"]["gp"], qb["last"]["gp"], qb["this"]["pass_yds"], qb["this"]["td_tot"]), (1, 2, 250.0, 1))
         self.assertEqual(qb["log"][0][:6], ["2026-09-13", "BUF", "H", 20, 30, 250])
