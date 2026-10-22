@@ -1,0 +1,206 @@
+{
+ "study": "MLB_BULLPEN_STUDY_V1",
+ "run_at": "2026-10-22T21:32:12Z",
+ "relief_rows": 0,
+ "games": 33561,
+ "games_with_bullpen": 33561,
+ "results": {
+  "seasons": {
+   "2015": {
+    "model_c": {
+     "games": 2226,
+     "log_loss": 0.68611,
+     "brier": 0.24648,
+     "accuracy": 0.5566
+    },
+    "c_plus_bullpen": {
+     "games": 2226,
+     "log_loss": 0.68611,
+     "brier": 0.24648,
+     "accuracy": 0.5566
+    }
+   },
+   "2016": {
+    "model_c": {
+     "games": 2239,
+     "log_loss": 0.68677,
+     "brier": 0.24683,
+     "accuracy": 0.5529
+    },
+    "c_plus_bullpen": {
+     "games": 2239,
+     "log_loss": 0.68677,
+     "brier": 0.24683,
+     "accuracy": 0.5529
+    }
+   },
+   "2017": {
+    "model_c": {
+     "games": 2234,
+     "log_loss": 0.68148,
+     "brier": 0.24424,
+     "accuracy": 0.5577
+    },
+    "c_plus_bullpen": {
+     "games": 2234,
+     "log_loss": 0.68148,
+     "brier": 0.24424,
+     "accuracy": 0.5577
+    }
+   },
+   "2018": {
+    "model_c": {
+     "games": 2187,
+     "log_loss": 0.67807,
+     "brier": 0.24255,
+     "accuracy": 0.5793
+    },
+    "c_plus_bullpen": {
+     "games": 2187,
+     "log_loss": 0.67807,
+     "brier": 0.24255,
+     "accuracy": 0.5793
+    }
+   },
+   "2019": {
+    "model_c": {
+     "games": 2172,
+     "log_loss": 0.6799,
+     "brier": 0.24345,
+     "accuracy": 0.5806
+    },
+    "c_plus_bullpen": {
+     "games": 2172,
+     "log_loss": 0.6799,
+     "brier": 0.24345,
+     "accuracy": 0.5806
+    }
+   },
+   "2020": {
+    "model_c": {
+     "games": 751,
+     "log_loss": 0.67711,
+     "brier": 0.24209,
+     "accuracy": 0.5766
+    },
+    "c_plus_bullpen": {
+     "games": 751,
+     "log_loss": 0.67711,
+     "brier": 0.24209,
+     "accuracy": 0.5766
+    }
+   },
+   "2021": {
+    "model_c": {
+     "games": 2161,
+     "log_loss": 0.67995,
+     "brier": 0.24348,
+     "accuracy": 0.5659
+    },
+    "c_plus_bullpen": {
+     "games": 2161,
+     "log_loss": 0.67995,
+     "brier": 0.24348,
+     "accuracy": 0.5659
+    }
+   },
+   "2022": {
+    "model_c": {
+     "games": 2195,
+     "log_loss": 0.67879,
+     "brier": 0.24285,
+     "accuracy": 0.5763
+    },
+    "c_plus_bullpen": {
+     "games": 2195,
+     "log_loss": 0.67879,
+     "brier": 0.24285,
+     "accuracy": 0.5763
+    }
+   },
+   "2023": {
+    "model_c": {
+     "games": 2167,
+     "log_loss": 0.68945,
+     "brier": 0.24816,
+     "accuracy": 0.5293
+    },
+    "c_plus_bullpen": {
+     "games": 2167,
+     "log_loss": 0.68945,
+     "brier": 0.24816,
+     "accuracy": 0.5293
+    }
+   },
+   "2024": {
+    "model_c": {
+     "games": 2185,
+     "log_loss": 0.68615,
+     "brier": 0.24651,
+     "accuracy": 0.557
+    },
+    "c_plus_bullpen": {
+     "games": 2185,
+     "log_loss": 0.68615,
+     "brier": 0.24651,
+     "accuracy": 0.557
+    }
+   },
+   "2025": {
+    "model_c": {
+     "games": 2180,
+     "log_loss": 0.68306,
+     "brier": 0.24503,
+     "accuracy": 0.5482
+    },
+    "c_plus_bullpen": {
+     "games": 2180,
+     "log_loss": 0.68306,
+     "brier": 0.24503,
+     "accuracy": 0.5482
+    }
+   }
+  },
+  "pooled": {
+   "model_c": {
+    "games": 22697,
+    "log_loss": 0.68279,
+    "brier": 0.24487,
+    "accuracy": 0.5609
+   },
+   "c_plus_bullpen": {
+    "games": 22697,
+    "log_loss": 0.68279,
+    "brier": 0.24487,
+    "accuracy": 0.5609
+   }
+  },
+  "log_loss_change": -0.0,
+  "log_loss_change_ci95": [
+   -0.0,
+   0.0
+  ],
+  "seasons_better": 0,
+  "seasons_tested": 11,
+  "helps": false,
+  "coef_all_years_scaled": {
+   "home_trail15_rs": 0.0606,
+   "home_trail15_ra": -0.0827,
+   "away_trail15_rs": -0.0739,
+   "away_trail15_ra": 0.0966,
+   "home_sp_trail5_era": -0.0196,
+   "home_sp_trail5_kbb": 0.1069,
+   "away_sp_trail5_era": 0.0138,
+   "away_sp_trail5_kbb": -0.0987,
+   "home_rest_days": -0.0103,
+   "away_rest_days": 0.0099,
+   "home_bp_era15": 0.0,
+   "home_bp_outs3": 0.0
+  }
+ },
+ "download_log": [
+  "https://www.retrosheet.org/downloads/: HTTPError: HTTP Error 403: Forbidden",
+  "links found: 662",
+  "https://retrosheet.org/downloads/pitching.zip: 1274253 rows"
+ ]
+}
