@@ -68,7 +68,7 @@ test("NBA game page with the shot chart", async (t) => {
       await card.locator(".game-head").click();
       await page.locator(".ct").waitFor({timeout: 10000});
       assert.equal(await page.locator(".fx").count(), 0, "opening the page replays nothing");
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Quarters"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Quarters"]);
       assert.equal(await page.locator(".ct-shot").count(), 5, "five shots with a spot (no free throw, no foul)");
       assert.equal(await page.locator(".ct-shot.made").count(), 4);
       // the newest shot (White's three from the far half, folded to x 4, y 20) gets the ring
@@ -83,7 +83,7 @@ test("NBA game page with the shot chart", async (t) => {
       await page.locator('.sb-tabs button[data-k="box"]').click();
       assert.match(await page.locator(".gp-box").first().innerText(), /LAL\s+MIN\s+PTS\s+REB\s+AST\s+3PT[\s\S]*Luka Doncic\s+29\s+26\s+6\s+7\s+3-8/);
       assert.doesNotMatch(await page.locator(".sb-pane").innerText(), /Bronny/);
-      await page.locator('.sb-tabs button[data-k="quarters"]').click();
+      await page.locator('.sb-tabs button[data-k="periods"]').click();
       assert.match(await page.locator(".gp-box").innerText(), /Q1\s+Q2\s+Q3\s+Q4\s+T\s+LAL\s+29\s+26\s+25\s+–\s+80\s+BOS\s+24\s+31\s+35\s+–\s+90/);
       await pg.screenshot({path: OUT + "nba-game-quarters.png", fullPage: true});
       await page.locator('.sb-tabs button[data-k="plays"]').click();
@@ -95,7 +95,7 @@ test("NBA game page with the shot chart", async (t) => {
       assert.equal(await page.locator(".ct-run").count(), 0);
       assert.equal(await page.locator(".ct-shot").count(), 6);
       assert.equal(await page.locator(".ct-new").getAttribute("cx"), (24 * 7.2).toFixed(1));
-      const fx = page.locator(".fx.fx-hoop");
+      const fx = page.locator(".fx.fx-m-hoop");
       assert.equal(await fx.count(), 1, "the dunk pops up");
       assert.equal(await fx.locator(".fx-num").innerText(), "2");
       assert.equal(await fx.locator(".fx-sub").innerText(), "DUNK");

@@ -40,7 +40,9 @@ const PROPS = {sport: "NFL", generated_at: iso(now), docs: [{collection: "props_
   game_key: "x_SF_SEA", away_team: "SF", home_team: "SEA", kickoff_time: iso(kick), sport: "NFL", locked: false, paper_picks: [], scored_utc: iso(now),
   rows: [row("Brock Purdy", "passing_yards", 224.5, 0.7, 0.72), row("Brock Purdy", "passing_yards", 244.5, 0.49, 0.51),
          row("Brock Purdy", "passing_yards", 264.5, 0.3, 0.32), row("Christian McCaffrey", "rushing_yards", 74.5, 0.55, 0.57),
-         row("George Kittle", "receiving_yards", 54.5, 0.5, 0.52), row("George Kittle", "receptions", 4.5, 0.45, 0.47)]}}]};
+         row("George Kittle", "receiving_yards", 54.5, 0.5, 0.52), row("George Kittle", "receptions", 4.5, 0.45, 0.47),
+         row("Sam Darnold", "passing_yards", 209.5, 0.5, 0.52)]}}]};
+let sfOverride = null;                   // what the "bot" rewrote team_SF.json to (the refresh test)
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
 const server = http.createServer((req, res) => {
   const u = new URL(req.url, "http://x");
@@ -63,6 +65,7 @@ test("team page from a logo: ranks, offense and defense, lines with recent hits"
       if (p.endsWith("/nfl/lineboard_export.json")) return r.fulfill({json: NFL});
       if (p.endsWith("/nfl/props_model_export.json")) return r.fulfill({json: PROPS});
       const m = /\/stats\/(nfl\/[\w.]+\.json)$/.exec(p);
+      if (m && m[1] === "nfl/team_SF.json" && sfOverride) return r.fulfill({json: sfOverride});
       if (m && existsSync(STATS + m[1])) return r.fulfill({json: JSON.parse(readFileSync(STATS + m[1], "utf8"))});
       return r.fulfill({status: 404, body: ""});
     });
@@ -127,6 +130,41 @@ test("team page from a logo: ranks, offense and defense, lines with recent hits"
       await rs.locator(".rs-head h3", {hasText: "Brock Purdy"}).waitFor();
       assert.equal(await pg.locator("#rsStat").inputValue(), "passing_yards");
       assert.equal(await pg.locator("#rsLine").inputValue(), "244.5");
+    });
+    await t.test("the game page's Matchup tab and the prop rows' recent-form chips", async () => {
+      await pg.locator('nav.tabs button[data-tab="home"]').click();
+      await pg.locator('#sportPills [data-sport="NFL"]').click();
+      await pg.locator('#homeSlate .card.game', {hasText: "SEA"}).first().locator(".game-head").click();
+      const page = pg.locator("#panel-game");
+      await page.locator('.sb-tabs button[data-k="matchup"]').click();
+      await page.locator(".mu-tbl").waitFor({timeout: 10000});
+      const ppg = page.locator(".mu-r", {hasText: /^.*Points per game/});
+      assert.match(await ppg.first().innerText(), /31\.0\s*1st\s+Points per game\s+20\.7\s*2nd/);
+      assert.equal(await ppg.first().locator(".mu-v.better").count(), 1, "SF's is the better one");
+      assert.deepEqual(await page.locator(".mu-teams .pill-tab").allInnerTexts(), ["SF\nSan Francisco 49ers", "SEA\nSeattle Seahawks"], "one switch per team");
+      assert.match(await page.locator(".mu-list:not([hidden])").innerText(), /Brock Purdy[\s\S]*Passing yards 244\.5 · over in 2 of last 3/);
+      assert.doesNotMatch(await page.locator(".mu-list:not([hidden])").innerText(), /Darnold/, "one team at a time");
+      await page.locator('[data-mu-team="SEA"]').click();
+      assert.match(await page.locator(".mu-list:not([hidden])").innerText(), /^Sam Darnold[\s\S]*Passing yards 209\.5 · over in 3 of last 3/);
+      await pg.screenshot({path: OUT + "matchup-switch.png", fullPage: true});
+      await page.locator('.sb-tabs button[data-k="game"]').click();
+      await page.locator('.sb-tabs button[data-k="matchup"]').click();
+      await page.locator(".mu-list:not([hidden])").waitFor({timeout: 10000});
+      assert.match(await page.locator(".mu-list:not([hidden])").innerText(), /^Sam Darnold/, "remembers the team");
+      await page.locator(".sb-tabs button", {hasText: "Passing"}).click();
+      await page.locator(".rs-form").first().waitFor({timeout: 10000});
+      assert.match(await page.locator(".pp-row", {hasText: "Brock Purdy"}).first().locator(".rs-form").innerText(), /^L3 2\/3$/);
+      await page.locator(".back-more").click();
+    });
+    await t.test("a stats file read over 10 minutes ago is read again", async () => {
+      sfOverride = Object.assign(JSON.parse(readFileSync(STATS + "nfl/team_SF.json", "utf8")), {rank: 9});
+      const open = () => pg.evaluate(() => window.devigOpenResearch({page: "team", sport: "NFL", code: "SF"}));
+      await open();
+      await rs.locator(".rs-head h3", {hasText: "San Francisco 49ers"}).waitFor();
+      assert.match(await rs.locator(".rs-head .faint").innerText(), /^#1 /, "a minute later: the copy already read");
+      await pg.evaluate(() => { const real = Date.now; Date.now = () => real() + 11 * 60e3; });
+      await open();
+      await pg.waitForFunction(() => /^#9 /.test((document.querySelector("#rsCard .rs-head .faint") || {}).textContent || ""), null, {timeout: 10000});
     });
     assert.deepEqual(errors, []);
   } finally {

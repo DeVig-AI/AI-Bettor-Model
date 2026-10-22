@@ -273,6 +273,8 @@
   .gp-box .gp-tr span:not(:first-child){text-align:right;}
   .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .gp-st .gp-nm{font-weight:600;}
+  .cfb-card{padding:0;} .cfb-open{display:block; width:100%; text-align:left; background:none; border:none; color:var(--ink); font:inherit; padding:12px 14px; cursor:pointer;}
+  .cfb-more{margin-top:8px; text-align:right; font-size:12.5px; font-weight:600; color:var(--accent-strong);}
   /* Research team page: league ranks, position groups, betting notes under a player */
   .rs-rank{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:700;
     background:var(--surface-2); color:var(--ink-soft); font-family:var(--font-sans);}
@@ -284,6 +286,25 @@
     font:inherit; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer; text-align:left;}
   .rs-note.good{border-color:var(--good); color:var(--good);} .rs-note.bad{border-color:var(--bad); color:var(--bad);}
   .tm-link{display:inline-flex; cursor:pointer; border-radius:50%;}
+  .rs-form{display:inline-block; width:max-content; align-self:flex-start; margin:2px 0 0 4px; padding:0 6px; border-radius:999px; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-soft);}
+  .rs-form.good{background:var(--good-wash); color:var(--good);} .rs-form.bad{background:var(--bad-wash); color:var(--bad);}
+  .mu-head{display:flex; justify-content:space-between; align-items:center; gap:8px; margin:4px 0 8px; font-size:12px;}
+  .mu-team{font-weight:700; font-size:14px;}
+  .mu-tbl{border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .mu-r{display:grid; grid-template-columns:1fr minmax(0,1.3fr) 1fr; gap:6px; align-items:center; padding:8px 10px; border-top:1px solid var(--line); font-size:13px;}
+  .mu-r:first-child{border-top:none;}
+  .mu-l{text-align:center; color:var(--ink-soft); font-size:12px;}
+  .mu-v{font-family:var(--font-mono); white-space:nowrap;} .mu-r .mu-v:last-child{text-align:right;}
+  .mu-v.better{font-weight:700; color:var(--ink);} .mu-v:not(.better){color:var(--ink-soft);}
+  .mu-v i{font-style:normal; margin-left:4px;}
+  .md-tabs.mu-teams{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:6px;}
+  .mu-teams .pill-tab{display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; min-width:0; padding:5px 8px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mu-teams .tm-badge{width:22px; height:22px; font-size:8px;}
+  .mu-list[hidden]{display:none;}
+  .mu-p{padding:8px 0; border-top:1px solid var(--line);}
+  .mu-avg{margin-top:4px; font-family:var(--font-mono); font-size:12.5px; color:var(--ink-soft);}
+  .mu-p .rs-link.mu-pn{font-weight:700; font-size:15px; padding:0; border:none; background:none; color:var(--ink); min-height:0;} .mu-p > div{margin-top:6px;}
   .ct{margin-top:12px;}
   /* Big moments over the game page's summary (touchdown, field goal, a three...) */
   .gp-head{position:relative;}
@@ -302,14 +323,24 @@
     text-shadow:0 2px 24px rgba(0,0,0,.6);}
   .fx-ring{position:absolute; left:50%; top:50%; width:110px; height:110px; margin:-55px 0 0 -55px; border-radius:50%;
     border:3px solid var(--fx); animation:fxRing .9s ease-out both;}
-  .fx-hoop .fx-sub{font-family:var(--font-sans); font-size:16px; font-weight:800; letter-spacing:.12em; color:var(--fx);}
+  .fx-m-k .fx-sub{font-family:var(--font-sans); font-size:16px; font-weight:800; letter-spacing:.12em; color:var(--fx);}
+  .fx-net{width:200px;} .fx-park{width:220px;}
+  .fx-puck{animation:fxPuck .7s .15s cubic-bezier(.3,.1,.3,1) both;}
+  .fx-hrball{animation:fxHr 1.2s .1s cubic-bezier(.2,.5,.4,1) both;}
+  @keyframes fxPuck{from{transform:translate(0,0);} to{transform:translate(108px,-16px);}}
+  @keyframes fxHr{0%{transform:translate(0,0);} 50%{transform:translate(95px,-70px);} 100%{transform:translate(178px,-40px); opacity:.3;}}
+  .bb-row{display:flex; align-items:center; gap:18px;}
+  .bb-diamond{width:96px; height:auto; flex:none;}
+  .bb-count{display:grid; grid-template-columns:auto auto; gap:6px 10px; align-items:center; font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--ink-soft);}
+  .bb-dots{display:inline-flex; gap:5px;} .bb-dots i{width:11px; height:11px; border-radius:50%; border:1.5px solid; display:inline-block;}
+  .fx-m-hoop .fx-sub{font-family:var(--font-sans); font-size:16px; font-weight:800; letter-spacing:.12em; color:var(--fx);}
   @keyframes fxStage{0%{opacity:0; transform:scale(.6);} 14%{opacity:1; transform:scale(1.08);} 24%{transform:scale(1);} 82%{opacity:1;} 100%{opacity:0;}}
   @keyframes fxShade{0%{opacity:0;} 6%{opacity:1;} 92%{opacity:1;} 100%{opacity:0;}}
   @keyframes fxRun{from{transform:translateX(0);} to{transform:translateX(162px);}}
   @keyframes fxKick{from{transform:translateY(0) scale(1.4);} to{transform:translateY(-78px) scale(.55);}}
   @keyframes fxRing{from{transform:scale(.4); opacity:1;} to{transform:scale(1.6); opacity:0;}}
   @media (prefers-reduced-motion: reduce){
-    .fx-stage{animation-name:fxFade;} .fx-ball, .fx-kick, .fx-ring{animation:none;} .fx-ring{display:none;}
+    .fx-stage{animation-name:fxFade;} .fx-ball, .fx-kick, .fx-ring, .fx-puck, .fx-hrball{animation:none;} .fx-ring{display:none;}
   }
   @keyframes fxFade{0%{opacity:0;} 10%{opacity:1;} 85%{opacity:1;} 100%{opacity:0;}}
   .ct-court{display:block; width:100%; height:auto;}
@@ -734,7 +765,7 @@
   .card.game.slim .sb-grid.one .sb-team.has-badge{grid-template-columns:24px minmax(0,1fr); column-gap:7px;}
   .card.game.slim .sb-grid.one .tm-badge{width:24px; height:24px; font-size:8px;}
   .card.game.slim .sb-grid.one .sb-team b{font-size:14px;}
-  .card.game.slim .sb-grid.one .sb-team small{display:none;}
+  .card.game.slim .sb-grid.one .sb-team small:empty{display:none;}
   .card.game.slim{margin-bottom:8px;}
   /* More: Models, Testing, About and Profile */
   .more-tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 12px;}
@@ -1747,11 +1778,18 @@
     var r = g.rank && g.rank[side];
     return (r ? '<span class="cfb-rk">' + r + '</span>' : '') + escapeHtml((g.names && g.names[side]) || g[side]);
   }
+  // A college game in the shape the shared game page takes (like a Kalshi-only game of another sport).
+  function cfbAsGame(x){
+    var ml = x.ml || {}, sp = x.spread || {}, tot = x.total || {};
+    return Object.assign({}, x, {sport: "CFB", marketOnly: true,
+      market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
+               spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
+      model: {available: false, note: "No model pick: DeVig has no college football model yet. Prices are Kalshi's, fee included."}});
+  }
   function cfbCard(g){
     var lg = cfbState(g), started = lg.state === "in" || lg.state === "post";
     var wp = g.home_wp, sp = g.spread, tot = g.total, ml = g.ml || {};
-    var card = el("details", "card cfb-card");
-    if(cfbOpen[g.espn_id]) card.open = true;
+    var card = el("div", "card cfb-card");
     var when = lg.state === "in" ? '<span class="cfb-live">Live</span> ' + escapeHtml(lg.detail)
       : lg.state === "post" ? escapeHtml(lg.detail || "Final") : escapeHtml(shortTime(g)) + (g.neutral ? ' · neutral site' : '');
     function row(side){
@@ -1761,21 +1799,17 @@
         '<span class="cfb-p">' + (p == null ? '—' : Math.round(p * 100) + '%') + '</span></div>';
     }
     var fav = sp ? (sp.home_point < 0 ? g.home + ' ' + sp.home_point + ' (' + fmtOdds(sp.home) + ')' : sp.home_point > 0 ? g.away + ' ' + (-sp.home_point) + ' (' + fmtOdds(sp.away) + ')' : 'PK') : '—';
-    card.innerHTML = '<summary><div class="cfb-when">' + when + '<span class="cfb-src">Win chance · Kalshi</span></div>' + row("away") + row("home") +
+    var head = el("button", "cfb-open", '<div class="cfb-when">' + when + '<span class="cfb-src">Win chance · Kalshi</span></div>' + row("away") + row("home") +
       '<div class="cfb-lines"><span>Spread <b>' + escapeHtml(fav) + '</b></span><span>Total <b>' + (tot ? escapeHtml(String(tot.line)) : '—') + '</b></span>' +
-      '<span>Money <b>' + escapeHtml(g.away) + ' ' + fmtOdds(ml.away) + '</b> · <b>' + escapeHtml(g.home) + ' ' + fmtOdds(ml.home) + '</b></span></div></summary>';
-    var body = el("div", "cfb-body");
-    var fl = fastLines[gameKey(g)], pts = fl && fl.points && fl.points.length > 1 ? fl.points : lg.kalshi_line && lg.kalshi_line.points;
-    var chart = pts && pts.length > 1 ? liveChartEl(Object.assign({}, g, {market: {}}), {state: lg.state, kalshi_line: {team: g.home, points: pts}}) : "";
-    body.innerHTML = chart || '<div class="faint" style="margin:8px 0">' + (g.home_ticker ? 'Loading the win-chance graph…' : 'No Kalshi win market for this game.') + '</div>';
-    var wheel = spreadWheelEl(g);
-    if(wheel) body.appendChild(wheel);
-    body.appendChild(el("div", "faint cfb-note", "Prices are Kalshi's, fee included. Display only: DeVig has no college football model yet, so nothing here is a pick."));
-    card.appendChild(body);
-    card.addEventListener("toggle", function(){
-      cfbOpen[g.espn_id] = card.open;
-      if(card.open){ initWheels(); if(!fastLines[gameKey(g)]) loadCfbLine(g); }
+      '<span>Money <b>' + escapeHtml(g.away) + ' ' + fmtOdds(ml.away) + '</b> · <b>' + escapeHtml(g.home) + ' ' + fmtOdds(ml.home) + '</b></span></div>' +
+      '<div class="cfb-more">' + (lg.state === "in" ? "Live game ›" : "Graph, spreads & plays ›") + '</div>');
+    head.type = "button";
+    head.addEventListener("click", function(){
+      cfbOpen[g.espn_id] = true;                       // its win-chance graph loads with the next poll
+      if(!fastLines[gameKey(g)]) loadCfbLine(g);
+      openGamePage(cfbAsGame(g));
     });
+    card.appendChild(head);
     return card;
   }
   function loadCfbLine(g){
@@ -1786,6 +1820,7 @@
       .then(function(d){
         fastLines[gameKey(g)] = {at: Date.now(), points: (d && d.points) || [], last: d && d.last};
         if(currentSport === "CFB" && !panels.home.hidden) renderHome();
+        renderGamePage();
       });
   }
   function renderCfbBoard(wrap, statusEl, syncedEl){
@@ -1886,13 +1921,18 @@
   // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
   // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA", "NHL", "NFL"];
+  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
+  var RS_FRESH = 6e5;          // a file read more than 10 minutes ago is read again (the bot rebuilds them during the day)
   function rsGet(path){
-    if(!rsCache[path]) rsCache[path] = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / 6e5), {cache: "no-store"})
-      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .catch(function(e){ delete rsCache[path]; throw e; });
-    return rsCache[path];
+    var hit = rsCache[path];
+    if(!hit || Date.now() - hit.at > RS_FRESH){
+      hit = rsCache[path] = {at: Date.now()};
+      hit.p = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / RS_FRESH), {cache: "no-store"})
+        .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .catch(function(e){ if(rsCache[path] === hit) delete rsCache[path]; throw e; });
+    }
+    return hit.p;
   }
   function rsIndex(sp){
     return rsGet(sp.toLowerCase() + "/index.json").then(function(idx){
@@ -1988,7 +2028,10 @@
   function rsNextProps(sp, code){
     var d = propsDocs.filter(function(x){ return docSport(x) === sp && (x.away_team === code || x.home_team === code) && !propStarted(x) && x.rows && x.rows.length; })
       .sort(function(a, b){ return String(a.kickoff_time || "9").localeCompare(String(b.kickoff_time || "9")); })[0];
-    if(!d) return null;
+    return d ? rsPropLines(d, code) : null;
+  }
+  // a props doc -> each player's main line per stat, as seen by team `code` (whose opponent and venue it names)
+  function rsPropLines(d, code){
     var lines = {};
     propRows(d).forEach(function(r){
       if(r.line == null || !r.player) return;
@@ -1998,6 +2041,18 @@
     });
     return {doc: d, lines: lines, opp: d.away_team === code ? d.home_team : d.away_team, home: d.home_team === code};
   }
+  // [times over, games counted] for a player's stat (an index hit_stats entry) in his last n games
+  function rsOver(idx, p, s, line, n){
+    var L = rsLogIdx(idx), o = 0, c = 0;
+    (p.log || []).slice(0, n).forEach(function(g){
+      var v = 0;
+      for(var i = 0; i < s[2].length; i++){ var y = g[L[s[2][i]]]; if(y == null){ v = null; break; } v += y; }
+      if(v == null) return;
+      c++; if(v > line) o++;
+    });
+    return [o, c];
+  }
+  function rsFormCls(o, n){ return n && o / n >= 0.8 ? "good" : n && o / n <= 0.2 ? "bad" : "neutral"; }
   var RS_NOTE_ORDER = ["passing_yards", "rushing_yards", "receiving_yards", "receptions", "points", "rebounds", "assists", "threes",
     "goals", "shots_on_goal", "passing_tds", "touchdowns", "rush_rec_yards"];
   // "Receiving yards 59.5 · over in 4 of last 5 · avg 63.2" for a player's lines (at most two), tappable to his page.
@@ -2010,15 +2065,9 @@
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
     }).slice(0, 2);
     return have.map(function(s){
-      var line = mine[s[0]].line, o = 0, n = 0;
-      log.slice(0, 5).forEach(function(g){
-        var v = 0;
-        for(var i = 0; i < s[2].length; i++){ var y = g[L[s[2][i]]]; if(y == null){ v = null; break; } v += y; }
-        if(v == null) return;
-        n++; if(v > line) o++;
-      });
+      var line = mine[s[0]].line, on = rsOver(idx, p, s, line, 5), o = on[0], n = on[1];
       var avg = s[2].reduce(function(m, c){ return m + (src[c] || 0); }, 0);
-      var cls = n && o / n >= 0.8 ? "good" : n && o / n <= 0.2 ? "bad" : "neutral";
+      var cls = rsFormCls(o, n);
       return rsLink({page: "player", sport: sp, team: t.code, id: p.id, stat: s[0], line: line},
         s[1] + " " + line + (n ? " · over in " + o + " of last " + n : "") + " · avg " + avg.toFixed(1), "rs-note " + cls);
     }).join("");
@@ -2086,6 +2135,17 @@
         btn.addEventListener("click", function(){ rsUnit[r.sport] = btn.dataset.rsUnit; var y = window.scrollY; renderResearch(); window.scrollTo(0, y); });
       });
     }).catch(fail);
+  }
+  // "Last 5: 4/5" on a prop row: how often he went over this line lately (filled in once his team's file loads)
+  function rsFormChip(row, sp, teams, name, stat, line){
+    Promise.all([rsIndex(sp), rsFindPlayer({sport: sp, teams: teams, name: name})]).then(function(x){
+      var idx = x[0], f = x[1], s = f && (idx.hit_stats || []).filter(function(h){ return h[0] === stat; })[0];
+      if(!s || line == null) return;
+      var on = rsOver(idx, f.player, s, line, 5);
+      if(!on[1]) return;
+      var sub = row.querySelector(".pp-sub");
+      if(sub && !row.querySelector(".rs-form")) sub.insertAdjacentHTML("beforeend", ' <span class="rs-form ' + rsFormCls(on[0], on[1]) + '" title="Over this line in his last ' + on[1] + ' games">L' + on[1] + ' ' + on[0] + '/' + on[1] + '</span>');
+    }).catch(function(){});
   }
   function rsFindPlayer(r){
     var teams = r.team ? [r.team] : (r.teams || []);
@@ -2884,6 +2944,8 @@
   }
 
   function computeDecisionBase(g){
+    if(g.marketOnly)                 // a Kalshi-only game: its note says why there's no pick (no model for the sport, ...)
+      return {action: "NO PICK", cls: "neutral", detail: (g.model && g.model.note) || "No model pick for this game."};
     if(!g.model || !g.model.available || g.model.winner_prob == null){
       return {action: "NO READ", cls: "neutral", detail: "Model hasn't synced a read for this game yet."};
     }
@@ -3099,9 +3161,12 @@
       : !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
       : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
       : '<span><span class="pill neutral">FINAL</span></span>';
+    // before kickoff, the game page shows Kalshi's graph when it has one loaded (college games load it on opening)
+    var fl = !started && !opts.more ? fastLines[k] : null;
+    var preChart = fl && fl.points && fl.points.length > 1 ? liveChartEl(Object.assign({}, g, {market: {}}), {state: "pre", kalshi_line: {team: g.home_team, points: fl.points}}) : '';
     var more = !opts.more ? '' : '<span class="game-more">' + (started && lg.state === "in" ? "Live game ›" : (pdoc ? "Lines & props ›" : "Details ›")) + '</span>';
     var html = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
-      sbGrid(g, d, started ? lg : null) + (started ? fieldTrackerEl(g, lg, !opts.more) + (opts.more ? '' : courtTrackerEl(g, lg)) + liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
+      sbGrid(g, d, started ? lg : null) + preChart + (started ? fieldTrackerEl(g, lg, !opts.more) + baseballTrackerEl(g, lg) + (opts.more ? '' : courtTrackerEl(g, lg) + hockeyTrackerEl(g, lg)) + liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
       '<div class="game-sum">' + chips.join("") + more + '</div>';
     return {html: html, live: !!lg && lg.state === "in", started: started, pdoc: pdoc};
   }
@@ -3123,13 +3188,13 @@
       var read2 = gamePane.querySelector(".model-read");
       if(read2) read2.parentNode.insertBefore(rcEl, read2.nextSibling); else gamePane.appendChild(rcEl);
     }
-    var swEl = !over && !isSimple() ? spreadWheelEl(g) : null;
+    var swEl = !over && (!isSimple() || g.sport === "CFB") ? spreadWheelEl(g) : null;    // college: every spread is the content
     if(swEl) gamePane.appendChild(swEl);
     if(rsHasSport(g.sport || "NFL") && !g.trial)
       gamePane.appendChild(el("div", "rs-links", "Research" + [g.away_team, g.home_team].map(function(c){
         return rsLink({page: "team", sport: g.sport || "NFL", code: c}, c);
       }).join("")));
-    if(pdoc || extra.front.length || extra.back.length) buildMatchupTabs(det, g, pdoc, gamePane, extra);
+    if(pdoc || extra.front.length || (extra.mid || []).length || extra.back.length) buildMatchupTabs(det, g, pdoc, gamePane, extra);
     else det.appendChild(gamePane);
     return det;
   }
@@ -3140,7 +3205,9 @@
   var gamePage = null;            // {key, g, back: the panel it was opened from, y: that panel's scroll, sig}
   var gameDetail = {};            // ESPN id -> {at, data}: /api/live?event=..&game=1 (plays, drive, scoring, team stats)
   var playsAll = false;
-  var GAME_PAGE_SPORTS = {NFL: 1, NBA: 1};      // sports whose games get Plays/Box from the fast feed
+  // Every sport's game page gets Plays/Box from the fast feed; its kind picks the tracker, tabs and big moments.
+  var GP_KIND = {NFL: "football", CFB: "football", NBA: "hoops", WNBA: "hoops", NHL: "hockey", MLB: "baseball"};
+  function gpKind(g){ return GP_KIND[(g && g.sport) || "NFL"]; }
   function openGamePage(g){
     var from = Object.keys(panels).filter(function(k){ return !panels[k].hidden; })[0] || "home";
     var back = from === "game" && gamePage ? gamePage.back : from, y = from === "game" && gamePage ? gamePage.y : window.scrollY;
@@ -3168,7 +3235,7 @@
   function loadGameDetail(){
     if(!gamePage || panels.game.hidden || fastOff) return Promise.resolve();
     var g = gamePage.g, lg = liveFor(g), sport = g.sport || "NFL";
-    if(!GAME_PAGE_SPORTS[sport] || !lg || !lg.espn_id || !liveStarted(lg)) return Promise.resolve();
+    if(!GP_KIND[sport] || !lg || !lg.espn_id || !liveStarted(lg)) return Promise.resolve();
     var id = lg.espn_id, have = gameDetail[id];
     if(have && (lg.state !== "in" || Date.now() - have.at < 15e3)) return Promise.resolve();
     return fastGet("sport=" + sport.toLowerCase() + "&event=" + id + "&game=1").then(function(d){
@@ -3182,10 +3249,10 @@
   }
   function renderGamePage(force){
     if(!gamePage || panels.game.hidden) return;
-    var fresh = boardDocs().filter(function(x){ return gameKey(x) === gamePage.key; })[0];
+    var fresh = (gamePage.g.sport === "CFB" ? cfbGames().map(cfbAsGame) : boardDocs()).filter(function(x){ return gameKey(x) === gamePage.key; })[0];
     if(fresh) gamePage.g = fresh;
     var g = gamePage.g, lg = liveFor(g), gd = gameDetailFor(lg);
-    var sig = JSON.stringify([lg, gd, isSimple()]);
+    var sig = JSON.stringify([lg, gd, isSimple(), (fastLines[gamePage.key] || {}).at]);
     if(!force && sig === gamePage.sig) return;
     gamePage.sig = sig;
     var y = window.scrollY, root = panels.game;
@@ -3196,7 +3263,8 @@
     root.appendChild(back);
     var card = el("div", "card game gp");
     card.setAttribute("data-key", gamePage.key);
-    card.appendChild(el("h2", "gp-title", escapeHtml((g.away_team || "Away") + " @ " + (g.home_team || "Home"))));
+    var nm = function(side){ return (g.names && g.names[side]) || g[side + "_team"] || (side === "away" ? "Away" : "Home"); };
+    card.appendChild(el("h2", "gp-title", escapeHtml(nm("away") + " @ " + nm("home"))));
     var sum = gameHead(g, {});
     if(sum.live) card.classList.add("is-live");
     card.appendChild(el("div", "game-head gp-head", sum.html));
@@ -3230,14 +3298,26 @@
   }
   // A play -> {kind, word, sub, team, rank} or null. NFL from ESPN's play type and text; NBA from points and the shot.
   function playMoment(g, p){
-    var sport = g.sport || "NFL", t = (p.type || "") + " " + (p.text || "");
+    var kind = gpKind(g), t = (p.type || "") + " " + (p.text || "");
     var other = p.team === g.away_team ? g.home_team : g.away_team;
     var score = p.away_score != null && p.home_score != null ? g.away_team + " " + p.away_score + " – " + p.home_score + " " + g.home_team : "";
-    if(sport === "NBA"){
+    if(kind === "hockey"){
+      if(!(p.scoring || /^goal\b/i.test(p.type || ""))) return null;
+      return {kind: "goal", word: "GOAL", sub: /empty net/i.test(t) ? "EMPTY NET" : /power.?play/i.test(t) ? "POWER PLAY" : /short.?handed/i.test(t) ? "SHORTHANDED" : "",
+        team: p.team, rank: 10, score: score};
+    }
+    if(kind === "baseball"){
+      if(/homer|home run/i.test(t)) return {kind: "hr", word: /grand slam/i.test(t) ? "GRAND SLAM" : "HOME RUN", team: p.team, rank: 10, score: score};
+      if(/struck out|strikes out/i.test(t)) return {kind: "k", word: "K", sub: "STRIKEOUT", team: other, rank: 4};
+      if(/double play/i.test(t)) return {kind: "word", word: "DOUBLE PLAY", team: other, rank: 5};
+      if(p.scoring) return {kind: "word", word: p.pts > 1 ? p.pts + " RUNS SCORE" : "RUN SCORES", team: p.team, rank: 6 + (p.pts || 1), score: score};
+      return null;
+    }
+    if(kind === "hoops"){
       if(!(p.pts >= 2)) return null;                                  // free throws stay quiet
       return {kind: "hoop", word: String(p.pts), sub: /dunk/i.test(t) ? "DUNK" : p.pts === 3 ? "THREE" : "BUCKET", team: p.team, rank: p.pts, score: score};
     }
-    if(sport !== "NFL") return null;
+    if(kind !== "football") return null;
     var turnover = /intercept|fumble/i.test(t);
     if(/touchdown/i.test(t) && p.scoring !== false){
       var scorer = turnover ? other : p.team;
@@ -3254,7 +3334,7 @@
     if(p.yards != null && p.yards >= 25) return {kind: "word", word: "BIG PLAY", sub: "+" + p.yards + " yds", team: p.team, rank: 2};
     return null;
   }
-  var MOMENT_MS = {td: 2000, kick: 2000, hoop: 1800, word: 1800};
+  var MOMENT_MS = {td: 2000, kick: 2000, hoop: 1800, word: 1800, goal: 2000, hr: 2200, k: 1800};
   function momentStage(kind, word, sub, toRight){
     var art = "";
     if(kind === "td") art = '<svg class="fx-art fx-field' + (toRight ? '' : ' fx-left') + '" viewBox="0 0 200 44" aria-hidden="true">' +
@@ -3264,29 +3344,41 @@
     if(kind === "kick") art = '<svg class="fx-art fx-posts" viewBox="0 0 120 96" aria-hidden="true">' +
       '<path d="M30 8 V58 H90 V8 M60 58 V92" fill="none" stroke="var(--fx)" stroke-width="5" stroke-linecap="round"/>' +
       '<ellipse class="fx-kick" cx="60" cy="86" rx="7" ry="4.5" fill="#8B4A1C" stroke="var(--ink)" stroke-width="1.2"/></svg>';
-    if(kind === "hoop") art = '<div class="fx-num">' + escapeHtml(word) + '<i class="fx-ring"></i></div>';
-    return art + (kind === "hoop" ? '' : '<div class="fx-word">' + escapeHtml(word) + '</div>') + (sub ? '<div class="fx-sub">' + escapeHtml(sub) + '</div>' : '');
+    if(kind === "hoop" || kind === "k") art = '<div class="fx-num">' + escapeHtml(word) + '<i class="fx-ring"></i></div>';
+    if(kind === "goal") art = '<svg class="fx-art fx-net" viewBox="0 0 160 80" aria-hidden="true">' +
+      '<path d="M100 14 h44 v52 h-44" fill="none" stroke="var(--fx)" stroke-width="4" stroke-linejoin="round"/>' +
+      '<g stroke="var(--line-strong)" stroke-width="1">' + [110, 120, 130].map(function(x){ return '<line x1="' + x + '" x2="' + x + '" y1="16" y2="64"/>'; }).join("") +
+      [28, 40, 52].map(function(y){ return '<line x1="102" x2="142" y1="' + y + '" y2="' + y + '"/>'; }).join("") + '</g>' +
+      '<ellipse class="fx-puck" cx="16" cy="56" rx="9" ry="4" fill="var(--ink)"/></svg>';
+    if(kind === "hr") art = '<svg class="fx-art fx-park" viewBox="0 0 200 90" aria-hidden="true">' +
+      '<path d="M8 84 H192" stroke="var(--line-strong)" stroke-width="2"/><path d="M150 84 V52 H192" fill="none" stroke="var(--fx)" stroke-width="4"/>' +
+      '<circle class="fx-hrball" cx="18" cy="78" r="5" fill="#fff" stroke="var(--ink-faint)"/></svg>';
+    var big = kind === "hoop" || kind === "k";
+    return art + (big ? '' : '<div class="fx-word">' + escapeHtml(word) + '</div>') + (sub ? '<div class="fx-sub">' + escapeHtml(sub) + '</div>' : '');
   }
   function showMoment(g, m, host){
     if(!host) return;
     var sport = g.sport || "NFL", c = (TEAM_COLORS[sport] || {})[m.team];
     var color = chartColor(m.team, "var(--accent)", sport);
-    var stages = [momentStage(m.kind, m.word, m.kind === "hoop" ? m.sub : (m.sub || m.score), m.team === g.away_team)];
+    var stages = [momentStage(m.kind, m.word, m.kind === "hoop" || m.kind === "k" ? m.sub : (m.sub ? m.sub + (m.score ? " · " + m.score : "") : m.score), m.team === g.away_team)];
     if(m.pat) stages.push(momentStage("kick", "EXTRA POINT", m.score));
-    var fx = el("div", "fx fx-" + m.kind, stages.map(function(h, i){
+    var fx = el("div", "fx fx-m-" + m.kind, stages.map(function(h, i){
       return '<div class="fx-stage" style="animation-delay:' + (i * MOMENT_MS.kick) + 'ms; animation-duration:' + MOMENT_MS[i ? "kick" : m.kind] + 'ms">' + h + '</div>';
     }).join(""));
     fx.setAttribute("role", "status");
-    fx.setAttribute("aria-label", [m.word, m.kind === "hoop" ? m.sub : "", m.pat ? "extra point" : "", m.score || ""].filter(Boolean).join(", "));
+    fx.setAttribute("aria-label", [m.kind === "k" ? "Strikeout" : m.word, m.kind === "hoop" || m.kind === "goal" ? m.sub : "", m.pat ? "extra point" : "", m.score || ""].filter(Boolean).join(", "));
     fx.style.setProperty("--fx", c ? color : "var(--accent)");
     fx.style.setProperty("--fx-total", ((stages.length - 1) * MOMENT_MS.kick + MOMENT_MS[stages.length > 1 ? "kick" : m.kind]) + "ms");
     host.appendChild(fx);
     setTimeout(function(){ if(fx.parentNode) fx.parentNode.removeChild(fx); }, stages.length * MOMENT_MS.kick + 200);
   }
-  // Games that have started get Plays (first) and Box, plus Scoring (NFL) or Quarters (NBA), from the fast feed.
+  // Games that have started get Plays (first) and Box, plus Scoring (football) or the score by quarter, period or inning.
+  var GP_PERIODS = {hoops: "Quarters", hockey: "Periods", baseball: "Innings"};
   function gamePageTabs(g, lg, gd){
-    var out = {front: [], back: []}, sport = g.sport || "NFL";
-    if(!GAME_PAGE_SPORTS[sport] || !liveStarted(lg) || !lg.espn_id) return out;
+    var out = {front: [], mid: [], back: []}, kind = gpKind(g);
+    if(rsHasSport(g.sport || "NFL") && !g.trial && g.away_team && g.home_team)
+      out.mid = [{key: "matchup", label: "Matchup", render: function(pane){ matchupEl(pane, g); }}];
+    if(!kind || !liveStarted(lg) || !lg.espn_id) return out;
     function wait(pane, what){
       pane.appendChild(el("div", "bb-empty", gd === undefined ? "Loading " + what + "…" : "No " + what + " for this game right now."));
     }
@@ -3294,10 +3386,10 @@
       if(gd && gd.plays && gd.plays.length) playsEl(pane, g, gd); else wait(pane, "plays");
     }});
     out.back.push({key: "box", label: "Box", render: function(pane){
-      if(gd && ((gd.team_stats || []).length || (gd.box || []).length)) (sport === "NBA" ? nbaBoxEl : boxEl)(pane, g, gd); else wait(pane, "box score");
+      if(gd && ((gd.team_stats || []).length || (gd.box || []).length)) (kind === "hoops" ? nbaBoxEl : boxEl)(pane, g, gd); else wait(pane, "box score");
     }});
-    if(sport === "NBA") out.back.push({key: "quarters", label: "Quarters", render: function(pane){
-      if(gd && gd.linescore) quartersEl(pane, g, lg, gd); else wait(pane, "quarter scores");
+    if(GP_PERIODS[kind]) out.back.push({key: "periods", label: GP_PERIODS[kind], render: function(pane){
+      if(gd && gd.linescore) periodsEl(pane, g, lg, gd); else wait(pane, GP_PERIODS[kind].toLowerCase());
     }});
     else out.back.push({key: "scoring", label: "Scoring", render: function(pane){
       if(gd && gd.scoring && gd.scoring.length) scoringEl(pane, g, gd);
@@ -3305,15 +3397,88 @@
     }});
     return out;
   }
-  function qName(q){ return q > 4 ? "Overtime" : ["1st", "2nd", "3rd", "4th"][q - 1] + " quarter"; }
+  // Matchup: each team-stat row for both teams with its league rank (the better one marked), the stats each team ranks
+  // best and worst in, then each team's players who have a line in this game, with how often they went over it lately.
+  var muTeam = {};                                   // game key -> the team whose players the Matchup tab shows
+  function matchupEl(pane, g){
+    var sp = g.sport || "NFL";
+    pane.appendChild(el("div", "bb-empty", "Loading both teams' stats…"));
+    Promise.all([rsIndex(sp), rsTeamFile(sp, g.away_team), rsTeamFile(sp, g.home_team)]).then(function(x){
+      var idx = x[0], A = x[1], H = x[2], n = (idx.teams || []).length || 32, low = idx.rank_low || [];
+      var ra = A.ranks || {}, rh = H.ranks || {};
+      var rows = (idx.team_rows || []).filter(function(c){ return c.length >= 3; });
+      function cell(t, r, c, better){
+        var v = t.this ? rsCell(t.this[c[1]], c) : "—", k = r[c[1]];
+        return '<span class="mu-v' + (better ? ' better' : '') + '">' + v + (k ? '<i class="rs-rank ' + (k <= 5 ? 'good' : k > n - 5 ? 'bad' : '') + '">' + rsOrd(k) + '</i>' : '') + '</span>';
+      }
+      var html = '<div class="mu-head">' + rsLink({page: "team", sport: sp, code: A.code}, A.code + " · #" + A.rank, "rs-link mu-team") +
+        '<span class="faint">Power ranking</span>' + rsLink({page: "team", sport: sp, code: H.code}, "#" + H.rank + " · " + H.code, "rs-link mu-team") + '</div>' +
+        '<div class="mu-tbl">' + '<div class="mu-r mu-rec">' + '<span class="mu-v">' + escapeHtml(((A.this || {}).record || "—").replace(/-/g, "–")) + '</span><span class="mu-l">Record</span>' +
+        '<span class="mu-v">' + escapeHtml(((H.this || {}).record || "—").replace(/-/g, "–")) + '</span></div>' +
+        rows.map(function(c){
+          var a = ra[c[1]], h = rh[c[1]];
+          return '<div class="mu-r">' + cell(A, ra, c, a && h && a < h) + '<span class="mu-l">' + escapeHtml(c[0]) + '</span>' + cell(H, rh, c, a && h && h < a) + '</div>';
+        }).join("") + '</div>';
+      // players with a line in this game (its own props, before or after it starts): one team at a time, a switch between them
+      var doc = propsDocFor(g);
+      // a team with no lines here (no props for the sport or the game): its key players and their season averages
+      var avgCols = (idx.roster_cols || []).filter(function(c){ return c[1] !== "gp"; });
+      function keyPlayers(t){
+        return (t.players || []).filter(function(p){ return p.this; }).slice(0, 6).map(function(p){
+          var bits = avgCols.map(function(c){ var v = p.this[c[1]]; return v == null ? null : c[0] + " " + rsCell(v, c); }).filter(Boolean);
+          return '<div class="mu-p">' + rsLink({page: "player", sport: sp, team: t.code, id: p.id}, p.name, "rs-link mu-pn") + ' <span class="faint">' + escapeHtml(p.pos || "") + '</span>' +
+            '<div class="mu-avg">' + escapeHtml(bits.join(" · ")) + '</div></div>';
+        }).join("");
+      }
+      var anyLines = false;
+      var lists = [A, H].map(function(t){
+        var next = doc && doc.rows && doc.rows.length ? rsPropLines(doc, t.code) : null;
+        var withLines = (t.players || []).map(function(p){ return {p: p, notes: rsNotes(idx, sp, t, p, next)}; })
+          .filter(function(x){ return x.notes; }).slice(0, 8);
+        if(withLines.length) anyLines = true;
+        return {t: t, html: withLines.length ? withLines.map(function(x){
+          return '<div class="mu-p"><b>' + escapeHtml(x.p.name) + '</b> <span class="faint">' + escapeHtml(x.p.pos || "") + '</span><div>' + x.notes + '</div></div>';
+        }).join("") : keyPlayers(t)};
+      }).filter(function(x){ return x.html; });
+      if(lists.length){
+        var gk = gameKey(g), on = lists.filter(function(x){ return x.t.code === muTeam[gk]; })[0] || lists[0];
+        html += '<div class="bb-sec">' + (anyLines ? 'Lines in this game' : 'Key players · per game this season') + '</div><div class="md-tabs mu-teams">' + lists.map(function(x){
+          return '<button type="button" class="pill-tab' + (x === on ? ' active' : '') + '" data-mu-team="' + escapeHtml(x.t.code) + '">' +
+            teamBadge(sp, x.t.code) + escapeHtml(x.t.name) + '</button>'; }).join("") + '</div>' +
+          lists.map(function(x){ return '<div class="mu-list" data-mu-list="' + escapeHtml(x.t.code) + '"' + (x === on ? '' : ' hidden') + '>' + x.html + '</div>'; }).join("");
+      }
+      html += '<p class="faint" style="margin:10px 0 0">Season numbers and ranks among all ' + n + ' teams (1st = best). Green rank: top 5; red: bottom 5; bold: the better of the two. ' +
+        (anyLines ? 'Lines: Kalshi\'s main line and how often the player went over it in his last 5 games. Counts, not chances.' : 'No player lines for this game; tap a player for his game log.') + '</p>';
+      pane.innerHTML = html;
+      pane.querySelectorAll("[data-mu-team]").forEach(function(b){
+        b.addEventListener("click", function(ev){
+          ev.stopPropagation();
+          muTeam[gameKey(g)] = b.dataset.muTeam;
+          pane.querySelectorAll("[data-mu-team]").forEach(function(x){ x.classList.toggle("active", x === b); });
+          pane.querySelectorAll("[data-mu-list]").forEach(function(l){ l.hidden = l.dataset.muList !== b.dataset.muTeam; });
+        });
+      });
+    }).catch(function(){ pane.innerHTML = '<div class="bb-empty">Team stats aren\'t available for this matchup right now.</div>'; });
+  }
+  function qName(q, kind, half){
+    if(kind === "baseball") return (half ? half + " " : "Inning ") + rsOrd(q);
+    if(kind === "hockey") return q > 3 ? (q > 4 ? "Shootout" : "Overtime") : rsOrd(q) + " period";
+    return q > 4 ? "Overtime" : rsOrd(q) + " quarter";
+  }
   function playsEl(pane, g, gd){
-    var list = gd.plays, SHOW = 30, lastQ = null;
+    var list = gd.plays, SHOW = 30, lastQ = null, kind = gpKind(g);
     (playsAll ? list : list.slice(0, SHOW)).forEach(function(p){
-      if(p.q && p.q !== lastQ){ pane.appendChild(el("div", "gp-q", escapeHtml(qName(p.q)))); lastQ = p.q; }
-      var nba = (g.sport || "NFL") === "NBA", scored = nba ? p.pts > 0 : p.scoring;
-      var big = nba ? p.pts === 3 : !p.scoring && p.yards != null && p.yards >= 20;
+      var sec = p.q ? p.q + "|" + (p.half || "") : null;
+      if(sec && sec !== lastQ){ pane.appendChild(el("div", "gp-q", escapeHtml(qName(p.q, kind, p.half)))); lastQ = sec; }
+      var nba = kind === "hoops", scored = nba ? p.pts > 0 : p.scoring;
+      var big = nba ? p.pts === 3 : kind === "football" ? !p.scoring && p.yards != null && p.yards >= 20 : !!playMoment(g, p);
+      // baseball and hockey: what happened (Home run, Strikeout, Goal), not ESPN's category ("Play Result")
+      var mo = kind === "baseball" || kind === "hockey" ? playMoment(g, p) : null;
+      var what = mo ? (mo.kind === "k" ? "Strikeout" : mo.word.charAt(0) + mo.word.slice(1).toLowerCase()) : /result/i.test(p.type || "") ? "" : (p.type || "");
       var tag = nba ? (p.pts ? "+" + p.pts + " · " + p.away_score + "–" + p.home_score : (p.type || ""))
-        : p.scoring ? "Score · " + p.away_score + "–" + p.home_score : big ? "+" + p.yards + " yds" : (p.type || "");
+        : kind !== "football" ? (what + (p.scoring ? (what ? " · " : "") + p.away_score + "–" + p.home_score : ""))
+        : p.scoring ? "Score · " + p.away_score + "–" + p.home_score
+        : big ? "+" + p.yards + " yds" : (p.type || "");
       pane.appendChild(el("div", "gp-play" + (big ? " big" : scored ? " score" : ""),
         '<div class="gp-pt">' + (p.team ? teamBadge(g.sport || "NFL", p.team) : '') + '<span class="gp-tag">' + escapeHtml(tag) + '</span>' +
         '<span class="gp-dd">' + escapeHtml(p.down || "") + '</span><span class="gp-clk">' + escapeHtml(p.clock || "") + '</span></div>' +
@@ -3341,10 +3506,12 @@
         }).join("")));
     });
   }
-  function quartersEl(pane, g, lg, gd){
-    var ls = gd.linescore, n = Math.max(4, ls.away.length, ls.home.length), heads = [];
-    for(var i = 0; i < n; i++) heads.push(i < 4 ? "Q" + (i + 1) : "OT" + (n > 5 ? i - 3 : ""));
-    var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + (n + 1) + ', minmax(30px, auto))';
+  function periodsEl(pane, g, lg, gd){
+    var kind = gpKind(g), reg = kind === "baseball" ? 9 : kind === "hockey" ? 3 : 4;
+    var ls = gd.linescore, n = Math.max(reg, ls.away.length, ls.home.length), heads = [];
+    for(var i = 0; i < n; i++) heads.push(kind === "baseball" ? String(i + 1) : i < reg ? (kind === "hockey" ? "P" : "Q") + (i + 1)
+      : kind === "hockey" && i === n - 1 && n > 4 ? "SO" : "OT" + (n - reg > 1 && kind !== "hockey" ? i - reg + 1 : ""));
+    var cols = 'grid-template-columns:minmax(36px,1fr) repeat(' + (n + 1) + ', minmax(' + (n > 9 ? 20 : 26) + 'px, auto))';
     function row(team, q, total){
       var cells = [];
       for(var i = 0; i < n; i++) cells.push(q[i] != null ? String(q[i]) : "–");
@@ -3356,6 +3523,13 @@
       row(g.away_team, ls.away, lg.away_score) + row(g.home_team, ls.home, lg.home_score)));
   }
   var BOX_COLS = {Passing: ["C/ATT", "YDS", "TD", "INT"], Rushing: ["CAR", "YDS", "AVG", "TD"], Receiving: ["REC", "YDS", "TD", "TGTS"]};
+  // other sports' groups (ESPN names them differently): the first set most of whose labels the table has
+  var BOX_SETS = [["IP", "H", "ER", "BB", "K"], ["AB", "R", "H", "RBI", "HR"], ["SA", "SV", "SV%", "GA"], ["G", "A", "S", "+/-", "TOI"]];
+  function boxWant(b){
+    return BOX_COLS[b.group] || BOX_SETS.filter(function(set){
+      return set.filter(function(c){ return b.labels.indexOf(c) >= 0; }).length >= set.length - 1;
+    })[0] || [];
+  }
   function boxEl(pane, g, gd){
     if((gd.team_stats || []).length){
       pane.appendChild(el("div", "gp-tbl gp-ts", '<div class="gp-tr gp-th"><span>' + escapeHtml(g.away_team) + '</span><span></span><span>' +
@@ -3364,7 +3538,7 @@
         }).join("")));
     }
     (gd.box || []).forEach(function(b){
-      var want = BOX_COLS[b.group] || [], idx = want.map(function(c){ return b.labels.indexOf(c); }).filter(function(i){ return i >= 0; });
+      var want = boxWant(b), idx = want.map(function(c){ return b.labels.indexOf(c); }).filter(function(i){ return i >= 0; });
       if(!idx.length) idx = b.labels.slice(0, 4).map(function(_, i){ return i; });
       var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + idx.length + ', minmax(40px, auto))';
       pane.appendChild(el("div", "gp-tbl gp-box", '<div class="gp-tr gp-th" style="' + cols + '"><span>' + escapeHtml(b.team + " " + b.group) + '</span>' +
@@ -3387,12 +3561,12 @@
   // in team colors, the newest ringed; the current run and the last play under it. Spots: functions/api/live.js nbaShot.
   var COURT_FT = 7.2, COURT_DEPTH = 30;           // px per foot; feet shown out from the baseline (deeper shots sit on the edge)
   function courtTrackerEl(g, lg){
-    if((g.sport || "NFL") !== "NBA" || !lg || lg.state !== "in") return "";
+    if(gpKind(g) !== "hoops" || !lg || lg.state !== "in") return "";
     var gd = gameDetailFor(lg);
     if(!gd || !gd.plays || !gd.plays.length) return "";
     var F = COURT_FT, W = 50 * F, H = COURT_DEPTH * F, rimY = 5.25 * F;
     var shots = gd.plays.filter(function(p){ return p.shot; }).slice(0, 24).reverse();
-    var cAway = chartColor(g.away_team, "var(--ink-soft)", "NBA"), cHome = chartColor(g.home_team, "var(--accent)", "NBA");
+    var cAway = chartColor(g.away_team, "var(--ink-soft)", g.sport), cHome = chartColor(g.home_team, "var(--accent)", g.sport);
     if(cAway === cHome) cAway = "var(--ink-soft)";
     function f(v){ return v.toFixed(1); }
     var dots = shots.map(function(p, i){
@@ -3419,23 +3593,48 @@
       (gd.run ? '<span class="pill neutral ct-run">' + escapeHtml(gd.run.team + " " + gd.run.points + "–0 run") + '</span>' : '') + '</div>' +
       (last ? '<div class="ft-last">' + escapeHtml(last.text) + '</div>' : '') + '</div>';
   }
+  // Baseball (live, card and page): the bases with runners, balls, strikes and outs, pitcher and batter, the last play,
+  // from the scoreboard's situation (functions/api/live.js mlbSituation).
+  function baseballTrackerEl(g, lg){
+    var sit = lg && lg.state === "in" && gpKind(g) === "baseball" ? lg.situation : null;
+    if(!sit) return "";
+    function base(on, x, y){ return '<rect class="bb-base' + (on ? ' on' : '') + '" x="' + (x - 9) + '" y="' + (y - 9) + '" width="18" height="18" transform="rotate(45 ' + x + ' ' + y + ')" fill="' + (on ? 'var(--accent)' : 'var(--surface)') + '" stroke="var(--ink-faint)" stroke-width="1.5"/>'; }
+    function dots(n, of, color){ var h = ""; for(var i = 0; i < of; i++) h += '<i style="background:' + (i < n ? color : 'transparent') + '; border-color:' + color + '"></i>'; return h; }
+    var b = sit.bases || [];
+    var svg = '<svg class="bb-diamond" viewBox="0 0 100 92" role="img" aria-label="' + escapeHtml(["first", "second", "third"].filter(function(_, i){ return b[i]; }).join(", ") || "bases empty") + '">' +
+      '<path d="M50 84 L84 50 L50 16 L16 50 Z" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>' +
+      '<path d="M44 84 h12 l-6 6 z" fill="var(--ink)"/>' + base(b[0], 84, 50) + base(b[1], 50, 16) + base(b[2], 16, 50) + '</svg>';
+    var count = '<div class="bb-count"><span>B</span><span class="bb-dots">' + dots(sit.balls || 0, 3, "var(--good)") + '</span>' +
+      '<span>S</span><span class="bb-dots">' + dots(sit.strikes || 0, 2, "var(--bad)") + '</span>' +
+      '<span>O</span><span class="bb-dots">' + dots(sit.outs || 0, 2, "var(--accent)") + '</span></div>';
+    var who = (sit.pitcher ? 'P: <b>' + escapeHtml(sit.pitcher) + '</b>' : '') + (sit.batter ? (sit.pitcher ? ' · ' : '') + 'AB: <b>' + escapeHtml(sit.batter) + '</b>' : '');
+    return '<div class="ft bb">' + '<div class="bb-row">' + svg + count + '</div>' + (who ? '<div class="ft-row"><span>' + who + '</span></div>' : '') +
+      (sit.last_play ? '<div class="ft-last">' + escapeHtml(sit.last_play) + '</div>' : '') + '</div>';
+  }
+  // Hockey (live, game page): the last play from the game detail.
+  function hockeyTrackerEl(g, lg){
+    if(gpKind(g) !== "hockey" || !lg || lg.state !== "in") return "";
+    var gd = gameDetailFor(lg), last = gd && gd.plays && gd.plays[0];
+    return last ? '<div class="ft"><div class="ft-last"><b>Last play</b> · ' + escapeHtml((last.clock ? last.clock + " · " : "") + last.text) + '</div></div>' : "";
+  }
   // The field (NFL, live): away end zone on the left. Spots are yards from the away goal line (functions/api/live.js).
   // withDetail: the game page, whose detail is kept fresh (a board card only has the scoreboard's situation).
   function fieldTrackerEl(g, lg, withDetail){
-    if((g.sport || "NFL") !== "NFL" || !lg || lg.state !== "in") return "";
+    if(gpKind(g) !== "football" || !lg || lg.state !== "in") return "";
     var gd = withDetail ? gameDetailFor(lg) : null;
     var sit = lg.situation || (gd && gd.situation);
     if(!sit || sit.spot == null) return "";
-    var off = sit.offense || lg.possession;
+    function M(c){ return (lg.codes && lg.codes[c]) || c; }        // ESPN's team code -> the board's (college)
+    var off = M(sit.offense) || lg.possession;
     if(off !== g.away_team && off !== g.home_team) return "";
     var right = off === g.away_team;                       // the away team drives toward the home end zone
     function clamp(v){ return Math.max(0, Math.min(100, v)); }
     function X(v){ return (24 + clamp(v) * 3.12).toFixed(1); }
     var spot = clamp(sit.spot), fd = null;
     if(sit.down > 0 && sit.distance > 0) fd = clamp(right ? spot + sit.distance : spot - sit.distance);
-    var drv = gd && gd.drive && gd.drive.offense === off && gd.drive.start != null && !gd.drive.result ? gd.drive : null;
+    var drv = gd && gd.drive && M(gd.drive.offense) === off && gd.drive.start != null && !gd.drive.result ? gd.drive : null;
     function ez(code, x){
-      var c = (TEAM_COLORS.NFL || {})[code] || "#555";
+      var c = (TEAM_COLORS[g.sport || "NFL"] || {})[code] || "#555";
       return '<rect x="' + x + '" y="0" width="24" height="64" fill="' + c + '"/>' +
         '<text x="' + (x + 12) + '" y="32" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" dominant-baseline="middle" transform="rotate(' + (x ? 90 : -90) + ' ' + (x + 12) + ' 32)">' + escapeHtml(code) + '</text>';
     }
@@ -3517,16 +3716,21 @@
       if(slipHas(leg)) h = h.replace('class="sb-btn', 'class="sb-btn in-slip');
       return h.replace('<div class="sb-btn', '<div role="button" tabindex="0" aria-label="Add ' + escapeHtml(leg.desc) + ' to the slip" data-legg="' + escapeHtml(JSON.stringify(leg)) + '" class="sb-btn');
     }
+    // no model %: Kalshi's win chance (its live price while the game is on), vig taken out
+    var kml = lg && lg.state === "in" && lg.kalshi_game && lg.kalshi_game.moneyline;
+    var kLive = kml ? devigTwoWay(kml.home, kml.away) : null, kPre = devigTwoWay(m.moneyline_home, m.moneyline_away);
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
+      var k = kLive || kPre, kp = pct == null && k ? (side === "home" ? k.a : k.b) : null;
       var sc = lg ? (side === "home" ? lg.home_score : lg.away_score) : null, osc = lg ? (side === "home" ? lg.away_score : lg.home_score) : null;
       var badge = teamBadge(g.sport || "NFL", team);
       if(rsHasSport(g.sport || "NFL") && !g.trial && x[1])          // the logo opens the team's stats (Research)
         badge = '<span class="tm-link" title="' + escapeHtml(team) + ' team stats"' + rsRow({page: "team", sport: g.sport || "NFL", code: team}) + '>' + badge + '</span>';
       html += '<div class="sb-team has-badge' + (sc != null ? ' with-sc' + (sc < osc ? ' trail' : '') : '') + '">' + badge +
         '<b>' + escapeHtml(team) + (lg && lg.state === "in" && lg.possession === team ? ' <span class="lv-poss" title="Has the ball" style="display:inline-block; vertical-align:middle"></span>' : '') + '</b>' +
-        (pct != null ? '<small>model ' + Math.round(pct * 100) + '%' + (lg ? ' · locked lines' : '') + '</small>' : '<small></small>') +
+        (pct != null ? '<small>model ' + Math.round(pct * 100) + '%' + (lg ? ' · locked lines' : '') + '</small>'
+          : kp != null ? '<small class="k-pct">Kalshi ' + Math.round(kp * 100) + '%' + (kLive ? ' now' : '') + '</small>' : '<small></small>') +
         (sc != null ? '<span class="lv-sc">' + Math.round(sc) + '</span>' : '') + '</div>';
       cols.forEach(function(c){
         if(c === "Spread"){
@@ -3603,9 +3807,10 @@
   function buildMatchupTabs(det, g, doc, gamePane, extra){
     var k = gameKey(g);
     extra = extra || {front: [], back: []};
+    var mid = extra.mid || [];                        // right after Picks & lines (Matchup)
     var have = {};
     if(doc) propRows(doc).forEach(function(r){ have[r.stat] = true; });
-    var tabs = extra.front.concat([{key: "game", label: "Picks & lines"}],
+    var tabs = extra.front.concat([{key: "game", label: "Picks & lines"}], mid,
       doc ? [{key: "top", label: "Top props"}].concat(propCats(doc).filter(function(c){ return c.stats.some(function(s){ return have[s]; }); })) : [],
       extra.back);
     var bar = el("div", "sb-tabs");
@@ -3616,7 +3821,7 @@
       Array.prototype.forEach.call(bar.children, function(b){ b.classList.toggle("active", b.dataset.k === key); });
       pane.innerHTML = "";
       if(key === "game"){ pane.appendChild(gamePane); setTimeout(initWheels, 0); return; }
-      var x = extra.front.concat(extra.back).filter(function(t){ return t.key === key; })[0];
+      var x = extra.front.concat(mid, extra.back).filter(function(t){ return t.key === key; })[0];
       if(x){ x.render(pane); return; }
       if(propStarted(doc)) pane.appendChild(el("div", "faint", "This game has started, so these prop prices are from before kickoff."));
       if(key === "top") renderTopProps(pane, doc, g);
@@ -3763,6 +3968,7 @@
         if(injSt) sub.push(escapeHtml(injSt));
         var row = el("div", "pp-row");
         var rsBtn = rsHasSport(docSport(doc)) ? rsLink({page: "player", sport: docSport(doc), teams: [doc.away_team, doc.home_team], name: name, stat: stat, line: main.line}, "Stats") : "";
+        if(rsBtn) rsFormChip(row, docSport(doc), [doc.away_team, doc.home_team], name, stat, main.line);
         row.innerHTML = '<div style="min-width:0"><div class="pp-name">' + escapeHtml(name) + rsBtn + '</div><div class="pp-sub">' + sub.join(" · ") + '</div></div>' +
           ppSideBtn(main, "OVER", e, g) + ppSideBtn(main, "UNDER", e, g);
         box.appendChild(row);
@@ -3967,7 +4173,7 @@
         modelWrap.appendChild(noteEl);
       }
       card.appendChild(modelWrap);
-    } else {
+    } else if(!g.marketOnly){
       var pending = el("div", "faint", "Model pick not yet synced for this game.");
       pending.style.marginTop = "10px";
       card.appendChild(pending);
@@ -4694,10 +4900,13 @@
       var ar = archiveFor(g);
       if(ar && ar.lines) base = Object.assign({}, base, {lines: ar.lines, stats: Object.assign({}, ar.stats || {}, base.stats || {})});
     }
-    var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
+    var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){
+      return g.espn_id ? String(x.id) === String(g.espn_id) : sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
     if(!f || (base && base.state === "post" && f.state !== "post")) return base;      // never step back from a final
+    var codes = {};                                              // ESPN's codes -> the board's (they differ for some colleges)
+    codes[f.away] = g.away_team; codes[f.home] = g.home_team;
     var o = Object.assign({}, base || {picks: []}, {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score,
-      possession: f.possession, espn_id: f.id, situation: f.situation || null, fast: true});
+      possession: codes[f.possession] || f.possession, espn_id: f.id, situation: f.situation || null, codes: codes, fast: true});
     if(fastBox[f.id]) o._box = fastBox[f.id];
     var fl = fastLines[gameKey(g)];
     if(fl && fl.points && fl.points.length > 1){                 // fresher graph + live money line, any sport

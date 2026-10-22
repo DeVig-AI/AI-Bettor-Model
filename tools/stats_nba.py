@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import kalshi_games_v1 as KG  # noqa: E402  (team codes only)
 import stats_common as S  # noqa: E402
 
+SPORT = "NBA"                                   # tools/stats_wnba.py swaps these module settings for the WNBA
 OUT = os.path.join(os.path.dirname(__file__), "..", "stats", "nba")
 URL = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_{kind}_boxscores/{kind}_box_{y}.csv"
 TYPES = {2: "R", 3: "P"}                       # regular season, playoffs
@@ -220,7 +221,7 @@ def build(now, cache):
             "players": roster[k]})
     search.sort(key=lambda r: -(r[5] or 0))
     S.write(os.path.join(OUT, "index.json"), {
-        "generated_at": stamp, "sport": "NBA", "season": label(y), "last_season": label(y - 1), "season_year": y,
+        "generated_at": stamp, "sport": SPORT, "season": label(y), "last_season": label(y - 1), "season_year": y,
         "rating_note": (f"Points per game better than an average team, adjusted for who each team played (SRS). Early in "
                         f"the season last season's rating counts as {S.PRIOR_GAMES} games, pulled "
                         f"{round((1 - S.CARRY) * 100)}% toward average."),
@@ -233,7 +234,7 @@ def build(now, cache):
 def main():
     cache = os.getenv("STATS_CACHE") or tempfile.mkdtemp()
     n = build(datetime.now(timezone.utc), cache)
-    print(f"NBA research files: {n} players")
+    print(f"{SPORT} research files: {n} players")
     return 0
 
 
