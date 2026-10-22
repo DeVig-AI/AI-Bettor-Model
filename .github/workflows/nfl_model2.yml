@@ -1,0 +1,39 @@
+name: NFL Model 2.0 -- live paper test (Model 1.0 + injuries; the app's picks stay on Model 1.0)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 */3 * * *'   # every 3 hours: the coming week's forecasts with the latest injury reports and rosters
+    - cron: '5 16 * * 0'     # Sunday noon ET: after the early games' inactives
+    - cron: '25 19 * * 0'    # Sunday 3:25pm ET: after the late games' inactives
+permissions:
+  contents: write
+concurrency:
+  group: nfl-model2
+  cancel-in-progress: false
+jobs:
+  model2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install the versions Model 1.0 was built with
+        run: pip install pandas==2.3.3 numpy==2.5.3 scikit-learn==1.9.1 joblib==1.6.0 pyarrow==25.0.1
+      - name: Past seasons' play-by-play (never changes)
+        uses: actions/cache@v4
+        with:
+          path: research/injuries/.cache
+          key: nfl-model2-history-v1
+      - name: Forecast the coming week
+        run: python3 nfl/model2/nfl_model2_v1.py live
+      - name: Save
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/model2/upcoming.json nfl/model2/MODEL2_LIVE_LOG.jsonl 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NFL Model 2.0 forecasts $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1

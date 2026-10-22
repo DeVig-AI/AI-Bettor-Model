@@ -7,6 +7,8 @@ only: nothing here feeds a DeVig pick, a test or a bet.
 Models (credits and licenses are also on the app's Models and About pages):
   devig   DeVig's own locks, read-only from its trackers: NFL Model 1.0, NBA Model C, MLB Model C (winner and run
           line), and the NFL / NBA props models v1 (from their logs).
+  devig2  NFL Model 2.0 (Model 1.0 + injuries), paper-tracked beside Model 1.0: its latest forecasts from
+          nfl/model2/upcoming.json (nfl/model2/nfl_model2_v1.py).
   nfelo   NFL, by greerreNFL (github.com/greerreNFL/nfelo). The repo has NO license, so none of its code is copied or
           run; only the picks it publishes (output_data/prediction_tracker.csv) are read.
   elo538  NFL, FiveThirtyEight's NFL Elo game model (github.com/fivethirtyeight/nfl-elo-game, MIT). Their code is
@@ -76,6 +78,7 @@ LATEST, PICKS, RESULTS = DIR / "latest.json", DIR / "picks.jsonl", DIR / "result
 EXPORT = ROOT / "live" / "models_export.json"
 ELO_DIR = ROOT / "nfl" / "open_models" / "elo538"
 NFL_TRACKER = ROOT / "nfl" / "PROSPECTIVE_TRACKER_V1_1.sqlite3"
+NFL_MODEL2 = ROOT / "nfl" / "model2" / "upcoming.json"
 NBA_TRACKER = ROOT / "nba" / "NBA_PROSPECTIVE_TRACKER_V1.sqlite3"
 MLB_TRACKER = ROOT / "mlb" / "MLB_PROSPECTIVE_TRACKER_V1.sqlite3"
 NFL_PROPS = ROOT / "nfl" / "PROPS_MODEL_V1_LOG.sqlite3"
@@ -98,6 +101,10 @@ MODELS = [
     {"key": "devig", "name": "DeVig", "sports": ["NFL", "NBA", "MLB"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model", "license": "this project",
      "note": "DeVig's own locked picks: NFL Model 1.0, NBA and MLB Model C, the props models v1."},
+    {"key": "devig2", "name": "DeVig 2.0", "sports": ["NFL"], "author": "DeVig.AI (this project)",
+     "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/nfl/model2/NFL_MODEL_2_0_LIVE_PREREG.md",
+     "license": "this project",
+     "note": "NFL Model 1.0 plus who is out (injury reports and rosters). Paper test only: the app's picks stay on Model 1.0."},
     {"key": "nfelo", "name": "nfelo", "sports": ["NFL"], "author": "Robby Greer (@greerreNFL)",
      "url": "https://github.com/greerreNFL/nfelo", "license": "none stated: only its published picks are read, no code copied",
      "note": "Its weekly picks as published in output_data/prediction_tracker.csv."},
@@ -118,7 +125,7 @@ MODELS = [
      "note": "The baseline: Kalshi's favourite (moneyline, spread) and the over (total), at Kalshi's price."},
 ]
 # which model makes which kind of pick, per sport (anything else shows "—" on the page)
-COVERS = {"NFL": {"ml": {"devig", "nfelo", "elo538", "kalshi"}, "spread": {"devig", "nfelo", "elo538", "kalshi"}, "total": {"kalshi"}},
+COVERS = {"NFL": {"ml": {"devig", "devig2", "nfelo", "elo538", "kalshi"}, "spread": {"devig", "nfelo", "elo538", "kalshi"}, "total": {"kalshi"}},
           "NBA": {"ml": {"devig", "blotny", "kalshi"}, "spread": {"blotny", "kalshi"}, "total": {"kalshi"}},
           "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
           "CFB": {"ml": {"cfbelo", "cfbrank", "kalshi"}, "spread": {"cfbelo", "kalshi"}, "total": {"kalshi"}}}
@@ -371,6 +378,14 @@ def devig_nfl(by_id):
     return out
 
 
+def devig2_nfl(by_id):
+    """NFL Model 2.0's latest forecasts (nfl/model2/upcoming.json, written by its own workflow)."""
+    if not NFL_MODEL2.exists():
+        return {}
+    games = json.loads(NFL_MODEL2.read_text()).get("games") or {}
+    return {gid: {"home_wp": num(v.get("home_wp"))} for gid, v in games.items() if gid in by_id and num(v.get("home_wp")) is not None}
+
+
 def devig_nba(by_id):
     if not NBA_TRACKER.exists():
         return {}
@@ -499,7 +514,7 @@ def update(now, nfl_csv=None, offline=False):
             def elo():
                 probs = elo538(ng)
                 return {gid: {"home_wp": probs[gid], "home_line": elo_line(probs[gid])} for gid in by_id if gid in probs}
-            sources = [("elo538", elo), ("devig", lambda: devig_nfl(by_id))]
+            sources = [("elo538", elo), ("devig", lambda: devig_nfl(by_id)), ("devig2", lambda: devig2_nfl(by_id))]
             if not offline:
                 sources.append(("nfelo", lambda: read_nfelo(ups)))
         elif sport == "NBA":

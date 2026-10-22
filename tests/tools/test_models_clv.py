@@ -99,5 +99,17 @@ class BeatTheClose(unittest.TestCase):
         self.assertEqual(json.loads(MC.LATEST.read_text())["games"]["NBA:77"]["picks"]["devig"]["mkt_wp"], 0.55)
 
 
+class Model2(unittest.TestCase):
+    def test_devig2_reads_upcoming(self):
+        d = Path(tempfile.mkdtemp()) / "upcoming.json"
+        d.write_text(json.dumps({"games": {"2026_07_NE_CHI": {"home_wp": 0.631}, "2026_07_LA_LV": {"home_wp": None}}}))
+        old, MC.NFL_MODEL2 = MC.NFL_MODEL2, d
+        try:
+            self.assertEqual(MC.devig2_nfl({"2026_07_NE_CHI": {}, "2026_07_LA_LV": {}}), {"2026_07_NE_CHI": {"home_wp": 0.631}})
+            self.assertEqual(MC.devig2_nfl({}), {})
+        finally:
+            MC.NFL_MODEL2 = old
+
+
 if __name__ == "__main__":
     unittest.main()
