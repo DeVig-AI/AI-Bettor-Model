@@ -125,17 +125,19 @@ test("Research section on a phone", async (t) => {
       await pg.locator('nav.tabs button[data-tab="home"]').click();
       await pg.locator('#sportPills [data-sport="NBA"]').click();
       const card = pg.locator("#homeSlate .card.game", {hasText: "NYK"}).first();
-      await card.locator(".game-head").click();
-      await card.locator('.rs-links .rs-link', {hasText: "NYK"}).click();
+      await card.locator(".game-head").click();                      // opens the game page
+      const page = pg.locator("#panel-game");
+      await page.locator('.rs-links .rs-link', {hasText: "NYK"}).click();
       await pg.locator("#rsCard .rs-head").waitFor();
       assert.match(await pg.locator("#rsCard h3").innerText(), /New York Knicks/);
     });
     await t.test("a prop row's Stats opens the player with that stat and line", async () => {
       await pg.locator('nav.tabs button[data-tab="home"]').click();
       const card = pg.locator("#homeSlate .card.game", {hasText: "NYK"}).first();
-      if (await card.locator(".game-details").isHidden()) await card.locator(".game-head").click();
-      await card.locator('.sb-tabs button[data-k="points"]').click();
-      await card.locator(".pp-row .rs-link").first().click();
+      await card.locator(".game-head").click();
+      const page = pg.locator("#panel-game");
+      await page.locator('.sb-tabs button[data-k="points"]').click();
+      await page.locator(".pp-row .rs-link").first().click();
       await pg.locator("#rsHits .rs-hit").waitFor();
       assert.match(await pg.locator("#rsCard h3").innerText(), new RegExp(star.name));
       assert.equal(await pg.locator("#rsStat").inputValue(), "points");

@@ -95,12 +95,13 @@ test("sport tabs: NHL in season, off-season sports hidden", async (t) => {
     });
     await t.test("NHL props: goals, assists and points tabs on the game", async () => {
       const card = pg.locator("#homeSlate .card.game", {hasText: "MTL"});
-      assert.match(await card.locator(".game-more").evaluate(e => e.textContent), /Lines & props/);
-      await card.locator(".game-head").click();
-      const tabs = await card.locator(".sb-tabs button").allInnerTexts();
+      assert.match(await card.locator(".game-more").evaluate(e => e.textContent), /Live game ›/, "a live game's card opens the game page");
+      await card.locator(".game-head").click();                      // opens the game page
+      const page = pg.locator("#panel-game");
+      const tabs = await page.locator(".sb-tabs button").allInnerTexts();
       for (const label of ["Goals", "Assists", "Points"]) assert.ok(tabs.includes(label), label + " tab");
-      await card.locator('.sb-tabs button[data-k="goals"]').click();
-      await card.getByText("Cole Caufield").first().waitFor({timeout: 5000});
+      await page.locator('.sb-tabs button[data-k="goals"]').click();
+      await page.getByText("Cole Caufield").first().waitFor({timeout: 5000});
       await pg.screenshot({path: OUT + "sports-nhl-props.png", fullPage: true});
     });
     await t.test("Testing lists the NHL props test", async () => {

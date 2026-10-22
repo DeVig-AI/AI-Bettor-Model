@@ -243,6 +243,35 @@
   .game-details{padding:0 16px 16px; border-top:1px solid var(--line);}
   .game-details > :first-child{margin-top:12px;}
   .card.game.flash{box-shadow:0 0 0 2px var(--accent);}
+  /* Game page (a game opened from its card) and the NFL field tracker */
+  .gp-title{font-size:18px; letter-spacing:-.01em; margin:0; padding:14px 16px 0;}
+  .gp-head{cursor:default; padding-top:8px;}
+  .card.game.gp .game-details{border-top:1px solid var(--line);}
+  .ft{margin-top:12px;}
+  .ft-field{display:block; width:100%; height:auto;}
+  .ft-row{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; margin-top:6px; font-size:13px;}
+  .ft-row .faint{margin-left:auto; font-size:12.5px;}
+  .ft-last{margin-top:4px; font-size:12.5px; color:var(--ink-soft); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .gp-q{font-size:12px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; margin:14px 0 6px;}
+  .gp-q:first-child{margin-top:4px;}
+  .gp-play{border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; background:var(--surface);}
+  .gp-play.big{border-color:var(--accent);}
+  .gp-play.score{border-color:var(--good);}
+  .gp-play p{margin:6px 0 0; font-size:14px; line-height:1.4;}
+  .gp-pt{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft);}
+  .gp-pt .tm-badge{width:22px; height:22px; font-size:8px; flex:none;}
+  .gp-tag{font-weight:700; color:var(--ink);}
+  .gp-play.big .gp-tag{color:var(--accent-strong);} .gp-play.score .gp-tag{color:var(--good);}
+  .gp-dd{font-family:var(--font-mono);}
+  .gp-clk{margin-left:auto; font-family:var(--font-mono); white-space:nowrap;}
+  .gp-tbl{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:12px; font-size:13px;}
+  .gp-tr{display:grid; grid-template-columns:72px minmax(0,1fr) 72px; gap:6px; padding:8px 12px; border-top:1px solid var(--line);
+    font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .gp-tr:first-child{border-top:none;}
+  .gp-th{font-family:var(--font-sans); font-weight:700; color:var(--ink-soft); font-size:12px;}
+  .gp-ts .gp-tr span:last-child{text-align:right;} .gp-lab{text-align:center; color:var(--ink-soft); font-family:var(--font-sans);}
+  .gp-box .gp-tr span:not(:first-child){text-align:right;}
+  .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .pick-row{display:flex; justify-content:space-between; align-items:center; gap:10px; width:100%; background:none; border:none;
     border-top:1px solid var(--line); color:var(--ink); font:inherit; text-align:left; padding:8px 0; cursor:pointer;}
   .pick-row:hover{background:var(--surface-2);}
@@ -770,6 +799,8 @@
     </div>
   </section>
 
+  <section class="panel" id="panel-game" hidden></section>
+
   <section class="panel" id="panel-scan" hidden>
     <div class="card">
       <label class="drop" id="dropZone">
@@ -1083,6 +1114,7 @@
   var panels = {
     home: document.getElementById("panel-home"),
     scan: document.getElementById("panel-scan"),
+    game: document.getElementById("panel-game"),
     ask: document.getElementById("panel-ask"),
     parlay: document.getElementById("panel-parlay"),
     lab: document.getElementById("panel-lab"),
@@ -1095,7 +1127,8 @@
   var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1, research: 1};
   var meBtn = document.getElementById("meBtn");
   function showPanel(name){
-    var navTab = UNDER_MORE[name] ? "more" : name;
+    var navTab = UNDER_MORE[name] ? "more" : name === "game" ? (gamePage ? gamePage.back : "home") : name;
+    if(name !== "game") gamePage = null;
     tabs.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === navTab)); });
     meBtn.setAttribute("aria-pressed", String(name === "me"));
     Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== name); });
@@ -1276,7 +1309,7 @@
   }
   // Re-render once a minute so games drop off on their own while the page
   // stays open, without waiting for the next sync.
-  setInterval(function(){ if(homeDocs.length) renderHome(); }, 60 * 1000);
+  setInterval(function(){ if(homeDocs.length) renderHome(); renderGamePage(); }, 60 * 1000);
   var currentConfKey = "all"; // "all" | "tracked"
   // Home shows one day at a time (tabs for each day with games, plus ★ Tracked)
   var currentDay = null, dayPicked = false, showAllPicks = false;
@@ -2575,25 +2608,8 @@
       "\"Preview\" on a game = that week's picks, synced before it's played. \"Early read\" on an over/under = from today's forecast; the final pick comes about 3 hours before kickoff."));
     return card;
   }
-  function openGame(g){
-    var k = gameKey(g);
-    openGames[k] = true;
-    var target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
-    if(!target){
-      // the game is on another day, or behind "more picks"
-      currentDay = boardDay(g); dayPicked = true; currentConfKey = "all"; showAllPicks = true;
-      renderHome();
-      target = document.querySelector('.card.game[data-key="' + (window.CSS && CSS.escape ? CSS.escape(k) : k) + '"]');
-    }
-    if(!target) return;
-    var fold = target.closest("details");
-    if(fold) fold.open = true;
-    var det = target.querySelector(".game-details"), head = target.querySelector(".game-head");
-    if(det){ det.hidden = false; head.setAttribute("aria-expanded", "true"); head.querySelector(".game-more").textContent = "Hide details"; }
-    target.scrollIntoView({behavior: "smooth", block: "start"});
-    target.classList.add("flash");
-    setTimeout(function(){ target.classList.remove("flash"); }, 1400);
-  }
+  function openGame(g){ openGamePage(g); }
+
 
   // The actual, validated decision logic: PASS or ML only, for NFL. Spread is
   // deliberately excluded as a possible decision for NFL -- confirmed twice (a
@@ -2880,19 +2896,27 @@
   }
 
   function renderGameCard(g){
-    var card = buildGameCard(g);
-    return collapseCard(g, card);
+    return collapseCard(g);
   }
 
-  // Turns a full game card into: a tappable summary (matchup, time, the call, price)
-  // plus the full breakdown, hidden until tapped.
-  function collapseCard(g, full){
+  // A game on the board: a tappable summary (matchup, time, the call, price, live field) that opens the game page.
+  function collapseCard(g){
     var k = gameKey(g);
     var card = el("div", "card game");
     card.setAttribute("data-key", k);
-    var d = computeDecision(g), mm = g.model || {};
-    var head = el("button", "game-head");
+    var sum = gameHead(g, {more: true});
+    if(sum.live) card.classList.add("is-live");
+    var head = el("button", "game-head", sum.html);
     head.type = "button";
+    head.addEventListener("click", function(){ openGamePage(g); });
+    card.appendChild(head);
+    return card;
+  }
+
+  // The summary both the board card and the game page show: time or score, odds grid, field, graph and the call.
+  function gameHead(g, opts){
+    var k = gameKey(g);
+    var d = computeDecision(g), mm = g.model || {};
     var kickoff = shortTime(g);
     var chips = [];
     if(d.action === "ML") chips.push('<span class="pill good">' + escapeHtml(mm.winner_side) + ' to win</span>' +
@@ -2920,8 +2944,6 @@
       chips.push('<span class="pill ' + (started ? "live" : "neutral") + '">Prop picks · ' + lg.picks.length +
         (started ? ' · ' + lt.won + ' won · ' + lt.lost + ' lost' + (lt.live ? ' · ' + lt.live + ' live' : '') : ' locked') + '</span>');
     }
-    if(lg && lg.state === "in") card.classList.add("is-live");
-    var isOpen = !!openGames[k];
     var tags = (g.trial ? ' <span class="pill neutral">Preseason trial</span>' : '') +
       (isPreviewGame(g) ? ' <span class="pill neutral">Preview</span>' : '');
     var pdoc = propsDocFor(g);
@@ -2938,10 +2960,16 @@
       : !started ? '<span class="faint">' + escapeHtml(kickoff) + '</span>'
       : lg.state === "in" ? '<span><span class="pill live">LIVE</span> <span class="faint">' + escapeHtml(lg.detail || "") + '</span></span>'
       : '<span><span class="pill neutral">FINAL</span></span>';
-    head.innerHTML = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
-      sbGrid(g, d, started ? lg : null) + (started ? liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
-      '<div class="game-sum">' + chips.join("") + '<span class="game-more">' + (isOpen ? "Hide" : (pdoc ? "Lines & props" : "Details")) + '</span></div>';
-    head.setAttribute("aria-expanded", String(isOpen));
+    var more = !opts.more ? '' : '<span class="game-more">' + (started && lg.state === "in" ? "Live game ›" : (pdoc ? "Lines & props ›" : "Details ›")) + '</span>';
+    var html = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
+      sbGrid(g, d, started ? lg : null) + (started ? fieldTrackerEl(g, lg) + liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
+      '<div class="game-sum">' + chips.join("") + more + '</div>';
+    return {html: html, live: !!lg && lg.state === "in", started: started, pdoc: pdoc};
+  }
+
+  // Everything under the summary on the game page: the model's read and picks, lines, props, plus any extra tabs.
+  function gameDetailsEl(g, extra){
+    var full = buildGameCard(g), lg = liveFor(g), pdoc = propsDocFor(g), over = !isOnBoard(g);
     var det = el("div", "game-details");
     if(full.firstChild) full.removeChild(full.firstChild); // the matchup header is already in the summary
     var gamePane = el("div", "sb-game");
@@ -2962,20 +2990,187 @@
       gamePane.appendChild(el("div", "rs-links", "Research" + [g.away_team, g.home_team].map(function(c){
         return rsLink({page: "team", sport: g.sport || "NFL", code: c}, c);
       }).join("")));
-    if(pdoc) buildMatchupTabs(det, g, pdoc, gamePane);
+    if(pdoc || extra.front.length || extra.back.length) buildMatchupTabs(det, g, pdoc, gamePane, extra);
     else det.appendChild(gamePane);
-    det.hidden = !isOpen;
-    if(isOpen) requestAnimationFrame(initWheels);
-    head.addEventListener("click", function(){
-      det.hidden = !det.hidden;
-      if(!det.hidden) setTimeout(initWheels, 0);
-      openGames[k] = !det.hidden;
-      head.setAttribute("aria-expanded", String(!det.hidden));
-      head.querySelector(".game-more").textContent = det.hidden ? (pdoc ? "Lines & props" : "Details") : "Hide";
+    return det;
+  }
+
+  // ---------- Game page: a game opened from its card ----------
+  // Score and the call on top, then (NFL, live) the field: ball spot, first-down line and the drive so far. Tabs below:
+  // Plays, Picks & lines, props, Box and Scoring. It redraws itself when the fast feed brings something new (~20 s).
+  var gamePage = null;            // {key, g, back: the panel it was opened from, y: that panel's scroll, sig}
+  var gameDetail = {};            // ESPN id -> {at, data}: /api/live?event=..&game=1 (plays, drive, scoring, team stats)
+  var playsAll = false;
+  function openGamePage(g){
+    var from = Object.keys(panels).filter(function(k){ return !panels[k].hidden; })[0] || "home";
+    var back = from === "game" && gamePage ? gamePage.back : from, y = from === "game" && gamePage ? gamePage.y : window.scrollY;
+    var pushed = from === "game" && gamePage && gamePage.pushed;
+    if(!pushed){ try{ history.pushState({devigGame: 1}, ""); pushed = true; }catch(e){} }
+    gamePage = {key: gameKey(g), g: g, back: back, y: y, pushed: pushed};
+    showPanel("game");
+    playsAll = false;
+    renderGamePage(true);
+    window.scrollTo(0, 0);
+    loadGameDetail().then(function(){ renderGamePage(); });
+  }
+  function closeGamePage(){
+    if(!gamePage) return;
+    var gp = gamePage;
+    showPanel(gp.back);
+    if(gp.back === "home") renderHome();
+    window.scrollTo(0, gp.y);
+  }
+  window.addEventListener("popstate", function(){ if(gamePage && !panels.game.hidden) closeGamePage(); });
+  function gameDetailFor(lg){
+    var x = lg && lg.espn_id ? gameDetail[lg.espn_id] : null;
+    return x ? x.data : undefined;            // undefined = not loaded yet, null = not available
+  }
+  function loadGameDetail(){
+    if(!gamePage || panels.game.hidden || fastOff) return Promise.resolve();
+    var g = gamePage.g, lg = liveFor(g);
+    if((g.sport || "NFL") !== "NFL" || !lg || !lg.espn_id || !liveStarted(lg)) return Promise.resolve();
+    var id = lg.espn_id, have = gameDetail[id];
+    if(have && (lg.state !== "in" || Date.now() - have.at < 15e3)) return Promise.resolve();
+    return fastGet("sport=nfl&event=" + id + "&game=1").then(function(d){
+      if(d && d.players){
+        var m = {};
+        Object.keys(d.players).forEach(function(n){ m[normName(n)] = d.players[n]; });
+        fastBox[id] = m;
+      }
+      gameDetail[id] = {at: Date.now(), data: d && d.game ? d.game : (have ? have.data : null)};
     });
-    card.appendChild(head);
-    card.appendChild(det);
-    return card;
+  }
+  function renderGamePage(force){
+    if(!gamePage || panels.game.hidden) return;
+    var fresh = boardDocs().filter(function(x){ return gameKey(x) === gamePage.key; })[0];
+    if(fresh) gamePage.g = fresh;
+    var g = gamePage.g, lg = liveFor(g), gd = gameDetailFor(lg);
+    var sig = JSON.stringify([lg, gd, isSimple()]);
+    if(!force && sig === gamePage.sig) return;
+    gamePage.sig = sig;
+    var y = window.scrollY, root = panels.game;
+    root.innerHTML = "";
+    var back = el("button", "back-more", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Back');
+    back.type = "button";
+    back.addEventListener("click", function(){ if(gamePage && gamePage.pushed) history.back(); else closeGamePage(); });
+    root.appendChild(back);
+    var card = el("div", "card game gp");
+    card.setAttribute("data-key", gamePage.key);
+    card.appendChild(el("h2", "gp-title", escapeHtml((g.away_team || "Away") + " @ " + (g.home_team || "Home"))));
+    var sum = gameHead(g, {});
+    if(sum.live) card.classList.add("is-live");
+    card.appendChild(el("div", "game-head gp-head", sum.html));
+    card.appendChild(gameDetailsEl(g, gamePageTabs(g, lg, gd)));
+    root.appendChild(card);
+    requestAnimationFrame(initWheels);
+    if(!force) window.scrollTo(0, y);
+  }
+  // NFL games that have started get Plays (first), Box and Scoring, from the fast feed's game detail.
+  function gamePageTabs(g, lg, gd){
+    var out = {front: [], back: []};
+    if((g.sport || "NFL") !== "NFL" || !liveStarted(lg) || !lg.espn_id) return out;
+    function wait(pane, what){
+      pane.appendChild(el("div", "bb-empty", gd === undefined ? "Loading " + what + "…" : "No " + what + " for this game right now."));
+    }
+    out.front.push({key: "plays", label: "Plays", render: function(pane){
+      if(gd && gd.plays && gd.plays.length) playsEl(pane, g, gd); else wait(pane, "plays");
+    }});
+    out.back.push({key: "box", label: "Box", render: function(pane){
+      if(gd && ((gd.team_stats || []).length || (gd.box || []).length)) boxEl(pane, g, gd); else wait(pane, "box score");
+    }});
+    out.back.push({key: "scoring", label: "Scoring", render: function(pane){
+      if(gd && gd.scoring && gd.scoring.length) scoringEl(pane, g, gd);
+      else pane.appendChild(el("div", "bb-empty", gd === undefined ? "Loading scoring…" : "No points yet."));
+    }});
+    return out;
+  }
+  function qName(q){ return q > 4 ? "Overtime" : ["1st", "2nd", "3rd", "4th"][q - 1] + " quarter"; }
+  function playsEl(pane, g, gd){
+    var list = gd.plays, SHOW = 30, lastQ = null;
+    (playsAll ? list : list.slice(0, SHOW)).forEach(function(p){
+      if(p.q && p.q !== lastQ){ pane.appendChild(el("div", "gp-q", escapeHtml(qName(p.q)))); lastQ = p.q; }
+      var big = !p.scoring && p.yards != null && p.yards >= 20;
+      var tag = p.scoring ? "Score · " + p.away_score + "–" + p.home_score : big ? "+" + p.yards + " yds" : (p.type || "");
+      pane.appendChild(el("div", "gp-play" + (p.scoring ? " score" : big ? " big" : ""),
+        '<div class="gp-pt">' + (p.team ? teamBadge("NFL", p.team) : '') + '<span class="gp-tag">' + escapeHtml(tag) + '</span>' +
+        '<span class="gp-dd">' + escapeHtml(p.down || "") + '</span><span class="gp-clk">' + escapeHtml(p.clock || "") + '</span></div>' +
+        '<p>' + escapeHtml(p.text) + '</p>'));
+    });
+    if(!playsAll && list.length > SHOW){
+      var more = el("button", "secondary pr-more", "Show earlier plays (" + (list.length - SHOW) + ")");
+      more.type = "button";
+      more.addEventListener("click", function(){ playsAll = true; pane.innerHTML = ""; playsEl(pane, g, gd); });
+      pane.appendChild(more);
+    }
+    pane.appendChild(el("p", "faint", "Play-by-play from ESPN, unofficial. Updates about every 20 seconds."));
+  }
+  var BOX_COLS = {Passing: ["C/ATT", "YDS", "TD", "INT"], Rushing: ["CAR", "YDS", "AVG", "TD"], Receiving: ["REC", "YDS", "TD", "TGTS"]};
+  function boxEl(pane, g, gd){
+    if((gd.team_stats || []).length){
+      pane.appendChild(el("div", "gp-tbl gp-ts", '<div class="gp-tr gp-th"><span>' + escapeHtml(g.away_team) + '</span><span></span><span>' +
+        escapeHtml(g.home_team) + '</span></div>' + gd.team_stats.map(function(r){
+          return '<div class="gp-tr"><span>' + escapeHtml(r.away) + '</span><span class="gp-lab">' + escapeHtml(r.label) + '</span><span>' + escapeHtml(r.home) + '</span></div>';
+        }).join("")));
+    }
+    (gd.box || []).forEach(function(b){
+      var want = BOX_COLS[b.group] || [], idx = want.map(function(c){ return b.labels.indexOf(c); }).filter(function(i){ return i >= 0; });
+      if(!idx.length) idx = b.labels.slice(0, 4).map(function(_, i){ return i; });
+      var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + idx.length + ', minmax(40px, auto))';
+      pane.appendChild(el("div", "gp-tbl gp-box", '<div class="gp-tr gp-th" style="' + cols + '"><span>' + escapeHtml(b.team + " " + b.group) + '</span>' +
+        idx.map(function(i){ return '<span>' + escapeHtml(b.labels[i]) + '</span>'; }).join("") + '</div>' +
+        b.rows.map(function(r){
+          return '<div class="gp-tr" style="' + cols + '"><span class="gp-nm">' + escapeHtml(r.name) + '</span>' +
+            idx.map(function(i){ return '<span>' + escapeHtml(r.stats[i] == null ? "" : r.stats[i]) + '</span>'; }).join("") + '</div>';
+        }).join("")));
+    });
+  }
+  function scoringEl(pane, g, gd){
+    gd.scoring.forEach(function(p){
+      pane.appendChild(el("div", "gp-play gp-sc",
+        '<div class="gp-pt">' + (p.team ? teamBadge("NFL", p.team) : '') + '<span class="gp-tag">' + escapeHtml((p.type || "Score") + (p.q ? " · " + (p.q > 4 ? "OT" : "Q" + p.q) : "") + (p.clock ? " " + p.clock : "")) + '</span>' +
+        '<span class="gp-clk">' + escapeHtml(g.away_team + " " + p.away_score + " – " + g.home_team + " " + p.home_score) + '</span></div>' +
+        '<p>' + escapeHtml(p.text) + '</p>'));
+    });
+  }
+  // The field (NFL, live): away end zone on the left. Spots are yards from the away goal line (functions/api/live.js).
+  function fieldTrackerEl(g, lg){
+    if((g.sport || "NFL") !== "NFL" || !lg || lg.state !== "in") return "";
+    var gd = gameDetailFor(lg);
+    var sit = lg.situation || (gd && gd.situation);
+    if(!sit || sit.spot == null) return "";
+    var off = sit.offense || lg.possession;
+    if(off !== g.away_team && off !== g.home_team) return "";
+    var right = off === g.away_team;                       // the away team drives toward the home end zone
+    function clamp(v){ return Math.max(0, Math.min(100, v)); }
+    function X(v){ return (24 + clamp(v) * 3.12).toFixed(1); }
+    var spot = clamp(sit.spot), fd = null;
+    if(sit.down > 0 && sit.distance > 0) fd = clamp(right ? spot + sit.distance : spot - sit.distance);
+    var drv = gd && gd.drive && gd.drive.offense === off && gd.drive.start != null && !gd.drive.result ? gd.drive : null;
+    function ez(code, x){
+      var c = (TEAM_COLORS.NFL || {})[code] || "#555";
+      return '<rect x="' + x + '" y="0" width="24" height="64" fill="' + c + '"/>' +
+        '<text x="' + (x + 12) + '" y="32" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" dominant-baseline="middle" transform="rotate(' + (x ? 90 : -90) + ' ' + (x + 12) + ' 32)">' + escapeHtml(code) + '</text>';
+    }
+    var lines = "", labels = "";
+    for(var yd = 10; yd <= 90; yd += 10){
+      lines += '<line x1="' + X(yd) + '" x2="' + X(yd) + '" y1="6" y2="46"/>';
+      labels += '<text x="' + X(yd) + '" y="58">' + (yd > 50 ? 100 - yd : yd) + '</text>';
+    }
+    var where = sit.down > 0 && sit.text ? sit.text + (sit.spot_text ? " · " + sit.spot_text : "") : (sit.spot_text ? "Ball on " + sit.spot_text : "");
+    var driveTxt = drv ? (drv.summary || ((drv.plays != null ? drv.plays + " plays" : "") + (drv.yards != null ? " · " + drv.yards + " yds" : ""))) : "";
+    var last = sit.last_play || (gd && gd.plays && gd.plays[0] ? gd.plays[0].text : "");
+    var svg = '<svg class="ft-field" viewBox="0 0 360 64" role="img" aria-label="' + escapeHtml(off + " ball" + (where ? ", " + where : "")) + '">' +
+      '<rect x="0" y="0" width="360" height="64" rx="8" fill="var(--surface-2)"/>' + ez(g.away_team, 0) + ez(g.home_team, 336) +
+      '<g stroke="var(--line-strong)" stroke-width="1">' + lines + '</g>' +
+      '<g fill="var(--ink-faint)" font-size="9" text-anchor="middle" font-family="var(--font-mono)">' + labels + '</g>' +
+      (drv ? '<rect x="' + X(Math.min(drv.start, spot)) + '" y="24" width="' + Math.abs(X(spot) - X(drv.start)).toFixed(1) + '" height="4" rx="2" fill="var(--accent)" opacity=".45"/>' : '') +
+      (fd != null ? '<line class="ft-fd" x1="' + X(fd) + '" x2="' + X(fd) + '" y1="3" y2="49" stroke="var(--accent)" stroke-width="2.5"/>' : '') +
+      '<line x1="' + X(spot) + '" x2="' + X(spot) + '" y1="3" y2="49" stroke="var(--ink)" stroke-width="1.5"/>' +
+      '<ellipse class="ft-ball" cx="' + X(spot) + '" cy="26" rx="7" ry="4.5" fill="#8B4A1C" stroke="var(--ink)" stroke-width="1.2"/>' +
+      '<path d="M' + X(right ? spot + 2.6 : spot - 2.6) + ' 26 l' + (right ? '' : '-') + '4 0" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    return '<div class="ft">' + svg + '<div class="ft-row"><b>' + escapeHtml(off + " ball" + (where ? " · " + where : "")) + '</b>' +
+      (sit.red_zone ? '<span class="pill bad">Red zone</span>' : '') + '<span class="faint">' + escapeHtml(driveTxt) + '</span></div>' +
+      (last ? '<div class="ft-last">' + escapeHtml(last) + '</div>' : '') + '</div>';
   }
 
   // ---------- sportsbook look: odds grid per matchup ----------
@@ -3113,13 +3308,15 @@
   function propLabeledCount(doc){ return Object.keys(propBestEdges(doc)).length; }
   function propKalshiTwoSided(r){ return r.kb != null && r.ka != null && r.ka > 0 && r.ka < 1 && r.kb > 0; }
 
-  function buildMatchupTabs(det, g, doc, gamePane){
+  // extra = {front: [...], back: [...]} game-page tabs ({key, label, render(pane)}) around the lines and props tabs.
+  function buildMatchupTabs(det, g, doc, gamePane, extra){
     var k = gameKey(g);
-    var rows = propRows(doc);
+    extra = extra || {front: [], back: []};
     var have = {};
-    rows.forEach(function(r){ have[r.stat] = true; });
-    var tabs = [{key: "game", label: "Game lines"}, {key: "top", label: "Top props"}].concat(
-      propCats(doc).filter(function(c){ return c.stats.some(function(s){ return have[s]; }); }));
+    if(doc) propRows(doc).forEach(function(r){ have[r.stat] = true; });
+    var tabs = extra.front.concat([{key: "game", label: "Picks & lines"}],
+      doc ? [{key: "top", label: "Top props"}].concat(propCats(doc).filter(function(c){ return c.stats.some(function(s){ return have[s]; }); })) : [],
+      extra.back);
     var bar = el("div", "sb-tabs");
     var pane = el("div", "sb-pane");
     det.appendChild(bar); det.appendChild(pane);
@@ -3128,6 +3325,8 @@
       Array.prototype.forEach.call(bar.children, function(b){ b.classList.toggle("active", b.dataset.k === key); });
       pane.innerHTML = "";
       if(key === "game"){ pane.appendChild(gamePane); setTimeout(initWheels, 0); return; }
+      var x = extra.front.concat(extra.back).filter(function(t){ return t.key === key; })[0];
+      if(x){ x.render(pane); return; }
       if(propStarted(doc)) pane.appendChild(el("div", "faint", "This game has started, so these prop prices are from before kickoff."));
       if(key === "top") renderTopProps(pane, doc, g);
       else renderPropCat(pane, doc, propCats(doc).filter(function(c){ return c.key === key; })[0], g);
@@ -3140,7 +3339,7 @@
       if(!b || !pane.contains(b)) return;
       if(ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
       ev.preventDefault(); ev.stopPropagation();
-      if(propStarted(doc)){ slipToast("This game has started"); return; }
+      if(doc && propStarted(doc)){ slipToast("This game has started"); return; }
       try{ toggleSlipLeg(JSON.parse(b.getAttribute("data-leg")), b); }catch(e){}
     }
     pane.addEventListener("click", onLeg);
@@ -3151,7 +3350,7 @@
       b.addEventListener("click", function(ev){ ev.stopPropagation(); show(t.key); });
       bar.appendChild(b);
     });
-    show(openTabs[k] && tabs.some(function(t){ return t.key === openTabs[k]; }) ? openTabs[k] : "game");
+    show(openTabs[k] && tabs.some(function(t){ return t.key === openTabs[k]; }) ? openTabs[k] : (extra.front.length ? extra.front[0].key : "game"));
   }
 
   function renderTopProps(box, doc, g){
@@ -4201,7 +4400,7 @@
     var f = typeof fastScores !== "undefined" && fastScores[sport] ? fastScores[sport].filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] : null;
     if(!f || (base && base.state === "post" && f.state !== "post")) return base;      // never step back from a final
     var o = Object.assign({}, base || {picks: []}, {state: f.state, detail: f.detail, away_score: f.away_score, home_score: f.home_score,
-      possession: f.possession, espn_id: f.id, fast: true});
+      possession: f.possession, espn_id: f.id, situation: f.situation || null, fast: true});
     if(fastBox[f.id]) o._box = fastBox[f.id];
     var fl = fastLines[gameKey(g)];
     if(fl && fl.points && fl.points.length > 1){                 // fresher graph + live money line, any sport
@@ -4283,7 +4482,8 @@
     Promise.all(sports.map(function(sp){
       return fastGet("sport=" + sp.toLowerCase()).then(function(d){ if(d && d.games) fastScores[sp] = d.games; });
     })).then(function(){
-      var boxes = boxGamesNow().map(function(b){
+      var gpLg = gamePage && !panels.game.hidden ? liveFor(gamePage.g) : null, gpId = gpLg && gpLg.espn_id;
+      var boxes = boxGamesNow().filter(function(b){ return !(b.sport === "NFL" && b.id === gpId); }).map(function(b){
         return fastGet("sport=" + b.sport.toLowerCase() + "&event=" + b.id).then(function(d){
           if(!d || !d.players) return;
           var m = {};
@@ -4297,10 +4497,11 @@
           .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; })
           .then(function(d){ if(d && d.points) fastLines[gameKey(g)] = {at: Date.now(), points: d.points, last: d.last}; });
       });
-      return Promise.all(boxes.concat(lines));
+      return Promise.all(boxes.concat(lines, [loadGameDetail()]));
     }).then(function(){
       if(fastOff) return;
       renderLive();
+      renderGamePage();
       if(currentSport === "CFB" && !panels.home.hidden) renderHome();
       var anyLive = Object.keys(fastScores).some(function(sp){ return fastScores[sp].some(function(x){ return x.state === "in"; }); });
       fastTimer = setTimeout(pollFast, anyLive ? 20e3 : 60e3);
