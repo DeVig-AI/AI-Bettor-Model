@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T07:23:01Z",
+ "updated_at": "2026-10-22T23:46:33Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
  },
  "constitution": {
-  "version": "v9",
-  "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
+  "version": "v10",
+  "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -2071,23 +2071,267 @@
     "tot-pe"
    ],
    "at": "2026-10-19T04:34:10Z"
+  },
+  {
+   "text": "Signal bye-diff (spread) on top of a base model: helped in all three search periods on 2 of 3 base models; on average +0.05 / +0.05 / +0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "helped",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-comp-epa (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.07 / +0.03 / +0.09 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "helped",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal def-early-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.03 / +0.07 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:49:19Z"
+  },
+  {
+   "text": "Signal def-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.06 / -0.17 / +0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:49:19Z"
+  },
+  {
+   "text": "Signal def-pass-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.19 / -0.10 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal def-turnover-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 3); on average +0.15 / -0.01 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal def-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.08 / -0.19 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-early-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.08 / +0.07 / -0.10 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-finishing (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.04 / -0.07 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.06 / -0.32 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-seconds-per-play (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.00 / +0.01 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-success (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.01 / +0.08 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.09 / -0.35 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal def-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / +0.06 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:49:19Z"
+  },
+  {
+   "text": "Signal def-finishing (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / +0.17 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:49:19Z"
+  },
+  {
+   "text": "Signal def-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / +0.09 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal def-success (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.04 / -0.02 / +0.09 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal def-success (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal div-game (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.00 / -0.09 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-comp-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.16 / +0.18 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.13 / +0.14 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.03 / -0.00 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-pass-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.10 / +0.18 / +0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal off-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.27 / +0.01 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-success (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.00 / +0.06 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal off-turnover-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.02 / +0.04 / -0.11 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal qb-change (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / +0.00 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal rest-diff (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average +0.07 / +0.10 / +0.10 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
+  },
+  {
+   "text": "Signal short-week-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal travel-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / -0.01 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-21T00:06:00Z"
   }
  ],
  "promoted": [],
  "runs": [
   {
    "kind": "search",
-   "name": "Search paused: menu exhausted",
-   "started_at": "2026-10-21T07:23:00Z",
-   "finished_at": "2026-10-21T07:23:00Z",
+   "name": "Search round 298 (NFL, running)",
+   "started_at": "2026-10-22T23:36:32Z",
+   "finished_at": null,
    "duration_s": null,
-   "run_number": null,
-   "run_url": null,
-   "summary": "all 179,929 configurations on the menu scored; waiting for new menu values or signals",
+   "run_number": 2279,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39872863731",
+   "summary": "1,599 of 2,925 models scored on 2006–2016",
    "funnel": [
     {
      "label": "models scored",
-     "count": 179929
+     "count": 1599
+    },
+    {
+     "label": "planned this round",
+     "count": 2925
     }
    ],
    "steps": []
@@ -2356,7 +2600,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-21T07:23:14Z",
+   "updated_at": "2026-10-22T23:46:49Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -2370,8 +2614,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
    },
    "constitution": {
-    "version": "v9",
-    "sha256": "537eba342e24ccd71885a3c98358ad8e51b40b811b7e8210813e205b0ece0f9e"
+    "version": "v10",
+    "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -2387,7 +2631,112 @@
     "exam_budget_total": 3
    },
    "candidates": [],
-   "lessons": [],
+   "lessons": [
+    {
+     "text": "Signal def-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
+     "kind": "helped",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal def-points-per-play (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
+     "kind": "helped",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal def-ppa (spread) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.26 / +0.02 / +0.00 pts in 2018 / 2019 / 2021.",
+     "kind": "helped",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.07 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.",
+     "kind": "helped",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal def-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.07 / +0.16 / -0.13 pts in 2018 / 2019 / 2021.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal def-points-per-play (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.24 / +0.27 / -0.12 pts in 2018 / 2019 / 2021.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.04 / -0.02 / -0.06 pts in 2018 / 2019 / 2021.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-points-per-play (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.05 / +0.16 / -0.03 pts in 2018 / 2019 / 2021.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.37 / +0.45 / -0.28 pts in 2018 / 2019 / 2021.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal def-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.03 / +0.00 / +0.11 pts in 2018 / 2019 / 2021.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.04 / +0.00 pts in 2018 / 2019 / 2021.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-points-per-play (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.06 / -0.07 / -0.53 pts in 2018 / 2019 / 2021.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    },
+    {
+     "text": "Signal off-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / +0.01 / -0.69 pts in 2018 / 2019 / 2021.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2018–2021 only",
+     "at": "2026-10-21T00:51:16Z"
+    }
+   ],
    "promoted": [],
    "runs": [
     {

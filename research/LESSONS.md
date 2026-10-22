@@ -1,16 +1,19 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-21T07:23:01Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-22T23:46:33Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
+- Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2006–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
 
-## Helped (3)
+## Helped (5)
 
 - Plain Elo, slower (K 10) vs Plain Elo: helped in every gate (+0.13 / +0.30 / +0.01 pts in 2016–18 / 2019–21 / 2022–24).
 - + Stronger preseason reversion vs Plain Elo: helped in every gate (+0.20 / +0.20 / +0.36 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency, fast (half-life 4) vs Pace × efficiency totals: helped in every gate (+0.51 / +0.06 / +0.11 pts in 2016–18 / 2019–21 / 2022–24).
+- Signal bye-diff (spread) on top of a base model: helped in all three search periods on 2 of 3 base models; on average +0.05 / +0.05 / +0.07 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-comp-epa (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.07 / +0.03 / +0.09 pts in 2006–09 / 2010–13 / 2014–16.
 
-## Faded (7)
+## Faded (18)
 
 - 538-style combination vs Plain Elo: helped in 2016–18, then faded (+0.14 / +0.05 / -0.26 pts in 2016–18 / 2019–21 / 2022–24).
 - + Rest / bye bonus vs Plain Elo: helped in 2016–18, then faded (+0.08 / -0.02 / +0.00 pts in 2016–18 / 2019–21 / 2022–24).
@@ -19,8 +22,19 @@ _Generated 2026-10-21T07:23:01Z by research/lab/report.py after each run. **Expl
 - + Market-resistant K vs Plain Elo: helped in 2016–18, then faded (+0.63 / +0.48 / -0.20 pts in 2016–18 / 2019–21 / 2022–24).
 - Blend of 2: s-3770bfc8 + s-6f3641ca vs the line-only baseline: helped in 2017–19, then faded (+0.55 / +0.73 / -1.30 pts in 2017–19 / 2020–22 / 2023–24).
 - Blend of 2: s-473e5379 + s-8a5f816b vs the line-only baseline: helped in 2017–19, then faded (+0.62 / +0.00 / -0.83 pts in 2017–19 / 2020–22 / 2023–24).
+- Signal def-early-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.03 / +0.07 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.06 / -0.17 / +0.01 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-pass-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.19 / -0.10 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-turnover-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 3); on average +0.15 / -0.01 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.08 / -0.19 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-early-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.08 / +0.07 / -0.10 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-finishing (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.04 / -0.07 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.06 / -0.32 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-seconds-per-play (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.00 / +0.01 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-success (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 3); on average +0.01 / +0.08 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 1); on average +0.09 / -0.35 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.
 
-## No effect (10)
+## No effect (27)
 
 - Plain Elo vs the line-only baseline: no consistent effect (+0.25 / -0.87 / +0.89 pts in 2016–18 / 2019–21 / 2022–24).
 - + Home field that changes over time vs Plain Elo: no consistent effect (-0.02 / +0.40 / -0.39 pts in 2016–18 / 2019–21 / 2022–24).
@@ -32,6 +46,23 @@ _Generated 2026-10-21T07:23:01Z by research/lab/report.py after each run. **Expl
 - + EPA per play as efficiency vs Pace × efficiency totals: no consistent effect (-0.29 / +0.49 / -1.04 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency, slow (half-life 16) vs Pace × efficiency totals: no consistent effect (-0.00 / +0.40 / +0.16 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency totals vs the line-only baseline: no consistent effect (-0.39 / -0.81 / -0.30 pts in 2016–18 / 2019–21 / 2022–24).
+- Signal def-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / +0.06 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-finishing (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / +0.17 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / +0.09 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-success (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.04 / -0.02 / +0.09 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal def-success (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal div-game (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.00 / -0.09 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-comp-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.16 / +0.18 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.13 / +0.14 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.03 / -0.00 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-pass-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.10 / +0.18 / +0.03 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.27 / +0.01 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-success (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.00 / +0.06 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal off-turnover-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.02 / +0.04 / -0.11 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal qb-change (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / +0.00 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal rest-diff (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average +0.07 / +0.10 / +0.10 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal short-week-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.
+- Signal travel-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.09 / -0.01 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.
 
 ## What the search learned (182,581 configurations, 2006–2016 only)
 

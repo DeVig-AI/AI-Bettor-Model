@@ -1,0 +1,402 @@
+# Research Lab search (NFL) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c).
+# Written by research/lab/search.py from search-season scores only; append-only, never edit.
+generations:
+- generation: 1
+  at: '2026-10-22T23:36:52Z'
+  round: 298
+  ladders:
+    bye_elo:
+    - 18
+    - 32
+    - 55
+    carry:
+    - 0.75
+    - 0.85
+    - 1.0
+    def_weight:
+    - 0.0
+    - 0.375
+    - 0.625
+    halflife:
+    - 20
+    - 28
+    - 40
+    hfa_pts:
+    - 0.5
+    - 1.25
+    - 1.75
+    k:
+    - 28
+    - 35
+    - 50
+    margin_cap:
+    - 24
+    - 32
+    - 42
+    market_blend:
+    - 0.125
+    - 0.375
+    market_resist:
+    - 0.375
+    - 1.127
+    - 2.252
+    prior_w:
+    - 1.5
+    - 2.5
+    - 3.5
+    revert:
+    - 0.0667
+    - 0.2666
+    - 0.3667
+    season_carry:
+    - 0.45
+    - 0.55
+    - 0.85
+    - 1.0
+    travel_elo_per_1000mi:
+    - 3
+    - 6
+    - 12
+  signals:
+  - id: off-finishing~h4
+    kind: team
+    side: offense
+    num: &id001
+      points: 1
+      epa: -1
+    den: null
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of off-finishing (half-life 4, carry 0.5): Points scored beyond what EPA explains (red-zone
+      finishing, short fields): partly luck that may not repeat.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h16
+    kind: team
+    side: offense
+    num: *id001
+    den: null
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of off-finishing (half-life 16, carry 0.5): Points scored beyond what EPA explains (red-zone
+      finishing, short fields): partly luck that may not repeat.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~c0.3
+    kind: team
+    side: offense
+    num: *id001
+    den: null
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of off-finishing (half-life 8, carry 0.3): Points scored beyond what EPA explains (red-zone
+      finishing, short fields): partly luck that may not repeat.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~c0.7
+    kind: team
+    side: offense
+    num: *id001
+    den: null
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of off-finishing (half-life 8, carry 0.7): Points scored beyond what EPA explains (red-zone
+      finishing, short fields): partly luck that may not repeat.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-success~h4
+    kind: team
+    side: offense
+    num: &id002
+      succ: 1
+    den: plays
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of off-success (half-life 4, carry 0.5): Success rate is a steadier read of an offense than
+      points or yards.'
+    variant_of: off-success
+    markets:
+    - spread
+    - total
+  - id: off-success~h16
+    kind: team
+    side: offense
+    num: *id002
+    den: plays
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of off-success (half-life 16, carry 0.5): Success rate is a steadier read of an offense than
+      points or yards.'
+    variant_of: off-success
+    markets:
+    - spread
+    - total
+  - id: off-success~c0.3
+    kind: team
+    side: offense
+    num: *id002
+    den: plays
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of off-success (half-life 8, carry 0.3): Success rate is a steadier read of an offense than
+      points or yards.'
+    variant_of: off-success
+    markets:
+    - spread
+    - total
+  - id: off-success~c0.7
+    kind: team
+    side: offense
+    num: *id002
+    den: plays
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of off-success (half-life 8, carry 0.7): Success rate is a steadier read of an offense than
+      points or yards.'
+    variant_of: off-success
+    markets:
+    - spread
+    - total
+  - id: def-finishing~h4
+    kind: team
+    side: defense
+    num: &id003
+      points: 1
+      epa: -1
+    den: null
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of def-finishing (half-life 4, carry 0.5): Points allowed beyond what EPA allowed explains
+      (red-zone stands, short fields given up): red-zone defense is one of the least stable parts of defense from year to
+      year, so it is partly luck that may not repeat.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~h16
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of def-finishing (half-life 16, carry 0.5): Points allowed beyond what EPA allowed explains
+      (red-zone stands, short fields given up): red-zone defense is one of the least stable parts of defense from year to
+      year, so it is partly luck that may not repeat.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~c0.3
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of def-finishing (half-life 8, carry 0.3): Points allowed beyond what EPA allowed explains
+      (red-zone stands, short fields given up): red-zone defense is one of the least stable parts of defense from year to
+      year, so it is partly luck that may not repeat.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~c0.7
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of def-finishing (half-life 8, carry 0.7): Points allowed beyond what EPA allowed explains
+      (red-zone stands, short fields given up): red-zone defense is one of the least stable parts of defense from year to
+      year, so it is partly luck that may not repeat.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-success~h4
+    kind: team
+    side: defense
+    num: &id004
+      succ: 1
+    den: plays
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of def-success (half-life 4, carry 0.5): Success rate allowed: how often a defense lets opponents
+      stay on schedule.'
+    variant_of: def-success
+    markets:
+    - spread
+    - total
+  - id: def-success~h16
+    kind: team
+    side: defense
+    num: *id004
+    den: plays
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of def-success (half-life 16, carry 0.5): Success rate allowed: how often a defense lets opponents
+      stay on schedule.'
+    variant_of: def-success
+    markets:
+    - spread
+    - total
+  - id: def-success~c0.3
+    kind: team
+    side: defense
+    num: *id004
+    den: plays
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of def-success (half-life 8, carry 0.3): Success rate allowed: how often a defense lets opponents
+      stay on schedule.'
+    variant_of: def-success
+    markets:
+    - spread
+    - total
+  - id: def-success~c0.7
+    kind: team
+    side: defense
+    num: *id004
+    den: plays
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of def-success (half-life 8, carry 0.7): Success rate allowed: how often a defense lets opponents
+      stay on schedule.'
+    variant_of: def-success
+    markets:
+    - spread
+    - total
+  - id: def-early-epa~h4
+    kind: team
+    side: defense
+    num: &id005
+      early_epa: 1
+    den: early_plays
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of def-early-epa (half-life 4, carry 0.5): Early-down EPA allowed per play: defenses that win
+      first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.'
+    variant_of: def-early-epa
+    markets:
+    - spread
+    - total
+  - id: def-early-epa~h16
+    kind: team
+    side: defense
+    num: *id005
+    den: early_plays
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of def-early-epa (half-life 16, carry 0.5): Early-down EPA allowed per play: defenses that
+      win first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.'
+    variant_of: def-early-epa
+    markets:
+    - spread
+    - total
+  - id: def-early-epa~c0.3
+    kind: team
+    side: defense
+    num: *id005
+    den: early_plays
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of def-early-epa (half-life 8, carry 0.3): Early-down EPA allowed per play: defenses that win
+      first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.'
+    variant_of: def-early-epa
+    markets:
+    - spread
+    - total
+  - id: def-early-epa~c0.7
+    kind: team
+    side: defense
+    num: *id005
+    den: early_plays
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of def-early-epa (half-life 8, carry 0.7): Early-down EPA allowed per play: defenses that win
+      first and second down force obvious passing downs, and early-down efficiency is steadier than third-down results.'
+    variant_of: def-early-epa
+    markets:
+    - spread
+    - total
+  - id: def-turnover-epa~h4
+    kind: team
+    side: defense
+    num: &id006
+      epa: 1
+      noto_epa: -1
+    den: plays
+    halflife: 4
+    carry: 0.5
+    reason: 'Automatic variant of def-turnover-epa (half-life 4, carry 0.5): Takeaway EPA per play by the defense: forced
+      turnovers are partly luck and regress.'
+    variant_of: def-turnover-epa
+    markets:
+    - spread
+    - total
+  - id: def-turnover-epa~h16
+    kind: team
+    side: defense
+    num: *id006
+    den: plays
+    halflife: 16
+    carry: 0.5
+    reason: 'Automatic variant of def-turnover-epa (half-life 16, carry 0.5): Takeaway EPA per play by the defense: forced
+      turnovers are partly luck and regress.'
+    variant_of: def-turnover-epa
+    markets:
+    - spread
+    - total
+  - id: def-turnover-epa~c0.3
+    kind: team
+    side: defense
+    num: *id006
+    den: plays
+    halflife: 8.0
+    carry: 0.3
+    reason: 'Automatic variant of def-turnover-epa (half-life 8, carry 0.3): Takeaway EPA per play by the defense: forced
+      turnovers are partly luck and regress.'
+    variant_of: def-turnover-epa
+    markets:
+    - spread
+    - total
+  - id: def-turnover-epa~c0.7
+    kind: team
+    side: defense
+    num: *id006
+    den: plays
+    halflife: 8.0
+    carry: 0.7
+    reason: 'Automatic variant of def-turnover-epa (half-life 8, carry 0.7): Takeaway EPA per play by the defense: forced
+      turnovers are partly luck and regress.'
+    variant_of: def-turnover-epa
+    markets:
+    - spread
+    - total
+  signal_bases:
+    spread:
+    - type: srs
+      params:
+        carry: 0.6
+        hfa_pts: 3.5
+        margin_cap: 35
+        prior_w: 4
+    total:
+    - type: team_rating
+      params:
+        def_weight: 0.25
+        halflife: 16
+        metric: early_epa
+        pace: seconds
+        season_carry: 0.9
+  signal_sets: 1
