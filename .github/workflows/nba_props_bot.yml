@@ -30,6 +30,9 @@ jobs:
       - name: Score props with the frozen v2 model, paper-lock, grade (v1's live test closed 2026-10-22)
         continue-on-error: true
         run: python3 nba/nba_props_model_v2_live.py
+      - name: v3 shadow -- lock v3's chances next to v2 (no picks; NBA_PROPS_MODEL_V3_SHADOW)
+        continue-on-error: true
+        run: python3 nba/nba_props_model_v3_shadow.py
       - name: Save the exports and the paper log
         if: always()
         run: |
@@ -38,6 +41,7 @@ jobs:
           [ -f nba/props_exchanges_export.json ] && git add nba/props_exchanges_export.json
           [ -f nba/props_model_export.json ] && git add nba/props_model_export.json
           [ -f nba/NBA_PROPS_MODEL_V2_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V2_LOG.sqlite3
+          [ -f nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3
           git diff --cached --quiet || git commit -m "NBA props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
           exit 1
