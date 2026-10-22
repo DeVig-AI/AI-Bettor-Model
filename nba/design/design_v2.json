@@ -1,0 +1,471 @@
+{
+ "doc": "NBA_PROPS_DESIGN_V2",
+ "test_seasons": [
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "train_span": 6,
+ "min_prev": 5,
+ "ladder": {
+  "points": [
+   9.5,
+   14.5,
+   19.5,
+   24.5,
+   29.5,
+   34.5,
+   39.5
+  ],
+  "rebounds": [
+   3.5,
+   4.5,
+   5.5,
+   6.5,
+   7.5,
+   8.5,
+   9.5,
+   11.5
+  ],
+  "assists": [
+   1.5,
+   2.5,
+   3.5,
+   4.5,
+   5.5,
+   6.5,
+   7.5,
+   9.5
+  ],
+  "threes": [
+   0.5,
+   1.5,
+   2.5,
+   3.5,
+   4.5,
+   5.5
+  ]
+ },
+ "params": {
+  "objective": "poisson",
+  "learning_rate": 0.05,
+  "num_leaves": 31,
+  "min_child_samples": 100,
+  "feature_fraction": 0.8,
+  "bagging_fraction": 0.8,
+  "bagging_freq": 1,
+  "verbose": -1,
+  "seed": 20261022
+ },
+ "rounds": 400,
+ "summary": {
+  "v1": {
+   "mean_logloss": 0.55009,
+   "by_stat": {
+    "points": 0.48634,
+    "rebounds": 0.53641,
+    "assists": 0.57037,
+    "threes": 0.60723
+   }
+  },
+  "v2_ratio": {
+   "mean_logloss": 0.52268,
+   "by_stat": {
+    "points": 0.4589,
+    "rebounds": 0.511,
+    "assists": 0.54056,
+    "threes": 0.58025
+   }
+  },
+  "v2_nb": {
+   "mean_logloss": 0.52661,
+   "by_stat": {
+    "points": 0.4763,
+    "rebounds": 0.51135,
+    "assists": 0.53983,
+    "threes": 0.57895
+   }
+  },
+  "v2_poisson": {
+   "mean_logloss": 0.53653,
+   "by_stat": {
+    "points": 0.5098,
+    "rebounds": 0.51485,
+    "assists": 0.54152,
+    "threes": 0.57997
+   }
+  }
+ },
+ "chosen_distribution": "v2_ratio",
+ "per_season": {
+  "points": [
+   {
+    "season": 2021,
+    "alpha": 0.298,
+    "mae_v1": 4.7049,
+    "mae_v2": 4.4754,
+    "mean_actual": 10.644,
+    "mean_v2": 10.839,
+    "rows_scored": 64937,
+    "ll": {
+     "v1": 0.48616,
+     "v2_ratio": 0.45986,
+     "v2_nb": 0.47759,
+     "v2_poisson": 0.50838
+    }
+   },
+   {
+    "season": 2022,
+    "alpha": 0.303,
+    "mae_v1": 4.7684,
+    "mae_v2": 4.5463,
+    "mean_actual": 10.5921,
+    "mean_v2": 10.7621,
+    "rows_scored": 73493,
+    "ll": {
+     "v1": 0.48752,
+     "v2_ratio": 0.46281,
+     "v2_nb": 0.47849,
+     "v2_poisson": 0.51452
+    }
+   },
+   {
+    "season": 2023,
+    "alpha": 0.3131,
+    "mae_v1": 4.8471,
+    "mae_v2": 4.5533,
+    "mean_actual": 11.0231,
+    "mean_v2": 11.1991,
+    "rows_scored": 75856,
+    "ll": {
+     "v1": 0.48474,
+     "v2_ratio": 0.45482,
+     "v2_nb": 0.47403,
+     "v2_poisson": 0.50229
+    }
+   },
+   {
+    "season": 2024,
+    "alpha": 0.298,
+    "mae_v1": 4.7222,
+    "mae_v2": 4.455,
+    "mean_actual": 10.8027,
+    "mean_v2": 10.8212,
+    "rows_scored": 75620,
+    "ll": {
+     "v1": 0.48251,
+     "v2_ratio": 0.45452,
+     "v2_nb": 0.47256,
+     "v2_poisson": 0.50541
+    }
+   },
+   {
+    "season": 2025,
+    "alpha": 0.298,
+    "mae_v1": 4.8362,
+    "mae_v2": 4.5515,
+    "mean_actual": 10.7724,
+    "mean_v2": 10.7964,
+    "rows_scored": 75334,
+    "ll": {
+     "v1": 0.49081,
+     "v2_ratio": 0.46278,
+     "v2_nb": 0.4791,
+     "v2_poisson": 0.51841
+    }
+   }
+  ],
+  "rebounds": [
+   {
+    "season": 2021,
+    "alpha": 0.0966,
+    "mae_v1": 1.9745,
+    "mae_v2": 1.8798,
+    "mean_actual": 4.1986,
+    "mean_v2": 4.2788,
+    "rows_scored": 103534,
+    "ll": {
+     "v1": 0.53671,
+     "v2_ratio": 0.51234,
+     "v2_nb": 0.51231,
+     "v2_poisson": 0.51572
+    }
+   },
+   {
+    "season": 2022,
+    "alpha": 0.0966,
+    "mae_v1": 2.0079,
+    "mae_v2": 1.8997,
+    "mean_actual": 4.2451,
+    "mean_v2": 4.3072,
+    "rows_scored": 118487,
+    "ll": {
+     "v1": 0.53401,
+     "v2_ratio": 0.50884,
+     "v2_nb": 0.50906,
+     "v2_poisson": 0.51177
+    }
+   },
+   {
+    "season": 2023,
+    "alpha": 0.1017,
+    "mae_v1": 1.9962,
+    "mae_v2": 1.8786,
+    "mean_actual": 4.1805,
+    "mean_v2": 4.2279,
+    "rows_scored": 115638,
+    "ll": {
+     "v1": 0.53571,
+     "v2_ratio": 0.50908,
+     "v2_nb": 0.50968,
+     "v2_poisson": 0.51321
+    }
+   },
+   {
+    "season": 2024,
+    "alpha": 0.1017,
+    "mae_v1": 1.9561,
+    "mae_v2": 1.8422,
+    "mean_actual": 4.1174,
+    "mean_v2": 4.1034,
+    "rows_scored": 113527,
+    "ll": {
+     "v1": 0.53576,
+     "v2_ratio": 0.51031,
+     "v2_nb": 0.51072,
+     "v2_poisson": 0.51401
+    }
+   },
+   {
+    "season": 2025,
+    "alpha": 0.0966,
+    "mae_v1": 2.0054,
+    "mae_v2": 1.8885,
+    "mean_actual": 4.1701,
+    "mean_v2": 4.1694,
+    "rows_scored": 116091,
+    "ll": {
+     "v1": 0.53995,
+     "v2_ratio": 0.51458,
+     "v2_nb": 0.5151,
+     "v2_poisson": 0.51969
+    }
+   }
+  ],
+  "assists": [
+   {
+    "season": 2021,
+    "alpha": 0.0866,
+    "mae_v1": 1.3285,
+    "mae_v2": 1.273,
+    "mean_actual": 2.3396,
+    "mean_v2": 2.4208,
+    "rows_scored": 69995,
+    "ll": {
+     "v1": 0.56947,
+     "v2_ratio": 0.54093,
+     "v2_nb": 0.54085,
+     "v2_poisson": 0.54242
+    }
+   },
+   {
+    "season": 2022,
+    "alpha": 0.0866,
+    "mae_v1": 1.3488,
+    "mae_v2": 1.2852,
+    "mean_actual": 2.354,
+    "mean_v2": 2.4128,
+    "rows_scored": 80070,
+    "ll": {
+     "v1": 0.57538,
+     "v2_ratio": 0.54453,
+     "v2_nb": 0.54388,
+     "v2_poisson": 0.54596
+    }
+   },
+   {
+    "season": 2023,
+    "alpha": 0.0916,
+    "mae_v1": 1.3523,
+    "mae_v2": 1.2857,
+    "mean_actual": 2.4339,
+    "mean_v2": 2.5098,
+    "rows_scored": 82393,
+    "ll": {
+     "v1": 0.5659,
+     "v2_ratio": 0.5345,
+     "v2_nb": 0.53423,
+     "v2_poisson": 0.53519
+    }
+   },
+   {
+    "season": 2024,
+    "alpha": 0.0715,
+    "mae_v1": 1.3998,
+    "mae_v2": 1.3268,
+    "mean_actual": 2.5143,
+    "mean_v2": 2.5418,
+    "rows_scored": 86233,
+    "ll": {
+     "v1": 0.56899,
+     "v2_ratio": 0.54169,
+     "v2_nb": 0.54016,
+     "v2_poisson": 0.54205
+    }
+   },
+   {
+    "season": 2025,
+    "alpha": 0.0866,
+    "mae_v1": 1.3993,
+    "mae_v2": 1.3264,
+    "mean_actual": 2.4966,
+    "mean_v2": 2.5568,
+    "rows_scored": 86928,
+    "ll": {
+     "v1": 0.57207,
+     "v2_ratio": 0.54124,
+     "v2_nb": 0.54025,
+     "v2_poisson": 0.5422
+    }
+   }
+  ],
+  "threes": [
+   {
+    "season": 2021,
+    "alpha": 0.1319,
+    "mae_v1": 0.8865,
+    "mae_v2": 0.8569,
+    "mean_actual": 1.206,
+    "mean_v2": 1.2402,
+    "rows_scored": 46415,
+    "ll": {
+     "v1": 0.60902,
+     "v2_ratio": 0.57957,
+     "v2_nb": 0.57891,
+     "v2_poisson": 0.57964
+    }
+   },
+   {
+    "season": 2022,
+    "alpha": 0.1168,
+    "mae_v1": 0.8992,
+    "mae_v2": 0.873,
+    "mean_actual": 1.1926,
+    "mean_v2": 1.2567,
+    "rows_scored": 52711,
+    "ll": {
+     "v1": 0.60751,
+     "v2_ratio": 0.58124,
+     "v2_nb": 0.58061,
+     "v2_poisson": 0.58242
+    }
+   },
+   {
+    "season": 2023,
+    "alpha": 0.1419,
+    "mae_v1": 0.8991,
+    "mae_v2": 0.8634,
+    "mean_actual": 1.1872,
+    "mean_v2": 1.22,
+    "rows_scored": 51836,
+    "ll": {
+     "v1": 0.60579,
+     "v2_ratio": 0.57874,
+     "v2_nb": 0.5771,
+     "v2_poisson": 0.5782
+    }
+   },
+   {
+    "season": 2024,
+    "alpha": 0.1419,
+    "mae_v1": 0.8961,
+    "mae_v2": 0.8609,
+    "mean_actual": 1.2138,
+    "mean_v2": 1.225,
+    "rows_scored": 53399,
+    "ll": {
+     "v1": 0.60533,
+     "v2_ratio": 0.58006,
+     "v2_nb": 0.5781,
+     "v2_poisson": 0.57861
+    }
+   },
+   {
+    "season": 2025,
+    "alpha": 0.1168,
+    "mae_v1": 0.9367,
+    "mae_v2": 0.8961,
+    "mean_actual": 1.2784,
+    "mean_v2": 1.2956,
+    "rows_scored": 54934,
+    "ll": {
+     "v1": 0.60864,
+     "v2_ratio": 0.58147,
+     "v2_nb": 0.57996,
+     "v2_poisson": 0.58088
+    }
+   }
+  ]
+ },
+ "top_features_by_gain": {
+  "points": {
+   "points_e20": 0.6469,
+   "usage_e5": 0.1637,
+   "usage_e20": 0.0923,
+   "vac_pts": 0.0164,
+   "last_min": 0.0112,
+   "points_e5": 0.006,
+   "days_since": 0.0052,
+   "minutes_e5": 0.0041,
+   "vac_reb": 0.0041,
+   "missed_10": 0.004,
+   "vac_usage": 0.004,
+   "start_rate": 0.0037
+  },
+  "rebounds": {
+   "rebounds_e20": 0.7368,
+   "rebounds_e5": 0.1142,
+   "start_rate": 0.0176,
+   "last_min": 0.0149,
+   "rebounds_pm": 0.0102,
+   "vac_reb": 0.0093,
+   "threes_pm": 0.0091,
+   "vac_pts": 0.0076,
+   "minutes_e5": 0.0072,
+   "points_e5": 0.0055,
+   "missed_10": 0.0052,
+   "minutes_e20": 0.0045
+  },
+  "assists": {
+   "assists_e20": 0.6968,
+   "assists_e5": 0.1662,
+   "assists_pm": 0.0257,
+   "usage_e20": 0.0173,
+   "minutes_e5": 0.0116,
+   "vac_ast": 0.0104,
+   "last_min": 0.0097,
+   "usage_e5": 0.0087,
+   "vac_pts": 0.0046,
+   "opp_allowed_assists": 0.0038,
+   "days_since": 0.0035,
+   "vac_usage": 0.0033
+  },
+  "threes": {
+   "fg3a_e20": 0.6608,
+   "threes_e20": 0.1987,
+   "fg3a_e5": 0.042,
+   "threes_pm": 0.0094,
+   "last_min": 0.0083,
+   "vac_pts": 0.0073,
+   "threes_e5": 0.004,
+   "opp_allowed_assists": 0.0039,
+   "start_rate": 0.0037,
+   "vac_usage": 0.0036,
+   "days_since": 0.0035,
+   "vac_min": 0.0035
+  }
+ },
+ "note": "Box scores only (2014-15 to 2024-25). No price was read."
+}
