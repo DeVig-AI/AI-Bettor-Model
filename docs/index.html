@@ -1887,11 +1887,16 @@
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
   var RS_SPORTS = ["NBA", "NHL", "NFL"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
+  var RS_FRESH = 6e5;          // a file read more than 10 minutes ago is read again (the bot rebuilds them during the day)
   function rsGet(path){
-    if(!rsCache[path]) rsCache[path] = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / 6e5), {cache: "no-store"})
-      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .catch(function(e){ delete rsCache[path]; throw e; });
-    return rsCache[path];
+    var hit = rsCache[path];
+    if(!hit || Date.now() - hit.at > RS_FRESH){
+      hit = rsCache[path] = {at: Date.now()};
+      hit.p = fetch(RS_RAW + path + "?t=" + Math.floor(Date.now() / RS_FRESH), {cache: "no-store"})
+        .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .catch(function(e){ if(rsCache[path] === hit) delete rsCache[path]; throw e; });
+    }
+    return hit.p;
   }
   function rsIndex(sp){
     return rsGet(sp.toLowerCase() + "/index.json").then(function(idx){

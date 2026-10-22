@@ -41,6 +41,7 @@ const PROPS = {sport: "NFL", generated_at: iso(now), docs: [{collection: "props_
   rows: [row("Brock Purdy", "passing_yards", 224.5, 0.7, 0.72), row("Brock Purdy", "passing_yards", 244.5, 0.49, 0.51),
          row("Brock Purdy", "passing_yards", 264.5, 0.3, 0.32), row("Christian McCaffrey", "rushing_yards", 74.5, 0.55, 0.57),
          row("George Kittle", "receiving_yards", 54.5, 0.5, 0.52), row("George Kittle", "receptions", 4.5, 0.45, 0.47)]}}]};
+let sfOverride = null;                   // what the "bot" rewrote team_SF.json to (the refresh test)
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
 const server = http.createServer((req, res) => {
   const u = new URL(req.url, "http://x");
@@ -63,6 +64,7 @@ test("team page from a logo: ranks, offense and defense, lines with recent hits"
       if (p.endsWith("/nfl/lineboard_export.json")) return r.fulfill({json: NFL});
       if (p.endsWith("/nfl/props_model_export.json")) return r.fulfill({json: PROPS});
       const m = /\/stats\/(nfl\/[\w.]+\.json)$/.exec(p);
+      if (m && m[1] === "nfl/team_SF.json" && sfOverride) return r.fulfill({json: sfOverride});
       if (m && existsSync(STATS + m[1])) return r.fulfill({json: JSON.parse(readFileSync(STATS + m[1], "utf8"))});
       return r.fulfill({status: 404, body: ""});
     });
@@ -127,6 +129,16 @@ test("team page from a logo: ranks, offense and defense, lines with recent hits"
       await rs.locator(".rs-head h3", {hasText: "Brock Purdy"}).waitFor();
       assert.equal(await pg.locator("#rsStat").inputValue(), "passing_yards");
       assert.equal(await pg.locator("#rsLine").inputValue(), "244.5");
+    });
+    await t.test("a stats file read over 10 minutes ago is read again", async () => {
+      sfOverride = Object.assign(JSON.parse(readFileSync(STATS + "nfl/team_SF.json", "utf8")), {rank: 9});
+      const open = () => pg.evaluate(() => window.devigOpenResearch({page: "team", sport: "NFL", code: "SF"}));
+      await open();
+      await rs.locator(".rs-head h3", {hasText: "San Francisco 49ers"}).waitFor();
+      assert.match(await rs.locator(".rs-head .faint").innerText(), /^#1 /, "a minute later: the copy already read");
+      await pg.evaluate(() => { const real = Date.now; Date.now = () => real() + 11 * 60e3; });
+      await open();
+      await pg.waitForFunction(() => /^#9 /.test((document.querySelector("#rsCard .rs-head .faint") || {}).textContent || ""), null, {timeout: 10000});
     });
     assert.deepEqual(errors, []);
   } finally {
