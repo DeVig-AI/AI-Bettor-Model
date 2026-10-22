@@ -43,6 +43,14 @@ Grading (the same rules for every model; nobody's self-reported record is used):
 Pushes and ties aren't counted. Records start when tracking started; earlier games aren't counted (props: since
 the props test began).
 
+Beating the close (moneyline; the measure professional bettors use, because it needs no luck to read): for each
+graded pick, Kalshi's win chance for the picked side when the pick was made against its last price before the game.
+Both are Kalshi's two asks with the vig removed (ask ratio). "When the pick was made": DeVig's own trackers store the
+Kalshi moneylines at lock; for the other models it is the Kalshi price this script saw the hour their number first
+appeared. "Last price": this script's last hourly Kalshi reading before the game (so up to an hour early). A model
+whose picks keep moving the price its way afterwards is ahead of the market; one that doesn't, isn't, whatever its
+win-loss record says while the sample is small.
+
 Usage:  python3 tools/models_compare.py [--nfl-games games.csv] [--offline] [--now ISO]
 """
 import argparse
@@ -162,6 +170,12 @@ def ml_payout(odds):
 
 def breakeven(odds):
     return None if odds is None else (100 / (odds + 100) if odds > 0 else -odds / (100 - odds))
+
+
+def novig(home_ml, away_ml):
+    """Home win chance from two American prices with the vig removed (each side's break-even over their sum)."""
+    h, a = breakeven(num(home_ml)), breakeven(num(away_ml))
+    return None if h is None or a is None or h + a <= 0 else h / (h + a)
 
 
 # ================================================================ games: what is coming up, and finals
@@ -351,7 +365,8 @@ def devig_nfl(by_id):
         if "spread_input_convention" in cols and r["spread_input_convention"] is not None \
                 and num(r["spread_edge"]) is not None and num(r["market_home_margin"]) is not None:
             line = num(r["market_home_margin"]) - num(r["spread_edge"])     # the app's pred_home_margin
-        out[gid] = {"home_wp": num(r["winner_p_home"]), "home_line": line, "at": iso(parse_t(r["lock_timestamp_utc"]))}
+        out[gid] = {"home_wp": num(r["winner_p_home"]), "home_line": line, "at": iso(parse_t(r["lock_timestamp_utc"])),
+                    "mkt_wp": r4(novig(r["home_moneyline"], r["away_moneyline"]))}
     c.close()
     return out
 
@@ -362,7 +377,8 @@ def devig_nba(by_id):
     c = ro(NBA_TRACKER)
     rows = [r for r in c.execute("SELECT * FROM picks ORDER BY lock_timestamp_utc")
             if str(r["event_id"]) in by_id and parse_t(r["lock_timestamp_utc"]) < by_id[str(r["event_id"])]["kickoff"]]
-    out = {str(k): {"home_wp": num(r["model_prob_home"]), "at": iso(parse_t(r["lock_timestamp_utc"]))}
+    out = {str(k): {"home_wp": num(r["model_prob_home"]), "at": iso(parse_t(r["lock_timestamp_utc"])),
+                    "mkt_wp": r4(novig(r["home_moneyline_kalshi"], r["away_moneyline_kalshi"]))}
            for k, r in latest_lock(rows, "event_id").items()}
     c.close()
     return out
@@ -381,7 +397,8 @@ def devig_mlb(upcoming):
     for r in c.execute("SELECT * FROM picks ORDER BY lock_timestamp_utc"):
         g = match_by_names(upcoming, r["game_date"], r["home_team_full"], r["away_team_full"])
         if g and parse_t(r["lock_timestamp_utc"]) < g["kickoff"]:
-            out.setdefault(g["game_id"], {}).update(home_wp=num(r["model_prob_home"]), at=iso(parse_t(r["lock_timestamp_utc"])))
+            out.setdefault(g["game_id"], {}).update(home_wp=num(r["model_prob_home"]), at=iso(parse_t(r["lock_timestamp_utc"])),
+                                                    mkt_wp=r4(novig(r["home_moneyline_kalshi"], r["away_moneyline_kalshi"])))
     for r in c.execute("SELECT * FROM spread_picks ORDER BY lock_timestamp_utc"):
         g = match_by_names(upcoming, r["game_date"], r["home_team_full"], r["away_team_full"])
         if not g or parse_t(r["lock_timestamp_utc"]) >= g["kickoff"] or r["spread_side_team"] is None:
@@ -505,6 +522,8 @@ def update(now, nfl_csv=None, offline=False):
                 note(f"{sport} {model}", e)
     errors.extend(f"kalshi: {x}" for x in KG.log[:10])
 
+    kal_now = {(sport, g["game_id"]): novig(v.get("home_ml"), v.get("away_ml"))
+               for sport, g, model, v in readings if model == "kalshi"}
     for sport, g, model, vals in readings:
         if now >= g["kickoff"]:
             continue
@@ -515,8 +534,15 @@ def update(now, nfl_csv=None, offline=False):
         vals = {k: (r4(v) if isinstance(v, float) else v) for k, v in vals.items()}
         at = vals.pop("at", None) or seen
         old = e["picks"].get(model)
-        if old and {k: v for k, v in old.items() if k not in ("at", "seen")} == vals:
-            continue                                    # unchanged: keep the time it was first seen
+        if old and {k: v for k, v in old.items() if k not in ("at", "seen", "mkt_wp")} == {k: v for k, v in vals.items() if k != "mkt_wp"}:
+            if old.get("mkt_wp") is None and vals.get("mkt_wp") is not None:
+                old["mkt_wp"] = vals["mkt_wp"]          # a tracker's own lock price, for a pick stored before it was read
+            continue                                    # unchanged: keep the time it was first seen (and its price)
+        if model != "kalshi" and vals.get("mkt_wp") is None:   # Kalshi's price now, as this number first appears
+            k = kal_now.get((sport, g["game_id"]))
+            if k is None:
+                k = novig((e["picks"].get("kalshi") or {}).get("home_ml"), (e["picks"].get("kalshi") or {}).get("away_ml"))
+            vals["mkt_wp"] = r4(k)
         e["picks"][model] = dict(vals, at=at, seen=seen)
 
     # games that have started: their last pre-start numbers become the graded picks
@@ -608,6 +634,38 @@ def grade_game(sport, picks, res):
     return out
 
 
+def clv(pick, close):
+    """How far Kalshi's price moved toward the picked side between the pick and the last price before the game, in
+    win-chance points (0.03 = 3 points), or None when either price or the side is missing."""
+    side = ml_side(pick)
+    if side is None or not close or pick.get("mkt_wp") is None:
+        return None
+    end = novig(close.get("home_ml"), close.get("away_ml"))
+    if end is None:
+        end = close.get("home_wp")
+    if end is None:
+        return None
+    move = end - pick["mkt_wp"]
+    return round(move if side == "home" else -move, 4)
+
+
+def tracker_prices():
+    """{(sport, game_id, lock time): Kalshi's no-vig home win chance at that lock}, from DeVig's NFL and NBA trackers:
+    the price for DeVig picks logged before this page stored it (picks.jsonl is append-only, so it is looked up)."""
+    out = {}
+    for sport, path, sql in (("NFL", NFL_TRACKER, "SELECT game_id AS g, lock_timestamp_utc AS t, home_moneyline AS h, "
+                                                 f"away_moneyline AS a FROM picks WHERE decider_version = '{NFL_DECIDER}'"),
+                             ("NBA", NBA_TRACKER, "SELECT event_id AS g, lock_timestamp_utc AS t, home_moneyline_kalshi AS h, "
+                                                 "away_moneyline_kalshi AS a FROM picks")):
+        if not path.exists():
+            continue
+        c = ro(path)
+        for r in c.execute(sql):
+            out[(sport, str(r["g"]), iso(parse_t(r["t"])))] = r4(novig(r["h"], r["a"]))
+        c.close()
+    return out
+
+
 def props_rows(sport):
     """DeVig props model v1 (its whole live record: props have no other model to compare on the same games) and the
     market bar (average price paid), graded from the model's own log."""
@@ -657,6 +715,16 @@ def export(now):
                 if be is not None:
                     t["be"].append(be)
 
+    moves, locks = {}, tracker_prices()            # (sport, model) -> [CLV per pick], every game that started
+    for (sport, gid), x in by_game.items():
+        for model, p in x["picks"].items():
+            if model != "kalshi":
+                if model == "devig" and p.get("mkt_wp") is None:
+                    p = dict(p, mkt_wp=locks.get((sport, gid, p.get("at"))))
+                c = clv(p, x["picks"].get("kalshi"))
+                if c is not None:
+                    moves.setdefault((sport, model), []).append(c)
+
     sports = {}
     for sport in SPORTS:
         tabs = {}
@@ -690,6 +758,13 @@ def export(now):
                         row["breakeven"] = round(sum(t["be"]) / len(t["be"]), 4)
                 rows.append(row)
             tabs[bet] = rows
+        tabs["close"] = []
+        for m in MODELS:
+            mv = moves.get((sport, m["key"]))
+            if sport in m["sports"] and m["key"] != "kalshi" and m["key"] in COVERS[sport]["ml"]:
+                tabs["close"].append({"key": m["key"], "name": m["name"], "n": len(mv or []),
+                                      "beat": sum(1 for c in mv or [] if c > 0), "same": sum(1 for c in mv or [] if c == 0),
+                                      "avg": round(sum(mv) / len(mv), 4) if mv else None})
         sports[sport] = tabs
 
     # the page's game list: upcoming (latest.json) and the last few days (picks.jsonl)
