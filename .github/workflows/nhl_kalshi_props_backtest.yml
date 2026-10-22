@@ -27,7 +27,7 @@ jobs:
         with: {ref: '${{ github.ref_name }}'}
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - name: Collect settled Kalshi NHL goals / assists / points props + pre-puck-drop prices (no keys, nothing bet; short first job = early check; v6 AWAY-at-HOME Anytime Goal wording)
+      - name: Collect settled Kalshi NHL goals / assists / points props + pre-puck-drop prices (no keys, nothing bet; short first job = early check; v7 Anytime Goal wording with no strike set)
         env: {MAX_MINUTES: '15'}
         run: python3 nhl/kalshi_props_history_v1.py
       - if: always()

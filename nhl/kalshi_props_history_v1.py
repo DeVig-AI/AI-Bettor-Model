@@ -56,7 +56,8 @@ def anytime(m):
     if ok and t.lower().endswith(": anytime goalscorer"):
         return t[: -len(": anytime goalscorer")].strip()
     i = t.lower().rfind(": anytime goal: ")                  # earliest wording: "AWAY at HOME: Anytime Goal: Name"
-    if ok and i >= 0 and t[i + len(": anytime goal: "):].strip():
+    early = m.get("strike_type") == "structured" and m.get("floor_strike") is None   # the first weeks: no strike set
+    if (ok or early) and i >= 0 and t[i + len(": anytime goal: "):].strip():
         return t[i + len(": anytime goal: "):].strip()
     return None
 
