@@ -5678,7 +5678,7 @@
             pick_history: pickHistory(), player_props_paper_test: propsAskContext()};
   }
   function propsAskContext(){
-    var r = propsReport, picks = [], nba = propsReports.NBA_PROPS_MODEL_V1;
+    var r = propsReport, picks = [], nba = propsReports.NBA_PROPS_MODEL_V2 || propsReports.NBA_PROPS_MODEL_V1;
     // The free chat (smaller AI, shared daily allowance) gets the upcoming games' picks only.
     propsDocs.filter(function(d){ return !window.devigAskCompact || !propStarted(d); }).forEach(function(d){ (d.paper_picks || []).forEach(function(p){
       picks.push(docSport(d) + " " + propGameLabel(d) + ": " + p.player + " " + p.side + " " + p.line + " " + propStat(p.stat) + ", at " + exOddsTxt(p.price, true) + " (fee included), model " + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + "% for that side");
