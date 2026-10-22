@@ -133,8 +133,11 @@ test("lab page on a phone", async (t) => {
     await t.test("sport switch (college football)", async () => {
       scenario = "sports";
       await pg.getByRole("button", {name: "Refresh"}).click();
-      await pg.locator(".sports").waitFor();
-      assert.deepEqual(await pg.locator(".sports .chip").allInnerTexts(), ["NFL", "College football"]);
+      await pg.getByRole("tab", {name: "College football"}).waitFor();
+      assert.deepEqual(await pg.locator(".sports .chip").allInnerTexts(), ["NFL", "College football", "MLB", "NBA", "NHL"]);
+      await pg.getByRole("tab", {name: "NBA"}).click();
+      assert.match(await pg.locator("main").innerText(), /NBA testing chamber[\s\S]*Under construction/i);
+      assert.equal(await pg.locator(".sumcard").count(), 0);
       await pg.getByRole("tab", {name: "College football"}).click();
       assert.match(await pg.locator(".sumcard .kicker").innerText(), /Research · CFB/i);
       assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["2", "0", "0"]);

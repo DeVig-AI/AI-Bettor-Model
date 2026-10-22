@@ -581,10 +581,27 @@ export const PAGE = `<!doctype html>
     var by = top.by_sport || {};
     return labSport && labSport !== top.sport && by[labSport] ? by[labSport] : top;
   }
+  // Testing chambers on the way: shown as tabs now, "Under construction" until the lab writes their status.
+  var PLANNED_SPORTS = [{key: "MLB", name: "MLB"}, {key: "NBA", name: "NBA"}, {key: "NHL", name: "NHL"}];
+  function sportList(top){
+    var list = ((top && top.sports) || []).slice();
+    PLANNED_SPORTS.forEach(function(p){ if (!list.some(function(x){ return x.key === p.key; })) list.push(p); });
+    return list;
+  }
+  function underConstruction(top){                 // the chosen sport is a planned chamber with no lab status yet
+    if (!labSport || !top || labSport === top.sport || (top.by_sport || {})[labSport]) return null;
+    return PLANNED_SPORTS.filter(function(p){ return p.key === labSport; })[0] || null;
+  }
+  function viewUnderConstruction(p){
+    return '<section class="card empty" aria-label="' + esc(p.name) + ' testing chamber"><div class="kicker">' + esc(p.name) + ' testing chamber</div>' +
+      '<b>Under construction</b><p>The ' + esc(p.name) + ' lab isn’t running yet. Its search, confirmation gates and lessons show up here ' +
+      'once it has data, a menu and its own Part of the Constitution.</p></section>';
+  }
   function viewSports(top){
-    var list = (top && top.sports) || [];
+    var list = sportList(top);
     if (list.length < 2) return "";
-    var cur = sportStatus(top).sport || top.sport;
+    var uc = underConstruction(top);
+    var cur = uc ? uc.key : (sportStatus(top).sport || top.sport);
     return '<div class="chips sports" role="tablist" aria-label="Sport">' + list.map(function(x){
       return '<button type="button" role="tab" class="chip' + (x.key === cur ? " on" : "") + '" aria-selected="' + (x.key === cur) +
         '" data-sport="' + esc(x.key) + '">' + esc(x.name) + '</button>';
@@ -602,8 +619,9 @@ export const PAGE = `<!doctype html>
       return '<div class="card empty"><b>Couldn’t read research/status.json</b><p>' + esc((r && r.error) || "") + '</p></div>';
     if (!s) return '<section class="card empty" aria-label="Research"><div class="kicker">Research</div><b>Lab hasn’t run yet</b>' +
       '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
+    var uc = underConstruction(top);
     return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
-      viewSports(top) + viewSummary(s) + viewAttempts(s) + viewTabs(s, data.github);
+      viewSports(top) + (uc ? viewUnderConstruction(uc) : viewSummary(s) + viewAttempts(s) + viewTabs(s, data.github));
   }
   function viewTabs(s, g){
     var nNew = (s.lessons || []).filter(isNew).length;
