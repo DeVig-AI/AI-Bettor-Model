@@ -1,0 +1,503 @@
+{
+ "doc": "NBA_PROPS_KALSHI_BACKTEST_V2",
+ "prereg_sha256": "4e5091b7359af39db08f1dda38ff94002309c77eea83faf5cff72c5312cec01d",
+ "script_sha256": "82446974b967bb77bc12e466c8f29be187ac828cce62e3bb035f1d1350a5afa2",
+ "model_sha256": "43799e78650c7d17616f793caabe639c70a1f9bd7e5157cd33c01fc8daa69527",
+ "funnel": {
+  "collected": 91444,
+  "settled_yes_no": 87803,
+  "nba_game_types_modeled_stat": 87803,
+  "after_dedup": 87803,
+  "player_unmatched": 8,
+  "model_chance_exists": 87795,
+  "v1_scored_four_stats": 77307,
+  "v2_status": {
+   "no_pid": 8,
+   "not_in_box": 84,
+   "out_dnp": 0,
+   "ok": 77215
+  },
+  "v2_chance_exists": 77215,
+  "no_gap_set": 25131,
+  "main_set": 24497
+ },
+ "test1": {
+  "rows": 24497,
+  "games": 964,
+  "yes_rate": 0.4132,
+  "v2_p_logloss": 0.56342,
+  "mid_logloss": 0.55592,
+  "diff_v2_p_minus_mid": 0.0075,
+  "diff_95ci": [
+   0.00454,
+   0.01047
+  ],
+  "verdict": "KALSHI MORE RIGHT",
+  "by_stat": {
+   "points": {
+    "rows": 10417,
+    "games": 923,
+    "yes_rate": 0.4,
+    "v2_p_logloss": 0.54811,
+    "mid_logloss": 0.5377,
+    "diff_v2_p_minus_mid": 0.01042,
+    "diff_95ci": [
+     0.00622,
+     0.0146
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "rebounds": {
+    "rows": 5391,
+    "games": 817,
+    "yes_rate": 0.4558,
+    "v2_p_logloss": 0.59445,
+    "mid_logloss": 0.58697,
+    "diff_v2_p_minus_mid": 0.00748,
+    "diff_95ci": [
+     0.00154,
+     0.01335
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "assists": {
+    "rows": 4181,
+    "games": 774,
+    "yes_rate": 0.432,
+    "v2_p_logloss": 0.58766,
+    "mid_logloss": 0.57921,
+    "diff_v2_p_minus_mid": 0.00845,
+    "diff_95ci": [
+     0.0015,
+     0.01547
+    ],
+    "verdict": "KALSHI MORE RIGHT"
+   },
+   "threes": {
+    "rows": 4508,
+    "games": 674,
+    "yes_rate": 0.3756,
+    "v2_p_logloss": 0.53919,
+    "mid_logloss": 0.53931,
+    "diff_v2_p_minus_mid": -0.00012,
+    "diff_95ci": [
+     -0.0062,
+     0.00596
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   }
+  },
+  "by_month": {
+   "2025-11": {
+    "rows": 36,
+    "games": 18,
+    "yes_rate": 0.6944,
+    "v2_p_logloss": 0.65609,
+    "mid_logloss": 0.62309,
+    "diff_v2_p_minus_mid": 0.03301,
+    "diff_95ci": [
+     -0.00408,
+     0.07451
+    ],
+    "verdict": "INCONCLUSIVE"
+   },
+   "2025-12": {
+    "rows": 963,
+    "games": 152,
+    "yes_rate": 0.4901,
+    "v2_p_logloss": 0.61646,
+    "mid_logloss": 0.59257,
+    "diff_v2_p_minus_mid": 0.02389,
+    "diff_95ci": [
+     0.00958,
+     0.03863
+    ],
+    "verdict": "KALSHI"
+   },
+   "2026-01": {
+    "rows": 2900,
+    "games": 217,
+    "yes_rate": 0.4128,
+    "v2_p_logloss": 0.57564,
+    "mid_logloss": 0.57467,
+    "diff_v2_p_minus_mid": 0.00097,
+    "diff_95ci": [
+     -0.00735,
+     0.0094
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "2026-02": {
+    "rows": 3151,
+    "games": 157,
+    "yes_rate": 0.4195,
+    "v2_p_logloss": 0.58607,
+    "mid_logloss": 0.5708,
+    "diff_v2_p_minus_mid": 0.01528,
+    "diff_95ci": [
+     0.00608,
+     0.02473
+    ],
+    "verdict": "KALSHI"
+   },
+   "2026-03": {
+    "rows": 7239,
+    "games": 238,
+    "yes_rate": 0.436,
+    "v2_p_logloss": 0.58874,
+    "mid_logloss": 0.57991,
+    "diff_v2_p_minus_mid": 0.00883,
+    "diff_95ci": [
+     0.00419,
+     0.01365
+    ],
+    "verdict": "KALSHI"
+   },
+   "2026-04": {
+    "rows": 5750,
+    "games": 139,
+    "yes_rate": 0.4078,
+    "v2_p_logloss": 0.55917,
+    "mid_logloss": 0.55185,
+    "diff_v2_p_minus_mid": 0.00731,
+    "diff_95ci": [
+     0.00067,
+     0.01374
+    ],
+    "verdict": "KALSHI"
+   },
+   "2026-05": {
+    "rows": 3591,
+    "games": 38,
+    "yes_rate": 0.364,
+    "v2_p_logloss": 0.50131,
+    "mid_logloss": 0.50158,
+    "diff_v2_p_minus_mid": -0.00027,
+    "diff_95ci": [
+     -0.00717,
+     0.00723
+    ],
+    "verdict": "TOO CLOSE TO CALL"
+   },
+   "2026-06": {
+    "rows": 867,
+    "games": 5,
+    "yes_rate": 0.3449,
+    "v2_p_logloss": 0.45148,
+    "mid_logloss": 0.44744,
+    "diff_v2_p_minus_mid": 0.00404,
+    "diff_95ci": [
+     -0.0018,
+     0.0108
+    ],
+    "verdict": "INCONCLUSIVE"
+   }
+  }
+ },
+ "test2": {
+  "rows": 25131,
+  "games": 964,
+  "yes_rate": 0.4156,
+  "v2_p_logloss": 0.5687,
+  "v1_p_logloss": 0.59967,
+  "diff_v2_p_minus_v1_p": -0.03097,
+  "diff_95ci": [
+   -0.03611,
+   -0.02606
+  ],
+  "verdict": "V2 MORE RIGHT",
+  "by_stat": {
+   "points": {
+    "rows": 10720,
+    "games": 927,
+    "yes_rate": 0.4027,
+    "v2_p_logloss": 0.55411,
+    "v1_p_logloss": 0.58962,
+    "diff_v2_p_minus_v1_p": -0.03551,
+    "diff_95ci": [
+     -0.04328,
+     -0.02798
+    ],
+    "verdict": "V2"
+   },
+   "rebounds": {
+    "rows": 5526,
+    "games": 821,
+    "yes_rate": 0.4566,
+    "v2_p_logloss": 0.59771,
+    "v1_p_logloss": 0.62551,
+    "diff_v2_p_minus_v1_p": -0.02779,
+    "diff_95ci": [
+     -0.03541,
+     -0.02045
+    ],
+    "verdict": "V2"
+   },
+   "assists": {
+    "rows": 4321,
+    "games": 778,
+    "yes_rate": 0.4342,
+    "v2_p_logloss": 0.59612,
+    "v1_p_logloss": 0.62638,
+    "diff_v2_p_minus_v1_p": -0.03026,
+    "diff_95ci": [
+     -0.04158,
+     -0.01936
+    ],
+    "verdict": "V2"
+   },
+   "threes": {
+    "rows": 4564,
+    "games": 675,
+    "yes_rate": 0.3788,
+    "v2_p_logloss": 0.54189,
+    "v1_p_logloss": 0.56673,
+    "diff_v2_p_minus_v1_p": -0.02483,
+    "diff_95ci": [
+     -0.03303,
+     -0.01666
+    ],
+    "verdict": "V2"
+   }
+  }
+ },
+ "test3": {
+  "all": {
+   "count": 4006,
+   "games": 782,
+   "win_rate": 0.4289,
+   "avg_cost": 0.4344,
+   "avg_ev": 0.0935,
+   "profit_sum": -22.045,
+   "cost_sum": 1740.045,
+   "roi": -0.0127,
+   "roi_95ci": [
+    -0.0464,
+    0.0206
+   ],
+   "verdict": "NOT SHOWN PROFITABLE"
+  },
+  "by_side": {
+   "OVER": {
+    "count": 1270,
+    "games": 560,
+    "win_rate": 0.3528,
+    "avg_cost": 0.379,
+    "avg_ev": 0.0886,
+    "profit_sum": -33.299,
+    "cost_sum": 481.299,
+    "roi": -0.0692,
+    "roi_95ci": [
+     -0.1343,
+     -0.0039
+    ]
+   },
+   "UNDER": {
+    "count": 2736,
+    "games": 660,
+    "win_rate": 0.4642,
+    "avg_cost": 0.4601,
+    "avg_ev": 0.0958,
+    "profit_sum": 11.254,
+    "cost_sum": 1258.746,
+    "roi": 0.0089,
+    "roi_95ci": [
+     -0.03,
+     0.0483
+    ]
+   }
+  },
+  "by_stat": {
+   "points": {
+    "count": 1578,
+    "games": 651,
+    "win_rate": 0.3999,
+    "avg_cost": 0.4201,
+    "avg_ev": 0.0931,
+    "profit_sum": -31.873,
+    "cost_sum": 662.873,
+    "roi": -0.0481,
+    "roi_95ci": [
+     -0.1022,
+     0.0039
+    ]
+   },
+   "rebounds": {
+    "count": 954,
+    "games": 512,
+    "win_rate": 0.4151,
+    "avg_cost": 0.4324,
+    "avg_ev": 0.0932,
+    "profit_sum": -16.537,
+    "cost_sum": 412.537,
+    "roi": -0.0401,
+    "roi_95ci": [
+     -0.1111,
+     0.0317
+    ]
+   },
+   "assists": {
+    "count": 826,
+    "games": 495,
+    "win_rate": 0.4492,
+    "avg_cost": 0.4424,
+    "avg_ev": 0.0954,
+    "profit_sum": 5.564,
+    "cost_sum": 365.436,
+    "roi": 0.0152,
+    "roi_95ci": [
+     -0.0606,
+     0.0905
+    ]
+   },
+   "threes": {
+    "count": 648,
+    "games": 378,
+    "win_rate": 0.4938,
+    "avg_cost": 0.4617,
+    "avg_ev": 0.0928,
+    "profit_sum": 20.8,
+    "cost_sum": 299.2,
+    "roi": 0.0695,
+    "roi_95ci": [
+     -0.0068,
+     0.1503
+    ]
+   }
+  }
+ },
+ "test4a": {
+  "rows": 19605,
+  "games": 496,
+  "yes_rate": 0.4108,
+  "blend_p_logloss": 0.55109,
+  "mid_logloss": 0.552,
+  "diff_blend_p_minus_mid": -0.00091,
+  "diff_95ci": [
+   -0.00169,
+   -0.00012
+  ],
+  "verdict": "BLEND MORE RIGHT",
+  "a": -0.0382,
+  "b": 0.8473,
+  "c": 0.1391,
+  "c_95ci": [
+   -0.1119,
+   0.3802
+  ],
+  "learning_rows": 5526,
+  "learning_games": 468,
+  "split": "2026-02-15"
+ },
+ "test4b": {
+  "threshold": 0.03,
+  "learning_grid": {
+   "0.02": {
+    "count": 3,
+    "games": 2,
+    "win_rate": 0.0,
+    "avg_cost": 0.5628,
+    "avg_ev": 0.0256,
+    "profit_sum": -1.688,
+    "cost_sum": 1.688,
+    "roi": -1.0,
+    "roi_95ci": [
+     -1.0,
+     -1.0
+    ]
+   },
+   "0.03": {
+    "count": 0
+   },
+   "0.04": {
+    "count": 0
+   },
+   "0.06": {
+    "count": 0
+   }
+  },
+  "test": {
+   "count": 41,
+   "games": 30,
+   "win_rate": 0.5366,
+   "avg_cost": 0.4929,
+   "avg_ev": 0.0421,
+   "profit_sum": 1.791,
+   "cost_sum": 20.209,
+   "roi": 0.0886,
+   "roi_95ci": [
+    -0.1868,
+    0.3832
+   ],
+   "verdict": "INCONCLUSIVE"
+  }
+ },
+ "info_only": {
+  "test1_on_v1_main_set": {
+   "rows": 21489,
+   "games": 956,
+   "yes_rate": 0.3992,
+   "v2_p_logloss": 0.55094,
+   "mid_logloss": 0.5447,
+   "diff_v2_p_minus_mid": 0.00624,
+   "diff_95ci": [
+    0.00336,
+    0.00922
+   ],
+   "verdict": "KALSHI"
+  },
+  "test1_v1_on_v1_main_set": {
+   "rows": 21489,
+   "games": 956,
+   "yes_rate": 0.3992,
+   "v1_p_logloss": 0.56283,
+   "mid_logloss": 0.5447,
+   "diff_v1_p_minus_mid": 0.01813,
+   "diff_95ci": [
+    0.01387,
+    0.0224
+   ],
+   "verdict": "KALSHI"
+  },
+  "test1_no_gap_set": {
+   "rows": 25131,
+   "games": 964,
+   "yes_rate": 0.4156,
+   "v2_p_logloss": 0.5687,
+   "mid_logloss": 0.55831,
+   "diff_v2_p_minus_mid": 0.0104,
+   "diff_95ci": [
+    0.00678,
+    0.01415
+   ],
+   "verdict": "KALSHI"
+  },
+  "late_news_check_no_fresh_absence": {
+   "rows": 14109,
+   "games": 620,
+   "yes_rate": 0.4039,
+   "v2_p_logloss": 0.55044,
+   "mid_logloss": 0.54601,
+   "diff_v2_p_minus_mid": 0.00443,
+   "diff_95ci": [
+    0.0006,
+    0.00824
+   ],
+   "verdict": "KALSHI"
+  },
+  "late_news_check_with_fresh_absence": {
+   "rows": 10388,
+   "games": 655,
+   "yes_rate": 0.426,
+   "v2_p_logloss": 0.58104,
+   "mid_logloss": 0.56938,
+   "diff_v2_p_minus_mid": 0.01166,
+   "diff_95ci": [
+    0.0072,
+    0.01612
+   ],
+   "verdict": "KALSHI"
+  }
+ },
+ "decision": "V2 REPLACES V1; NO NBA PROP MODEL HAS BEATEN KALSHI'S PRICES"
+}
