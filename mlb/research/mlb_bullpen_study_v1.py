@@ -123,7 +123,7 @@ def bullpen_features(p):
     p["date"] = pd.to_datetime(p["date"].astype(str), format="%Y%m%d", errors="coerce")
     p = p[p.date.dt.year.isin(list(SEASONS)) & p.gametype.isin(["regular", "R"])]
     games = p.groupby(["gid", "team"], as_index=False).agg(date=("date", "first"), number=("number", "first"))
-    rel = p[p.p_gs == 0].groupby(["gid", "team"], as_index=False).agg(outs=("p_ipouts", "sum"), er=("p_er", "sum"))
+    rel = p[p.p_gs != 1].groupby(["gid", "team"], as_index=False).agg(outs=("p_ipouts", "sum"), er=("p_er", "sum"))
     t = games.merge(rel, on=["gid", "team"], how="left").fillna({"outs": 0.0, "er": 0.0})
     t = t.sort_values(["team", "date", "number", "gid"]).reset_index(drop=True)
     out = []
@@ -217,8 +217,17 @@ def main():
         for side in ("home", "away"):
             df = df.merge(bp.rename(columns={"team": f"{side}_team", "bp_era15": f"{side}_bp_era15", "bp_outs3": f"{side}_bp_outs3"}),
                           on=["gid", f"{side}_team"], how="left")
-        out.update(relief_rows=int((pd.to_numeric(p.p_gs, errors="coerce") == 0).sum()), games=int(len(df)),
-                   games_with_bullpen=int(df.home_bp_outs3.notna().sum()))
+        gs = pd.to_numeric(p.p_gs, errors="coerce")
+        out.update(relief_rows=int((gs != 1).sum()), games=int(len(df)),
+                   games_with_bullpen=int(df.home_bp_era15.notna().sum()), pitching_columns=list(p.columns)[:60],
+                   p_gs_values={str(k): int(v) for k, v in gs.value_counts(dropna=False).head(10).items()})
+        win = p[pd.to_datetime(p["date"].astype(str), format="%Y%m%d", errors="coerce").dt.year.isin(list(SEASONS))]
+        per_game = float((pd.to_numeric(win.p_gs, errors="coerce") == 1).sum() / max(win.gid.nunique(), 1))
+        out["starters_per_game"] = round(per_game, 3)
+        if not 1.9 <= per_game <= 2.1:
+            raise RuntimeError(f"starters aren't marked p_gs = 1 ({per_game:.2f} per game): can't tell relievers apart")
+        if not out["relief_rows"] or not out["games_with_bullpen"]:
+            raise RuntimeError("no relief-pitcher rows: the bullpen features would be empty, so nothing is compared")
         out["results"] = run(df)
     except Exception as e:
         out["error"] = f"{type(e).__name__}: {e}"[:500]
