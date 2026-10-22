@@ -1,9 +1,58 @@
 {
  "study": "MLB_BULLPEN_STUDY_V1",
- "run_at": "2026-10-22T21:32:12Z",
- "relief_rows": 0,
+ "run_at": "2026-10-22T21:44:12Z",
+ "relief_rows": 823514,
  "games": 33561,
  "games_with_bullpen": 33561,
+ "pitching_columns": [
+  "gid",
+  "id",
+  "team",
+  "p_seq",
+  "stattype",
+  "p_ipouts",
+  "p_noout",
+  "p_bfp",
+  "p_h",
+  "p_d",
+  "p_t",
+  "p_hr",
+  "p_r",
+  "p_er",
+  "p_w",
+  "p_iw",
+  "p_k",
+  "p_hbp",
+  "p_wp",
+  "p_bk",
+  "p_sh",
+  "p_sf",
+  "p_sb",
+  "p_cs",
+  "p_pb",
+  "wp",
+  "lp",
+  "save",
+  "p_gs",
+  "p_gf",
+  "p_cg",
+  "date",
+  "number",
+  "site",
+  "vishome",
+  "opp",
+  "win",
+  "loss",
+  "tie",
+  "gametype",
+  "box",
+  "pbp"
+ ],
+ "p_gs_values": {
+  "nan": 823514,
+  "1.0": 450739
+ },
+ "starters_per_game": 2.0,
  "results": {
   "seasons": {
    "2015": {
@@ -15,8 +64,8 @@
     },
     "c_plus_bullpen": {
      "games": 2226,
-     "log_loss": 0.68611,
-     "brier": 0.24648,
+     "log_loss": 0.68631,
+     "brier": 0.24659,
      "accuracy": 0.5566
     }
    },
@@ -29,9 +78,9 @@
     },
     "c_plus_bullpen": {
      "games": 2239,
-     "log_loss": 0.68677,
-     "brier": 0.24683,
-     "accuracy": 0.5529
+     "log_loss": 0.68654,
+     "brier": 0.24672,
+     "accuracy": 0.5561
     }
    },
    "2017": {
@@ -43,9 +92,9 @@
     },
     "c_plus_bullpen": {
      "games": 2234,
-     "log_loss": 0.68148,
-     "brier": 0.24424,
-     "accuracy": 0.5577
+     "log_loss": 0.68123,
+     "brier": 0.24412,
+     "accuracy": 0.5533
     }
    },
    "2018": {
@@ -57,9 +106,9 @@
     },
     "c_plus_bullpen": {
      "games": 2187,
-     "log_loss": 0.67807,
-     "brier": 0.24255,
-     "accuracy": 0.5793
+     "log_loss": 0.67788,
+     "brier": 0.24246,
+     "accuracy": 0.572
     }
    },
    "2019": {
@@ -71,9 +120,9 @@
     },
     "c_plus_bullpen": {
      "games": 2172,
-     "log_loss": 0.6799,
-     "brier": 0.24345,
-     "accuracy": 0.5806
+     "log_loss": 0.68092,
+     "brier": 0.24393,
+     "accuracy": 0.5764
     }
    },
    "2020": {
@@ -85,9 +134,9 @@
     },
     "c_plus_bullpen": {
      "games": 751,
-     "log_loss": 0.67711,
-     "brier": 0.24209,
-     "accuracy": 0.5766
+     "log_loss": 0.67655,
+     "brier": 0.24182,
+     "accuracy": 0.5779
     }
    },
    "2021": {
@@ -99,9 +148,9 @@
     },
     "c_plus_bullpen": {
      "games": 2161,
-     "log_loss": 0.67995,
-     "brier": 0.24348,
-     "accuracy": 0.5659
+     "log_loss": 0.67986,
+     "brier": 0.24344,
+     "accuracy": 0.5655
     }
    },
    "2022": {
@@ -113,9 +162,9 @@
     },
     "c_plus_bullpen": {
      "games": 2195,
-     "log_loss": 0.67879,
-     "brier": 0.24285,
-     "accuracy": 0.5763
+     "log_loss": 0.67845,
+     "brier": 0.24268,
+     "accuracy": 0.5745
     }
    },
    "2023": {
@@ -127,9 +176,9 @@
     },
     "c_plus_bullpen": {
      "games": 2167,
-     "log_loss": 0.68945,
-     "brier": 0.24816,
-     "accuracy": 0.5293
+     "log_loss": 0.68931,
+     "brier": 0.24808,
+     "accuracy": 0.533
     }
    },
    "2024": {
@@ -141,9 +190,9 @@
     },
     "c_plus_bullpen": {
      "games": 2185,
-     "log_loss": 0.68615,
-     "brier": 0.24651,
-     "accuracy": 0.557
+     "log_loss": 0.68632,
+     "brier": 0.2466,
+     "accuracy": 0.5538
     }
    },
    "2025": {
@@ -155,9 +204,9 @@
     },
     "c_plus_bullpen": {
      "games": 2180,
-     "log_loss": 0.68306,
-     "brier": 0.24503,
-     "accuracy": 0.5482
+     "log_loss": 0.68361,
+     "brier": 0.24529,
+     "accuracy": 0.5463
     }
    }
   },
@@ -170,32 +219,34 @@
    },
    "c_plus_bullpen": {
     "games": 22697,
-    "log_loss": 0.68279,
-    "brier": 0.24487,
-    "accuracy": 0.5609
+    "log_loss": 0.68283,
+    "brier": 0.24489,
+    "accuracy": 0.5594
    }
   },
-  "log_loss_change": -0.0,
+  "log_loss_change": 5e-05,
   "log_loss_change_ci95": [
-   -0.0,
-   0.0
+   -0.00018,
+   0.00027
   ],
-  "seasons_better": 0,
+  "seasons_better": 7,
   "seasons_tested": 11,
   "helps": false,
   "coef_all_years_scaled": {
-   "home_trail15_rs": 0.0606,
-   "home_trail15_ra": -0.0827,
-   "away_trail15_rs": -0.0739,
-   "away_trail15_ra": 0.0966,
-   "home_sp_trail5_era": -0.0196,
-   "home_sp_trail5_kbb": 0.1069,
-   "away_sp_trail5_era": 0.0138,
-   "away_sp_trail5_kbb": -0.0987,
-   "home_rest_days": -0.0103,
-   "away_rest_days": 0.0099,
-   "home_bp_era15": 0.0,
-   "home_bp_outs3": 0.0
+   "home_trail15_rs": 0.0598,
+   "home_trail15_ra": -0.095,
+   "away_trail15_rs": -0.0746,
+   "away_trail15_ra": 0.0725,
+   "home_sp_trail5_era": -0.019,
+   "home_sp_trail5_kbb": 0.1048,
+   "away_sp_trail5_era": 0.017,
+   "away_sp_trail5_kbb": -0.1002,
+   "home_rest_days": -0.0072,
+   "away_rest_days": 0.0122,
+   "home_bp_era15": 0.0159,
+   "home_bp_outs3": 0.0026,
+   "away_bp_era15": 0.0318,
+   "away_bp_outs3": 0.013
   }
  },
  "download_log": [
