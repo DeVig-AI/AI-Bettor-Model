@@ -272,6 +272,12 @@
   .gp-ts .gp-tr span:last-child{text-align:right;} .gp-lab{text-align:center; color:var(--ink-soft); font-family:var(--font-sans);}
   .gp-box .gp-tr span:not(:first-child){text-align:right;}
   .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .gp-st .gp-nm{font-weight:600;}
+  .ct{margin-top:12px;}
+  .ct-court{display:block; width:100%; height:auto;}
+  .ct-key{display:inline-flex; align-items:center; gap:5px; font-weight:600;}
+  .ct-key i{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .ft-row .ct-run{margin-left:auto;} .ct .ft-row .faint{margin-left:0;}
   .pick-row{display:flex; justify-content:space-between; align-items:center; gap:10px; width:100%; background:none; border:none;
     border-top:1px solid var(--line); color:var(--ink); font:inherit; text-align:left; padding:8px 0; cursor:pointer;}
   .pick-row:hover{background:var(--surface-2);}
@@ -2962,7 +2968,7 @@
       : '<span><span class="pill neutral">FINAL</span></span>';
     var more = !opts.more ? '' : '<span class="game-more">' + (started && lg.state === "in" ? "Live game ›" : (pdoc ? "Lines & props ›" : "Details ›")) + '</span>';
     var html = '<div class="sb-top">' + when + '<span>' + (tags && !started && !over ? tags + ' ' : '') + (over ? '' : trkBtn("g", k)) + '</span></div>' +
-      sbGrid(g, d, started ? lg : null) + (started ? fieldTrackerEl(g, lg) + liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
+      sbGrid(g, d, started ? lg : null) + (started ? fieldTrackerEl(g, lg, !opts.more) + (opts.more ? '' : courtTrackerEl(g, lg)) + liveChartEl(g, lg) + (adv ? liveOddsEl(g, lg) : '') : '') +
       '<div class="game-sum">' + chips.join("") + more + '</div>';
     return {html: html, live: !!lg && lg.state === "in", started: started, pdoc: pdoc};
   }
@@ -3001,6 +3007,7 @@
   var gamePage = null;            // {key, g, back: the panel it was opened from, y: that panel's scroll, sig}
   var gameDetail = {};            // ESPN id -> {at, data}: /api/live?event=..&game=1 (plays, drive, scoring, team stats)
   var playsAll = false;
+  var GAME_PAGE_SPORTS = {NFL: 1, NBA: 1};      // sports whose games get Plays/Box from the fast feed
   function openGamePage(g){
     var from = Object.keys(panels).filter(function(k){ return !panels[k].hidden; })[0] || "home";
     var back = from === "game" && gamePage ? gamePage.back : from, y = from === "game" && gamePage ? gamePage.y : window.scrollY;
@@ -3027,11 +3034,11 @@
   }
   function loadGameDetail(){
     if(!gamePage || panels.game.hidden || fastOff) return Promise.resolve();
-    var g = gamePage.g, lg = liveFor(g);
-    if((g.sport || "NFL") !== "NFL" || !lg || !lg.espn_id || !liveStarted(lg)) return Promise.resolve();
+    var g = gamePage.g, lg = liveFor(g), sport = g.sport || "NFL";
+    if(!GAME_PAGE_SPORTS[sport] || !lg || !lg.espn_id || !liveStarted(lg)) return Promise.resolve();
     var id = lg.espn_id, have = gameDetail[id];
     if(have && (lg.state !== "in" || Date.now() - have.at < 15e3)) return Promise.resolve();
-    return fastGet("sport=nfl&event=" + id + "&game=1").then(function(d){
+    return fastGet("sport=" + sport.toLowerCase() + "&event=" + id + "&game=1").then(function(d){
       if(d && d.players){
         var m = {};
         Object.keys(d.players).forEach(function(n){ m[normName(n)] = d.players[n]; });
@@ -3065,10 +3072,10 @@
     requestAnimationFrame(initWheels);
     if(!force) window.scrollTo(0, y);
   }
-  // NFL games that have started get Plays (first), Box and Scoring, from the fast feed's game detail.
+  // Games that have started get Plays (first) and Box, plus Scoring (NFL) or Quarters (NBA), from the fast feed.
   function gamePageTabs(g, lg, gd){
-    var out = {front: [], back: []};
-    if((g.sport || "NFL") !== "NFL" || !liveStarted(lg) || !lg.espn_id) return out;
+    var out = {front: [], back: []}, sport = g.sport || "NFL";
+    if(!GAME_PAGE_SPORTS[sport] || !liveStarted(lg) || !lg.espn_id) return out;
     function wait(pane, what){
       pane.appendChild(el("div", "bb-empty", gd === undefined ? "Loading " + what + "…" : "No " + what + " for this game right now."));
     }
@@ -3076,9 +3083,12 @@
       if(gd && gd.plays && gd.plays.length) playsEl(pane, g, gd); else wait(pane, "plays");
     }});
     out.back.push({key: "box", label: "Box", render: function(pane){
-      if(gd && ((gd.team_stats || []).length || (gd.box || []).length)) boxEl(pane, g, gd); else wait(pane, "box score");
+      if(gd && ((gd.team_stats || []).length || (gd.box || []).length)) (sport === "NBA" ? nbaBoxEl : boxEl)(pane, g, gd); else wait(pane, "box score");
     }});
-    out.back.push({key: "scoring", label: "Scoring", render: function(pane){
+    if(sport === "NBA") out.back.push({key: "quarters", label: "Quarters", render: function(pane){
+      if(gd && gd.linescore) quartersEl(pane, g, lg, gd); else wait(pane, "quarter scores");
+    }});
+    else out.back.push({key: "scoring", label: "Scoring", render: function(pane){
       if(gd && gd.scoring && gd.scoring.length) scoringEl(pane, g, gd);
       else pane.appendChild(el("div", "bb-empty", gd === undefined ? "Loading scoring…" : "No points yet."));
     }});
@@ -3089,10 +3099,12 @@
     var list = gd.plays, SHOW = 30, lastQ = null;
     (playsAll ? list : list.slice(0, SHOW)).forEach(function(p){
       if(p.q && p.q !== lastQ){ pane.appendChild(el("div", "gp-q", escapeHtml(qName(p.q)))); lastQ = p.q; }
-      var big = !p.scoring && p.yards != null && p.yards >= 20;
-      var tag = p.scoring ? "Score · " + p.away_score + "–" + p.home_score : big ? "+" + p.yards + " yds" : (p.type || "");
-      pane.appendChild(el("div", "gp-play" + (p.scoring ? " score" : big ? " big" : ""),
-        '<div class="gp-pt">' + (p.team ? teamBadge("NFL", p.team) : '') + '<span class="gp-tag">' + escapeHtml(tag) + '</span>' +
+      var nba = (g.sport || "NFL") === "NBA", scored = nba ? p.pts > 0 : p.scoring;
+      var big = nba ? p.pts === 3 : !p.scoring && p.yards != null && p.yards >= 20;
+      var tag = nba ? (p.pts ? "+" + p.pts + " · " + p.away_score + "–" + p.home_score : (p.type || ""))
+        : p.scoring ? "Score · " + p.away_score + "–" + p.home_score : big ? "+" + p.yards + " yds" : (p.type || "");
+      pane.appendChild(el("div", "gp-play" + (big ? " big" : scored ? " score" : ""),
+        '<div class="gp-pt">' + (p.team ? teamBadge(g.sport || "NFL", p.team) : '') + '<span class="gp-tag">' + escapeHtml(tag) + '</span>' +
         '<span class="gp-dd">' + escapeHtml(p.down || "") + '</span><span class="gp-clk">' + escapeHtml(p.clock || "") + '</span></div>' +
         '<p>' + escapeHtml(p.text) + '</p>'));
     });
@@ -3103,6 +3115,34 @@
       pane.appendChild(more);
     }
     pane.appendChild(el("p", "faint", "Play-by-play from ESPN, unofficial. Updates about every 20 seconds."));
+  }
+  // NBA box: one table per team, starters first (ESPN's order), the columns the API kept (MIN, PTS, REB, AST, 3PT).
+  var NBA_COLS = ["MIN", "PTS", "REB", "AST", "3PT"];
+  function nbaBoxEl(pane, g, gd){
+    (gd.box || []).forEach(function(b){
+      var idx = NBA_COLS.map(function(c){ return b.labels.indexOf(c); }).filter(function(i){ return i >= 0; });
+      var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + idx.length + ', minmax(34px, auto))';
+      pane.appendChild(el("div", "gp-tbl gp-box", '<div class="gp-tr gp-th" style="' + cols + '"><span>' + escapeHtml(b.team || "") + '</span>' +
+        idx.map(function(i){ return '<span>' + escapeHtml(b.labels[i]) + '</span>'; }).join("") + '</div>' +
+        b.rows.map(function(r){
+          return '<div class="gp-tr' + (r.starter ? ' gp-st' : '') + '" style="' + cols + '"><span class="gp-nm">' + escapeHtml(r.name) + '</span>' +
+            idx.map(function(i){ return '<span>' + escapeHtml(r.stats[i] == null ? "" : r.stats[i]) + '</span>'; }).join("") + '</div>';
+        }).join("")));
+    });
+  }
+  function quartersEl(pane, g, lg, gd){
+    var ls = gd.linescore, n = Math.max(4, ls.away.length, ls.home.length), heads = [];
+    for(var i = 0; i < n; i++) heads.push(i < 4 ? "Q" + (i + 1) : "OT" + (n > 5 ? i - 3 : ""));
+    var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + (n + 1) + ', minmax(30px, auto))';
+    function row(team, q, total){
+      var cells = [];
+      for(var i = 0; i < n; i++) cells.push(q[i] != null ? String(q[i]) : "–");
+      return '<div class="gp-tr" style="' + cols + '"><span class="gp-nm">' + escapeHtml(team) + '</span>' +
+        cells.map(function(c){ return '<span>' + c + '</span>'; }).join("") + '<span><b>' + (total != null ? Math.round(total) : "") + '</b></span></div>';
+    }
+    pane.appendChild(el("div", "gp-tbl gp-box", '<div class="gp-tr gp-th" style="' + cols + '"><span></span>' +
+      heads.map(function(h){ return '<span>' + h + '</span>'; }).join("") + '<span>T</span></div>' +
+      row(g.away_team, ls.away, lg.away_score) + row(g.home_team, ls.home, lg.home_score)));
   }
   var BOX_COLS = {Passing: ["C/ATT", "YDS", "TD", "INT"], Rushing: ["CAR", "YDS", "AVG", "TD"], Receiving: ["REC", "YDS", "TD", "TGTS"]};
   function boxEl(pane, g, gd){
@@ -3132,10 +3172,47 @@
         '<p>' + escapeHtml(p.text) + '</p>'));
     });
   }
-  // The field (NFL, live): away end zone on the left. Spots are yards from the away goal line (functions/api/live.js).
-  function fieldTrackerEl(g, lg){
-    if((g.sport || "NFL") !== "NFL" || !lg || lg.state !== "in") return "";
+  // The court (NBA, live, once the game detail is in): the last 24 shots on a half court, made filled and missed hollow,
+  // in team colors, the newest ringed; the current run and the last play under it. Spots: functions/api/live.js nbaShot.
+  var COURT_FT = 7.2, COURT_DEPTH = 30;           // px per foot; feet shown out from the baseline (deeper shots sit on the edge)
+  function courtTrackerEl(g, lg){
+    if((g.sport || "NFL") !== "NBA" || !lg || lg.state !== "in") return "";
     var gd = gameDetailFor(lg);
+    if(!gd || !gd.plays || !gd.plays.length) return "";
+    var F = COURT_FT, W = 50 * F, H = COURT_DEPTH * F, rimY = 5.25 * F;
+    var shots = gd.plays.filter(function(p){ return p.shot; }).slice(0, 24).reverse();
+    var cAway = chartColor(g.away_team, "var(--ink-soft)", "NBA"), cHome = chartColor(g.home_team, "var(--accent)", "NBA");
+    if(cAway === cHome) cAway = "var(--ink-soft)";
+    function f(v){ return v.toFixed(1); }
+    var dots = shots.map(function(p, i){
+      var x = p.shot.x * F, y = Math.min(p.shot.y, COURT_DEPTH - 0.6) * F, c = p.team === g.home_team ? cHome : cAway;
+      var newest = i === shots.length - 1;
+      return (newest ? '<circle class="ct-new" cx="' + f(x) + '" cy="' + f(y) + '" r="11" fill="none" stroke="var(--accent)" stroke-width="1.5"/>' : '') +
+        '<circle class="ct-shot' + (p.shot.made ? ' made' : '') + '" cx="' + f(x) + '" cy="' + f(y) + '" r="5.5" ' +
+        (p.shot.made ? 'fill="' + c + '" stroke="var(--ink)" stroke-width="1"' : 'fill="none" stroke="' + c + '" stroke-width="2"') + '/>';
+    }).join("");
+    var arcY = f(rimY + Math.sqrt(23.75 * 23.75 - 22 * 22) * F);
+    var svg = '<svg class="ct-court" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Shot chart, last ' + shots.length + ' shots">' +
+      '<rect x="0" y="0" width="' + W + '" height="' + H + '" rx="8" fill="var(--surface-2)"/>' +
+      '<g fill="none" stroke="var(--line-strong)" stroke-width="1.5">' +
+      '<rect x="' + f(17 * F) + '" y="0" width="' + f(16 * F) + '" height="' + f(19 * F) + '"/>' +
+      '<circle cx="' + f(25 * F) + '" cy="' + f(19 * F) + '" r="' + f(6 * F) + '"/>' +
+      '<path d="M' + f(3 * F) + ' 0 L' + f(3 * F) + ' ' + arcY + ' A' + f(23.75 * F) + ' ' + f(23.75 * F) + ' 0 0 0 ' + f(47 * F) + ' ' + arcY + ' L' + f(47 * F) + ' 0"/>' +
+      '<line x1="' + f(22 * F) + '" x2="' + f(28 * F) + '" y1="' + f(4 * F) + '" y2="' + f(4 * F) + '"/></g>' +
+      '<circle cx="' + f(25 * F) + '" cy="' + f(rimY) + '" r="' + f(0.75 * F) + '" fill="none" stroke="var(--accent)" stroke-width="2"/>' + dots + '</svg>';
+    var last = gd.plays[0];
+    return '<div class="ct">' + svg + '<div class="ft-row">' +
+      '<span class="ct-key"><i style="background:' + cAway + '"></i>' + escapeHtml(g.away_team) + '</span>' +
+      '<span class="ct-key"><i style="background:' + cHome + '"></i>' + escapeHtml(g.home_team) + '</span>' +
+      '<span class="faint">● made ○ missed</span>' +
+      (gd.run ? '<span class="pill neutral ct-run">' + escapeHtml(gd.run.team + " " + gd.run.points + "–0 run") + '</span>' : '') + '</div>' +
+      (last ? '<div class="ft-last">' + escapeHtml(last.text) + '</div>' : '') + '</div>';
+  }
+  // The field (NFL, live): away end zone on the left. Spots are yards from the away goal line (functions/api/live.js).
+  // withDetail: the game page, whose detail is kept fresh (a board card only has the scoreboard's situation).
+  function fieldTrackerEl(g, lg, withDetail){
+    if((g.sport || "NFL") !== "NFL" || !lg || lg.state !== "in") return "";
+    var gd = withDetail ? gameDetailFor(lg) : null;
     var sit = lg.situation || (gd && gd.situation);
     if(!sit || sit.spot == null) return "";
     var off = sit.offense || lg.possession;
@@ -4483,7 +4560,7 @@
       return fastGet("sport=" + sp.toLowerCase()).then(function(d){ if(d && d.games) fastScores[sp] = d.games; });
     })).then(function(){
       var gpLg = gamePage && !panels.game.hidden ? liveFor(gamePage.g) : null, gpId = gpLg && gpLg.espn_id;
-      var boxes = boxGamesNow().filter(function(b){ return !(b.sport === "NFL" && b.id === gpId); }).map(function(b){
+      var boxes = boxGamesNow().filter(function(b){ return b.id !== gpId; }).map(function(b){
         return fastGet("sport=" + b.sport.toLowerCase() + "&event=" + b.id).then(function(d){
           if(!d || !d.players) return;
           var m = {};

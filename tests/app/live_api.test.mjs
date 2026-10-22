@@ -1,9 +1,10 @@
 // /api/live's NFL game page data: field spots, the scoreboard's situation and the summary's plays, drive, scoring
-// and team stats.   node --test tests/app/live_api.test.mjs
+// and team stats; NBA plays with shot spots, the run, quarter scores and the box.   node --test tests/app/live_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { nflSpot, nflGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
+import { nflSpot, nflGame, nbaShot, nbaGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
 import { scoreboard as espnScoreboard, summary, espnFetcher } from "./espn_nfl_fixture.mjs";
+import { summary as nbaSummary } from "./espn_nba_fixture.mjs";
 
 test("field spots are yards from the away goal line", () => {
   assert.equal(nflSpot("SEA 37", null, "SF", "SF", "SEA"), 63);       // in the home team's half
@@ -51,4 +52,28 @@ test("event + game=1 adds the game page data; without it the box score is unchan
   const plain = await (await handle(new Request("https://x/api/live?sport=nfl&event=401"), f)).json();
   assert.ok(plain.players["Brock Purdy"]);
   assert.equal(plain.game, undefined);
+});
+
+// ---------- NBA ----------
+test("NBA shot spots: kept on the court, the far half folded onto the near one", () => {
+  assert.deepEqual(nbaShot({x: 8, y: 20}), {x: 8, y: 20});
+  assert.deepEqual(nbaShot({x: 46, y: 74}), {x: 4, y: 20});
+  assert.equal(nbaShot({x: -214748340, y: -214748365}), null);
+  assert.equal(nbaShot(null), null);
+});
+
+test("the NBA summary becomes plays with shots, the run, quarter scores and the box", () => {
+  const d = nbaGame(nbaSummary(), teamCode("nba"));
+  assert.equal(d.away, "LAL"); assert.equal(d.home, "BOS");
+  assert.match(d.plays[0].text, /personal foul/, "newest first");
+  assert.deepEqual(d.plays[1].shot, {x: 4, y: 20, made: true});
+  assert.equal(d.plays[1].pts, 3); assert.equal(d.plays[1].home_score, 90);
+  assert.equal(d.plays[2].shot, null, "no spot for a free throw");
+  assert.deepEqual(d.plays[4].shot, {x: 16, y: 12, made: false});
+  assert.deepEqual(d.run, {team: "BOS", points: 9});
+  assert.deepEqual(d.linescore, {away: [29, 26, 25], home: [24, 31, 35]});
+  assert.deepEqual(d.box[0].labels, ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "+/-"]);
+  assert.deepEqual(d.box[0].rows.map(r => r.name), ["Luka Doncic", "LeBron James"], "no row for a player who didn't play");
+  assert.equal(d.box[0].rows[0].stats[1], "26");
+  assert.equal(nbaGame(nbaSummary({next: true})).run, undefined, "a Lakers bucket ends the run");
 });
