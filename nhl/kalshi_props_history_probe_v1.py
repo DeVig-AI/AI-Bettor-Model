@@ -7,7 +7,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import nhl_kalshi_common_v1 as K  # noqa: E402
 
-EVENTS = ["KXNHLGOAL-26JAN15TORCHI", "KXNHLGOAL-26FEB05PITBUF", "KXNHLGOAL-25DEC20BOSMTL", "KXNHLPTS-26JAN15TORCHI",
+_SUM = os.path.join(HERE, "props_history", "kalshi_props_history_v1_summary.json")
+_LEFT = [e.split()[-1] for e in json.load(open(_SUM)).get("errors", []) if e.startswith("no markets")][:6] \
+    if os.path.exists(_SUM) else []             # the events the collector still reads as "no markets"
+EVENTS = _LEFT + ["KXNHLGOAL-26JAN15TORCHI", "KXNHLGOAL-26FEB05PITBUF", "KXNHLGOAL-25DEC20BOSMTL", "KXNHLPTS-26JAN15TORCHI",
           "KXNHLGOAL-26FEB28PITNYR", "KXNHLGOAL-26MAR10TORBOS"]
 LABEL = ("ticker", "title", "yes_sub_title", "no_sub_title", "strike_type", "floor_strike", "cap_strike", "custom_strike",
          "functional_strike", "market_type", "result", "status")
