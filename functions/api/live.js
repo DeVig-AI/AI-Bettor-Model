@@ -1,6 +1,8 @@
 // DeVig live scores: GET /api/live?sport=nfl|nba|mlb|nhl|wnba|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
 // with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
-// (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}. Display only, unofficial.
+// (NFL or NBA) returns that game's box score as {players: {name: {stat: value}}}, and NFL with &game=1 also returns
+// game: {plays, drive, situation, scoring, team_stats, box} for the game page. NFL scoreboard games in progress carry
+// situation (down, distance, field spot) for the field tracker. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
 
@@ -35,8 +37,11 @@ export async function cachedJson(url, ttl, fetcher = fetch) {
 
 const num = x => { const v = parseFloat(x); return isFinite(v) ? v : null; };
 
+// ESPN team code -> the app's
+export const teamCode = sport => a => { a = String(a || "").toUpperCase(); return (ALIASES[sport] || {})[a] || a; };
+
 export function scoreboard(d, sport) {
-  const code = a => { a = String(a || "").toUpperCase(); return (ALIASES[sport] || {})[a] || a; };
+  const code = teamCode(sport);
   return (d.events || []).map(ev => {
     const comp = (ev.competitions || [{}])[0];
     const side = {};
@@ -53,6 +58,7 @@ export function scoreboard(d, sport) {
       out.away_id = String((a.team || {}).id || ""); out.home_id = String((h.team || {}).id || "");
       out.away_name = (a.team || {}).location || ""; out.home_name = (h.team || {}).location || "";
     }
+    if (sport === "nfl" && out.state === "in" && comp.situation) out.situation = nflSituation(comp.situation, out, code);
     return out;
   }).filter(Boolean);
 }
@@ -85,6 +91,107 @@ export function nflBox(d) {
     s.rush_rec_yards = (s.rushing_yards || 0) + (s.receiving_yards || 0);
     s.touchdowns = (s._rush_td || 0) + (s._rec_td || 0);
     delete s._rush_td; delete s._rec_td;
+  });
+  return out;
+}
+
+// ---------- NFL game page: field position, drive, plays, scoring, team stats ----------
+// Field spots are yards from the AWAY team's goal line (0 = away goal, 100 = home goal), so the app draws the away
+// end zone on the left. ESPN gives a spot as "SEA 37" (possessionText) and, on plays, as yardsToEndzone for the
+// team with the ball; either is enough.
+export function nflSpot(text, ytez, offense, away, home) {
+  if (ytez != null && isFinite(ytez) && (offense === away || offense === home))
+    return offense === away ? 100 - Number(ytez) : Number(ytez);
+  const m = /^\s*([A-Za-z]{2,4})?\s*(\d{1,2})\s*$/.exec(String(text || ""));
+  if (!m) return null;
+  const n = Number(m[2]);
+  if (n === 50 || !m[1]) return n === 50 ? 50 : null;
+  const side = m[1].toUpperCase();
+  return side === away ? n : side === home ? 100 - n : null;
+}
+
+// The scoreboard's situation for a game in progress (fresh every ~15 seconds). code() maps ESPN's team codes to ours.
+export function nflSituation(s, game, code) {
+  const out = {down: num(s.down), distance: num(s.distance), text: s.shortDownDistanceText || s.downDistanceText || "",
+    spot_text: s.possessionText || "", red_zone: !!s.isRedZone,
+    timeouts: {away: num(s.awayTimeouts), home: num(s.homeTimeouts)}};
+  const offense = game.possession;
+  out.offense = offense || null;
+  out.spot = nflSpot(normSpot(s.possessionText, code), null, offense, game.away, game.home);
+  if (s.lastPlay && s.lastPlay.text) out.last_play = String(s.lastPlay.text);
+  return out;
+}
+// "WSH 37" -> "WAS 37" (ESPN's code in a spot text, mapped to ours)
+function normSpot(t, code) {
+  const m = /^\s*([A-Za-z]{2,4})\s+(\d{1,2})\s*$/.exec(String(t || ""));
+  return m ? code(m[1]) + " " + m[2] : t;
+}
+
+const TEAM_STATS = [["totalYards", "Total yards"], ["netPassingYards", "Passing"], ["rushingYards", "Rushing"],
+  ["firstDowns", "First downs"], ["thirdDownEff", "3rd down"], ["fourthDownEff", "4th down"], ["turnovers", "Turnovers"],
+  ["totalPenaltiesYards", "Penalties"], ["sacksYardsLost", "Sacks-yards"], ["possessionTime", "Possession"]];
+const BOX_GROUPS = {passing: "Passing", rushing: "Rushing", receiving: "Receiving"};
+const PLAYS_KEPT = 60;
+
+// NFL summary -> what the game page shows. Every part is optional: a missing ESPN field leaves that part out.
+export function nflGame(d, code = x => String(x || "").toUpperCase()) {
+  const comp = ((d.header || {}).competitions || [])[0] || {};
+  const idTeam = {}, side = {};
+  (comp.competitors || []).forEach(c => {
+    const t = code((c.team || {}).abbreviation);
+    idTeam[String((c.team || {}).id)] = t; side[c.homeAway] = t;
+  });
+  const away = side.away, home = side.home;
+  const teamOf = t => t ? (idTeam[String(t.id)] || (t.abbreviation ? code(t.abbreviation) : null)) : null;
+  const drives = d.drives || {};
+  const all = (drives.previous || []).concat(drives.current ? [drives.current] : []);
+  const seen = {}, plays = [];
+  all.forEach(dr => {
+    const offense = teamOf(dr.team);
+    (dr.plays || []).forEach(p => {
+      if (!p || !p.text || seen[p.id]) return;
+      seen[p.id] = 1;
+      const st = p.start || {}, typ = (p.type || {}).text || "";
+      plays.push({id: String(p.id || plays.length), team: teamOf(st.team) || offense, q: num((p.period || {}).number),
+        clock: (p.clock || {}).displayValue || "", text: String(p.text), type: typ, yards: num(p.statYardage),
+        down: st.down > 0 ? (st.shortDownDistanceText || st.downDistanceText || "") : "",
+        scoring: !!p.scoringPlay, away_score: num(p.awayScore), home_score: num(p.homeScore)});
+    });
+  });
+  const out = {away, home, plays: plays.slice(-PLAYS_KEPT).reverse()};
+  const cur = drives.current;
+  if (cur) {
+    const offense = teamOf(cur.team), start = cur.start || {};
+    const ps = (cur.plays || []).filter(p => p && p.text), last = ps[ps.length - 1], end = last && last.end || {};
+    out.drive = {offense, summary: cur.description || "", plays: num(cur.offensivePlays), yards: num(cur.yards),
+      start: nflSpot(normSpot(start.text, code), null, offense, away, home), result: String(cur.displayResult || cur.result || "")};
+    if (last) {
+      const endTeam = teamOf(end.team) || offense;
+      out.situation = {offense: endTeam, down: num(end.down), distance: num(end.distance),
+        text: end.down > 0 ? (end.shortDownDistanceText || end.downDistanceText || "") : "",
+        spot_text: end.possessionText || "", spot: nflSpot(normSpot(end.possessionText, code), end.yardsToEndzone, endTeam, away, home)};
+    }
+  }
+  out.scoring = (d.scoringPlays || []).map(p => ({team: teamOf(p.team), q: num((p.period || {}).number),
+    clock: (p.clock || {}).displayValue || "", type: ((p.type || {}).abbreviation || (p.type || {}).text || ""),
+    text: String(p.text || ""), away_score: num(p.awayScore), home_score: num(p.homeScore)}));
+  const teams = ((d.boxscore || {}).teams || []);
+  const statsOf = t => { const m = {}; ((t || {}).statistics || []).forEach(s => { m[s.name] = s.displayValue; }); return m; };
+  const tAway = teams.filter(t => teamOf(t.team) === away)[0], tHome = teams.filter(t => teamOf(t.team) === home)[0];
+  if (tAway || tHome) {
+    const sa = statsOf(tAway), sh = statsOf(tHome);
+    out.team_stats = TEAM_STATS.filter(([k]) => sa[k] != null || sh[k] != null)
+      .map(([k, label]) => ({label, away: sa[k] != null ? String(sa[k]) : "", home: sh[k] != null ? String(sh[k]) : ""}));
+  }
+  out.box = [];
+  ((d.boxscore || {}).players || []).forEach(tm => {
+    const team = teamOf(tm.team);
+    (tm.statistics || []).forEach(g => {
+      if (!BOX_GROUPS[g.name]) return;
+      const rows = (g.athletes || []).filter(a => a.athlete && a.athlete.displayName && (a.stats || []).length)
+        .slice(0, 4).map(a => ({name: a.athlete.displayName, stats: a.stats.map(String)}));
+      if (rows.length) out.box.push({team, group: BOX_GROUPS[g.name], labels: (g.labels || []).map(String), rows});
+    });
   });
   return out;
 }
@@ -124,7 +231,9 @@ export async function handle(request, fetcher = fetch) {
     if (event) {
       if ((sport !== "nfl" && sport !== "nba") || !/^\d{1,12}$/.test(event)) return json({error: "box scores are NFL and NBA only"}, 400);
       const d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
-      return json({sport, event, at: new Date().toISOString(), players: sport === "nba" ? nbaBox(d) : nflBox(d)}, 200, 10);
+      const body = {sport, event, at: new Date().toISOString(), players: sport === "nba" ? nbaBox(d) : nflBox(d)};
+      if (sport === "nfl" && q.get("game") === "1") body.game = nflGame(d, teamCode(sport));
+      return json(body, 200, 10);
     }
     const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${QUERY[sport] || ""}`, SCORE_TTL, fetcher);
     return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, 10);
