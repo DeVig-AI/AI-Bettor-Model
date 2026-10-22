@@ -1,55 +1,98 @@
 {
- "generated_at": "2026-10-22T06:46:35Z",
+ "generated_at": "2026-10-22T06:57:39Z",
  "stats": {
-  "events_seen": 982,
-  "events_done_now": 187,
-  "markets_written_now": 3249,
-  "no_candle": 2,
-  "no_game": 1,
+  "events_seen": 3392,
+  "events_done_now": 120,
+  "markets_written_now": 2173,
+  "no_candle": 0,
+  "no_game": 3,
   "not_nhl_game_type": 0,
-  "after_cutoff": 8,
-  "no_markets": 0,
+  "after_cutoff": 24,
+  "no_markets": 41,
   "markets_from": {
-   "/historical/markets": 187
+   "/historical/markets": 120
   },
   "candles_by_endpoint": {
    "batch": 0,
-   "historical": 3247
+   "historical": 2173
   },
-  "anytime_goalscorer_markets": 3249,
-  "minutes": 15.1,
-  "complete": false,
-  "events_done_total": 3204
+  "anytime_goalscorer_markets": 2173,
+  "minutes": 10.8,
+  "complete": true,
+  "events_done_total": 3324
  },
  "errors": [
-  "no game KXNHLGOAL-26JAN26LACBJ"
+  "no game KXNHLGOAL-26JAN26LACBJ",
+  "no markets KXNHLGOAL-25DEC04CHILA",
+  "no markets KXNHLGOAL-25DEC04SEAEDM",
+  "no markets KXNHLGOAL-25DEC04MINCGY",
+  "no markets KXNHLGOAL-25DEC04DETCBJ",
+  "no markets KXNHLGOAL-25DEC04TORCAR",
+  "no markets KXNHLGOAL-25DEC04STLBOS",
+  "no markets KXNHLGOAL-25DEC04PITTB",
+  "no markets KXNHLGOAL-25DEC04NYROTT",
+  "no markets KXNHLGOAL-25DEC04NSHFLA",
+  "no markets KXNHLGOAL-25DEC04COLNYI",
+  "no markets KXNHLGOAL-25DEC03WSHSJ",
+  "no markets KXNHLGOAL-25DEC03UTAANA",
+  "no markets KXNHLGOAL-25DEC03WPGMTL",
+  "no markets KXNHLGOAL-25DEC03BUFPHI",
+  "no markets KXNHLGOAL-25DEC03DALNJ",
+  "no markets KXNHLGOAL-25DEC02WSHLA",
+  "no markets KXNHLGOAL-25DEC02CHIVGK",
+  "no markets KXNHLGOAL-25DEC02VANCOL",
+  "no markets KXNHLGOAL-25DEC02MINEDM",
+  "no markets KXNHLGOAL-25DEC02CGYNSH",
+  "no markets KXNHLGOAL-25DEC02TORFLA",
+  "no markets KXNHLGOAL-25DEC02TBNYI",
+  "no markets KXNHLGOAL-25DEC02OTTMTL",
+  "no markets KXNHLGOAL-25DEC02DALNYR",
+  "no markets KXNHLGOAL-25DEC02BOSDET",
+  "no markets KXNHLGOAL-25DEC01UTASJ",
+  "no markets KXNHLGOAL-25DEC01ANASTL",
+  "no markets KXNHLGOAL-25DEC01WPGBUF",
+  "no markets KXNHLGOAL-25DEC01PITPHI",
+  "no markets KXNHLGOAL-25DEC01CBJNJ",
+  "no markets KXNHLGOAL-25NOV25DALEDM",
+  "no markets KXNHLGOAL-25NOV24VGKUTA",
+  "no markets KXNHLGOAL-25NOV24OTTLA",
+  "no markets KXNHLGOAL-25NOV24FLANSH",
+  "no markets KXNHLGOAL-25NOV24STLNYR",
+  "no markets KXNHLGOAL-25NOV24PHITB",
+  "no markets KXNHLGOAL-25NOV24DETNJ",
+  "no markets KXNHLGOAL-25NOV24CBJWSH",
+  "no markets KXNHLGOAL-25NOV22STLNYI",
+  "no markets KXNHLGOAL-25NOV22CBJDET",
+  "no markets KXNHLGOAL-25NOV21BOSLA",
+  "no game KXNHLPTS-26JAN26LACBJ",
+  "no game KXNHLAST-26JAN26LACBJ"
  ],
  "raw_candle_samples": {
   "market_/historical/markets": {
    "can_close_early": true,
-   "close_time": "2026-01-16T03:03:38.569224Z",
-   "created_time": "2026-01-15T21:02:02.206727Z",
+   "close_time": "2025-12-21T03:02:47.139054Z",
+   "created_time": "2025-12-20T21:01:45.753327Z",
    "custom_strike": {
-    "hockey_player": "07f05b67-320f-4f39-a67b-9252b14e70f6",
-    "hockey_team": "2d6db4a4-99f2-4547-85f3-9913404577f9"
+    "hockey_player": "0c6e583b-71db-475c-8802-08ff0a8f5dc1",
+    "hockey_team": "b08e569c-3249-4fcf-bea2-a57ab5e822eb"
    },
    "early_close_condition": "This market will close and expire early if the event occurs.",
-   "event_ticker": "KXNHLGOAL-26JAN15VANCBJ",
+   "event_ticker": "KXNHLGOAL-25DEC20CARTB",
    "exchange_index": 0,
-   "expected_expiration_time": "2026-01-16T03:00:00Z",
-   "expiration_time": "2026-01-30T00:00:00Z",
-   "expiration_value": "goal_count",
+   "expected_expiration_time": "2025-12-21T03:00:00Z",
+   "expiration_time": "2026-01-04T00:00:00Z",
+   "expiration_value": "",
    "floor_strike": 0.5,
-   "last_price_dollars": "0.0000",
-   "latest_expiration_time": "2026-01-30T00:00:00Z",
+   "last_price_dollars": "0.1500",
+   "latest_expiration_time": "2026-01-04T00:00:00Z",
    "market_type": "binary",
    "no_ask_dollars": "1.0000",
    "no_bid_dollars": "0.0000",
-   "no_sub_title": "Tom Willander",
+   "no_sub_title": "Yanni Gourde",
    "notional_value_dollars": "1.0000",
    "open_interest_fp": "0.00",
-   "open_time": "2026-01-15T21:06:00Z",
-   "previous_price_dollars": "0.0000",
+   "open_time": "2025-12-20T21:06:00Z",
+   "previous_price_dollars": "0.1500",
    "previous_yes_ask_dollars": "1.0000",
    "previous_yes_bid_dollars": "0.0000",
    "price_level_structure": "linear_cent",
@@ -62,29 +105,29 @@
    ],
    "primary_participant_key": "hockey_player",
    "result": "no",
-   "rules_primary": "If Tom Willander enters the game and scores a goal in the VAN Canucks at CBJ Blue Jackets professional hockey game originally scheduled for Jan 15, 2026, then the market resolves to Yes.",
-   "rules_secondary": "The following market refers to a player in the VAN Canucks at CBJ Blue Jackets professional hockey game originally scheduled for Jan 15, 2026. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals scored.",
+   "rules_primary": "If Yanni Gourde enters the game and scores a goal in the CAR Hurricanes at TB Lightning professional hockey game originally scheduled for Dec 20, 2025, then the market resolves to Yes.",
+   "rules_secondary": "The following market refers to a player in the CAR Hurricanes at TB Lightning professional hockey game originally scheduled for Dec 20, 2025. If a player is active but never enters the game, the market settles to the last fair market price before game start. Once a player enters the game, the market settles based on the player's goals scored.",
    "settlement_bounds_type": "default",
    "settlement_timer_seconds": 1800,
-   "settlement_ts": "2026-01-16T03:34:43.657021Z",
+   "settlement_ts": "2025-12-21T03:33:49.613459Z",
    "settlement_value_dollars": "0.0000",
    "status": "finalized",
    "strike_type": "structured",
-   "ticker": "KXNHLGOAL-26JAN15VANCBJ-VANTWILLANDER5",
-   "title": "VAN Canucks at CBJ Blue Jackets: Anytime Goal: Tom Willander",
+   "ticker": "KXNHLGOAL-25DEC20CARTB-TBYGOURDE37",
+   "title": "CAR Hurricanes at TB Lightning: Anytime Goal: Yanni Gourde",
    "updated_time": "2026-02-19T08:48:16.628714Z",
    "volume_24h_fp": "0.00",
-   "volume_fp": "0.00",
+   "volume_fp": "31.00",
    "yes_ask_dollars": "1.0000",
    "yes_ask_size_fp": "0.00",
    "yes_bid_dollars": "0.0000",
    "yes_bid_size_fp": "0.00",
-   "yes_sub_title": "Tom Willander"
+   "yes_sub_title": "Yanni Gourde"
   },
   "historical": {
    "candlesticks": [
     {
-     "end_period_ts": 1768514400,
+     "end_period_ts": 1766268000,
      "open_interest": "0.00",
      "price": {
       "close": null,
@@ -96,9 +139,9 @@
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.0700",
+      "close": "0.1500",
       "high": "0.9900",
-      "low": "0.0700",
+      "low": "0.1500",
       "open": "0.9900"
      },
      "yes_bid": {
@@ -109,7 +152,7 @@
      }
     },
     {
-     "end_period_ts": 1768518000,
+     "end_period_ts": 1766271600,
      "open_interest": "0.00",
      "price": {
       "close": null,
@@ -121,20 +164,20 @@
      },
      "volume": "0.00",
      "yes_ask": {
-      "close": "0.0600",
-      "high": "0.0700",
-      "low": "0.0600",
-      "open": "0.0700"
+      "close": "0.1600",
+      "high": "0.9800",
+      "low": "0.1500",
+      "open": "0.1500"
      },
      "yes_bid": {
-      "close": "0.0000",
-      "high": "0.0000",
+      "close": "0.0500",
+      "high": "0.0500",
       "low": "0.0000",
       "open": "0.0000"
      }
     }
    ],
-   "ticker": "KXNHLGOAL-26JAN15VANCBJ-VANTWILLANDER5"
+   "ticker": "KXNHLGOAL-25DEC20CARTB-TBYGOURDE37"
   }
  }
 }
