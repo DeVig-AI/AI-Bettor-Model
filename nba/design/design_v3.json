@@ -1,0 +1,195 @@
+{
+ "doc": "NBA_PROPS_DESIGN_V3",
+ "test_seasons": [
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "candidates": [
+  "v2",
+  "v3",
+  "v3_month"
+ ],
+ "new_features": [
+  "n_out_fresh",
+  "vac_usage_fresh",
+  "vac_min_fresh",
+  "vac_pts_fresh",
+  "n_back",
+  "back_usage",
+  "back_min",
+  "back_pts",
+  "star_out_usage",
+  "starters_out",
+  "usage_share",
+  "vac_usage_share",
+  "opp_n_out",
+  "opp_vac_min",
+  "opp_vac_pts",
+  "new_team",
+  "games_with_team",
+  "team_game_no"
+ ],
+ "summary": {
+  "v2": {
+   "all": {
+    "mean_logloss": 0.52267,
+    "by_stat": {
+     "points": 0.45894,
+     "rebounds": 0.51095,
+     "assists": 0.54068,
+     "threes": 0.58012
+    },
+    "rows": 1597431
+   },
+   "teammate_newly_out": {
+    "mean_logloss": 0.53501,
+    "by_stat": {
+     "points": 0.47456,
+     "rebounds": 0.52415,
+     "assists": 0.55186,
+     "threes": 0.58948
+    },
+    "rows": 710936
+   },
+   "teammate_back": {
+    "mean_logloss": 0.52179,
+    "by_stat": {
+     "points": 0.45738,
+     "rebounds": 0.50941,
+     "assists": 0.54167,
+     "threes": 0.5787
+    },
+    "rows": 1051715
+   },
+   "oct_nov": {
+    "mean_logloss": 0.51926,
+    "by_stat": {
+     "points": 0.45195,
+     "rebounds": 0.50815,
+     "assists": 0.53857,
+     "threes": 0.57838
+    },
+    "rows": 301451
+   },
+   "new_team": {
+    "mean_logloss": 0.50707,
+    "by_stat": {
+     "points": 0.44666,
+     "rebounds": 0.49438,
+     "assists": 0.52007,
+     "threes": 0.56716
+    },
+    "rows": 14093
+   }
+  },
+  "v3": {
+   "all": {
+    "mean_logloss": 0.51978,
+    "by_stat": {
+     "points": 0.45446,
+     "rebounds": 0.50821,
+     "assists": 0.53793,
+     "threes": 0.57854
+    },
+    "rows": 1597431
+   },
+   "teammate_newly_out": {
+    "mean_logloss": 0.53177,
+    "by_stat": {
+     "points": 0.46933,
+     "rebounds": 0.52099,
+     "assists": 0.5491,
+     "threes": 0.58767
+    },
+    "rows": 710936
+   },
+   "teammate_back": {
+    "mean_logloss": 0.51872,
+    "by_stat": {
+     "points": 0.45286,
+     "rebounds": 0.50654,
+     "assists": 0.53868,
+     "threes": 0.57682
+    },
+    "rows": 1051715
+   },
+   "oct_nov": {
+    "mean_logloss": 0.51645,
+    "by_stat": {
+     "points": 0.44777,
+     "rebounds": 0.50504,
+     "assists": 0.53556,
+     "threes": 0.57744
+    },
+    "rows": 301451
+   },
+   "new_team": {
+    "mean_logloss": 0.50161,
+    "by_stat": {
+     "points": 0.43363,
+     "rebounds": 0.48668,
+     "assists": 0.51807,
+     "threes": 0.56807
+    },
+    "rows": 14093
+   }
+  },
+  "v3_month": {
+   "all": {
+    "mean_logloss": 0.5196,
+    "by_stat": {
+     "points": 0.45433,
+     "rebounds": 0.5081,
+     "assists": 0.53768,
+     "threes": 0.5783
+    },
+    "rows": 1597431
+   },
+   "teammate_newly_out": {
+    "mean_logloss": 0.53158,
+    "by_stat": {
+     "points": 0.46929,
+     "rebounds": 0.5208,
+     "assists": 0.54909,
+     "threes": 0.58716
+    },
+    "rows": 710936
+   },
+   "teammate_back": {
+    "mean_logloss": 0.51856,
+    "by_stat": {
+     "points": 0.45272,
+     "rebounds": 0.50642,
+     "assists": 0.53845,
+     "threes": 0.57664
+    },
+    "rows": 1051715
+   },
+   "oct_nov": {
+    "mean_logloss": 0.51638,
+    "by_stat": {
+     "points": 0.44774,
+     "rebounds": 0.50507,
+     "assists": 0.5355,
+     "threes": 0.57719
+    },
+    "rows": 301451
+   },
+   "new_team": {
+    "mean_logloss": 0.50232,
+    "by_stat": {
+     "points": 0.43391,
+     "rebounds": 0.48813,
+     "assists": 0.51875,
+     "threes": 0.5685
+    },
+    "rows": 14093
+   }
+  }
+ },
+ "best": "v3_month",
+ "note": "Box scores only (2014-15 to 2024-25). No price was read."
+}
