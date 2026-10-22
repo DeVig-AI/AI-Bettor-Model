@@ -1,0 +1,35 @@
+name: Research stats -- power rankings, team and player stats (display only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 11,17 * * *'   # twice a day: box scores are published the morning after games; public data only
+permissions:
+  contents: write
+concurrency:
+  group: research-stats
+  cancel-in-progress: false
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pandas numpy
+      - name: NBA (ESPN box scores via sportsdataverse)
+        run: python3 tools/stats_nba.py
+      - name: NHL (the props model's box scores + final scores from the NHL API)
+        run: python3 tools/stats_nhl.py
+      - name: NFL (nflverse weekly stats and schedule)
+        run: python3 tools/stats_nfl.py
+      - name: Save them
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add stats
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Research stats $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
