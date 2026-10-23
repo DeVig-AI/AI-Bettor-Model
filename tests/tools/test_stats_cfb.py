@@ -21,13 +21,14 @@ GAMES = [  # id, week, date, home, away, home pts, away pts
     ("g1", 1, "2026-09-05", "1", "9", 45, 3),        # Georgia vs an FCS team (id 9, "SAM")
     ("g2", 2, "2026-09-12", "2", "3", 24, 27),
     ("g3", 3, "2026-09-19", "1", "2", 31, 20),
-    ("g4", 3, "2026-09-19", "3", "9", 38, 10),
+    ("g4", 3, "2026-09-19", "3", "8", 38, 10),       # Texas A&M vs another FCS team (id 8, "CIT")
 ]
+OTHERS = {"9": "SAM", "8": "CIT", "7": "OSU"}        # ESPN's team list has every division (7: Ohio State Newark)
 
 
 def team(tid):
-    if tid == "9":
-        return {"id": "9", "abbreviation": "SAM"}
+    if tid in OTHERS:
+        return {"id": tid, "abbreviation": OTHERS[tid]}
     code, name, color = TEAMS[tid]
     return {"id": tid, "abbreviation": code, "displayName": name, "color": color}
 
@@ -52,7 +53,7 @@ def box(gid):
                 {"name": "turnovers", "displayValue": "1"}, {"name": "sacksYardsLost", "displayValue": "2-14"}]}
     players = []
     for tid, pts in ((h, hp), (a, ap)):
-        if tid == "9":
+        if tid in OTHERS:
             continue
         qb, rb, lb = tid + "01", tid + "02", tid + "03"
         players.append({"team": {"id": tid}, "statistics": [
@@ -83,7 +84,7 @@ class FakeEspn:
         self.urls.append(url)
         path = url.split("/college-football/", 1)[1]
         if path.startswith("teams?"):
-            return {"sports": [{"leagues": [{"teams": [{"team": team(t)} for t in TEAMS]}]}]}
+            return {"sports": [{"leagues": [{"teams": [{"team": team(t)} for t in list(TEAMS) + list(OTHERS)]}]}]}
         if path.startswith("scoreboard?"):
             q = dict(x.split("=") for x in path.split("?", 1)[1].split("&"))
             return scoreboard(int(q["week"])) if q["seasontype"] == "2" else {"events": []}
@@ -115,12 +116,13 @@ class StatsCFB(unittest.TestCase):
 
     def test_teams_records_ranks(self):
         idx = self.load("index.json")
-        self.assertEqual(sorted(t["code"] for t in idx["teams"]), ["BAMA", "TA_M", "UGA"], "FBS only; TA&M -> TA_M")
+        self.assertEqual(sorted(t["code"] for t in idx["teams"]), ["BAMA", "TA_M", "UGA"], "FBS only (not every team ESPN lists); TA&M -> TA_M")
+        self.assertFalse(os.path.exists(os.path.join(C.OUT, "team_OSU.json")), "no file for a team outside FBS")
         uga = self.load("team_UGA.json")
         self.assertEqual(uga["this"]["record"], "2-0")
         self.assertEqual(uga["ranks"]["ppg"], 1)
         self.assertEqual(uga["games"][-1][:6], ["2026-09-05", "SAM", "H", 45, 3, "W"], "an FCS opponent keeps its abbreviation")
-        self.assertEqual(uga["this"]["sacks"], 2.0, "sacks: the opponents' sacks taken")
+        self.assertEqual(uga["this"]["sacks"], 1.5, "sacks: its defenders' sacks")
         self.assertEqual(idx["teams"][0]["code"], "UGA")
 
     def test_players_by_position(self):

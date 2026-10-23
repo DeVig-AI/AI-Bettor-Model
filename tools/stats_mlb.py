@@ -34,7 +34,8 @@ ALIASES = {"AZ": "ARI", "CWS": "CHW", "KCR": "KC", "SDP": "SD", "SFG": "SF", "TB
 HITTERS, PITCHERS = ["C", "IF", "OF", "DH"], ["SP", "RP"]
 POS_GROUP = {"C": "C", "1B": "IF", "2B": "IF", "3B": "IF", "SS": "IF", "IF": "IF", "LF": "OF", "CF": "OF", "RF": "OF", "OF": "OF",
              "DH": "DH", "TWP": "DH", "P": "P"}
-LOG = ["ab", "h", "hr", "rbi", "r", "bb", "so", "tb", "ip", "k", "er", "ha"]   # batting, then pitching (k = strikeouts thrown)
+# batting, then pitching: ip as baseball writes it (6.2 = 6 and 2/3), outs for counting, k = strikeouts thrown
+LOG = ["ab", "h", "hr", "rbi", "r", "bb", "so", "tb", "ip", "outs", "k", "er", "ha"]
 GROUP_COLS = {
     "C": [["G", "gp", 0], ["AVG", "avg"], ["HR", "hr", 0], ["RBI", "rbi", 0], ["OPS", "ops"]],
     "SP": [["GS", "gs", 0], ["ERA", "era"], ["IP", "ip"], ["K", "k", 0], ["WHIP", "whip"]],
@@ -66,7 +67,7 @@ CONFIG = {
                   ["rbis", "RBIs", ["rbi"]], ["runs", "Runs", ["r"]], ["hits_runs_rbis", "Hits + runs + RBIs", ["h", "r", "rbi"]],
                   ["batter_strikeouts", "Strikeouts (batting)", ["so"]]],
     "hit_stats_def": [["pitcher_strikeouts", "Strikeouts", ["k"]], ["earned_runs", "Earned runs", ["er"]],
-                      ["hits_allowed", "Hits allowed", ["ha"]], ["outs", "Innings pitched", ["ip"]]],
+                      ["hits_allowed", "Hits allowed", ["ha"]], ["outs", "Outs recorded", ["outs"]]],
 }
 
 
@@ -256,7 +257,8 @@ def box_lines(box):
             h, d2, d3, hr = num(b.get("hits")), num(b.get("doubles")), num(b.get("triples")), num(b.get("homeRuns"))
             vals = {"ab": num(b.get("atBats")), "h": h, "hr": hr, "rbi": num(b.get("rbi")), "r": num(b.get("runs")),
                     "bb": num(b.get("baseOnBalls")), "so": num(b.get("strikeOuts")), "tb": h + d2 + 2 * d3 + 3 * hr,
-                    "ip": ip_outs(p.get("inningsPitched")) / 3 if p else 0, "k": num(p.get("strikeOuts")),
+                    "ip": float(ip_text(ip_outs(p.get("inningsPitched")))) if p else 0, "outs": ip_outs(p.get("inningsPitched")) if p else 0,
+                    "k": num(p.get("strikeOuts")),
                     "er": num(p.get("earnedRuns")), "ha": num(p.get("hits"))}
             if b and not num(b.get("plateAppearances") or b.get("atBats") or b.get("baseOnBalls")) and not p:
                 continue                              # in the lineup card but never came up

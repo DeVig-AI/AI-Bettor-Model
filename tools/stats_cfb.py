@@ -43,7 +43,7 @@ POS_COLS = {
     "QB": [["GP", "gp", 0], ["PASS", "pass_yds", 1], ["TD", "pass_td", 2], ["INT", "int", 2], ["RUSH", "rush_yds", 1]],
     "RB": [["GP", "gp", 0], ["CAR", "car", 1], ["RUSH", "rush_yds", 1], ["REC", "rec", 1], ["TD", "td_tot", 0]],
     "WR": [["GP", "gp", 0], ["REC", "rec", 1], ["REC YDS", "rec_yds", 1], ["TD", "td_tot", 0]],
-    "DL": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["QB HIT", "qbh", 2]],
+    "DL": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["PD", "pd", 2]],
     "LB": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["PD", "pd", 2]],
     "DB": [["GP", "gp", 0], ["TKL", "tkl", 1], ["INT", "int_d", 2], ["PD", "pd", 2], ["TFL", "tfl", 2]],
 }
@@ -66,7 +66,7 @@ CONFIG = {
                     ["INT", "int", 2], ["CAR", "car", 1], ["RUSH YDS", "rush_yds", 1], ["REC", "rec", 1],
                     ["REC YDS", "rec_yds", 1], ["TD", "td_tot", 0]],
     "player_note": "Per game this season (TD: total rushing and receiving touchdowns).",
-    "player_cols_def": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2], ["QB HIT", "qbh", 2],
+    "player_cols_def": [["GP", "gp", 0], ["TKL", "tkl", 1], ["SACK", "sk", 2], ["TFL", "tfl", 2],
                         ["INT", "int_d", 2], ["PD", "pd", 2], ["FF", "ff", 2]],
     "player_note_def": "Per game this season (TKL: total tackles).",
     "log_show": [["PASS", "pass_yds"], ["CAR", "car"], ["RUSH", "rush_yds"], ["REC", "rec"], ["REC YDS", "rec_yds"]],
@@ -142,8 +142,9 @@ class Espn:
         return {"boxscore": d.get("boxscore") or {}}
 
 
-def fbs_teams(api):
-    """{ESPN team id: {code, name, color}} for FBS (group 80)."""
+def all_teams(api):
+    """{ESPN team id: {code, name, color}} for every college team ESPN lists (its group filter isn't applied here, so
+    FBS membership comes from the scoreboards: see fbs_of)."""
     d = api.get("teams?groups=80&limit=1000")
     out = {}
     for lg in d.get("sports", [{}])[0].get("leagues", [{}]):
@@ -155,12 +156,27 @@ def fbs_teams(api):
     return out
 
 
+def fbs_of(games):
+    """FBS teams: the teams in the FBS scoreboards' finished games that play in most of them. An FCS team shows up only
+    for its one or two games against FBS teams, an FBS team every week, so a team counts when it has more than half the
+    typical team's games (early in the season, every team does)."""
+    n = {}
+    for g in games:
+        for t in (g["home"], g["away"]):
+            n[t] = n.get(t, 0) + 1
+    if not n:
+        return set()
+    counts = sorted(n.values())
+    need = counts[len(counts) // 2] // 2 + 1
+    return {t for t, k in n.items() if k >= need}
+
+
 def is_done(ev):
     comp = (ev.get("competitions") or [{}])[0]
     return bool(((comp.get("status") or ev.get("status") or {}).get("type") or {}).get("completed"))
 
 
-def finished_games(api, y, fbs):
+def finished_games(api, y):
     """Season y's finished games with an FBS team: [{id, date, home, away (ESPN ids), home_pts, away_pts, type, abbr}]."""
     out, seen = [], set()
     for st, weeks in ((2, WEEKS), (3, [1])):
@@ -173,8 +189,6 @@ def finished_games(api, y, fbs):
                 if not is_done(ev) or ev.get("id") in seen or "home" not in side or "away" not in side:
                     continue
                 h, a = str(side["home"]["team"]["id"]), str(side["away"]["team"]["id"])
-                if h not in fbs and a not in fbs:
-                    continue
                 seen.add(ev["id"])
                 abbr = {str(c["team"]["id"]): key_of(c["team"].get("abbreviation") or "") for c in side.values()}
                 out.append({"id": str(ev["id"]), "date": str(ev.get("date", ""))[:10], "home": h, "away": a, "abbr": abbr,
@@ -222,7 +236,8 @@ def player_lines(box):
                     p["tgt"] = num(v.get("receivingTargets"))
                 elif name == "defensive":
                     p["tkl"] = num(v.get("totalTackles")) or num(v.get("soloTackles")) + num(v.get("assistTackles"))
-                    p["sk"], p["tfl"], p["pd"], p["qbh"] = num(v.get("sacks")), num(v.get("tacklesForLoss")), num(v.get("passesDefended")), num(v.get("QBHits"))
+                    p["sk"], p["tfl"], p["pd"] = num(v.get("sacks")), num(v.get("tacklesForLoss")), num(v.get("passesDefended"))
+                    p["qbh"] = num(v.get("QBHits") or v.get("quarterbackHits") or v.get("QBHurries") or v.get("quarterbackHurries"))
                 elif name == "interceptions":
                     p["int_d"] = num(v.get("interceptions"))
                 elif name == "fumbles":
@@ -270,8 +285,10 @@ def records(rows):
 def build(now, cache, fetch=None, pause=0.25):
     y = season_of(now)
     api = Espn(cache, fetch, pause)
-    fbs = fbs_teams(api)
-    games = finished_games(api, y, fbs)
+    known = all_teams(api)
+    games = finished_games(api, y)
+    fbs = {t: known.get(t) or {"code": key_of(next((g["abbr"][t] for g in games if t in g["abbr"]), t)), "name": t, "color": None}
+           for t in fbs_of(games)}
     rows = {tid: [] for tid in fbs}               # per FBS team, oldest first: {f, a, ha, opp, ...}
     for g in games:
         for me, op, ha, f, a in ((g["home"], g["away"], "N" if g["neutral"] else "H", g["home_pts"], g["away_pts"]),
@@ -293,10 +310,12 @@ def build(now, cache, fetch=None, pause=0.25):
         own, opp = [], []
         for r in rs:
             box = api.summary(r["g"]["id"])["boxscore"]
-            st = team_stats(box)
-            own.append((r, st.get(tid, {})))
+            st, pl = team_stats(box), player_lines(box)
+            mine = dict(st.get(tid, {}))
+            mine["_sacks"] = sum(p["sk"] for (t, _), p in pl.items() if t == tid)     # its defenders' sacks in the game
+            own.append((r, mine))
             opp.append((r, st.get(r["opp"], {})))
-            for (t, aid), p in player_lines(box).items():
+            for (t, aid), p in pl.items():
                 if t == tid:
                     logs.setdefault((tid, aid), []).append((r, p))
 
@@ -304,8 +323,6 @@ def build(now, cache, fetch=None, pause=0.25):
             v = [fn(s) for r, s in pairs if r["g"]["type"] == "R" and s]
             return S.r1(sum(v) / len(v), 2) if v else None
 
-        def sacks(s):                             # ESPN gives a team's sacks taken as "3-21" (sacks-yards)
-            return num(str(s.get("sacksYardsLost", "0-0")).split("-")[0])
         res = ["W" if r["f"] > r["a"] else "L" if r["f"] < r["a"] else "T" for r in reg]
         n = len(reg)
         last5 = res[-5:]
@@ -318,7 +335,7 @@ def build(now, cache, fetch=None, pause=0.25):
             "ypg": avg(own, lambda s: num(s.get("totalYards"))), "pypg": avg(own, lambda s: num(s.get("netPassingYards"))),
             "rypg": avg(own, lambda s: num(s.get("rushingYards"))), "oypg": avg(opp, lambda s: num(s.get("totalYards"))),
             "give": avg(own, lambda s: num(s.get("turnovers"))), "take": avg(opp, lambda s: num(s.get("turnovers"))),
-            "sacks": avg(opp, sacks),
+            "sacks": avg(own, lambda s: s.get("_sacks", 0.0)),
             "games": [[r["g"]["date"], opp_code(r["opp"], r["g"]), r["ha"], r["f"], r["a"],
                        "W" if r["f"] > r["a"] else "L" if r["f"] < r["a"] else "T", r["g"]["type"], y + 1, ""] for r in rs][::-1]}
     ranks = S.league_ranks({t: ts[t] for t in ts if ts[t]["gp"]}, CONFIG["team_rows"], CONFIG["rank_low"], CONFIG["rank_skip"])

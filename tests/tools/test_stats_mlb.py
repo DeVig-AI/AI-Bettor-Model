@@ -133,7 +133,7 @@ class StatsMLB(unittest.TestCase):
         g = judge["log"][0]
         self.assertEqual((g[0], g[L["h"]], g[L["tb"]], g[L["hr"]]), ("2026-10-21", 2, 6, 1))
         cole = [p for p in self.load("team_NYY.json")["players"] if p["name"] == "Gerrit Cole"][0]
-        self.assertEqual((cole["log"][0][L["ip"]], cole["log"][0][L["k"]]), (6.7, 9))
+        self.assertEqual((cole["log"][0][L["ip"]], cole["log"][0][L["outs"]], cole["log"][0][L["k"]]), (6.2, 20, 9), "innings as baseball writes them")
         boxes = len([u for u in self.fake.urls if "/boxscore" in u])
         again = FakeApi()
         M.build(datetime(2026, 10, 22, tzinfo=timezone.utc), self.cache, fetch=again, pause=0)
