@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T17:48:55Z",
+ "updated_at": "2026-10-23T17:54:47Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T17:49:39Z",
+   "updated_at": "2026-10-23T17:55:13Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4080,7 +4080,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-23T17:49:42Z",
+   "updated_at": "2026-10-23T17:55:14Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4146,7 +4146,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-23T17:48:55Z",
+   "updated_at": "2026-10-23T17:55:14Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4212,7 +4212,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-23T17:49:42Z",
+   "updated_at": "2026-10-23T17:54:47Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4242,10 +4242,96 @@
     "exam_budget_left": 3,
     "exam_budget_total": 3
    },
-   "candidates": [],
+   "candidates": [
+    {
+     "id": "s-7155dd60",
+     "name": "Blend of 3: s-8ecc6864 + s-2a658606 + s-8989b9bc",
+     "market": "total",
+     "family": "Blend · search",
+     "reason": "Found by search round 1: on 2014–2016 it beat the line by +0.14 pts a game (t = 2.59), positive in all three search periods. Now confirmed on 2017–2019, which the search never saw.",
+     "state": "queued",
+     "fail_reason": "",
+     "gate_now": null,
+     "started_at": null,
+     "eta_at": null,
+     "gates": [
+      {
+       "name": "2017",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2018",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2019",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      }
+     ],
+     "pooled": null,
+     "attempts": 0,
+     "p_bar": 0.05,
+     "fade_ratio": null,
+     "fade_needed": 0.5,
+     "kalshi": null,
+     "rule_split": [],
+     "exam": {
+      "state": "not_taken",
+      "effect": null,
+      "ci": null,
+      "taken_at": null,
+      "note": ""
+     },
+     "verdict": "Registered; runs in the next nightly lab run.",
+     "graded_at": null,
+     "run_number": null,
+     "run_url": null,
+     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/candidates/s-7155dd60.yaml",
+     "updated_at": null
+    }
+   ],
    "lessons": [],
    "promoted": [],
-   "runs": []
+   "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 1",
+     "started_at": "2026-10-23T17:54:46Z",
+     "finished_at": "2026-10-23T17:54:46Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "238 models scored → 232 consistent → 10 strong (t ≥ 2.5) → 1 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 238
+      },
+      {
+       "label": "consistent",
+       "count": 232
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 10
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 1
+      }
+     ],
+     "steps": []
+    }
+   ]
   }
  },
  "sports": [
