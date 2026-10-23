@@ -204,10 +204,7 @@
   .ask-row button{width:auto; flex:none;}
   /* Best-bets summary + collapsible game rows */
   .bb-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
-  .cfb-head{padding:12px 14px}
-  .cfb-card, .cfb-past{padding:12px 14px}
-  .cfb-card > summary{list-style:none; cursor:pointer}
-  .cfb-card > summary::-webkit-details-marker{display:none}
+  .cfb-past{padding:12px 14px}
   .cfb-when{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--ink-soft); margin-bottom:6px}
   .cfb-src{color:var(--ink-faint)}
   .cfb-live{color:var(--bad); font-weight:700}
@@ -273,8 +270,6 @@
   .gp-box .gp-tr span:not(:first-child){text-align:right;}
   .gp-nm{font-family:var(--font-sans); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .gp-st .gp-nm{font-weight:600;}
-  .cfb-card{padding:0;} .cfb-open{display:block; width:100%; text-align:left; background:none; border:none; color:var(--ink); font:inherit; padding:12px 14px; cursor:pointer;}
-  .cfb-more{margin-top:8px; text-align:right; font-size:12.5px; font-weight:600; color:var(--accent-strong);}
   /* Research team page: league ranks, position groups, betting notes under a player */
   .rs-rank{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:700;
     background:var(--surface-2); color:var(--ink-soft); font-family:var(--font-sans);}
@@ -1424,7 +1419,7 @@
   // A sport's tab shows only while it is in season: a game (with a model pick or only Kalshi's prices) in the last
   // 3 days or the next 3 weeks. Off-season sports drop off the row until their games come back.
   var IN_SEASON_BACK_DAYS = 3, IN_SEASON_AHEAD_DAYS = 21;
-  var NO_GAME_MODEL = {NHL: true, WNBA: true};             // Kalshi's odds only: no "DeVig's picks" section
+  var NO_GAME_MODEL = {NHL: true, WNBA: true, CFB: true};             // Kalshi's odds only: no "DeVig's picks" section
   function sportsInSeason(){
     var lo = Date.now() - IN_SEASON_BACK_DAYS * 864e5, hi = Date.now() + IN_SEASON_AHEAD_DAYS * 864e5, on = {};
     boardDocs().concat(cfbGames()).forEach(function(g){
@@ -1491,7 +1486,7 @@
     }
 
     updateSportTabs();
-    if(currentSport === "CFB"){ document.getElementById("dayTabs").innerHTML = ""; renderCfbBoard(wrap, statusEl, syncedEl); return; }
+    if(currentSport === "CFB" && CFB_UNDER_CONSTRUCTION){ document.getElementById("dayTabs").innerHTML = ""; renderCfbBoard(wrap, statusEl, syncedEl); return; }
     var allSynced = boardDocs().filter(function(g){ return (g.sport || "NFL") === currentSport; });
     var forSport = allSynced.filter(isOnBoard);
     var nFinished = allSynced.length - forSport.length;
@@ -1512,6 +1507,8 @@
         emptyMsg = "Picks lock at 10:30am and 4pm ET when both starting pitchers are announced; in the postseason there are only one or two games a day, and games Kalshi lists show up here with its odds even without a pick. See About for the honest MLB track record.";
       } else if(currentSport === "NBA"){
         emptyMsg = "Picks lock automatically every morning (11am ET) for games in the next 3 days and show up here on their own once synced. The 2026-27 regular season starts October 20. See About for the NBA track record.";
+      } else if(currentSport === "CFB"){
+        emptyMsg = "DeVig has no college football model, so there are no picks: FBS games show up here with Kalshi's odds once Kalshi lists them (usually early in the week).";
       } else if(currentSport === "NHL" || currentSport === "WNBA"){
         emptyMsg = "DeVig has no " + currentSport + " game model, so there are no picks: games show up here with Kalshi's odds once Kalshi lists them." + (currentSport === "NHL" ? " Player props have a paper test (see Testing)." : "");
       } else {
@@ -1653,6 +1650,7 @@
                  spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
         model: {available: false, note: "No model pick. " + why + " Prices are Kalshi's, fee included."}};
     });
+    if(!CFB_UNDER_CONSTRUCTION) out = out.concat(cfbGames().map(cfbAsGame));   // college football: every game is Kalshi-only
     marketOnlyCache = {src: linesDoc, n: homeDocs.length, out: out};
     return out;
   }
@@ -1769,48 +1767,15 @@
     o.kalshi_line = b ? b.kalshi_line : null;
     return o;
   }
-  function cfbOnBoard(g){
-    var st = cfbState(g).state, k = new Date(g.kickoff_time).getTime();
-    if(st === "post") return false;
-    return !isFinite(k) || Date.now() < k + FINISHED_AFTER_HOURS * 3600 * 1000;
-  }
-  function cfbTeamName(g, side){
-    var r = g.rank && g.rank[side];
-    return (r ? '<span class="cfb-rk">' + r + '</span>' : '') + escapeHtml((g.names && g.names[side]) || g[side]);
-  }
+
+
   // A college game in the shape the shared game page takes (like a Kalshi-only game of another sport).
   function cfbAsGame(x){
     var ml = x.ml || {}, sp = x.spread || {}, tot = x.total || {};
-    return Object.assign({}, x, {sport: "CFB", marketOnly: true,
+    return Object.assign({}, x, {sport: "CFB", marketOnly: true, game_date: x.date,
       market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
                spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
       model: {available: false, note: "No model pick: DeVig has no college football model yet. Prices are Kalshi's, fee included."}});
-  }
-  function cfbCard(g){
-    var lg = cfbState(g), started = lg.state === "in" || lg.state === "post";
-    var wp = g.home_wp, sp = g.spread, tot = g.total, ml = g.ml || {};
-    var card = el("div", "card cfb-card");
-    var when = lg.state === "in" ? '<span class="cfb-live">Live</span> ' + escapeHtml(lg.detail)
-      : lg.state === "post" ? escapeHtml(lg.detail || "Final") : escapeHtml(shortTime(g)) + (g.neutral ? ' · neutral site' : '');
-    function row(side){
-      var p = wp == null ? null : (side === "home" ? wp : 1 - wp);
-      var score = started && lg[side + "_score"] != null ? '<b class="cfb-sc">' + lg[side + "_score"] + '</b>' : '';
-      return '<div class="cfb-row">' + teamBadge("CFB", g[side]) + '<span class="cfb-nm">' + cfbTeamName(g, side) + '</span>' + score +
-        '<span class="cfb-p">' + (p == null ? '—' : Math.round(p * 100) + '%') + '</span></div>';
-    }
-    var fav = sp ? (sp.home_point < 0 ? g.home + ' ' + sp.home_point + ' (' + fmtOdds(sp.home) + ')' : sp.home_point > 0 ? g.away + ' ' + (-sp.home_point) + ' (' + fmtOdds(sp.away) + ')' : 'PK') : '—';
-    var head = el("button", "cfb-open", '<div class="cfb-when">' + when + '<span class="cfb-src">Win chance · Kalshi</span></div>' + row("away") + row("home") +
-      '<div class="cfb-lines"><span>Spread <b>' + escapeHtml(fav) + '</b></span><span>Total <b>' + (tot ? escapeHtml(String(tot.line)) : '—') + '</b></span>' +
-      '<span>Money <b>' + escapeHtml(g.away) + ' ' + fmtOdds(ml.away) + '</b> · <b>' + escapeHtml(g.home) + ' ' + fmtOdds(ml.home) + '</b></span></div>' +
-      '<div class="cfb-more">' + (lg.state === "in" ? "Live game ›" : "Graph, spreads & plays ›") + '</div>');
-    head.type = "button";
-    head.addEventListener("click", function(){
-      cfbOpen[g.espn_id] = true;                       // its win-chance graph loads with the next poll
-      if(!fastLines[gameKey(g)]) loadCfbLine(g);
-      openGamePage(cfbAsGame(g));
-    });
-    card.appendChild(head);
-    return card;
   }
   function loadCfbLine(g){
     if(!g.home_ticker || !dbApi) return;
@@ -1823,37 +1788,9 @@
         renderGamePage();
       });
   }
-  function renderCfbBoard(wrap, statusEl, syncedEl){
-    var noteEl = document.getElementById("confFilterNote");
-    if(CFB_UNDER_CONSTRUCTION){
-      noteEl.textContent = ""; statusEl.textContent = ""; statusEl.className = "status"; syncedEl.textContent = "";
-      wrap.appendChild(el("div", "card cfb-soon", cfbConstructionHtml()));
-      return;
-    }
-    var all = cfbGames(), games = all.filter(cfbOnBoard);
-    if(currentConfKey === "tracked") games = games.filter(function(g){ return followsGame(g); });
-    noteEl.textContent = currentConfKey === "top25" || currentConfKey === "top50" ? "Confidence bars are for DeVig's models; college football has none yet, so every game is shown." : "";
-    statusEl.textContent = ""; statusEl.className = "status";
-    syncedEl.textContent = linesDoc && linesDoc.generated_at ? "Kalshi prices " + new Date(linesDoc.generated_at).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}) : "";
-    if(!games.length){
-      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No upcoming college football games with Kalshi prices right now.<br>' +
-        '<span class="faint">FBS games show up here once Kalshi lists them (usually early in the week). Finished games are under History.</span></div>'));
-      return;
-    }
-    games.sort(function(a, b){
-      var la = cfbState(a).state === "in" ? 0 : 1, lb = cfbState(b).state === "in" ? 0 : 1;
-      return la - lb || a.kickoff_time.localeCompare(b.kickoff_time) || ((a.rank && (a.rank.home || a.rank.away)) ? 0 : 1) - ((b.rank && (b.rank.home || b.rank.away)) ? 0 : 1);
-    });
-    var head = el("div", "card cfb-head");
-    head.innerHTML = '<b>College football</b> <span class="faint">· ' + games.length + ' FBS game' + (games.length === 1 ? '' : 's') + ' · tap one for the win-chance graph and every spread</span>';
-    wrap.appendChild(head);
-    var day = null;
-    games.forEach(function(g){
-      var st = cfbState(g).state, d = st === "in" ? "Live now" : new Date(g.kickoff_time).toLocaleDateString([], {weekday: "long", month: "short", day: "numeric"});
-      if(d !== day){ day = d; wrap.appendChild(el("div", "bb-sec", escapeHtml(d))); }
-      wrap.appendChild(cfbCard(g));
-    });
-    setTimeout(initWheels, 0);
+  function renderCfbBoard(wrap, statusEl, syncedEl){   // only while CFB_UNDER_CONSTRUCTION; otherwise the shared board
+    document.getElementById("confFilterNote").textContent = ""; statusEl.textContent = ""; statusEl.className = "status"; syncedEl.textContent = "";
+    wrap.appendChild(el("div", "card cfb-soon", cfbConstructionHtml()));
   }
   // History: each finished game with Kalshi's last numbers before kickoff (live/cfb_history.json)
   function cfbFinals(){
@@ -1942,7 +1879,12 @@
     });
   }
   // a team's file, by its code with anything but letters and digits as "_" (college: TA&M -> team_TA_M.json)
-  function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "_") + ".json"); }
+  // The board's college codes come from ESPN's scoreboard; the Research files use ESPN's team pages, which differ for a few.
+  var RS_ALIAS = {CFB: {AFA: "AF", BUFF: "BUF"}};
+  function rsTeamFile(sp, code){
+    code = (RS_ALIAS[sp] || {})[code] || code;
+    return rsGet(sp.toLowerCase() + "/team_" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "_") + ".json");
+  }
   function rsHasSport(sp){ return RS_SPORTS.indexOf(sp) >= 0; }
   // Open Research at a page: {page: "team", sport, code} or {page: "player", sport, team | teams, id | name, stat, line}.
   function openResearch(route){
@@ -3216,6 +3158,7 @@
     var pushed = from === "game" && gamePage && gamePage.pushed;
     if(!pushed){ try{ history.pushState({devigGame: 1}, ""); pushed = true; }catch(e){} }
     gamePage = {key: gameKey(g), g: g, back: back, y: y, pushed: pushed};
+    if(g.sport === "CFB" && g.espn_id){ cfbOpen[g.espn_id] = true; if(!fastLines[gameKey(g)]) loadCfbLine(g); }   // Kalshi's graph before kickoff
     showPanel("game");
     playsAll = false;
     renderGamePage(true);
@@ -4898,6 +4841,8 @@
     var sport = g.sport || "NFL";
     var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : otherLiveFor(g);
     if(!base || (base.state === "pre" && !base.away_score)) base = archiveFor(g) || base;
+    if(!base && g.sport === "CFB" && g.state && g.state !== "pre")   // college: the score the lines file saw when it was built
+      base = {picks: [], state: g.state, detail: g.detail || "", away_score: g.away_score, home_score: g.home_score, espn_id: g.espn_id};
     if(base && base.state === "post" && !base.lines){                  // still in this week's live file: take the archive's lines
       var ar = archiveFor(g);
       if(ar && ar.lines) base = Object.assign({}, base, {lines: ar.lines, stats: Object.assign({}, ar.stats || {}, base.stats || {})});
@@ -4979,7 +4924,7 @@
       return lg && lg.state === "in" && gl && gl.home_ticker && (!have || now - have.at > 55e3);
     }).concat(cfbGames().filter(function(g){                     // college football: live games, and any open card
       var have = fastLines[gameKey(g)], st = cfbState(g).state;
-      return g.home_ticker && (st === "in" || cfbOpen[g.espn_id] && !have) && (!have || now - have.at > 55e3);
+      return g.home_ticker && st !== "in" && cfbOpen[g.espn_id] && !have;      // live ones come through boardDocs
     }));
   }
   function pollFast(){
