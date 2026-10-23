@@ -1,10 +1,10 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-23T08:08:39Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-23T08:18:26Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-21736 configurations scored so far.
+22134 configurations scored so far.
 
-## Spread -- top 25 of 18859
+## Spread -- top 25 of 19234
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -34,7 +34,7 @@ _Generated 2026-10-23T08:08:39Z by research/lab/search.py. Scores are on the sea
 | 24 | `s-0cd1a75d` | Blend of 2: s-dd1d33a1 + s-8d757565 | +0.66 | 1.52 | +1.60 | +1.06 | -0.68 |
 | 25 | `s-26f9ccd8` | Blend of 2: s-dd1d33a1 + s-a6587210 | +0.66 | 1.52 | +1.59 | +0.93 | -0.56 |
 
-## Total -- top 25 of 2877
+## Total -- top 25 of 2900
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -66,30 +66,30 @@ _Generated 2026-10-23T08:08:39Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `k`: best 65 (median t -0.33), worst 15 (-1.10) over 8933 configurations
-- spread · elo · `market_blend`: best 0.0625 (median t -0.63), worst 1.0 (-1.02) over 8933 configurations
-- spread · elo · `mov`: best 538 (median t -0.62), worst none (-inf) over 8933 configurations
-- spread · elo · `mov_cap`: best 34 (median t -0.68), worst 42 (-1.00) over 8933 configurations
-- spread · ppa · `carry`: best 0.85 (median t -0.32), worst 0.6 (-0.84) over 362 configurations
-- spread · ppa · `garbage_time`: best exclude (median t -0.41), worst include (-0.77) over 362 configurations
-- spread · ppa · `prior_w`: best 2 (median t -0.29), worst 0.5 (-0.80) over 362 configurations
+- spread · elo · `k`: best 65 (median t -0.33), worst 15 (-1.10) over 9084 configurations
+- spread · elo · `market_blend`: best 0.0625 (median t -0.64), worst 1.0 (-1.02) over 9084 configurations
+- spread · elo · `mov`: best 538 (median t -0.62), worst none (-inf) over 9084 configurations
+- spread · elo · `mov_cap`: best 34 (median t -0.68), worst 42 (-1.00) over 9084 configurations
+- spread · ppa · `carry`: best 0.85 (median t -0.32), worst 0.6 (-0.84) over 363 configurations
+- spread · ppa · `garbage_time`: best exclude (median t -0.41), worst include (-0.77) over 363 configurations
+- spread · ppa · `prior_w`: best 2 (median t -0.29), worst 0.5 (-0.80) over 363 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.75, 'hfa_pts': 1.5, 'margin_cap': None, 'prior_w': 0.5}, 'type': 'srs'} (median t +0.99), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.35) over 1151 configurations
 - spread · signals · `signals`: best [{'carry': 0.6, 'den': 'plays', 'halflife': 6.0, 'id': 'off-points-per-play~c0.6', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': 'Automatic variant of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.', 'side': 'offense', 'variant_of': 'off-points-per-play'}, {'carry': 0.4, 'den': 'plays', 'halflife': 12, 'id': 'off-ppa~h12', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa'}] (median t +1.43), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 1151 configurations
-- spread · srs · `carry`: best 0.95 (median t +0.38), worst 0.2 (-0.40) over 6845 configurations
-- spread · srs · `hfa_pts`: best 0.5 (median t +0.44), worst 3.5 (-0.26) over 6845 configurations
-- spread · srs · `margin_cap`: best 49 (median t +0.66), worst 21 (-0.51) over 6845 configurations
-- spread · srs · `prior_w`: best 0.625 (median t +0.64), worst 10 (-0.32) over 6845 configurations
-- spread · team_rating · `def_weight`: best 1.0 (median t +0.17), worst 0.5 (-0.13) over 1169 configurations
-- spread · team_rating · `halflife`: best 2 (median t +0.36), worst 6 (-0.28) over 1169 configurations
-- spread · team_rating · `metric`: best points (median t +0.27), worst epa (-0.37) over 1169 configurations
-- spread · team_rating · `season_carry`: best 0.85 (median t +0.13), worst 0.2 (-0.18) over 1169 configurations
-- total · pace_eff · `efficiency`: best epa (median t +0.64), worst points (+0.15) over 775 configurations
-- total · pace_eff · `halflife`: best 26 (median t +0.77), worst 2 (-0.33) over 775 configurations
-- total · pace_eff · `pace`: best True (median t +0.69), worst False (-0.13) over 775 configurations
-- total · pace_eff · `season_carry`: best 1.0 (median t +0.75), worst 0.2 (-0.18) over 775 configurations
+- spread · srs · `carry`: best 0.95 (median t +0.39), worst 0.2 (-0.40) over 7042 configurations
+- spread · srs · `hfa_pts`: best 1.25 (median t +0.42), worst 3.5 (-0.25) over 7042 configurations
+- spread · srs · `margin_cap`: best 49 (median t +0.66), worst 21 (-0.50) over 7042 configurations
+- spread · srs · `prior_w`: best 0.625 (median t +0.64), worst 10 (-0.31) over 7042 configurations
+- spread · team_rating · `def_weight`: best 1.0 (median t +0.16), worst 0.5 (-0.13) over 1195 configurations
+- spread · team_rating · `halflife`: best 2 (median t +0.36), worst 6 (-0.33) over 1195 configurations
+- spread · team_rating · `metric`: best points (median t +0.27), worst epa (-0.37) over 1195 configurations
+- spread · team_rating · `season_carry`: best 0.85 (median t +0.13), worst 0.2 (-0.18) over 1195 configurations
+- total · pace_eff · `efficiency`: best epa (median t +0.63), worst points (+0.13) over 792 configurations
+- total · pace_eff · `halflife`: best 26 (median t +0.77), worst 2 (-0.33) over 792 configurations
+- total · pace_eff · `pace`: best True (median t +0.70), worst False (-0.16) over 792 configurations
+- total · pace_eff · `season_carry`: best 1.0 (median t +0.75), worst 0.2 (-0.18) over 792 configurations
 - total · signals · `base`: best {'params': {'calibrate': True, 'efficiency': 'epa', 'halflife': 3, 'league_window': 1600, 'pace': True, 'season_carry': 0.3}, 'type': 'pace_eff'} (median t +1.78), worst {'params': {'calibrate': True, 'efficiency': 'points', 'halflife': 6, 'league_window': 1600, 'pace': True, 'season_carry': 0.5}, 'type': 'pace_eff'} (+0.11) over 1155 configurations
 - total · signals · `signals`: best [{'carry': 0.2, 'den': 'plays', 'halflife': 6.0, 'id': 'off-ppa~c0.2', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa (half-life 6, carry 0.2): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa'}, {'carry': 0.4, 'den': 'plays', 'halflife': 12, 'id': 'off-ppa~h12', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa'}] (median t +2.00), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'def-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'PPA per play allowed by the defense.', 'side': 'defense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-pace', 'kind': 'team', 'markets': ['total'], 'num': {'plays': 1}, 'reason': 'Plays per game: tempo drives the number of possessions.', 'side': 'offense'}] (-inf) over 1155 configurations
-- total · team_rating · `halflife`: best 4 (median t +1.36), worst 1 (-0.25) over 485 configurations
-- total · team_rating · `metric`: best epa (median t +1.11), worst points (+0.47) over 485 configurations
-- total · team_rating · `pace`: best plays (median t +1.10), worst none (+0.63) over 485 configurations
-- total · team_rating · `season_carry`: best 0.45 (median t +1.08), worst 0.9 (+0.65) over 485 configurations
+- total · team_rating · `halflife`: best 4 (median t +1.36), worst 1 (-0.25) over 491 configurations
+- total · team_rating · `metric`: best epa (median t +1.11), worst points (+0.47) over 491 configurations
+- total · team_rating · `pace`: best plays (median t +1.10), worst none (+0.61) over 491 configurations
+- total · team_rating · `season_carry`: best 0.45 (median t +1.08), worst 0.9 (+0.65) over 491 configurations
