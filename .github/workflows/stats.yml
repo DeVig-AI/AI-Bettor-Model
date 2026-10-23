@@ -14,6 +14,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main          # a run queued behind another starts from that run's pushed files, not the older commit
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -70,5 +72,9 @@ jobs:
           git add stats
           git diff --cached --quiet && exit 0
           git commit -q -m "Research stats $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          # the files are generated: if another run pushed the same files meanwhile, this run's (newer) copy wins
+          for i in 1 2 3 4 5; do
+            if git pull --rebase -X theirs -q; then git push -q && exit 0; else git rebase --abort 2>/dev/null || true; fi
+            sleep $((i * 7))
+          done
           exit 1
