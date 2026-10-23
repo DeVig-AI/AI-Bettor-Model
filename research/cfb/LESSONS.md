@@ -1,6 +1,6 @@
 # Research Lab -- lessons, College football (EXPLORATORY)
 
-_Generated 2026-10-23T06:26:21Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-23T06:33:57Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2018–2021 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -9,86 +9,100 @@ _Generated 2026-10-23T06:26:21Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## Faded (21)
+## Faded (26)
 
 - Signal def-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / -0.07 / -0.03 pts in 2018 / 2019 / 2021.
 - Signal def-finishing~c0.2 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / -0.03 / -0.05 pts in 2018 / 2019 / 2021.
 - Signal def-finishing~c0.6 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / -0.06 / +0.01 pts in 2018 / 2019 / 2021.
 - Signal def-finishing~h12 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.02 / -0.05 / -0.00 pts in 2018 / 2019 / 2021.
 - Signal def-finishing~h3 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.06 / -0.00 / -0.06 pts in 2018 / 2019 / 2021.
-- Signal def-points-per-play (total) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 2); on average +0.01 / +0.03 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play (total) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 3); on average +0.01 / +0.02 / -0.02 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.2~c0 (total) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 3); on average +0.01 / +0.02 / -0.00 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.6~c0.8 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.02 / -0.13 / -0.09 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h12 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.00 / -0.23 / -0.11 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h12~c0.6 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.07 / -0.02 / -0.04 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h12~h24 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / -0.08 / -0.07 pts in 2018 / 2019 / 2021.
-- Signal off-comp-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.09 / +0.14 / -0.19 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h3 (total) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 3); on average +0.00 / +0.00 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal off-comp-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.06 / +0.08 / -0.10 pts in 2018 / 2019 / 2021.
 - Signal off-points-per-play (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / -0.22 / -0.22 pts in 2018 / 2019 / 2021.
 - Signal off-points-per-play~c0.2 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / -0.32 / -0.12 pts in 2018 / 2019 / 2021.
 - Signal off-points-per-play~h12 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.07 / -0.23 / -0.11 pts in 2018 / 2019 / 2021.
-- Signal off-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.13 / +0.18 / -0.20 pts in 2018 / 2019 / 2021.
-- Signal off-ppa~c0.2 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.12 / +0.16 / -0.24 pts in 2018 / 2019 / 2021.
+- Signal off-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / +0.12 / -0.11 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~c0.2 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / +0.11 / -0.14 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~c0.6 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / -0.10 / -0.28 pts in 2018 / 2019 / 2021.
-- Signal off-ppa~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.14 / +0.17 / -0.27 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.10 / +0.09 / -0.15 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~h12 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / -0.25 / -0.31 pts in 2018 / 2019 / 2021.
-- Signal off-ppa~h12 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.11 / +0.13 / -0.13 pts in 2018 / 2019 / 2021.
-- Signal off-ppa~h3 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.19 / +0.24 / -0.31 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~h12 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.07 / +0.08 / -0.06 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~h3 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.12 / +0.15 / -0.20 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~h3~c0.2 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.09 / +0.15 / -0.21 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~h3~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.12 / +0.17 / -0.19 pts in 2018 / 2019 / 2021.
+- Signal off-ppa~h3~h2 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.06 / +0.14 / -0.15 pts in 2018 / 2019 / 2021.
 
-## No effect (60)
+## No effect (69)
 
 - Signal def-comp-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.27 / -0.34 / -0.09 pts in 2018 / 2019 / 2021.
-- Signal def-comp-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.08 / +0.03 / -0.00 pts in 2018 / 2019 / 2021.
-- Signal def-finishing (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.11 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
-- Signal def-finishing~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.11 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
-- Signal def-finishing~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.10 / -0.04 / -0.01 pts in 2018 / 2019 / 2021.
-- Signal def-finishing~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.04 / +0.00 / -0.03 pts in 2018 / 2019 / 2021.
-- Signal def-finishing~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.04 / -0.06 / -0.04 pts in 2018 / 2019 / 2021.
+- Signal def-comp-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.07 / +0.01 / -0.04 pts in 2018 / 2019 / 2021.
+- Signal def-finishing (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.07 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
+- Signal def-finishing~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.07 / -0.05 / +0.01 pts in 2018 / 2019 / 2021.
+- Signal def-finishing~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
+- Signal def-finishing~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.03 / +0.00 / -0.03 pts in 2018 / 2019 / 2021.
+- Signal def-finishing~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.08 / -0.03 / -0.01 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.27 / -0.14 / -0.01 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.28 / -0.28 / -0.01 pts in 2018 / 2019 / 2021.
-- Signal def-points-per-play~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average +0.02 / +0.03 / +0.05 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average +0.00 / +0.02 / +0.03 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.2~c0 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.22 / -0.33 / +0.00 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.2~h12 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.21 / -0.23 / -0.03 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.2~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.02 / +0.02 / -0.00 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.2~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.27 / -0.30 / -0.05 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.2~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average +0.01 / +0.00 / +0.03 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.10 / -0.13 / -0.03 pts in 2018 / 2019 / 2021.
-- Signal def-points-per-play~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.01 / +0.03 / -0.03 pts in 2018 / 2019 / 2021.
-- Signal def-points-per-play~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average +0.01 / +0.03 / +0.05 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.01 / +0.02 / -0.03 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~c0.6~c0.8 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.02 / -0.01 / -0.04 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.00 / +0.01 / -0.00 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h12~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.00 / +0.01 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h12~h24 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.07 / +0.01 / -0.05 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.29 / -0.14 / -0.00 pts in 2018 / 2019 / 2021.
-- Signal def-points-per-play~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average +0.00 / +0.01 / +0.00 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h3~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.27 / -0.12 / -0.02 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h3~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.03 / -0.02 / -0.02 pts in 2018 / 2019 / 2021.
 - Signal def-points-per-play~h3~h2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.23 / -0.28 / -0.07 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play~h3~h2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.01 / +0.00 / +0.02 pts in 2018 / 2019 / 2021.
 - Signal def-ppa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.17 / -0.16 / -0.05 pts in 2018 / 2019 / 2021.
-- Signal def-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.11 / -0.01 / -0.05 pts in 2018 / 2019 / 2021.
+- Signal def-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / -0.02 / -0.05 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~c0.2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.11 / -0.26 / -0.13 pts in 2018 / 2019 / 2021.
-- Signal def-ppa~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.13 / +0.04 / -0.11 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.13 / +0.02 / -0.08 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.25 / -0.12 / -0.03 pts in 2018 / 2019 / 2021.
-- Signal def-ppa~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.09 / +0.02 / +0.00 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / +0.03 / -0.02 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~c0.6~c0.8 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / -0.15 / +0.04 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~c0.6~c0.8 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.02 / -0.00 / +0.01 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~c0.6~h12 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.08 / -0.26 / +0.06 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~c0.6~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.07 / -0.03 / -0.01 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~c0.6~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.30 / -0.22 / -0.04 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~c0.6~h3 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.26 / -0.01 / -0.12 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~h12 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.13 / -0.32 / +0.02 pts in 2018 / 2019 / 2021.
-- Signal def-ppa~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.07 / -0.01 / -0.06 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / -0.01 / -0.04 pts in 2018 / 2019 / 2021.
 - Signal def-ppa~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.20 / -0.24 / -0.10 pts in 2018 / 2019 / 2021.
-- Signal def-ppa~h3 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.24 / -0.00 / -0.13 pts in 2018 / 2019 / 2021.
+- Signal def-ppa~h3 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.25 / -0.01 / -0.08 pts in 2018 / 2019 / 2021.
 - Signal off-comp-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.08 / -0.22 / -0.27 pts in 2018 / 2019 / 2021.
 - Signal off-finishing (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.08 / -0.26 / -0.13 pts in 2018 / 2019 / 2021.
-- Signal off-finishing (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.09 / -0.04 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal off-finishing (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.05 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
 - Signal off-finishing~c0.2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.12 / -0.17 / -0.20 pts in 2018 / 2019 / 2021.
-- Signal off-finishing~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.09 / -0.04 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal off-finishing~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
 - Signal off-finishing~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.08 / -0.30 / -0.07 pts in 2018 / 2019 / 2021.
-- Signal off-finishing~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.09 / -0.04 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal off-finishing~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.05 / -0.04 / +0.02 pts in 2018 / 2019 / 2021.
 - Signal off-finishing~h12 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average +0.00 / -0.30 / +0.06 pts in 2018 / 2019 / 2021.
-- Signal off-finishing~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.04 / +0.00 / -0.01 pts in 2018 / 2019 / 2021.
+- Signal off-finishing~h12 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.03 / +0.00 / -0.02 pts in 2018 / 2019 / 2021.
 - Signal off-finishing~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.20 / -0.15 / -0.12 pts in 2018 / 2019 / 2021.
-- Signal off-finishing~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.04 / -0.06 / -0.02 pts in 2018 / 2019 / 2021.
+- Signal off-finishing~h3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.04 / -0.03 / +0.03 pts in 2018 / 2019 / 2021.
 - Signal off-garbage-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.03 / -0.17 / +0.11 pts in 2018 / 2019 / 2021.
-- Signal off-garbage-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.13 / -0.23 / -0.15 pts in 2018 / 2019 / 2021.
-- Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.05 / -0.01 / -0.06 pts in 2018 / 2019 / 2021.
-- Signal off-points-per-play (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.10 / +0.02 / -0.07 pts in 2018 / 2019 / 2021.
-- Signal off-points-per-play~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.11 / +0.02 / -0.09 pts in 2018 / 2019 / 2021.
+- Signal off-garbage-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.22 / -0.16 / -0.10 pts in 2018 / 2019 / 2021.
+- Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.04 / -0.00 / -0.06 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / +0.00 / -0.02 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play~c0.2 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.07 / +0.00 / -0.03 pts in 2018 / 2019 / 2021.
 - Signal off-points-per-play~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / -0.12 / -0.17 pts in 2018 / 2019 / 2021.
-- Signal off-points-per-play~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.10 / -0.01 / -0.07 pts in 2018 / 2019 / 2021.
-- Signal off-points-per-play~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.05 / -0.03 / -0.06 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play~c0.6 (total) on top of a base model: no consistent effect (helped in all three on 1 of 3); on average -0.06 / -0.00 / -0.02 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play~h12 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.04 / -0.01 / -0.04 pts in 2018 / 2019 / 2021.
 - Signal off-points-per-play~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / -0.22 / -0.09 pts in 2018 / 2019 / 2021.
-- Signal off-points-per-play~h3 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.06 / +0.03 / -0.09 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play~h3 (total) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.06 / +0.01 / -0.02 pts in 2018 / 2019 / 2021.
 - Signal off-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.01 / -0.06 / -0.29 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~c0.2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.04 / -0.20 / -0.29 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~h3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.12 / -0.10 / -0.24 pts in 2018 / 2019 / 2021.
@@ -96,30 +110,31 @@ _Generated 2026-10-23T06:26:21Z by research/lab/report.py after each run. **Expl
 - Signal off-ppa~h3~c0.6 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.11 / -0.09 / -0.18 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~h3~h2 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 3); on average -0.18 / -0.07 / -0.25 pts in 2018 / 2019 / 2021.
 
-## What the search learned (17,485 configurations, 2018–2021 only)
+## What the search learned (18,354 configurations, 2018–2021 only)
 
-- spread · elo · `k`: best 65 (median t -0.08), worst 15 (-1.11) over 7905 configurations
-- spread · elo · `mov`: best 538 (median t -0.64), worst none (-inf) over 7905 configurations
-- spread · elo · `mov_cap`: best 34 (median t -0.55), worst 38 (-inf) over 7905 configurations
-- spread · ppa · `carry`: best 0.875 (median t -0.17), worst 0.6 (-0.83) over 264 configurations
-- spread · ppa · `garbage_time`: best exclude (median t -0.39), worst include (-0.76) over 264 configurations
-- spread · ppa · `prior_w`: best 2 (median t -0.39), worst 0.625 (-1.03) over 264 configurations
-- spread · signals · `base`: best {'params': {'carry': 0.75, 'hfa_pts': 1.5, 'margin_cap': None, 'prior_w': 0.5}, 'type': 'srs'} (median t +0.94), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.57) over 752 configurations
-- spread · signals · `signals`: best [{'carry': 0.4, 'den': None, 'halflife': 3, 'id': 'def-finishing~h3', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Automatic variant of def-finishing (half-life 3, carry 0.4): Points allowed beyond what PPA allowed explains: red-zone stands and short fields given up are partly luck and tend to even out.', 'side': 'defense', 'variant_of': 'def-finishing'}] (median t +1.33), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 752 configurations
-- spread · srs · `carry`: best 0.95 (median t +0.73), worst 0.2 (-0.44) over 5827 configurations
-- spread · srs · `hfa_pts`: best 1.875 (median t +1.18), worst 3.5 (-0.28) over 5827 configurations
-- spread · srs · `margin_cap`: best 49 (median t +0.66), worst 21 (-0.52) over 5827 configurations
-- spread · srs · `prior_w`: best 0.625 (median t +1.16), worst 10 (-0.35) over 5827 configurations
-- spread · team_rating · `halflife`: best 2 (median t +0.36), worst 6 (-0.33) over 839 configurations
-- spread · team_rating · `metric`: best points (median t +0.23), worst epa (-0.38) over 839 configurations
-- spread · team_rating · `season_carry`: best 0.425 (median t +0.12), worst 0.2 (-0.16) over 839 configurations
-- total · pace_eff · `efficiency`: best epa (median t +0.58), worst points (+0.04) over 535 configurations
-- total · pace_eff · `halflife`: best 23 (median t +0.90), worst 2 (-0.33) over 535 configurations
-- total · pace_eff · `pace`: best True (median t +0.63), worst False (-0.11) over 535 configurations
-- total · pace_eff · `season_carry`: best 0.85 (median t +0.91), worst 0.2 (-0.24) over 535 configurations
-- total · signals · `base`: best {'params': {'calibrate': True, 'efficiency': 'epa', 'halflife': 3, 'league_window': 1600, 'pace': True, 'season_carry': 0.3}, 'type': 'pace_eff'} (median t +1.77), worst {'params': {'calibrate': True, 'efficiency': 'points', 'halflife': 6, 'league_window': 1600, 'pace': True, 'season_carry': 0.5}, 'type': 'pace_eff'} (+0.08) over 359 configurations
-- total · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 3, 'id': 'def-points-per-play~h3', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play'}, {'carry': 0.4, 'den': None, 'halflife': 12, 'id': 'off-finishing~h12', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Automatic variant of off-finishing (half-life 12, carry 0.4): Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense', 'variant_of': 'off-finishing'}] (median t +1.14), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'def-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'PPA per play allowed by the defense.', 'side': 'defense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-pace', 'kind': 'team', 'markets': ['total'], 'num': {'plays': 1}, 'reason': 'Plays per game: tempo drives the number of possessions.', 'side': 'offense'}] (-inf) over 359 configurations
-- total · team_rating · `halflife`: best 4 (median t +1.37), worst 1 (+0.31) over 347 configurations
-- total · team_rating · `metric`: best epa (median t +1.16), worst points (+0.31) over 347 configurations
-- total · team_rating · `pace`: best plays (median t +1.14), worst none (+0.57) over 347 configurations
-- total · team_rating · `season_carry`: best 0.475 (median t +1.20), worst 0.9 (+0.67) over 347 configurations
+- spread · elo · `k`: best 65 (median t -0.38), worst 15 (-1.11) over 8083 configurations
+- spread · elo · `market_blend`: best 0.0625 (median t -0.76), worst 1.0 (-1.03) over 8083 configurations
+- spread · elo · `mov`: best 538 (median t -0.64), worst none (-inf) over 8083 configurations
+- spread · elo · `mov_cap`: best 49 (median t -0.55), worst 38 (-inf) over 8083 configurations
+- spread · ppa · `carry`: best 0.875 (median t -0.17), worst 0.6 (-0.82) over 289 configurations
+- spread · ppa · `garbage_time`: best exclude (median t -0.40), worst include (-0.76) over 289 configurations
+- spread · ppa · `prior_w`: best 2 (median t -0.28), worst 0.625 (-0.98) over 289 configurations
+- spread · signals · `base`: best {'params': {'carry': 0.75, 'hfa_pts': 1.5, 'margin_cap': None, 'prior_w': 0.5}, 'type': 'srs'} (median t +0.94), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.57) over 756 configurations
+- spread · signals · `signals`: best [{'carry': 0.4, 'den': None, 'halflife': 3, 'id': 'def-finishing~h3', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Automatic variant of def-finishing (half-life 3, carry 0.4): Points allowed beyond what PPA allowed explains: red-zone stands and short fields given up are partly luck and tend to even out.', 'side': 'defense', 'variant_of': 'def-finishing'}] (median t +1.33), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 756 configurations
+- spread · srs · `carry`: best 0.825 (median t +0.87), worst 0.2 (-0.44) over 5916 configurations
+- spread · srs · `hfa_pts`: best 1.875 (median t +0.96), worst 3.5 (-0.28) over 5916 configurations
+- spread · srs · `margin_cap`: best 49 (median t +0.75), worst 21 (-0.51) over 5916 configurations
+- spread · srs · `prior_w`: best 0.625 (median t +1.07), worst 10 (-0.35) over 5916 configurations
+- spread · team_rating · `halflife`: best 18 (median t +0.49), worst 6 (-0.33) over 880 configurations
+- spread · team_rating · `metric`: best points (median t +0.24), worst epa (-0.37) over 880 configurations
+- spread · team_rating · `season_carry`: best 0.425 (median t +0.10), worst 0.2 (-0.16) over 880 configurations
+- total · pace_eff · `efficiency`: best epa (median t +0.63), worst points (+0.06) over 579 configurations
+- total · pace_eff · `halflife`: best 23 (median t +0.90), worst 2 (-0.33) over 579 configurations
+- total · pace_eff · `pace`: best True (median t +0.66), worst False (-0.09) over 579 configurations
+- total · pace_eff · `season_carry`: best 0.85 (median t +0.90), worst 0.2 (-0.24) over 579 configurations
+- total · signals · `base`: best {'params': {'calibrate': True, 'efficiency': 'epa', 'halflife': 4, 'league_window': 1600, 'pace': True, 'season_carry': 0.2}, 'type': 'pace_eff'} (median t +1.79), worst {'params': {'calibrate': True, 'efficiency': 'points', 'halflife': 6, 'league_window': 1600, 'pace': True, 'season_carry': 0.5}, 'type': 'pace_eff'} (+0.08) over 755 configurations
+- total · signals · `signals`: best [{'carry': 0.4, 'den': None, 'halflife': 12, 'id': 'def-finishing~h12', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Automatic variant of def-finishing (half-life 12, carry 0.4): Points allowed beyond what PPA allowed explains: red-zone stands and short fields given up are partly luck and tend to even out.', 'side': 'defense', 'variant_of': 'def-finishing'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-pace', 'kind': 'team', 'markets': ['total'], 'num': {'plays': 1}, 'reason': 'Plays per game: tempo drives the number of possessions.', 'side': 'offense'}] (median t +1.98), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'def-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'PPA per play allowed by the defense.', 'side': 'defense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-pace', 'kind': 'team', 'markets': ['total'], 'num': {'plays': 1}, 'reason': 'Plays per game: tempo drives the number of possessions.', 'side': 'offense'}] (-inf) over 755 configurations
+- total · team_rating · `halflife`: best 4 (median t +1.37), worst 1 (+0.31) over 370 configurations
+- total · team_rating · `metric`: best epa (median t +1.15), worst points (+0.34) over 370 configurations
+- total · team_rating · `pace`: best plays (median t +1.14), worst none (+0.57) over 370 configurations
+- total · team_rating · `season_carry`: best 0.475 (median t +1.13), worst 1.0 (+0.64) over 370 configurations
