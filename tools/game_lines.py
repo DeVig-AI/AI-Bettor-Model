@@ -17,7 +17,8 @@ College football (sport "CFB", Kalshi series KXNCAAFGAME / KXNCAAFSPREAD / KXNCA
 its own (MOSU, MTU), so each Kalshi game is matched to ESPN's FBS scoreboard by team names (tools/cfb_teams.py) and
 written in ESPN's codes, with what the app's CFB board needs: kickoff, ESPN ids (logos for signed-in users), names,
 colours, ranks, the score when this ran, Kalshi's win chance, moneylines, main spread and main total.
-live/cfb_history.json keeps each CFB game's last Kalshi numbers before kickoff and its final score (History tab).
+live/cfb_history.json keeps each CFB game's last Kalshi numbers before kickoff and its final score (History tab), and
+live/market_history.json does the same for NHL and WNBA, the other sports with no DeVig game model.
 Keyless: Kalshi and ESPN public endpoints only.
 """
 import json
@@ -37,6 +38,9 @@ KG.ESPN.setdefault("WNBA", "basketball/wnba")
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "live", "game_lines.json")
 CFB_HISTORY = os.path.join(os.path.dirname(__file__), "..", "live", "cfb_history.json")
+MARKET_HISTORY = os.path.join(os.path.dirname(__file__), "..", "live", "market_history.json")
+HISTORY_SPORTS = ("NHL", "WNBA")      # Kalshi-only sports whose finished games the History tab lists
+MARKET_HISTORY_DAYS = 200             # a whole WNBA season (May to October)
 SPORTS = ("NFL", "NBA", "MLB", "NHL", "WNBA")
 ET = ZoneInfo("America/New_York")
 ESPN_CFB = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard"
@@ -218,6 +222,72 @@ def update_history(now, cfb, espn):
         json.dump(hist, f, separators=(",", ":"))
 
 
+def espn_finals(sport, date):
+    """{espn_id: (away score, home score)} of the finished games on ESPN's scoreboard for one US date (YYYY-MM-DD)."""
+    d = KG.get(f"https://site.api.espn.com/apis/site/v2/sports/{KG.ESPN[sport]}/scoreboard",
+               {"dates": date.replace("-", "")}) or {}
+    out = {}
+    for ev in d.get("events") or []:
+        comp = (ev.get("competitions") or [{}])[0]
+        st = ((ev.get("status") or comp.get("status") or {}).get("type")) or {}
+        side = {c.get("homeAway"): c for c in comp.get("competitors") or []}
+        if st.get("state") != "post" or "home" not in side or "away" not in side:
+            continue
+        try:
+            out[str(ev.get("id"))] = (int(float(side["away"].get("score"))), int(float(side["home"].get("score"))))
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+def update_market_history(now, games):
+    """Per NHL / WNBA game: the last Kalshi numbers seen before it started, then ESPN's final score (History tab).
+    Keyed "SPORT:espn_id". Old games drop off after MARKET_HISTORY_DAYS."""
+    try:
+        with open(MARKET_HISTORY) as f:
+            hist = json.load(f)
+    except (OSError, ValueError):
+        hist = {"games": {}}
+    store = hist.setdefault("games", {})
+    for g in games:
+        if g["sport"] not in HISTORY_SPORTS or not g.get("espn_id") or not g.get("kickoff"):
+            continue
+        ko = datetime.fromisoformat(g["kickoff"].replace("Z", "+00:00"))
+        h = store.setdefault(f"{g['sport']}:{g['espn_id']}", {})
+        h.update({k: g[k] for k in ("sport", "espn_id", "kickoff", "away", "home") if g.get(k) is not None})
+        h["date"] = ko.astimezone(ET).strftime("%Y-%m-%d")
+        if g.get("colors"):
+            h["colors"] = g["colors"]
+        if now < ko and g.get("home_wp") is not None:         # never written after the start
+            h["pre"] = {"home_wp": g["home_wp"], "ml": g.get("ml"), "spread": g.get("spread"), "total": g.get("total"),
+                        "at": now.strftime("%Y-%m-%dT%H:%M:%SZ")}
+    pending = {}                                              # (sport, date) -> keys still waiting for a final
+    for key, h in store.items():
+        ko = h.get("kickoff")
+        if "final" not in h and ko and datetime.fromisoformat(ko.replace("Z", "+00:00")) < now - timedelta(hours=2):
+            pending.setdefault((h["sport"], h["date"]), []).append(key)
+    for (sport, date), keys in sorted(pending.items()):
+        try:
+            fin = espn_finals(sport, date)
+        except Exception as e:                                # one scoreboard failing must not stop the others
+            KG.log.append(f"{sport} finals {date}: {type(e).__name__}")
+            continue
+        for key in keys:
+            sc = fin.get(str(store[key]["espn_id"]))
+            if sc:
+                store[key]["final"] = {"away": sc[0], "home": sc[1]}
+    cut = (now - timedelta(days=MARKET_HISTORY_DAYS)).strftime("%Y-%m-%d")
+    hist["games"] = {k: v for k, v in sorted(store.items(), key=lambda x: x[1].get("kickoff") or "")
+                     if (v.get("date") or "9") >= cut}
+    hist["generated_at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    hist["note"] = ("NHL and WNBA games with Kalshi prices: the last Kalshi win chance, moneyline, puck line / main "
+                    "spread and total seen before the start (tools/game_lines.py, every 30 minutes), then ESPN's final "
+                    "score. Display only.")
+    os.makedirs(os.path.dirname(MARKET_HISTORY), exist_ok=True)
+    with open(MARKET_HISTORY, "w") as f:
+        json.dump(hist, f, separators=(",", ":"))
+
+
 def main():
     games = []
     for sport in SPORTS:
@@ -240,6 +310,10 @@ def main():
         update_history(now, cfb, espn)
     except Exception as e:                        # college football failing must not drop the other sports
         KG.log.append(f"CFB: {type(e).__name__}: {e}")
+    try:
+        update_market_history(now, games)
+    except Exception as e:                        # the history failing must not drop the lines file
+        KG.log.append(f"market history: {type(e).__name__}: {e}")
     games.sort(key=lambda x: (x["sport"], x["date"] or "", x["away"]))
     out = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "games": games,
            "errors": KG.log[:20], "cfb_unmatched": sorted(CFB_UNMATCHED, key=lambda u: (u["why"], u["date"], u["away"]))}

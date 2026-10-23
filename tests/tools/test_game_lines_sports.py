@@ -63,6 +63,7 @@ class NHLWNBALines(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.mkdtemp()
         GL.OUT, GL.CFB_HISTORY = os.path.join(tmp, "game_lines.json"), os.path.join(tmp, "cfb_history.json")
+        GL.MARKET_HISTORY = os.path.join(tmp, "market_history.json")
         GL.KG.get = fake_get
         GL.KG._sb.clear()
         GL.KG.log.clear()

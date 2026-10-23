@@ -1,17 +1,22 @@
 name: Game lines -- every Kalshi spread for both teams (display only)
 on:
   workflow_dispatch:
+    inputs:
+      backfill:
+        description: 'Also fill the History tab with NHL games since Oct 1 and the 2026 WNBA season (ESPN finals, Kalshi pre-game chance; once)'
+        type: boolean
+        default: false
   schedule:
     - cron: '7,37 * * * *'   # twice an hour; public prices only, no keys, nothing bet
 permissions:
   contents: write
 concurrency:
   group: game-lines
-  cancel-in-progress: true
+  cancel-in-progress: false  # queue: a backfill run must not be cut off by the next scheduled run
 jobs:
   lines:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,6 +24,11 @@ jobs:
           python-version: '3.11'
       - name: Build the lines file (Kalshi spreads for NFL, NBA, MLB, NHL, WNBA and college football)
         run: python3 tools/game_lines.py
+      - name: History backfill (NHL since Oct 1, WNBA 2026 season; finished games only)
+        if: inputs.backfill
+        run: |
+          python3 tools/market_history_backfill.py --sport NHL --since 2026-10-01
+          python3 tools/market_history_backfill.py --sport WNBA --since 2026-05-01
       - name: Save it
         run: |
           [ -f live/game_lines.json ] || exit 0
@@ -26,6 +36,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add live/game_lines.json
           if [ -f live/cfb_history.json ]; then git add live/cfb_history.json; fi
+          if [ -f live/market_history.json ]; then git add live/market_history.json; fi
           git diff --cached --quiet && exit 0
           git commit -q -m "Game lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done

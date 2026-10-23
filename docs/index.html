@@ -1813,11 +1813,35 @@
       away_team: h.away, home_team: h.home, kickoff_time: h.kickoff,
       state: "post", detail: "Final", away_score: h.final.away, home_score: h.final.home});
   }
-  function renderCfbPast(wrap, recEl, strip){
-    var fin = cfbFinals();
+  // NHL and WNBA (no DeVig game model either): live/market_history.json, written by tools/game_lines.py
+  var marketHistory = null;
+  function marketFinals(sport){
+    var gs = (marketHistory && marketHistory.games) || {};
+    return Object.keys(gs).map(function(k){ return gs[k]; })
+      .filter(function(h){ return h.sport === sport && h.final && h.kickoff && h.espn_id; });
+  }
+  // A finished NHL / WNBA game in the shape the shared game page takes (like a Kalshi-only game on the board).
+  function marketFinalAsGame(h){
+    var p = h.pre || {}, ml = p.ml || {}, sp = p.spread || {}, tot = p.total || {};
+    if(h.colors){
+      var tc = TEAM_COLORS[h.sport] = TEAM_COLORS[h.sport] || {};
+      ["away", "home"].forEach(function(k){ if(!tc[h[k]] && /^#[0-9a-f]{6}$/i.test(h.colors[k] || "")) tc[h[k]] = h.colors[k]; });
+    }
+    return {game_id: "hist:" + h.sport + ":" + h.espn_id, sport: h.sport, away_team: h.away, home_team: h.home,
+      kickoff_time: h.kickoff, game_date: h.date, espn_id: h.espn_id, marketOnly: true, fromHistory: true, home_wp: p.home_wp,
+      state: "post", detail: "Final", away_score: h.final.away, home_score: h.final.home,
+      market: {book: "Kalshi", moneyline_home: ml.home, moneyline_away: ml.away, spread_home: sp.home_point,
+               spread_home_odds: sp.home, spread_away_odds: sp.away, total_line: tot.line, over_odds: tot.over, under_odds: tot.under},
+      model: {available: false, note: "No model pick: DeVig has no " + h.sport + " game model. Prices are Kalshi's last before the start, fee included."}};
+  }
+  function renderCfbPast(wrap, recEl, strip){ renderMarketPast("CFB", wrap, recEl, strip); }
+  // History for a sport with no DeVig model: the market itself, Kalshi's last numbers before the start against the final.
+  function renderMarketPast(sport, wrap, recEl, strip){
+    var cfb = sport === "CFB", name = cfb ? "college football" : sport;
+    var fin = cfb ? cfbFinals() : marketFinals(sport), asGame = cfb ? cfbFinalAsGame : marketFinalAsGame;
     var fw = 0, fl = 0, cw = 0, cl = 0;
     function grade(h){
-      var m = h.final.home - h.final.away, p = h.pre, out = {};
+      var m = h.final.home - h.final.away, p = h.pre || {}, out = {};
       if(p.home_wp != null && p.home_wp !== 0.5 && m !== 0) out.fav = (p.home_wp > 0.5) === (m > 0);
       if(p.spread && p.spread.home_point){
         var favHome = p.spread.home_point < 0, cover = m + p.spread.home_point;   // home margin against the home line
@@ -1826,14 +1850,14 @@
       return out;
     }
     fin.forEach(function(h){ var r = grade(h); if(r.fav === true) fw++; else if(r.fav === false) fl++; if(r.cover === true) cw++; else if(r.cover === false) cl++; });
-    recEl.innerHTML = '<div class="rec-big"><b>' + fw + '–' + fl + '</b><span>' + (fw + fl ? Math.round(fw / (fw + fl) * 100) + '% of Kalshi favourites won' : 'no finished games yet') + '</span></div>' +
-      (cw + cl ? '<div class="rec-big" style="margin-top:4px"><b style="font-size:22px">' + cw + '–' + cl + '</b><span>favourites covered Kalshi\'s main spread</span></div>' : '') +
-      '<div class="faint">College football has no DeVig model, so this is the market itself: Kalshi\'s last price before kickoff against the final score. Favourites win often but pay little.</div>';
+    recEl.innerHTML = '<div class="rec-big"><b>' + fw + '–' + fl + '</b><span>' + (fw + fl ? Math.round(fw / (fw + fl) * 100) + '% of Kalshi favourites won' : 'no finished games with a Kalshi price yet') + '</span></div>' +
+      (cw + cl ? '<div class="rec-big" style="margin-top:4px"><b style="font-size:22px">' + cw + '–' + cl + '</b><span>favourites covered Kalshi\'s ' + (sport === "NHL" ? 'puck line' : 'main spread') + '</span></div>' : '') +
+      '<div class="faint">' + (cfb ? 'College football' : sport) + ' has no DeVig model, so this is the market itself: Kalshi\'s last price before ' + (cfb ? 'kickoff' : 'the start') + ' against the final score. Favourites win often but pay little.</div>';
     var byDay = {};
     fin.forEach(function(h){ (byDay[dayKey(h.kickoff)] = byDay[dayKey(h.kickoff)] || []).push(h); });
     var days = Object.keys(byDay).sort();
     if(!days.length){
-      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished college football games yet.</div>'));
+      wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished ' + escapeHtml(name) + ' games yet.</div>'));
       return;
     }
     if(days.indexOf(pastDay) < 0) pastDay = days[days.length - 1];
@@ -1849,22 +1873,23 @@
     var list = byDay[pastDay].slice().sort(function(a, b){ return a.kickoff.localeCompare(b.kickoff); });
     wrap.appendChild(el("div", "bb-sec", escapeHtml(new Date(list[0].kickoff).toLocaleDateString([], {weekday: "long", month: "long", day: "numeric"}))));
     list.forEach(function(h){
-      var r = grade(h), p = h.pre, favHome = p.home_wp > 0.5, c = el("button", "card cfb-past");
+      var r = grade(h), p = h.pre || {}, hasWp = p.home_wp != null, favHome = p.home_wp > 0.5, c = el("button", "card cfb-past");
       c.type = "button";
-      ["away", "home"].forEach(function(k){ if(h.ids && h.ids[k]) CFB_IDS[h[k]] = h.ids[k]; });
+      if(cfb) ["away", "home"].forEach(function(k){ if(h.ids && h.ids[k]) CFB_IDS[h[k]] = h.ids[k]; });
+      else marketFinalAsGame(h);                         // registers ESPN's colours for the badges
       function line(side){
         var won = side === "home" ? h.final.home > h.final.away : h.final.away > h.final.home;
         var pr = side === "home" ? p.home_wp : 1 - p.home_wp;
-        return '<div class="cfb-row' + (won ? ' won' : '') + '">' + teamBadge("CFB", h[side]) + '<span class="cfb-nm">' + escapeHtml((h.names && h.names[side]) || h[side]) + '</span>' +
-          '<b class="cfb-sc">' + h.final[side] + '</b><span class="cfb-p">' + Math.round(pr * 100) + '%</span></div>';
+        return '<div class="cfb-row' + (won ? ' won' : '') + '">' + teamBadge(sport, h[side]) + '<span class="cfb-nm">' + escapeHtml((h.names && h.names[side]) || h[side]) + '</span>' +
+          '<b class="cfb-sc">' + h.final[side] + '</b><span class="cfb-p">' + (hasWp ? Math.round(pr * 100) + '%' : '') + '</span></div>';
       }
       var spTxt = p.spread && p.spread.home_point ? (p.spread.home_point < 0 ? h.home + ' ' + p.spread.home_point : h.away + ' ' + (-p.spread.home_point)) : null;
-      c.innerHTML = '<div class="cfb-when">Final<span class="cfb-src">Kalshi before kickoff</span></div>' + line("away") + line("home") +
-        '<div class="cfb-lines"><span>Favourite <b>' + escapeHtml(favHome ? h.home : h.away) + '</b> ' + (r.fav === true ? '<span class="pill good">won</span>' : r.fav === false ? '<span class="pill bad">lost</span>' : '') + '</span>' +
-        (spTxt ? '<span>Spread <b>' + escapeHtml(spTxt) + '</b> ' + (r.cover === true ? '<span class="pill good">covered</span>' : r.cover === false ? '<span class="pill bad">didn\'t cover</span>' : '<span class="pill neutral">push</span>') + '</span>' : '') +
+      c.innerHTML = '<div class="cfb-when">Final<span class="cfb-src">' + (hasWp ? 'Kalshi before ' + (cfb ? 'kickoff' : 'the start') : 'no Kalshi price saved') + '</span></div>' + line("away") + line("home") +
+        '<div class="cfb-lines">' + (hasWp ? '<span>Favourite <b>' + escapeHtml(favHome ? h.home : h.away) + '</b> ' + (r.fav === true ? '<span class="pill good">won</span>' : r.fav === false ? '<span class="pill bad">lost</span>' : '') + '</span>' : '') +
+        (spTxt ? '<span>' + (sport === "NHL" ? 'Puck line' : 'Spread') + ' <b>' + escapeHtml(spTxt) + '</b> ' + (r.cover === true ? '<span class="pill good">covered</span>' : r.cover === false ? '<span class="pill bad">didn\'t cover</span>' : '<span class="pill neutral">push</span>') + '</span>' : '') +
         (p.total ? '<span>Total <b>' + escapeHtml(String(p.total.line)) + '</b> ' + ((h.final.home + h.final.away) > p.total.line ? 'went over' : (h.final.home + h.final.away) < p.total.line ? 'stayed under' : 'push') + '</span>' : '') + '</div>' +
         '<div class="cfb-go"><span class="game-more">Plays, box & matchup ›</span></div>';
-      c.addEventListener("click", function(){ openGamePage(cfbFinalAsGame(h)); });
+      c.addEventListener("click", function(){ openGamePage(asGame(h)); });
       wrap.appendChild(c);
     });
   }
@@ -2340,13 +2365,16 @@
     var sports = [];
     past.concat(decisionsDocs).forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
     if(cfbFinals().length && sports.indexOf("CFB") < 0) sports.push("CFB");
+    ["NHL", "WNBA"].forEach(function(sp){ if(marketFinals(sp).length && sports.indexOf(sp) < 0) sports.push(sp); });
     sports.sort(function(a, b){ return historySportRank(a) - historySportRank(b); });
     if(sports.indexOf(pastSport) < 0) pastSport = sports[0] || null;
     pills.innerHTML = sports.map(function(sp){
       return '<button type="button" class="pill-tab' + (sp === pastSport ? ' active' : '') + '" data-past-sport="' + escapeHtml(sp) + '">' + escapeHtml(sp) + '</button>';
     }).join("");
     wrap.innerHTML = ""; recEl.innerHTML = ""; strip.innerHTML = "";
-    if(pastSport === "CFB"){ renderCfbPast(wrap, recEl, strip); return; }
+    if(pastSport === "CFB" || ((pastSport === "NHL" || pastSport === "WNBA") && marketFinals(pastSport).length)){
+      renderMarketPast(pastSport, wrap, recEl, strip); return;
+    }
     if(!pastSport){
       wrap.appendChild(el("div", "card", '<div class="empty"><div class="icon">—</div>No finished games yet.<br><span class="faint">Games move here from Home once they end.</span></div>'));
       return;
@@ -4357,6 +4385,7 @@
           if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
           if(x && x.doc === "LIVE_LINES") otherLive = x;
           if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
+          if(x && x.doc === "MARKET_HISTORY"){ marketHistory = x; setTimeout(renderPast, 0); }
           if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
           if(x && x.doc === "NBA_ROSTERS"){ nbaRosters = x; setTimeout(renderHome, 0); }
         });
@@ -4862,7 +4891,7 @@
       return d.game_id === g.game_id && d.outcome && d.outcome.resolved && d.outcome.home_score != null; })[0] : null;
     if(graded && base && base.state !== "post")
       base = Object.assign({}, base, {state: "post", detail: "Final", away_score: graded.outcome.away_score, home_score: graded.outcome.home_score});
-    if(!base && g.sport === "CFB" && g.state && g.state !== "pre")   // college: the score the lines file saw when it was built
+    if(!base && (g.sport === "CFB" || g.fromHistory) && g.state && g.state !== "pre")   // college / History: the score the file saw
       base = {picks: [], state: g.state, detail: g.detail || "", away_score: g.away_score, home_score: g.home_score, espn_id: g.espn_id};
     if(base && base.state === "post" && !base.lines){                  // still in this week's live file: take the archive's lines
       var ar = archiveFor(g);
