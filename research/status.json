@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T17:54:47Z",
+ "updated_at": "2026-10-23T18:04:43Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T17:55:13Z",
+   "updated_at": "2026-10-23T18:05:11Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4080,7 +4080,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-23T17:55:14Z",
+   "updated_at": "2026-10-23T18:05:13Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4146,7 +4146,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-23T17:55:14Z",
+   "updated_at": "2026-10-23T18:05:13Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4212,7 +4212,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-23T17:54:47Z",
+   "updated_at": "2026-10-23T18:04:43Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4236,7 +4236,7 @@
    },
    "counts": {
     "tried": 0,
-    "running": 0,
+    "running": 1,
     "lab_pass": 0,
     "exam_pass": 0,
     "exam_budget_left": 3,
@@ -4249,11 +4249,11 @@
      "market": "total",
      "family": "Blend · search",
      "reason": "Found by search round 1: on 2014–2016 it beat the line by +0.14 pts a game (t = 2.59), positive in all three search periods. Now confirmed on 2017–2019, which the search never saw.",
-     "state": "queued",
+     "state": "running",
      "fail_reason": "",
-     "gate_now": null,
-     "started_at": null,
-     "eta_at": null,
+     "gate_now": 1,
+     "started_at": "2026-10-23T18:04:43Z",
+     "eta_at": "2026-10-23T18:06:13Z",
      "gates": [
       {
        "name": "2017",
@@ -4291,7 +4291,7 @@
       "taken_at": null,
       "note": ""
      },
-     "verdict": "Registered; runs in the next nightly lab run.",
+     "verdict": "Running through the three gates now.",
      "graded_at": null,
      "run_number": null,
      "run_url": null,
@@ -4302,6 +4302,23 @@
    "lessons": [],
    "promoted": [],
    "runs": [
+    {
+     "kind": "lab",
+     "name": "Research Lab #2371",
+     "started_at": "2026-10-23T18:04:43Z",
+     "finished_at": null,
+     "duration_s": null,
+     "run_number": 2371,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "1 tested → running through the gates",
+     "funnel": [
+      {
+       "label": "tested",
+       "count": 1
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 1",
