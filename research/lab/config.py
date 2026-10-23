@@ -1,14 +1,14 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v10: Part B NFL,
-Part C college football); the Constitution wins if they ever disagree.
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v11: Part B NFL,
+Part C college football, Part D NBA / NHL / MLB); the Constitution wins if they ever disagree.
 
-The module holds one sport's settings at a time: NFL by default, `use("CFB")` switches every constant below to
-Part C (the lab's commands take `--sport`, or the LAB_SPORT environment variable)."""
+The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB") switches every
+constant below to that sport's Part (the lab's commands take `--sport`, or the LAB_SPORT environment variable)."""
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v10"
+CONSTITUTION_VERSION = "v11"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -23,6 +23,7 @@ EXAMS = os.path.join(RESEARCH, "exam", "EXAMS.csv")
 PAPER_DIR = os.path.join(RESEARCH, "paper")
 PROMOTED = os.path.join(RESEARCH, "promoted.json")
 STATUS_JSON = os.path.join(RESEARCH, "status.json")
+MARKETS = ("spread", "total")  # B3; Part D3 gives NHL and MLB a moneyline instead of a spread
 
 # B2. Season split (v4; v2/v3 used 2006-12 / 2013-18 / 2019-24, v1 used training 2006-15 and gates 2016-18 / 2019-21 / 2022-24)
 FIRST_SEASON = 1999            # ratings start here, from average
@@ -65,7 +66,7 @@ STOP_Z = 1.6449                                # 90% two-sided Wilson interval
 GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 PBP_URL = "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz"
 
-SPORTS = ("NFL", "CFB")
+SPORTS = ("NFL", "CFB", "NBA", "NHL", "MLB")
 _NFL = {k: v for k, v in dict(globals()).items() if k.isupper() and k not in ("ROOT", "RESEARCH", "REPO", "BLOB",
                                                                              "CONSTITUTION", "SPORTS")}
 CFB_DIR = os.path.join(RESEARCH, "cfb")
@@ -104,20 +105,59 @@ _CFB = dict(
 )
 
 
+# Part D. NBA, NHL and MLB: one archive (D1, pinned by commit and fingerprint), one season split (D2)
+SBR_COMMIT = "1a820e50c6fbd0276cde073c22bfffae78930868"
+SBR_URL = "https://raw.githubusercontent.com/flancast90/sportsbookreview-scraper/" + SBR_COMMIT + "/data/{name}"
+
+
+def _part_d(sport, folder, markets, exam_min, stop_after, sbr_file, sbr_sha, kalshi):
+    d = os.path.join(RESEARCH, folder)
+    return dict(
+        SPORT=sport, MARKETS=markets,
+        DATA_DIR=os.path.join(d, "data"), CANDIDATES=os.path.join(d, "candidates"), QUEUE=os.path.join(d, "queue"),
+        RESULTS=os.path.join(d, "results"), LEDGER=os.path.join(d, "LEDGER.csv"),
+        EXAMS=os.path.join(d, "exam", "EXAMS.csv"), PAPER_DIR=os.path.join(d, "paper"),
+        PROMOTED=os.path.join(d, "promoted.json"), STATUS_MD=os.path.join(d, "STATUS.md"),
+        LESSONS_MD=os.path.join(d, "LESSONS.md"), SEARCH_DIR=os.path.join(d, "search"),
+        FIRST_SEASON=2011,                       # warm-up 2011: ratings only, never scored or fit on
+        TRAIN=(2012, 2013),
+        SEARCH=(2014, 2016),
+        SEARCH_PERIODS=[(2014, 2014), (2015, 2015), (2016, 2016)],
+        GATES=[("2017", 2017, 2017), ("2018", 2018, 2018), ("2019", 2019, 2019)],
+        POOLED=("Pooled 2017–19", 2017, 2019),
+        SKIP_SEASONS=(2020,),                    # COVID seasons: played through, never scored
+        RULE_SPLITS=[], EXTRA_SPLITS=[],
+        LAB_MAX_SEASON=2020,
+        SEALED_SEASON=2021,
+        EXAM_MIN_GAMES=exam_min,
+        STOP_AFTER_WEEK=stop_after,              # D5, in weeks of the season (NBA/NHL ~ January 31, MLB ~ July 1)
+        KALSHI_SPORT=kalshi,
+        SBR_FILE=sbr_file, SBR_SHA=sbr_sha,
+    )
+
+
+_NBA = _part_d("NBA", "nba", ("spread", "total"), 800, 15, "nba_archive_10Y.json",
+               "0c9858489d224c54dcf2f2d1b70c3a122675381d35ae03ce0a81204f739f0e98", "NBA")
+_NHL = _part_d("NHL", "nhl", ("moneyline", "total"), 800, 16, "nhl_archive_10Y.json",
+               "399b65039c909907011827907285ede97982b3ce89e6224c323c5031c2885168", "NHL")
+_MLB = _part_d("MLB", "mlb", ("moneyline", "total"), 1500, 14, "mlb_archive_10Y.json",
+               "ee4904dee0ee1474e7ac75697cea2c28f0084e5fb576553e48627e4cf90dd77d", "MLB")
+_PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB}
+
+
 def use(sport):
     """Switch every constant to one sport's Part of the Constitution."""
     sport = (sport or "NFL").upper()
     if sport not in SPORTS:
         raise SystemExit(f"unknown sport {sport!r}: one of {', '.join(SPORTS)}")
     globals().update(_NFL)
-    if sport == "CFB":
-        globals().update(_CFB)
+    globals().update(_PARTS.get(sport, {}))
     return sport
 
 
 def dir_for(sport):
     """{name: path} of one sport's files, without switching the module (used to read every sport's ledger)."""
-    src = _CFB if sport == "CFB" else _NFL
+    src = _PARTS.get(sport, _NFL)
     return {k: src[k] for k in ("LEDGER", "EXAMS", "RESULTS", "CANDIDATES")}
 
 

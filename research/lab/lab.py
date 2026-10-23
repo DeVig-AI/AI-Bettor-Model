@@ -5,6 +5,7 @@
                                                  # research/status.json (the workflow pushes both before the run)
     python3 -m research.lab.lab run [--rerun ID] # run them (at most 18) through the three gates
     ... --sport CFB                              # college football (Part C; files under research/cfb/)
+    ... --sport NBA|NHL|MLB                      # Part D (files under research/nba/, research/nhl/, research/mlb/)
 
 `run` writes research/results/<id>.json, appends one research/LEDGER.csv row per attempt (never edits one), and
 locks each candidate file that ran into FROZEN.sha256. The Inspector General's review (inspector.py) then judges.
@@ -32,14 +33,18 @@ LEDGER_COLS = ["attempt", "sport", "candidate_id", "market", "run_at", "status",
                "run_url", "games_pooled", "effect_pooled", "ci_lo", "ci_hi", "p_one_sided", "g1_effect", "g2_effect",
                "g3_effect", "error"]
 REQUIRED = ["id", "name", "market", "family", "parent", "reason", "model"]
-CODE_FILES = ["config.py", "data.py", "cfb_data.py", "models.py", "metrics.py", "lab.py", "search.py", "signals.py"]
+CODE_FILES = ["config.py", "data.py", "cfb_data.py", "sbr_data.py", "models.py", "metrics.py", "lab.py", "search.py",
+              "signals.py"]
 
 
 def dm():
-    """The data module for the sport in use (Part B1 nflverse, Part C1 CollegeFootballData)."""
+    """The data module for the sport in use (Part B1 nflverse, Part C1 CollegeFootballData, Part D1 the archive)."""
     if C.SPORT == "CFB":
         from . import cfb_data
         return cfb_data
+    if C.SPORT in ("NBA", "NHL", "MLB"):
+        from . import sbr_data
+        return sbr_data
     return D
 
 
@@ -110,8 +115,8 @@ def load_candidates():
             raise SystemExit(f"candidate {f}: missing {missing}")
         if f != f"{c['id']}.yaml":
             raise SystemExit(f"candidate {f}: id {c['id']!r} must match the file name")
-        if c["market"] not in ("spread", "total"):
-            raise SystemExit(f"candidate {f}: market must be spread or total")
+        if c["market"] not in C.MARKETS:
+            raise SystemExit(f"candidate {f}: market must be one of {', '.join(C.MARKETS)} for {C.SPORT}")
         out[c["id"]] = c
     for c in out.values():
         if c["parent"] is not None and c["parent"] not in out:
@@ -208,6 +213,11 @@ def split_mask(e, kind):
             "regular": e.game_type == "REG", "post": e.game_type != "REG"}[kind]
 
 
+def price_of(c, e):
+    """The home side's closing price per game, for moneyline pick pricing (Part D3); None for spreads and totals."""
+    return (e.line.values / 100) if c["market"] == "moneyline" else None
+
+
 def evaluate_candidate(c, data):
     out, fit = models.run(c, data)
     e = score(out)
@@ -217,21 +227,23 @@ def evaluate_candidate(c, data):
     s0 = M.baseline_side(tr.r.values)
     res = {"baseline": {"side": s0, "train_mean_cover": round(float(tr.r.mean()), 4), "train_games": len(tr),
                         "meaning": "line-only baseline takes this side on every game (+1 home/over, -1 away/under)"},
-           "train": M.evaluate(tr.d, tr.r, s0, with_ci=False), "gates": [], "rule_split": [], "fit": fit}
+           "train": M.evaluate(tr.d, tr.r, s0, with_ci=False, price=price_of(c, tr)), "gates": [], "rule_split": [],
+           "fit": fit}
     for name, a, b in C.GATES:
         g = between(e, a, b)
-        res["gates"].append(dict(name=name, seasons=[a, b], **M.evaluate(g.d, g.r, s0)))
+        res["gates"].append(dict(name=name, seasons=[a, b], **M.evaluate(g.d, g.r, s0, price=price_of(c, g))))
     name, a, b = C.POOLED
     g = between(e, a, b)
-    res["pooled"] = dict(name=name, seasons=[a, b], **M.evaluate(g.d, g.r, s0))
+    res["pooled"] = dict(name=name, seasons=[a, b], **M.evaluate(g.d, g.r, s0, price=price_of(c, g)))
     for label, a, b, note in C.RULE_SPLITS:
         g = between(e, a, b)
-        res["rule_split"].append(dict(label=label, seasons=[a, b], note=note, **M.evaluate(g.d, g.r, s0, with_ci=False)))
+        res["rule_split"].append(dict(label=label, seasons=[a, b], note=note,
+                                      **M.evaluate(g.d, g.r, s0, with_ci=False, price=price_of(c, g))))
     pooled = between(e, *C.POOLED[1:])
     for label, kind, note in C.EXTRA_SPLITS:
         g = pooled[split_mask(pooled, kind).values]
         res["rule_split"].append(dict(label=label, seasons=list(C.POOLED[1:]), note=note,
-                                      **M.evaluate(g.d, g.r, s0, with_ci=False)))
+                                      **M.evaluate(g.d, g.r, s0, with_ci=False, price=price_of(c, g))))
     return res
 
 
@@ -288,8 +300,12 @@ def run_all(rerun=None, log=print):
                    "constitution": {"version": C.CONSTITUTION_VERSION, "sha256": csha},
                    "candidate_sha256": row["candidate_sha256"], "code_sha256": ksha, "data_sha256": dsha,
                    "git_commit": head, "run_number": number, "run_url": url,
-                   "effect_definition": "cover points per game beyond the line-only baseline (Constitution A5)",
-                   "pricing": {"price": C.PRICE, "fee": C.FEE, "break_even": C.COST}, **res}
+                   "effect_definition": ("win-chance points per game beyond the line-only baseline, against the "
+                                         "vig-free closing price (Constitution D3)" if c["market"] == "moneyline" else
+                                         "cover points per game beyond the line-only baseline (Constitution A5)"),
+                   "pricing": ({"price": "the vig-free closing price of the picked side", "fee_rate": C.FEE_RATE}
+                               if c["market"] == "moneyline" else {"price": C.PRICE, "fee": C.FEE, "break_even": C.COST}),
+                   **res}
             with open(os.path.join(C.RESULTS, f"{cid}.json"), "w") as f:
                 json.dump(doc, f, indent=1, ensure_ascii=False)
                 f.write("\n")
@@ -312,7 +328,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["pending", "start", "run"])
     ap.add_argument("--rerun", default=None, help="re-run one candidate whose last attempt crashed")
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
     a = ap.parse_args(argv)
     C.use(a.sport)
     if a.cmd == "pending":

@@ -1,10 +1,10 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-23T15:53:42Z by research/lab/report.py. Constitution v10 (`8744e2800dd2`). Do not edit by hand._
+_Generated 2026-10-23T16:34:07Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 20 registered, 20 tried, 0 running
+- Candidates: 21 registered, 20 tried, 0 running
 - Ledger attempts (all count in the Holm correction): 20 · across all sports: 20 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
@@ -26,6 +26,7 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `elo-resist` + Market-resistant K | spread | failed · gate_2 | +0.88 | -0.39 | +0.69 | +0.39 [-0.40, +1.18] | 1.000 | 51.1% / -1.2% (2412) |
 | `elo-revert` + Stronger preseason reversion | spread | failed · gate_2 | +0.45 | -0.68 | +1.25 | +0.35 [-0.40, +1.09] | 1.000 | 51.4% / -0.7% (2412) |
 | `elo-travel` + Travel distance | spread | failed · gate_2 | +0.06 | -0.74 | +0.82 | +0.06 [-0.71, +0.83] | 1.000 | 50.6% / -2.2% (2412) |
+| `s-2d757889` Blend of 2: s-3a502c4f + s-0827df0a | total | queued | — | — | — | — | — | — |
 | `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | failed · gate_3 | +0.55 | +0.73 | -1.30 | +0.14 [-0.48, +0.76] | 1.000 | 49.7% / -4.0% (2150) |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | failed · gate_3 | +0.62 | +0.00 | -0.83 | +0.01 [-0.63, +0.64] | 1.000 | 49.7% / -4.0% (2150) |
 | `tot-epa` + EPA per play as efficiency | total | failed · gate_1 | -0.68 | -0.32 | -1.33 | -0.78 [-1.57, +0.00] | 1.000 | 48.8% / -5.6% (2453) |
@@ -49,6 +50,7 @@ Verdicts (Inspector General):
 - `elo-resist`: Fails the lab: not positive in gate 2 (2020–22: -0.39 pts); pooled +0.39 pts, Holm-adjusted p = 1.000 over 20 attempts.
 - `elo-revert`: Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 20 attempts.
 - `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 20 attempts.
+- `s-2d757889`: Registered; runs in the next nightly lab run.
 - `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 20 attempts.
 - `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 20 attempts.
 - `tot-epa`: Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 20 attempts.
@@ -58,10 +60,9 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Search round 378** 2026-10-23T15:53:34Z: 1,998 models scored → 606 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 377** 2026-10-23T15:40:34Z: 2,000 models scored → 593 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 376** 2026-10-23T15:31:23Z: 2,000 models scored → 580 consistent → 29 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 375** 2026-10-23T15:22:19Z: 2,000 models scored → 577 consistent → 21 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 374** 2026-10-23T15:11:16Z: 2,000 models scored → 630 consistent → 23 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 1** 2026-10-23T16:34:07Z: 21 models scored → 19 consistent → 19 strong (t ≥ -99) → 1 sent to confirmation
+- **Search paused: menu exhausted** 2026-10-23T16:34:07Z: all 21 configurations on the menu scored; waiting for new menu values or signals
+- **Research Lab #5** 2026-10-19T06:27:06Z, 0 s: 2 tested → 2 past gate 1 → 2 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
+- **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).

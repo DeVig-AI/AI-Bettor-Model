@@ -531,6 +531,63 @@ def run_ppa(p, data):
     return f[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
 
 
+# ---- Moneyline families (Part D3: NHL, MLB) ------------------------------------------------------------------------------
+# A margin model (Elo, SRS or a team rating, in goals or runs) turned into the home team's win probability. Everything is
+# in win-chance points: forecast = 100 x P(home wins), line = 100 x the vig-free closing price, actual = 100 or 0.
+def _logistic(x, y, iters=50):
+    """(a, b) maximising the likelihood of y (0/1) under P = 1 / (1 + exp(-(a + b x))), by Newton's method."""
+    a, b = 0.0, 0.0
+    for _ in range(iters):
+        z = np.clip(a + b * x, -30, 30)
+        q = 1 / (1 + np.exp(-z))
+        w = q * (1 - q) + 1e-9
+        g = np.array([np.sum(y - q), np.sum((y - q) * x)])
+        H = np.array([[np.sum(w), np.sum(w * x)], [np.sum(w * x), np.sum(w * x * x)]])
+        step = np.linalg.solve(H, g)
+        a, b = a + step[0], b + step[1]
+        if np.abs(step).max() < 1e-10:
+            break
+    return float(a), float(b)
+
+
+def _as_moneyline(out, data, prob=None):
+    """A margin model's rows as moneyline rows. prob: the model's own home win probability (Elo); None = fit
+    P(home wins) from the forecast margin once on the training seasons (A3.4)."""
+    m = out.copy()
+    line = data["games"].set_index("game_id").ml_line
+    m["line"] = line.reindex(m.game_id).values
+    margin = m.actual
+    m["actual"] = np.where(margin > 0, 100.0, np.where(margin < 0, 0.0, np.nan))   # no ties in NHL / MLB finals
+    fit = {}
+    if prob is None:
+        tr = ((m.season >= C.TRAIN[0]) & (m.season <= C.TRAIN[1]) & m.actual.notna()).values
+        a, b = _logistic(m.forecast.values[tr].astype(float), (m.actual.values[tr] > 0).astype(float))
+        prob = 1 / (1 + np.exp(-np.clip(a + b * m.forecast.values.astype(float), -30, 30)))
+        fit = {"intercept": round(a, 6), "per_unit_margin": round(b, 6), "fit_games": int(tr.sum()),
+               "fit_seasons": f"{C.TRAIN[0]}-{C.TRAIN[1]}"}
+    m["forecast"] = 100 * np.asarray(prob, dtype=float)
+    return m[["game_id", "season", "game_type", "week", "forecast", "line", "actual"]], fit
+
+
+def run_elo_ml(p, data):
+    out, _ = run_elo(p, data)
+    if p.get("prob", "elo") == "elo":                  # Elo's own expected score: 1 / (1 + 10^(-diff / 400))
+        diff = out.forecast.values.astype(float) * p["elo_per_point"]
+        return _as_moneyline(out, data, 1 / (1 + 10 ** (-np.clip(diff, -4000, 4000) / 400)))
+    return _as_moneyline(out, data)
+
+
+def run_srs_ml(p, data):
+    out, _ = run_srs(p, data)
+    return _as_moneyline(out, data)
+
+
+def run_rating_ml(p, data):
+    out, fit = run_team_rating(p, data, "spread")
+    m, f2 = _as_moneyline(out, data)
+    return m, {"margin": fit, "win_probability": f2}
+
+
 def _run_signals(p, d, m):
     from .signals import run_signals
     return run_signals(p, d, m)
@@ -538,8 +595,9 @@ def _run_signals(p, d, m):
 
 FAMILIES = {"elo": run_elo, "pace_eff": run_pace_eff, "srs": run_srs, "ppa": run_ppa,
             "team_rating": lambda p, d, m: run_team_rating(p, d, m), "blend": lambda p, d, m: run_blend(p, d, m),
-            "signals": _run_signals}
-MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread"}   # the other families take the candidate's market
+            "signals": _run_signals, "elo_ml": run_elo_ml, "srs_ml": run_srs_ml, "rating_ml": run_rating_ml}
+MARKET_OF = {"elo": "spread", "pace_eff": "total", "srs": "spread", "ppa": "spread", "elo_ml": "moneyline",
+             "srs_ml": "moneyline", "rating_ml": "moneyline"}   # the other families take the candidate's market
 
 
 def run(candidate, data):

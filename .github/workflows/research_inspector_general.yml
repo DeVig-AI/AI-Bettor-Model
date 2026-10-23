@@ -7,7 +7,8 @@ name: Research Lab -- Inspector General
 #             The research loop hands over here (then_loop) when a sport has a lab pass and an exam left;
 #             this queues the loop again when done (Constitution v8 A8).
 #   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
-# sport: NFL (Part B, sealed 2025) or CFB (Part C, sealed 2025). Scheduled runs do NFL every 3 hours and CFB once a
+# sport: NFL (Part B, sealed 2025), CFB (Part C, sealed 2025), or NBA / NHL / MLB (Part D, sealed 2021; their paper
+# season starts when each sport's Kalshi logger is merged, D7). Scheduled runs do NFL every 3 hours and CFB once a
 # day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
   schedule:
@@ -20,9 +21,9 @@ on:
         options: [review, paper, exam]
         default: review
       sport:
-        description: 'NFL or CFB (college football)'
+        description: 'NFL, CFB (college football), NBA, NHL or MLB'
         type: choice
-        options: [NFL, CFB]
+        options: [NFL, CFB, NBA, NHL, MLB]
         default: NFL
       then_loop:
         description: 'Queue the research loop again when done (the loop sets this when it hands over for an exam)'
@@ -60,7 +61,7 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%H)" = "15" ]; then
             echo "LAB_SPORT=CFB" >> "$GITHUB_ENV"; LAB_SPORT=CFB      # the once-a-day CFB paper slot (15:41 UTC; NFL takes the other seven)
           fi
-          prom=research/promoted.json; [ "$LAB_SPORT" = "CFB" ] && prom=research/cfb/promoted.json
+          prom=research/promoted.json; [ "$LAB_SPORT" != "NFL" ] && prom="research/${LAB_SPORT,,}/promoted.json"
           if [ "$ACTION" = "paper" ] && ! grep -q '"state": "active"' "$prom" 2>/dev/null; then
             echo "No promoted model: nothing to paper-track."
             echo "go=false" >> "$GITHUB_OUTPUT"
@@ -90,6 +91,10 @@ jobs:
             research/cfb/data/advanced_ngt.csv
             research/cfb/data/returning.csv
             research/cfb/current
+
+      - name: Build the Part D lab cache from the pinned archive (2011-2020 only; never committed, Constitution D1)
+        if: steps.go.outputs.go == 'true' && contains(fromJSON('["NBA","NHL","MLB"]'), env.LAB_SPORT)
+        run: python3 -m research.lab.sbr_data fetch
 
       - name: Locked files unchanged
         if: steps.go.outputs.go == 'true'

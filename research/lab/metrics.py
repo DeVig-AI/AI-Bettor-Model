@@ -33,19 +33,28 @@ def bootstrap(v, n=C.BOOT_N, seed=C.BOOT_SEED, chunk=500):
     return out
 
 
-def picks(d, r):
-    """Pick record at closing-line 50/50 + Kalshi fee (A4): every game where the model differs from the line."""
+def picks(d, r, price=None):
+    """Pick record at closing-line 50/50 + Kalshi fee (A4): every game where the model differs from the line.
+    price: the home side's vig-free closing price per game (moneylines, Part D3); a pick then costs its side's price
+    plus the fee, and break-even is the picks' average cost."""
     s = np.sign(d)
     take = (s != 0) & (r != 0)                          # model equals line: no pick; push: no bet
     win = (s * r > 0) & take
     n, w = int(take.sum()), int(win.sum())
-    profit = w * (1 - C.COST) - (n - w) * C.COST
+    if price is None:
+        cost = np.full(len(s), C.COST)
+    else:
+        q = np.where(s > 0, np.asarray(price, dtype=float), 1 - np.asarray(price, dtype=float))
+        cost = q + C.FEE_RATE * q * (1 - q)
+    staked = float(cost[take].sum())
+    profit = float((1 - cost[win]).sum() - cost[take & ~win].sum())
     return {"picks": n, "wins": w, "losses": n - w, "pushes": int(((s != 0) & (r == 0)).sum()),
-            "win_rate": round(w / n, 4) if n else None, "break_even": round(C.COST, 4),
-            "roi": round(profit / (n * C.COST), 4) if n else None}
+            "win_rate": round(w / n, 4) if n else None,
+            "break_even": round(float(cost[take].mean()) if price is not None and n else C.COST, 4),
+            "roi": round(profit / staked, 4) if n else None}
 
 
-def evaluate(d, r, s0, with_ci=True):
+def evaluate(d, r, s0, with_ci=True, price=None):
     d, r = np.asarray(d, dtype=float), np.asarray(r, dtype=float)
     n = len(r)
     if n == 0:
@@ -61,7 +70,7 @@ def evaluate(d, r, s0, with_ci=True):
     sd = d.std()
     out["slope"] = round(float(np.polyfit(d, r, 1)[0]), 4) if n > 2 and sd > 0 else None
     out["pick_share"] = round(float((np.sign(d) != 0).mean()), 4)
-    out["kalshi"] = picks(d, r)
+    out["kalshi"] = picks(d, r, price)
     return out
 
 

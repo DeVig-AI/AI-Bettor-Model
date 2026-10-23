@@ -1,0 +1,62 @@
+{
+ "source": "https://raw.githubusercontent.com/flancast90/sportsbookreview-scraper/1a820e50c6fbd0276cde073c22bfffae78930868/data/nba_archive_10Y.json",
+ "commit": "1a820e50c6fbd0276cde073c22bfffae78930868",
+ "file_sha256": "0c9858489d224c54dcf2f2d1b70c3a122675381d35ae03ce0a81204f739f0e98",
+ "seasons": [
+  2011,
+  2020
+ ],
+ "sha256": {
+  "games": "7a8cbfcc04e2037b5a1f458a45147ccd5f0ab66fd3d638b5e3ab517925960020",
+  "team_games": "bb80df687b462d3cd6d0710665a29463f8e9bdfae47a4373646b7decc4f7a587"
+ },
+ "games_by_season": {
+  "2011": 1073,
+  "2012": 1313,
+  "2013": 1318,
+  "2014": 1310,
+  "2015": 1315,
+  "2016": 1308,
+  "2017": 1311,
+  "2018": 1311,
+  "2019": 1142,
+  "2020": 1170
+ },
+ "lines_by_season": {
+  "spread": {
+   "2011": 1026,
+   "2012": 1249,
+   "2013": 1244,
+   "2014": 1224,
+   "2015": 1224,
+   "2016": 1194,
+   "2017": 1233,
+   "2018": 1224,
+   "2019": 1072,
+   "2020": 1067
+  },
+  "total": {
+   "2011": 1026,
+   "2012": 1249,
+   "2013": 1244,
+   "2014": 1224,
+   "2015": 1224,
+   "2016": 1194,
+   "2017": 1233,
+   "2018": 1224,
+   "2019": 1072,
+   "2020": 1067
+  }
+ },
+ "checks_whole_file": {
+  "rows": 13903,
+  "no_date_or_team": 10,
+  "duplicate": 0,
+  "no_score": 0,
+  "spread_lines": 12960,
+  "spread_no_line": 933,
+  "total_lines": 12960,
+  "total_no_line": 933
+ },
+ "note": "Lab cache (Constitution D1), seasons 2011-2020 only. The csv files are never committed; 2021 is sealed and never stored."
+}

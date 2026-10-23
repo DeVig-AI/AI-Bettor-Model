@@ -1,6 +1,6 @@
 """Research Lab search (Constitution v10 A3.3c): find candidates automatically, deterministically, with no AI.
 
-    python3 -m research.lab.search round [--force] [--sport CFB]   # one round if 20 hours have passed (or --force)
+    python3 -m research.lab.search round [--force] [--sport CFB|NBA|NHL|MLB]   # one round (back to back)
 
 A round scores configurations from the sport's MENU.yaml on the SEARCH seasons only -- this module is given data up
 to the last search season and nothing later -- then sends candidates to confirmation by writing them to the sport's
@@ -33,13 +33,15 @@ from . import metrics as M
 from . import models
 
 def path(name):
-    """One of the search's files for the sport in use: research/search/ (NFL), research/cfb/search/ (CFB)."""
+    """One of the search's files for the sport in use: research/search/ (NFL), research/<sport>/search/ (others)."""
     return os.path.join(C.SEARCH_DIR, name)
 
 SCORE_COLS = ["round", "id", "market", "type", "label", "games", "effect", "t", "p1", "p2", "p3", "eligible",
               "config"]
-ROUND_COLS = ["round", "at", "data_through", "scored_new", "scored_total", "best_spread_id", "best_spread_t",
-              "best_total_id", "best_total_t", "shortlisted", "run_url"]
+def round_cols():
+    """ROUNDS.csv columns: the best configuration of each of the sport's markets (NFL, CFB, NBA: spread and total)."""
+    return (["round", "at", "data_through", "scored_new", "scored_total"]
+            + [f"best_{m}_{k}" for m in C.MARKETS for k in ("id", "t")] + ["shortlisted", "run_url"])
 METRIC_NAMES = {"points": "Points", "epa": "EPA", "pass_epa": "Passing-EPA", "early_epa": "Early-down EPA",
                 "success": "Success-rate", "noto_epa": "No-turnover EPA", "comp_epa": "Competitive EPA"}
 
@@ -391,6 +393,10 @@ def label(cfg):
     if t == "pace_eff":
         return (f"{'Pace × ' if p.get('pace', True) else 'Points, no pace · '}{p['efficiency']} · half-life "
                 f"{p['halflife']:g} · carry {p['season_carry']:g}")
+    if t in ("elo_ml", "srs_ml", "rating_ml"):             # Part D3: a margin model turned into a win probability
+        inner = {"elo_ml": "elo", "srs_ml": "srs", "rating_ml": "team_rating"}[t]
+        how = " · Elo win chance" if t == "elo_ml" and p.get("prob", "elo") == "elo" else " · win chance fit on training"
+        return label({"market": "spread", "type": inner, "params": p}) + how
     if t == "signals":
         b = p["base"]
         return f"Signals ({label({'market': cfg['market'], 'type': b['type'], 'params': b['params']})}) + " + \
@@ -613,7 +619,7 @@ def run_round(force=False, log=print, progress=None):
         todo = [c for c in grid(menu) if config_id(c) not in scored or config_id(c) in retry]
         todo += signal_configs(menu, list(scored.values()))
         todo += focus(menu, list(scored.values()))
-        for market in ("spread", "total"):
+        for market in C.MARKETS:
             singles = sorted((r for r in scored.values() if r["market"] == market and r["type"] != "blend"),
                              key=lambda r: (-float(r["t"]), r["id"]))
             for r in singles[:menu["search"]["neighbours_of_best"]]:
@@ -701,7 +707,7 @@ def run_round(force=False, log=print, progress=None):
                 progress(n_round, done + 1, planned)
     # blends of the best singles so far (this round's and earlier rounds')
     allrows = list(scored.values()) + rows
-    for market in ("spread", "total"):
+    for market in C.MARKETS:
         best = sorted((r for r in allrows if r["market"] == market and r["type"] != "blend" and r["t"] != "-inf"),
                       key=lambda r: (-float(r["t"]), r["id"]))
         pool = [json.loads(r["config"]) for r in best[:S["blend_pool"]]]
@@ -731,18 +737,14 @@ def run_round(force=False, log=print, progress=None):
     picks = shortlist(allrows, data, S, fc)
     for cfg, r in picks:
         write_candidate(cfg, r, n_round)
-    best = {}
-    for market in ("spread", "total"):
+    row = {"round": n_round, "at": L.now(), "data_through": C.SEARCH[1], "scored_new": len(rows),
+           "scored_total": len(allrows)}
+    for market in C.MARKETS:
         b = max((r for r in allrows if r["market"] == market), key=lambda r: float(r["t"]), default=None)
-        best[market] = b
+        row[f"best_{market}_id"], row[f"best_{market}_t"] = (b["id"], b["t"]) if b else ("", "")
     number, url = L.run_info()
-    append_rows(path("ROUNDS.csv"), ROUND_COLS, [{
-        "round": n_round, "at": L.now(), "data_through": C.SEARCH[1], "scored_new": len(rows),
-        "scored_total": len(allrows), "best_spread_id": best["spread"]["id"] if best["spread"] else "",
-        "best_spread_t": best["spread"]["t"] if best["spread"] else "",
-        "best_total_id": best["total"]["id"] if best["total"] else "",
-        "best_total_t": best["total"]["t"] if best["total"] else "",
-        "shortlisted": " ".join(config_id(c) for c, _ in picks), "run_url": url or ""}])
+    row.update(shortlisted=" ".join(config_id(c) for c, _ in picks), run_url=url or "")
+    append_rows(path("ROUNDS.csv"), round_cols(), [row])
     write_leaderboard(allrows)
     log(f"search round {n_round}: {len(rows)} new configurations scored on {C.SEARCH[0]}-{C.SEARCH[1]} "
         f"({len(allrows)} so far); shortlisted {[config_id(c) for c, _ in picks] or 'none'}")
@@ -756,7 +758,7 @@ def shortlist(allrows, data, S, fc, now=None):
     for cid, (cfg, _) in sent.items():
         sent_d[cid] = fc[cid][2]["d"] if cid in fc else score_out(forecasts(cfg, data))["d"]
     picks = []
-    for market in ("spread", "total"):
+    for market in C.MARKETS:
         recent = sum(1 for cfg, at in sent.values() if cfg["market"] == market and at and
                      now - dt.datetime.fromisoformat(at.replace("Z", "+00:00")) < dt.timedelta(days=S["shortlist_window_days"]))
         pool = sorted((r for r in allrows if r["market"] == market and r["eligible"] == "true"
@@ -781,13 +783,14 @@ def write_candidate(cfg, r, n_round):
     cid = config_id(cfg)
     c = {"id": cid, "name": label(cfg), "market": cfg["market"],
          "family": {"elo": "Elo family", "team_rating": "Team rating", "pace_eff": "Pace × efficiency",
-                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend",
-                    "signals": "Signals"}.get(cfg["type"], cfg["type"]) + " · search",
+                    "srs": "SRS", "ppa": "PPA rating", "blend": "Blend", "signals": "Signals",
+                    "elo_ml": "Elo win chance", "srs_ml": "SRS win chance",
+                    "rating_ml": "Team rating win chance"}.get(cfg["type"], cfg["type"]) + " · search",
          "parent": None,
          "reason": (f"Found by search round {n_round}: on {C.SEARCH[0]}–{C.SEARCH[1]} it beat the line by "
-                    f"{float(r['effect']):+.2f} pts a game (t = {float(r['t']):.2f}), positive in all three search "
+                    f"{float(r['effect']):+.2f} {'win-chance ' if cfg['market'] == 'moneyline' else ''}pts a game (t = {float(r['t']):.2f}), positive in all three search "
                     f"periods. Now confirmed on {C.GATES[0][1]}–{C.GATES[-1][2]}, which the search never saw."),
-         "source": f"automatic search ({C.SPORT}, Constitution v10 A3.3c)",
+         "source": f"automatic search ({C.SPORT}, Constitution {C.CONSTITUTION_VERSION} A3.3c)",
          "search": {"round": n_round, "t": float(r["t"]), "effect": float(r["effect"]),
                     "periods": [float(r["p1"]), float(r["p2"]), float(r["p3"])], "games": int(r["games"]),
                     "sent_at": L.now()},
@@ -802,11 +805,12 @@ def write_candidate(cfg, r, n_round):
 def write_leaderboard(allrows):
     lines = [f"# Research Lab search ({C.SPORT}) -- leaderboard (EXPLORATORY)", "",
              f"_Generated {L.now()} by research/lab/search.py. Scores are on the search seasons {C.SEARCH[0]}–"
-             f"{C.SEARCH[1]} only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its "
+             f"{C.SEARCH[1]} only: effect = cover points (moneyline: win-chance points) per game beyond the line-only "
+             "baseline, t = effect ÷ its "
              "standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist "
              "is confirmed, on seasons the search never saw._", "",
              f"{len(allrows)} configurations scored so far.", ""]
-    for market in ("spread", "total"):
+    for market in C.MARKETS:
         rs = sorted((r for r in allrows if r["market"] == market), key=lambda r: -float(r["t"]))
         lines += [f"## {market.title()} -- top 25 of {len(rs)}", "",
                   "| # | id | model | effect | t | " + " | ".join(
@@ -848,7 +852,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["round", "migrate-scores"])
     ap.add_argument("--force", action="store_true", help="run a round even if the last one was under 20 hours ago")
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
     ap.add_argument("--progress", action="store_true", help="post the round's progress to /lab (GitHub Actions)")
     a = ap.parse_args(argv)
     C.use(a.sport)
