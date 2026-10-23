@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T05:36:54Z",
+ "updated_at": "2026-10-23T05:47:53Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T05:37:13Z",
+   "updated_at": "2026-10-23T05:47:52Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3565,6 +3565,27 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 143 (CFB, running)",
+     "started_at": "2026-10-23T05:37:52Z",
+     "finished_at": null,
+     "duration_s": null,
+     "run_number": 2308,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39906472184",
+     "summary": "384 of 800 models scored on 2018–2021",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 384
+      },
+      {
+       "label": "planned this round",
+       "count": 800
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 142",
      "started_at": "2026-10-23T05:33:20Z",
      "finished_at": "2026-10-23T05:33:20Z",
@@ -3808,35 +3829,6 @@
       {
        "label": "models scored",
        "count": 392
-      },
-      {
-       "label": "consistent",
-       "count": 10
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 133",
-     "started_at": "2026-10-23T04:10:45Z",
-     "finished_at": "2026-10-23T04:10:45Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39898056868",
-     "summary": "397 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 397
       },
       {
        "label": "consistent",

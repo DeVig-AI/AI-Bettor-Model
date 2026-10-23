@@ -380,3 +380,399 @@ generations:
         pace: true
         season_carry: 0.3
   signal_sets: 1
+- generation: 2
+  at: '2026-10-23T05:37:54Z'
+  round: 143
+  ladders:
+    carry:
+    - 0.825
+    - 0.875
+    - 0.95
+    halflife:
+    - 18
+    - 23
+    - 32
+    hfa_elo:
+    - 66
+    - 74
+    hfa_pts:
+    - 0.5
+    - 1.25
+    - 1.625
+    - 1.875
+    k:
+    - 34
+    - 38
+    - 50
+    - 65
+    margin_cap:
+    - 34
+    - 38
+    - 49
+    market_blend:
+    - 0.0625
+    - 0.1875
+    mov_cap:
+    - 30
+    - 34
+    - 38
+    - 49
+    prior_w:
+    - 0.25
+    - 0.625
+    - 0.875
+    season_carry:
+    - 0.425
+    - 0.475
+    - 0.85
+    - 1.0
+  signals:
+  - id: def-points-per-play~c0.2~h3
+    kind: team
+    side: defense
+    num: &id007
+      points: 1
+    den: plays
+    halflife: 3
+    carry: 0.2
+    reason: 'Automatic variant of def-points-per-play~c0.2 (half-life 3, carry 0.2): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.2
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.2~h12
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 12
+    carry: 0.2
+    reason: 'Automatic variant of def-points-per-play~c0.2 (half-life 12, carry 0.2): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.2
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.2~c0
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6.0
+    carry: 0.0
+    reason: 'Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.2
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.2~c0.4
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.2
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h12~h6
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~h12 (half-life 6, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 12, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h12
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h12~h24
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 24
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~h12 (half-life 24, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 12, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h12
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h12~c0.2
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 12.0
+    carry: 0.2
+    reason: 'Automatic variant of def-points-per-play~h12 (half-life 12, carry 0.2): Automatic variant of def-points-per-play
+      (half-life 12, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h12
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h12~c0.6
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 12.0
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play~h12 (half-life 12, carry 0.6): Automatic variant of def-points-per-play
+      (half-life 12, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h12
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h3~h2
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 2
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~h3 (half-life 2, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h3
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h3~h6
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~h3 (half-life 6, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h3
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h3~c0.2
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 3.0
+    carry: 0.2
+    reason: 'Automatic variant of def-points-per-play~h3 (half-life 3, carry 0.2): Automatic variant of def-points-per-play
+      (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h3
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h3~c0.6
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 3.0
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play~h3 (half-life 3, carry 0.6): Automatic variant of def-points-per-play
+      (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~h3
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~h3
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 3
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.6): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~h12
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 12
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play~c0.6 (half-life 12, carry 0.6): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.6): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.4
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play~c0.6 (half-life 6, carry 0.4): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.6): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.8
+    kind: team
+    side: defense
+    num: *id007
+    den: plays
+    halflife: 6.0
+    carry: 0.8
+    reason: 'Automatic variant of def-points-per-play~c0.6 (half-life 6, carry 0.8): Automatic variant of def-points-per-play
+      (half-life 6, carry 0.6): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per
+      game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h3~h2
+    kind: team
+    side: offense
+    num: &id008
+      epa: 1
+    den: plays
+    halflife: 2
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h3 (half-life 2, carry 0.4): Automatic variant of off-ppa (half-life 3, carry 0.4):
+      Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h3
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h3~h6
+    kind: team
+    side: offense
+    num: *id008
+    den: plays
+    halflife: 6
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h3 (half-life 6, carry 0.4): Automatic variant of off-ppa (half-life 3, carry 0.4):
+      Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h3
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h3~c0.2
+    kind: team
+    side: offense
+    num: *id008
+    den: plays
+    halflife: 3.0
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa~h3 (half-life 3, carry 0.2): Automatic variant of off-ppa (half-life 3, carry 0.4):
+      Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h3
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h3~c0.6
+    kind: team
+    side: offense
+    num: *id008
+    den: plays
+    halflife: 3.0
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~h3 (half-life 3, carry 0.6): Automatic variant of off-ppa (half-life 3, carry 0.4):
+      Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h3
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.6~h3
+    kind: team
+    side: defense
+    num: &id009
+      epa: 1
+    den: plays
+    halflife: 3
+    carry: 0.6
+    reason: 'Automatic variant of def-ppa~c0.6 (half-life 3, carry 0.6): Automatic variant of def-ppa (half-life 6, carry
+      0.6): PPA per play allowed by the defense.'
+    variant_of: def-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.6~h12
+    kind: team
+    side: defense
+    num: *id009
+    den: plays
+    halflife: 12
+    carry: 0.6
+    reason: 'Automatic variant of def-ppa~c0.6 (half-life 12, carry 0.6): Automatic variant of def-ppa (half-life 6, carry
+      0.6): PPA per play allowed by the defense.'
+    variant_of: def-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.6~c0.4
+    kind: team
+    side: defense
+    num: *id009
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of def-ppa~c0.6 (half-life 6, carry 0.4): Automatic variant of def-ppa (half-life 6, carry
+      0.6): PPA per play allowed by the defense.'
+    variant_of: def-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.6~c0.8
+    kind: team
+    side: defense
+    num: *id009
+    den: plays
+    halflife: 6.0
+    carry: 0.8
+    reason: 'Automatic variant of def-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of def-ppa (half-life 6, carry
+      0.6): PPA per play allowed by the defense.'
+    variant_of: def-ppa~c0.6
+    markets:
+    - spread
+    - total
+  signal_bases:
+    spread:
+    - type: srs
+      params:
+        carry: 0.75
+        hfa_pts: 1.5
+        margin_cap: null
+        prior_w: 0.5
+    total:
+    - type: pace_eff
+      params:
+        calibrate: true
+        efficiency: epa
+        halflife: 4
+        league_window: 1600
+        pace: true
+        season_carry: 0.2
+  signal_sets: 1
