@@ -1,6 +1,6 @@
 # Research Lab -- status (MLB)
 
-_Generated 2026-10-23T18:30:10Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
+_Generated 2026-10-23T18:57:28Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -20,6 +20,7 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 3** 2026-10-23T18:57:28Z: 254 models scored → 252 consistent → 8 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 2** 2026-10-23T18:30:09Z: 267 models scored → 263 consistent → 9 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Research Lab #2371** 2026-10-23T18:05:15Z, 0 s: 1 tested → 1 past gate 1 → 1 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 - **Search round 1** 2026-10-23T17:54:46Z: 238 models scored → 232 consistent → 10 strong (t ≥ 2.5) → 1 sent to confirmation
