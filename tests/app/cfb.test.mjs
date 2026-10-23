@@ -92,7 +92,7 @@ test("college football tab on a phone", async (t) => {
     const u = await open(browser, base, false, false);
     await t.test("default: the CFB board is on (no preview switch)", async () => {
       await u.pg.locator('#sportPills [data-sport="CFB"]').click();
-      await u.pg.locator(".cfb-card").first().waitFor();
+      await u.pg.locator("#homeSlate .card.game").first().waitFor();
       assert.equal(await u.pg.locator(".cfb-soon").count(), 0);
       await u.pg.locator('nav.tabs button[data-tab="more"]').click(); await u.pg.locator('#panel-more [data-go="models"]').click();
       await u.pg.locator('#mdSport [data-md-sport="CFB"]').click();
@@ -101,24 +101,29 @@ test("college football tab on a phone", async (t) => {
     assert.deepEqual(u.errors, []);
     await u.ctx.close();
     const {ctx, pg, errors, logoHits} = await open(browser, base, false);
+    // the same board as every other sport: day tabs, Kalshi-odds cards with Track, no "DeVig's picks" (no CFB model)
     await t.test("home: CFB board", async () => {
       await pg.locator('#sportPills [data-sport="CFB"]').click();
-      await pg.locator(".cfb-card").first().waitFor();
-      assert.equal(await pg.locator(".cfb-card").count(), 3);
-      const live = pg.locator(".cfb-card").first();
-      assert.match(await live.innerText(), /Live[\s\S]*Q4 9:50[\s\S]*Missouri State[\s\S]*21[\s\S]*Delaware[\s\S]*17/, "fast feed score wins");
-      assert.match(await live.innerText(), /Spread DEL -1\.5 \(-105\)/);
-      assert.match(await pg.locator(".cfb-card").nth(1).innerText(), /6\s*Indiana[\s\S]*69%[\s\S]*Michigan[\s\S]*31%/);
-      assert.match(await pg.locator(".cfb-card").nth(2).innerText(), /neutral site/);
+      await pg.locator("#homeSlate .card.game").first().waitFor();
+      assert.ok(await pg.locator("#dayTabs button").count() >= 2, "a tab per day");
+      assert.match(await pg.locator("#homeSlate .home-sec").first().innerText(), /Games[\s\S]*Kalshi odds/);
+      assert.doesNotMatch(await pg.locator("#homeSlate").innerText(), /DeVig's picks|No pick clears the bar/);
+      const live = pg.locator("#homeSlate .card.game").first();
+      assert.match(await live.innerText(), /MOST[\s\S]*1[47][\s\S]*DEL[\s\S]*17/, "the live score, before the fast feed answers too");
+      await pg.waitForFunction(() => /21/.test(document.querySelector("#homeSlate .card.game").innerText), null, {timeout: 70000});
+      assert.match(await live.innerText(), /MOST[\s\S]*21[\s\S]*DEL[\s\S]*17/, "fast feed score wins");
+      assert.equal(await live.locator(".trk").count(), 1, "Track, like every sport");
       assert.equal(await pg.locator(".tm-badge img").count(), 0, "no logos when signed out");
       await pg.screenshot({path: OUT + "cfb-home.png", fullPage: true});
       const w = await pg.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(w <= 390, `page is ${w}px wide`);
-      const box = await pg.locator(".cfb-card .cfb-open").first().boundingBox();
+      const box = await live.locator(".game-head").boundingBox();
       assert.ok(box.height >= 44);
+      await pg.locator("#dayTabs button").nth(1).click();
+      assert.match(await pg.locator("#homeSlate .card.game").first().innerText(), /IU[\s\S]*Kalshi 69%[\s\S]*MICH[\s\S]*Kalshi 31%/);
     });
     await t.test("open a game: its game page, with the win-chance graph and spread wheel", async () => {
-      await pg.locator(".cfb-card .cfb-open").nth(1).click();
+      await pg.locator("#homeSlate .card.game .game-head").first().click();
       const page = pg.locator("#panel-game");
       await page.waitFor({state: "visible"});
       assert.match(await page.locator(".gp-title").innerText(), /Michigan @ Indiana|Indiana @ Michigan/);
@@ -144,13 +149,21 @@ test("college football tab on a phone", async (t) => {
       await pg.screenshot({path: OUT + "cfb-history.png", fullPage: true});
       const w = await pg.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(w <= 390, `page is ${w}px wide`);
+      await pg.locator(".cfb-past").first().click();           // a final opens the same game page as every sport
+      const page = pg.locator("#panel-game");
+      await page.waitFor({state: "visible"});
+      assert.match(await page.locator(".gp-title").innerText(), /Alabama @ Georgia/);
+      assert.match(await page.innerText(), /FINAL[\s\S]*20[\s\S]*27/i);
+      assert.ok(await page.getByRole("button", {name: "Matchup"}).count() >= 1 || /Matchup/.test(await page.innerText()));
+      await page.locator(".back-more").click();
+      await pg.locator(".cfb-past").first().waitFor();
     });
     assert.deepEqual(errors, []);
     await ctx.close();
     const s = await open(browser, base, true);
     await t.test("signed in: ESPN logos by team id", async () => {
       await s.pg.locator('#sportPills [data-sport="CFB"]').click();
-      await s.pg.locator(".cfb-card .tm-badge img").first().waitFor();
+      await s.pg.locator("#homeSlate .card.game .tm-badge img").first().waitFor();
       assert.ok(s.logoHits.some(u => u.endsWith("/teamlogos/ncaa/500/48.png")), s.logoHits.join(","));
       await s.pg.screenshot({path: OUT + "cfb-home-logos.png"});
     });

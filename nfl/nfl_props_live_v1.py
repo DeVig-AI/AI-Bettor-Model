@@ -289,7 +289,15 @@ def main():
     kicks = [parse_t(g.get("kickoff_time")) for g in games]
     active = any(k and k - WINDOW_BEFORE <= now <= k + WINDOW_AFTER for k in kicks)
     if not active and os.getenv("FORCE") != "1" and os.path.exists(OUT):
-        print("no game window now; nothing to do"); return 0
+        # GitHub runs this "every 5 minutes" job hours apart at busy times, so a game can end between two runs. If the
+        # last file still shows a game in progress, update once more: its final score lands and it is archived.
+        try:
+            unfinished = any(g.get("state") == "in" for g in json.load(open(OUT)).get("games", []))
+        except Exception:
+            unfinished = False
+        if not unfinished:
+            print("no game window now; nothing to do"); return 0
+        print("no game window now, but the last live file shows a game in progress: one more update for its final")
     sb = scoreboard()
     odds = live_game_odds()
     out_games, n_picks = [], 0
