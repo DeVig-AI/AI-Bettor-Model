@@ -1,0 +1,382 @@
+# Research Lab search (CFB) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c).
+# Written by research/lab/search.py from search-season scores only; append-only, never edit.
+generations:
+- generation: 1
+  at: '2026-10-22T23:54:15Z'
+  round: 115
+  ladders:
+    carry:
+    - 0.75
+    - 0.85
+    - 1.0
+    halflife:
+    - 1
+    - 17
+    - 26
+    hfa_elo:
+    - 62
+    - 78
+    hfa_pts:
+    - 1.0
+    - 1.75
+    - 2.25
+    k:
+    - 32
+    - 40
+    - 55
+    margin_cap:
+    - 24
+    - 32
+    - 42
+    market_blend:
+    - 0.125
+    - 0.625
+    - 1.0
+    mov_cap:
+    - 14
+    - 24
+    - 32
+    - 42
+    prior_w:
+    - 0.75
+    - 1.5
+    season_carry:
+    - 0.35
+    - 0.45
+    - 0.75
+    - 0.9
+  signals:
+  - id: def-points-per-play~h3
+    kind: team
+    side: defense
+    num: &id001
+      points: 1
+    den: plays
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play (half-life 3, carry 0.4): Points allowed per opponent play: a tempo-free
+      read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~h12
+    kind: team
+    side: defense
+    num: *id001
+    den: plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of def-points-per-play (half-life 12, carry 0.4): Points allowed per opponent play: a tempo-free
+      read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.2
+    kind: team
+    side: defense
+    num: *id001
+    den: plays
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free
+      read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6
+    kind: team
+    side: defense
+    num: *id001
+    den: plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play (half-life 6, carry 0.6): Points allowed per opponent play: a tempo-free
+      read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo hands the opponent.'
+    variant_of: def-points-per-play
+    markets:
+    - spread
+    - total
+  - id: def-ppa~h3
+    kind: team
+    side: defense
+    num: &id002
+      epa: 1
+    den: plays
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of def-ppa (half-life 3, carry 0.4): PPA per play allowed by the defense.'
+    variant_of: def-ppa
+    markets:
+    - spread
+    - total
+  - id: def-ppa~h12
+    kind: team
+    side: defense
+    num: *id002
+    den: plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of def-ppa (half-life 12, carry 0.4): PPA per play allowed by the defense.'
+    variant_of: def-ppa
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.2
+    kind: team
+    side: defense
+    num: *id002
+    den: plays
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of def-ppa (half-life 6, carry 0.2): PPA per play allowed by the defense.'
+    variant_of: def-ppa
+    markets:
+    - spread
+    - total
+  - id: def-ppa~c0.6
+    kind: team
+    side: defense
+    num: *id002
+    den: plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of def-ppa (half-life 6, carry 0.6): PPA per play allowed by the defense.'
+    variant_of: def-ppa
+    markets:
+    - spread
+    - total
+  - id: def-finishing~h3
+    kind: team
+    side: defense
+    num: &id003
+      points: 1
+      epa: -1
+    den: null
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of def-finishing (half-life 3, carry 0.4): Points allowed beyond what PPA allowed explains:
+      red-zone stands and short fields given up are partly luck and tend to even out.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~h12
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of def-finishing (half-life 12, carry 0.4): Points allowed beyond what PPA allowed explains:
+      red-zone stands and short fields given up are partly luck and tend to even out.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~c0.2
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of def-finishing (half-life 6, carry 0.2): Points allowed beyond what PPA allowed explains:
+      red-zone stands and short fields given up are partly luck and tend to even out.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: def-finishing~c0.6
+    kind: team
+    side: defense
+    num: *id003
+    den: null
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of def-finishing (half-life 6, carry 0.6): Points allowed beyond what PPA allowed explains:
+      red-zone stands and short fields given up are partly luck and tend to even out.'
+    variant_of: def-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h3
+    kind: team
+    side: offense
+    num: &id004
+      points: 1
+      epa: -1
+    den: null
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of off-finishing (half-life 3, carry 0.4): Points beyond what PPA explains: finishing drives
+      and short fields are partly luck.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h12
+    kind: team
+    side: offense
+    num: *id004
+    den: null
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-finishing (half-life 12, carry 0.4): Points beyond what PPA explains: finishing drives
+      and short fields are partly luck.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~c0.2
+    kind: team
+    side: offense
+    num: *id004
+    den: null
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of off-finishing (half-life 6, carry 0.2): Points beyond what PPA explains: finishing drives
+      and short fields are partly luck.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-finishing~c0.6
+    kind: team
+    side: offense
+    num: *id004
+    den: null
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of off-finishing (half-life 6, carry 0.6): Points beyond what PPA explains: finishing drives
+      and short fields are partly luck.'
+    variant_of: off-finishing
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h3
+    kind: team
+    side: offense
+    num: &id005
+      epa: 1
+    den: plays
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa (half-life 3, carry 0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12
+    kind: team
+    side: offense
+    num: *id005
+    den: plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.2
+    kind: team
+    side: offense
+    num: *id005
+    den: plays
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa (half-life 6, carry 0.2): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6
+    kind: team
+    side: offense
+    num: *id005
+    den: plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa (half-life 6, carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~h3
+    kind: team
+    side: offense
+    num: &id006
+      points: 1
+    den: plays
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of off-points-per-play (half-life 3, carry 0.4): Points per play (tempo-free scoring, as in
+      public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow
+      ones.'
+    variant_of: off-points-per-play
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~h12
+    kind: team
+    side: offense
+    num: *id006
+    den: plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-points-per-play (half-life 12, carry 0.4): Points per play (tempo-free scoring, as in
+      public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow
+      ones.'
+    variant_of: off-points-per-play
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.2
+    kind: team
+    side: offense
+    num: *id006
+    den: plays
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of off-points-per-play (half-life 6, carry 0.2): Points per play (tempo-free scoring, as in
+      public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow
+      ones.'
+    variant_of: off-points-per-play
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6
+    kind: team
+    side: offense
+    num: *id006
+    den: plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in
+      public college analytics): college tempos vary widely, so points per game overrate fast offenses and underrate slow
+      ones.'
+    variant_of: off-points-per-play
+    markets:
+    - spread
+    - total
+  signal_bases:
+    spread:
+    - type: srs
+      params:
+        carry: 0.4
+        hfa_pts: 1.5
+        margin_cap: null
+        prior_w: 0.5
+    total:
+    - type: pace_eff
+      params:
+        calibrate: true
+        efficiency: epa
+        halflife: 3
+        league_window: 1600
+        pace: true
+        season_carry: 0.3
+  signal_sets: 1

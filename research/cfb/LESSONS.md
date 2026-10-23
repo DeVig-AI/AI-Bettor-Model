@@ -1,20 +1,31 @@
 # Research Lab -- lessons, College football (EXPLORATORY)
 
-_Generated 2026-10-21T01:09:32Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-23T00:04:16Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
+- Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2018–2021 only); **helped** = better in all three periods on most of the bases it was tried on.
 
-## Helped (0)
+## Helped (4)
 
-- none
+- Signal def-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.05 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.
+- Signal def-ppa (spread) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.26 / +0.02 / +0.00 pts in 2018 / 2019 / 2021.
+- Signal off-finishing (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.07 / +0.05 / +0.09 pts in 2018 / 2019 / 2021.
 
-## Faded (0)
+## Faded (5)
 
-- none
+- Signal def-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.07 / +0.16 / -0.13 pts in 2018 / 2019 / 2021.
+- Signal def-points-per-play (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.24 / +0.27 / -0.12 pts in 2018 / 2019 / 2021.
+- Signal off-finishing (spread) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.04 / -0.02 / -0.06 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.05 / +0.16 / -0.03 pts in 2018 / 2019 / 2021.
+- Signal off-ppa (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 1); on average +0.37 / +0.45 / -0.28 pts in 2018 / 2019 / 2021.
 
-## No effect (0)
+## No effect (4)
 
-- none
+- Signal def-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.03 / +0.00 / +0.11 pts in 2018 / 2019 / 2021.
+- Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.04 / +0.00 pts in 2018 / 2019 / 2021.
+- Signal off-points-per-play (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.06 / -0.07 / -0.53 pts in 2018 / 2019 / 2021.
+- Signal off-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / +0.01 / -0.69 pts in 2018 / 2019 / 2021.
 
 ## What the search learned (4,758 configurations, 2018–2021 only)
 
