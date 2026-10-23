@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-23T10:39:58.403379Z",
+ "generated_at": "2026-10-23T16:03:33.037136Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -131,7 +131,7 @@
   ],
   "BUF": [
    {
-    "espn_updated": "2026-10-23T10:01Z",
+    "espn_updated": "2026-10-23T15:01Z",
     "injury": "Suspension",
     "name": "C.J. Gardner-Johnson",
     "pos": "S",
@@ -171,7 +171,7 @@
     "pos": "CB",
     "return_date": "2026-11-02",
     "share_basis": "this season",
-    "snap_share": 0.82,
+    "snap_share": 0.75,
     "status": "Questionable"
    },
    {
@@ -181,7 +181,7 @@
     "pos": "TE",
     "return_date": "2026-11-02",
     "share_basis": "this season",
-    "snap_share": 0.62,
+    "snap_share": 0.61,
     "status": "Questionable"
    }
   ],
@@ -356,6 +356,16 @@
   ],
   "GB": [
    {
+    "espn_updated": "2026-10-23T15:50Z",
+    "injury": "Shin",
+    "name": "Zaire Franklin",
+    "pos": "LB",
+    "return_date": "2026-10-29",
+    "share_basis": "this season",
+    "snap_share": 0.99,
+    "status": "Out"
+   },
+   {
     "espn_updated": "2026-10-19T21:14Z",
     "injury": "Knee - ACL",
     "name": "Micah Parsons",
@@ -364,16 +374,6 @@
     "share_basis": "last season",
     "snap_share": 0.78,
     "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-23T00:35Z",
-    "injury": "Shin",
-    "name": "Zaire Franklin",
-    "pos": "LB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.99,
-    "status": "Questionable"
    },
    {
     "espn_updated": "2026-10-22T00:10Z",
@@ -596,7 +596,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-22T22:21Z",
+    "espn_updated": "2026-10-23T12:48Z",
     "injury": "Calf",
     "name": "Puka Nacua",
     "pos": "WR",
@@ -662,7 +662,7 @@
   ],
   "MIA": [
    {
-    "espn_updated": "2026-10-22T20:36Z",
+    "espn_updated": "2026-10-23T15:15Z",
     "injury": "Ankle",
     "name": "Caleb Douglas",
     "pos": "WR",
@@ -728,16 +728,6 @@
   ],
   "NO": [
    {
-    "espn_updated": "2026-10-22T00:45Z",
-    "injury": "Calf",
-    "name": "Kaden Elliss",
-    "pos": "LB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 1.0,
-    "status": "Questionable"
-   },
-   {
     "espn_updated": "2026-10-20T00:17Z",
     "injury": "Knee",
     "name": "Cesar Ruiz",
@@ -745,6 +735,16 @@
     "return_date": "2026-10-25",
     "share_basis": "this season",
     "snap_share": 0.9,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-23T13:37Z",
+    "injury": "Achilles",
+    "name": "Nathan Shepherd",
+    "pos": "DT",
+    "return_date": "2026-10-25",
+    "share_basis": "this season",
+    "snap_share": 0.66,
     "status": "Questionable"
    }
   ],
@@ -790,7 +790,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-23T10:01Z",
+    "espn_updated": "2026-10-23T15:01Z",
     "injury": "Calf",
     "name": "Jermaine Eluemunor",
     "pos": "OT",
@@ -822,7 +822,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-22T20:09Z",
+    "espn_updated": "2026-10-23T15:09Z",
     "injury": "Finger",
     "name": "Adonai Mitchell",
     "pos": "WR",
@@ -904,36 +904,6 @@
     "share_basis": "last season",
     "snap_share": 0.75,
     "status": "Injured Reserve"
-   },
-   {
-    "espn_updated": "2026-10-21T02:21Z",
-    "injury": "Wrist",
-    "name": "Jalen Ramsey",
-    "pos": "CB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 1.0,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-10-22T21:40Z",
-    "injury": "Calf",
-    "name": "T.J. Watt",
-    "pos": "LB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.68,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-10-21T21:34Z",
-    "injury": "Groin",
-    "name": "Alex Highsmith",
-    "pos": "LB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.67,
-    "status": "Questionable"
    }
   ],
   "SEA": [
@@ -1042,7 +1012,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-22T19:54Z",
+    "espn_updated": "2026-10-23T15:18Z",
     "injury": "Concussion",
     "name": "Emeka Egbuka",
     "pos": "WR",
@@ -1052,7 +1022,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-22T19:53Z",
+    "espn_updated": "2026-10-23T15:19Z",
     "injury": "Illness",
     "name": "Bucky Irving",
     "pos": "RB",
