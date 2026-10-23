@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T16:34:07Z",
+ "updated_at": "2026-10-23T15:53:42Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
  },
  "constitution": {
-  "version": "v11",
-  "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+  "version": "v10",
+  "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -1347,61 +1347,6 @@
    "updated_at": "2026-10-19T04:34:06Z"
   },
   {
-   "id": "s-2d757889",
-   "name": "Blend of 2: s-3a502c4f + s-0827df0a",
-   "market": "total",
-   "family": "Blend · search",
-   "reason": "Found by search round 1: on 2006–2016 it beat the line by +2.44 pts a game (t = 9.67), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
-   "state": "queued",
-   "fail_reason": "",
-   "gate_now": null,
-   "started_at": null,
-   "eta_at": null,
-   "gates": [
-    {
-     "name": "2017–19",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    },
-    {
-     "name": "2020–22",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    },
-    {
-     "name": "2023–24",
-     "effect": null,
-     "ci": null,
-     "games": null,
-     "passed": null
-    }
-   ],
-   "pooled": null,
-   "attempts": 20,
-   "p_bar": 0.05,
-   "fade_ratio": null,
-   "fade_needed": 0.5,
-   "kalshi": null,
-   "rule_split": [],
-   "exam": {
-    "state": "not_taken",
-    "effect": null,
-    "ci": null,
-    "taken_at": null,
-    "note": ""
-   },
-   "verdict": "Registered; runs in the next nightly lab run.",
-   "graded_at": null,
-   "run_number": null,
-   "run_url": null,
-   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/../../../tmp/tmpfpkwfnbs/cands/s-2d757889.yaml",
-   "updated_at": null
-  },
-  {
    "id": "s-e27628a8",
    "name": "Blend of 2: s-3770bfc8 + s-6f3641ca",
    "market": "spread",
@@ -2126,125 +2071,919 @@
     "tot-pe"
    ],
    "at": "2026-10-19T04:34:10Z"
+  },
+  {
+   "text": "Signal def-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~c0.7 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~h4 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.12 / -0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-pass-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.14 / -0.12 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.01 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~h16 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.00 / -0.02 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 4); on average +0.11 / -0.02 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.13 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~c0.3 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.03 / +0.00 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.13 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~c0.7 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.05 / +0.02 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~c0.7 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.10 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~h4 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 4); on average +0.08 / -0.02 / -0.12 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal div-game (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 4); on average +0.06 / -0.11 / +0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-early-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / +0.00 / -0.08 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.06 / -0.07 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.17 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~c0.3 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.03 / -0.06 / -0.09 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.14 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~c0.7 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.04 / -0.06 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~c0.7 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.00 / -0.21 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~h16 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.01 / -0.05 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~h16 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.15 / -0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~h4 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 1 of 4); on average +0.00 / +0.00 / -0.16 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-finishing~h4 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.21 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / +0.02 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / +0.01 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~c0.7 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / +0.02 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~h16 (spread) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 4); on average +0.00 / -0.00 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~h4 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / +0.02 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-turnover-epa (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.02 / -0.17 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "faded",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal bye-diff (spread) on top of a base model: no consistent effect (helped in all three on 2 of 4); on average +0.02 / +0.05 / +0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average -0.09 / +0.00 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.09 / -0.03 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~c0.3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / +0.09 / -0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~c0.3 (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.06 / -0.02 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~c0.7 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average -0.17 / -0.02 / +0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~c0.7 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.09 / -0.05 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~h16 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.12 / +0.02 / +0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~h16 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.04 / +0.02 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~h4 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average -0.04 / +0.08 / +0.08 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-early-epa~h4 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.38 / -0.01 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.12 / +0.10 / +0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~c0.3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.09 / +0.06 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~c0.7 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.09 / +0.11 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~h16 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / +0.09 / -0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~h16 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-finishing~h4 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / +0.03 / -0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.20 / +0.12 / +0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / -0.09 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.01 / +0.00 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~c0.3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.06 / -0.07 / +0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~c0.7 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.11 / -0.04 / +0.09 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~c0.7 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.01 / -0.00 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~h16 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.03 / -0.10 / +0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~h4 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.06 / -0.07 / +0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-success~h4 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.01 / +0.01 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~h16 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average -0.02 / -0.00 / -0.10 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~h16 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.01 / -0.04 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal def-turnover-epa~h4 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.02 / -0.11 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-comp-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.13 / +0.14 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-comp-epa (total) on top of a base model: no consistent effect (helped in all three on 1 of 2); on average -0.29 / -0.05 / +0.07 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-early-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.08 / +0.10 / -0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.03 / +0.01 / -0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-pass-epa (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average -0.06 / +0.12 / -0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-pass-epa (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.38 / +0.09 / -0.12 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-seconds-per-play (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average -0.00 / +0.01 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.00 / +0.05 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~c0.3 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.03 / +0.05 / +0.01 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~c0.7 (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.01 / +0.02 / +0.02 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~h16 (total) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.02 / -0.03 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-success~h4 (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average +0.01 / +0.06 / +0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal off-turnover-epa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.01 / -0.05 / -0.18 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal qb-change (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / +0.03 / +0.04 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal rest-diff (spread) on top of a base model: no consistent effect (helped in all three on 1 of 4); on average +0.02 / +0.09 / +0.05 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
+  },
+  {
+   "text": "Signal short-week-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-20T00:06:19Z"
+  },
+  {
+   "text": "Signal travel-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / -0.01 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.",
+   "kind": "no_effect",
+   "candidates": [],
+   "source": "search",
+   "from": "search · 2006–2016 only",
+   "at": "2026-10-22T23:53:21Z"
   }
  ],
  "promoted": [],
  "runs": [
   {
    "kind": "search",
-   "name": "Search round 1",
-   "started_at": "2026-10-23T16:34:07Z",
-   "finished_at": "2026-10-23T16:34:07Z",
+   "name": "Search round 378",
+   "started_at": "2026-10-23T15:53:34Z",
+   "finished_at": "2026-10-23T15:53:34Z",
    "duration_s": null,
    "run_number": null,
-   "run_url": null,
-   "summary": "21 models scored → 19 consistent → 19 strong (t ≥ -99) → 1 sent to confirmation",
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39981340828",
+   "summary": "1,998 models scored → 606 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
      "label": "models scored",
-     "count": 21
+     "count": 1998
     },
     {
      "label": "consistent",
-     "count": 19
+     "count": 606
     },
     {
-     "label": "strong (t ≥ -99)",
-     "count": 19
+     "label": "strong (t ≥ 2.5)",
+     "count": 26
     },
     {
      "label": "sent to confirmation",
-     "count": 1
+     "count": 0
     }
    ],
    "steps": []
   },
   {
    "kind": "search",
-   "name": "Search paused: menu exhausted",
-   "started_at": "2026-10-23T16:34:07Z",
-   "finished_at": "2026-10-23T16:34:07Z",
+   "name": "Search round 377",
+   "started_at": "2026-10-23T15:40:34Z",
+   "finished_at": "2026-10-23T15:40:34Z",
    "duration_s": null,
    "run_number": null,
-   "run_url": null,
-   "summary": "all 21 configurations on the menu scored; waiting for new menu values or signals",
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39979878084",
+   "summary": "2,000 models scored → 593 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
      "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 593
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 22
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 376",
+   "started_at": "2026-10-23T15:31:23Z",
+   "finished_at": "2026-10-23T15:31:23Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39978390435",
+   "summary": "2,000 models scored → 580 consistent → 29 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 580
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 29
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 375",
+   "started_at": "2026-10-23T15:22:19Z",
+   "finished_at": "2026-10-23T15:22:19Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39977109994",
+   "summary": "2,000 models scored → 577 consistent → 21 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 577
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
      "count": 21
-    }
-   ],
-   "steps": []
-  },
-  {
-   "kind": "lab",
-   "name": "Research Lab #5",
-   "started_at": "2026-10-19T06:27:06Z",
-   "finished_at": "2026-10-19T06:27:06Z",
-   "duration_s": 0,
-   "run_number": 5,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39208787262",
-   "summary": "2 tested → 2 past gate 1 → 2 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
-   "funnel": [
-    {
-     "label": "tested",
-     "count": 2
     },
     {
-     "label": "past gate 1",
-     "count": 2
-    },
-    {
-     "label": "past gate 2",
-     "count": 2
-    },
-    {
-     "label": "passed the lab",
-     "count": 0
-    },
-    {
-     "label": "passed the exam",
-     "count": 0
-    },
-    {
-     "label": "promoted",
+     "label": "sent to confirmation",
      "count": 0
     }
    ],
    "steps": []
   },
   {
-   "kind": "lab",
-   "name": "Research Lab #1",
-   "started_at": "2026-10-19T04:34:00Z",
-   "finished_at": "2026-10-19T04:34:10Z",
-   "duration_s": 10,
-   "run_number": 1,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39200057801",
-   "summary": "18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
+   "kind": "search",
+   "name": "Search round 374",
+   "started_at": "2026-10-23T15:11:16Z",
+   "finished_at": "2026-10-23T15:11:16Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39975700614",
+   "summary": "2,000 models scored → 630 consistent → 23 strong (t ≥ 2.5) → 0 sent to confirmation",
    "funnel": [
     {
-     "label": "tested",
-     "count": 18
+     "label": "models scored",
+     "count": 2000
     },
     {
-     "label": "past gate 1",
-     "count": 15
+     "label": "consistent",
+     "count": 630
     },
     {
-     "label": "past gate 2",
+     "label": "strong (t ≥ 2.5)",
+     "count": 23
+    },
+    {
+     "label": "sent to confirmation",
      "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 373",
+   "started_at": "2026-10-23T15:00:55Z",
+   "finished_at": "2026-10-23T15:00:55Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39973781573",
+   "summary": "2,000 models scored → 587 consistent → 21 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
     },
     {
-     "label": "passed the lab",
+     "label": "consistent",
+     "count": 587
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 21
+    },
+    {
+     "label": "sent to confirmation",
      "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 372",
+   "started_at": "2026-10-23T14:48:11Z",
+   "finished_at": "2026-10-23T14:48:11Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39972350386",
+   "summary": "2,000 models scored → 589 consistent → 24 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
     },
     {
-     "label": "passed the exam",
+     "label": "consistent",
+     "count": 589
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 24
+    },
+    {
+     "label": "sent to confirmation",
      "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 371",
+   "started_at": "2026-10-23T14:39:15Z",
+   "finished_at": "2026-10-23T14:39:15Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39970662937",
+   "summary": "2,000 models scored → 581 consistent → 20 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
     },
     {
-     "label": "promoted",
+     "label": "consistent",
+     "count": 581
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 20
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 370",
+   "started_at": "2026-10-23T14:29:00Z",
+   "finished_at": "2026-10-23T14:29:00Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39969591997",
+   "summary": "2,000 models scored → 615 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 615
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 22
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 369",
+   "started_at": "2026-10-23T14:21:08Z",
+   "finished_at": "2026-10-23T14:21:08Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39968077647",
+   "summary": "2,000 models scored → 597 consistent → 30 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 597
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 30
+    },
+    {
+     "label": "sent to confirmation",
      "count": 0
     }
    ],
@@ -2253,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T16:34:07Z",
+   "updated_at": "2026-10-23T15:54:23Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -2267,8 +3006,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
    },
    "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+    "version": "v10",
+    "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -3339,114 +4078,6 @@
      "steps": []
     }
    ]
-  },
-  "NBA": {
-   "updated_at": "2026-10-23T16:34:10Z",
-   "scope": "NBA",
-   "effect_name": "Edge beyond the closing line",
-   "effect_unit": "pts",
-   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
-   "exam_name": "Sealed 2021 exam",
-   "sport": "NBA",
-   "sport_name": "NBA",
-   "attempts": {
-    "this_sport": 0,
-    "all_sports": 20,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
-   },
-   "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
-   },
-   "links": {
-    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
-    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LEDGER.csv",
-    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LESSONS.md"
-   },
-   "counts": {
-    "tried": 0,
-    "running": 0,
-    "lab_pass": 0,
-    "exam_pass": 0,
-    "exam_budget_left": 3,
-    "exam_budget_total": 3
-   },
-   "candidates": [],
-   "lessons": [],
-   "promoted": [],
-   "runs": []
-  },
-  "NHL": {
-   "updated_at": "2026-10-23T16:34:10Z",
-   "scope": "NHL",
-   "effect_name": "Edge beyond the closing line",
-   "effect_unit": "pts",
-   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
-   "exam_name": "Sealed 2021 exam",
-   "sport": "NHL",
-   "sport_name": "NHL",
-   "attempts": {
-    "this_sport": 0,
-    "all_sports": 20,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
-   },
-   "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
-   },
-   "links": {
-    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
-    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LEDGER.csv",
-    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LESSONS.md"
-   },
-   "counts": {
-    "tried": 0,
-    "running": 0,
-    "lab_pass": 0,
-    "exam_pass": 0,
-    "exam_budget_left": 3,
-    "exam_budget_total": 3
-   },
-   "candidates": [],
-   "lessons": [],
-   "promoted": [],
-   "runs": []
-  },
-  "MLB": {
-   "updated_at": "2026-10-23T16:34:10Z",
-   "scope": "MLB",
-   "effect_name": "Edge beyond the closing line",
-   "effect_unit": "pts",
-   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
-   "exam_name": "Sealed 2021 exam",
-   "sport": "MLB",
-   "sport_name": "MLB",
-   "attempts": {
-    "this_sport": 0,
-    "all_sports": 20,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
-   },
-   "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
-   },
-   "links": {
-    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
-    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LEDGER.csv",
-    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LESSONS.md"
-   },
-   "counts": {
-    "tried": 0,
-    "running": 0,
-    "lab_pass": 0,
-    "exam_pass": 0,
-    "exam_budget_left": 3,
-    "exam_budget_total": 3
-   },
-   "candidates": [],
-   "lessons": [],
-   "promoted": [],
-   "runs": []
   }
  },
  "sports": [
@@ -3457,18 +4088,6 @@
   {
    "key": "CFB",
    "name": "College football"
-  },
-  {
-   "key": "NBA",
-   "name": "NBA"
-  },
-  {
-   "key": "NHL",
-   "name": "NHL"
-  },
-  {
-   "key": "MLB",
-   "name": "MLB"
   }
  ]
 }
