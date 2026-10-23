@@ -71,7 +71,8 @@ def roster(tid):
         raise ValueError("roster unavailable")      # Texas A&M: grouped by what its players did
     return {"athletes": [{"position": "offense", "items": [{"id": tid + "01", "position": {"abbreviation": "QB"}},
                                                            {"id": tid + "02", "position": {"abbreviation": "RB"}}]},
-                         {"position": "defense", "items": [{"id": tid + "03", "position": {"abbreviation": "OLB"}}]}]}
+                         {"position": "defense", "items": [{"id": tid + "03", "position": {"abbreviation": "OLB"}}]},
+                         {"position": "specialTeam"}]}                 # a group with no list (seen on ESPN's college rosters)
 
 
 class FakeEspn:

@@ -231,19 +231,21 @@ def player_lines(box):
 
 
 def roster(api, tid):
-    """{athlete id: (position abbreviation, group)} from the team's roster."""
+    """{athlete id: (position abbreviation, group)} from the team's roster (grouped by side, or a plain list)."""
     try:
         d = api.get(f"teams/{tid}/roster")
-    except Exception as e:                       # a roster that won't load: its players are grouped by their stats
-        print(f"roster {tid}: {type(e).__name__}")
+        out = {}
+        for sec in d.get("athletes") or []:
+            items = sec.get("items") if isinstance(sec.get("items"), list) else ([sec] if sec.get("id") else [])
+            for a in items:
+                p = a.get("position")
+                pos = str((p.get("abbreviation") if isinstance(p, dict) else "") or "").upper()
+                if a.get("id"):
+                    out[str(a["id"])] = (pos, POS_GROUP.get(pos))
+        return out
+    except Exception as e:                       # a roster that won't load or read: its players are grouped by their stats
+        print(f"roster {tid}: {type(e).__name__}: {e}")
         return {}
-    out = {}
-    for sec in d.get("athletes") or []:
-        for a in (sec.get("items") or [sec]):
-            pos = str(((a.get("position") or {}).get("abbreviation")) or "").upper()
-            if a.get("id"):
-                out[str(a["id"])] = (pos, POS_GROUP.get(pos))
-    return out
 
 
 def guess_group(s):

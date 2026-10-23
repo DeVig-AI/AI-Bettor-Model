@@ -1920,7 +1920,7 @@
   // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
   // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA", "CFB"];
+  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA", "CFB", "MLB"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
   var RS_FRESH = 6e5;          // a file read more than 10 minutes ago is read again (the bot rebuilds them during the day)
   function rsGet(path){
