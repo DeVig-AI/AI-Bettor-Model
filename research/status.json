@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T04:06:42Z",
+ "updated_at": "2026-10-23T04:10:46Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T04:07:04Z",
+   "updated_at": "2026-10-23T04:10:46Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3565,6 +3565,35 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 133",
+     "started_at": "2026-10-23T04:10:45Z",
+     "finished_at": "2026-10-23T04:10:45Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39898056868",
+     "summary": "397 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 397
+      },
+      {
+       "label": "consistent",
+       "count": 10
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 132",
      "started_at": "2026-10-23T04:00:09Z",
      "finished_at": "2026-10-23T04:00:09Z",
@@ -3812,35 +3841,6 @@
       {
        "label": "consistent",
        "count": 12
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 123",
-     "started_at": "2026-10-23T02:22:24Z",
-     "finished_at": "2026-10-23T02:22:24Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39888389790",
-     "summary": "394 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 394
-      },
-      {
-       "label": "consistent",
-       "count": 15
       },
       {
        "label": "strong (t ≥ 2.5)",
