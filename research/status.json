@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T06:55:24Z",
+ "updated_at": "2026-10-23T07:06:29Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T06:55:44Z",
+   "updated_at": "2026-10-23T07:06:28Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3789,6 +3789,27 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 146 (CFB, running)",
+     "started_at": "2026-10-23T06:56:26Z",
+     "finished_at": null,
+     "duration_s": null,
+     "run_number": 2311,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39914168450",
+     "summary": "276 of 800 models scored on 2018–2021",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 276
+      },
+      {
+       "label": "planned this round",
+       "count": 800
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 145",
      "started_at": "2026-10-23T06:51:36Z",
      "finished_at": "2026-10-23T06:51:36Z",
@@ -4036,35 +4057,6 @@
       {
        "label": "consistent",
        "count": 11
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 136",
-     "started_at": "2026-10-23T04:38:40Z",
-     "finished_at": "2026-10-23T04:38:40Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39900697844",
-     "summary": "387 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 387
-      },
-      {
-       "label": "consistent",
-       "count": 15
       },
       {
        "label": "strong (t ≥ 2.5)",
