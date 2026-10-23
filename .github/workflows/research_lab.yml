@@ -8,6 +8,8 @@ name: Research Lab -- loop (back to back)
 # research/candidates/; NFL candidates without a ledger row (search
 # finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
 # same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
+# Then NBA, NHL and MLB, one after another (Part D, v11): search on 2014, 2015, 2016, confirmation on 2017 / 2018 / 2019,
+# files under research/<sport>/, data built each run from the pinned public archive (never committed, D1).
 # Each sport ends with the Inspector General's review. Deterministic; no AI in the loop.
 on:
   schedule:
@@ -191,10 +193,83 @@ jobs:
         if: always() && steps.start.outcome == 'success'
         run: research/lab/push.sh "Research Lab CFB results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
+  part_d:
+    needs: cfb
+    if: always()
+    strategy:
+      max-parallel: 1          # one sport at a time: each writes research/status.json and pushes to main
+      fail-fast: false
+      matrix:
+        sport: [NBA, NHL, MLB]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      LAB_SPORT: ${{ matrix.sport }}
+      FORCE_SEARCH: ${{ inputs.search }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main          # the sport before may have just pushed
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Build the lab cache from the pinned archive (2011-2020 only; never committed, Constitution D1)
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.sbr_data fetch
+          python3 -m research.lab.sbr_data check
+
+      - name: Search round (2014, 2015, 2016 only)
+        run: |
+          python3 -m research.lab.search round --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain "research/${LAB_SPORT,,}/search")" ]; then
+            python3 -m research.lab.inspector review
+            research/lab/push.sh "Research Lab $LAB_SPORT search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          n=$(python3 -m research.lab.lab pending)
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start
+          research/lab/push.sh "Research Lab $LAB_SPORT: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab $LAB_SPORT results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
   next:
-    needs: [lab, cfb]
+    needs: [lab, cfb, part_d]
     # only after a good run: a failure waits for the hourly safety net instead of looping on the error
-    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
+    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && needs.part_d.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

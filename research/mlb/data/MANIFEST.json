@@ -1,0 +1,62 @@
+{
+ "source": "https://raw.githubusercontent.com/flancast90/sportsbookreview-scraper/1a820e50c6fbd0276cde073c22bfffae78930868/data/mlb_archive_10Y.json",
+ "commit": "1a820e50c6fbd0276cde073c22bfffae78930868",
+ "file_sha256": "ee4904dee0ee1474e7ac75697cea2c28f0084e5fb576553e48627e4cf90dd77d",
+ "seasons": [
+  2011,
+  2020
+ ],
+ "sha256": {
+  "games": "f4111ee80f845a467bd549b89cd8400ccd540b1f91d5fe1841efbad882ec74c4",
+  "team_games": "11b5a654dc8e38f6cc86ed71f573fbba52db4940aeb54530d0bc2f191b2bf89c"
+ },
+ "games_by_season": {
+  "2011": 2458,
+  "2012": 2464,
+  "2013": 2465,
+  "2014": 2454,
+  "2015": 2459,
+  "2016": 2454,
+  "2017": 2459,
+  "2018": 2460,
+  "2019": 2458,
+  "2020": 941
+ },
+ "lines_by_season": {
+  "total": {
+   "2011": 2458,
+   "2012": 2464,
+   "2013": 2465,
+   "2014": 2454,
+   "2015": 2459,
+   "2016": 2452,
+   "2017": 2459,
+   "2018": 2456,
+   "2019": 2458,
+   "2020": 941
+  },
+  "moneyline": {
+   "2011": 1234,
+   "2012": 1207,
+   "2013": 1127,
+   "2014": 1169,
+   "2015": 1133,
+   "2016": 1003,
+   "2017": 1025,
+   "2018": 847,
+   "2019": 827,
+   "2020": 322
+  }
+ },
+ "checks_whole_file": {
+  "rows": 25597,
+  "no_date_or_team": 57,
+  "duplicate": 14,
+  "no_score": 2,
+  "total_lines": 25520,
+  "total_no_line": 4,
+  "moneyline_lines": 10779,
+  "moneyline_no_line": 14745
+ },
+ "note": "Lab cache (Constitution D1), seasons 2011-2020 only. The csv files are never committed; 2021 is sealed and never stored."
+}

@@ -5,6 +5,7 @@
     python3 -m research.lab.inspector exam-run       # download the sealed season, score the registered exam
     python3 -m research.lab.inspector paper          # paper season for promoted models (Kalshi prices before kickoff)
     ... --sport CFB                                  # college football (Part C)
+    ... --sport NBA|NHL|MLB                          # Part D
 
 Only this module downloads the sealed season (exam) or current-season data (paper season), and never into the
 repo: data.fetch_live keeps it in memory. Only the exam's and the paper season's summary numbers are committed.
@@ -236,7 +237,7 @@ def exam_run():
         ex = L.between(e, C.SEALED_SEASON, C.SEALED_SEASON)
         if len(ex) < C.EXAM_MIN_GAMES:
             raise RuntimeError(f"only {len(ex)} scored games in {C.SEALED_SEASON}")
-        res = M.evaluate(ex.d, ex.r, s0)
+        res = M.evaluate(ex.d, ex.r, s0, price=L.price_of(c, ex))
         passed = res["effect"] > 0 and res["p"] < C.EXAM_ALPHA
         append_csv(C.EXAMS, EXAM_COLS, dict(base, event="scored", at=L.now(), games=res["games"], effect=res["effect"],
                                             ci_lo=res["ci"][0], ci_hi=res["ci"][1], p_one_sided=res["p"],
@@ -322,6 +323,10 @@ def paper():
     prom = [p for p in promoted_list() if p.get("state") == "active"]
     if not prom:
         print("paper season: no promoted model; nothing to do")
+        return
+    if C.SPORT in ("NBA", "NHL", "MLB"):              # D7: starts the day this sport's Kalshi logger is merged
+        print(f"paper season: no {C.SPORT} Kalshi logger yet (Constitution D7); {len(prom)} promoted model(s) wait, "
+              "nothing is back-filled")
         return
     sys.path.insert(0, C.ROOT)
     import kalshi_games_v1 as K
@@ -442,7 +447,7 @@ def stop_rule(log, games):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["review", "exam-register", "exam-run", "paper"])
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B) or CFB (Part C)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
     a = ap.parse_args(argv)
     C.use(a.sport)
     {"review": review, "exam-register": exam_register, "exam-run": exam_run, "paper": paper}[a.cmd]()

@@ -1,5 +1,5 @@
 """What the back-to-back loop queues next (Constitution v8 A8): the sealed exam of a sport that has a lab pass and an
-exam left, otherwise the next loop run. Prints 'exam NFL', 'exam CFB' or 'loop'.
+exam left, otherwise the next loop run. Prints 'exam <SPORT>' (NFL, CFB, NBA, NHL, MLB) or 'loop'.
 
     python3 -m research.lab.next_run [research/status.json]
 """
