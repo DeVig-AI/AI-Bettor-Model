@@ -1921,7 +1921,7 @@
   // new sport is a new stats file, not new page code. Descriptive only: averages, logs and how often a line was
   // cleared, always with the number of games.
   var RS_RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/";
-  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA"];
+  var RS_SPORTS = ["NBA", "NHL", "NFL", "WNBA", "CFB", "MLB"];
   var rsCache = {}, rsStack = [{page: "home"}], rsSport = "NBA", rsTab = "rank", rsQuery = "", rsHit = {};
   var RS_FRESH = 6e5;          // a file read more than 10 minutes ago is read again (the bot rebuilds them during the day)
   function rsGet(path){
@@ -1941,7 +1941,8 @@
       return idx;
     });
   }
-  function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + code + ".json"); }
+  // a team's file, by its code with anything but letters and digits as "_" (college: TA&M -> team_TA_M.json)
+  function rsTeamFile(sp, code){ return rsGet(sp.toLowerCase() + "/team_" + String(code).toUpperCase().replace(/[^A-Z0-9]/g, "_") + ".json"); }
   function rsHasSport(sp){ return RS_SPORTS.indexOf(sp) >= 0; }
   // Open Research at a page: {page: "team", sport, code} or {page: "player", sport, team | teams, id | name, stat, line}.
   function openResearch(route){
@@ -2076,6 +2077,7 @@
   function rsTeam(card, r, fail){
     Promise.all([rsIndex(r.sport), rsTeamFile(r.sport, r.code)]).then(function(x){
       var idx = x[0], t = x[1], a = t.this || {}, b = t.last || {}, ls = rsShort(t.last_season), ranks = t.ranks || {};
+      var hasLast = t.last_season && t.last_season !== "—";          // college football: this season only
       var nTeams = (idx.teams || []).length || 32;
       function rankChip(f){
         var k = ranks[f];
@@ -2088,12 +2090,12 @@
         ' in DeVig\'s power rankings · rating ' + rsSigned(t.rating) + '</div></div></div>' +
         (best.length && t.this ? '<div class="rs-best">Best: ' + best.map(function(c){
           return '<b>' + rsOrd(ranks[c[1]]) + '</b> in ' + escapeHtml(c[0].charAt(0).toLowerCase() + c[0].slice(1)); }).join(" · ") + '</div>' : '') +
-        '<div class="lab-scroll"><table class="lab-table rs-stats"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th><th>' + escapeHtml(ls) + '</th></tr>' +
+        '<div class="lab-scroll"><table class="lab-table rs-stats"><tr><th></th><th>' + escapeHtml(rsShort(t.season)) + '</th>' + (hasLast ? '<th>' + escapeHtml(ls) + '</th>' : '') + '</tr>' +
         (idx.team_rows || []).map(function(c){
-          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") + rankChip(c[1]) : '—') + '</td><td>' +
-            (t.last ? rsCell(b[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") : '—') + '</td></tr>';
+          return '<tr><td>' + escapeHtml(c[0]) + '</td><td>' + (t.this ? rsCell(a[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") + rankChip(c[1]) : '—') + '</td>' +
+            (hasLast ? '<td>' + (t.last ? rsCell(b[c[1]], c).replace(/(\d)-(\d)/g, "$1–$2") : '—') + '</td>' : '') + '</tr>';
         }).join("") + '</table></div>' +
-        (t.ranks ? '<p class="faint" style="margin:6px 0 0">Rank: where this season\'s number stands among all ' + nTeams + ' teams (1st = best; for points and yards allowed and giveaways, fewest is best).</p>' : '');
+        (t.ranks ? '<p class="faint" style="margin:6px 0 0">Rank: where this season\'s number stands among all ' + nTeams + ' teams (1st = best; where fewer is better, like points allowed, the fewest is 1st).</p>' : '');
       var games = (t.games || []).slice(0, 10);
       if(games.length){
         html += '<div class="bb-sec">Recent games</div><div class="lab-scroll"><table class="lab-table">' + games.map(function(g){

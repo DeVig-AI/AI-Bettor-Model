@@ -11,7 +11,7 @@ concurrency:
 jobs:
   stats:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,6 +26,43 @@ jobs:
         run: python3 tools/stats_nfl.py
       - name: WNBA (ESPN box scores via sportsdataverse)
         run: python3 tools/stats_wnba.py
+      # College football: ESPN, this season only (the 2025 season is sealed for the research lab). Finished games' box
+      # scores never change, so they stay in the private Actions cache and each run fetches only new ones.
+      - name: Restore the college football box scores
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-espn-none
+          restore-keys: cfb-espn-
+          path: .cache/cfb-espn
+      - name: College football (ESPN scoreboards, box scores and rosters)
+        continue-on-error: true          # a new source's failure never holds back the other sports' files
+        env:
+          CFB_ESPN_CACHE: .cache/cfb-espn
+        run: python3 tools/stats_cfb.py
+      # MLB: the Stats API; each team's last 10 box scores are kept in the private Actions cache like college football's.
+      - name: Restore the MLB box scores
+        uses: actions/cache/restore@v4
+        with:
+          key: mlb-box-none
+          restore-keys: mlb-box-
+          path: .cache/mlb
+      - name: MLB (MLB Stats API)
+        continue-on-error: true          # a new source's failure never holds back the other sports' files
+        env:
+          MLB_STATS_CACHE: .cache/mlb
+        run: python3 tools/stats_mlb.py
+      - name: Keep the MLB box scores
+        if: always() && hashFiles('.cache/mlb/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          key: mlb-box-${{ github.run_id }}
+          path: .cache/mlb
+      - name: Keep the college football box scores
+        if: always() && hashFiles('.cache/cfb-espn/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          key: cfb-espn-${{ github.run_id }}
+          path: .cache/cfb-espn
       - name: Save them
         run: |
           git config user.name "sports-tracker-bot"
