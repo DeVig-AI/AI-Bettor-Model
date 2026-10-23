@@ -149,6 +149,14 @@ test("college football tab on a phone", async (t) => {
       await pg.screenshot({path: OUT + "cfb-history.png", fullPage: true});
       const w = await pg.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(w <= 390, `page is ${w}px wide`);
+      await pg.locator(".cfb-past").first().click();           // a final opens the same game page as every sport
+      const page = pg.locator("#panel-game");
+      await page.waitFor({state: "visible"});
+      assert.match(await page.locator(".gp-title").innerText(), /Alabama @ Georgia/);
+      assert.match(await page.innerText(), /FINAL[\s\S]*20[\s\S]*27/i);
+      assert.ok(await page.getByRole("button", {name: "Matchup"}).count() >= 1 || /Matchup/.test(await page.innerText()));
+      await page.locator(".back-more").click();
+      await pg.locator(".cfb-past").first().waitFor();
     });
     assert.deepEqual(errors, []);
     await ctx.close();

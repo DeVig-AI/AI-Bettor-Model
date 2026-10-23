@@ -204,7 +204,8 @@
   .ask-row button{width:auto; flex:none;}
   /* Best-bets summary + collapsible game rows */
   .bb-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
-  .cfb-past{padding:12px 14px}
+  .cfb-past{padding:12px 14px; display:block; width:100%; text-align:left; font:inherit; color:var(--ink); cursor:pointer}
+  .cfb-go{margin-top:8px; text-align:right}
   .cfb-when{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--ink-soft); margin-bottom:6px}
   .cfb-src{color:var(--ink-faint)}
   .cfb-live{color:var(--bad); font-weight:700}
@@ -1373,6 +1374,11 @@
   // The parlay picker uses the same rule, so it never offers a leg on a game
   // that's already over. A game with no kickoff time is kept (can't tell).
   var FINISHED_AFTER_HOURS = 5;
+  // A game the sport's export marks as never played (MLB: cancelled or postponed): it has no result to show in History.
+  function notPlayed(g){
+    return !!(g.game_id && typeof decisionsDocs !== "undefined" && decisionsDocs.some(function(d){
+      return d.game_id === g.game_id && d.outcome && d.outcome.not_played; }));
+  }
   function isOnBoard(g){
     // A game with a final score is off the board, whatever the clock says.
     if(g.game_id && typeof decisionsDocs !== "undefined" && decisionsDocs.some(function(d){ return d.game_id === g.game_id && d.outcome && d.outcome.resolved; })) return false;
@@ -1799,6 +1805,14 @@
     return Object.keys(gs).map(function(k){ return Object.assign({espn_id: k}, gs[k]); })
       .filter(function(h){ return h.final && h.pre && h.kickoff; });
   }
+  // A finished college game in the shape the shared game page takes (Kalshi's last prices before kickoff, the final).
+  function cfbFinalAsGame(h){
+    var p = h.pre || {};
+    return cfbAsGame({espn_id: h.espn_id, away: h.away, home: h.home, names: h.names, ids: h.ids, neutral: h.neutral,
+      kickoff: h.kickoff, date: h.date, ml: p.ml, spread: p.spread, total: p.total, home_wp: p.home_wp,
+      away_team: h.away, home_team: h.home, kickoff_time: h.kickoff,
+      state: "post", detail: "Final", away_score: h.final.away, home_score: h.final.home});
+  }
   function renderCfbPast(wrap, recEl, strip){
     var fin = cfbFinals();
     var fw = 0, fl = 0, cw = 0, cl = 0;
@@ -1835,7 +1849,8 @@
     var list = byDay[pastDay].slice().sort(function(a, b){ return a.kickoff.localeCompare(b.kickoff); });
     wrap.appendChild(el("div", "bb-sec", escapeHtml(new Date(list[0].kickoff).toLocaleDateString([], {weekday: "long", month: "long", day: "numeric"}))));
     list.forEach(function(h){
-      var r = grade(h), p = h.pre, favHome = p.home_wp > 0.5, c = el("div", "card cfb-past");
+      var r = grade(h), p = h.pre, favHome = p.home_wp > 0.5, c = el("button", "card cfb-past");
+      c.type = "button";
       ["away", "home"].forEach(function(k){ if(h.ids && h.ids[k]) CFB_IDS[h[k]] = h.ids[k]; });
       function line(side){
         var won = side === "home" ? h.final.home > h.final.away : h.final.away > h.final.home;
@@ -1847,7 +1862,9 @@
       c.innerHTML = '<div class="cfb-when">Final<span class="cfb-src">Kalshi before kickoff</span></div>' + line("away") + line("home") +
         '<div class="cfb-lines"><span>Favourite <b>' + escapeHtml(favHome ? h.home : h.away) + '</b> ' + (r.fav === true ? '<span class="pill good">won</span>' : r.fav === false ? '<span class="pill bad">lost</span>' : '') + '</span>' +
         (spTxt ? '<span>Spread <b>' + escapeHtml(spTxt) + '</b> ' + (r.cover === true ? '<span class="pill good">covered</span>' : r.cover === false ? '<span class="pill bad">didn\'t cover</span>' : '<span class="pill neutral">push</span>') + '</span>' : '') +
-        (p.total ? '<span>Total <b>' + escapeHtml(String(p.total.line)) + '</b> ' + ((h.final.home + h.final.away) > p.total.line ? 'went over' : (h.final.home + h.final.away) < p.total.line ? 'stayed under' : 'push') + '</span>' : '') + '</div>';
+        (p.total ? '<span>Total <b>' + escapeHtml(String(p.total.line)) + '</b> ' + ((h.final.home + h.final.away) > p.total.line ? 'went over' : (h.final.home + h.final.away) < p.total.line ? 'stayed under' : 'push') + '</span>' : '') + '</div>' +
+        '<div class="cfb-go"><span class="game-more">Plays, box & matchup ›</span></div>';
+      c.addEventListener("click", function(){ openGamePage(cfbFinalAsGame(h)); });
       wrap.appendChild(c);
     });
   }
@@ -2319,7 +2336,7 @@
     var wrap = document.getElementById("pastGames"), pills = document.getElementById("pastSportPills");
     var recEl = document.getElementById("pastRecord"), strip = document.getElementById("pastDays");
     if(!wrap || !pills || panels.scan.hidden) return;
-    var past = homeDocs.filter(function(g){ return !isOnBoard(g); });
+    var past = homeDocs.filter(function(g){ return !isOnBoard(g) && !notPlayed(g); });
     var sports = [];
     past.concat(decisionsDocs).forEach(function(g){ var sp = g.sport || "NFL"; if(sports.indexOf(sp) < 0) sports.push(sp); });
     if(cfbFinals().length && sports.indexOf("CFB") < 0) sports.push("CFB");
@@ -4841,6 +4858,10 @@
     var sport = g.sport || "NFL";
     var base = liveDoc && sport === "NFL" ? (liveDoc.games || []).filter(function(x){ return sameGame(g, x.away, x.home, x.kickoff); })[0] || null : otherLiveFor(g);
     if(!base || (base.state === "pre" && !base.away_score)) base = archiveFor(g) || base;
+    var graded = g.game_id && typeof decisionsDocs !== "undefined" ? decisionsDocs.filter(function(d){
+      return d.game_id === g.game_id && d.outcome && d.outcome.resolved && d.outcome.home_score != null; })[0] : null;
+    if(graded && base && base.state !== "post")
+      base = Object.assign({}, base, {state: "post", detail: "Final", away_score: graded.outcome.away_score, home_score: graded.outcome.home_score});
     if(!base && g.sport === "CFB" && g.state && g.state !== "pre")   // college: the score the lines file saw when it was built
       base = {picks: [], state: g.state, detail: g.detail || "", away_score: g.away_score, home_score: g.home_score, espn_id: g.espn_id};
     if(base && base.state === "post" && !base.lines){                  // still in this week's live file: take the archive's lines

@@ -78,6 +78,20 @@ def tier(p, top25, top50):
 POSTSEASON_TYPES = {"F", "D", "L", "W"}  # Wild Card, Division Series, LCS, World Series
 
 
+# {gamePk: every status MLB lists for it} for each ungraded pick, filled by fetch_series_info from the same API call.
+# A postponed game can come back under the same gamePk on a later date (one entry per date).
+GAME_STATUS = {}
+NOT_PLAYED = ("Postponed", "Cancelled")
+
+
+def not_played(statuses):
+    """'Cancelled' or 'Postponed' when MLB says so and no entry of the game was played to a final; else None.
+    (A cancelled game's abstract state is also "Final", so the detailed state decides.)"""
+    if not statuses or any(x not in NOT_PLAYED and x.startswith(("Final", "Game Over", "Completed")) for x in statuses):
+        return None
+    return "Cancelled" if "Cancelled" in statuses else "Postponed" if "Postponed" in statuses else None
+
+
 def fetch_series_info(game_pks):
     """{gamePk: info} for postseason games that aren't final yet. Never raises."""
     if not game_pks:
@@ -94,6 +108,9 @@ def fetch_series_info(game_pks):
     out = {}
     for d in data.get("dates", []):
         for g in d.get("games", []):
+            st = (g.get("status") or {}).get("detailedState")
+            if st:
+                GAME_STATUS.setdefault(int(g["gamePk"]), []).append(st)
             if g.get("gameType") not in POSTSEASON_TYPES:
                 continue
             if (g.get("status") or {}).get("abstractGameState") == "Final":
@@ -147,13 +164,15 @@ def main():
     pending_pks = [r["statsapi_game_pk"] for r in conn.execute(
         "SELECT statsapi_game_pk FROM picks WHERE graded = 0 AND statsapi_game_pk IS NOT NULL")]
     series_info = fetch_series_info(pending_pks)
-    prev_series = {}
+    prev_series, prev_not_played = {}, {}
     if series_info is None:  # API unreachable: keep what the last export said instead of flapping the app
         series_info = {}
         try:
             for d in json.loads(OUT.read_text())["docs"]:
                 if d["collection"] == "slate" and d["data"].get("model", {}).get("series"):
                     prev_series[d["doc_id"]] = d["data"]["model"]["series"]
+                if d["collection"] == "decisions" and d["data"].get("outcome", {}).get("not_played"):
+                    prev_not_played[d["doc_id"]] = d["data"]["outcome"]["not_played"]
         except (OSError, ValueError, KeyError):
             pass
 
@@ -225,6 +244,15 @@ def main():
                 outcome["spread_decision_correct"] = bool(sg["model_pick_correct"]) if sg is not None else None
                 if sg is None:
                     outcome["resolved"] = False  # wait until the run-line grade exists too
+        else:
+            # never graded because MLB says the game wasn't played (the graders skip it as "not final" for good):
+            # the app then leaves it out of History instead of showing a game with no score
+            pk = int(r["statsapi_game_pk"]) if r["statsapi_game_pk"] is not None else None
+            st = GAME_STATUS.get(pk) if pk is not None else None
+            if not_played(st):
+                outcome["not_played"] = not_played(st)
+            elif st is None and gid in prev_not_played:
+                outcome["not_played"] = prev_not_played[gid]
 
         base = {"game_id": gid, "home_team": home, "away_team": away, "game_date": r["game_date"],
                 "kickoff_time": r["kickoff_time"], "season": r["season"], "sport": "MLB"}
