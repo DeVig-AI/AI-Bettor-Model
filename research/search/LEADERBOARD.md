@@ -1,10 +1,10 @@
 # Research Lab search (NFL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-23T16:14:00Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-23T16:25:57Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-350842 configurations scored so far.
+352842 configurations scored so far.
 
-## Spread -- top 25 of 346598
+## Spread -- top 25 of 348598
 
 | # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |
 |---|---|---|---|---|---|---|---|
@@ -66,13 +66,13 @@ _Generated 2026-10-23T16:14:00Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `bye_elo`: best 55 (median t +0.74), worst 0 (+0.20) over 326369 configurations
-- spread · elo · `k`: best 28 (median t +0.79), worst 6 (-0.23) over 326369 configurations
-- spread · elo · `market_blend`: best 0.375 (median t +0.64), worst 0.0 (+0.19) over 326369 configurations
-- spread · elo · `market_resist`: best 2.252 (median t +0.89), worst 0.375 (-0.93) over 326369 configurations
-- spread · elo · `mov`: best nfelo (median t +0.65), worst none (+0.03) over 326369 configurations
-- spread · elo · `revert`: best 0.0667 (median t +0.93), worst 0.7 (-0.26) over 326369 configurations
-- spread · elo · `travel_elo_per_1000mi`: best 12 (median t +0.63), worst 0 (+0.26) over 326369 configurations
+- spread · elo · `bye_elo`: best 55 (median t +0.74), worst 0 (+0.20) over 328369 configurations
+- spread · elo · `k`: best 28 (median t +0.79), worst 6 (-0.23) over 328369 configurations
+- spread · elo · `market_blend`: best 0.375 (median t +0.64), worst 0.0 (+0.19) over 328369 configurations
+- spread · elo · `market_resist`: best 2.252 (median t +0.89), worst 0.375 (-0.93) over 328369 configurations
+- spread · elo · `mov`: best nfelo (median t +0.65), worst none (+0.03) over 328369 configurations
+- spread · elo · `revert`: best 0.0667 (median t +0.93), worst 0.7 (-0.26) over 328369 configurations
+- spread · elo · `travel_elo_per_1000mi`: best 12 (median t +0.63), worst 0 (+0.26) over 328369 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.89), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.71) over 2197 configurations
 - spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'carry': 0.5, 'den': None, 'halflife': 8, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points scored beyond what EPA explains (red-zone finishing, short fields): partly luck that may not repeat.', 'side': 'offense'}] (median t +3.43), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2197 configurations
 - spread · srs · `hfa_pts`: best 3.5 (median t +2.06), worst 0.5 (+1.76) over 8712 configurations
