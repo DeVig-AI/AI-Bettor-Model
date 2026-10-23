@@ -78,7 +78,7 @@ test("MLB, NHL and WNBA game pages", async (t) => {
       await pg.screenshot({path: OUT + "mlb-card.png"});
       await card.locator(".game-head").click();
       await page.locator(".gp-play").first().waitFor({timeout: 10000});
-      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Box", "Innings"]);
+      assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Innings"]);
       assert.doesNotMatch(await page.locator(".sb-pane").innerText(), /Ball 1|Strike 1/, "no pitch-by-pitch rows");
       assert.match(await page.locator(".gp-q").first().innerText(), /BOTTOM 7TH/i);
       await page.locator('.sb-tabs button[data-k="box"]').click();
