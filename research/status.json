@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T09:47:51Z",
+ "updated_at": "2026-10-23T09:54:37Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2701,6 +2701,35 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 343",
+   "started_at": "2026-10-23T09:54:30Z",
+   "finished_at": "2026-10-23T09:54:30Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39934594341",
+   "summary": "2,000 models scored → 575 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 575
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 26
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 342",
    "started_at": "2026-10-23T09:41:33Z",
    "finished_at": "2026-10-23T09:41:33Z",
@@ -2959,40 +2988,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 333",
-   "started_at": "2026-10-23T08:02:46Z",
-   "finished_at": "2026-10-23T08:02:46Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39921367640",
-   "summary": "1,999 models scored → 597 consistent → 30 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 1999
-    },
-    {
-     "label": "consistent",
-     "count": 597
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 30
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T09:47:50Z",
+   "updated_at": "2026-10-23T09:55:08Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
