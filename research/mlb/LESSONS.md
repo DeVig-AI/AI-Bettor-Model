@@ -1,6 +1,6 @@
 # Research Lab -- lessons, MLB (EXPLORATORY)
 
-_Generated 2026-10-23T18:04:43Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-23T18:05:19Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2014–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -9,9 +9,9 @@ _Generated 2026-10-23T18:04:43Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## Faded (0)
+## Faded (1)
 
-- none
+- Blend of 3: s-8ecc6864 + s-2a658606 + s-8989b9bc vs the line-only baseline: helped in 2017, then faded (+0.07 / +0.21 / -0.07 pts in 2017 / 2018 / 2019).
 
 ## No effect (0)
 
