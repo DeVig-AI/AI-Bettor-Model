@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T17:21:00Z",
+ "updated_at": "2026-10-23T17:26:58Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
  },
  "constitution": {
-  "version": "v10",
-  "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+  "version": "v11",
+  "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T17:21:43Z",
+   "updated_at": "2026-10-23T17:26:56Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3006,8 +3006,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
    },
    "constitution": {
-    "version": "v10",
-    "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -3789,6 +3789,35 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 203",
+     "started_at": "2026-10-23T17:26:55Z",
+     "finished_at": "2026-10-23T17:26:55Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39993525997",
+     "summary": "398 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 398
+      },
+      {
+       "label": "consistent",
+       "count": 15
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 202",
      "started_at": "2026-10-23T17:13:51Z",
      "finished_at": "2026-10-23T17:13:51Z",
@@ -4047,37 +4076,116 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 193",
-     "started_at": "2026-10-23T15:36:22Z",
-     "finished_at": "2026-10-23T15:36:22Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39978390435",
-     "summary": "399 models scored → 21 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 399
-      },
-      {
-       "label": "consistent",
-       "count": 21
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
+  },
+  "NBA": {
+   "updated_at": "2026-10-23T17:27:23Z",
+   "scope": "NBA",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "NBA",
+   "sport_name": "NBA",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 20,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": []
+  },
+  "NHL": {
+   "updated_at": "2026-10-23T17:27:23Z",
+   "scope": "NHL",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "NHL",
+   "sport_name": "NHL",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 20,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": []
+  },
+  "MLB": {
+   "updated_at": "2026-10-23T17:27:23Z",
+   "scope": "MLB",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "MLB",
+   "sport_name": "MLB",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 20,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": []
   }
  },
  "sports": [
@@ -4088,6 +4196,18 @@
   {
    "key": "CFB",
    "name": "College football"
+  },
+  {
+   "key": "NBA",
+   "name": "NBA"
+  },
+  {
+   "key": "NHL",
+   "name": "NHL"
+  },
+  {
+   "key": "MLB",
+   "name": "MLB"
   }
  ]
 }
