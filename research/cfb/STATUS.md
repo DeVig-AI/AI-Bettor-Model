@@ -1,11 +1,11 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-10-23T17:13:52Z by research/lab/report.py. Constitution v10 (`8744e2800dd2`). Do not edit by hand._
+_Generated 2026-10-23T18:42:58Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 0 registered, 0 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 0 · across all sports: 20 (reported only, Constitution C4)
+- Ledger attempts (all count in the Holm correction): 0 · across all sports: 21 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 Gates: 2022 / 2023 / 2024 (confirmation; the search uses 2018, 2019, 2021). Search leaderboard: `research/cfb/search/LEADERBOARD.md`.
@@ -18,10 +18,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 206** 2026-10-23T18:42:56Z: 398 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 205** 2026-10-23T18:15:09Z: 400 models scored → 18 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 204** 2026-10-23T17:39:34Z: 397 models scored → 14 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 203** 2026-10-23T17:26:55Z: 398 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 202** 2026-10-23T17:13:51Z: 396 models scored → 12 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 201** 2026-10-23T17:02:20Z: 395 models scored → 16 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 200** 2026-10-23T16:52:39Z: 396 models scored → 17 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 199** 2026-10-23T16:41:54Z: 394 models scored → 17 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 198** 2026-10-23T16:32:14Z: 399 models scored → 16 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/cfb/results/<id>.json` (every number), `research/cfb/LEDGER.csv` (every attempt), `research/cfb/LESSONS.md` (exploratory).

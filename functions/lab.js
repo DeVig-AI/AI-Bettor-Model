@@ -306,7 +306,7 @@ export const PAGE = `<!doctype html>
     if ((c.state === "failed" || c.state === "exam_fail") && c.fail_reason) t += " · " + c.fail_reason;
     return '<span class="chip s s-' + esc(c.state) + '">' + esc(t) + '</span>';
   }
-  function marketName(m){ return {spread: "Spread", total: "Total", props: "Props"}[m] || "Other"; }
+  function marketName(m){ return {spread: "Spread", total: "Total", moneyline: "Moneyline", props: "Props"}[m] || "Other"; }
 
   // one scale for every interval bar, so cards compare at a glance; at least ±1 (±4 on the detail screen)
   function scaleOf(cands, floor){

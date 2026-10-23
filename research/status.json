@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-23T17:13:55Z",
+ "updated_at": "2026-10-23T18:49:19Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -9,12 +9,12 @@
  "sport_name": "NFL",
  "attempts": {
   "this_sport": 20,
-  "all_sports": 20,
-  "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 20 attempts (reported only)."
+  "all_sports": 21,
+  "note": "Holm correction over this sport's 20 attempts decides; across all sports there are 21 attempts (reported only)."
  },
  "constitution": {
-  "version": "v10",
-  "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+  "version": "v11",
+  "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -2701,6 +2701,122 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 389",
+   "started_at": "2026-10-23T18:36:25Z",
+   "finished_at": "2026-10-23T18:36:25Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40003978969",
+   "summary": "1,998 models scored → 581 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 1998
+    },
+    {
+     "label": "consistent",
+     "count": 581
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 26
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 388",
+   "started_at": "2026-10-23T18:10:03Z",
+   "finished_at": "2026-10-23T18:10:03Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40000534118",
+   "summary": "1,999 models scored → 590 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 1999
+    },
+    {
+     "label": "consistent",
+     "count": 590
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 22
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 387",
+   "started_at": "2026-10-23T17:33:33Z",
+   "finished_at": "2026-10-23T17:33:33Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+   "summary": "1,999 models scored → 582 consistent → 17 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 1999
+    },
+    {
+     "label": "consistent",
+     "count": 582
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 17
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
+   "name": "Search round 386",
+   "started_at": "2026-10-23T17:20:51Z",
+   "finished_at": "2026-10-23T17:20:51Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39993525997",
+   "summary": "2,000 models scored → 591 consistent → 18 strong (t ≥ 2.5) → 0 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 591
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 18
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 0
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 385",
    "started_at": "2026-10-23T17:07:40Z",
    "finished_at": "2026-10-23T17:07:40Z",
@@ -2872,127 +2988,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 379",
-   "started_at": "2026-10-23T16:04:09Z",
-   "finished_at": "2026-10-23T16:04:09Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39983204403",
-   "summary": "2,000 models scored → 551 consistent → 16 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 2000
-    },
-    {
-     "label": "consistent",
-     "count": 551
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 16
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 378",
-   "started_at": "2026-10-23T15:53:34Z",
-   "finished_at": "2026-10-23T15:53:34Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39981340828",
-   "summary": "1,998 models scored → 606 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 1998
-    },
-    {
-     "label": "consistent",
-     "count": 606
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 26
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 377",
-   "started_at": "2026-10-23T15:40:34Z",
-   "finished_at": "2026-10-23T15:40:34Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39979878084",
-   "summary": "2,000 models scored → 593 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 2000
-    },
-    {
-     "label": "consistent",
-     "count": 593
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 22
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 376",
-   "started_at": "2026-10-23T15:31:23Z",
-   "finished_at": "2026-10-23T15:31:23Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39978390435",
-   "summary": "2,000 models scored → 580 consistent → 29 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 2000
-    },
-    {
-     "label": "consistent",
-     "count": 580
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 29
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-23T17:13:52Z",
+   "updated_at": "2026-10-23T18:49:54Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3002,12 +3002,12 @@
    "sport_name": "College football",
    "attempts": {
     "this_sport": 0,
-    "all_sports": 20,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 20 attempts (reported only)."
+    "all_sports": 21,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 21 attempts (reported only)."
    },
    "constitution": {
-    "version": "v10",
-    "sha256": "8744e2800dd22cbb1d826951ce6e2f40a8563546ac769c71f9d97cca30b4818e"
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -3789,6 +3789,122 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 206",
+     "started_at": "2026-10-23T18:42:56Z",
+     "finished_at": "2026-10-23T18:42:56Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40003978969",
+     "summary": "398 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 398
+      },
+      {
+       "label": "consistent",
+       "count": 10
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 205",
+     "started_at": "2026-10-23T18:15:09Z",
+     "finished_at": "2026-10-23T18:15:09Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40000534118",
+     "summary": "400 models scored → 18 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 400
+      },
+      {
+       "label": "consistent",
+       "count": 18
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 204",
+     "started_at": "2026-10-23T17:39:34Z",
+     "finished_at": "2026-10-23T17:39:34Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "397 models scored → 14 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 397
+      },
+      {
+       "label": "consistent",
+       "count": 14
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 203",
+     "started_at": "2026-10-23T17:26:55Z",
+     "finished_at": "2026-10-23T17:26:55Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39993525997",
+     "summary": "398 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 398
+      },
+      {
+       "label": "consistent",
+       "count": 15
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 202",
      "started_at": "2026-10-23T17:13:51Z",
      "finished_at": "2026-10-23T17:13:51Z",
@@ -3960,24 +4076,61 @@
       }
      ],
      "steps": []
-    },
+    }
+   ]
+  },
+  "NBA": {
+   "updated_at": "2026-10-23T18:49:19Z",
+   "scope": "NBA",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "NBA",
+   "sport_name": "NBA",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 21,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 21 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": [
     {
      "kind": "search",
-     "name": "Search round 196",
-     "started_at": "2026-10-23T16:08:09Z",
-     "finished_at": "2026-10-23T16:08:09Z",
+     "name": "Search round 3",
+     "started_at": "2026-10-23T18:49:18Z",
+     "finished_at": "2026-10-23T18:49:18Z",
      "duration_s": null,
      "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39983204403",
-     "summary": "396 models scored → 15 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40003978969",
+     "summary": "501 models scored → 155 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 396
+       "count": 501
       },
       {
        "label": "consistent",
-       "count": 15
+       "count": 155
       },
       {
        "label": "strong (t ≥ 2.5)",
@@ -3992,21 +4145,21 @@
     },
     {
      "kind": "search",
-     "name": "Search round 195",
-     "started_at": "2026-10-23T15:59:52Z",
-     "finished_at": "2026-10-23T15:59:52Z",
+     "name": "Search round 2",
+     "started_at": "2026-10-23T18:21:26Z",
+     "finished_at": "2026-10-23T18:21:26Z",
      "duration_s": null,
      "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39981340828",
-     "summary": "399 models scored → 22 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40000534118",
+     "summary": "530 models scored → 134 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 399
+       "count": 530
       },
       {
        "label": "consistent",
-       "count": 22
+       "count": 134
       },
       {
        "label": "strong (t ≥ 2.5)",
@@ -4021,21 +4174,87 @@
     },
     {
      "kind": "search",
-     "name": "Search round 194",
-     "started_at": "2026-10-23T15:46:30Z",
-     "finished_at": "2026-10-23T15:46:30Z",
+     "name": "Search round 1",
+     "started_at": "2026-10-23T17:44:16Z",
+     "finished_at": "2026-10-23T17:44:16Z",
      "duration_s": null,
      "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39979878084",
-     "summary": "397 models scored → 12 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "540 models scored → 218 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 397
+       "count": 540
       },
       {
        "label": "consistent",
-       "count": 12
+       "count": 218
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    }
+   ]
+  },
+  "NHL": {
+   "updated_at": "2026-10-23T18:49:55Z",
+   "scope": "NHL",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "NHL",
+   "sport_name": "NHL",
+   "attempts": {
+    "this_sport": 0,
+    "all_sports": 21,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 21 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/LESSONS.md"
+   },
+   "counts": {
+    "tried": 0,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [],
+   "lessons": [],
+   "promoted": [],
+   "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 2",
+     "started_at": "2026-10-23T18:25:07Z",
+     "finished_at": "2026-10-23T18:25:07Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40000534118",
+     "summary": "526 models scored → 108 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 526
+      },
+      {
+       "label": "consistent",
+       "count": 108
       },
       {
        "label": "strong (t ≥ 2.5)",
@@ -4050,21 +4269,21 @@
     },
     {
      "kind": "search",
-     "name": "Search round 193",
-     "started_at": "2026-10-23T15:36:22Z",
-     "finished_at": "2026-10-23T15:36:22Z",
+     "name": "Search round 1",
+     "started_at": "2026-10-23T17:48:54Z",
+     "finished_at": "2026-10-23T17:48:54Z",
      "duration_s": null,
      "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39978390435",
-     "summary": "399 models scored → 21 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "540 models scored → 129 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 399
+       "count": 540
       },
       {
        "label": "consistent",
-       "count": 21
+       "count": 129
       },
       {
        "label": "strong (t ≥ 2.5)",
@@ -4073,6 +4292,226 @@
       {
        "label": "sent to confirmation",
        "count": 0
+      }
+     ],
+     "steps": []
+    }
+   ]
+  },
+  "MLB": {
+   "updated_at": "2026-10-23T18:49:55Z",
+   "scope": "MLB",
+   "effect_name": "Edge beyond the closing line",
+   "effect_unit": "pts",
+   "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page). Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3).",
+   "exam_name": "Sealed 2021 exam",
+   "sport": "MLB",
+   "sport_name": "MLB",
+   "attempts": {
+    "this_sport": 1,
+    "all_sports": 21,
+    "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 21 attempts (reported only)."
+   },
+   "constitution": {
+    "version": "v11",
+    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+   },
+   "links": {
+    "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+    "ledger": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LEDGER.csv",
+    "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/LESSONS.md"
+   },
+   "counts": {
+    "tried": 1,
+    "running": 0,
+    "lab_pass": 0,
+    "exam_pass": 0,
+    "exam_budget_left": 3,
+    "exam_budget_total": 3
+   },
+   "candidates": [
+    {
+     "id": "s-7155dd60",
+     "name": "Blend of 3: s-8ecc6864 + s-2a658606 + s-8989b9bc",
+     "market": "total",
+     "family": "Blend · search",
+     "reason": "Found by search round 1: on 2014–2016 it beat the line by +0.14 pts a game (t = 2.59), positive in all three search periods. Now confirmed on 2017–2019, which the search never saw.",
+     "state": "failed",
+     "fail_reason": "gate_3",
+     "gate_now": null,
+     "started_at": null,
+     "eta_at": null,
+     "gates": [
+      {
+       "name": "2017",
+       "effect": 0.07,
+       "ci": [
+        -0.18,
+        0.31
+       ],
+       "games": 2459,
+       "passed": true
+      },
+      {
+       "name": "2018",
+       "effect": 0.21,
+       "ci": [
+        -0.02,
+        0.43
+       ],
+       "games": 2456,
+       "passed": true
+      },
+      {
+       "name": "2019",
+       "effect": -0.07,
+       "ci": [
+        -0.34,
+        0.19
+       ],
+       "games": 2458,
+       "passed": false
+      }
+     ],
+     "pooled": {
+      "name": "Pooled 2017–19",
+      "effect": 0.07,
+      "ci": [
+       -0.08,
+       0.21
+      ],
+      "adj_p": 0.177656,
+      "adj_p_all_sports": 1.0
+     },
+     "attempts": 1,
+     "p_bar": 0.05,
+     "fade_ratio": -1.059,
+     "fade_needed": 0.5,
+     "kalshi": {
+      "picks": 7066,
+      "win_rate": 0.5402,
+      "break_even": 0.5175,
+      "roi": 0.0439
+     },
+     "rule_split": [],
+     "exam": {
+      "state": "not_taken",
+      "effect": null,
+      "ci": null,
+      "taken_at": null,
+      "note": ""
+     },
+     "verdict": "Fails the lab: not positive in gate 3 (2019: -0.07 pts); pooled +0.07 pts, Holm-adjusted p = 0.178 over 1 attempts.",
+     "graded_at": "2026-10-23T18:05:15Z",
+     "run_number": 2371,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/mlb/results/s-7155dd60.json",
+     "updated_at": "2026-10-23T18:05:15Z"
+    }
+   ],
+   "lessons": [
+    {
+     "text": "Blend of 3: s-8ecc6864 + s-2a658606 + s-8989b9bc vs the line-only baseline: helped in 2017, then faded (+0.07 / +0.21 / -0.07 pts in 2017 / 2018 / 2019).",
+     "kind": "faded",
+     "candidates": [
+      "s-7155dd60"
+     ],
+     "at": "2026-10-23T18:05:15Z"
+    }
+   ],
+   "promoted": [],
+   "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 2",
+     "started_at": "2026-10-23T18:30:09Z",
+     "finished_at": "2026-10-23T18:30:09Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40000534118",
+     "summary": "267 models scored → 263 consistent → 9 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 267
+      },
+      {
+       "label": "consistent",
+       "count": 263
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 9
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "lab",
+     "name": "Research Lab #2371",
+     "started_at": "2026-10-23T18:05:15Z",
+     "finished_at": "2026-10-23T18:05:15Z",
+     "duration_s": 0,
+     "run_number": 2371,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "1 tested → 1 past gate 1 → 1 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
+     "funnel": [
+      {
+       "label": "tested",
+       "count": 1
+      },
+      {
+       "label": "past gate 1",
+       "count": 1
+      },
+      {
+       "label": "past gate 2",
+       "count": 1
+      },
+      {
+       "label": "passed the lab",
+       "count": 0
+      },
+      {
+       "label": "passed the exam",
+       "count": 0
+      },
+      {
+       "label": "promoted",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
+     "name": "Search round 1",
+     "started_at": "2026-10-23T17:54:46Z",
+     "finished_at": "2026-10-23T17:54:46Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
+     "summary": "238 models scored → 232 consistent → 10 strong (t ≥ 2.5) → 1 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 238
+      },
+      {
+       "label": "consistent",
+       "count": 232
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 10
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 1
       }
      ],
      "steps": []
@@ -4088,6 +4527,18 @@
   {
    "key": "CFB",
    "name": "College football"
+  },
+  {
+   "key": "NBA",
+   "name": "NBA"
+  },
+  {
+   "key": "NHL",
+   "name": "NHL"
+  },
+  {
+   "key": "MLB",
+   "name": "MLB"
   }
  ]
 }

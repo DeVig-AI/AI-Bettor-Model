@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v10
+# DeVig Research Lab -- Constitution v11
 
-Version: **v10** · adopted 2026-10-22 · applies to: Part A (all sports), Part B (NFL), Part C (college football) ·
-replaces v9 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v9.md`; v8 to v1 alongside it;
-what changed: sections "Changes from v1" to "Changes from v9" at the end)
+Version: **v11** · adopted 2026-10-23 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
+Part D (NBA, NHL, MLB) · replaces v10 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v10.md`; v9
+to v1 alongside it; what changed: sections "Changes from v1" to "Changes from v10" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -55,10 +55,10 @@ result, and it will be reported exactly like a success: every number, plainly.
    cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
-3c. **The search (every sport with a search split: NFL Part B, college football Part C).** Besides hand-written
+3c. **The search (every sport with a search split: NFL Part B, college football Part C, NBA / NHL / MLB Part D).** Besides hand-written
    candidates, the lab finds candidates itself, per sport, in rounds, back to back (each run of the research loop does
    one round per sport; the menu's `round_every_hours` is 0), deterministically, with no AI. Each sport has its own menu and logs
-   (NFL `research/search/`, CFB `research/cfb/search/`):
+   (NFL `research/search/`, CFB `research/cfb/search/`, Part D `research/<sport>/search/`):
    - **Menu:** the sport's `MENU.yaml` lists the model families and the values each setting may take. Each round
      scores, in this fixed order, up to the menu's `max_new_per_round` configurations not scored before: first every
      grid combination not yet scored (a large grid spreads over several rounds), then the **focus** combinations (for each
@@ -349,9 +349,126 @@ than those named in C2 is reported. A lesson about CFB (A10) is exploratory like
 
 ---
 
-## Part D -- reserved
+## Part D -- NBA, NHL and MLB, added in v11
 
-Reserved for another sport. Until a later version adds it, Part A applies only to NFL and CFB.
+Part D adds three sports that share one data source and one set of rules: **NBA** (`research/nba/`), **NHL**
+(`research/nhl/`) and **MLB** (`research/mlb/`), each with its own candidates, search, ledger, exams, results
+and reports, kept apart exactly as CFB is kept apart from the NFL. Part A applies unchanged except where this Part says
+so explicitly (D3 adds a moneyline market and its metric; D7 says when the paper season can start).
+
+**What was seen before this Part was written and locked:** the author downloaded the archive named in D1 and looked at
+its column names, the number of games it lists per season and sport, and the first game of each file (one 2011 game
+per sport, with its score and lines). Nothing else: no model was run, no line was compared with a result, no season
+was scored. This is stated so the split below can be judged knowing it.
+
+**Expected result, stated up front:** closing lines in these sports are very good forecasts, and the models this data
+allows know only scores, schedules and the lines themselves (no injuries, lineups or starting pitchers: MLB models
+here cannot see who is pitching, which is the most important input to an MLB price). The most likely outcome for all
+three sports is that **no candidate passes the sealed exam**, and quite possibly none passes the lab.
+
+### D1. Data
+- **Source:** the public archive of closing lines and final scores in the GitHub repository
+  `flancast90/sportsbookreview-scraper`, pinned to commit `1a820e50c6fbd0276cde073c22bfffae78930868`: files
+  `data/nba_archive_10Y.json`, `data/nhl_archive_10Y.json`, `data/mlb_archive_10Y.json` (games of the 2011 to 2021
+  seasons, scraped from sportsbookreview.com and patched by its author). The files' SHA-256 are fixed here:
+  NBA `0c9858489d224c54dcf2f2d1b70c3a122675381d35ae03ce0a81204f739f0e98`,
+  NHL `399b65039c909907011827907285ede97982b3ce89e6224c323c5031c2885168`,
+  MLB `ee4904dee0ee1474e7ac75697cea2c28f0084e5fb576553e48627e4cf90dd77d`.
+  The lab refuses to run on a file whose fingerprint differs; a different file needs a new version.
+- **Season** = the year the season starts (the archive's own `season`: NBA and NHL 2011 = the 2011-12 season).
+- **Fields used:** date, home and away team, final scores, the closing home spread (NBA only), the closing total, and
+  the closing moneylines (NHL and MLB). Everything else is dropped from the lab's cache: opening lines, first-half /
+  second-half lines, the juice on spreads and totals, and per-period scores.
+- **Closing lines, checked before use** (a value failing its check counts as "no closing line" for that market; the
+  game still has its result and still updates ratings):
+  - NBA spread: home spread present, equal to minus the away spread, and at most 25 points either way. Expected home
+    margin = minus the home spread.
+  - Totals: NBA 150-280 points, NHL 4-8 goals, MLB 4-16 runs.
+  - Moneylines (NHL, MLB): both present, each a valid American price (at most -100 or at least +100), and the two
+    implied probabilities summing to between 1.00 and 1.15.
+- **Eligible games:** games with both final scores and a closing line for that market that passes its check. A game
+  listed twice (same date and teams) is kept once, the first time it appears.
+- **Line coverage gate:** as C1: if fewer than 70% of a training or gate season's games have a closing line for a
+  market, the lab refuses to run that market; only a new version may change the split.
+- **Where the data is kept:** the archive is scraped from a sportsbook site, so a copy is not republished here. The
+  lab's cache (`research/<sport>/data/*.csv`, seasons **2011-2020 only**) is built at the start of each lab job from the
+  pinned file and is **never committed** (git-ignored). What is committed: `MANIFEST.json` (source, commit, file
+  fingerprint, seasons held, the cache files' fingerprints and the counts of games and lines dropped by each check),
+  and derived outputs (results, ledger, verdicts, reports). The sealed season is read only by the Inspector General's
+  exam, in memory, and never written anywhere.
+
+### D2. Season split (the same for all three sports)
+| Use | Seasons | Notes |
+|---|---|---|
+| Warm-up | 2011 | ratings start here from average; never scored, never fit on |
+| Training | 2012-2013 | the only seasons coefficients may be fit on; also sets the line-only baseline |
+| Search | 2014, 2015, 2016 | the search (A3.3c) scores configurations here; each season is a search sub-period |
+| Gate 1 | 2017 | confirmation |
+| Gate 2 | 2018 | confirmation |
+| Gate 3 | 2019 | confirmation (NBA and NHL: the season paused in March 2020 and finished in a bubble) |
+| (played through) | 2020 | COVID seasons (empty or limited arenas, short MLB season): ratings update through it, never scored, never fit on, never searched on |
+| Pooled | 2017-2019 | the pooled test of A7 |
+| **Sealed** | **2021** | the exam (A8); not in the lab |
+
+Reported, never used to pass: each gate on its own (no rule-era splits are declared for Part D). The 2012 NHL season
+(48 games, after a lockout) and the 2011 NBA season (66 games) are used as they are.
+
+### D3. Markets and how they are measured
+- **NBA:** `spread` and `total`, exactly as B3 (`r` = home margin − closing expected home margin; combined points −
+  closing total).
+- **NHL and MLB:** `total` as B3 (in goals or runs), and **`moneyline`** in place of a spread (their spreads are fixed
+  at 1.5 and priced by juice, which D1 drops):
+  - the closing price as a probability: `q` = the home moneyline's implied probability ÷ (home + away implied
+    probabilities), the vig removed in proportion;
+  - forecast = the model's home win probability; everything is in **win-chance points** (percent): line = 100·q,
+    `actual` = 100 if the home team won (overtime and shootouts included) else 0, so `r = actual − 100·q` and
+    `d = forecast − 100·q`;
+  - **Effect** exactly as A5, `E = mean(s·r) − mean(s0·r)`, in win-chance points per game: the extra share of games
+    won by taking the model's side, beyond the line-only baseline, measured against the fair closing price. Bootstrap,
+    p-value, gates, correction and exam as A5-A8, unchanged.
+  - **Pricing** (replaces A4 for moneylines only): a pick on the home team costs `q` plus Kalshi's fee
+    `0.07·q·(1 − q)`, on the away team `1 − q` plus its fee; it pays $1.00 if that team wins. ROI = profit ÷ cost;
+    break-even is each pick's own cost (reported as their average). Reported, never sufficient to pass, as in A4.
+- Totals keep A4's 50/50 pricing: the total's juice is dropped (D1), so in the NHL, where totals are usually 5.5 or 6
+  with uneven juice, the 50/50 price is rough. The line-only baseline (A5) absorbs any average lean.
+- "Home" is the home team the archive lists; no neutral sites are marked.
+
+### D4. Multiple testing across sports
+- As C4: Holm-Bonferroni over **every attempt of that sport** (`research/<sport>/LEDGER.csv`) decides; the global
+  attempt count across all sports and each attempt's Holm-adjusted p over that global set are reported, never used.
+
+### D5. Season, budget and mid-season
+- v11 opens the **2026-27 research season** for NBA and NHL (ending when the 2027 NBA Finals / Stanley Cup Final end)
+  and the **2027 research season** for MLB (ending when the 2027 World Series ends). Sealed exam season 2021, budget
+  **3 exams per sport** (A8), recorded in each sport's `exam/EXAMS.csv`.
+- An exam needs at least NBA 800, NHL 800, MLB 1,500 scored games in the sealed season, or it is recorded as an
+  error (still spent).
+- Paper-season mid-season point for the stop rule (A9.4): NBA and NHL after January 31, MLB after July 1.
+
+### D6. Seed ideas (points of each sport's search menu, not separate candidates)
+(a) a plain team rating (Elo) for the side market (NBA spread; NHL / MLB moneyline), the baseline every rating idea
+is measured against; (b) a plain points-for / against totals model; (c) ideas from public, open rating methods
+(FiveThirtyEight's NBA, NHL and MLB Elo rules; Simple Rating System / least-squares margins as in sports-reference;
+opponent-adjusted points-for / against ratings), **each idea a setting of the menu**: K factor, home edge, preseason
+reversion, margin-of-victory multiplier, a margin cap, home edge learned from recent seasons, regression toward the
+market line, rating half-life, and for moneylines a win probability fit once on the training seasons from a margin
+rating. A3.5 applies: no back-to-back, travel-fatigue, rest-advantage, revenge, lookahead or "schedule spot" filters
+as candidates of their own (rest may enter only as a signal, A3.3e, if a later version lists it for these sports).
+
+### D7. Paper season
+- Promotion, the paper season and the stop rule are A9's. Paper tracking needs a logger that reads Kalshi's game
+  markets for that sport (NBA spread and total ladders; NHL and MLB game winner and total ladders) and logs picks
+  before the game starts. **Until that logger is merged for a sport**, a model promoted in it is recorded as promoted
+  with an empty paper log, and its paper season starts on the day the logger is merged: no pick is back-filled, and
+  nothing about the exam or promotion changes.
+
+### D8. Small samples
+As C7: no result is read from one team, one month or any slice smaller than 300 games, and no slice other than those
+named in D2 is reported. Lessons (A10) are exploratory.
+
+## Part E -- reserved
+
+Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL and MLB.
 
 ---
 
@@ -485,3 +602,15 @@ Unchanged: the search and confirmation seasons, the shortlist (t ≥ 2.5, positi
 at most 0.95 with earlier candidates, at most 2 per market in any 7 days), and so the rate of attempts; every
 scoring, testing, correction, exam and promotion rule. No rule is loosened (A1.4): more configurations are searched,
 but the number of attempts and the bar each must clear are the same.
+
+## Changes from v10 (2026-10-23)
+
+The owner asked for testing chambers for the sports the /lab page listed as "under construction" (MLB, NBA, NHL).
+v11 adds **Part D** for NBA, NHL and MLB: one public archive of closing lines and scores (2011-2021, pinned by commit
+and fingerprint, never committed here), one season split for all three (warm-up 2011, training 2012-13, search 2014,
+2015, 2016, gates 2017 / 2018 / 2019, 2020 played through, sealed 2021), and a **moneyline** market for NHL and MLB
+measured in win-chance points against the vig-free closing price, with Kalshi-fee pricing at that price. A3.3c now
+names Part D's search folders. Paper tracking for these sports starts when its Kalshi logger is merged (D7).
+
+Unchanged: Part A's scoring, correction, lab-pass, exam and promotion rules for every sport; Parts B and C entirely
+(the NFL and CFB budgets, splits, ledgers and searches are not touched). No rule is loosened (A1.4).

@@ -1,11 +1,11 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-23T17:07:47Z by research/lab/report.py. Constitution v10 (`8744e2800dd2`). Do not edit by hand._
+_Generated 2026-10-23T18:36:33Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 20 registered, 20 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 20 · across all sports: 20 (reported only, Constitution C4)
+- Ledger attempts (all count in the Holm correction): 20 · across all sports: 21 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search uses 2006–16); v1 candidates 2016–18 / 2019–21 / 2022–24 (their ledger rows say which). Search leaderboard: `research/search/LEADERBOARD.md`.
@@ -58,10 +58,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 389** 2026-10-23T18:36:25Z: 1,998 models scored → 581 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 388** 2026-10-23T18:10:03Z: 1,999 models scored → 590 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 387** 2026-10-23T17:33:33Z: 1,999 models scored → 582 consistent → 17 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 386** 2026-10-23T17:20:51Z: 2,000 models scored → 591 consistent → 18 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 385** 2026-10-23T17:07:40Z: 2,000 models scored → 589 consistent → 25 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 384** 2026-10-23T16:56:38Z: 2,000 models scored → 580 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 383** 2026-10-23T16:47:16Z: 2,000 models scored → 566 consistent → 27 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 382** 2026-10-23T16:36:06Z: 2,000 models scored → 597 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 381** 2026-10-23T16:25:57Z: 2,000 models scored → 596 consistent → 20 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).

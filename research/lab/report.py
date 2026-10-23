@@ -19,7 +19,7 @@ from . import metrics as M
 PASSED_LAB = ("lab_pass", "exam_pass", "exam_fail", "promoted", "stopped")
 PASSED_EXAM = ("exam_pass", "promoted", "stopped")
 MINUTES_PER_CANDIDATE = 1.5
-SPORT_NAMES = {"NFL": "NFL", "CFB": "College football"}
+SPORT_NAMES = {"NFL": "NFL", "CFB": "College football", "NBA": "NBA", "NHL": "NHL", "MLB": "MLB"}
 
 
 def status_md_path():
@@ -362,7 +362,9 @@ def build(running=(), started_at=None, gate_now=1, live=None):
     used = IG.budget_used()
     status = {
         "updated_at": L.now(), "scope": C.SPORT, "effect_name": "Edge beyond the closing line", "effect_unit": "pts",
-        "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page).",
+        "note": "Expected result: most likely nothing passes the sealed exam (Constitution, first page)." + (
+            " Moneyline effects are in win-chance points against the vig-free closing price (Constitution D3)."
+            if "moneyline" in C.MARKETS else ""),
         "exam_name": f"Sealed {C.SEALED_SEASON} exam",
         "sport": C.SPORT, "sport_name": SPORT_NAMES.get(C.SPORT, C.SPORT),
         "attempts": {"this_sport": attempts, "all_sports": gn,

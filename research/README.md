@@ -1,4 +1,4 @@
-# DeVig Research Lab (NFL; college football in `cfb/`, same loop)
+# DeVig Research Lab (NFL; college football in `cfb/`; NBA, NHL, MLB in `nba/`, `nhl/`, `mlb/`; same loop)
 
 A closed loop: **search → confirm → sealed exam → paper season (with automatic removal)**. GitHub Actions does all
 the compute, deterministically; there is no AI anywhere in the loop. Results are public in this repo; the public app
@@ -68,4 +68,18 @@ sport switch.
 ```
 python3 -m research.lab.lab pending --sport CFB
 python3 -m research.lab.inspector review --sport CFB
+```
+
+**NBA, NHL and MLB** are Part D (since v11). One public archive of closing lines and final scores
+(`flancast90/sportsbookreview-scraper`, pinned by commit and SHA-256 in the Constitution) feeds all three; each job
+rebuilds `research/<sport>/data/` from it (seasons 2011-2020; never committed, only `MANIFEST.json` is) and the
+Inspector General reads the sealed 2021 season in memory. Same split for all three: training 2012-13, search 2014,
+2015, 2016, confirmation 2017 / 2018 / 2019, 2020 played through. Markets: NBA spread and total; NHL moneyline and
+total; MLB total only (D1's coverage gate refuses the archive's MLB moneylines, which fail the price check in about half
+the games). Moneylines are measured in win-chance points against the vig-free closing price (D3). The loop runs them
+after CFB, one sport at a time; their paper season starts when each sport's Kalshi logger is merged (D7).
+
+```
+python3 -m research.lab.sbr_data fetch --sport NHL      # build the cache from the pinned archive
+python3 -m research.lab.search round --sport NHL --force
 ```

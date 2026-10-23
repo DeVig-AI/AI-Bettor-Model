@@ -1,0 +1,228 @@
+# Research Lab search menu, NBA (Constitution v11 Part D, A3.3c). Every round scores, in this order, up to
+# search.max_new_per_round configurations not scored before: the grid below (all combinations, in order), then
+# the focus combinations, the neighbours of the 30 best per market, learned and random samples (seeded by
+# round), then blends of the best. Adding a value or a family here is how an idea joins the search: free,
+# since search scores are not attempts. No known betting angles (A3.5, D6).
+families:
+- name: Elo
+  type: elo
+  market: spread
+  fixed:
+    mean: 1505
+    playoff_mult: 1.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb: none
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    market_resist: 0.0
+    revert_center: none
+    elo_per_point: 28
+  grid:
+    k:
+    - 10
+    - 15
+    - 20
+    - 25
+    - 30
+    hfa_elo:
+    - 50
+    - 75
+    - 100
+    - 125
+    revert:
+    - 0.25
+    - 0.4
+    - 0.5
+    mov:
+    - none
+    - '538'
+    hfa_mode:
+    - fixed
+    - rolling
+    market_blend:
+    - 0.0
+    - 0.25
+    - 0.5
+- name: SRS
+  type: srs
+  market: spread
+  fixed: {}
+  grid:
+    hfa_pts:
+    - 2.0
+    - 2.5
+    - 3.0
+    - 3.5
+    carry:
+    - 0.3
+    - 0.5
+    - 0.7
+    - 0.8
+    prior_w:
+    - 1
+    - 2
+    - 4
+    - 8
+    margin_cap:
+    - null
+    - 20
+- name: Team rating
+  type: team_rating
+  market: spread
+  fixed:
+    metric: points
+    pace: none
+    league_window: 2460
+  grid:
+    halflife:
+    - 5
+    - 10
+    - 15
+    - 20
+    - 30
+    - 40
+    def_weight:
+    - 0.5
+    - 0.75
+    - 1.0
+    season_carry:
+    - 0.3
+    - 0.5
+    - 0.7
+- name: Team rating totals
+  type: team_rating
+  market: total
+  fixed:
+    metric: points
+    pace: none
+    league_window: 2460
+  grid:
+    halflife: &id001
+    - 5
+    - 10
+    - 15
+    - 20
+    - 30
+    - 40
+    season_carry: &id002
+    - 0.3
+    - 0.5
+    - 0.7
+    def_weight:
+    - 0.5
+    - 0.75
+    - 1.0
+- name: Points for / against
+  type: pace_eff
+  market: total
+  fixed:
+    calibrate: true
+    pace: false
+    efficiency: points
+    league_window: 2460
+  grid:
+    halflife: *id001
+    season_carry: *id002
+ladders:
+  season_carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  prior_w:
+  - 0.5
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  revert:
+  - 0.2
+  - 0.25
+  - 0.3333
+  - 0.4
+  - 0.5
+  - 0.6
+  market_blend:
+  - 0.0
+  - 0.25
+  - 0.5
+  - 0.75
+  k:
+  - 5
+  - 10
+  - 15
+  - 20
+  - 25
+  - 30
+  - 40
+  hfa_elo:
+  - 25
+  - 50
+  - 75
+  - 100
+  - 125
+  - 150
+  halflife:
+  - 3
+  - 5
+  - 10
+  - 15
+  - 20
+  - 30
+  - 40
+  - 60
+  hfa_pts:
+  - 1.5
+  - 2.0
+  - 2.5
+  - 3.0
+  - 3.5
+  - 4.0
+  margin_cap:
+  - 15
+  - 20
+  - 25
+  - 30
+search:
+  widen_below: 200
+  max_widenings_per_round: 3
+  max_share_per_type: 0.5
+  round_every_hours: 0
+  neighbours_of_best: 30
+  blend_pool: 10
+  blend_triples_of: 6
+  equal_blends:
+  - 3
+  - 5
+  - 7
+  - 10
+  fitted_blends:
+  - 5
+  - 8
+  shortlist_per_market: 2
+  shortlist_window_days: 7
+  shortlist_min_t: 2.5
+  max_disagreement_corr: 0.95
+  learned_samples: 200
+  random_samples: 100
+  signal_pairs_of: 0
+  signal_trios_of: 0
+  max_new_per_round: 400

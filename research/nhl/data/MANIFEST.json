@@ -1,0 +1,62 @@
+{
+ "source": "https://raw.githubusercontent.com/flancast90/sportsbookreview-scraper/1a820e50c6fbd0276cde073c22bfffae78930868/data/nhl_archive_10Y.json",
+ "commit": "1a820e50c6fbd0276cde073c22bfffae78930868",
+ "file_sha256": "399b65039c909907011827907285ede97982b3ce89e6224c323c5031c2885168",
+ "seasons": [
+  2011,
+  2020
+ ],
+ "sha256": {
+  "games": "cdc79714a0f6917183e4370fe31205b00c0763963efe301b2275200f7f302dee",
+  "team_games": "a16a9939a6fad2b09076b51ff18074ca6bf1f81b1776939b1182080158bb6a8b"
+ },
+ "games_by_season": {
+  "2011": 1314,
+  "2012": 805,
+  "2013": 1322,
+  "2014": 1318,
+  "2015": 1320,
+  "2016": 1316,
+  "2017": 1354,
+  "2018": 1357,
+  "2019": 1211,
+  "2020": 947
+ },
+ "lines_by_season": {
+  "total": {
+   "2011": 1314,
+   "2012": 805,
+   "2013": 1321,
+   "2014": 1318,
+   "2015": 1320,
+   "2016": 1316,
+   "2017": 1354,
+   "2018": 1357,
+   "2019": 1211,
+   "2020": 946
+  },
+  "moneyline": {
+   "2011": 1314,
+   "2012": 805,
+   "2013": 1321,
+   "2014": 1318,
+   "2015": 1320,
+   "2016": 1316,
+   "2017": 1354,
+   "2018": 1357,
+   "2019": 1211,
+   "2020": 946
+  }
+ },
+ "checks_whole_file": {
+  "rows": 13678,
+  "no_date_or_team": 10,
+  "duplicate": 4,
+  "no_score": 1,
+  "total_lines": 13662,
+  "total_no_line": 1,
+  "moneyline_lines": 13662,
+  "moneyline_no_line": 1
+ },
+ "note": "Lab cache (Constitution D1), seasons 2011-2020 only. The csv files are never committed; 2021 is sealed and never stored."
+}
