@@ -38,6 +38,10 @@ def path(name):
 
 SCORE_COLS = ["round", "id", "market", "type", "label", "games", "effect", "t", "p1", "p2", "p3", "eligible",
               "config"]
+ROUND_COLS = ["round", "at", "data_through", "scored_new", "scored_total", "best_spread_id", "best_spread_t",
+              "best_total_id", "best_total_t", "shortlisted", "run_url"]      # NFL and CFB (spread and total)
+
+
 def round_cols():
     """ROUNDS.csv columns: the best configuration of each of the sport's markets (NFL, CFB, NBA: spread and total)."""
     return (["round", "at", "data_through", "scored_new", "scored_total"]
