@@ -1,6 +1,6 @@
 # Research Lab -- lessons, MLB (EXPLORATORY)
 
-_Generated 2026-10-24T02:50:18Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-24T03:19:18Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2014–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -17,7 +17,7 @@ _Generated 2026-10-24T02:50:18Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## What the search learned (3,849 configurations, 2014–2016 only)
+## What the search learned (4,059 configurations, 2014–2016 only)
 
-- total · pace_eff · `halflife`: best 28 (median t +2.41), worst 60 (+0.41) over 877 configurations
-- total · team_rating · `halflife`: best 24 (median t +2.27), worst 5 (+1.69) over 2491 configurations
+- total · pace_eff · `halflife`: best 28 (median t +2.40), worst 60 (+0.40) over 932 configurations
+- total · team_rating · `halflife`: best 23 (median t +2.27), worst 5 (+1.70) over 2636 configurations
