@@ -1,0 +1,49 @@
+name: Research inputs -- free box scores for NBA, WNBA, NHL goalies and MLB starters (collect only)
+
+# tools/research_inputs.py: public box scores into research/inputs/<sport>/, one gzipped CSV per season. No prices,
+# no keys. The Research Lab does not read these files until a Constitution version lists them as inputs (A3.3e), and
+# the sealed exam season (2021 for NBA, NHL and MLB, Part D1) is never fetched or stored. Past seasons are fetched
+# once; the season in progress is refreshed each week.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 9 * * 1'      # Mondays: the week's finished games
+permissions:
+  contents: write
+concurrency:
+  group: research-inputs
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      max-parallel: 1           # one sport at a time: each pushes research/inputs/
+      fail-fast: false
+      matrix:
+        sport: [NBA, WNBA, NHL, MLB]
+    env:
+      MAX_MINUTES: '300'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect ${{ matrix.sport }}
+        run: python3 tools/research_inputs.py --sport ${{ matrix.sport }}
+      - name: Save
+        if: always()
+        run: |
+          git config user.name "research-inputs-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add research/inputs
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Research inputs ${{ matrix.sport }} $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do
+            if git pull --rebase -X theirs -q; then git push -q && exit 0; else git rebase --abort 2>/dev/null || true; fi
+            sleep $((i * 7))
+          done
+          exit 1
