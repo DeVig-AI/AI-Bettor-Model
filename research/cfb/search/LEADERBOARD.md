@@ -1,40 +1,40 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-24T05:22:38Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-24T06:06:00Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-51039 configurations scored so far.
+51863 configurations scored so far.
 
-## Spread -- top 25 of 47402
+## Spread -- top 25 of 48167
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
-| 1 | `s-ff0eb2fd` | SRS · carry 0.975 · prior 4 | +0.64 | 1.68 | +0.57 | +1.25 | +0.11 |
-| 2 | `s-273ab5a2` | Signals (SRS · carry 0.5 · prior 0.75) + def-finishing~h3 | +0.72 | 1.66 | +0.82 | +1.17 | +0.17 |
-| 3 | `s-7574ae77` | Signals (SRS · carry 0.5 · prior 0.75) + off-ppa~h3~h2 | +0.71 | 1.64 | +0.75 | +1.24 | +0.15 |
-| 4 | `s-399f2c60` | Blend of 2: s-9f0327f2 + s-a5190ec4 | +0.69 | 1.63 | +0.93 | +1.08 | +0.07 |
-| 5 | `s-7f3204c8` | Blend of 2: s-fd46bf69 + s-2c7101dc | +0.71 | 1.62 | +1.65 | +1.10 | -0.63 |
-| 6 | `s-0aa8a1f4` | Signals (SRS · carry 0.4 · prior 0.5) + off-points-per-play~c0.6, off-ppa, off-ppa~c0.6 | +0.68 | 1.61 | +0.90 | +1.12 | +0.01 |
-| 7 | `s-8c19848f` | Blend of 8 (fitted weights): s-0aa8a1f4 + s-bc66e2e5 + s-fd46bf69 + s-49536fef + s-b997878e + s-dd1d33a1 + s-8d757565 + s-2c7101dc | +0.70 | 1.60 | +1.65 | +1.08 | -0.64 |
-| 8 | `s-35e32905` | Blend of 2: s-fd46bf69 + s-dd1d33a1 | +0.69 | 1.59 | +1.65 | +1.06 | -0.64 |
-| 9 | `s-59bcec59` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing~c0.6, off-points-per-play~c0.2 | +0.68 | 1.58 | +1.51 | +1.14 | -0.60 |
-| 10 | `s-bc66e2e5` | Signals (SRS · carry 0.75 · prior 0.5) + def-finishing~c0.6 | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
-| 11 | `s-0bbf5018` | Blend of 2: s-bc66e2e5 + s-49536fef | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
-| 12 | `s-ebf3960e` | Blend of 2: s-bc66e2e5 + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
-| 13 | `s-94180696` | Blend of 2: s-49536fef + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
-| 14 | `s-c6dd681b` | Blend of 3: s-bc66e2e5 + s-49536fef + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
-| 15 | `s-fd46bf69` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing, off-finishing~h3, off-ppa~c0.2 | +0.68 | 1.57 | +1.62 | +1.07 | -0.64 |
-| 16 | `s-8fd716bb` | Blend of 2: s-1820246c + s-370124f1 | +0.66 | 1.57 | +0.99 | +1.22 | -0.24 |
-| 17 | `s-9a89223d` | Blend of 2: s-325971d0 + s-8e51930a | +0.67 | 1.57 | +1.26 | +1.50 | -0.76 |
-| 18 | `s-ede9ae45` | Blend of 2: s-8d757565 + s-a6587210 | +0.67 | 1.56 | +1.59 | +0.98 | -0.56 |
-| 19 | `s-d8a75c58` | Blend of 2: s-5e66c242 + s-a6587210 | +0.67 | 1.55 | +1.58 | +0.97 | -0.55 |
-| 20 | `s-49536fef` | SRS · carry 0.75 · prior 0.5 | +0.66 | 1.55 | +1.26 | +1.50 | -0.78 |
-| 21 | `s-b997878e` | Signals (SRS · carry 0.75 · prior 0.5) + def-finishing~h12 | +0.66 | 1.55 | +1.32 | +1.42 | -0.76 |
-| 22 | `s-dd1d33a1` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing~h3, off-ppa~c0.2, off-ppa~c0.6 | +0.67 | 1.55 | +1.60 | +1.10 | -0.68 |
-| 23 | `s-a8a868ef` | Blend of 2: s-fd46bf69 + s-8d757565 | +0.67 | 1.54 | +1.65 | +1.06 | -0.71 |
-| 24 | `s-011ee3ee` | Signals (SRS · carry 0.5 · prior 0.75) + def-finishing~c0.6 | +0.67 | 1.54 | +0.64 | +1.14 | +0.23 |
-| 25 | `s-5e66c242` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing, off-ppa, off-ppa~h12 | +0.67 | 1.54 | +1.59 | +1.07 | -0.67 |
+| 1 | `s-46c58a11` | Blend of 2: s-6523a5e3 + s-fd46bf69 | +0.78 | 1.82 | +1.44 | +0.99 | -0.11 |
+| 2 | `s-6523a5e3` | Signals (SRS · carry 0.4 · prior 0.5) + off-comp-ppa~c0.2, off-finishing~h3~h2, off-points-per-play~c0.6~h3 | +0.74 | 1.72 | +1.16 | +0.93 | +0.13 |
+| 3 | `s-ff0eb2fd` | SRS · carry 0.975 · prior 4 | +0.64 | 1.68 | +0.57 | +1.25 | +0.11 |
+| 4 | `s-273ab5a2` | Signals (SRS · carry 0.5 · prior 0.75) + def-finishing~h3 | +0.72 | 1.66 | +0.82 | +1.17 | +0.17 |
+| 5 | `s-7574ae77` | Signals (SRS · carry 0.5 · prior 0.75) + off-ppa~h3~h2 | +0.71 | 1.64 | +0.75 | +1.24 | +0.15 |
+| 6 | `s-399f2c60` | Blend of 2: s-9f0327f2 + s-a5190ec4 | +0.69 | 1.63 | +0.93 | +1.08 | +0.07 |
+| 7 | `s-7f3204c8` | Blend of 2: s-fd46bf69 + s-2c7101dc | +0.71 | 1.62 | +1.65 | +1.10 | -0.63 |
+| 8 | `s-0aa8a1f4` | Signals (SRS · carry 0.4 · prior 0.5) + off-points-per-play~c0.6, off-ppa, off-ppa~c0.6 | +0.68 | 1.61 | +0.90 | +1.12 | +0.01 |
+| 9 | `s-8c19848f` | Blend of 8 (fitted weights): s-0aa8a1f4 + s-bc66e2e5 + s-fd46bf69 + s-49536fef + s-b997878e + s-dd1d33a1 + s-8d757565 + s-2c7101dc | +0.70 | 1.60 | +1.65 | +1.08 | -0.64 |
+| 10 | `s-35e32905` | Blend of 2: s-fd46bf69 + s-dd1d33a1 | +0.69 | 1.59 | +1.65 | +1.06 | -0.64 |
+| 11 | `s-59bcec59` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing~c0.6, off-points-per-play~c0.2 | +0.68 | 1.58 | +1.51 | +1.14 | -0.60 |
+| 12 | `s-bc66e2e5` | Signals (SRS · carry 0.75 · prior 0.5) + def-finishing~c0.6 | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
+| 13 | `s-0bbf5018` | Blend of 2: s-bc66e2e5 + s-49536fef | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
+| 14 | `s-ebf3960e` | Blend of 2: s-bc66e2e5 + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
+| 15 | `s-94180696` | Blend of 2: s-49536fef + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
+| 16 | `s-c6dd681b` | Blend of 3: s-bc66e2e5 + s-49536fef + s-b997878e | +0.67 | 1.57 | +1.26 | +1.50 | -0.75 |
+| 17 | `s-fd46bf69` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing, off-finishing~h3, off-ppa~c0.2 | +0.68 | 1.57 | +1.62 | +1.07 | -0.64 |
+| 18 | `s-8fd716bb` | Blend of 2: s-1820246c + s-370124f1 | +0.66 | 1.57 | +0.99 | +1.22 | -0.24 |
+| 19 | `s-9a89223d` | Blend of 2: s-325971d0 + s-8e51930a | +0.67 | 1.57 | +1.26 | +1.50 | -0.76 |
+| 20 | `s-ede9ae45` | Blend of 2: s-8d757565 + s-a6587210 | +0.67 | 1.56 | +1.59 | +0.98 | -0.56 |
+| 21 | `s-d8a75c58` | Blend of 2: s-5e66c242 + s-a6587210 | +0.67 | 1.55 | +1.58 | +0.97 | -0.55 |
+| 22 | `s-49536fef` | SRS · carry 0.75 · prior 0.5 | +0.66 | 1.55 | +1.26 | +1.50 | -0.78 |
+| 23 | `s-b997878e` | Signals (SRS · carry 0.75 · prior 0.5) + def-finishing~h12 | +0.66 | 1.55 | +1.32 | +1.42 | -0.76 |
+| 24 | `s-dd1d33a1` | Signals (SRS · carry 0.75 · prior 0.5) + off-finishing~h3, off-ppa~c0.2, off-ppa~c0.6 | +0.67 | 1.55 | +1.60 | +1.10 | -0.68 |
+| 25 | `s-a8a868ef` | Blend of 2: s-fd46bf69 + s-8d757565 | +0.67 | 1.54 | +1.65 | +1.06 | -0.71 |
 
-## Total -- top 25 of 3637
+## Total -- top 25 of 3696
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -66,30 +66,30 @@ _Generated 2026-10-24T05:22:38Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `k`: best 60 (median t -0.16), worst 10 (-1.19) over 22554 configurations
-- spread · elo · `market_blend`: best 0.1562 (median t -0.55), worst 1.0 (-1.08) over 22554 configurations
-- spread · elo · `mov`: best 538 (median t -0.54), worst none (-inf) over 22554 configurations
-- spread · elo · `mov_cap`: best 46 (median t -0.48), worst 30 (-1.02) over 22554 configurations
-- spread · ppa · `carry`: best 0.85 (median t -0.32), worst 0.6 (-0.84) over 440 configurations
-- spread · ppa · `garbage_time`: best exclude (median t -0.39), worst include (-0.78) over 440 configurations
-- spread · ppa · `prior_w`: best 2 (median t -0.28), worst 0.5 (-0.80) over 440 configurations
-- spread · signals · `base`: best {'params': {'carry': 0.5, 'hfa_pts': 2.0, 'margin_cap': None, 'prior_w': 0.75}, 'type': 'srs'} (median t +1.07), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.24) over 1951 configurations
-- spread · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 24, 'id': 'off-ppa~h12~h24', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa~h12 (half-life 24, carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa~h12'}] (median t +1.44), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 1951 configurations
-- spread · srs · `carry`: best 0.975 (median t +0.53), worst 0.2 (-0.17) over 20500 configurations
-- spread · srs · `hfa_pts`: best 0.75 (median t +0.64), worst 3.5 (-0.14) over 20500 configurations
-- spread · srs · `margin_cap`: best 56 (median t +0.69), worst 21 (-0.40) over 20500 configurations
-- spread · srs · `prior_w`: best 0.5625 (median t +0.62), worst 10 (-0.11) over 20500 configurations
-- spread · team_rating · `def_weight`: best 1.0 (median t +0.16), worst 0.5 (-0.15) over 1482 configurations
-- spread · team_rating · `halflife`: best 2 (median t +0.35), worst 6 (-0.34) over 1482 configurations
-- spread · team_rating · `metric`: best points (median t +0.29), worst epa (-0.37) over 1482 configurations
-- spread · team_rating · `season_carry`: best 0.85 (median t +0.13), worst 0.2 (-0.19) over 1482 configurations
-- total · pace_eff · `efficiency`: best epa (median t +0.68), worst points (+0.18) over 973 configurations
-- total · pace_eff · `halflife`: best 38 (median t +0.87), worst 2 (-0.38) over 973 configurations
-- total · pace_eff · `pace`: best True (median t +0.72), worst False (-0.12) over 973 configurations
-- total · pace_eff · `season_carry`: best 0.95 (median t +0.68), worst 0.2 (-0.18) over 973 configurations
+- spread · elo · `k`: best 75 (median t -0.25), worst 10 (-1.18) over 22680 configurations
+- spread · elo · `market_blend`: best 0.03125 (median t -0.54), worst 1.0 (-1.08) over 22680 configurations
+- spread · elo · `mov`: best 538 (median t -0.54), worst none (-inf) over 22680 configurations
+- spread · elo · `mov_cap`: best 46 (median t -0.56), worst 30 (-1.02) over 22680 configurations
+- spread · ppa · `carry`: best 0.85 (median t -0.33), worst 0.6 (-0.84) over 463 configurations
+- spread · ppa · `garbage_time`: best exclude (median t -0.39), worst include (-0.78) over 463 configurations
+- spread · ppa · `prior_w`: best 2 (median t -0.28), worst 0.5 (-0.80) over 463 configurations
+- spread · signals · `base`: best {'params': {'carry': 0.5, 'hfa_pts': 2.0, 'margin_cap': None, 'prior_w': 0.75}, 'type': 'srs'} (median t +1.07), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.18) over 2351 configurations
+- spread · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'halflife': 24, 'id': 'off-ppa~h12~h24', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa~h12 (half-life 24, carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa~h12'}] (median t +1.44), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 2351 configurations
+- spread · srs · `carry`: best 0.975 (median t +0.50), worst 0.2 (-0.17) over 20649 configurations
+- spread · srs · `hfa_pts`: best 1.125 (median t +0.51), worst 3.5 (-0.14) over 20649 configurations
+- spread · srs · `margin_cap`: best 56 (median t +0.67), worst 21 (-0.40) over 20649 configurations
+- spread · srs · `prior_w`: best 0.5625 (median t +0.55), worst 10 (-0.10) over 20649 configurations
+- spread · team_rating · `def_weight`: best 1.0 (median t +0.17), worst 0.5 (-0.14) over 1525 configurations
+- spread · team_rating · `halflife`: best 2 (median t +0.35), worst 6 (-0.34) over 1525 configurations
+- spread · team_rating · `metric`: best points (median t +0.30), worst epa (-0.37) over 1525 configurations
+- spread · team_rating · `season_carry`: best 0.4375 (median t +0.20), worst 0.2 (-0.19) over 1525 configurations
+- total · pace_eff · `efficiency`: best epa (median t +0.68), worst points (+0.19) over 1010 configurations
+- total · pace_eff · `halflife`: best 38 (median t +0.83), worst 2 (-0.37) over 1010 configurations
+- total · pace_eff · `pace`: best True (median t +0.75), worst False (-0.11) over 1010 configurations
+- total · pace_eff · `season_carry`: best 0.95 (median t +0.66), worst 0.2 (-0.17) over 1010 configurations
 - total · signals · `base`: best {'params': {'calibrate': True, 'efficiency': 'epa', 'halflife': 4, 'league_window': 1600, 'pace': True, 'season_carry': 0.2}, 'type': 'pace_eff'} (median t +1.77), worst {'params': {'calibrate': True, 'efficiency': 'points', 'halflife': 6, 'league_window': 1600, 'pace': True, 'season_carry': 0.5}, 'type': 'pace_eff'} (+0.10) over 1555 configurations
 - total · signals · `signals`: best [{'carry': 0.2, 'den': 'plays', 'halflife': 6.0, 'id': 'off-ppa~c0.2', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa (half-life 6, carry 0.2): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa'}, {'carry': 0.4, 'den': 'plays', 'halflife': 12, 'id': 'off-ppa~h12', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than points.', 'side': 'offense', 'variant_of': 'off-ppa'}] (median t +2.00), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6, 'id': 'def-ppa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1}, 'reason': 'PPA per play allowed by the defense.', 'side': 'defense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points beyond what PPA explains: finishing drives and short fields are partly luck.', 'side': 'offense'}, {'carry': 0.4, 'den': None, 'halflife': 6, 'id': 'off-pace', 'kind': 'team', 'markets': ['total'], 'num': {'plays': 1}, 'reason': 'Plays per game: tempo drives the number of possessions.', 'side': 'offense'}] (-inf) over 1555 configurations
-- total · team_rating · `halflife`: best 4 (median t +1.33), worst 2 (+0.67) over 602 configurations
-- total · team_rating · `metric`: best epa (median t +1.10), worst points (+0.53) over 602 configurations
-- total · team_rating · `pace`: best plays (median t +1.08), worst none (+0.65) over 602 configurations
-- total · team_rating · `season_carry`: best 0.4625 (median t +1.20), worst 1.0 (+0.64) over 602 configurations
+- total · team_rating · `halflife`: best 4 (median t +1.33), worst 1 (-0.19) over 624 configurations
+- total · team_rating · `metric`: best epa (median t +1.10), worst points (+0.53) over 624 configurations
+- total · team_rating · `pace`: best plays (median t +1.08), worst none (+0.65) over 624 configurations
+- total · team_rating · `season_carry`: best 0.4625 (median t +1.18), worst 0.9 (+0.65) over 624 configurations
