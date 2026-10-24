@@ -1,15 +1,15 @@
 # Research Lab search (MLB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-24T06:16:56Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-24T06:52:57Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-4772 configurations scored so far.
+4972 configurations scored so far.
 
 ## Moneyline -- top 25 of 0
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
 
-## Total -- top 25 of 4772
+## Total -- top 25 of 4972
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -41,5 +41,5 @@ _Generated 2026-10-24T06:16:56Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- total · pace_eff · `halflife`: best 28 (median t +2.40), worst 60 (+0.38) over 1098 configurations
-- total · team_rating · `halflife`: best 24 (median t +2.29), worst 5 (+1.70) over 3183 configurations
+- total · pace_eff · `halflife`: best 28 (median t +2.41), worst 60 (+0.38) over 1155 configurations
+- total · team_rating · `halflife`: best 24 (median t +2.28), worst 5 (+1.70) over 3326 configurations
