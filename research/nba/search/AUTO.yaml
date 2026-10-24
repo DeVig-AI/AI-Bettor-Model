@@ -1,0 +1,48 @@
+# Research Lab search (NBA) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c).
+# Written by research/lab/search.py from search-season scores only; append-only, never edit.
+generations:
+- generation: 1
+  at: '2026-10-24T02:15:29Z'
+  round: 16
+  ladders:
+    carry:
+    - 0.75
+    - 0.85
+    - 1.0
+    halflife:
+    - 1
+    - 4
+    - 12
+    - 18
+    hfa_elo:
+    - 0
+    - 38
+    - 62
+    hfa_pts:
+    - 1.0
+    - 1.75
+    - 2.25
+    k:
+    - 8
+    - 12
+    margin_cap:
+    - 10
+    - 18
+    - 22
+    market_blend:
+    - 0.125
+    - 0.625
+    - 1.0
+    prior_w:
+    - 6.0
+    - 12.0
+    - 24.0
+    revert:
+    - 0.15
+    - 0.225
+    - 0.55
+    - 0.7
+    season_carry:
+    - 0.65
+    - 0.75
+    - 0.9
