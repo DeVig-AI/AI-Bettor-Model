@@ -776,3 +776,386 @@ generations:
         pace: true
         season_carry: 0.2
   signal_sets: 1
+- generation: 3
+  at: '2026-10-24T03:27:47Z'
+  round: 222
+  ladders:
+    carry:
+    - 0.925
+    - 0.975
+    halflife:
+    - 24
+    - 29
+    - 38
+    hfa_elo:
+    - 68
+    - 72
+    hfa_pts:
+    - 0.0
+    - 0.75
+    - 1.125
+    k:
+    - 52
+    - 60
+    - 75
+    margin_cap:
+    - 40
+    - 46
+    - 56
+    market_blend:
+    - 0.03125
+    - 0.09375
+    - 0.1562
+    mov_cap:
+    - 36
+    - 40
+    - 46
+    - 56
+    prior_w:
+    - 0.375
+    - 0.5625
+    - 0.6875
+    season_carry:
+    - 0.4375
+    - 0.4625
+    - 0.95
+  signals:
+  - id: off-finishing~h3~h2
+    kind: team
+    side: offense
+    num: &id010
+      points: 1
+      epa: -1
+    den: null
+    halflife: 2
+    carry: 0.4
+    reason: 'Automatic variant of off-finishing~h3 (half-life 2, carry 0.4): Automatic variant of off-finishing (half-life
+      3, carry 0.4): Points beyond what PPA explains: finishing drives and short fields are partly luck.'
+    variant_of: off-finishing~h3
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h3~h6
+    kind: team
+    side: offense
+    num: *id010
+    den: null
+    halflife: 6
+    carry: 0.4
+    reason: 'Automatic variant of off-finishing~h3 (half-life 6, carry 0.4): Automatic variant of off-finishing (half-life
+      3, carry 0.4): Points beyond what PPA explains: finishing drives and short fields are partly luck.'
+    variant_of: off-finishing~h3
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h3~c0.2
+    kind: team
+    side: offense
+    num: *id010
+    den: null
+    halflife: 3.0
+    carry: 0.2
+    reason: 'Automatic variant of off-finishing~h3 (half-life 3, carry 0.2): Automatic variant of off-finishing (half-life
+      3, carry 0.4): Points beyond what PPA explains: finishing drives and short fields are partly luck.'
+    variant_of: off-finishing~h3
+    markets:
+    - spread
+    - total
+  - id: off-finishing~h3~c0.6
+    kind: team
+    side: offense
+    num: *id010
+    den: null
+    halflife: 3.0
+    carry: 0.6
+    reason: 'Automatic variant of off-finishing~h3 (half-life 3, carry 0.6): Automatic variant of off-finishing (half-life
+      3, carry 0.4): Points beyond what PPA explains: finishing drives and short fields are partly luck.'
+    variant_of: off-finishing~h3
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h3
+    kind: team
+    side: offense
+    num: &id011
+      points: 1
+    den: plays
+    halflife: 3
+    carry: 0.6
+    reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant of off-points-per-play
+      (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos vary
+      widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h12
+    kind: team
+    side: offense
+    num: *id011
+    den: plays
+    halflife: 12
+    carry: 0.6
+    reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 12, carry 0.6): Automatic variant of off-points-per-play
+      (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos vary
+      widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~c0.4
+    kind: team
+    side: offense
+    num: *id011
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 6, carry 0.4): Automatic variant of off-points-per-play
+      (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos vary
+      widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~c0.8
+    kind: team
+    side: offense
+    num: *id011
+    den: plays
+    halflife: 6.0
+    carry: 0.8
+    reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 6, carry 0.8): Automatic variant of off-points-per-play
+      (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos vary
+      widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h6
+    kind: team
+    side: offense
+    num: &id012
+      epa: 1
+    den: plays
+    halflife: 6
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h12 (half-life 6, carry 0.4): Automatic variant of off-ppa (half-life 12, carry
+      0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h24
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 24
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h12 (half-life 24, carry 0.4): Automatic variant of off-ppa (half-life 12, carry
+      0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~c0.2
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 12.0
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa~h12 (half-life 12, carry 0.2): Automatic variant of off-ppa (half-life 12, carry
+      0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~c0.6
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 12.0
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~h12 (half-life 12, carry 0.6): Automatic variant of off-ppa (half-life 12, carry
+      0.4): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~h12
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h3
+    kind: team
+    side: offense
+    num: &id013
+      comp_epa: 1
+    den: comp_plays
+    halflife: 3
+    carry: 0.4
+    reason: 'Automatic variant of off-comp-ppa (half-life 3, carry 0.4): Offensive PPA per play with garbage time removed:
+      college blowouts are common, and plays against backups in a decided game say little about how good an offense is.'
+    variant_of: off-comp-ppa
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h12
+    kind: team
+    side: offense
+    num: *id013
+    den: comp_plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-comp-ppa (half-life 12, carry 0.4): Offensive PPA per play with garbage time removed:
+      college blowouts are common, and plays against backups in a decided game say little about how good an offense is.'
+    variant_of: off-comp-ppa
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~c0.2
+    kind: team
+    side: offense
+    num: *id013
+    den: comp_plays
+    halflife: 6.0
+    carry: 0.2
+    reason: 'Automatic variant of off-comp-ppa (half-life 6, carry 0.2): Offensive PPA per play with garbage time removed:
+      college blowouts are common, and plays against backups in a decided game say little about how good an offense is.'
+    variant_of: off-comp-ppa
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~c0.6
+    kind: team
+    side: offense
+    num: *id013
+    den: comp_plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of off-comp-ppa (half-life 6, carry 0.6): Offensive PPA per play with garbage time removed:
+      college blowouts are common, and plays against backups in a decided game say little about how good an offense is.'
+    variant_of: off-comp-ppa
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~h3
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 3
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~c0.6 (half-life 3, carry 0.6): Automatic variant of off-ppa (half-life 6, carry
+      0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~h12
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 12
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~c0.6 (half-life 12, carry 0.6): Automatic variant of off-ppa (half-life 6, carry
+      0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.4
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.4): Automatic variant of off-ppa (half-life 6, carry
+      0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 6.0
+    carry: 0.8
+    reason: 'Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life 6, carry
+      0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.2~h3
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 3
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa~c0.2 (half-life 3, carry 0.2): Automatic variant of off-ppa (half-life 6, carry
+      0.2): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.2
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.2~h12
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 12
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa~c0.2 (half-life 12, carry 0.2): Automatic variant of off-ppa (half-life 6, carry
+      0.2): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.2
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.2~c0
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 6.0
+    carry: 0.0
+    reason: 'Automatic variant of off-ppa~c0.2 (half-life 6, carry 0): Automatic variant of off-ppa (half-life 6, carry 0.2):
+      Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.2
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.2~c0.4
+    kind: team
+    side: offense
+    num: *id012
+    den: plays
+    halflife: 6.0
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~c0.2 (half-life 6, carry 0.4): Automatic variant of off-ppa (half-life 6, carry
+      0.2): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.2
+    markets:
+    - spread
+    - total
+  signal_bases:
+    spread:
+    - type: srs
+      params:
+        carry: 0.5
+        hfa_pts: 2.0
+        margin_cap: null
+        prior_w: 0.75
+    total:
+    - type: pace_eff
+      params:
+        calibrate: true
+        efficiency: epa
+        halflife: 3
+        league_window: 1600
+        pace: true
+        season_carry: 0.5
+  signal_sets: 1
