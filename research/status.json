@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-24T00:35:04Z",
+ "updated_at": "2026-10-24T00:41:21Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-24T00:35:28Z",
+   "updated_at": "2026-10-24T00:42:01Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4080,7 +4080,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-24T00:35:30Z",
+   "updated_at": "2026-10-24T00:42:05Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4407,7 +4407,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-24T00:35:04Z",
+   "updated_at": "2026-10-24T00:42:05Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4734,7 +4734,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-24T00:35:30Z",
+   "updated_at": "2026-10-24T00:41:21Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4856,6 +4856,35 @@
    ],
    "promoted": [],
    "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 11",
+     "started_at": "2026-10-24T00:41:20Z",
+     "finished_at": "2026-10-24T00:41:20Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40044795392",
+     "summary": "238 models scored → 232 consistent → 29 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 238
+      },
+      {
+       "label": "consistent",
+       "count": 232
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 29
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 10",
@@ -5112,43 +5141,6 @@
       },
       {
        "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
-    },
-    {
-     "kind": "lab",
-     "name": "Research Lab #2371",
-     "started_at": "2026-10-23T18:05:15Z",
-     "finished_at": "2026-10-23T18:05:15Z",
-     "duration_s": 0,
-     "run_number": 2371,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/39995294870",
-     "summary": "1 tested → 1 past gate 1 → 1 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
-     "funnel": [
-      {
-       "label": "tested",
-       "count": 1
-      },
-      {
-       "label": "past gate 1",
-       "count": 1
-      },
-      {
-       "label": "past gate 2",
-       "count": 1
-      },
-      {
-       "label": "passed the lab",
-       "count": 0
-      },
-      {
-       "label": "passed the exam",
-       "count": 0
-      },
-      {
-       "label": "promoted",
        "count": 0
       }
      ],
