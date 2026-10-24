@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-24T07:21:43Z",
+ "updated_at": "2026-10-24T07:24:12Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -2992,7 +2992,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-24T07:21:40Z",
+   "updated_at": "2026-10-24T07:24:08Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4029,21 +4029,29 @@
    "runs": [
     {
      "kind": "search",
-     "name": "Search round 227 (CFB, running)",
-     "started_at": "2026-10-24T07:01:37Z",
-     "finished_at": null,
+     "name": "Search round 227",
+     "started_at": "2026-10-24T07:24:06Z",
+     "finished_at": "2026-10-24T07:24:06Z",
      "duration_s": null,
-     "run_number": 2396,
+     "run_number": null,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40072019290",
-     "summary": "713 of 800 models scored on 2018–2021",
+     "summary": "800 models scored → 165 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 713
+       "count": 800
       },
       {
-       "label": "planned this round",
-       "count": 800
+       "label": "consistent",
+       "count": 165
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
       }
      ],
      "steps": []
@@ -4312,7 +4320,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-24T07:22:25Z",
+   "updated_at": "2026-10-24T07:24:56Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4639,7 +4647,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-24T07:22:25Z",
+   "updated_at": "2026-10-24T07:24:56Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4966,7 +4974,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-24T07:22:25Z",
+   "updated_at": "2026-10-24T07:24:56Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
