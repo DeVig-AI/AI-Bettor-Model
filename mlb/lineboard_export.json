@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-23T21:13:39.961038Z"
+    "synced_at": "2026-10-24T04:03:07.878337Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -107,7 +107,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-23T21:13:39.961038Z"
+    "synced_at": "2026-10-24T04:03:07.878337Z"
    },
    "doc_id": "CLE202610180"
   },
@@ -157,7 +157,7 @@
    "collection": "slate",
    "data": {
     "away_team": "TB",
-    "export_hash": "2f07e153e0de55de41be48d001108201d67e761b5b490fcb6074aee3eee06d38",
+    "export_hash": "527d43a8c1eeb5a12d3528b7d6631844e7e6e6f56945519eca6376b5a6bcc5be",
     "game_date": "2026-10-23",
     "game_id": "MIL202610230",
     "home_team": "MIL",
@@ -173,18 +173,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Nick Martinez vs Jacob Misiorowski. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 0,
-      "description": "World Series",
-      "fair_price_favored": -204,
-      "favored": "MIL",
-      "favored_prob": 0.6711,
-      "games_in_series": 7,
-      "home_wins": 0,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.6711,
-      "series_game_number": 1
-     },
      "source_snapshot_time": "2026-10-23T18:34:45.857418+00:00",
      "spread_prob": 0.5878396281984173,
      "spread_side": "TB +1.5",
@@ -195,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-23T21:13:39.961038Z"
+    "synced_at": "2026-10-24T04:03:07.878337Z"
    },
    "doc_id": "MIL202610230"
   },
@@ -209,7 +197,7 @@
      "side": "MIL",
      "tier": "top50"
     },
-    "export_hash": "8e2e3d042e2205ab1e50b2971959347df4ade98587d3bb69d0a475062473c2e6",
+    "export_hash": "dac8700077f200255eab38dc076f1ee2938d397ea421b6c1688a84d2c51f57a1",
     "game_date": "2026-10-23",
     "game_id": "MIL202610230",
     "home_team": "MIL",
@@ -220,10 +208,11 @@
      "moneyline_home": -182
     },
     "outcome": {
-     "away_score": null,
-     "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "away_score": 2,
+     "decision_correct": true,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 3,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -242,7 +231,7 @@
    "doc_id": "MIL202610230"
   }
  ],
- "generated_at": "2026-10-23T21:13:39.961038Z",
+ "generated_at": "2026-10-24T04:03:07.878337Z",
  "n_docs": 6,
  "sport": "MLB"
 }
