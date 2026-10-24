@@ -1,38 +1,38 @@
 # Research Lab search (NBA) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-24T07:28:17Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-24T08:22:54Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-8822 configurations scored so far.
+9144 configurations scored so far.
 
-## Spread -- top 25 of 8069
+## Spread -- top 25 of 8391
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
-| 1 | `s-7d619807` | SRS · carry 0.2 · prior 24 · margin cap 30 | +0.47 | 2.24 | +0.42 | +0.39 | +0.60 |
-| 2 | `s-991db9da` | Blend of 2: s-92f96012 + s-f91e2b50 | +0.44 | 2.17 | +0.22 | +0.37 | +0.75 |
-| 3 | `s-994058bd` | SRS · carry 0.2 · prior 24 · margin cap 22 | +0.46 | 2.16 | +0.40 | +0.40 | +0.57 |
-| 4 | `s-abc9877d` | SRS · carry 0.3 · prior 4 · margin cap 15 | +0.45 | 2.15 | +0.24 | +0.44 | +0.67 |
-| 5 | `s-ebf49a79` | Blend of 2: s-7d619807 + s-994058bd | +0.45 | 2.15 | +0.40 | +0.40 | +0.56 |
-| 6 | `s-704748c1` | SRS · carry 0.8 · prior 24 · margin cap 22 | +0.43 | 2.15 | +0.30 | +0.35 | +0.65 |
-| 7 | `s-2681610c` | Blend of 2: s-994058bd + s-00281b97 | +0.46 | 2.15 | +0.37 | +0.39 | +0.60 |
-| 8 | `s-ae2ef88d` | Blend of 2: s-f91e2b50 + s-92843d62 | +0.43 | 2.15 | +0.19 | +0.39 | +0.73 |
-| 9 | `s-81baa953` | Blend of 3: s-0675ef6a + s-92f96012 + s-f91e2b50 | +0.44 | 2.12 | +0.15 | +0.43 | +0.75 |
-| 10 | `s-c833ebb5` | Blend of 2: s-f91e2b50 + s-c2072912 | +0.43 | 2.12 | +0.20 | +0.39 | +0.72 |
-| 11 | `s-312f5ef5` | Blend of 2: s-fcbd835f + s-77d748a6 | +0.49 | 2.12 | +0.24 | +0.48 | +0.76 |
-| 12 | `s-cd7f74b7` | Elo · K5 · fixed home edge · revert 0.23 · market blend 0.75 | +0.49 | 2.12 | +0.24 | +0.48 | +0.76 |
-| 13 | `s-39b956dd` | SRS · carry 0.4 · prior 12 · margin cap 22 | +0.42 | 2.10 | +0.26 | +0.49 | +0.52 |
-| 14 | `s-480e871b` | Blend of 2: s-7d619807 + s-213cc134 | +0.43 | 2.09 | +0.30 | +0.43 | +0.57 |
-| 15 | `s-82ce7f8d` | Blend of 2: s-9c160435 + s-0bdac33c | +0.44 | 2.09 | +0.16 | +0.39 | +0.77 |
-| 16 | `s-79f5bdd8` | Blend of 2: s-cd7f74b7 + s-fcbd835f | +0.49 | 2.09 | +0.24 | +0.46 | +0.76 |
-| 17 | `s-0dc7afe9` | Blend of 2: s-d6b46aba + s-92f96012 | +0.42 | 2.08 | +0.22 | +0.35 | +0.71 |
-| 18 | `s-0675ef6a` | SRS · carry 0.3 · prior 12 · margin cap 15 | +0.44 | 2.07 | +0.32 | +0.31 | +0.70 |
-| 19 | `s-b8f9fb5f` | Blend of 2: s-7d619807 + s-00281b97 | +0.43 | 2.06 | +0.36 | +0.34 | +0.61 |
-| 20 | `s-66421af3` | Blend of 2: s-704748c1 + s-d6b46aba | +0.42 | 2.06 | +0.28 | +0.34 | +0.63 |
-| 21 | `s-51abbe50` | Blend of 2: s-d6b46aba + s-f91e2b50 | +0.42 | 2.06 | +0.20 | +0.40 | +0.67 |
-| 22 | `s-9a0b4a33` | Blend of 2: s-7d619807 + s-0675ef6a | +0.43 | 2.04 | +0.32 | +0.35 | +0.63 |
-| 23 | `s-00281b97` | SRS · carry 0.3 · prior 24 · margin cap 22 | +0.43 | 2.04 | +0.35 | +0.31 | +0.63 |
-| 24 | `s-fcbd835f` | Elo · K5 · fixed home edge · revert 0.20 · market blend 0.75 | +0.47 | 2.04 | +0.24 | +0.46 | +0.73 |
-| 25 | `s-c2c025c7` | Blend of 2: s-92f96012 + s-c2072912 | +0.41 | 2.04 | +0.22 | +0.30 | +0.74 |
+| 1 | `s-9d978b6c` | Blend of 2: s-7d619807 + s-d62aa4c6 | +0.47 | 2.25 | +0.46 | +0.42 | +0.52 |
+| 2 | `s-7d619807` | SRS · carry 0.2 · prior 24 · margin cap 30 | +0.47 | 2.24 | +0.42 | +0.39 | +0.60 |
+| 3 | `s-991db9da` | Blend of 2: s-92f96012 + s-f91e2b50 | +0.44 | 2.17 | +0.22 | +0.37 | +0.75 |
+| 4 | `s-994058bd` | SRS · carry 0.2 · prior 24 · margin cap 22 | +0.46 | 2.16 | +0.40 | +0.40 | +0.57 |
+| 5 | `s-abc9877d` | SRS · carry 0.3 · prior 4 · margin cap 15 | +0.45 | 2.15 | +0.24 | +0.44 | +0.67 |
+| 6 | `s-ebf49a79` | Blend of 2: s-7d619807 + s-994058bd | +0.45 | 2.15 | +0.40 | +0.40 | +0.56 |
+| 7 | `s-704748c1` | SRS · carry 0.8 · prior 24 · margin cap 22 | +0.43 | 2.15 | +0.30 | +0.35 | +0.65 |
+| 8 | `s-2681610c` | Blend of 2: s-994058bd + s-00281b97 | +0.46 | 2.15 | +0.37 | +0.39 | +0.60 |
+| 9 | `s-ae2ef88d` | Blend of 2: s-f91e2b50 + s-92843d62 | +0.43 | 2.15 | +0.19 | +0.39 | +0.73 |
+| 10 | `s-81baa953` | Blend of 3: s-0675ef6a + s-92f96012 + s-f91e2b50 | +0.44 | 2.12 | +0.15 | +0.43 | +0.75 |
+| 11 | `s-c833ebb5` | Blend of 2: s-f91e2b50 + s-c2072912 | +0.43 | 2.12 | +0.20 | +0.39 | +0.72 |
+| 12 | `s-312f5ef5` | Blend of 2: s-fcbd835f + s-77d748a6 | +0.49 | 2.12 | +0.24 | +0.48 | +0.76 |
+| 13 | `s-cd7f74b7` | Elo · K5 · fixed home edge · revert 0.23 · market blend 0.75 | +0.49 | 2.12 | +0.24 | +0.48 | +0.76 |
+| 14 | `s-d62aa4c6` | SRS · carry 0.3 · prior 24 | +0.43 | 2.11 | +0.44 | +0.46 | +0.40 |
+| 15 | `s-39b956dd` | SRS · carry 0.4 · prior 12 · margin cap 22 | +0.42 | 2.10 | +0.26 | +0.49 | +0.52 |
+| 16 | `s-480e871b` | Blend of 2: s-7d619807 + s-213cc134 | +0.43 | 2.09 | +0.30 | +0.43 | +0.57 |
+| 17 | `s-82ce7f8d` | Blend of 2: s-9c160435 + s-0bdac33c | +0.44 | 2.09 | +0.16 | +0.39 | +0.77 |
+| 18 | `s-79f5bdd8` | Blend of 2: s-cd7f74b7 + s-fcbd835f | +0.49 | 2.09 | +0.24 | +0.46 | +0.76 |
+| 19 | `s-0dc7afe9` | Blend of 2: s-d6b46aba + s-92f96012 | +0.42 | 2.08 | +0.22 | +0.35 | +0.71 |
+| 20 | `s-0675ef6a` | SRS · carry 0.3 · prior 12 · margin cap 15 | +0.44 | 2.07 | +0.32 | +0.31 | +0.70 |
+| 21 | `s-d6542d0b` | Blend of 2: s-994058bd + s-d62aa4c6 | +0.43 | 2.06 | +0.37 | +0.30 | +0.63 |
+| 22 | `s-b8f9fb5f` | Blend of 2: s-7d619807 + s-00281b97 | +0.43 | 2.06 | +0.36 | +0.34 | +0.61 |
+| 23 | `s-66421af3` | Blend of 2: s-704748c1 + s-d6b46aba | +0.42 | 2.06 | +0.28 | +0.34 | +0.63 |
+| 24 | `s-51abbe50` | Blend of 2: s-d6b46aba + s-f91e2b50 | +0.42 | 2.06 | +0.20 | +0.40 | +0.67 |
+| 25 | `s-9a0b4a33` | Blend of 2: s-7d619807 + s-0675ef6a | +0.43 | 2.04 | +0.32 | +0.35 | +0.63 |
 
 ## Total -- top 25 of 753
 
@@ -66,17 +66,17 @@ _Generated 2026-10-24T07:28:17Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `hfa_elo`: best 38 (median t +1.11), worst 125 (-0.15) over 4457 configurations
-- spread · elo · `k`: best 5 (median t +1.24), worst 40 (-1.19) over 4457 configurations
-- spread · elo · `market_blend`: best 1.0 (median t +1.15), worst 0.5 (+0.04) over 4457 configurations
-- spread · elo · `mov`: best none (median t +0.69), worst 538 (-0.48) over 4457 configurations
-- spread · elo · `revert`: best 0.7 (median t +1.19), worst 0.25 (-0.03) over 4457 configurations
-- spread · srs · `carry`: best 0.85 (median t +1.08), worst 0.4 (+0.73) over 2627 configurations
-- spread · srs · `hfa_pts`: best 1.0 (median t +1.56), worst 4.0 (+0.66) over 2627 configurations
-- spread · srs · `margin_cap`: best 10 (median t +1.27), worst None (+0.67) over 2627 configurations
-- spread · srs · `prior_w`: best 24.0 (median t +1.34), worst 0.5 (+0.53) over 2627 configurations
-- spread · team_rating · `def_weight`: best 1.0 (median t +0.55), worst 0.5 (+0.06) over 355 configurations
-- spread · team_rating · `halflife`: best 60 (median t +1.15), worst 5 (-0.17) over 355 configurations
-- spread · team_rating · `season_carry`: best 0.8 (median t +0.48), worst 0.2 (+0.06) over 355 configurations
+- spread · elo · `hfa_elo`: best 38 (median t +1.09), worst 125 (-0.15) over 4624 configurations
+- spread · elo · `k`: best 5 (median t +1.24), worst 40 (-1.20) over 4624 configurations
+- spread · elo · `market_blend`: best 1.0 (median t +1.08), worst 0.0 (+0.05) over 4624 configurations
+- spread · elo · `mov`: best none (median t +0.70), worst 538 (-0.46) over 4624 configurations
+- spread · elo · `revert`: best 0.7 (median t +1.16), worst 0.25 (-0.01) over 4624 configurations
+- spread · srs · `carry`: best 0.85 (median t +1.10), worst 0.2 (+0.74) over 2756 configurations
+- spread · srs · `hfa_pts`: best 1.0 (median t +1.51), worst 4.0 (+0.67) over 2756 configurations
+- spread · srs · `margin_cap`: best 10 (median t +1.27), worst None (+0.67) over 2756 configurations
+- spread · srs · `prior_w`: best 24.0 (median t +1.33), worst 0.5 (+0.54) over 2756 configurations
+- spread · team_rating · `def_weight`: best 1.0 (median t +0.53), worst 0.5 (+0.06) over 359 configurations
+- spread · team_rating · `halflife`: best 60 (median t +1.15), worst 5 (-0.12) over 359 configurations
+- spread · team_rating · `season_carry`: best 0.8 (median t +0.45), worst 0.2 (+0.06) over 359 configurations
 - total · pace_eff · `halflife`: best 1 (median t +0.49), worst 5 (-0.48) over 120 configurations
 - total · team_rating · `halflife`: best 1 (median t +0.88), worst 40 (-0.23) over 359 configurations
