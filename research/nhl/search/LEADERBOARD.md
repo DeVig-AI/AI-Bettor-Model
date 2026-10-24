@@ -1,10 +1,10 @@
 # Research Lab search (NHL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-24T10:32:03Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-24T11:19:26Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-9647 configurations scored so far.
+10035 configurations scored so far.
 
-## Moneyline -- top 25 of 9131
+## Moneyline -- top 25 of 9519
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -66,19 +66,19 @@ _Generated 2026-10-24T10:32:03Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `hfa_elo`: best 58 (median t +0.10), worst 20 (-inf) over 7901 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 7901 configurations
-- moneyline · elo_ml · `k`: best 5 (median t +0.06), worst 4 (-inf) over 7901 configurations
-- moneyline · elo_ml · `market_blend`: best 0.375 (median t +0.21), worst 0.25 (-inf) over 7901 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 7901 configurations
-- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 7901 configurations
-- moneyline · elo_ml · `revert`: best 0.15 (median t +0.09), worst 0.25 (-inf) over 7901 configurations
-- moneyline · rating_ml · `def_weight`: best 0.75 (median t +0.38), worst 0.5 (+0.13) over 238 configurations
-- moneyline · rating_ml · `halflife`: best 50 (median t +0.84), worst 5 (-0.68) over 238 configurations
-- moneyline · rating_ml · `season_carry`: best 0.8 (median t +0.72), worst 0.2 (-0.22) over 238 configurations
-- moneyline · srs_ml · `carry`: best 1.0 (median t -0.65), worst 0.2 (-1.00) over 639 configurations
-- moneyline · srs_ml · `hfa_pts`: best 0.0 (median t -0.71), worst 0.4 (-0.96) over 639 configurations
-- moneyline · srs_ml · `prior_w`: best 24.0 (median t +0.04), worst 2 (-1.00) over 639 configurations
+- moneyline · elo_ml · `hfa_elo`: best 58 (median t +0.04), worst 20 (-inf) over 8240 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 8240 configurations
+- moneyline · elo_ml · `k`: best 3 (median t -0.01), worst 4 (-inf) over 8240 configurations
+- moneyline · elo_ml · `market_blend`: best 0.375 (median t +0.18), worst 0.25 (-inf) over 8240 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 8240 configurations
+- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 8240 configurations
+- moneyline · elo_ml · `revert`: best 0.2916 (median t +0.07), worst 0.25 (-inf) over 8240 configurations
+- moneyline · rating_ml · `def_weight`: best 0.75 (median t +0.38), worst 0.5 (+0.13) over 240 configurations
+- moneyline · rating_ml · `halflife`: best 50 (median t +0.84), worst 5 (-0.67) over 240 configurations
+- moneyline · rating_ml · `season_carry`: best 0.8 (median t +0.72), worst 0.2 (-0.22) over 240 configurations
+- moneyline · srs_ml · `carry`: best 1.0 (median t -0.65), worst 0.2 (-1.00) over 686 configurations
+- moneyline · srs_ml · `hfa_pts`: best 0.0 (median t -0.71), worst 0.4 (-0.96) over 686 configurations
+- moneyline · srs_ml · `prior_w`: best 24.0 (median t +0.04), worst 2 (-1.00) over 686 configurations
 - total · pace_eff · `halflife`: best 5 (median t +0.02), worst 35 (-1.88) over 80 configurations
 - total · pace_eff · `season_carry`: best 0.2 (median t -1.05), worst 0.8 (-1.88) over 80 configurations
 - total · team_rating · `def_weight`: best 1.0 (median t +0.64), worst 0.5 (+0.24) over 240 configurations
