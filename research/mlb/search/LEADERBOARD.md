@@ -1,15 +1,15 @@
 # Research Lab search (MLB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-24T00:41:20Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-24T01:02:52Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-2540 configurations scored so far.
+2778 configurations scored so far.
 
 ## Moneyline -- top 25 of 0
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
 
-## Total -- top 25 of 2540
+## Total -- top 25 of 2778
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -29,17 +29,17 @@ _Generated 2026-10-24T00:41:20Z by research/lab/search.py. Scores are on the sea
 | 14 | `s-fd543e50` | Blend of 2: s-0301f320 + s-31871805 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
 | 15 | `s-5920e064` | Blend of 3: s-0301f320 + s-efe5dfd1 + s-3b3c7bfb | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
 | 16 | `s-93194dcc` | Blend of 3: s-3b3c7bfb + s-8186ebfa + s-f10abf65 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
-| 17 | `s-d5af1752` | Blend of 3: s-613d826a + s-8ecc6864 + s-82c6d6e1 | +0.14 | 2.54 | +0.13 | +0.11 | +0.18 |
-| 18 | `s-f643b3ff` | Blend of 2: s-3b3c7bfb + s-4af97677 | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 19 | `s-31871805` | Points rating · half-life 23 · carry 0.6625 · defense ×0.75 | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 20 | `s-1efac2c6` | Blend of 3: s-efe5dfd1 + s-3b3c7bfb + s-f10abf65 | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 21 | `s-30327587` | Blend of 2: s-0301f320 + s-8186ebfa | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 22 | `s-9afffb16` | Blend of 3: s-0301f320 + s-31871805 + s-8186ebfa | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 23 | `s-63a8c9de` | Blend of 3: s-efe5dfd1 + s-3b3c7bfb + s-8186ebfa | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 24 | `s-71196fa4` | Blend of 5: s-0301f320 + s-31871805 + s-efe5dfd1 + s-3b3c7bfb + s-8186ebfa | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
-| 25 | `s-5351e0c8` | Blend of 2: s-f10abf65 + s-4af97677 | +0.14 | 2.54 | +0.15 | +0.11 | +0.15 |
+| 17 | `s-f1f94a52` | Points rating · half-life 23 · carry 0.6656 · defense ×0.75 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 18 | `s-6a9b2ec2` | Points rating · half-life 23 · carry 0.6719 · defense ×0.75 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 19 | `s-2b4885c0` | Blend of 2: s-0301f320 + s-6a9b2ec2 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 20 | `s-72b2ae8a` | Blend of 2: s-0301f320 + s-f1f94a52 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 21 | `s-31c689b6` | Blend of 2: s-6a9b2ec2 + s-f1f94a52 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 22 | `s-dc068368` | Blend of 2: s-6a9b2ec2 + s-31871805 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 23 | `s-7af0af09` | Blend of 3: s-0301f320 + s-6a9b2ec2 + s-f1f94a52 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 24 | `s-28c25858` | Blend of 3: s-0301f320 + s-6a9b2ec2 + s-31871805 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
+| 25 | `s-83356834` | Blend of 3: s-0301f320 + s-f1f94a52 + s-31871805 | +0.14 | 2.55 | +0.15 | +0.11 | +0.15 |
 
 ## What the search learned (exploratory)
 
-- total · pace_eff · `halflife`: best 28 (median t +2.45), worst 60 (+0.47) over 589 configurations
-- total · team_rating · `halflife`: best 60 (median t +2.23), worst 5 (+1.68) over 1579 configurations
+- total · pace_eff · `halflife`: best 28 (median t +2.43), worst 60 (+0.46) over 650 configurations
+- total · team_rating · `halflife`: best 20 (median t +2.24), worst 5 (+1.68) over 1718 configurations
