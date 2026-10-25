@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-24T17:31:36.383768Z"
+    "synced_at": "2026-10-25T04:03:45.352805Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -107,7 +107,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-24T17:31:36.383768Z"
+    "synced_at": "2026-10-25T04:03:45.352805Z"
    },
    "doc_id": "CLE202610180"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-24T17:31:36.383768Z"
+    "synced_at": "2026-10-25T04:03:45.352805Z"
    },
    "doc_id": "MIL202610230"
   },
@@ -234,7 +234,7 @@
    "collection": "slate",
    "data": {
     "away_team": "TB",
-    "export_hash": "867fbe7a41814e5d98b07d58e8e9f62be0fb442b1946655d77dd337c18ebaf8b",
+    "export_hash": "8e7ddd566d4f45d7b088ee05f8e832fb4c3540adedf1930d293c2b852cbbf1db",
     "game_date": "2026-10-24",
     "game_id": "MIL202610240",
     "home_team": "MIL",
@@ -250,18 +250,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Drew Rasmussen vs Logan Henderson. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 0,
-      "description": "World Series",
-      "fair_price_favored": -321,
-      "favored": "MIL",
-      "favored_prob": 0.7627,
-      "games_in_series": 7,
-      "home_wins": 1,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.7627,
-      "series_game_number": 2
-     },
      "source_snapshot_time": "2026-10-24T17:31:31.115350+00:00",
      "spread_prob": 0.6148162241932473,
      "spread_side": "TB +1.5",
@@ -272,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-24T17:31:36.383768Z"
+    "synced_at": "2026-10-25T04:03:45.352805Z"
    },
    "doc_id": "MIL202610240"
   },
@@ -286,7 +274,7 @@
      "side": "MIL",
      "tier": "top50"
     },
-    "export_hash": "3d436faa996c7b2bbd43bde391319f212477b4043ebf74815acbff0459f51a8f",
+    "export_hash": "b670d817cb92a5322732c3e7a1aee23d0a50e70e21b45cb79ebd7c6c5c17dcc5",
     "game_date": "2026-10-24",
     "game_id": "MIL202610240",
     "home_team": "MIL",
@@ -297,10 +285,11 @@
      "moneyline_home": -125
     },
     "outcome": {
-     "away_score": null,
-     "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "away_score": 4,
+     "decision_correct": true,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 5,
+     "resolved": true,
      "spread_correct": null,
      "spread_decision_correct": null,
      "teaser_correct": null
@@ -319,7 +308,7 @@
    "doc_id": "MIL202610240"
   }
  ],
- "generated_at": "2026-10-24T17:31:36.383768Z",
+ "generated_at": "2026-10-25T04:03:45.352805Z",
  "n_docs": 8,
  "sport": "MLB"
 }
