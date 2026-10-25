@@ -1,0 +1,158 @@
+{
+ "id": "s-e4891f12",
+ "name": "Blend of 2: s-e425bd72 + s-066ccdc8",
+ "market": "spread",
+ "family": "Blend · search",
+ "parent": null,
+ "reason": "Found by search round 88: on 2014–2016 it beat the line by +0.52 pts a game (t = 2.66), positive in all three search periods. Now confirmed on 2017–2019, which the search never saw.",
+ "attempt": 1,
+ "ran_at": "2026-10-25T08:27:35Z",
+ "constitution": {
+  "version": "v11",
+  "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+ },
+ "candidate_sha256": "fddd1f4736c60aecce319e604bf554f98aa0fff562ea9166a2b4e0abb1b5e625",
+ "code_sha256": "e8fbb10d7e825b5c57f2e0b973e8415a3c952004419943c151a06937ca897c86",
+ "data_sha256": "12e7c71e70a2a2b2de9b0ae8fb009c4a49fcfdd8140d825cd63a556655600111",
+ "git_commit": "6bccfcde3de5ceef638632802893a15dedb1d627",
+ "run_number": 2466,
+ "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40174361400",
+ "effect_definition": "cover points per game beyond the line-only baseline (Constitution A5)",
+ "pricing": {
+  "price": 0.5,
+  "fee": 0.0175,
+  "break_even": 0.5175
+ },
+ "baseline": {
+  "side": -1.0,
+  "train_mean_cover": -0.2116,
+  "train_games": 2493,
+  "meaning": "line-only baseline takes this side on every game (+1 home/over, -1 away/under)"
+ },
+ "train": {
+  "games": 2493,
+  "effect": 0.3903,
+  "slope": 0.2377,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 2456,
+   "wins": 1258,
+   "losses": 1198,
+   "pushes": 37,
+   "win_rate": 0.5122,
+   "break_even": 0.5175,
+   "roi": -0.0102
+  }
+ },
+ "gates": [
+  {
+   "name": "2017",
+   "seasons": [
+    2017,
+    2017
+   ],
+   "games": 1233,
+   "effect": -0.1241,
+   "ci": [
+    -0.8962,
+    0.6464
+   ],
+   "se": 0.3913,
+   "p": 0.624417,
+   "slope": -0.0206,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 1199,
+    "wins": 615,
+    "losses": 584,
+    "pushes": 34,
+    "win_rate": 0.5129,
+    "break_even": 0.5175,
+    "roi": -0.0088
+   }
+  },
+  {
+   "name": "2018",
+   "seasons": [
+    2018,
+    2018
+   ],
+   "games": 1224,
+   "effect": 0.4216,
+   "ci": [
+    -0.3187,
+    1.1863
+   ],
+   "se": 0.3822,
+   "p": 0.134999,
+   "slope": -0.0134,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 1208,
+    "wins": 613,
+    "losses": 595,
+    "pushes": 16,
+    "win_rate": 0.5075,
+    "break_even": 0.5175,
+    "roi": -0.0194
+   }
+  },
+  {
+   "name": "2019",
+   "seasons": [
+    2019,
+    2019
+   ],
+   "games": 1072,
+   "effect": 0.667,
+   "ci": [
+    -0.1437,
+    1.4833
+   ],
+   "se": 0.4159,
+   "p": 0.054387,
+   "slope": 0.2657,
+   "pick_share": 1.0,
+   "kalshi": {
+    "picks": 1044,
+    "wins": 525,
+    "losses": 519,
+    "pushes": 28,
+    "win_rate": 0.5029,
+    "break_even": 0.5175,
+    "roi": -0.0283
+   }
+  }
+ ],
+ "rule_split": [],
+ "fit": {
+  "component 1": {},
+  "component 2": {}
+ },
+ "pooled": {
+  "name": "Pooled 2017–19",
+  "seasons": [
+   2017,
+   2019
+  ],
+  "games": 3529,
+  "effect": 0.3055,
+  "ci": [
+   -0.1454,
+   0.749
+  ],
+  "se": 0.2266,
+  "p": 0.08884,
+  "slope": 0.0954,
+  "pick_share": 1.0,
+  "kalshi": {
+   "picks": 3451,
+   "wins": 1753,
+   "losses": 1698,
+   "pushes": 78,
+   "win_rate": 0.508,
+   "break_even": 0.5175,
+   "roi": -0.0184
+  }
+ }
+}
