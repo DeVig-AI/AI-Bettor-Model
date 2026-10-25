@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NBA (EXPLORATORY)
 
-_Generated 2026-10-25T03:29:05Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-25T03:49:03Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2014–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -17,16 +17,16 @@ _Generated 2026-10-25T03:29:05Z by research/lab/report.py after each run. **Expl
 
 - none
 
-## What the search learned (23,799 configurations, 2014–2016 only)
+## What the search learned (24,088 configurations, 2014–2016 only)
 
-- spread · elo · `hfa_elo`: best 0 (median t +0.67), worst 150 (+0.07) over 15051 configurations
-- spread · elo · `k`: best 5 (median t +1.21), worst 40 (-1.17) over 15051 configurations
-- spread · elo · `market_blend`: best 1.0 (median t +0.58), worst 0.5 (+0.23) over 15051 configurations
-- spread · elo · `mov`: best none (median t +0.76), worst 538 (-0.16) over 15051 configurations
-- spread · elo · `revert`: best 0.7 (median t +0.74), worst 0.25 (+0.12) over 15051 configurations
-- spread · srs · `hfa_pts`: best 1.0 (median t +1.19), worst 4.0 (+0.79) over 6938 configurations
-- spread · srs · `margin_cap`: best 10 (median t +1.19), worst None (+0.73) over 6938 configurations
-- spread · srs · `prior_w`: best 24.0 (median t +1.24), worst 0.5 (+0.59) over 6938 configurations
+- spread · elo · `hfa_elo`: best 0 (median t +0.65), worst 150 (+0.06) over 15320 configurations
+- spread · elo · `k`: best 5 (median t +1.21), worst 40 (-1.16) over 15320 configurations
+- spread · elo · `market_blend`: best 1.0 (median t +0.57), worst 0.5 (+0.23) over 15320 configurations
+- spread · elo · `mov`: best none (median t +0.75), worst 538 (-0.16) over 15320 configurations
+- spread · elo · `revert`: best 0.7 (median t +0.73), worst 0.25 (+0.12) over 15320 configurations
+- spread · srs · `hfa_pts`: best 1.0 (median t +1.18), worst 4.0 (+0.79) over 6958 configurations
+- spread · srs · `margin_cap`: best 10 (median t +1.19), worst None (+0.73) over 6958 configurations
+- spread · srs · `prior_w`: best 24.0 (median t +1.24), worst 0.5 (+0.59) over 6958 configurations
 - spread · team_rating · `def_weight`: best 1.0 (median t +0.53), worst 0.5 (+0.06) over 360 configurations
 - spread · team_rating · `halflife`: best 60 (median t +1.15), worst 5 (-0.12) over 360 configurations
 - spread · team_rating · `season_carry`: best 0.8 (median t +0.45), worst 0.2 (+0.06) over 360 configurations
