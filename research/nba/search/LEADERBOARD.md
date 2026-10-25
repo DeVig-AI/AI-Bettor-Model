@@ -1,10 +1,10 @@
 # Research Lab search (NBA) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-25T00:00:58Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-25T00:17:44Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-20556 configurations scored so far.
+20854 configurations scored so far.
 
-## Spread -- top 25 of 19802
+## Spread -- top 25 of 20100
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -66,14 +66,14 @@ _Generated 2026-10-25T00:00:58Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `hfa_elo`: best 0 (median t +0.77), worst 150 (+0.08) over 12244 configurations
-- spread · elo · `k`: best 5 (median t +1.23), worst 40 (-1.19) over 12244 configurations
-- spread · elo · `market_blend`: best 1.0 (median t +0.70), worst 0.5 (+0.23) over 12244 configurations
-- spread · elo · `mov`: best none (median t +0.79), worst 538 (-0.14) over 12244 configurations
-- spread · elo · `revert`: best 0.7 (median t +0.87), worst 0.25 (+0.12) over 12244 configurations
-- spread · srs · `hfa_pts`: best 1.0 (median t +1.23), worst 4.0 (+0.79) over 6502 configurations
-- spread · srs · `margin_cap`: best 10 (median t +1.20), worst None (+0.72) over 6502 configurations
-- spread · srs · `prior_w`: best 24.0 (median t +1.25), worst 0.5 (+0.59) over 6502 configurations
+- spread · elo · `hfa_elo`: best 0 (median t +0.74), worst 150 (+0.08) over 12496 configurations
+- spread · elo · `k`: best 5 (median t +1.22), worst 40 (-1.19) over 12496 configurations
+- spread · elo · `market_blend`: best 1.0 (median t +0.68), worst 0.5 (+0.23) over 12496 configurations
+- spread · elo · `mov`: best none (median t +0.79), worst 538 (-0.13) over 12496 configurations
+- spread · elo · `revert`: best 0.7 (median t +0.84), worst 0.25 (+0.12) over 12496 configurations
+- spread · srs · `hfa_pts`: best 1.0 (median t +1.23), worst 4.0 (+0.79) over 6548 configurations
+- spread · srs · `margin_cap`: best 10 (median t +1.20), worst None (+0.72) over 6548 configurations
+- spread · srs · `prior_w`: best 24.0 (median t +1.25), worst 0.5 (+0.59) over 6548 configurations
 - spread · team_rating · `def_weight`: best 1.0 (median t +0.53), worst 0.5 (+0.06) over 360 configurations
 - spread · team_rating · `halflife`: best 60 (median t +1.15), worst 5 (-0.12) over 360 configurations
 - spread · team_rating · `season_carry`: best 0.8 (median t +0.45), worst 0.2 (+0.06) over 360 configurations
