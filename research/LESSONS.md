@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-10-25T00:44:16Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-10-25T01:02:55Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2006–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -112,15 +112,15 @@ _Generated 2026-10-25T00:44:16Z by research/lab/report.py after each run. **Expl
 - Signal short-week-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.
 - Signal travel-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / -0.01 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.
 
-## What the search learned (493,659 configurations, 2006–2016 only)
+## What the search learned (495,659 configurations, 2006–2016 only)
 
-- spread · elo · `bye_elo`: best 55 (median t +0.76), worst 0 (+0.25) over 469186 configurations
-- spread · elo · `k`: best 28 (median t +0.83), worst 6 (-0.17) over 469186 configurations
-- spread · elo · `market_blend`: best 0.375 (median t +0.64), worst 0.0 (+0.16) over 469186 configurations
-- spread · elo · `market_resist`: best 2.252 (median t +0.87), worst 0.375 (-0.86) over 469186 configurations
-- spread · elo · `mov`: best nfelo (median t +0.67), worst 538 (+0.20) over 469186 configurations
-- spread · elo · `revert`: best 0.0667 (median t +0.96), worst 0.7 (-0.21) over 469186 configurations
-- spread · elo · `travel_elo_per_1000mi`: best 12 (median t +0.66), worst 2 (+0.33) over 469186 configurations
+- spread · elo · `bye_elo`: best 55 (median t +0.76), worst 0 (+0.25) over 471186 configurations
+- spread · elo · `k`: best 28 (median t +0.83), worst 6 (-0.16) over 471186 configurations
+- spread · elo · `market_blend`: best 0.375 (median t +0.64), worst 0.0 (+0.16) over 471186 configurations
+- spread · elo · `market_resist`: best 2.252 (median t +0.87), worst 0.375 (-0.86) over 471186 configurations
+- spread · elo · `mov`: best nfelo (median t +0.67), worst 538 (+0.20) over 471186 configurations
+- spread · elo · `revert`: best 0.0667 (median t +0.96), worst 0.7 (-0.21) over 471186 configurations
+- spread · elo · `travel_elo_per_1000mi`: best 12 (median t +0.66), worst 2 (+0.33) over 471186 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.89), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.71) over 2197 configurations
 - spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'carry': 0.5, 'den': None, 'halflife': 8, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points scored beyond what EPA explains (red-zone finishing, short fields): partly luck that may not repeat.', 'side': 'offense'}] (median t +3.43), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2197 configurations
 - spread · srs · `hfa_pts`: best 3.5 (median t +2.06), worst 0.5 (+1.76) over 8712 configurations
