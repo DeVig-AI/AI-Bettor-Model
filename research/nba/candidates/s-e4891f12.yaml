@@ -1,0 +1,42 @@
+# Research Lab candidate s-e4891f12 -- written by the search; registered before it runs (A3). Never edit after it has run.
+id: s-e4891f12
+name: 'Blend of 2: s-e425bd72 + s-066ccdc8'
+market: spread
+family: Blend · search
+parent: null
+reason: 'Found by search round 88: on 2014–2016 it beat the line by +0.52 pts a game (t = 2.66), positive in all three search
+  periods. Now confirmed on 2017–2019, which the search never saw.'
+source: automatic search (NBA, Constitution v11 A3.3c)
+search:
+  round: 88
+  t: 2.6551
+  effect: 0.5195
+  periods:
+  - 0.2974
+  - 0.5384
+  - 0.7278
+  games: 3642
+  sent_at: '2026-10-25T08:13:31Z'
+model:
+  type: blend
+  params:
+    components:
+    - market: spread
+      model:
+        params:
+          carry: 0.75
+          hfa_pts: 1.0
+          margin_cap: 30
+          prior_w: 32.0
+        type: srs
+    - market: spread
+      model:
+        params:
+          carry: 0.75
+          hfa_pts: 0.5
+          margin_cap: 22
+          prior_w: 32.0
+        type: srs
+    weights:
+    - 0.5
+    - 0.5
