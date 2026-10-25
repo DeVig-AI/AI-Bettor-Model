@@ -1,10 +1,10 @@
 # Research Lab search (NHL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-25T19:12:33Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-25T19:34:40Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-36969 configurations scored so far.
+37357 configurations scored so far.
 
-## Moneyline -- top 25 of 36203
+## Moneyline -- top 25 of 36586
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -17,24 +17,24 @@ _Generated 2026-10-25T19:12:33Z by research/lab/search.py. Scores are on the sea
 | 7 | `s-82cfaa9d` | Elo · K6 · fixed home edge · revert 0.40 · market blend 0.5 · Elo win chance | +0.46 | 2.36 | -0.22 | +0.46 | +1.15 |
 | 8 | `s-37e1a343` | Blend of 2: s-82cfaa9d + s-fafdfaae | +0.47 | 2.35 | -0.12 | +0.36 | +1.16 |
 | 9 | `s-ca3e00b8` | Blend of 3: s-93306647 + s-82cfaa9d + s-fafdfaae | +0.47 | 2.35 | -0.12 | +0.36 | +1.16 |
-| 10 | `s-62dbbe0d` | Blend of 2: s-93306647 + s-4b7a35e9 | +0.41 | 2.14 | -0.31 | +0.46 | +1.10 |
-| 11 | `s-552cf30f` | Blend of 2: s-93306647 + s-1b5f8390 | +0.43 | 2.12 | -0.18 | +0.30 | +1.16 |
-| 12 | `s-e8aff95f` | Blend of 3: s-5e90df05 + s-85ff0da4 + s-b2c8fb9d | +1.35 | 1.99 | +0.93 | +0.27 | +2.86 |
-| 13 | `s-80d57a4d` | Blend of 2: s-8fa50c11 + s-97285eac | +1.34 | 1.98 | +1.06 | +0.13 | +2.83 |
-| 14 | `s-d0f38df8` | Blend of 3: s-93306647 + s-82cfaa9d + s-253e69d7 | +0.44 | 1.96 | +0.01 | +0.38 | +0.92 |
-| 15 | `s-1b5f8390` | Elo · K6 · fixed home edge · revert 0.29 · market blend 0.5 · Elo win chance | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
-| 16 | `s-e00d0149` | Blend of 2: s-93306647 + s-fafdfaae | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
-| 17 | `s-c8277d6e` | Blend of 3: s-93306647 + s-1b5f8390 + s-fafdfaae | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
-| 18 | `s-f88de69e` | Blend of 3: s-5e90df05 + s-8fa50c11 + s-97285eac | +1.31 | 1.93 | +0.94 | +0.13 | +2.86 |
-| 19 | `s-671a81f7` | Blend of 2: s-85ff0da4 + s-b2c8fb9d | +1.31 | 1.93 | +0.93 | +0.13 | +2.86 |
-| 20 | `s-5e90df05` | Elo · K8 · fixed home edge · 538 margin · revert 0.25 · Elo win chance | +1.31 | 1.92 | +0.88 | +0.19 | +2.86 |
-| 21 | `s-fafdfaae` | Elo · K6 · fixed home edge · revert 0.25 · market blend 0.5 · Elo win chance | +0.41 | 1.88 | -0.17 | +0.28 | +1.13 |
-| 22 | `s-e5063ac1` | Blend of 2: s-28a66837 + s-b2c8fb9d | +1.18 | 1.88 | +0.85 | -0.28 | +2.97 |
-| 23 | `s-045663c8` | Blend of 2: s-82cfaa9d + s-bc3f6a37 | +0.44 | 1.87 | +0.01 | +0.52 | +0.78 |
-| 24 | `s-5aac150f` | Blend of 2: s-5e90df05 + s-85ff0da4 | +1.27 | 1.86 | +0.65 | +0.18 | +2.99 |
-| 25 | `s-5c127ab0` | Blend of 3: s-5e90df05 + s-85ff0da4 + s-939595ed | +1.20 | 1.83 | +0.51 | +0.13 | +2.97 |
+| 10 | `s-59784c98` | Blend of 2: s-82cfaa9d + s-da2d74e7 | +0.47 | 2.26 | -0.18 | +0.30 | +1.29 |
+| 11 | `s-62dbbe0d` | Blend of 2: s-93306647 + s-4b7a35e9 | +0.41 | 2.14 | -0.31 | +0.46 | +1.10 |
+| 12 | `s-552cf30f` | Blend of 2: s-93306647 + s-1b5f8390 | +0.43 | 2.12 | -0.18 | +0.30 | +1.16 |
+| 13 | `s-b63eab1e` | Blend of 2: s-fafdfaae + s-da2d74e7 | +0.46 | 2.07 | -0.10 | +0.28 | +1.22 |
+| 14 | `s-e8aff95f` | Blend of 3: s-5e90df05 + s-85ff0da4 + s-b2c8fb9d | +1.35 | 1.99 | +0.93 | +0.27 | +2.86 |
+| 15 | `s-80d57a4d` | Blend of 2: s-8fa50c11 + s-97285eac | +1.34 | 1.98 | +1.06 | +0.13 | +2.83 |
+| 16 | `s-d0f38df8` | Blend of 3: s-93306647 + s-82cfaa9d + s-253e69d7 | +0.44 | 1.96 | +0.01 | +0.38 | +0.92 |
+| 17 | `s-1b5f8390` | Elo · K6 · fixed home edge · revert 0.29 · market blend 0.5 · Elo win chance | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
+| 18 | `s-e00d0149` | Blend of 2: s-93306647 + s-fafdfaae | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
+| 19 | `s-c8277d6e` | Blend of 3: s-93306647 + s-1b5f8390 + s-fafdfaae | +0.41 | 1.94 | -0.25 | +0.25 | +1.22 |
+| 20 | `s-f88de69e` | Blend of 3: s-5e90df05 + s-8fa50c11 + s-97285eac | +1.31 | 1.93 | +0.94 | +0.13 | +2.86 |
+| 21 | `s-671a81f7` | Blend of 2: s-85ff0da4 + s-b2c8fb9d | +1.31 | 1.93 | +0.93 | +0.13 | +2.86 |
+| 22 | `s-5e90df05` | Elo · K8 · fixed home edge · 538 margin · revert 0.25 · Elo win chance | +1.31 | 1.92 | +0.88 | +0.19 | +2.86 |
+| 23 | `s-fafdfaae` | Elo · K6 · fixed home edge · revert 0.25 · market blend 0.5 · Elo win chance | +0.41 | 1.88 | -0.17 | +0.28 | +1.13 |
+| 24 | `s-e5063ac1` | Blend of 2: s-28a66837 + s-b2c8fb9d | +1.18 | 1.88 | +0.85 | -0.28 | +2.97 |
+| 25 | `s-045663c8` | Blend of 2: s-82cfaa9d + s-bc3f6a37 | +0.44 | 1.87 | +0.01 | +0.52 | +0.78 |
 
-## Total -- top 25 of 766
+## Total -- top 25 of 771
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -66,19 +66,19 @@ _Generated 2026-10-25T19:12:33Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `hfa_elo`: best 88 (median t +0.26), worst 20 (-inf) over 34147 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 34147 configurations
-- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 34147 configurations
-- moneyline · elo_ml · `market_blend`: best 0.6875 (median t +0.35), worst 0.0 (-inf) over 34147 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 34147 configurations
-- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 34147 configurations
-- moneyline · elo_ml · `revert`: best 0.1 (median t +0.41), worst 0.25 (-inf) over 34147 configurations
-- moneyline · rating_ml · `halflife`: best 55 (median t +0.95), worst 10 (-0.66) over 369 configurations
-- moneyline · rating_ml · `season_carry`: best 0.65 (median t +0.92), worst 0.2 (-0.10) over 369 configurations
-- moneyline · srs_ml · `carry`: best 0.95 (median t -0.32), worst 0.2 (-0.99) over 1141 configurations
-- moneyline · srs_ml · `hfa_pts`: best 0.025 (median t -0.46), worst 0.4 (-0.86) over 1141 configurations
-- moneyline · srs_ml · `prior_w`: best 32.0 (median t +0.29), worst 2 (-0.98) over 1141 configurations
+- moneyline · elo_ml · `hfa_elo`: best 88 (median t +0.24), worst 20 (-inf) over 34418 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 34418 configurations
+- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 34418 configurations
+- moneyline · elo_ml · `market_blend`: best 0.6875 (median t +0.34), worst 0.0 (-inf) over 34418 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 34418 configurations
+- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 34418 configurations
+- moneyline · elo_ml · `revert`: best 0.1 (median t +0.31), worst 0.25 (-inf) over 34418 configurations
+- moneyline · rating_ml · `halflife`: best 55 (median t +0.91), worst 10 (-0.65) over 378 configurations
+- moneyline · rating_ml · `season_carry`: best 0.8 (median t +0.86), worst 0.2 (-0.10) over 378 configurations
+- moneyline · srs_ml · `carry`: best 0.95 (median t -0.29), worst 0.2 (-0.95) over 1234 configurations
+- moneyline · srs_ml · `hfa_pts`: best 0.025 (median t -0.45), worst 0.4 (-0.82) over 1234 configurations
+- moneyline · srs_ml · `prior_w`: best 32.0 (median t +0.31), worst 2 (-0.97) over 1234 configurations
 - total · pace_eff · `halflife`: best 5 (median t +0.01), worst 35 (-1.88) over 130 configurations
 - total · pace_eff · `season_carry`: best 0.2 (median t -1.52), worst 0.5 (-1.88) over 130 configurations
-- total · team_rating · `halflife`: best 60 (median t +0.91), worst 10 (-0.53) over 377 configurations
-- total · team_rating · `season_carry`: best 0.525 (median t +0.75), worst 0.2 (+0.33) over 377 configurations
+- total · team_rating · `halflife`: best 60 (median t +0.91), worst 10 (-0.53) over 382 configurations
+- total · team_rating · `season_carry`: best 0.45 (median t +0.74), worst 0.2 (+0.33) over 382 configurations
