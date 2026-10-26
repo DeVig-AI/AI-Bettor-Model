@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-26T15:59:25Z",
+ "updated_at": "2026-10-26T16:02:19Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3196,7 +3196,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-26T16:01:00Z",
+   "updated_at": "2026-10-26T16:03:30Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4732,7 +4732,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-26T15:59:22Z",
+   "updated_at": "2026-10-26T16:03:37Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5147,7 +5147,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-26T16:01:11Z",
+   "updated_at": "2026-10-26T16:02:18Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5181,6 +5181,35 @@
    "lessons": [],
    "promoted": [],
    "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 168",
+     "started_at": "2026-10-26T16:02:16Z",
+     "finished_at": "2026-10-26T16:02:16Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40348519659",
+     "summary": "300 models scored → 3 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 300
+      },
+      {
+       "label": "consistent",
+       "count": 3
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 167",
@@ -5441,40 +5470,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 158",
-     "started_at": "2026-10-26T09:42:14Z",
-     "finished_at": "2026-10-26T09:42:14Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40299021071",
-     "summary": "299 models scored → 5 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 299
-      },
-      {
-       "label": "consistent",
-       "count": 5
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-26T16:01:13Z",
+   "updated_at": "2026-10-26T16:03:38Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
