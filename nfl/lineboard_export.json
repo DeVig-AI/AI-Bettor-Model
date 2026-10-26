@@ -3,160 +3,6 @@
   {
    "collection": "slate",
    "data": {
-    "away_team": "SEA",
-    "export_hash": "d51112fb675bc770884bf7f1f9e62beac09f3df9613b5f26aebede4c1e459fb0",
-    "game_id": "2026_06_SEA_DEN",
-    "home_team": "DEN",
-    "injury_report": {
-     "as_of": "2026-10-16T00:09:33.954745Z",
-     "away": [
-      {
-       "espn_updated": "2026-10-15T00:24Z",
-       "injury": "Ankle",
-       "name": "Drake Thomas",
-       "pos": "LB",
-       "return_date": "2026-10-25",
-       "share_basis": "this season",
-       "snap_share": 0.87,
-       "status": "Out"
-      }
-     ],
-     "home": [
-      {
-       "espn_updated": "2026-10-15T22:49Z",
-       "injury": "Ankle",
-       "name": "Talanoa Hufanga",
-       "pos": "S",
-       "return_date": "2026-10-25",
-       "share_basis": "this season",
-       "snap_share": 0.93,
-       "status": "Out"
-      }
-     ],
-     "note": "Information only -- the pick was made by the frozen model and does not account for injuries.",
-     "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
-     "source": "ESPN injury feed + nflverse snap counts"
-    },
-    "key_ladder": {
-     "main_home_point": 2.5,
-     "rungs": [
-      {
-       "book": "draftkings",
-       "crosses": "3",
-       "ev": 0.0115,
-       "ev_low": -0.026,
-       "n": 1168,
-       "odds": -242,
-       "official": false,
-       "p_cover": 0.7158,
-       "p_high": 0.7409,
-       "p_low": 0.6892,
-       "pin_agree": false,
-       "point": 3.5,
-       "result": "WIN",
-       "team": "SEA",
-       "tier": "LEAN"
-      }
-     ],
-     "snapshot_utc": "2026-10-15T22:52:43Z",
-     "test": "KEY_LADDER_LIVE_V1"
-    },
-    "kickoff_time": "2026-10-16T00:15:00Z",
-    "market": {
-     "moneyline_away": -140,
-     "moneyline_home": 120,
-     "spread_away_odds": -115,
-     "spread_home": 2.5,
-     "spread_home_odds": -105
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the NFL tracker on GitHub (Model 1.0, frozen). Line shown is the one the tracker locked. Spread read is information only -- no demonstrated edge.",
-     "pred_home_margin": 1.9879668382470754,
-     "sees_injuries": false,
-     "source_snapshot_time": "2026-10-14T17:30:16.798169+00:00",
-     "spread_side": "DEN",
-     "status": "locked",
-     "version": "1.0",
-     "winner_prob": 0.5595956558459151,
-     "winner_side": "SEA"
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
-    "week": 6
-   },
-   "doc_id": "2026_06_SEA_DEN"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "SEA",
-    "decision": {
-     "action": "PASS",
-     "prob": 0.5595956558459151,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "da7f62f2c7832dbb5a3f33860c7849dd89d5f2336ba3677f45a71a2edb812223",
-    "game_id": "2026_06_SEA_DEN",
-    "home_team": "DEN",
-    "kickoff_time": "2026-10-16T00:15:00Z",
-    "locked_at": "2026-10-14T17:30:16.798169+00:00",
-    "market_snapshot": {
-     "moneyline_away": -140,
-     "moneyline_home": 120,
-     "spread_away_odds": -115,
-     "spread_home": 2.5,
-     "spread_home_odds": -105
-    },
-    "model_version": "1.0",
-    "outcome": {
-     "away_score": 14,
-     "decision_correct": null,
-     "graded_source": "nflverse final score via the GitHub Actions grader",
-     "home_score": 17,
-     "resolved": true,
-     "spread_correct": true,
-     "teaser_correct": true
-    },
-    "season": 2026,
-    "sport": "NFL",
-    "spread_read": {
-     "pred_home_margin": 1.9879668382470754,
-     "side": "DEN"
-    },
-    "teaser_signal": {
-     "dogPoints": 2.5,
-     "dogTeam": "DEN",
-     "strength": "strongest",
-     "tease": 10
-    },
-    "tracker_deciders": {
-     "NEW_V2_1_CORRECTED_THRESHOLDS": {
-      "action": "PASS",
-      "side": null
-     },
-     "OLD_LAB28_43_HYBRID": {
-      "action": "ML",
-      "side": "AWAY"
-     },
-     "V3_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     },
-     "V4_BEST_PRICE_ML_ONLY_TAU019": {
-      "action": "PASS",
-      "side": null
-     }
-    },
-    "week": 6
-   },
-   "doc_id": "2026_06_SEA_DEN"
-  },
-  {
-   "collection": "slate",
-   "data": {
     "away_team": "HOU",
     "export_hash": "46f6aecff21370b3f235d274c274c3258d1d3a775b618f4a63de1eff44d16eff",
     "game_id": "2026_06_HOU_JAX",
@@ -223,7 +69,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_HOU_JAX"
@@ -371,7 +217,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_BAL_CLE"
@@ -545,7 +391,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_CAR_PHI"
@@ -705,7 +551,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_CHI_ATL"
@@ -913,7 +759,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_NO_NYG"
@@ -1124,7 +970,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_NYJ_NE"
@@ -1345,7 +1191,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_PIT_TB"
@@ -1529,7 +1375,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Pinnacle",
      "ev": 0.0587,
@@ -1784,7 +1630,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_ARI_LA"
@@ -1991,7 +1837,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_BUF_LV"
@@ -2251,7 +2097,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 6
    },
    "doc_id": "2026_06_LAC_KC"
@@ -2424,7 +2270,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.1062,
@@ -2674,7 +2520,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.0678,
@@ -2921,7 +2767,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.0516,
@@ -3097,7 +2943,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_PIT_NO"
@@ -3322,7 +3168,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.0343,
@@ -3575,7 +3421,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_CLE_TEN"
@@ -3823,7 +3669,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.0221,
@@ -4050,7 +3896,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "weather_total": {
      "book": "Kalshi",
      "ev": 0.0237,
@@ -4294,7 +4140,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_NYG_HOU"
@@ -4547,7 +4393,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_SF_ATL"
@@ -4725,7 +4571,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_TB_CAR"
@@ -4955,7 +4801,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_DEN_ARI"
@@ -5218,7 +5064,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_GB_DET"
@@ -5464,7 +5310,7 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_LA_LV"
@@ -5558,7 +5404,7 @@
    "collection": "slate",
    "data": {
     "away_team": "KC",
-    "export_hash": "e7875a508dfe2b1c553b1f3a0ffae4eef41d1b76037a1907ee3e6ca5c84881cd",
+    "export_hash": "13fd610486490e94d32ad09b9b72cf063d965e0035851dcf8b00f4a13114c2c0",
     "game_id": "2026_07_KC_SEA",
     "home_team": "SEA",
     "injury_report": {
@@ -5716,14 +5562,14 @@
      "sees_injuries": true,
      "source_snapshot_time": "2026-10-25T23:31:59Z",
      "spread_side": "KC",
-     "status": "updates until kickoff",
+     "status": "locked",
      "version": "2.0",
      "winner_prob": 0.5324530000000001,
      "winner_side": "KC"
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
     "week": 7
    },
    "doc_id": "2026_07_KC_SEA"
@@ -5822,7 +5668,7 @@
    "collection": "slate",
    "data": {
     "away_team": "DAL",
-    "export_hash": "4170bd25838d18bfc6a454c14f756567839dbe0a790371dcf6f717f4977dff13",
+    "export_hash": "8f1152ade4045b39b753488694de1b1d93afa00a6cc6d378b2f821e2acc2b3ca",
     "game_id": "2026_07_DAL_PHI",
     "home_team": "PHI",
     "injury_report": {
@@ -5960,7 +5806,20 @@
     },
     "season": 2026,
     "sport": "NFL",
-    "synced_at": "2026-10-25T23:32:19.625488Z",
+    "synced_at": "2026-10-26T00:41:41.185305Z",
+    "weather_total": {
+     "book": "Kalshi",
+     "ev": 0.0061,
+     "forecast_temp_f": 57.3,
+     "forecast_wind_mph": 5.4,
+     "indoor": false,
+     "line": 43.5,
+     "odds": null,
+     "preview": true,
+     "preview_generated_utc": "2026-10-26T00:41:18Z",
+     "side": "pass",
+     "test": "PREVIEW (not counted)"
+    },
     "week": 7
    },
    "doc_id": "2026_07_DAL_PHI"
@@ -6033,7 +5892,7 @@
    "doc_id": "2026_07_DAL_PHI"
   }
  ],
- "generated_at": "2026-10-25T23:32:19.625488Z",
- "n_docs": 56,
+ "generated_at": "2026-10-26T00:41:41.185305Z",
+ "n_docs": 54,
  "sport": "NFL"
 }
