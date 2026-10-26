@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-25T20:07:01.968481Z",
+ "generated_at": "2026-10-26T02:08:57.261457Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -101,7 +101,7 @@
   ],
   "BUF": [
    {
-    "espn_updated": "2026-10-25T19:49Z",
+    "espn_updated": "2026-10-26T01:00Z",
     "injury": "Suspension",
     "name": "C.J. Gardner-Johnson",
     "pos": "S",
@@ -113,6 +113,16 @@
   ],
   "CAR": [
    {
+    "espn_updated": "2026-10-25T22:30Z",
+    "injury": "Leg",
+    "name": "Taylor Moton",
+    "pos": "OT",
+    "return_date": "2027-01-03",
+    "share_basis": "this season",
+    "snap_share": 1.0,
+    "status": "Doubtful"
+   },
+   {
     "espn_updated": "2026-10-25T15:37Z",
     "injury": "Hamstring",
     "name": "Jaelan Phillips",
@@ -121,16 +131,6 @@
     "share_basis": "this season",
     "snap_share": 0.64,
     "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-25T19:33Z",
-    "injury": "Ankle",
-    "name": "Taylor Moton",
-    "pos": "OT",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 1.0,
-    "status": "Questionable"
    }
   ],
   "CHI": [
@@ -182,7 +182,7 @@
     "injury": "Head",
     "name": "Tytus Howard",
     "pos": "OT",
-    "return_date": "2026-10-25",
+    "return_date": "2026-11-01",
     "share_basis": "this season",
     "snap_share": 0.91,
     "status": "Questionable"
@@ -192,7 +192,7 @@
     "injury": "Hamstring",
     "name": "Myles Harden",
     "pos": "CB",
-    "return_date": "2026-10-25",
+    "return_date": "2026-11-01",
     "share_basis": "this season",
     "snap_share": 0.63,
     "status": "Questionable"
@@ -220,6 +220,26 @@
     "share_basis": "this season",
     "snap_share": 0.93,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-10-25T23:45Z",
+    "injury": "Hamstring",
+    "name": "Zach Allen",
+    "pos": "DE",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.69,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-25T23:46Z",
+    "injury": "Chest",
+    "name": "Jaylen Waddle",
+    "pos": "WR",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.68,
+    "status": "Questionable"
    }
   ],
   "DET": [
@@ -256,16 +276,6 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-10-19T21:14Z",
-    "injury": "Knee - ACL",
-    "name": "Micah Parsons",
-    "pos": "DE",
-    "return_date": "2026-10-29",
-    "share_basis": "last season",
-    "snap_share": 0.78,
-    "status": "Out"
-   },
-   {
     "espn_updated": "2026-10-25T18:58Z",
     "injury": "Coach's Decision",
     "name": "Jager Burton",
@@ -274,6 +284,26 @@
     "share_basis": "this season",
     "snap_share": 0.7,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-10-25T22:11Z",
+    "injury": "Ankle",
+    "name": "Sean Rhyan",
+    "pos": "G",
+    "return_date": "2026-10-29",
+    "share_basis": "this season",
+    "snap_share": 1.0,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-25T20:50Z",
+    "injury": "Quadriceps",
+    "name": "Jacob Monk",
+    "pos": "C",
+    "return_date": "2026-10-29",
+    "share_basis": "this season",
+    "snap_share": 0.96,
+    "status": "Questionable"
    }
   ],
   "HOU": [
@@ -282,7 +312,7 @@
     "injury": "Shoulder - AC Joint",
     "name": "Jalen Pitre",
     "pos": "S",
-    "return_date": "2026-11-01",
+    "return_date": "2026-11-08",
     "share_basis": "this season",
     "snap_share": 0.92,
     "status": "Out"
@@ -292,7 +322,7 @@
     "injury": "Concussion",
     "name": "Reed Blankenship",
     "pos": "S",
-    "return_date": "2026-11-01",
+    "return_date": "2026-11-08",
     "share_basis": "this season",
     "snap_share": 0.86,
     "status": "Out"
@@ -324,7 +354,7 @@
     "injury": "Undisclosed",
     "name": "Justin Walley",
     "pos": "CB",
-    "return_date": "2026-10-25",
+    "return_date": "2026-11-01",
     "share_basis": "this season",
     "snap_share": 0.73,
     "status": "Questionable"
@@ -374,7 +404,7 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-10-23T17:04Z",
+    "espn_updated": "2026-10-25T23:04Z",
     "injury": "Hamstring",
     "name": "Rashee Rice",
     "pos": "WR",
@@ -382,16 +412,6 @@
     "share_basis": "this season",
     "snap_share": 0.62,
     "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-24T18:14Z",
-    "injury": "Knee",
-    "name": "L'Jarius Sneed",
-    "pos": "CB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.72,
-    "status": "Questionable"
    }
   ],
   "LA": [
@@ -514,7 +534,7 @@
     "status": "Injured Reserve"
    },
    {
-    "espn_updated": "2026-10-25T19:32Z",
+    "espn_updated": "2026-10-25T20:33Z",
     "injury": "Knee",
     "name": "Aaron Jones Sr.",
     "pos": "RB",
@@ -697,17 +717,17 @@
   "PIT": [],
   "SEA": [
    {
-    "espn_updated": "2026-10-24T00:43Z",
+    "espn_updated": "2026-10-25T23:00Z",
     "injury": "Elbow",
     "name": "Drew Lock",
     "pos": "QB",
-    "return_date": "2026-10-25",
+    "return_date": "2026-11-02",
     "share_basis": "this season",
     "snap_share": 0.95,
-    "status": "Questionable"
+    "status": "Out"
    },
    {
-    "espn_updated": "2026-10-24T00:47Z",
+    "espn_updated": "2026-10-25T22:52Z",
     "injury": "Ankle",
     "name": "Drake Thomas",
     "pos": "LB",
@@ -715,26 +735,6 @@
     "share_basis": "this season",
     "snap_share": 0.87,
     "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-25T14:21Z",
-    "injury": "Hip",
-    "name": "Nick Emmanwori",
-    "pos": "S",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.68,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-10-22T23:22Z",
-    "injury": "Knee",
-    "name": "DeMarcus Lawrence",
-    "pos": "LB",
-    "return_date": "2026-10-25",
-    "share_basis": "this season",
-    "snap_share": 0.61,
-    "status": "Questionable"
    }
   ],
   "SF": [
