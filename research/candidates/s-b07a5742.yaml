@@ -1,0 +1,48 @@
+# Research Lab candidate s-b07a5742 -- written by the search; registered before it runs (A3). Never edit after it has run.
+id: s-b07a5742
+name: Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + bye-diff, qb-change, travel-diff
+market: spread
+family: Signals · search
+parent: null
+reason: 'Found by search round 534: on 2006–2016 it beat the line by +1.22 pts a game (t = 4.25), positive in all three search
+  periods. Now confirmed on 2017–2024, which the search never saw.'
+source: automatic search (NFL, Constitution v11 A3.3c)
+search:
+  round: 534
+  t: 4.2528
+  effect: 1.224
+  periods:
+  - 2.0993
+  - 0.8633
+  - 0.5381
+  games: 2937
+  sent_at: '2026-10-26T06:35:22Z'
+model:
+  type: signals
+  params:
+    base:
+      params:
+        carry: 0.6
+        hfa_pts: 3.5
+        margin_cap: 35
+        prior_w: 4
+      type: srs
+    ridge: 1.0
+    signals:
+    - field: off_bye_diff
+      id: bye-diff
+      kind: schedule
+      markets:
+      - spread
+      reason: Coming off a bye means extra rest and game-planning time.
+    - id: qb-change
+      kind: qb_change
+      markets:
+      - spread
+      reason: A new starting quarterback changes a team more than any other player.
+    - field: travel_diff
+      id: travel-diff
+      kind: schedule
+      markets:
+      - spread
+      reason: Long trips cost the travelling team rest and routine.
