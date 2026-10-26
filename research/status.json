@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-26T13:05:33Z",
+ "updated_at": "2026-10-26T13:15:45Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3196,7 +3196,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-26T13:05:20Z",
+   "updated_at": "2026-10-26T13:15:31Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3365,20 +3365,20 @@
      "at": "2026-10-24T08:17:25Z"
     },
     {
-     "text": "Signal off-comp-ppa~h12~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.13 / +0.11 / -0.09 pts in 2018 / 2019 / 2021.",
+     "text": "Signal off-comp-ppa~h12~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / +0.03 / -0.02 pts in 2018 / 2019 / 2021.",
      "kind": "faded",
      "candidates": [],
      "source": "search",
      "from": "search · 2018–2021 only",
-     "at": "2026-10-26T11:59:29Z"
+     "at": "2026-10-26T13:15:28Z"
     },
     {
-     "text": "Signal off-comp-ppa~h12~h24 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.11 / +0.02 / -0.07 pts in 2018 / 2019 / 2021.",
+     "text": "Signal off-comp-ppa~h12~h24 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.08 / -0.01 / -0.01 pts in 2018 / 2019 / 2021.",
      "kind": "faded",
      "candidates": [],
      "source": "search",
      "from": "search · 2018–2021 only",
-     "at": "2026-10-26T11:59:29Z"
+     "at": "2026-10-26T13:15:28Z"
     },
     {
      "text": "Signal off-comp-ppa~h3 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 4); on average +0.07 / +0.09 / -0.16 pts in 2018 / 2019 / 2021.",
@@ -3517,12 +3517,12 @@
      "at": "2026-10-24T08:17:25Z"
     },
     {
-     "text": "Signal off-ppa~h12~c0.6~h24 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 2); on average +0.07 / +0.09 / -0.12 pts in 2018 / 2019 / 2021.",
+     "text": "Signal off-ppa~h12~c0.6~h24 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 3); on average +0.03 / +0.04 / -0.07 pts in 2018 / 2019 / 2021.",
      "kind": "faded",
      "candidates": [],
      "source": "search",
      "from": "search · 2018–2021 only",
-     "at": "2026-10-26T11:59:29Z"
+     "at": "2026-10-26T13:15:28Z"
     },
     {
      "text": "Signal off-ppa~h12~h24 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 4); on average +0.03 / +0.02 / -0.02 pts in 2018 / 2019 / 2021.",
@@ -4441,21 +4441,29 @@
    "runs": [
     {
      "kind": "search",
-     "name": "Search round 367 (CFB, running)",
-     "started_at": "2026-10-26T12:45:18Z",
-     "finished_at": null,
+     "name": "Search round 367",
+     "started_at": "2026-10-26T13:15:28Z",
+     "finished_at": "2026-10-26T13:15:28Z",
      "duration_s": null,
-     "run_number": 2549,
+     "run_number": null,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40323820091",
-     "summary": "572 of 800 models scored on 2018–2021",
+     "summary": "849 models scored → 247 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 572
+       "count": 849
       },
       {
-       "label": "planned this round",
-       "count": 800
+       "label": "consistent",
+       "count": 247
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
       }
      ],
      "steps": []
@@ -4724,7 +4732,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-26T13:07:13Z",
+   "updated_at": "2026-10-26T13:17:27Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5139,7 +5147,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-26T13:07:16Z",
+   "updated_at": "2026-10-26T13:17:30Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5466,7 +5474,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-26T13:07:19Z",
+   "updated_at": "2026-10-26T13:17:33Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
