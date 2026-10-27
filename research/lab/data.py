@@ -217,6 +217,9 @@ def load_lab(data_dir=None):
     P = _paths(data_dir or C.DATA_DIR)
     out = {}
     for k, p in P.items():
+        if k == "injury_games" and not os.path.exists(p):    # a cache from before v12: no injury rows (features 0)
+            out[k] = pd.DataFrame(columns=INJURY_COLS)
+            continue
         if not os.path.exists(p):
             raise FileNotFoundError(f"lab cache missing {p}; run: python3 -m research.lab.data fetch")
         out[k] = _guard(pd.read_csv(p, low_memory=False), k, C.LAB_MAX_SEASON)
@@ -226,7 +229,8 @@ def load_lab(data_dir=None):
 def data_fingerprint(data_dir=None):
     h = hashlib.sha256()
     for p in _paths(data_dir or C.DATA_DIR).values():
-        h.update(sha_file(p).encode())
+        if os.path.exists(p) or not p.endswith("injury_games.csv"):
+            h.update(sha_file(p).encode())
     return h.hexdigest()
 
 

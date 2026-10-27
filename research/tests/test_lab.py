@@ -568,6 +568,11 @@ class Sealed(unittest.TestCase):
             for k, v in d.items():
                 v[v.season <= 2024].to_csv(os.path.join(tmp, f"{k}.csv"), index=False)
             self.assertEqual(int(D.load_lab(tmp)["games"].season.max()), 2024)
+            self.assertEqual(len(D.load_lab(tmp)["injury_games"]), 0)        # a cache from before v12: no rows
+            pd.DataFrame([{"season": 2025, "game_id": "2025_01_A_B", "d_qb": 1, "d_out": 0, "d_q": 0}]).to_csv(
+                os.path.join(tmp, "injury_games.csv"), index=False)
+            with self.assertRaises(D.SealedDataError):                     # injury rows are guarded too
+                D.load_lab(tmp)
         finally:
             shutil.rmtree(tmp)
 
