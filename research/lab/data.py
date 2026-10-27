@@ -34,6 +34,8 @@ PBP_COLS = ["game_id", "season", "posteam", "defteam", "play_type", "epa", "qb_k
 TEAM_COLS = ["season", "game_id", "team", "plays", "epa", "pass_plays", "pass_epa", "early_plays", "early_epa", "succ",
              "noto_plays", "noto_epa", "comp_plays", "comp_epa", "top_seconds"]
 QB_COLS = ["season", "game_id", "team", "qb_id", "att", "cmp", "yds", "td", "int", "sacks", "ratt", "ryds", "rtd"]
+INJURY_COLS = ["season", "game_id", "d_qb", "d_out", "d_q"]     # v12: home minus away, research/injuries study code
+INJURY_REL = "https://github.com/nflverse/nflverse-data/releases/download/"
 UA = "devig-research-lab/1.0 (personal research; read-only)"
 
 
@@ -115,8 +117,41 @@ def _pbp_season(season):
     return aggregate_pbp(pbp)
 
 
+def injury_rows(seasons, log=print):
+    """Per game, home minus away: last game's QB unavailable (d_qb), regulars unavailable (d_out), regulars
+    questionable (d_q) -- built by the locked injury study's own code (research/injuries/nfl_injury_study_v1.py,
+    definitions in NFL_INJURY_STUDY_V1_PREREG.md) from nflverse injury reports, weekly rosters and snap counts, all
+    published before kickoff. Seasons before C.INJURY_FIRST have no snap counts and get no rows (feature 0)."""
+    sys.path.insert(0, os.path.join(C.RESEARCH, "injuries"))
+    import nfl_injury_study_v1 as INJ                  # locked; read-only use
+    seasons = [s for s in seasons if s >= C.INJURY_FIRST]
+    if not seasons:
+        return pd.DataFrame(columns=INJURY_COLS)
+
+    def csv(name):
+        with tempfile.TemporaryDirectory() as d:          # downloads land in their own empty folder
+            path = os.path.join(d, "f.csv")
+            with open(path, "wb") as f:
+                f.write(_get(INJURY_REL + name))
+            return pd.read_csv(path, low_memory=False)
+    g = csv("schedules/games.csv")
+    g = g[g.season.isin(seasons)].copy()
+    g["home"], g["away"] = g.home_team.map(INJ.fr), g.away_team.map(INJ.fr)
+    g = g.sort_values(["season", "week", "gameday", "game_id"]).reset_index(drop=True)
+    out = []
+    players = csv("players/players.csv")
+    for s in seasons:                                    # regulars are same-season only, so seasons are independent
+        part = [csv(f"snap_counts/snap_counts_{s}.csv"), csv(f"injuries/injuries_{s}.csv"), players,
+                csv(f"weekly_rosters/roster_weekly_{s}.csv")]
+        feats, cover = INJ.build(g[g.season == s], part[0], part[1], part[2], part[3])
+        log(f"injuries {s}: {len(feats)} games, {cover['report_rows_matched_to_snap_counts']} of "
+            f"{cover['report_rows_with_status']} report rows matched")
+        out.append(feats[INJURY_COLS])
+    return pd.concat(out, ignore_index=True)
+
+
 def _paths(data_dir):
-    return {k: os.path.join(data_dir, f"{k}.csv") for k in ("games", "team_games", "qb_games")}
+    return {k: os.path.join(data_dir, f"{k}.csv") for k in ("games", "team_games", "qb_games", "injury_games")}
 
 
 def sha_file(path):
@@ -154,10 +189,15 @@ def fetch_lab_cache(data_dir=None, log=print):
         qb = pd.concat([qb[qb.season != s], q], ignore_index=True)
         log(f"play-by-play {s}: {len(t)} team-games, {len(q)} QB-games")
         changed = True
+    if not os.path.exists(P["injury_games"]):             # v12: built once, from the locked study code
+        injury_rows(want, log).sort_values(["season", "game_id"]).to_csv(P["injury_games"], index=False)
+        changed = True
     if changed:
         team.sort_values(["season", "game_id", "team"]).to_csv(P["team_games"], index=False)
         qb.sort_values(["season", "game_id", "team", "qb_id"]).to_csv(P["qb_games"], index=False)
-        manifest = {"sources": {"games": C.GAMES_URL, "pbp": C.PBP_URL}, "seasons": [want[0], want[-1]],
+        manifest = {"sources": {"games": C.GAMES_URL, "pbp": C.PBP_URL,
+                                "injuries": INJURY_REL + "{injuries,weekly_rosters,snap_counts,players,schedules}"},
+                    "seasons": [want[0], want[-1]],
                     "sha256": {k: sha_file(v) for k, v in P.items()},
                     "note": "Lab cache (Constitution B1). Seasons 2002-2024 only; 2025 is sealed and never stored here."}
         with open(os.path.join(data_dir, "MANIFEST.json"), "w") as f:
@@ -172,7 +212,8 @@ def _guard(df, name, last):
 
 
 def load_lab(data_dir=None):
-    """The lab's data: {games, team_games, qb_games}, seasons 2002-2024. Raises SealedDataError on anything later."""
+    """The lab's data: {games, team_games, qb_games, injury_games}, seasons 2002-2024 (injury_games from 2013).
+    Raises SealedDataError on anything later."""
     P = _paths(data_dir or C.DATA_DIR)
     out = {}
     for k, p in P.items():
@@ -204,7 +245,12 @@ def fetch_live(seasons, log=print):
         teams.append(t); qbs.append(q)
     team = pd.concat(teams, ignore_index=True) if teams else pd.DataFrame(columns=TEAM_COLS)
     qb = pd.concat(qbs, ignore_index=True) if qbs else pd.DataFrame(columns=QB_COLS)
-    return {"games": games, "team_games": team, "qb_games": qb}
+    try:
+        inj = injury_rows(seasons, log)
+    except RuntimeError as e:                           # a lagging current-season file: injury features are then 0
+        log(f"injury data unavailable: {e}")
+        inj = pd.DataFrame(columns=INJURY_COLS)
+    return {"games": games, "team_games": team, "qb_games": qb, "injury_games": inj}
 
 
 if __name__ == "__main__":

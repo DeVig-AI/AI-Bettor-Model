@@ -67,7 +67,9 @@ def load_menu(menu_path=None, auto=True):
 #   2. signal variants: the 6 best team signals not varied before, each with its half-life halved and doubled and its
 #      season carry 0.2 lower and higher (same columns, same football reason);
 #   3. signal bases: the best single model per market that is not a base yet;
-#   4. bigger signal sets: pairs of 4 more and trios of 2 more of the best signals.
+#   4. bigger signal sets: pairs of 4 more and trios of 2 more of the best signals;
+#   5. (v12) formula signals: the next 8 of a fixed catalogue of team-column formulas (rates per play / per dropback /
+#      per second, play-type shares, per-game differences), offense and defense, that the library does not have yet.
 BOUNDS = {"season_carry": (0.0, 1.0), "carry": (0.0, 1.0), "revert": (0.0, 1.0), "market_blend": (0.0, 1.0),
           "def_weight": (0.0, 2.0), "k": (1, 100), "halflife": (1, 64), "prior_w": (0.1, 50), "hfa_pts": (0.0, 6.0),
           "margin_cap": (7, 60), "market_resist": (0.0, 6.0), "bye_elo": (0, 100), "travel_elo_per_1000mi": (0, 20)}
@@ -172,6 +174,71 @@ def widen_signals(scored_rows, n=6):
     return out
 
 
+# v12 A3.3c(5): the formula catalogue, in a fixed order. Value columns are summed amounts; count columns are numbers of
+# plays (or seconds). Built only from the sport's allowed columns, so A3.3e's data rules hold; A3.5 holds because no
+# column can express a betting angle.
+FORMULA_COLUMNS = {"NFL": {"values": ["epa", "pass_epa", "early_epa", "noto_epa", "comp_epa", "succ", "points"],
+                           "counts": ["plays", "pass_plays", "early_plays", "noto_plays", "comp_plays", "top_seconds"]},
+                   "CFB": {"values": ["epa", "comp_epa", "points"], "counts": ["plays", "comp_plays"]}}
+FORMULA_STYLE = {"NFL": (8, 0.5), "CFB": (6, 0.4)}     # half-life and season carry, as the hand-written signals use
+
+
+def formula_catalogue(sport=None):
+    """Every formula signal for the sport, in the fixed order generations take them from."""
+    cols = FORMULA_COLUMNS.get(sport or C.SPORT)
+    if not cols:
+        return []
+    h, c = FORMULA_STYLE[sport or C.SPORT]
+    vals, cnts = cols["values"], cols["counts"]
+    forms = []                                          # (num, den, plain-language description)
+    for v in vals:
+        for n in cnts:
+            forms.append(({v: 1}, n, f"{v} per {n[:-1] if n.endswith('s') else n} (summed {v} / {n})"))
+    for n in cnts:
+        if n not in ("plays", "top_seconds") and "plays" in cnts:
+            forms.append(({n: 1}, "plays", f"share of plays that are {n.replace('_plays', '')} plays ({n} / plays)"))
+    if "top_seconds" in cnts:
+        forms.append(({"plays": 1}, "top_seconds", "plays per second of possession (tempo)"))
+    for a, b in (("epa", "pass_epa"), ("epa", "early_epa"), ("epa", "comp_epa"), ("epa", "noto_epa")):
+        if a in vals and b in vals:
+            forms.append(({a: 1, b: -1}, None, f"{a} minus {b}, per game"))
+    out = []
+    for num, den, desc in forms:
+        for side in ("offense", "defense"):
+            terms = "-".join(f"{k}{'' if w == 1 else 'x' + str(w)}" for k, w in sorted(num.items()))
+            sid = f"f-{'off' if side == 'offense' else 'def'}-{terms}" + (f"-per-{den}" if den else "")
+            out.append({"id": sid, "kind": "team", "side": side, "num": dict(num), "den": den, "halflife": h,
+                        "carry": c, "formula": True,
+                        "reason": (f"Automatic formula signal (Constitution v12 A3.3c): {desc}, "
+                                   f"{'by the team' if side == 'offense' else 'allowed by the team'}. Generated "
+                                   "mechanically from the allowed team columns, with no hand-written football reason: "
+                                   "it competes only on search-season scores and, if shortlisted, confirmation.")})
+    return out
+
+
+def signal_shape(sig):
+    """What makes two team signals the same model input (id, reason, half-life and carry aside)."""
+    return json.dumps({"side": sig.get("side"), "num": {k: float(v) for k, v in (sig.get("num") or {}).items()},
+                       "den": sig.get("den") or None}, sort_keys=True)
+
+
+def widen_formulas(n=8):
+    """The next n formula signals the library does not have (same columns and side as an existing signal = have)."""
+    from . import signals as SG
+    lib = SG.load_library()
+    have_ids = {x["id"] for x in lib}
+    have_shape = {signal_shape(x) for x in lib if x["kind"] == "team"}
+    out = []
+    for f in formula_catalogue():
+        if f["id"] in have_ids or signal_shape(f) in have_shape:
+            continue
+        out.append(f)
+        have_shape.add(signal_shape(f))
+        if len(out) == n:
+            break
+    return out
+
+
 def widen_bases(menu, scored_rows):
     """The best single model per market (by search t) that is not a signal base yet."""
     bases = menu.get("signal_bases") or {}
@@ -193,7 +260,7 @@ def widen(menu, scored_rows, n_round, log=print):
     """Append one generation to AUTO.yaml. Returns it ({} if there was nothing at all to add)."""
     from . import signals as SG
     room = menu.get("signal_bases") and menu["search"].get("signal_pairs_of", 0) < len(SG.load_library())
-    gen = {"ladders": widen_ladders(menu, scored_rows), "signals": widen_signals(scored_rows),
+    gen = {"ladders": widen_ladders(menu, scored_rows), "signals": widen_signals(scored_rows) + widen_formulas(),
            "signal_bases": widen_bases(menu, scored_rows), "signal_sets": 1 if room else 0}
     gen = {k: v for k, v in gen.items() if v}
     if not gen:
@@ -204,7 +271,7 @@ def widen(menu, scored_rows, n_round, log=print):
     gens.append(gen)
     with open(path("AUTO.yaml"), "w") as f:
         f.write(f"# Research Lab search ({C.SPORT}) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 "
-                "A3.3c).\n# Written by research/lab/search.py from search-season scores only; append-only, never edit.\n")
+                "A3.3c; formula signals since v12).\n# Written by research/lab/search.py from search-season scores only; append-only, never edit.\n")
         yaml.safe_dump(auto, f, sort_keys=False, allow_unicode=True, width=120)
     log(f"search: widened the menu (generation {gen['generation']}): " + ", ".join(
         f"{len(v) if not isinstance(v, int) else '+'} {k}" for k, v in gen.items() if k in AUTO_COLS))
