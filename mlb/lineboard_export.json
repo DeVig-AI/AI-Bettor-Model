@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-26T20:03:04.661394Z"
+    "synced_at": "2026-10-27T08:48:22.720984Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -107,7 +107,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-26T20:03:04.661394Z"
+    "synced_at": "2026-10-27T08:48:22.720984Z"
    },
    "doc_id": "CLE202610180"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-26T20:03:04.661394Z"
+    "synced_at": "2026-10-27T08:48:22.720984Z"
    },
    "doc_id": "MIL202610230"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-26T20:03:04.661394Z"
+    "synced_at": "2026-10-27T08:48:22.720984Z"
    },
    "doc_id": "MIL202610240"
   },
@@ -311,7 +311,7 @@
    "collection": "slate",
    "data": {
     "away_team": "MIL",
-    "export_hash": "f3f4f00ecaed5d04a442d80923815b792013bcf248f3e1a4009d79ea7d49a3aa",
+    "export_hash": "3e37f8f8b21df9dfa95f13d27c5b0b9316c3202dbcdbc109c50e3598079e8dd8",
     "game_date": "2026-10-26",
     "game_id": "TBA202610260",
     "home_team": "TB",
@@ -327,18 +327,6 @@
     "model": {
      "available": true,
      "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Robert Gasser vs Freddy Peralta. Odds from Kalshi (n_books_used=1).",
-     "series": {
-      "away_wins": 2,
-      "description": "World Series",
-      "fair_price_favored": -394,
-      "favored": "MIL",
-      "favored_prob": 0.7977,
-      "games_in_series": 7,
-      "home_wins": 0,
-      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
-      "p_home_series": 0.2023,
-      "series_game_number": 3
-     },
      "source_snapshot_time": "2026-10-26T20:03:00.907317+00:00",
      "spread_prob": 0.6585013626602783,
      "spread_side": "MIL +1.5",
@@ -349,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-26T20:03:04.661394Z"
+    "synced_at": "2026-10-27T08:48:22.720984Z"
    },
    "doc_id": "TBA202610260"
   },
@@ -363,7 +351,7 @@
      "side": null,
      "tier": null
     },
-    "export_hash": "7001e8b2f871b3d9b50c9ad41136fe9982e947fe0449ef177b86084c63cee3f7",
+    "export_hash": "81038fa3b00fa2c229b1c3eb776e77e1cf351353d25411c5cb23d3b50d61384c",
     "game_date": "2026-10-26",
     "game_id": "TBA202610260",
     "home_team": "TB",
@@ -374,12 +362,13 @@
      "moneyline_home": -121
     },
     "outcome": {
-     "away_score": null,
+     "away_score": 10,
      "decision_correct": null,
-     "home_score": null,
-     "resolved": false,
+     "graded_source": "statsapi.mlb.com final score via the GitHub Actions graders",
+     "home_score": 1,
+     "resolved": true,
      "spread_correct": null,
-     "spread_decision_correct": null,
+     "spread_decision_correct": true,
      "teaser_correct": null
     },
     "season": 2026,
@@ -396,7 +385,7 @@
    "doc_id": "TBA202610260"
   }
  ],
- "generated_at": "2026-10-26T20:03:04.661394Z",
+ "generated_at": "2026-10-27T08:48:22.720984Z",
  "n_docs": 10,
  "sport": "MLB"
 }
