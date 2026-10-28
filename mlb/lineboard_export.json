@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -107,7 +107,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "CLE202610180"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "MIL202610230"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "MIL202610240"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "TBA202610260"
   },
@@ -414,7 +414,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-28T04:58:20.066080Z"
+    "synced_at": "2026-10-28T19:43:01.797056Z"
    },
    "doc_id": "TBA202610270"
   },
@@ -460,9 +460,97 @@
     "teaser_signal": null
    },
    "doc_id": "TBA202610270"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "MIL",
+    "export_hash": "482ec6808c2df7d682a305b0cb11d6d90cde8d9eb50c0b4a0e01afd2f6d32f27",
+    "game_date": "2026-10-28",
+    "game_id": "TBA202610280",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-29T00:00:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": -148,
+     "moneyline_home": 128,
+     "spread_away_odds": 118.7,
+     "spread_home": 1.5,
+     "spread_home_odds": -142.2
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Jacob Misiorowski vs Drew Rasmussen. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 3,
+      "description": "World Series",
+      "fair_price_favored": -649,
+      "favored": "MIL",
+      "favored_prob": 0.8664,
+      "games_in_series": 7,
+      "home_wins": 1,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.1336,
+      "series_game_number": 5
+     },
+     "source_snapshot_time": "2026-10-28T19:42:57.253051+00:00",
+     "spread_prob": 0.6645569080833784,
+     "spread_side": "MIL +1.5",
+     "spread_side_team": "MIL",
+     "status": "locked",
+     "winner_prob": 0.5111981312769648,
+     "winner_side": "TB"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-28T19:43:01.797056Z"
+   },
+   "doc_id": "TBA202610280"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "MIL",
+    "decision": {
+     "action": "PASS",
+     "prob": 0.5111981312769648,
+     "side": null,
+     "tier": null
+    },
+    "export_hash": "b45c4c57798069bb84e986cfd26a2559b0332eb0bb247fc28b4bf9b176f1de39",
+    "game_date": "2026-10-28",
+    "game_id": "TBA202610280",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-29T00:00:00Z",
+    "locked_at": "2026-10-28T19:42:57.253051+00:00",
+    "market_snapshot": {
+     "moneyline_away": -148,
+     "moneyline_home": 128
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "COVER",
+     "prob": 0.6645569080833784,
+     "side": "MIL +1.5",
+     "tier": "top50"
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "TBA202610280"
   }
  ],
- "generated_at": "2026-10-28T04:58:20.066080Z",
- "n_docs": 12,
+ "generated_at": "2026-10-28T19:43:01.797056Z",
+ "n_docs": 14,
  "sport": "MLB"
 }
