@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T11:47:15.929916Z",
+ "generated_at": "2026-10-28T17:34:35.675719Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -91,7 +91,7 @@
   ],
   "BUF": [
    {
-    "espn_updated": "2026-10-28T11:00Z",
+    "espn_updated": "2026-10-28T17:06Z",
     "injury": "Suspension",
     "name": "C.J. Gardner-Johnson",
     "pos": "S",
@@ -179,12 +179,22 @@
   "CLE": [
    {
     "espn_updated": "2026-10-25T19:36Z",
-    "injury": "Head",
+    "injury": "Concussion",
     "name": "Tytus Howard",
     "pos": "OT",
     "return_date": "2026-11-01",
     "share_basis": "this season",
     "snap_share": 0.87,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-28T16:16Z",
+    "injury": "Knee",
+    "name": "Jared Verse",
+    "pos": "DE",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.66,
     "status": "Questionable"
    },
    {
@@ -232,7 +242,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-25T23:46Z",
+    "espn_updated": "2026-10-28T14:08Z",
     "injury": "Chest",
     "name": "Jaylen Waddle",
     "pos": "WR",
@@ -628,6 +638,26 @@
     "share_basis": "this season",
     "snap_share": 0.86,
     "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-28T16:19Z",
+    "injury": "Groin",
+    "name": "David Bailey",
+    "pos": "LB",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.81,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-10-28T16:38Z",
+    "injury": "Ankle",
+    "name": "Braelon Allen",
+    "pos": "RB",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.67,
+    "status": "Questionable"
    }
   ],
   "PHI": [
@@ -769,7 +799,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-27T13:11Z",
+    "espn_updated": "2026-10-28T16:09Z",
     "injury": "Concussion",
     "name": "Emeka Egbuka",
     "pos": "WR",
@@ -779,7 +809,18 @@
     "status": "Questionable"
    }
   ],
-  "TEN": [],
+  "TEN": [
+   {
+    "espn_updated": "2026-10-28T17:11Z",
+    "injury": "Shoulder",
+    "name": "Carnell Tate",
+    "pos": "WR",
+    "return_date": "2026-11-01",
+    "share_basis": "this season",
+    "snap_share": 0.82,
+    "status": "Questionable"
+   }
+  ],
   "WAS": [
    {
     "espn_updated": "2026-10-26T17:23Z",
@@ -792,24 +833,24 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-10-20T19:18Z",
-    "injury": "Knee",
-    "name": "Terry McLaurin",
-    "pos": "WR",
-    "return_date": "2027-02-15",
-    "share_basis": "this season",
-    "snap_share": 0.6,
-    "status": "Out"
-   },
-   {
-    "espn_updated": "2026-10-20T02:16Z",
+    "espn_updated": "2026-10-28T17:23Z",
     "injury": "Knee",
     "name": "Javon Kinlaw",
     "pos": "DT",
     "return_date": "2026-11-01",
     "share_basis": "this season",
     "snap_share": 0.6,
-    "status": "Questionable"
+    "status": "Doubtful"
+   },
+   {
+    "espn_updated": "2026-10-28T16:43Z",
+    "injury": "Knee",
+    "name": "Terry McLaurin",
+    "pos": "WR",
+    "return_date": "2027-02-15",
+    "share_basis": "this season",
+    "snap_share": 0.6,
+    "status": "Injured Reserve"
    }
   ]
  }
