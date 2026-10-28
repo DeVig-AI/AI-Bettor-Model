@@ -2,7 +2,12 @@
   "sources": {
     "games": "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv",
     "pbp": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz",
-    "injuries": "https://github.com/nflverse/nflverse-data/releases/download/{injuries,weekly_rosters,snap_counts,players,schedules}"
+    "injuries": "https://github.com/nflverse/nflverse-data/releases/download/{injuries,weekly_rosters,snap_counts,players,schedules}",
+    "availability": [
+      "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_{season}.csv",
+      "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_{season}.csv",
+      "https://github.com/nflverse/nflverse-data/releases/download/players/players.csv"
+    ]
   },
   "seasons": [
     1999,
@@ -12,8 +17,8 @@
     "games": "cb7b640d019dc890e8887250b46fa78305b7895868c4516b1aa75ea1fc3979ed",
     "team_games": "8259cef9b02f03a58598c1114ead8e408d06afc086ea88de78038e68f1eb48d9",
     "qb_games": "e5e2f28a32fef8925189971c1f2927ab29c23746e0fdef1f927db615f9f1fab9",
-    "injury_games": "69488b182ad36621686a10930df119e521becaa2bfe1d5172b105ce72b4688cf"
+    "injury_games": "69488b182ad36621686a10930df119e521becaa2bfe1d5172b105ce72b4688cf",
+    "availability": "25afe3018b86b0ff6f2bafe0a3495c79b75201621344b70f9e8fa85a50cf258c"
   },
-  "note": "Lab cache (Constitution B1). Seasons 2002-2024 only; 2025 is sealed and never stored here.",
-  "injury_note": "v12: injury_games (2013-2024) built by data.injury_rows from the locked injury study code."
+  "note": "Lab cache (Constitution B1). Seasons 2002-2024 only; 2025 is sealed and never stored here."
 }

@@ -1,8 +1,8 @@
-name: Research Lab -- scout (what changed in outside models and analytics, for the weekly researcher)
+name: Research Lab -- scout (what changed in outside models and analytics, for the daily researcher)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 18 * * 0'   # Sundays, the day before the weekly researcher runs
+    - cron: '17 11 * * *'   # daily, before the researcher (8:47 New York time)
 permissions:
   contents: write
 concurrency:

@@ -151,7 +151,14 @@ def injury_rows(seasons, log=print):
 
 
 def _paths(data_dir):
-    return {k: os.path.join(data_dir, f"{k}.csv") for k in ("games", "team_games", "qb_games", "injury_games")}
+    return {k: os.path.join(data_dir, f"{k}.csv")
+            for k in ("games", "team_games", "qb_games", "injury_games", "availability")}
+
+
+def _optional():
+    """Cache files a cache from before v12 (injury_games) or v13 (availability) does not have: read as empty."""
+    from . import availability as AV
+    return {"injury_games": INJURY_COLS, "availability": AV.COLS}
 
 
 def sha_file(path):
@@ -192,11 +199,18 @@ def fetch_lab_cache(data_dir=None, log=print):
     if not os.path.exists(P["injury_games"]):             # v12: built once, from the locked study code
         injury_rows(want, log).sort_values(["season", "game_id"]).to_csv(P["injury_games"], index=False)
         changed = True
+    if not os.path.exists(P["availability"]):             # v13: who is missing, weighted by recent snaps
+        from . import availability as AV
+        av = AV.build(games, *AV.download(list(range(AV.FIRST, C.LAB_MAX_SEASON + 1)), _get))
+        _guard(av, "availability", C.LAB_MAX_SEASON).to_csv(P["availability"], index=False)
+        log(f"availability: {len(av)} team-games, {av.season.min()}-{av.season.max()}")
+        changed = True
     if changed:
         team.sort_values(["season", "game_id", "team"]).to_csv(P["team_games"], index=False)
         qb.sort_values(["season", "game_id", "team", "qb_id"]).to_csv(P["qb_games"], index=False)
         manifest = {"sources": {"games": C.GAMES_URL, "pbp": C.PBP_URL,
-                                "injuries": INJURY_REL + "{injuries,weekly_rosters,snap_counts,players,schedules}"},
+                                "injuries": INJURY_REL + "{injuries,weekly_rosters,snap_counts,players,schedules}",
+                                "availability": [C.INJURIES_URL, C.SNAPS_URL, C.PLAYERS_URL]},
                     "seasons": [want[0], want[-1]],
                     "sha256": {k: sha_file(v) for k, v in P.items()},
                     "note": "Lab cache (Constitution B1). Seasons 2002-2024 only; 2025 is sealed and never stored here."}
@@ -212,13 +226,14 @@ def _guard(df, name, last):
 
 
 def load_lab(data_dir=None):
-    """The lab's data: {games, team_games, qb_games, injury_games}, seasons 2002-2024 (injury_games from 2013).
+    """The lab's data: {games, team_games, qb_games, injury_games, availability}, seasons 2002-2024 (the last two
+    from 2013).
     Raises SealedDataError on anything later."""
     P = _paths(data_dir or C.DATA_DIR)
     out = {}
     for k, p in P.items():
-        if k == "injury_games" and not os.path.exists(p):    # a cache from before v12: no injury rows (features 0)
-            out[k] = pd.DataFrame(columns=INJURY_COLS)
+        if k in _optional() and not os.path.exists(p):     # an older cache: no rows (features 0)
+            out[k] = pd.DataFrame(columns=_optional()[k])
             continue
         if not os.path.exists(p):
             raise FileNotFoundError(f"lab cache missing {p}; run: python3 -m research.lab.data fetch")
@@ -229,7 +244,7 @@ def load_lab(data_dir=None):
 def data_fingerprint(data_dir=None):
     h = hashlib.sha256()
     for p in _paths(data_dir or C.DATA_DIR).values():
-        if os.path.exists(p) or not p.endswith("injury_games.csv"):
+        if os.path.exists(p) or os.path.basename(p)[:-4] not in _optional():
             h.update(sha_file(p).encode())
     return h.hexdigest()
 
@@ -254,7 +269,15 @@ def fetch_live(seasons, log=print):
     except RuntimeError as e:                           # a lagging current-season file: injury features are then 0
         log(f"injury data unavailable: {e}")
         inj = pd.DataFrame(columns=INJURY_COLS)
-    return {"games": games, "team_games": team, "qb_games": qb, "injury_games": inj}
+    from . import availability as AV
+    try:                                                # the season before too: week 1's snap window needs it
+        ss = sorted({min(seasons) - 1, *seasons})
+        av = AV.build(prepare_games(raw, first=min(ss), last=max(ss)), *AV.download(ss, _get))
+        av = av[av.season >= min(seasons)]
+    except RuntimeError as e:                           # a lagging file: availability features are then 0
+        log(f"availability data unavailable: {e}")
+        av = pd.DataFrame(columns=AV.COLS)
+    return {"games": games, "team_games": team, "qb_games": qb, "injury_games": inj, "availability": av}
 
 
 if __name__ == "__main__":

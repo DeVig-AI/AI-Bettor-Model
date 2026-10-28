@@ -1,4 +1,4 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v12: Part B NFL,
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v13: Part B NFL,
 Part C college football, Part D NBA / NHL / MLB); the Constitution wins if they ever disagree.
 
 The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB") switches every
@@ -8,7 +8,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v12"
+CONSTITUTION_VERSION = "v13"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -41,6 +41,9 @@ LAB_MAX_SEASON = 2024          # the lab refuses anything later
 # model with an injury signal fits its weights on the training seasons plus these (the newest search seasons).
 INJURY_FIRST = 2013            # first season with snap counts, so the first with injury features
 INJURY_FIT = (2013, 2016)
+INJURIES_URL = "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_{season}.csv"   # v13
+SNAPS_URL = "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_{season}.csv"
+PLAYERS_URL = "https://github.com/nflverse/nflverse-data/releases/download/players/players.csv"
 SEALED_SEASON = 2025
 
 # A4. Pricing

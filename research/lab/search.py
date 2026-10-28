@@ -423,8 +423,10 @@ def signal_configs(menu, scored_rows):
         sets += [list(c) for c in itertools.combinations(ranked[:S.get("signal_trios_of", 0)], 3)]
         for b in blist:
             for st in sets:
-                out.append({"market": market, "type": "signals",
-                            "params": {"base": b, "signals": sorted(st, key=lambda x: x["id"]), "ridge": 1.0}})
+                for w in S.get("signal_weights") or [{}]:     # {} = fixed weights, the config as before v13
+                    out.append({"market": market, "type": "signals",
+                                "params": {"base": b, "signals": sorted(st, key=lambda x: x["id"]), "ridge": 1.0,
+                                           **w}})
     return out
 
 
@@ -470,8 +472,11 @@ def label(cfg):
         return label({"market": "spread", "type": inner, "params": p}) + how
     if t == "signals":
         b = p["base"]
+        w = ""
+        if p.get("weights") == "walk_forward":
+            w = " · weights refit yearly" + (f" (last {p['window']} seasons)" if p.get("window") else "")
         return f"Signals ({label({'market': cfg['market'], 'type': b['type'], 'params': b['params']})}) + " + \
-            ", ".join(x["id"] for x in p["signals"])
+            ", ".join(x["id"] for x in p["signals"]) + w
     if t == "blend":
         ws = p["weights"]
         same = len(set(round(w, 6) for w in ws)) == 1

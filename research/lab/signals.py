@@ -16,9 +16,14 @@ Kinds:
             roster (data.injury_rows): qb_out = last game's QB unavailable, reg_out = regulars unavailable, reg_q =
             regulars questionable. 0 before C.INJURY_FIRST. A model with an injury signal fits its weights on the
             training seasons plus C.INJURY_FIT (the training seasons have no injury data).
+  availability  (v13, NFL only) one of AVAIL_FIELDS from data["availability"] (research/lab/availability.py): the share
+            of the team's recent snaps held by players its final injury report listed Out or Doubtful, by unit.
+            Spread feature: home minus away; total: home plus away. 0 where there is no row (before 2013). Fit like
+            injury signals: the training seasons plus C.INJURY_FIT, or walk-forward.
 
-The signals model: forecast = base forecast + features · beta, beta fit once by least squares (small ridge) on the
-training seasons' residuals (actual - base). Everything is computed game by game from games already finished; games
+The signals model: forecast = base forecast + features · beta, beta fit by least squares (small ridge) on residuals
+(actual - base): once (weights "fixed", the default), or (weights "walk_forward", v13 A3.4) again before each season
+after the training seasons, on the finished seasons before it. Everything is computed game by game from games already finished; games
 in one kickoff slot never see each other (models.slots).
 """
 import math
@@ -35,7 +40,10 @@ TEAM_COLUMNS = {"plays", "epa", "pass_plays", "pass_epa", "early_plays", "early_
                 "comp_plays", "comp_epa", "top_seconds", "points"}
 SCHEDULE_FIELDS = {"rest_diff", "travel_diff", "div_game", "off_bye_diff", "short_week_diff"}
 INJURY_FIELDS = {"qb_out": "d_qb", "reg_out": "d_out", "reg_q": "d_q"}
-KINDS = {"team", "schedule", "qb_change", "injury"}
+AVAIL_FIELDS = {"out_qb", "out_ol", "out_skill", "out_front", "out_db", "out_off", "out_def", "listed_out"}
+KINDS = {"team", "schedule", "qb_change", "injury", "availability"}
+NEW_DATA = ("injury", "availability")              # kinds with no rows in the training seasons
+WEIGHTS = ("fixed", "walk_forward")
 MAX_PER_MODEL = 6
 
 
@@ -66,6 +74,11 @@ def validate(sig):
             raise SignalError(f"{sig['id']}: injury field {sig.get('field')!r} is not allowed")
         if C.SPORT != "NFL":
             raise SignalError(f"{sig['id']}: injury signals are NFL only")
+    if sig["kind"] == "availability":
+        if sig.get("field") not in AVAIL_FIELDS:
+            raise SignalError(f"{sig['id']}: availability field {sig.get('field')!r} is not allowed")
+        if C.SPORT != "NFL":
+            raise SignalError(f"{sig['id']}: availability signals are NFL only")
     markets = sig.get("markets") or ["spread", "total"]
     if sig["kind"] in ("schedule", "qb_change", "injury"):
         markets = ["spread"]
@@ -134,6 +147,12 @@ def features(sigs, data, market):
     inj = {}
     if any(s["kind"] == "injury" for s in sigs) and data.get("injury_games") is not None:
         inj = {r["game_id"]: r for r in data["injury_games"].to_dict("records")}
+    avail = {}
+    if any(s["kind"] == "availability" for s in sigs):
+        if data.get("availability") is None:
+            raise SignalError("availability signals need data['availability'] (NFL lab cache, v13)")
+        for r in data["availability"].to_dict("records"):
+            avail[(r["game_id"], FRANCHISE.get(r["team"], r["team"]))] = r
     out = {}
 
     def value(sig, r):
@@ -194,6 +213,9 @@ def features(sigs, data, market):
                 elif s["kind"] == "injury":                # published before kickoff; 0 where there is no data
                     v = (inj.get(g.game_id) or {}).get(INJURY_FIELDS[s["field"]])
                     f.append(0.0 if v is None or pd.isna(v) else float(v))
+                elif s["kind"] == "availability":         # injury report + earlier games' snaps: known before kickoff
+                    vh, va = (float((avail.get((g.game_id, t)) or {}).get(s["field"], 0.0)) for t in (h, a))
+                    f.append(vh + va if market == "total" else vh - va)
                 else:                                      # qb_change
                     ch = []
                     for t, q in ((h, getattr(g, "home_qb_id", None)), (a, getattr(g, "away_qb_id", None))):
@@ -221,28 +243,47 @@ def features(sigs, data, market):
 
 
 def run_signals(p, data, market):
-    """Base model + signals, beta fit on the training seasons (A3.4)."""
+    """Base model + signals (A3.4). weights "fixed" (the default): beta fit once on the training seasons (plus
+    C.INJURY_FIT for injury and availability signals). weights "walk_forward" (v13): each later season gets its own
+    beta, fit only on finished seasons before it -- the last `window` of them (0 = all since the training seasons
+    began); training seasons keep the fixed fit."""
     from . import models
     sigs = [validate(dict(s)) for s in p["signals"]]
     if not sigs or len(sigs) > MAX_PER_MODEL:
         raise SignalError(f"a signals model takes 1-{MAX_PER_MODEL} signals")
     if any(market not in s["markets"] for s in sigs):
         raise SignalError(f"a signal here does not apply to {market}")
+    mode, window = p.get("weights", "fixed"), int(p.get("window", 0))
+    if mode not in WEIGHTS or window < 0:
+        raise SignalError(f"weights must be one of {WEIGHTS} with window >= 0")
     base, base_fit = models.run({"id": "base", "market": market, "model": p["base"]}, data)
     F = features(sigs, data, market)
     X = np.array([F[g] for g in base.game_id])
     resid = (base.actual - base.forecast).values
     fit_in = (base.season >= C.TRAIN[0]) & (base.season <= C.TRAIN[1])
     seasons = f"{C.TRAIN[0]}-{C.TRAIN[1]}"
-    if any(s["kind"] == "injury" for s in sigs):        # v12 A3.3e: the training seasons have no injury data
+    if any(s["kind"] in NEW_DATA for s in sigs):       # v12 A3.3e: the training seasons have no injury data
         fit_in = fit_in | ((base.season >= C.INJURY_FIT[0]) & (base.season <= C.INJURY_FIT[1]))
         seasons += f" + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}"
     tr = (fit_in & base.actual.notna() & ~base.season.isin(C.SKIP_SEASONS)).values
     Xt = X[tr]
     lam = float(p.get("ridge", 1.0))
     beta = np.linalg.solve(Xt.T @ Xt + lam * np.eye(X.shape[1]), Xt.T @ resid[tr])
-    out = base.copy()
-    out["forecast"] = base.forecast.values + X @ beta
+    adj = X @ beta
     fit = {"beta": {s["id"]: round(float(b), 6) for s, b in zip(sigs, beta)}, "fit_games": int(tr.sum()),
            "fit_seasons": seasons, "base_fit": base_fit}
+    if mode == "walk_forward":
+        season = base.season.values
+        usable = (base.actual.notna() & ~base.season.isin(C.SKIP_SEASONS)).values
+        by_season = {}
+        for s in sorted(set(season[season > C.TRAIN[1]])):
+            lo = C.TRAIN[0] if not window else max(C.TRAIN[0], s - window)
+            m = usable & (season >= lo) & (season < s)
+            b = np.linalg.solve(X[m].T @ X[m] + lam * np.eye(X.shape[1]), X[m].T @ resid[m])
+            adj[season == s] = X[season == s] @ b
+            by_season[int(s)] = {"beta": {x["id"]: round(float(v), 6) for x, v in zip(sigs, b)},
+                                 "fit_games": int(m.sum()), "fit_seasons": f"{lo}-{s - 1}"}
+        fit.update(weights="walk_forward", window=window, by_season=by_season)
+    out = base.copy()
+    out["forecast"] = base.forecast.values + adj
     return out, fit

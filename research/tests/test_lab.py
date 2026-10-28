@@ -73,7 +73,15 @@ def synthetic(first=1999, last=2024, seed=7):
                                    yds=int(rng.integers(150, 350)), td=int(rng.integers(0, 4)), int=int(rng.integers(0, 3)),
                                    sacks=int(rng.integers(0, 5)), ratt=int(rng.integers(0, 6)),
                                    ryds=int(rng.integers(0, 40)), rtd=int(rng.integers(0, 2))))
-    return {"games": pd.DataFrame(games), "team_games": pd.DataFrame(team), "qb_games": pd.DataFrame(qb)}
+    g = pd.DataFrame(games)
+    ra = np.random.default_rng(seed + 1)               # its own stream: the other tables stay as they were
+    av = [dict(season=r.season, game_id=r.game_id, team=t, **{c: round(float(ra.exponential(0.3)), 4)
+                                                               for c in ("out_qb", "out_ol", "out_skill", "out_front",
+                                                                         "out_db", "out_off", "out_def")},
+               listed_out=int(ra.integers(0, 5)))
+          for r in g[g.season >= 2013].itertuples() for t in (r.home_team, r.away_team)]
+    return {"games": g, "team_games": pd.DataFrame(team), "qb_games": pd.DataFrame(qb),
+            "availability": pd.DataFrame(av)}
 
 
 class Metrics(unittest.TestCase):
@@ -775,7 +783,7 @@ class Signals(unittest.TestCase):
             c = self.cand([sid], market)
             a, fit = models.run(c, self.data)
             self.assertTrue(np.isfinite(a.forecast).all(), sid)
-            want = f"{C.TRAIN[0]}-{C.TRAIN[1]}" + (f" + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}" if sig["kind"] == "injury" else "")
+            want = f"{C.TRAIN[0]}-{C.TRAIN[1]}" + (f" + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}" if sig["kind"] in ("injury", "availability") else "")
             self.assertEqual(fit["fit_seasons"], want)
             alt = {k: v.copy() for k, v in self.data.items()}
             slot = alt["games"].loc[target, "gameday"]
@@ -869,6 +877,64 @@ class Signals(unittest.TestCase):
         rows = SG.team_frame(data)
         r = next(iter(rows.values()))
         self.assertEqual((r["comp_plays"], r["comp_epa"]), (r["plays"] * 0.8, r["epa"] - 1.0))
+
+    def test_walk_forward_weights(self):
+        c = self.cand(["off-success", "rest-diff"])
+        fixed, ffit = models.run(c, self.data)
+        c["model"]["params"].update(weights="walk_forward", window=3)
+        wf, fit = models.run(c, self.data)
+        self.assertEqual(fit["beta"], ffit["beta"])                          # the training fit is unchanged
+        tr = (wf.season <= C.TRAIN[1]).values
+        np.testing.assert_allclose(wf.forecast[tr], fixed.forecast[tr])      # training seasons keep it
+        later = sorted(fit["by_season"])
+        self.assertEqual(later[0], C.TRAIN[1] + 1)
+        s = later[-1]
+        self.assertEqual(fit["by_season"][s]["fit_seasons"], f"{max(C.TRAIN[0], s - 3)}-{s - 1}")
+        self.assertNotEqual(fit["by_season"][s]["beta"], ffit["beta"])
+        # no lookahead: changing a season's results moves no forecast in that season or before it
+        alt = {k: v.copy() for k, v in self.data.items()}
+        g = alt["games"]
+        g.loc[g.season == s, "home_score"] += 9
+        b, _ = models.run(c, alt)
+        np.testing.assert_allclose(b.forecast[(b.season <= s).values], wf.forecast[(wf.season <= s).values])
+        c["model"]["params"]["weights"] = "every_game"
+        with self.assertRaises(self.SG.SignalError):
+            models.run(c, self.data)
+
+    def test_availability_build(self):
+        from research.lab import availability as AV
+        games = pd.DataFrame([dict(game_id=f"2014_0{w}_B_A", season=2014, week=w, game_type="REG",
+                                   gameday=f"2014-09-0{w}", gametime="13:00", home_team="A", away_team="B")
+                              for w in (1, 2, 3)])
+        snaps = pd.DataFrame([dict(game_id=f"2014_0{w}_B_A", team="A", pfr_player_id=p, position=pos,
+                                   offense_pct=o, defense_pct=d)
+                              for w, p, pos, o, d in ((1, "t1", "T", 1.0, 0.0), (1, "c1", "CB", 0.0, 0.8),
+                                                      (2, "t1", "T", 1.0, 0.0), (2, "c1", "CB", 0.0, 0.6),
+                                                      (3, "t1", "T", 0.2, 0.0))])
+        players = pd.DataFrame({"gsis_id": ["g1", "g2"], "pfr_id": ["t1", "c1"]})
+        inj = pd.DataFrame([dict(season=2014, week=w, team="A", gsis_id=g, report_status=st)
+                            for w, g, st in ((2, "g2", "Out"), (3, "g1", "Doubtful"), (3, "g2", "Questionable"))])
+        a = AV.build(games, inj, snaps, players).set_index(["game_id", "team"])
+        self.assertNotIn(("2014_01_B_A", "A"), a.index)                     # no earlier games: no row
+        self.assertNotIn(("2014_01_B_A", "B"), a.index)                     # B has no snaps at all
+        w2, w3 = a.loc[("2014_02_B_A", "A")], a.loc[("2014_03_B_A", "A")]
+        self.assertEqual((w2.out_db, w2.out_def, w2.out_off, w2.listed_out), (0.8, 0.8, 0.0, 1))
+        # week 3: the tackle's share from weeks 1-2 only (1.0), never his 0.2 in week 3 itself; Questionable not counted
+        self.assertEqual((w3.out_ol, w3.out_off, w3.out_def, w3.listed_out), (1.0, 1.0, 0.0, 1))
+
+    def test_availability_signals(self):
+        out, fit = models.run(self.cand(["out-off", "out-db", "off-success"]), self.data)
+        self.assertTrue(np.isfinite(out.forecast).all())
+        self.assertEqual(fit["fit_seasons"], f"{C.TRAIN[0]}-{C.TRAIN[1]} + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}")
+        c = self.cand(["out-off", "out-db"])
+        c["model"]["params"].update(weights="walk_forward", window=0)
+        _, fit = models.run(c, self.data)
+        self.assertNotEqual(fit["by_season"][2015]["beta"]["out-off"], 0.0)  # learned once rows exist
+        data = {k: v for k, v in self.data.items() if k != "availability"}
+        with self.assertRaises(self.SG.SignalError):
+            models.run(c, data)
+        with self.assertRaises(self.SG.SignalError):
+            self.SG.validate({"id": "w", "kind": "availability", "field": "practice_status", "reason": "r"})
 
     def test_qb_change_and_combos(self):
         out, fit = models.run(self.cand(["qb-change", "rest-diff", "off-success"]), self.data)

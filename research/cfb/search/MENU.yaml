@@ -273,6 +273,13 @@ search:
   random_samples: 100
   signal_pairs_of: 6
   signal_trios_of: 4
+  # 2026-10-28 (Constitution v13 A3.4): every signal set is also tried with weights refit before each season on the
+  # seasons before it (all of them, or only the last few), not just once. {} = fixed, as before.
+  signal_weights:
+  - {}
+  - {weights: walk_forward, window: 0}
+  - {weights: walk_forward, window: 2}
+  - {weights: walk_forward, window: 4}
 signal_bases:
   spread:
   - type: srs

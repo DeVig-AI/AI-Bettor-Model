@@ -55,7 +55,7 @@ class Scout(unittest.TestCase):
         self.assertIn("Add rest adjustment", md)
         self.assertNotIn("long body", md)                 # titles only
         self.assertIn("`model/rest.py`", md)
-        self.assertIn("no change since last week", md)
+        self.assertIn("no change since the last run", md)
 
     def test_one_source_down(self):
         self.head["o/b"] = "boom"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 scout_sources.py -- the Research Lab scout bot (Constitution v12 A2): for every source in research/scout/SOURCES.yaml,
-what changed since last week, written to research/scout/WHATS_NEW.md for the weekly researcher. Only links, commit
+what changed since the last run, written to research/scout/WHATS_NEW.md for the daily researcher. Only links, commit
 titles and changed file paths are recorded -- never anyone's code or text. research/scout/STATE.json remembers the last
 commit seen per source.
 
@@ -73,7 +73,7 @@ def run(now=None, get=api):
         if not old:
             lines.append(f"- first look: now at `{head[:7]}` on `{branch}`; the whole repository is new to the scout.")
         elif not commits:
-            lines.append("- no change since last week.")
+            lines.append("- no change since the last run.")
         else:
             lines.append(f"- {len(commits)} new commit(s), `{old[:7]}` → `{head[:7]}` "
                          f"([compare]({url}/compare/{old[:7]}...{head[:7]})):")

@@ -284,6 +284,13 @@ search:
   # so later rounds were all Elo (median t +0.5) while signals (median t +2.55 on SRS) had only 130 tries.
   signal_pairs_of: 12
   signal_trios_of: 8
+  # 2026-10-28 (Constitution v13 A3.4): every signal set is also tried with weights refit before each season on the
+  # seasons before it (all of them, or only the last few), not just once. {} = fixed, as before.
+  signal_weights:
+  - {}
+  - {weights: walk_forward, window: 0}
+  - {weights: walk_forward, window: 4}
+  - {weights: walk_forward, window: 8}
 signal_bases:
   spread:
   - type: team_rating

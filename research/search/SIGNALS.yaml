@@ -171,3 +171,34 @@ signals:
   field: reg_q
   reason: 'How many regular starters are listed Questionable: players who do play are often limited, a smaller and
     less certain version of the same effect.'
+# 2026-10-28 (Constitution v13): who is missing, by playing time. Share of each team's recent snaps held by players its final injury
+# report listed Out or Doubtful (research/lab/availability.py; 2013 on, 0 before). Ratings built from recent games
+# already include players who have been out for weeks; these read the new absences the ratings have not seen yet.
+- id: out-off
+  kind: availability
+  field: out_off
+  reason: An offense missing regular players this week is weaker than its recent games, which it played with them.
+- id: out-def
+  kind: availability
+  field: out_def
+  reason: A defense missing regular players this week is weaker than its recent games, which it played with them.
+- id: out-ol
+  kind: availability
+  field: out_ol
+  markets: [spread]
+  reason: Offensive lines work as a unit; a missing starter forces a backup and new assignments next to him.
+- id: out-skill
+  kind: availability
+  field: out_skill
+  markets: [spread]
+  reason: Missing receivers and backs narrow what the passing game can do and who the defense must cover.
+- id: out-front
+  kind: availability
+  field: out_front
+  markets: [spread]
+  reason: Missing linemen and linebackers weaken the pass rush and run defense, which drive opponents' efficiency.
+- id: out-db
+  kind: availability
+  field: out_db
+  markets: [spread]
+  reason: Missing cornerbacks and safeties expose the pass defense, the most important part of defense.
