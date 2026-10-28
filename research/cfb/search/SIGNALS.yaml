@@ -106,3 +106,15 @@ signals:
   reason: 'PPA a team piles up in garbage time each game: it inflates points-based ratings (SRS, Elo margins) without
     saying much about the next close game, so it may be overrated by them.'
 
+- id: def-pace
+  kind: team
+  side: defense
+  num:
+    plays: 1
+  den: null
+  halflife: 6
+  carry: 0.4
+  reason: 'Plays the defense faces per game: defenses that get off the field quickly (or face fast offenses) shape how
+    many possessions a game has, which drives the total.'
+  markets:
+  - total
