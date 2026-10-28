@@ -1,6 +1,6 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-10-27T18:56:18Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
+_Generated 2026-10-28T02:20:28Z by research/lab/report.py. Constitution v11 (`e167dcbaf2a7`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -18,10 +18,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Search round 437** 2026-10-27T18:56:15Z: 400 models scored → 7 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 436** 2026-10-27T18:29:20Z: 400 models scored → 14 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 435** 2026-10-27T18:03:07Z: 398 models scored → 12 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 434** 2026-10-27T17:36:09Z: 398 models scored → 13 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 433** 2026-10-27T17:10:58Z: 399 models scored → 16 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 454** 2026-10-28T02:20:25Z: 400 models scored → 8 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 453** 2026-10-28T01:51:45Z: 400 models scored → 12 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 452** 2026-10-28T01:23:10Z: 400 models scored → 24 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 451** 2026-10-28T00:54:51Z: 399 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search round 450** 2026-10-28T00:28:03Z: 400 models scored → 11 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/cfb/results/<id>.json` (every number), `research/cfb/LEDGER.csv` (every attempt), `research/cfb/LESSONS.md` (exploratory).

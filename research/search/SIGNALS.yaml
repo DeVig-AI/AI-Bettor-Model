@@ -155,6 +155,46 @@ signals:
   carry: 0.5
   reason: 'Early-down EPA allowed per play: defenses that win first and second down force obvious passing downs, and
     early-down efficiency is steadier than third-down results.'
+- id: off-noto-epa
+  kind: team
+  side: offense
+  num:
+    noto_epa: 1
+  den: noto_plays
+  halflife: 8
+  carry: 0.5
+  reason: 'EPA per play on plays without a turnover: turnovers are the noisiest part of EPA, so efficiency with them
+    stripped out is a steadier read of how good an offense is.'
+- id: def-noto-epa
+  kind: team
+  side: defense
+  num:
+    noto_epa: 1
+  den: noto_plays
+  halflife: 8
+  carry: 0.5
+  reason: 'EPA per play allowed on plays without a turnover: takeaways swing defensive EPA from week to week, so the
+    turnover-free rate is a steadier read of a defense.'
+- id: def-comp-epa
+  kind: team
+  side: defense
+  num:
+    comp_epa: 1
+  den: comp_plays
+  halflife: 8
+  carry: 0.5
+  reason: 'EPA per play allowed while the game is in doubt: defenses play softer coverage with a big lead, so
+    garbage-time yards say little about how good they are.'
+- id: off-pass-rate
+  kind: team
+  side: offense
+  num:
+    pass_plays: 1
+  den: plays
+  halflife: 8
+  carry: 0.5
+  reason: 'Share of plays that are passes: published NFL analytics find passing is more efficient than running, and
+    teams that pass more (especially on early downs) tend to have the better-run offenses.'
 - id: inj-qb-out
   kind: injury
   field: qb_out
