@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-28T11:10:23Z",
+ "updated_at": "2026-10-28T11:13:31Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -9,8 +9,8 @@
  "sport_name": "NFL",
  "attempts": {
   "this_sport": 22,
-  "all_sports": 24,
-  "note": "Holm correction over this sport's 22 attempts decides; across all sports there are 24 attempts (reported only)."
+  "all_sports": 25,
+  "note": "Holm correction over this sport's 22 attempts decides; across all sports there are 25 attempts (reported only)."
  },
  "constitution": {
   "version": "v12",
@@ -3284,7 +3284,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-28T11:12:55Z",
+   "updated_at": "2026-10-28T11:15:58Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3294,8 +3294,8 @@
    "sport_name": "College football",
    "attempts": {
     "this_sport": 0,
-    "all_sports": 24,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 24 attempts (reported only)."
+    "all_sports": 25,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
     "version": "v12",
@@ -4828,7 +4828,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-28T11:10:16Z",
+   "updated_at": "2026-10-28T11:13:25Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4837,9 +4837,9 @@
    "sport": "NBA",
    "sport_name": "NBA",
    "attempts": {
-    "this_sport": 1,
-    "all_sports": 24,
-    "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 24 attempts (reported only)."
+    "this_sport": 2,
+    "all_sports": 25,
+    "note": "Holm correction over this sport's 2 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
     "version": "v12",
@@ -4851,8 +4851,8 @@
     "lessons": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/LESSONS.md"
    },
    "counts": {
-    "tried": 1,
-    "running": 1,
+    "tried": 2,
+    "running": 0,
     "lab_pass": 0,
     "exam_pass": 0,
     "exam_budget_left": 3,
@@ -4865,40 +4865,63 @@
      "market": "spread",
      "family": "SRS · search",
      "reason": "Found by search round 269: on 2014–2016 it beat the line by +0.54 pts a game (t = 2.54), positive in all three search periods. Now confirmed on 2017–2019, which the search never saw.",
-     "state": "running",
-     "fail_reason": "",
-     "gate_now": 1,
-     "started_at": "2026-10-28T11:10:16Z",
-     "eta_at": "2026-10-28T11:11:46Z",
+     "state": "failed",
+     "fail_reason": "not_significant",
+     "gate_now": null,
+     "started_at": null,
+     "eta_at": null,
      "gates": [
       {
        "name": "2017",
-       "effect": null,
-       "ci": null,
-       "games": null,
-       "passed": null
+       "effect": 0.03,
+       "ci": [
+        -0.81,
+        0.84
+       ],
+       "games": 1233,
+       "passed": true
       },
       {
        "name": "2018",
-       "effect": null,
-       "ci": null,
-       "games": null,
-       "passed": null
+       "effect": 0.22,
+       "ci": [
+        -0.6,
+        1.04
+       ],
+       "games": 1224,
+       "passed": true
       },
       {
        "name": "2019",
-       "effect": null,
-       "ci": null,
-       "games": null,
-       "passed": null
+       "effect": 0.81,
+       "ci": [
+        -0.07,
+        1.69
+       ],
+       "games": 1072,
+       "passed": true
       }
      ],
-     "pooled": null,
-     "attempts": 1,
+     "pooled": {
+      "name": "Pooled 2017–19",
+      "effect": 0.33,
+      "ci": [
+       -0.16,
+       0.81
+      ],
+      "adj_p": 0.17768,
+      "adj_p_all_sports": 1.0
+     },
+     "attempts": 2,
      "p_bar": 0.05,
-     "fade_ratio": null,
+     "fade_ratio": 31.0346,
      "fade_needed": 0.5,
-     "kalshi": null,
+     "kalshi": {
+      "picks": 3451,
+      "win_rate": 0.5094,
+      "break_even": 0.5175,
+      "roi": -0.0156
+     },
      "rule_split": [],
      "exam": {
       "state": "not_taken",
@@ -4907,12 +4930,12 @@
       "taken_at": null,
       "note": ""
      },
-     "verdict": "Running through the three gates now.",
-     "graded_at": null,
-     "run_number": null,
-     "run_url": null,
-     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/candidates/s-886c3b42.yaml",
-     "updated_at": null
+     "verdict": "Fails the lab: not enough evidence after the correction (needs adjusted p < 0.05); pooled +0.33 pts, Holm-adjusted p = 0.178 over 2 attempts.",
+     "graded_at": "2026-10-28T11:13:22Z",
+     "run_number": 2663,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40672343845",
+     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nba/results/s-886c3b42.json",
+     "updated_at": "2026-10-28T11:13:22Z"
     },
     {
      "id": "s-e4891f12",
@@ -4964,10 +4987,10 @@
        -0.15,
        0.75
       ],
-      "adj_p": 0.08884,
+      "adj_p": 0.17768,
       "adj_p_all_sports": 1.0
      },
-     "attempts": 1,
+     "attempts": 2,
      "p_bar": 0.05,
      "fade_ratio": null,
      "fade_needed": 0.5,
@@ -4985,7 +5008,7 @@
       "taken_at": null,
       "note": ""
      },
-     "verdict": "Fails the lab: not positive in gate 1 (2017: -0.12 pts); pooled +0.31 pts, Holm-adjusted p = 0.089 over 1 attempts.",
+     "verdict": "Fails the lab: not positive in gate 1 (2017: -0.12 pts); pooled +0.31 pts, Holm-adjusted p = 0.178 over 2 attempts.",
      "graded_at": "2026-10-25T08:27:35Z",
      "run_number": 2466,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40174361400",
@@ -4994,6 +5017,14 @@
     }
    ],
    "lessons": [
+    {
+     "text": "SRS · carry 0.1 · prior 24 vs the line-only baseline: helped in every gate (+0.03 / +0.22 / +0.81 pts in 2017 / 2018 / 2019).",
+     "kind": "helped",
+     "candidates": [
+      "s-886c3b42"
+     ],
+     "at": "2026-10-28T11:13:22Z"
+    },
     {
      "text": "Blend of 2: s-e425bd72 + s-066ccdc8 vs the line-only baseline: no consistent effect (-0.12 / +0.42 / +0.67 pts in 2017 / 2018 / 2019).",
      "kind": "no_effect",
@@ -5008,16 +5039,36 @@
     {
      "kind": "lab",
      "name": "Research Lab #2663",
-     "started_at": "2026-10-28T11:10:16Z",
-     "finished_at": null,
-     "duration_s": null,
+     "started_at": "2026-10-28T11:13:22Z",
+     "finished_at": "2026-10-28T11:13:22Z",
+     "duration_s": 0,
      "run_number": 2663,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40672343845",
-     "summary": "1 tested → running through the gates",
+     "summary": "1 tested → 1 past gate 1 → 1 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted",
      "funnel": [
       {
        "label": "tested",
        "count": 1
+      },
+      {
+       "label": "past gate 1",
+       "count": 1
+      },
+      {
+       "label": "past gate 2",
+       "count": 1
+      },
+      {
+       "label": "passed the lab",
+       "count": 0
+      },
+      {
+       "label": "passed the exam",
+       "count": 0
+      },
+      {
+       "label": "promoted",
+       "count": 0
       }
      ],
      "steps": []
@@ -5286,7 +5337,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-28T11:13:15Z",
+   "updated_at": "2026-10-28T11:16:16Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5296,8 +5347,8 @@
    "sport_name": "NHL",
    "attempts": {
     "this_sport": 0,
-    "all_sports": 24,
-    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 24 attempts (reported only)."
+    "all_sports": 25,
+    "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
     "version": "v12",
@@ -5613,7 +5664,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-28T11:13:20Z",
+   "updated_at": "2026-10-28T11:16:20Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5623,8 +5674,8 @@
    "sport_name": "MLB",
    "attempts": {
     "this_sport": 1,
-    "all_sports": 24,
-    "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 24 attempts (reported only)."
+    "all_sports": 25,
+    "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
     "version": "v12",
