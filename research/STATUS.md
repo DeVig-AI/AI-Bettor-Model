@@ -1,10 +1,10 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-10-28T10:35:12Z by research/lab/report.py. Constitution v12 (`fb13091a1111`). Do not edit by hand._
+_Generated 2026-10-28T11:05:40Z by research/lab/report.py. Constitution v12 (`fb13091a1111`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 22 registered, 22 tried, 0 running
+- Candidates: 23 registered, 22 tried, 0 running
 - Ledger attempts (all count in the Holm correction): 22 · across all sports: 24 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
@@ -27,6 +27,7 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `elo-revert` + Stronger preseason reversion | spread | failed · gate_2 | +0.45 | -0.68 | +1.25 | +0.35 [-0.40, +1.09] | 1.000 | 51.4% / -0.7% (2412) |
 | `elo-travel` + Travel distance | spread | failed · gate_2 | +0.06 | -0.74 | +0.82 | +0.06 [-0.71, +0.83] | 1.000 | 50.6% / -2.2% (2412) |
 | `s-0501d21a` Blend of 3: s-f3fafc67 + s-1bba7fb4 + s-aaee4789 | spread | failed · gate_2 | +0.84 | -0.05 | -1.06 | +0.01 [-0.51, +0.54] | 1.000 | 49.2% / -5.0% (2150) |
+| `s-2d757889` Blend of 2: s-3a502c4f + s-0827df0a | total | queued | — | — | — | — | — | — |
 | `s-b07a5742` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + bye-diff, qb-change, travel-diff | spread | failed · gate_3 | +0.83 | +0.18 | -0.75 | +0.17 [-0.34, +0.71] | 1.000 | 49.3% / -4.7% (2150) |
 | `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | failed · gate_3 | +0.55 | +0.73 | -1.30 | +0.14 [-0.48, +0.76] | 1.000 | 49.7% / -4.0% (2150) |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | failed · gate_3 | +0.62 | +0.00 | -0.83 | +0.01 [-0.63, +0.64] | 1.000 | 49.7% / -4.0% (2150) |
@@ -52,6 +53,7 @@ Verdicts (Inspector General):
 - `elo-revert`: Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 22 attempts.
 - `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 22 attempts.
 - `s-0501d21a`: Fails the lab: not positive in gate 2 (2020–22: -0.05 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 22 attempts.
+- `s-2d757889`: Registered; runs in the next nightly lab run.
 - `s-b07a5742`: Fails the lab: not positive in gate 3 (2023–24: -0.75 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 22 attempts.
 - `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 22 attempts.
 - `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 22 attempts.
@@ -62,10 +64,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Search round 653** 2026-10-28T10:34:51Z: 1,999 models scored → 593 consistent → 25 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 652** 2026-10-28T09:59:10Z: 2,000 models scored → 532 consistent → 15 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 651** 2026-10-28T09:34:46Z: 1,999 models scored → 543 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 650** 2026-10-28T09:05:46Z: 2,000 models scored → 542 consistent → 24 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 649** 2026-10-28T08:38:22Z: 2,000 models scored → 546 consistent → 21 strong (t ≥ 2.5) → 0 sent to confirmation
+- **Search paused: menu exhausted** 2026-10-28T11:05:39Z: all 21 configurations on the menu scored; waiting for new menu values or signals
+- **Search round 1** 2026-10-28T11:05:38Z: 21 models scored → 19 consistent → 19 strong (t ≥ -99) → 1 sent to confirmation
+- **Research Lab #2534** 2026-10-26T06:48:14Z, 2 s: 2 tested → 2 past gate 1 → 1 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
+- **Research Lab #5** 2026-10-19T06:27:06Z, 0 s: 2 tested → 2 past gate 1 → 2 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
+- **Research Lab #1** 2026-10-19T04:34:00Z, 10 s: 18 tested → 15 past gate 1 → 0 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).
