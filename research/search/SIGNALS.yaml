@@ -1,6 +1,6 @@
 # Research Lab signal library, NFL (Constitution v9 A3.3e). Each signal is tested by the search on top of the
 # menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons only.
-# Allowed: kind team (columns: plays, epa, pass_plays, pass_epa, early_plays, early_epa, succ, noto_plays, noto_epa, comp_plays, comp_epa, top_seconds, points), schedule (rest_diff, travel_diff, div_game, off_bye_diff, short_week_diff), qb_change. Anything else is rejected by the code.
+# Allowed: kind team (columns: plays, epa, pass_plays, pass_epa, early_plays, early_epa, succ, noto_plays, noto_epa, comp_plays, comp_epa, top_seconds, points), schedule (rest_diff, travel_diff, div_game, off_bye_diff, short_week_diff), qb_change, injury (qb_out, reg_out, reg_q; since v12, spread only, weights fit on the training seasons plus 2013-2016). Anything else is rejected by the code.
 # New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
 # football reason; no known betting angles or situational spots (A3.5).
 signals:
@@ -195,3 +195,19 @@ signals:
   carry: 0.5
   reason: 'Share of plays that are passes: published NFL analytics find passing is more efficient than running, and
     teams that pass more (especially on early downs) tend to have the better-run offenses.'
+- id: inj-qb-out
+  kind: injury
+  field: qb_out
+  reason: 'Last game''s starting quarterback is out (injury report Out/Doubtful, or inactive / on a reserve list that
+    week): the quarterback matters more than any other player, and the DeVig injury study (research/injuries/) found
+    a missing starter worth about 3.8 points in game results.'
+- id: inj-regulars-out
+  kind: injury
+  field: reg_out
+  reason: 'How many regular starters (half the snaps or more in recent games) are out: depth charts thin out and
+    backups are worse, which public injury-adjusted ratings (e.g. nfelo, FiveThirtyEight) account for.'
+- id: inj-regulars-q
+  kind: injury
+  field: reg_q
+  reason: 'How many regular starters are listed Questionable: players who do play are often limited, a smaller and
+    less certain version of the same effect.'

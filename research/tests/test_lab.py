@@ -568,6 +568,11 @@ class Sealed(unittest.TestCase):
             for k, v in d.items():
                 v[v.season <= 2024].to_csv(os.path.join(tmp, f"{k}.csv"), index=False)
             self.assertEqual(int(D.load_lab(tmp)["games"].season.max()), 2024)
+            self.assertEqual(len(D.load_lab(tmp)["injury_games"]), 0)        # a cache from before v12: no rows
+            pd.DataFrame([{"season": 2025, "game_id": "2025_01_A_B", "d_qb": 1, "d_out": 0, "d_q": 0}]).to_csv(
+                os.path.join(tmp, "injury_games.csv"), index=False)
+            with self.assertRaises(D.SealedDataError):                     # injury rows are guarded too
+                D.load_lab(tmp)
         finally:
             shutil.rmtree(tmp)
 
@@ -770,7 +775,8 @@ class Signals(unittest.TestCase):
             c = self.cand([sid], market)
             a, fit = models.run(c, self.data)
             self.assertTrue(np.isfinite(a.forecast).all(), sid)
-            self.assertEqual(fit["fit_seasons"], f"{C.TRAIN[0]}-{C.TRAIN[1]}")
+            want = f"{C.TRAIN[0]}-{C.TRAIN[1]}" + (f" + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}" if sig["kind"] == "injury" else "")
+            self.assertEqual(fit["fit_seasons"], want)
             alt = {k: v.copy() for k, v in self.data.items()}
             slot = alt["games"].loc[target, "gameday"]
             later = alt["games"].gameday >= slot
@@ -779,6 +785,65 @@ class Signals(unittest.TestCase):
             b, _ = models.run(c, alt)
             self.assertAlmostEqual(a.set_index("game_id").forecast[gid], b.set_index("game_id").forecast[gid],
                                    places=9, msg=sid)
+
+    def test_injury_signals(self):
+        # v12: NFL only, spread only, a field from the list; read from injury_games (0 where there is none); weights
+        # fit on the training seasons plus 2013-2016, never later
+        for bad in ({"id": "w", "kind": "injury", "field": "weather_out", "reason": "r"},
+                    {"id": "w", "kind": "injury", "reason": "r"}):
+            with self.assertRaises(self.SG.SignalError):
+                self.SG.validate(dict(bad))
+        self.assertEqual(self.SG.validate({"id": "w", "kind": "injury", "field": "qb_out", "reason": "r",
+                                           "markets": ["total"]})["markets"], ["spread"])
+        C.use("CFB")
+        try:
+            with self.assertRaises(self.SG.SignalError):
+                self.SG.validate({"id": "w", "kind": "injury", "field": "qb_out", "reason": "r"})
+        finally:
+            C.use("NFL")
+        data = {k: v.copy() for k, v in self.data.items()}
+        g = data["games"]
+        rng = np.random.default_rng(3)
+        inj = g[g.season >= C.INJURY_FIRST][["season", "game_id"]].copy()
+        inj["d_qb"] = rng.choice([-1.0, 0.0, 0.0, 0.0, 1.0], len(inj))
+        inj["d_out"], inj["d_q"] = 0.0, 0.0
+        data["injury_games"] = inj
+        hurt = g.game_id.isin(inj.game_id[inj.d_qb == 1])          # home QB out: home team scores 6 fewer
+        data["games"].loc[hurt, "home_score"] -= 6
+        sig = self.lib["inj-qb-out"]
+        F = self.SG.features([sig], data, "spread")
+        self.assertEqual(F[g.game_id[g.season == 2005].iloc[0]], [0.0])            # before the data: 0
+        gid = inj.game_id[inj.d_qb == 1].iloc[0]
+        self.assertEqual(F[gid], [1.0])
+        out, fit = models.run(self.cand(["inj-qb-out"]), data)
+        self.assertEqual(fit["fit_seasons"], f"{C.TRAIN[0]}-{C.TRAIN[1]} + {C.INJURY_FIT[0]}-{C.INJURY_FIT[1]}")
+        self.assertLess(fit["beta"]["inj-qb-out"], -2)                            # learned from 2013-2016
+        late = data["games"].season > C.INJURY_FIT[1]
+        alt = {k: v.copy() for k, v in data.items()}
+        alt["games"].loc[late, "home_score"] += 20                                  # later seasons never move it
+        _, fit2 = models.run(self.cand(["inj-qb-out"]), alt)
+        self.assertAlmostEqual(fit["beta"]["inj-qb-out"], fit2["beta"]["inj-qb-out"], places=9)
+
+    def test_formula_signals(self):
+        # v12 A3.3c(5): a fixed catalogue, every entry a valid team signal, unique ids; a generation takes the next 8
+        # whose columns and side the library does not already have
+        from research.lab import search as SR
+        for sport in ("NFL", "CFB"):
+            C.use(sport)
+            try:
+                cat = SR.formula_catalogue()
+                self.assertEqual(len({f["id"] for f in cat}), len(cat))
+                for f in cat:
+                    self.SG.validate(dict(f))
+                lib_shapes = {SR.signal_shape(x) for x in self.SG.load_library() if x["kind"] == "team"}
+                new = SR.widen_formulas()
+                self.assertEqual(len(new), 8)
+                self.assertEqual([f["id"] for f in new], [f["id"] for f in SR.widen_formulas()])   # deterministic
+                for f in new:
+                    self.assertNotIn(SR.signal_shape(f), lib_shapes)
+            finally:
+                C.use("NFL")
+        self.assertEqual(SR.formula_catalogue("NBA"), [])
 
     def test_team_signals_need_no_stadiums(self):
         # college football's schedule has no stadium_id: only the travel signal may need one
