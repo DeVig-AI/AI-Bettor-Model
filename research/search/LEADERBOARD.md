@@ -1,40 +1,40 @@
 # Research Lab search (NFL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-28T03:05:00Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-28T03:44:49Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-865101 configurations scored so far.
+868043 configurations scored so far.
 
-## Spread -- top 25 of 860849
+## Spread -- top 25 of 863579
 
 | # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |
 |---|---|---|---|---|---|---|---|
-| 1 | `s-0501d21a` | Blend of 3: s-f3fafc67 + s-1bba7fb4 + s-aaee4789 | +1.36 | 4.61 | +2.04 | +1.28 | +0.55 |
-| 2 | `s-f6b96569` | Blend of 3: s-5817d5ec + s-ba58f5b6 + s-236ef69a | +1.35 | 4.60 | +2.09 | +1.18 | +0.60 |
-| 3 | `s-f70033d4` | Blend of 3: s-f3fafc67 + s-236ef69a + s-aaee4789 | +1.35 | 4.57 | +2.10 | +1.20 | +0.55 |
-| 4 | `s-355c5a1b` | Blend of 10: s-5817d5ec + s-ba58f5b6 + s-f3fafc67 + s-236ef69a + s-1bba7fb4 + s-aaee4789 + s-62bfc883 + s-5e0bf9f0 + s-289c2518 + s-38ef10c9 | +1.33 | 4.54 | +2.02 | +1.24 | +0.54 |
-| 5 | `s-a5ce518f` | Blend of 2: s-ba58f5b6 + s-5e0bf9f0 | +1.34 | 4.53 | +2.06 | +1.21 | +0.54 |
-| 6 | `s-649f3ec4` | Blend of 2: s-f3fafc67 + s-d95d4a37 | +1.34 | 4.53 | +2.08 | +1.26 | +0.45 |
-| 7 | `s-89b53ea9` | Blend of 2: s-d95d4a37 + s-aaee4789 | +1.34 | 4.53 | +1.95 | +1.37 | +0.50 |
-| 8 | `s-93015474` | Blend of 3: s-5817d5ec + s-f3fafc67 + s-236ef69a | +1.33 | 4.52 | +2.05 | +1.16 | +0.60 |
-| 9 | `s-85b42419` | Blend of 2: s-8f86f9a9 + s-aaee4789 | +1.33 | 4.51 | +1.97 | +1.32 | +0.50 |
-| 10 | `s-56eecdff` | Blend of 2: s-ba58f5b6 + s-62bfc883 | +1.33 | 4.51 | +2.02 | +1.22 | +0.58 |
-| 11 | `s-144c33af` | Blend of 3: s-ba58f5b6 + s-236ef69a + s-1bba7fb4 | +1.32 | 4.51 | +2.06 | +1.16 | +0.55 |
-| 12 | `s-03a3212b` | Blend of 2: s-aaee4789 + s-38ef10c9 | +1.33 | 4.51 | +1.99 | +1.25 | +0.55 |
-| 13 | `s-130ea7c4` | Blend of 2: s-3a6a7b4b + s-aaee4789 | +1.33 | 4.50 | +1.97 | +1.31 | +0.50 |
-| 14 | `s-36d28f4b` | Blend of 3: s-ba58f5b6 + s-1bba7fb4 + s-aaee4789 | +1.32 | 4.50 | +2.05 | +1.20 | +0.50 |
-| 15 | `s-0e084d2f` | Blend of 2: s-8f86f9a9 + s-ba58f5b6 | +1.33 | 4.50 | +2.03 | +1.24 | +0.51 |
-| 16 | `s-de1e5fea` | Blend of 2: s-1bba7fb4 + s-925a9a68 | +1.32 | 4.49 | +1.98 | +1.24 | +0.55 |
-| 17 | `s-28ce94e3` | Blend of 3: s-5817d5ec + s-f3fafc67 + s-aaee4789 | +1.33 | 4.49 | +2.03 | +1.20 | +0.55 |
-| 18 | `s-4581e352` | Blend of 2: s-8f86f9a9 + s-f3fafc67 | +1.33 | 4.49 | +2.03 | +1.28 | +0.46 |
-| 19 | `s-808bfe2e` | Blend of 2: s-ba58f5b6 + s-289c2518 | +1.32 | 4.49 | +2.05 | +1.20 | +0.50 |
-| 20 | `s-44e932bb` | Blend of 3: s-8f86f9a9 + s-3a6a7b4b + s-f3fafc67 | +1.33 | 4.49 | +2.03 | +1.28 | +0.47 |
-| 21 | `s-17660a13` | Blend of 2: s-83992138 + s-d95d4a37 | +1.33 | 4.48 | +2.05 | +1.26 | +0.45 |
-| 22 | `s-de323b15` | Blend of 2: s-289c2518 + s-38ef10c9 | +1.32 | 4.48 | +2.06 | +1.20 | +0.50 |
-| 23 | `s-647a6839` | Blend of 3: s-ba58f5b6 + s-f3fafc67 + s-aaee4789 | +1.33 | 4.48 | +1.99 | +1.32 | +0.45 |
-| 24 | `s-aacfccc2` | Blend of 2: s-f3fafc67 + s-aaee4789 | +1.32 | 4.48 | +1.95 | +1.32 | +0.50 |
-| 25 | `s-5b61f47a` | Blend of 2: s-83992138 + s-aaee4789 | +1.32 | 4.48 | +1.95 | +1.32 | +0.50 |
+| 1 | `s-5190584d` | Blend of 2: s-e53a621e + s-120d310f | +1.50 | 5.06 | +2.15 | +1.11 | +1.15 |
+| 2 | `s-5a5f47e5` | Blend of 2: s-e53a621e + s-2d3d1680 | +1.50 | 5.06 | +2.27 | +1.08 | +1.03 |
+| 3 | `s-07bab77c` | Blend of 2: s-e767c930 + s-e53a621e | +1.48 | 5.01 | +2.18 | +1.05 | +1.13 |
+| 4 | `s-b4e0a552` | Blend of 2: s-e767c930 + s-4db1abcd | +1.47 | 4.97 | +2.16 | +1.06 | +1.10 |
+| 5 | `s-a141af94` | Blend of 3: s-2bcdec9f + s-da14c102 + s-e767c930 | +1.45 | 4.92 | +2.09 | +1.13 | +1.01 |
+| 6 | `s-422b53f7` | Blend of 2: s-2bcdec9f + s-da14c102 | +1.44 | 4.92 | +2.05 | +1.13 | +1.03 |
+| 7 | `s-e3c7c547` | Blend of 2: s-2bcdec9f + s-de4ca996 | +1.44 | 4.92 | +2.04 | +1.18 | +0.97 |
+| 8 | `s-51cc77af` | Blend of 2: s-e53a621e + s-de4ca996 | +1.44 | 4.91 | +2.05 | +1.00 | +1.23 |
+| 9 | `s-2bcdec9f` | Signals (SRS · carry 0.7 · prior 4) + bye-diff, inj-regulars-out, off-finishing | +1.44 | 4.90 | +2.07 | +1.13 | +1.00 |
+| 10 | `s-7fc0fccf` | Blend of 3: s-2bcdec9f + s-e53a621e + s-2d3d1680 | +1.43 | 4.89 | +2.19 | +0.91 | +1.12 |
+| 11 | `s-f5b23861` | Blend of 2: s-2bcdec9f + s-e53a621e | +1.43 | 4.86 | +2.18 | +1.00 | +1.02 |
+| 12 | `s-b2f1448b` | Blend of 3: s-e767c930 + s-e53a621e + s-2d3d1680 | +1.43 | 4.86 | +2.14 | +1.03 | +1.01 |
+| 13 | `s-83c32d25` | Blend of 2: s-e0cac3d4 + s-de4ca996 | +1.43 | 4.83 | +2.01 | +1.08 | +1.11 |
+| 14 | `s-3b860dfd` | Blend of 2: s-da14c102 + s-de4ca996 | +1.41 | 4.82 | +1.96 | +1.18 | +0.97 |
+| 15 | `s-2a79bb55` | Blend of 2: s-da14c102 + s-e53a621e | +1.42 | 4.82 | +2.15 | +0.99 | +1.03 |
+| 16 | `s-442c08f0` | Signals (SRS · carry 0.7 · prior 4) + def-early-epa~h4, inj-regulars-out | +1.42 | 4.80 | +1.98 | +1.00 | +1.23 |
+| 17 | `s-409be489` | Blend of 2: s-e767c930 + s-de4ca996 | +1.41 | 4.80 | +2.05 | +1.09 | +0.97 |
+| 18 | `s-a5bfab17` | Blend of 2: s-2d3d1680 + s-de4ca996 | +1.40 | 4.79 | +2.05 | +1.09 | +0.96 |
+| 19 | `s-32bb31b1` | Blend of 2: s-120d310f + s-4db1abcd | +1.41 | 4.79 | +1.96 | +1.10 | +1.11 |
+| 20 | `s-6ab5d594` | Blend of 2: s-2d3d1680 + s-4db1abcd | +1.41 | 4.79 | +2.13 | +1.03 | +0.96 |
+| 21 | `s-81a969b2` | Blend of 3: s-2bcdec9f + s-da14c102 + s-2d3d1680 | +1.40 | 4.79 | +2.05 | +1.08 | +0.98 |
+| 22 | `s-da14c102` | Signals (SRS · carry 0.7 · prior 4) + bye-diff, inj-regulars-out, off-finishing~c0.7 | +1.40 | 4.78 | +2.03 | +1.04 | +1.03 |
+| 23 | `s-9d5e6d4b` | Blend of 2: s-2bcdec9f + s-4db1abcd | +1.41 | 4.77 | +2.13 | +0.98 | +1.00 |
+| 24 | `s-acc4d1a2` | Blend of 2: s-e0cac3d4 + s-120d310f | +1.42 | 4.75 | +1.96 | +1.06 | +1.16 |
+| 25 | `s-e767c930` | Signals (SRS · carry 0.7 · prior 4) + inj-qb-out, inj-regulars-out, off-finishing | +1.39 | 4.72 | +2.00 | +0.98 | +1.12 |
 
-## Total -- top 25 of 4252
+## Total -- top 25 of 4464
 
 | # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |
 |---|---|---|---|---|---|---|---|
@@ -66,14 +66,14 @@ _Generated 2026-10-28T03:05:00Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `bye_elo`: best 55 (median t +0.74), worst 0 (+0.36) over 840592 configurations
-- spread · elo · `k`: best 20 (median t +0.86), worst 6 (-0.08) over 840592 configurations
-- spread · elo · `market_blend`: best 0.75 (median t +0.73), worst 0.0 (+0.24) over 840592 configurations
-- spread · elo · `market_resist`: best 2.252 (median t +0.82), worst 0.375 (-0.70) over 840592 configurations
-- spread · elo · `mov`: best nfelo (median t +0.71), worst 538 (+0.19) over 840592 configurations
-- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.13) over 840592 configurations
-- spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.89), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.71) over 2225 configurations
-- spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'carry': 0.5, 'den': None, 'halflife': 8, 'id': 'off-finishing', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': -1, 'points': 1}, 'reason': 'Points scored beyond what EPA explains (red-zone finishing, short fields): partly luck that may not repeat.', 'side': 'offense'}] (median t +3.43), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2225 configurations
+- spread · elo · `bye_elo`: best 55 (median t +0.74), worst 0 (+0.36) over 842592 configurations
+- spread · elo · `k`: best 20 (median t +0.86), worst 6 (-0.08) over 842592 configurations
+- spread · elo · `market_blend`: best 0.75 (median t +0.73), worst 0.0 (+0.24) over 842592 configurations
+- spread · elo · `market_resist`: best 2.252 (median t +0.82), worst 0.375 (-0.70) over 842592 configurations
+- spread · elo · `mov`: best nfelo (median t +0.71), worst 538 (+0.19) over 842592 configurations
+- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.13) over 842592 configurations
+- spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.94), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.75) over 2885 configurations
+- spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'field': 'qb_out', 'id': 'inj-qb-out', 'kind': 'injury', 'markets': ['spread'], 'reason': "Last game's starting quarterback is out (injury report Out/Doubtful, or inactive / on a reserve list that week): the quarterback matters more than any other player, and the DeVig injury study (research/injuries/) found a missing starter worth about 3.8 points in game results."}, {'carry': 0.5, 'den': 'plays', 'halflife': 4, 'id': 'off-success~h4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 4, carry 0.5): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}] (median t +3.46), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2885 configurations
 - spread · srs · `hfa_pts`: best 3.5 (median t +2.06), worst 0.5 (+1.76) over 8712 configurations
 - spread · srs · `margin_cap`: best 35 (median t +2.02), worst 14 (+1.11) over 8712 configurations
 - spread · srs · `prior_w`: best 2 (median t +2.18), worst 15 (+0.76) over 8712 configurations
@@ -83,8 +83,8 @@ _Generated 2026-10-28T03:05:00Z by research/lab/search.py. Scores are on the sea
 - spread · team_rating · `season_carry`: best 1.0 (median t +0.47), worst 0.2 (-0.24) over 8736 configurations
 - total · pace_eff · `halflife`: best 6 (median t -1.49), worst 40 (-1.85) over 312 configurations
 - total · pace_eff · `season_carry`: best 0.4 (median t -1.52), worst 1.0 (-1.95) over 312 configurations
-- total · signals · `base`: best {'params': {'def_weight': 0.25, 'halflife': 16, 'metric': 'early_epa', 'pace': 'seconds', 'season_carry': 0.9}, 'type': 'team_rating'} (median t -0.24), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'points', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (-1.55) over 1041 configurations
-- total · signals · `signals`: best [{'carry': 0.3, 'den': 'plays', 'halflife': 8.0, 'id': 'off-success~c0.3', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 8, carry 0.3): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}, {'carry': 0.5, 'den': 'plays', 'halflife': 16, 'id': 'off-success~h16', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 16, carry 0.5): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}] (median t -0.52), worst [{'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-success', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Success rate allowed: how often a defense lets opponents stay on schedule.', 'side': 'defense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'off-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'EPA lost to turnovers per play: turnovers are noisy and tend to even out, so recent turnover luck may mislead the rating.', 'side': 'offense'}] (-1.94) over 1041 configurations
+- total · signals · `base`: best {'params': {'def_weight': 0.25, 'halflife': 16, 'metric': 'early_epa', 'pace': 'seconds', 'season_carry': 0.9}, 'type': 'team_rating'} (median t -0.27), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'points', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (-1.53) over 1253 configurations
+- total · signals · `signals`: best [{'carry': 0.3, 'den': 'plays', 'halflife': 8.0, 'id': 'off-success~c0.3', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 8, carry 0.3): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}, {'carry': 0.5, 'den': 'plays', 'halflife': 16, 'id': 'off-success~h16', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 16, carry 0.5): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}] (median t -0.52), worst [{'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-success', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Success rate allowed: how often a defense lets opponents stay on schedule.', 'side': 'defense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'def-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'Takeaway EPA per play by the defense: forced turnovers are partly luck and regress.', 'side': 'defense'}, {'carry': 0.5, 'den': 'plays', 'halflife': 8, 'id': 'off-turnover-epa', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'epa': 1, 'noto_epa': -1}, 'reason': 'EPA lost to turnovers per play: turnovers are noisy and tend to even out, so recent turnover luck may mislead the rating.', 'side': 'offense'}] (-1.94) over 1253 configurations
 - total · team_rating · `def_weight`: best 0.625 (median t -0.42), worst 1.0 (-1.42) over 2415 configurations
 - total · team_rating · `halflife`: best 24 (median t -1.11), worst 2 (-1.64) over 2415 configurations
 - total · team_rating · `metric`: best early_epa (median t -0.98), worst epa (-1.68) over 2415 configurations
