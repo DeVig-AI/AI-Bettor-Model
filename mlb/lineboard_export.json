@@ -30,7 +30,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-27T08:48:22.720984Z"
+    "synced_at": "2026-10-27T23:38:46.326999Z"
    },
    "doc_id": "NYA202609270"
   },
@@ -107,7 +107,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-27T08:48:22.720984Z"
+    "synced_at": "2026-10-27T23:38:46.326999Z"
    },
    "doc_id": "CLE202610180"
   },
@@ -183,7 +183,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-27T08:48:22.720984Z"
+    "synced_at": "2026-10-27T23:38:46.326999Z"
    },
    "doc_id": "MIL202610230"
   },
@@ -260,7 +260,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-27T08:48:22.720984Z"
+    "synced_at": "2026-10-27T23:38:46.326999Z"
    },
    "doc_id": "MIL202610240"
   },
@@ -337,7 +337,7 @@
     },
     "season": 2026,
     "sport": "MLB",
-    "synced_at": "2026-10-27T08:48:22.720984Z"
+    "synced_at": "2026-10-27T23:38:46.326999Z"
    },
    "doc_id": "TBA202610260"
   },
@@ -383,9 +383,97 @@
     "teaser_signal": null
    },
    "doc_id": "TBA202610260"
+  },
+  {
+   "collection": "slate",
+   "data": {
+    "away_team": "MIL",
+    "export_hash": "aa7bd3a58db370ae0201caf54f56777b6f5f3d8d256eb199fae27d47f87e61bd",
+    "game_date": "2026-10-27",
+    "game_id": "TBA202610270",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-28T00:00:00Z",
+    "market": {
+     "book": "Kalshi",
+     "moneyline_away": -121,
+     "moneyline_home": 101,
+     "spread_away_odds": 139.9,
+     "spread_home": 1.5,
+     "spread_home_odds": -167.8
+    },
+    "model": {
+     "available": true,
+     "note": "Locked pregame by the tracker (MLB_MODEL_C_V1_10FEAT_LIVE_V3_REGSEASON_ONLY). Probable starters Dustin May vs Griffin Jax. Odds from Kalshi (n_books_used=1).",
+     "series": {
+      "away_wins": 3,
+      "description": "World Series",
+      "fair_price_favored": -1704,
+      "favored": "MIL",
+      "favored_prob": 0.9446,
+      "games_in_series": 7,
+      "home_wins": 0,
+      "method": "per-game model probability for this game applied to every remaining game; information only, not a validated pick",
+      "p_home_series": 0.0554,
+      "series_game_number": 4
+     },
+     "source_snapshot_time": "2026-10-27T23:38:41.484266+00:00",
+     "spread_prob": 0.6809498466329957,
+     "spread_side": "MIL +1.5",
+     "spread_side_team": "MIL",
+     "status": "locked",
+     "winner_prob": 0.5147480100224155,
+     "winner_side": "MIL"
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "synced_at": "2026-10-27T23:38:46.326999Z"
+   },
+   "doc_id": "TBA202610270"
+  },
+  {
+   "collection": "decisions",
+   "data": {
+    "away_team": "MIL",
+    "decision": {
+     "action": "PASS",
+     "prob": 0.5147480100224155,
+     "side": null,
+     "tier": null
+    },
+    "export_hash": "2774ab1e0c1b89c0a967665520fa49ee0f285bf6f6ce98b28d9ea5873656e599",
+    "game_date": "2026-10-27",
+    "game_id": "TBA202610270",
+    "home_team": "TB",
+    "kickoff_time": "2026-10-28T00:00:00Z",
+    "locked_at": "2026-10-27T23:38:41.484266+00:00",
+    "market_snapshot": {
+     "moneyline_away": -121,
+     "moneyline_home": 101
+    },
+    "outcome": {
+     "away_score": null,
+     "decision_correct": null,
+     "home_score": null,
+     "resolved": false,
+     "spread_correct": null,
+     "spread_decision_correct": null,
+     "teaser_correct": null
+    },
+    "season": 2026,
+    "sport": "MLB",
+    "spread_decision": {
+     "action": "COVER",
+     "prob": 0.6809498466329957,
+     "side": "MIL +1.5",
+     "tier": "top25"
+    },
+    "spread_read": null,
+    "teaser_signal": null
+   },
+   "doc_id": "TBA202610270"
   }
  ],
- "generated_at": "2026-10-27T08:48:22.720984Z",
- "n_docs": 10,
+ "generated_at": "2026-10-27T23:38:46.326999Z",
+ "n_docs": 12,
  "sport": "MLB"
 }
