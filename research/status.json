@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-28T02:52:37Z",
+ "updated_at": "2026-10-28T02:56:42Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 22 attempts decides; across all sports there are 24 attempts (reported only)."
  },
  "constitution": {
-  "version": "v11",
-  "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+  "version": "v12",
+  "sha256": "fb13091a1111f7fff50ac377030dbbb07423bd66ba60915404ddbf61299db85c"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -3196,7 +3196,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-28T02:54:41Z",
+   "updated_at": "2026-10-28T02:58:40Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3210,8 +3210,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 24 attempts (reported only)."
    },
    "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+    "version": "v12",
+    "sha256": "fb13091a1111f7fff50ac377030dbbb07423bd66ba60915404ddbf61299db85c"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -4732,7 +4732,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-28T02:52:32Z",
+   "updated_at": "2026-10-28T02:58:54Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -4746,8 +4746,8 @@
     "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 24 attempts (reported only)."
    },
    "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+    "version": "v12",
+    "sha256": "fb13091a1111f7fff50ac377030dbbb07423bd66ba60915404ddbf61299db85c"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -5147,7 +5147,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-28T02:54:56Z",
+   "updated_at": "2026-10-28T02:56:37Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5161,8 +5161,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 24 attempts (reported only)."
    },
    "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+    "version": "v12",
+    "sha256": "fb13091a1111f7fff50ac377030dbbb07423bd66ba60915404ddbf61299db85c"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -5181,6 +5181,35 @@
    "lessons": [],
    "promoted": [],
    "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 252",
+     "started_at": "2026-10-28T02:56:34Z",
+     "finished_at": "2026-10-28T02:56:34Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40621513301",
+     "summary": "300 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 300
+      },
+      {
+       "label": "consistent",
+       "count": 0
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 251",
@@ -5441,40 +5470,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 242",
-     "started_at": "2026-10-27T22:26:58Z",
-     "finished_at": "2026-10-27T22:26:58Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40592166416",
-     "summary": "300 models scored → 1 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 300
-      },
-      {
-       "label": "consistent",
-       "count": 1
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-28T02:54:59Z",
+   "updated_at": "2026-10-28T02:58:57Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5488,8 +5488,8 @@
     "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 24 attempts (reported only)."
    },
    "constitution": {
-    "version": "v11",
-    "sha256": "e167dcbaf2a753e7ce7a2ff0b768197419a1efb1ecca7ea707fa3bf1e0e42ee5"
+    "version": "v12",
+    "sha256": "fb13091a1111f7fff50ac377030dbbb07423bd66ba60915404ddbf61299db85c"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
