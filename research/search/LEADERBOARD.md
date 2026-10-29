@@ -1,10 +1,10 @@
 # Research Lab search (NFL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-29T20:09:52Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-29T20:46:47Z by research/lab/search.py. Scores are on the search seasons 2006–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-1024014 configurations scored so far.
+1026014 configurations scored so far.
 
-## Spread -- top 25 of 1019550
+## Spread -- top 25 of 1021550
 
 | # | id | model | effect | t | 2006–09 | 2010–13 | 2014–16 |
 |---|---|---|---|---|---|---|---|
@@ -66,12 +66,12 @@ _Generated 2026-10-29T20:09:52Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `bye_elo`: best 55 (median t +0.73), worst 0 (+0.38) over 998563 configurations
-- spread · elo · `k`: best 20 (median t +0.86), worst 6 (-0.06) over 998563 configurations
-- spread · elo · `market_blend`: best 0.75 (median t +0.75), worst 0.0 (+0.25) over 998563 configurations
-- spread · elo · `market_resist`: best 2.252 (median t +0.80), worst 0.375 (-0.64) over 998563 configurations
-- spread · elo · `mov`: best nfelo (median t +0.70), worst 538 (+0.19) over 998563 configurations
-- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.11) over 998563 configurations
+- spread · elo · `bye_elo`: best 55 (median t +0.73), worst 0 (+0.38) over 1000563 configurations
+- spread · elo · `k`: best 20 (median t +0.86), worst 6 (-0.06) over 1000563 configurations
+- spread · elo · `market_blend`: best 0.75 (median t +0.75), worst 0.0 (+0.25) over 1000563 configurations
+- spread · elo · `market_resist`: best 2.252 (median t +0.80), worst 0.375 (-0.64) over 1000563 configurations
+- spread · elo · `mov`: best nfelo (median t +0.70), worst 538 (+0.19) over 1000563 configurations
+- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.11) over 1000563 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.94), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.75) over 2885 configurations
 - spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'field': 'qb_out', 'id': 'inj-qb-out', 'kind': 'injury', 'markets': ['spread'], 'reason': "Last game's starting quarterback is out (injury report Out/Doubtful, or inactive / on a reserve list that week): the quarterback matters more than any other player, and the DeVig injury study (research/injuries/) found a missing starter worth about 3.8 points in game results."}, {'carry': 0.5, 'den': 'plays', 'halflife': 4, 'id': 'off-success~h4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 4, carry 0.5): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}] (median t +3.46), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2885 configurations
 - spread · srs · `hfa_pts`: best 3.5 (median t +2.06), worst 0.5 (+1.76) over 8712 configurations
