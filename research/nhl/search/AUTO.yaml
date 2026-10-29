@@ -1,4 +1,4 @@
-# Research Lab search (NHL) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c).
+# Research Lab search (NHL) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c; formula signals since v12).
 # Written by research/lab/search.py from search-season scores only; append-only, never edit.
 generations:
 - generation: 1
@@ -74,3 +74,41 @@ generations:
     - 0.525
     - 0.575
     - 0.65
+- generation: 3
+  at: '2026-10-29T14:22:39Z'
+  round: 321
+  ladders:
+    carry:
+    - 0.625
+    - 0.675
+    - 0.925
+    - 0.975
+    halflife:
+    - 48
+    - 52
+    - 58
+    hfa_elo:
+    - 78
+    - 84
+    - 92
+    hfa_pts:
+    - 0.125
+    - 0.175
+    - 0.25
+    market_blend:
+    - 0.5312
+    - 0.5938
+    - 0.6562
+    - 0.7188
+    prior_w:
+    - 22.0
+    - 28.0
+    - 40.0
+    revert:
+    - 0.05
+    - 0.125
+    - 0.1625
+    season_carry:
+    - 0.5625
+    - 0.5875
+    - 0.625
