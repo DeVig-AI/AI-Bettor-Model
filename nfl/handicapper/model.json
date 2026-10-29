@@ -1,0 +1,116 @@
+{
+ "version": "v1",
+ "fit_seasons": [
+  2011,
+  2022
+ ],
+ "ratings": {
+  "alpha": 0.06,
+  "carry": 0.5
+ },
+ "grid": [
+  {
+   "alpha": 0.04,
+   "carry": 0.5,
+   "cv_mae_base": 10.3108
+  },
+  {
+   "alpha": 0.04,
+   "carry": 0.7,
+   "cv_mae_base": 10.3564
+  },
+  {
+   "alpha": 0.06,
+   "carry": 0.5,
+   "cv_mae_base": 10.3004
+  },
+  {
+   "alpha": 0.06,
+   "carry": 0.7,
+   "cv_mae_base": 10.3184
+  },
+  {
+   "alpha": 0.08,
+   "carry": 0.5,
+   "cv_mae_base": 10.3075
+  },
+  {
+   "alpha": 0.08,
+   "carry": 0.7,
+   "cv_mae_base": 10.308
+  },
+  {
+   "alpha": 0.12,
+   "carry": 0.5,
+   "cv_mae_base": 10.3487
+  },
+  {
+   "alpha": 0.12,
+   "carry": 0.7,
+   "cv_mae_base": 10.3382
+  }
+ ],
+ "lines": {
+  "early": {
+   "before_hours": 144.0,
+   "fit_from": 2011,
+   "groups": [
+    "base"
+   ],
+   "selection": [
+    [
+     [
+      "base"
+     ],
+     10.3004
+    ]
+   ],
+   "coef": {
+    "home": 0.65041,
+    "net_epa": 6.38487,
+    "mov": 1.0392,
+    "const": 0.59146
+   },
+   "sigma": 13.3146,
+   "cv_mae": 10.3004
+  },
+  "late": {
+   "before_hours": 24.0,
+   "fit_from": 2014,
+   "groups": [
+    "base",
+    "injuries"
+   ],
+   "selection": [
+    [
+     [
+      "base"
+     ],
+     10.2289
+    ],
+    [
+     [
+      "base",
+      "injuries"
+     ],
+     10.1865
+    ]
+   ],
+   "coef": {
+    "home": 0.51688,
+    "net_epa": 9.98513,
+    "mov": 0.94973,
+    "inj_qb": -4.07296,
+    "inj_off": -0.81221,
+    "inj_def": -0.72967,
+    "const": 0.70904
+   },
+   "sigma": 13.1203,
+   "cv_mae": 10.1865
+  }
+ },
+ "validation_2023_24": [
+  "early: groups ['base'], sigma 13.31; 2023-24 (570 games): MAE ours 10.36 vs closing spread 9.84; ours vs closing spread: MAE 2.46, corr 0.836",
+  "late: groups ['base', 'injuries'], sigma 13.12; 2023-24 (570 games): MAE ours 10.19 vs closing spread 9.84; ours vs closing spread: MAE 2.32, corr 0.868"
+ ]
+}
