@@ -3,6 +3,7 @@
 hdata.py -- NFL Handicapper v1 input data (public nflverse files only), written to nfl/handicapper/data/:
   games.csv         every game from 2009 on: teams, kickoff, scores, rest, closing spread / total, stadium
   team_games.csv    per team-game offense stats from play-by-play (research.lab.data.aggregate_pbp columns)
+  qb_games.csv      per QB per game passing and rushing lines (same function), for the QB ratings (v2)
   availability.csv  per team-game snap share of players listed Out / Doubtful (research.lab.availability, 2013 on)
 
 Seasons through research.lab.config.LAB_MAX_SEASON come from the Research Lab's committed files (same code, same
@@ -28,7 +29,7 @@ LAB = os.path.join(ROOT, "research", "data", "nfl")
 FIRST = 2009
 GAME_COLS = ["game_id", "season", "game_type", "week", "gameday", "weekday", "gametime", "away_team", "home_team",
              "away_score", "home_score", "location", "away_rest", "home_rest", "spread_line", "total_line", "div_game",
-             "roof", "temp", "wind", "away_qb_id", "home_qb_id", "stadium_id"]
+             "roof", "temp", "wind", "away_qb_id", "home_qb_id", "away_qb_name", "home_qb_name", "stadium_id"]
 
 
 def new_seasons(games):
@@ -41,7 +42,7 @@ def pbp_season(season):
         with open(path, "wb") as f:
             f.write(D._get(C.PBP_URL.format(season=season)))
         pbp = pd.read_csv(path, usecols=lambda c: c in D.PBP_COLS, low_memory=False)
-    return D.aggregate_pbp(pbp)[0]
+    return D.aggregate_pbp(pbp)
 
 
 def main():
@@ -54,9 +55,13 @@ def main():
 
     team = pd.read_csv(os.path.join(LAB, "team_games.csv"))
     team = team[team.season >= FIRST]
-    parts = [team] + [pbp_season(s) for s in fresh]
-    team = pd.concat(parts, ignore_index=True)
+    qb = pd.read_csv(os.path.join(LAB, "qb_games.csv"))
+    qb = qb[qb.season >= FIRST]
+    built = [pbp_season(s) for s in fresh]
+    team = pd.concat([team] + [t for t, _ in built], ignore_index=True)
+    qb = pd.concat([qb] + [q for _, q in built], ignore_index=True)
     team[team.game_id.isin(played)].to_csv(os.path.join(OUT, "team_games.csv"), index=False)
+    qb[qb.game_id.isin(played)].to_csv(os.path.join(OUT, "qb_games.csv"), index=False)
 
     av = pd.read_csv(os.path.join(LAB, "availability.csv"))
     seasons = [C.LAB_MAX_SEASON] + fresh               # the last lab season seeds each team's recent snaps
@@ -64,7 +69,7 @@ def main():
     built = AV.build(games[games.season.isin(seasons)], inj, snaps, players)
     av = pd.concat([av, built[built.season > C.LAB_MAX_SEASON]], ignore_index=True)
     av.to_csv(os.path.join(OUT, "availability.csv"), index=False)
-    print(f"games {len(games)} (to {games.gameday.max()}), team_games {len(team)}, availability {len(av)}; "
+    print(f"games {len(games)} (to {games.gameday.max()}), team_games {len(team)}, qb_games {len(qb)}, availability {len(av)}; "
           f"downloaded seasons {fresh}")
 
 

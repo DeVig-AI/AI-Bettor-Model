@@ -1,0 +1,150 @@
+{
+ "version": "v2",
+ "fit_seasons": [
+  2011,
+  2022
+ ],
+ "ratings": {
+  "alpha": 0.06,
+  "carry": 0.5
+ },
+ "qb": {
+  "alpha": 0.1,
+  "carry": 0.8,
+  "league": 49.5542,
+  "debut": 28.8161,
+  "recent": 4,
+  "out_qb": 0.5
+ },
+ "grid_qb": [
+  {
+   "alpha": 0.05,
+   "carry": 0.6,
+   "cv_mae_base_qb": 10.2684
+  },
+  {
+   "alpha": 0.05,
+   "carry": 0.8,
+   "cv_mae_base_qb": 10.265
+  },
+  {
+   "alpha": 0.1,
+   "carry": 0.6,
+   "cv_mae_base_qb": 10.2676
+  },
+  {
+   "alpha": 0.1,
+   "carry": 0.8,
+   "cv_mae_base_qb": 10.2631
+  },
+  {
+   "alpha": 0.2,
+   "carry": 0.6,
+   "cv_mae_base_qb": 10.2805
+  },
+  {
+   "alpha": 0.2,
+   "carry": 0.8,
+   "cv_mae_base_qb": 10.278
+  }
+ ],
+ "lines": {
+  "early": {
+   "before_hours": 144.0,
+   "fit_from": 2011,
+   "injuries": false,
+   "groups": [
+    "base",
+    "qb",
+    "matchup"
+   ],
+   "selection": [
+    [
+     [
+      "base"
+     ],
+     10.3004
+    ],
+    [
+     [
+      "base",
+      "qb"
+     ],
+     10.2631
+    ],
+    [
+     [
+      "base",
+      "qb",
+      "matchup"
+     ],
+     10.262
+    ]
+   ],
+   "coef": {
+    "home": 0.6485,
+    "net_epa": -11.75906,
+    "mov": 0.99345,
+    "qb": 0.07418,
+    "qb_change": 0.00486,
+    "net_pass": 3.78842,
+    "net_run": 9.07238,
+    "mu_pass": -38.39164,
+    "mu_run": -77.31572,
+    "const": 0.61912
+   },
+   "sigma": 13.2479,
+   "cv_mae": 10.262
+  },
+  "late": {
+   "before_hours": 24.0,
+   "fit_from": 2014,
+   "injuries": true,
+   "groups": [
+    "base",
+    "qb",
+    "injuries"
+   ],
+   "selection": [
+    [
+     [
+      "base"
+     ],
+     10.2289
+    ],
+    [
+     [
+      "base",
+      "qb"
+     ],
+     10.1781
+    ],
+    [
+     [
+      "base",
+      "qb",
+      "injuries"
+     ],
+     10.1553
+    ]
+   ],
+   "coef": {
+    "home": 0.52188,
+    "net_epa": 3.89488,
+    "mov": 0.88959,
+    "qb": 0.06555,
+    "qb_change": -0.04038,
+    "inj_qb": -2.99275,
+    "inj_off": -0.80148,
+    "inj_def": -0.71661,
+    "const": 0.71912
+   },
+   "sigma": 13.0768,
+   "cv_mae": 10.1553
+  }
+ },
+ "validation_2023_24": [
+  "early: groups ['base', 'qb', 'matchup'], sigma 13.25; 2023-24 (570 games): MAE ours 10.25 vs closing spread 9.84; ours vs closing spread: MAE 2.39, corr 0.848",
+  "late: groups ['base', 'qb', 'injuries'], sigma 13.08; 2023-24 (570 games): MAE ours 10.11 vs closing spread 9.84; ours vs closing spread: MAE 2.21, corr 0.881"
+ ]
+}

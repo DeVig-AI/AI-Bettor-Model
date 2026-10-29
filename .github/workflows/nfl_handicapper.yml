@@ -1,0 +1,34 @@
+name: NFL Handicapper v2 -- live paper test (our line vs Kalshi, resting limit orders, graded on closing price)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */3 * * *'   # every 3 hours: decisions 6-4 days and 1 day-2 hours before kickoff, grading after games
+permissions:
+  contents: write
+concurrency:
+  group: nfl-handicapper
+  cancel-in-progress: false
+jobs:
+  handicapper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+      - name: Refresh nflverse data (schedule, play-by-play, injury reports)
+        run: python3 nfl/handicapper/hdata.py
+      - name: Decide, grade and write the card
+        run: python3 nfl/handicapper/live.py
+      - name: Save (only this bot writes nfl/handicapper/, so the rebase can't conflict)
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nfl/handicapper/data/games.csv nfl/handicapper/data/team_games.csv nfl/handicapper/data/qb_games.csv \
+                  nfl/handicapper/data/availability.csv nfl/handicapper/live/
+          git diff --cached --quiet && exit 0
+          git commit -q -m "NFL Handicapper v2 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
