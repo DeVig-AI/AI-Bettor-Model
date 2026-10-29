@@ -35,3 +35,13 @@ Rules: `HANDICAPPER_V1_BACKTEST_PREREG.md`. CLV and ROI are per $1 contract, fee
 The price did drift our way slightly, but by about a quarter of what crossing the spread and the fee cost. Most
 disagreements come from the model rating favorites lower than the market does. That is mostly the model missing
 something (for example, quarterback quality), not the market being wrong.
+
+## Limit orders instead of paying the ask (exploratory, v1; `explore_limit_orders_v1.py`, rules fixed before it ran)
+| Test | Orders | Filled | Filled CLV | Unfilled orders' would-be CLV | Paying the ask |
+|---|---|---|---|---|---|
+| A (d6) | 236 | 167 (71%) | −0.53¢ (t −1.47) | +3.49¢ | −1.70¢ |
+| B (d1) | 230 | 92 (40%) | −0.82¢ (t −4.42) | +1.12¢ | −1.84¢ |
+
+Resting at the bid cuts the loss by about two thirds, but there's **adverse selection**. The orders that fill tend to
+be the ones where the price moves against us, while the ones that would have won the move never fill. v1 still loses
+with limit orders. That's why v2 also needs a better line (QB ratings), not just cheaper execution.
