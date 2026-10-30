@@ -21,6 +21,7 @@
     {path: "nba/lineboard_export.json", every: 10},
     {path: "nba/preseason_trial_export.json", every: 30},
     {path: "nba/roster_changes.json", every: 60, live: "NBA_ROSTERS"},
+    {path: "nba/injuries_export.json", every: 15},
     {path: "nfl/comparison_lineboard_export.json", every: 30},
     {path: "live/models_export.json", every: 15},
     {path: "nfl/props_model_export.json", every: 15, props: true},

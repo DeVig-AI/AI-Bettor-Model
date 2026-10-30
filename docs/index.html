@@ -806,6 +806,28 @@
   [data-mode-switch]{text-align:left;}
   #labMore > summary{padding:0 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); font-size:14px;}
   #labMore[open] > summary{margin-bottom:6px;}
+  /* Injuries tab */
+  .inj-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+  .inj-game{padding:0; overflow:hidden;}
+  .inj-ghead{display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line);}
+  .inj-ghead .vs{font-family:var(--font-mono); font-weight:600; font-size:15px;}
+  .inj-ghead .tip{margin-left:auto; font-size:12.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+  .inj-team{padding:8px 16px 10px;}
+  .inj-team + .inj-team{border-top:1px solid var(--line);}
+  .inj-tname{display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:4px 0 2px;}
+  .inj-tname .tm-badge{width:22px; height:22px; font-size:9px;}
+  .inj-row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:7px 0; border-top:1px solid var(--line);}
+  .inj-row:first-of-type{border-top:none;}
+  .inj-row.starter .nm{font-weight:700;}
+  .inj-row .nm{font-size:14px;}
+  .inj-row .why{font-size:12px; color:var(--ink-faint);}
+  .inj-row .note{font-size:12.5px; color:var(--accent-strong); margin-top:2px;}
+  .inj-tags{display:flex; gap:5px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+  .pill.warn{background:var(--accent-wash); color:var(--accent-strong);}
+  .pill.st{background:var(--surface-2); color:var(--ink); border:1px solid var(--line-strong);}
+  .inj-watch .inj-row{grid-template-columns:auto 1fr auto;}
+  .inj-watch .tm-badge{width:26px; height:26px; font-size:9px;}
+  .inj-tags{flex-direction:column; align-items:flex-end; gap:4px;}
 </style>
 
 <div id="splash" role="status" aria-label="Loading DeVig"><svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg><div class="word">DeVig</div></div>
@@ -974,6 +996,20 @@
     </details>
   </section>
 
+  <section class="panel" id="panel-inj" hidden>
+    <div class="card">
+      <div class="inj-head"><h3>Injury report</h3><span class="faint" id="injAsOf"></span></div>
+      <p class="faint" style="margin:6px 0 10px">Tonight's official NBA list. Starters who are questionable or on a minutes limit are pulled to the top. Statuses change right up to tip, so check again close to game time.</p>
+      <div class="chips" id="injFilters">
+        <button type="button" class="pill-tab active" data-inj-f="all">All</button>
+        <button type="button" class="pill-tab" data-inj-f="gtd">Questionable / limits</button>
+        <button type="button" class="pill-tab" data-inj-f="out">Out</button>
+      </div>
+    </div>
+    <div id="injWatch"></div>
+    <div id="injGames"><div class="status">Loading…</div></div>
+  </section>
+
   <section class="panel" id="panel-me" hidden>
     <div class="card">
       <h3 style="margin-bottom:4px">Profile</h3>
@@ -994,6 +1030,7 @@
 
   <section class="panel" id="panel-more" hidden>
     <div class="more-tiles">
+      <button type="button" class="more-tile" data-go="inj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8"/><path d="M8 12h8"/></svg><b>Injuries</b><span>Tonight's NBA report, starters first</span></button>
       <button type="button" class="more-tile" data-go="research"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></svg><b>Research</b><span>Rankings, team and player stats</span></button>
       <button type="button" class="more-tile" data-go="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg><b>Models</b><span>What each sport runs on</span></button>
       <button type="button" class="more-tile" data-go="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg><b>Testing</b><span>How the picks have done</span></button>
@@ -1197,11 +1234,12 @@
     lab: document.getElementById("panel-lab"),
     models: document.getElementById("panel-models"),
     research: document.getElementById("panel-research"),
+    inj: document.getElementById("panel-inj"),
     me: document.getElementById("panel-me"),
     more: document.getElementById("panel-more"),
     about: document.getElementById("panel-about")
   };
-  var UNDER_MORE = {models: 1, lab: 1, about: 1, me: 1, research: 1};
+  var UNDER_MORE = {inj: 1, models: 1, lab: 1, about: 1, me: 1, research: 1};
   var meBtn = document.getElementById("meBtn");
   function showPanel(name){
     var navTab = UNDER_MORE[name] ? "more" : name === "game" ? (gamePage ? gamePage.back : "home") : name;
@@ -1212,6 +1250,7 @@
     if(name === "scan"){ loadHistory(); renderPast(); }
     if(name === "parlay"){ renderTrackedParlays(); renderBestParlay(); }
     if(name === "me") renderMe();
+    if(name === "inj") renderInjuries();
     if(name === "models") renderModels();
     if(name === "research") renderResearch();
   }
@@ -5520,7 +5559,85 @@
     try{ sampleApi = await window.claude.use("sample"); }catch(e){ sampleApi = null; }
     try{ dbApi = await window.claude.use("db"); }catch(e){ dbApi = null; }
     startHomeSubscription();
+    startInjurySub();
   })();
+
+  // ---------- injuries tab ----------
+  var injDocs = [], injMeta = null, injLoaded = false, injFilter = "all";
+  function startInjurySub(){
+    if(!dbApi){ injLoaded = true; renderInjuries(); return; }
+    try{
+      dbApi.collection("injuries").onSnapshot(function(snap){
+        injDocs = snap.docs.map(function(d){ return d.data(); }); injLoaded = true; renderInjuries();
+      });
+      dbApi.collection("injury_meta").onSnapshot(function(snap){
+        injMeta = null; snap.docs.forEach(function(d){ injMeta = d.data(); }); renderInjuries();
+      });
+    }catch(e){ injLoaded = true; renderInjuries(); }
+  }
+  var INJ_RANK = {"Out": 0, "Doubtful": 1, "Questionable": 2, "Probable": 3, "Available": 4};
+  function injPill(st){
+    var cls = (st === "Out" || st === "Doubtful") ? "bad" : st === "Questionable" ? "warn" : "";
+    return '<span class="pill ' + cls + '">' + escapeHtml(st || "?") + '</span>';
+  }
+  function injTags(r){
+    return '<div class="inj-tags">' + (r.starter ? '<span class="pill st">Starter</span>' : '') +
+      (r.minutes ? '<span class="pill warn">Min limit</span>' : '') + injPill(r.status) + '</div>';
+  }
+  function injWatchable(r){ return r.starter && (r.minutes || r.status === "Questionable" || r.status === "Doubtful"); }
+  function injShow(r){
+    if(injFilter === "gtd") return r.minutes || r.status === "Questionable" || r.status === "Doubtful";
+    if(injFilter === "out") return r.status === "Out";
+    return true;
+  }
+  function renderInjuries(){
+    var games = document.getElementById("injGames"), watch = document.getElementById("injWatch");
+    if(!games) return;
+    document.getElementById("injAsOf").textContent = injMeta && injMeta.as_of ? "as of " + injMeta.as_of : "";
+    if(!injLoaded){ games.innerHTML = '<div class="status">Loading…</div>'; return; }
+    if(!injDocs.length){ watch.innerHTML = ""; games.innerHTML = '<div class="card empty"><div class="icon">+</div>No injury report loaded yet. Ask Claude to update it.</div>'; return; }
+    var favs = (typeof favTeams === "function") ? favTeams("NBA") : [];
+    // starters to watch
+    var w = injDocs.filter(injWatchable).sort(function(a, b){ return String(a.tip_sort).localeCompare(String(b.tip_sort)); });
+    watch.innerHTML = w.length ? '<div class="card inj-watch"><div class="bb-sec" style="margin-top:0">Starters to watch</div>' +
+      w.map(function(r){
+        return '<div class="inj-row starter">' + teamBadge(r.sport || "NBA", r.team) + '<div><div class="nm">' + escapeHtml(r.player) + '</div>' +
+          '<div class="why">' + escapeHtml(r.away + " @ " + r.home + " · " + (r.tip || "")) + (r.reason ? " · " + escapeHtml(r.reason) : "") + '</div>' +
+          (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') + '</div>' + injTags(r) + '</div>';
+      }).join("") + '</div>' : "";
+    // group by game
+    var byGame = {};
+    injDocs.forEach(function(r){ var k = r.away + "@" + r.home; (byGame[k] = byGame[k] || {away: r.away, home: r.home, tip: r.tip, tip_sort: r.tip_sort, rows: []}).rows.push(r); });
+    var list = Object.keys(byGame).map(function(k){ return byGame[k]; }).sort(function(a, b){
+      var fa = (favs.indexOf(a.away) >= 0 || favs.indexOf(a.home) >= 0) ? 0 : 1, fb = (favs.indexOf(b.away) >= 0 || favs.indexOf(b.home) >= 0) ? 0 : 1;
+      return fa - fb || String(a.tip_sort).localeCompare(String(b.tip_sort));
+    });
+    var html = "";
+    list.forEach(function(g){
+      var teamsHtml = [g.away, g.home].map(function(t){
+        var rows = g.rows.filter(function(r){ return r.team === t && injShow(r); }).sort(function(a, b){
+          return (b.starter ? 1 : 0) - (a.starter ? 1 : 0) || (INJ_RANK[a.status] - INJ_RANK[b.status]) || String(a.player).localeCompare(b.player);
+        });
+        if(!rows.length) return "";
+        return '<div class="inj-team"><div class="inj-tname">' + teamBadge("NBA", t) + escapeHtml(t) + '</div>' +
+          rows.map(function(r){
+            return '<div class="inj-row' + (r.starter ? ' starter' : '') + '"><div><div class="nm">' + escapeHtml(r.player) + '</div>' +
+              (r.reason ? '<div class="why">' + escapeHtml(r.reason) + '</div>' : '') + (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') +
+              '</div>' + injTags(r) + '</div>';
+          }).join("") + '</div>';
+      }).join("");
+      if(!teamsHtml) return;
+      html += '<div class="card inj-game"><div class="inj-ghead">' + teamBadge("NBA", g.away) + '<span class="vs">' + escapeHtml(g.away) + ' @ ' + escapeHtml(g.home) + '</span>' +
+        teamBadge("NBA", g.home) + '<span class="tip">' + escapeHtml(g.tip || "") + '</span></div>' + teamsHtml + '</div>';
+    });
+    games.innerHTML = html || '<div class="card empty">Nothing matches this filter.</div>';
+  }
+  document.getElementById("injFilters").addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-inj-f]"); if(!b) return;
+    injFilter = b.getAttribute("data-inj-f");
+    this.querySelectorAll("[data-inj-f]").forEach(function(x){ x.classList.toggle("active", x === b); });
+    renderInjuries();
+  });
 
   // ---------- scan tab ----------
   var fileInput = document.getElementById("fileInput");
