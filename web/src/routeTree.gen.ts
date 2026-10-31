@@ -16,6 +16,7 @@ import { Route as errors404RouteImport } from './routes/(errors)/404'
 import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
 import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated/parlay'
 import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
@@ -55,6 +56,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInjuriesRoute = AuthenticatedInjuriesRouteImport.update({
+  id: '/injuries',
+  path: '/injuries',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedParlayRoute = AuthenticatedParlayRouteImport.update({
   id: '/parlay',
   path: '/parlay',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/injuries': typeof AuthenticatedInjuriesRoute
   '/parlay': typeof AuthenticatedParlayRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/injuries': typeof AuthenticatedInjuriesRoute
   '/parlay': typeof AuthenticatedParlayRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
   '/_authenticated/parlay': typeof AuthenticatedParlayRoute
   '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/injuries'
     | '/parlay'
     | '/props'
     | '/track-record'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/injuries'
     | '/parlay'
     | '/props'
     | '/track-record'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/_authenticated/injuries'
     | '/_authenticated/parlay'
     | '/_authenticated/props'
     | '/_authenticated/track-record'
@@ -215,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/injuries': {
+      id: '/_authenticated/injuries'
+      path: '/injuries'
+      fullPath: '/injuries'
+      preLoaderRoute: typeof AuthenticatedInjuriesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/parlay': {
       id: '/_authenticated/parlay'
       path: '/parlay'
@@ -247,6 +266,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
   AuthenticatedParlayRoute: typeof AuthenticatedParlayRoute
   AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
@@ -255,6 +275,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
   AuthenticatedParlayRoute: AuthenticatedParlayRoute,
   AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,

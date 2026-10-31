@@ -1,1 +1,0 @@
-import{n as e}from"./props-Df7hy_pm.js";var t=e;export{t as component};
