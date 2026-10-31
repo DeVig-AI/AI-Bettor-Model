@@ -82,7 +82,7 @@ NFL_MODEL2 = ROOT / "nfl" / "model2" / "upcoming.json"
 NBA_TRACKER = ROOT / "nba" / "NBA_PROSPECTIVE_TRACKER_V1.sqlite3"
 MLB_TRACKER = ROOT / "mlb" / "MLB_PROSPECTIVE_TRACKER_V1.sqlite3"
 NFL_PROPS = ROOT / "nfl" / "PROPS_MODEL_V1_LOG.sqlite3"
-NBA_PROPS = ROOT / "nba" / "NBA_PROPS_MODEL_V1_LOG.sqlite3"
+NBA_PROPS = ROOT / "nba" / "NBA_PROPS_MODEL_V2_LOG.sqlite3"   # the live NBA props model since 2026-10-22 (v1 stopped then)
 NFL_DECIDER = "OLD_LAB28_43_HYBRID"                          # the decider the app shows (export_lineboard_nfl_v8.py)
 NFL_GAMES_URL = "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"  # as the grader
 NFELO_URL = "https://raw.githubusercontent.com/greerreNFL/nfelo/main/output_data/prediction_tracker.csv"
@@ -706,10 +706,30 @@ def props_rows(sport):
 CAL_BINS = ((0.5, 0.6), (0.6, 0.7), (0.7, 0.8), (0.8, 1.0001))
 
 
+def cal_row(key, name, pairs):
+    """One "do the percentages come true" row from (model chance, Kalshi chance, outcome 1/0) triples: how often the
+    side the model favoured won per band of the chance it gave (50-60%, ... 80%+), and log loss and Brier score (lower
+    = better) next to Kalshi's on the same rows."""
+    def scores(i):
+        ps = [min(max(t[i], 1e-4), 1 - 1e-4) for t in pairs]
+        ys = [t[2] for t in pairs]
+        ll = -sum(y * math.log(q) + (1 - y) * math.log(1 - q) for q, y in zip(ps, ys)) / len(ps)
+        return round(ll, 4), round(sum((q - y) ** 2 for q, y in zip(ps, ys)) / len(ps), 4)
+    bins = []
+    for lo, hi in CAL_BINS:
+        inside = [(max(t[0], 1 - t[0]), t[2] if t[0] >= 0.5 else 1 - t[2]) for t in pairs if lo <= max(t[0], 1 - t[0]) < hi]
+        bins.append({"lo": lo, "hi": min(hi, 1.0), "n": len(inside),
+                     "said": round(sum(a for a, _ in inside) / len(inside), 4) if inside else None,
+                     "won": round(sum(b for _, b in inside) / len(inside), 4) if inside else None})
+    ll, br = scores(0)
+    mll, mbr = scores(1)
+    return {"key": key, "name": name, "n": len(pairs), "logloss": ll, "brier": br, "mkt_logloss": mll, "mkt_brier": mbr,
+            "bins": bins}
+
+
 def calibration(sport, by_game, results):
-    """Do a model's win chances come true? For each model with a win chance, on the graded games of this sport: how
-    often the side it favoured won, per band of the chance it gave (50-60%, ... 80%+), plus log loss and Brier score
-    (lower = better) next to Kalshi's on the same games. A tie or a game without Kalshi's chance is left out."""
+    """Do a model's win chances come true? For each model with a win chance, on the graded games of this sport (a tie or
+    a game without Kalshi's chance is left out), next to Kalshi on the same games."""
     rows = []
     for m in MODELS:
         if sport not in m["sports"] or m["key"] not in COVERS[sport]["ml"]:
@@ -721,25 +741,30 @@ def calibration(sport, by_game, results):
                     or p.get("home_wp") is None or k.get("home_wp") is None:
                 continue
             pairs.append((p["home_wp"], k["home_wp"], 1.0 if res["home_score"] > res["away_score"] else 0.0))
-        if not pairs:
-            continue
-
-        def scores(i):
-            ps = [min(max(t[i], 1e-4), 1 - 1e-4) for t in pairs]
-            ys = [t[2] for t in pairs]
-            ll = -sum(y * math.log(q) + (1 - y) * math.log(1 - q) for q, y in zip(ps, ys)) / len(ps)
-            return round(ll, 4), round(sum((q - y) ** 2 for q, y in zip(ps, ys)) / len(ps), 4)
-        bins = []
-        for lo, hi in CAL_BINS:
-            inside = [(max(t[0], 1 - t[0]), t[2] if t[0] >= 0.5 else 1 - t[2]) for t in pairs if lo <= max(t[0], 1 - t[0]) < hi]
-            bins.append({"lo": lo, "hi": min(hi, 1.0), "n": len(inside),
-                         "said": round(sum(a for a, _ in inside) / len(inside), 4) if inside else None,
-                         "won": round(sum(b for _, b in inside) / len(inside), 4) if inside else None})
-        ll, br = scores(0)
-        mll, mbr = scores(1)
-        rows.append({"key": m["key"], "name": m["name"], "n": len(pairs), "logloss": ll, "brier": br,
-                     "mkt_logloss": mll, "mkt_brier": mbr, "bins": bins})
+        if pairs:
+            rows.append(cal_row(m["key"], m["name"], pairs))
     return rows
+
+
+def props_calibration(sport):
+    """The same check for DeVig's props model: every prop row it locked before a game (not only its picks), its chance of
+    the over against Kalshi's mid price at that lock, graded from the model's own log. Market = Kalshi's mid."""
+    path = NFL_PROPS if sport == "NFL" else NBA_PROPS
+    if not path.exists():
+        return []
+    c = ro(path)
+    if sport == "NFL":
+        sql = ("SELECT r.model_p AS p, r.k_bid AS b, r.k_ask AS a, g.over_won AS y FROM locked_rows r JOIN grades g ON "
+               "g.game_key=r.game_key AND g.player_id=r.player_id AND g.stat=r.stat AND g.line=r.line WHERE g.over_won IN (0,1)")
+    else:
+        sql = ("SELECT r.model_p AS p, r.k_bid AS b, r.k_ask AS a, CASE g.result WHEN 'yes' THEN 1 ELSE 0 END AS y "
+               "FROM locked_rows r JOIN grades g ON g.ticker=r.ticker WHERE g.result IN ('yes','no')")
+    pairs = [(r["p"], (r["b"] + r["a"]) / 2, float(r["y"])) for r in c.execute(sql)
+             if r["p"] is not None and r["b"] is not None and r["a"] is not None and 0 <= r["b"] <= r["a"] <= 1]
+    c.close()
+    if not pairs:
+        return []
+    return [cal_row("devig", "DeVig props", pairs), cal_row("kalshi", "Market", [(k, k, y) for _, k, y in pairs])]
 
 
 def export(now):
@@ -820,6 +845,8 @@ def export(now):
                                       "beat": sum(1 for c in mv or [] if c > 0), "same": sum(1 for c in mv or [] if c == 0),
                                       "avg": round(sum(mv) / len(mv), 4) if mv else None})
         tabs["calib"] = calibration(sport, by_game, results)
+        if sport in ("NFL", "NBA"):
+            tabs["props_calib"] = props_calibration(sport)
         sports[sport] = tabs
 
     # the page's game list: upcoming (latest.json) and the last few days (picks.jsonl)

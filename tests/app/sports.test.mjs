@@ -102,6 +102,8 @@ test("sport tabs: NHL in season, off-season sports hidden", async (t) => {
       for (const label of ["Goals", "Assists", "Points"]) assert.ok(tabs.includes(label), label + " tab");
       await page.locator('.sb-tabs button[data-k="goals"]').click();
       await page.getByText("Cole Caufield").first().waitFor({timeout: 5000});
+      // the market's chance first (Kalshi's mid), the model's second
+      assert.match(await page.locator(".pp-row", {hasText: "Cole Caufield"}).first().locator(".pp-sub").innerText(), /^Kalshi 39% over · model 48%/);
       await pg.screenshot({path: OUT + "sports-nhl-props.png", fullPage: true});
     });
     await t.test("Testing lists the NHL props test", async () => {

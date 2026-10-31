@@ -24,6 +24,9 @@ const EXPORT = {generated_at: new Date().toISOString(), docs: [{collection: "mod
                  spread: [], total: [], props: [],
                  close: [{key: "devig", name: "DeVig", n: 14, beat: 6, same: 1, avg: -0.003},
                          {key: "blotny", name: "Blotny NBA", n: 9, beat: 6, same: 0, avg: 0.021}],
+                 props_calib: [{key: "devig", name: "DeVig props", n: 8923, logloss: 0.4899, brier: 0.16, mkt_logloss: 0.4787, mkt_brier: 0.155,
+                                bins: [{lo: 0.5, hi: 0.6, n: 1258, said: 0.546, won: 0.5556}, {lo: 0.6, hi: 0.7, n: 1634, said: 0.6462, won: 0.6542},
+                                       {lo: 0.7, hi: 0.8, n: 1709, said: 0.7506, won: 0.7472}, {lo: 0.8, hi: 1, n: 4322, said: 0.8959, won: 0.8857}]}],
                  calib: [{key: "devig", name: "DeVig", n: 68, logloss: 0.6197, brier: 0.21, mkt_logloss: 0.5686, mkt_brier: 0.19,
                           bins: [{lo: 0.5, hi: 0.6, n: 19, said: 0.5529, won: 0.5263}, {lo: 0.6, hi: 0.7, n: 22, said: 0.6513, won: 0.5455},
                                  {lo: 0.7, hi: 0.8, n: 17, said: 0.7435, won: 0.8235}, {lo: 0.8, hi: 1, n: 8, said: 0.85, won: 0.75}]},
@@ -74,6 +77,11 @@ test("Models page: beat the closing line", async () => {
     assert.equal(await pg.locator("#mdCalib td.faint").count(), 2);
     await pg.locator("#mdCalib").scrollIntoViewIfNeeded();
     await pg.screenshot({path: OUT + "models-calib.png"});
+    // the Props tab swaps in the props model's check (every locked prop against Kalshi's mid)
+    await pg.locator('#mdBet [data-md-bet="props"]').click();
+    const pcal = await pg.locator("#mdCalib").innerText();
+    assert.match(pcal, /props[\s\S]*DeVig props\s+8923\s+0\.490\s+Market 0\.479/i);
+    assert.match(await pg.locator("#mdCalibNote").innerText(), /Every prop the props model scored/);
     const w = await pg.evaluate(() => document.documentElement.scrollWidth);
     assert.ok(w <= 390, `page is ${w}px wide`);
     assert.deepEqual(errors, []);

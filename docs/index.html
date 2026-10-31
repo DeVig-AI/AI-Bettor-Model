@@ -1065,7 +1065,7 @@
     <div class="card">
       <h3 style="margin-bottom:6px">Do the percentages come true?</h3>
       <div class="lab-scroll"><table class="lab-table" id="mdCalib"></table></div>
-      <div class="faint" style="margin-top:8px">Each model's win chances, grouped: of the games where it gave its side 60–70%, how many did that side win? An honest model's 65% wins about 65% of the time. Accuracy scores how close every chance was to what happened (log loss, lower is better), next to the Market's on the same games. Groups under 10 games are greyed out: too few to judge.</div>
+      <div class="faint" style="margin-top:8px"><span id="mdCalibNote"></span> Groups under 10 are greyed out: too few to judge.</div>
     </div>
     <div class="card">
       <h3 style="margin-bottom:6px" id="mdGamesTitle">Picks</h3>
@@ -2270,14 +2270,18 @@
           games.forEach(function(g){ var v = val(g, d[2]); if(v == null) return; n++; if(v > ln) o++; });
           return [o, n];
         }
+        var opp = (r.teams || []).filter(function(c){ return c !== t.code; })[0];
         var groups = [["Last 5 games", log.slice(0, 5)], ["Last 10 games", log.slice(0, 10)],
+          ["Last 10 at home", log.filter(function(g){ return g[2] === "H"; }).slice(0, 10)],
+          ["Last 10 away", log.filter(function(g){ return g[2] === "A"; }).slice(0, 10)]].concat(
+          opp ? [["Vs " + opp + " (any season)", log.filter(function(g){ return g[1] === opp; })]] : []).concat([
           ["This season (" + rsShort(t.season) + ")", log.filter(function(g){ return g[L.season] === cur && g[L.type] === "R"; })],
-          ["Last season (" + rsShort(t.last_season) + ")", log.filter(function(g){ return g[L.season] === cur - 1 && g[L.type] === "R"; })]];
+          ["Last season (" + rsShort(t.last_season) + ")", log.filter(function(g){ return g[L.season] === cur - 1 && g[L.type] === "R"; })]]);
         document.getElementById("rsHits").innerHTML = isFinite(ln) ? '<div class="rs-hit">' + groups.map(function(gr){
           var c = count(gr[1]);
           return '<span>' + escapeHtml(gr[0]) + '</span><span class="v">' + (c[1] ? c[0] + ' of ' + c[1] : '—') + '</span>' +
             '<div class="rs-bar"><i style="width:' + (c[1] ? Math.round(c[0] / c[1] * 100) : 0) + '%"></i></div>';
-        }).join("") + '</div><p class="faint" style="margin:6px 0 0">Counts, not chances: 5 or 10 games is a small sample, and Kalshi\'s price already knows about his recent form. On a prop, compare with the model %.</p>'
+        }).join("") + '</div><p class="faint" style="margin:6px 0 0">Counts, not chances: 5 or 10 games is a small sample, and Kalshi\'s price already knows about his recent form. On a prop, compare with Kalshi\'s % (the market\'s chance), not just these counts.</p>'
           : '<div class="faint">Type a line, like 22.5.</div>';
         var rows = log.slice(0, 20), prevSeason = null, ncol = show.length + 2;
         document.getElementById("rsLog").innerHTML = '<tr><th>Date</th>' + show.map(function(c){ return '<th>' + escapeHtml(c[0]) + '</th>'; }).join("") + '<th>' + escapeHtml(d[1]) + '</th></tr>' +
@@ -2403,9 +2407,14 @@
         return '<tr><td>' + escapeHtml(m.name) + '</td><td>' + (m.n || 0) + '</td><td>' + (m.n ? m.beat + " of " + m.n : "—") + '</td>' +
           '<td style="color:' + col + '">' + avg + '</td></tr>';
       }).join("");
-    var cal = r && r.sports && r.sports[mdSport] ? r.sports[mdSport].calib || [] : [];
-    document.getElementById("mdCalib").innerHTML = !cal.length ? '<tr><td class="faint">' + (mdLoaded ? "No graded games with win chances yet." : "Loading…") + '</td></tr>' :
-      '<tr><th>Model</th><th>Games</th><th>Accuracy</th>' + CAL_LABELS.map(function(l){ return '<th>' + l + '</th>'; }).join("") + '</tr>' + cal.map(function(m){
+    // on the Props tab: the props model's every locked prop (its chance of the over) against Kalshi's mid at the lock
+    var onProps = mdBet === "props";
+    var cal = r && r.sports && r.sports[mdSport] ? r.sports[mdSport][onProps ? "props_calib" : "calib"] || [] : [];
+    document.getElementById("mdCalibNote").textContent = onProps
+      ? "Every prop the props model scored before a game (not just its picks): of the props where it gave a side 60–70%, how often did that side happen? Accuracy (log loss, lower is better) is next to Kalshi's middle price on the same props."
+      : "Each model's win chances, grouped: of the games where it gave its side 60–70%, how many did that side win? An honest model's 65% wins about 65% of the time. Accuracy scores how close every chance was to what happened (log loss, lower is better), next to the Market's on the same games.";
+    document.getElementById("mdCalib").innerHTML = !cal.length ? '<tr><td class="faint">' + (mdLoaded ? (onProps ? "No graded props for this sport." : "No graded games with win chances yet.") : "Loading…") + '</td></tr>' :
+      '<tr><th>Model</th><th>' + (onProps ? "Props" : "Games") + '</th><th>Accuracy</th>' + CAL_LABELS.map(function(l){ return '<th>' + l + '</th>'; }).join("") + '</tr>' + cal.map(function(m){
         var bench = m.key === "kalshi";
         var acc = m.logloss.toFixed(3) + (bench ? "" : '<br><span class="faint" style="font-size:11px">Market ' + m.mkt_logloss.toFixed(3) + '</span>');
         var col = bench || m.logloss === m.mkt_logloss ? "inherit" : (m.logloss < m.mkt_logloss ? "var(--good)" : "var(--bad)");
@@ -4084,12 +4093,12 @@
         var rs = byP[name].sort(function(a, b){ return a.line - b.line; });
         var main = ppMainLine(rs), e = propEdge(main, inj);
         var injSt = inj[propNorm(name)];
-        var sub = [];
+        // the market's chance first (on every props log Kalshi has been the more accurate), then the model's
+        var sub = [], mk = propMarketChance(main);
+        if(mk) sub.push(mk.src + " " + Math.round(mk.p * 100) + "% over" + (mk.thin ? " (thin)" : ""));
         if(main.mp != null){
-          var chance = Math.round(main.mp * 100);
-          sub.push("model " + chance + "% over" + (main.ex != null ? " · expects ~" + (Math.round(main.ex * 10) / 10) : ""));
+          sub.push("model " + Math.round(main.mp * 100) + "%" + (main.ex != null ? " · expects ~" + (Math.round(main.ex * 10) / 10) : ""));
         } else sub.push("no model (too few games)");
-        if(!propKalshiTwoSided(main) && main.pp != null) sub.push("Polymarket" + ((main.pliq == null || main.pliq < 500) ? ", thin" : ""));
         if(injSt) sub.push(escapeHtml(injSt));
         var row = el("div", "pp-row");
         var rsBtn = rsHasSport(docSport(doc)) ? rsLink({page: "player", sport: docSport(doc), teams: [doc.away_team, doc.home_team], name: name, stat: stat, line: main.line}, "Stats") : "";
@@ -4125,6 +4134,7 @@
     d.style.marginTop = "14px";
     d.innerHTML = '<summary class="faint" style="cursor:pointer">How to read props' + (doc.prices_fetched ? ' · prices as of ' + escapeHtml(whenTxt(doc.prices_fetched)) : '') + '</summary>' +
       '<p style="margin-top:8px"><b>Odds</b> are Kalshi\'s price shown as sportsbook odds, with Kalshi\'s fee included (Polymarket when Kalshi has no price; "thin" means little money behind it). Any odds have a <b>needs %</b>: how often the bet must win to break even. −150 needs 60%.</p>' +
+      '<p><b>Kalshi %</b> (or Polymarket %) comes first: the market\'s chance of the over, the middle of its buy and sell prices. On every graded props log so far (about 9,000 props per sport) the market has been more accurate than the model; More → Models → Props shows the check.</p>' +
       '<p><b>Model %</b> is our model\'s chance, from the player\'s own recent games only. It doesn\'t know about injuries, teammates, weather or game plans.</p>' +
       '<p><b>Labels</b> (<span class="pr-tier high">Big gap</span> <span class="pr-tier med">Gap</span> <span class="pr-tier lean">Small gap</span>) are not confidence and not the chance it hits. They show how far the model % is above the needs % at Kalshi\'s price: 10+ points, 5–10, or 2–5. So far the big gaps have won about as often as their price needed, no more. ' + (docSport(doc) === "NHL" ? 'Only skaters with 40+ games, a game in the last 30 days and busy markets get one; never players listed Out, Day-To-Day, on IR or suspended.' : docSport(doc) === "NBA" ? 'Only players with 40+ games and busy markets get one; never steals, blocks, turnovers or players listed Out or Doubtful.' : 'Only players with 21+ games and busy markets get one; never touchdowns or players listed Out or Doubtful.') + '</p>' +
       '<p>A big gap can mean the market knows something the model doesn\'t. Prices move: check the live price first.</p>';
@@ -4688,7 +4698,7 @@
   }
   var PROP_PICK_STATS = {passing_yards:1, passing_tds:1, passing_attempts:1, passing_completions:1, interceptions:1,
     rushing_yards:1, rushing_attempts:1, receiving_yards:1, receptions:1, rush_rec_yards:1};
-  var PROP_PICK_STATS_NBA = {points:1, rebounds:1, assists:1, threes:1, pts_reb_ast:1, pts_reb:1, pts_ast:1, reb_ast:1};
+  var PROP_PICK_STATS_NBA = {points:1, rebounds:1, assists:1, threes:1};   // NBA props model v2's stats (nba_props_model_lib_v2.STATS)
   var NHL_PICK_STATS = {goals:1, assists:1, points:1};
   var NBA_STATS = {points:1, rebounds:1, assists:1, threes:1, pts_reb_ast:1, pts_reb:1, pts_ast:1, reb_ast:1, steals:1, blocks:1, stl_blk:1, turnovers:1};
   function propNorm(s){ return String(s || "").toLowerCase().replace(/[.'’-]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/\s+/g, " ").trim(); }
@@ -4708,13 +4718,15 @@
     return out;
   }
   // Same screen as the pre-registered paper test: 21+ games, no TDs, 100+ open interest, model within 20 pts of the market mid.
+  // NBA: props model v2's screen (NBA_PROPS_MODEL_V2_LIVE_PREREG.md): points, rebounds, assists and threes, 40+ games, a
+  // spread of 0.10 or less.
   // NHL (sport "NHL"): its own pre-registered screen, 40+ games, a game in the last 30 days, a spread of 0.10 or less,
   // and no one listed Out, Day-To-Day, on IR / LTIR or suspended.
   function propEdge(r, inj, sport){
     if(r.mp == null || r.kb == null || r.ka == null || !(r.ka > 0 && r.ka < 1)) return null;
     var nhl = sport === "NHL", isNba = !nhl && !!NBA_STATS[r.stat];
     if(nhl ? (!NHL_PICK_STATS[r.stat] || (r.n || 0) < 40 || r.stale || r.ka - r.kb > 0.10)
-       : isNba ? (!PROP_PICK_STATS_NBA[r.stat] || (r.n || 0) < 40 || r.stale) : (!PROP_PICK_STATS[r.stat] || (r.n || 0) < 21)) return null;
+       : isNba ? (!PROP_PICK_STATS_NBA[r.stat] || (r.n || 0) < 40 || r.stale || r.ka - r.kb > 0.10) : (!PROP_PICK_STATS[r.stat] || (r.n || 0) < 21)) return null;
     if((r.koi || 0) < 100) return null;
     if(Math.abs(r.mp - (r.kb + r.ka) / 2) > 0.20) return null;
     var st = inj && inj[propNorm(r.player)];
@@ -4746,7 +4758,7 @@
       });
       if(n) return {label: "Big gaps", n: n, w: w, need: need / n};
     }
-    var r = propsReports[sport + "_PROPS_MODEL_V1"] || (sport === "NFL" ? propsReport : null);
+    var r = propsReportFor(sport);
     var g = r ? (r.paper_picks_graded || 0) : 0;
     if(g && r.cost_sum) return {label: "Graded picks", n: g, w: r.wins || 0, need: r.cost_sum / g};
     return null;
@@ -4804,16 +4816,31 @@
     var recB = propsRecordEl(docSport(doc));
     if(recB){ recB.style.marginTop = "6px"; box.appendChild(recB); }
   }
+  // The market's chance of the over: Kalshi's mid when it has a two-sided price, else Polymarket's (thin = little money)
+  function propMarketChance(r){
+    if(propKalshiTwoSided(r)) return {p: (r.kb + r.ka) / 2, src: "Kalshi"};
+    if(r.pp != null) return {p: r.pp, src: "Polymarket", thin: r.pliq == null || r.pliq < 500};
+    return null;
+  }
+  // The live props test's report for a sport: the newest model version present (NBA is v2 since 2026-10-22)
+  function propsReportFor(sport){
+    var best = null, ver = -1;
+    Object.keys(propsReports).forEach(function(k){
+      var m = /^([A-Z]+)_PROPS_MODEL_V(\d+)$/.exec(k);
+      if(m && m[1] === sport && Number(m[2]) > ver){ ver = Number(m[2]); best = propsReports[k]; }
+    });
+    return best || (sport === "NFL" ? propsReport : null);
+  }
   function propRowEl(r, pick, e){
     var row = el("div", "pr-row");
     var what = el("div", "what", escapeHtml(propLineTxt(r.stat, r.line)) +
       (e ? ' ' + propTierPill(e.tier) + ' <span class="faint" style="font-weight:600">on the ' + (e.side === "OVER" ? "Over" : "Under") + '</span>' : "") +
       (pick ? ' <span class="pill neutral">PICK: ' + escapeHtml(pick.side) + '</span>' : ""));
-    var mdl = el("div", "mdl");
-    if(r.mp != null){
-      mdl.innerHTML = Math.round(r.mp * 100) + '%<div class="faint" style="font-weight:500; font-family:var(--font-sans)">model</div>';
+    var mdl = el("div", "mdl"), mk = propMarketChance(r);
+    if(mk){
+      mdl.innerHTML = Math.round(mk.p * 100) + '%<div class="faint" style="font-weight:500; font-family:var(--font-sans)">' + mk.src + ' over</div>';
     } else {
-      mdl.innerHTML = '<span class="faint" style="font-weight:500; font-family:var(--font-sans)">no model</span>';
+      mdl.innerHTML = '<span class="faint" style="font-weight:500; font-family:var(--font-sans)">no price</span>';
     }
     row.appendChild(what); row.appendChild(mdl);
     var parts = [];
@@ -4828,13 +4855,13 @@
       var thin = r.pliq == null || r.pliq < 500;
       parts.push("Polymarket Over: <b>" + exOddsTxt(r.pp, false) + "</b>" + (thin ? " (thin, may be stale)" : ""));
     }
-    if(r.ex != null && r.mp != null) parts.push("model expects ~" + (Math.round(r.ex * 10) / 10) + " " + propStat(r.stat, true));
+    if(r.mp != null) parts.push("Model: " + Math.round(r.mp * 100) + "% over" + (r.ex != null ? ", expects ~" + (Math.round(r.ex * 10) / 10) + " " + propStat(r.stat, true) : ""));
     row.appendChild(el("div", "px", parts.join("<br>")));
     return row;
   }
   // Testing tab: each props model's record and the rules it was locked with.
   function propsTestCard(sport){
-    var r = propsReports[sport + "_PROPS_MODEL_V1"] || (sport === "NFL" ? propsReport : null);
+    var r = propsReportFor(sport);
     if(!r && !propsDocs.some(function(d){ return docSport(d) === sport; })) return null;
     var target = sport === "NBA" || sport === "NHL" ? 500 : 300;
     var graded = r ? (r.paper_picks_graded || 0) : 0;
@@ -4844,7 +4871,7 @@
       (sport === "NHL"
         ? 'About 6 hours to 30 minutes before each puck drop the model locks picks on goals, assists and points only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for skaters with 40+ games and a game in the last 30 days, skipping injured players and thin markets. Graded by Kalshi\'s own settlement. Judged at 500 picks or season end.'
         : sport === "NBA"
-        ? 'About 6 hours to 30 minutes before each tip-off the model locks picks only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for established players (40+ games), skipping steals, blocks, turnovers, injured players and thin markets. Graded by Kalshi\'s own settlement. Judged at 500 picks or season end.'
+        ? 'About 6 hours to 30 minutes before each tip-off the model (v2) locks picks only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), on points, rebounds, assists and 3-pointers, for established players (40+ games), skipping injured players and thin or wide markets. Graded by Kalshi\'s own settlement. Judged at 500 picks or season end.'
         : 'About 6 hours to 40 minutes before each kickoff the model locks picks only where its chance is at least 5 points above what Kalshi\'s odds need (fee included), for established players (21+ games), skipping touchdowns, injured players and thin markets. Graded from official play-by-play. Judged at 300 picks or season end.') + ' Nothing is bet.</p>';
     if(graded){
       html += '<div class="stat-row"><span class="muted">Picks graded</span><span class="v tabular">' + graded + '</span></div>' +
