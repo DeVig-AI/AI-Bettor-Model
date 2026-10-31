@@ -19,12 +19,15 @@ jobs:
           python-version: '3.11'
       - name: Build the lines file (Kalshi spreads for NFL, NBA, MLB, NHL, WNBA and college football)
         run: python3 tools/game_lines.py
+      - name: Polymarket's prices for the same games (public, no key)
+        run: python3 tools/poly_lines.py || echo "poly_lines failed; the Kalshi file is still saved"
       - name: Save it
         run: |
           [ -f live/game_lines.json ] || exit 0
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           git add live/game_lines.json
+          if [ -f live/poly_lines.json ]; then git add live/poly_lines.json; fi
           if [ -f live/cfb_history.json ]; then git add live/cfb_history.json; fi
           git diff --cached --quiet && exit 0
           git commit -q -m "Game lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"

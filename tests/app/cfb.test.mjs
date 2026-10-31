@@ -35,6 +35,9 @@ const LINES = {generated_at: iso(now - 4 * 60e3), errors: [], games: [
    ids: {away: "221", home: "2390"}, colors: {away: "#003594", home: "#f47321"}, rank: {away: null, home: 1},
    state: "pre", detail: "", away_score: null, home_score: null, home_wp: 0.86, ml: {home: -640, away: 470},
    spread: {home_point: -17.5, home: -110, away: -110}, total: {line: 54.5, over: -110, under: -110}}]};
+// Polymarket's price for IU @ MICH: cheaper than Kalshi (fee included) for both teams
+const POLY = {doc: "POLY_LINES", generated_at: iso(now), games: [{sport: "CFB", date: day(k2), kickoff: iso(k2), away: "IU", home: "MICH",
+  away_bid: 0.70, away_ask: 0.71, home_bid: 0.29, home_ask: 0.30, liquidity: 50000, slug: "cfb-ind-mich"}]};
 const kOld = Math.floor(now / 86400e3) * 86400e3 - 2 * 86400e3 + 16 * 3600e3;   // 4pm UTC two days ago: both games on one day
 const HISTORY = {generated_at: iso(now), games: {
   "390": {date: day(kOld), kickoff: iso(kOld), away: "BAMA", home: "UGA", names: {away: "Alabama", home: "Georgia"}, ids: {away: "333", home: "61"},
@@ -71,6 +74,7 @@ async function open(browser, base, logos, preview = true) {
     const p = new URL(r.request().url()).pathname;
     if (p.endsWith("/live/game_lines.json")) return r.fulfill({json: LINES});
     if (p.endsWith("/live/cfb_history.json")) return r.fulfill({json: HISTORY});
+    if (p.endsWith("/live/poly_lines.json")) return r.fulfill({json: POLY});
     return r.fulfill({status: 404, body: ""});
   });
   if (logos) await ctx.addInitScript(() => { Object.defineProperty(window, "devigLogos", {get: () => true, set: () => {}}); });
@@ -131,6 +135,11 @@ test("college football tab on a phone", async (t) => {
       assert.match(await page.locator(".lv-chart").innerText(), /Win chance · Kalshi/);
       assert.ok(await page.locator(".sw-wheel").count() >= 1);
       assert.match(await page.locator(".gp-head").innerText(), /Kalshi \d+%/, "Kalshi's chance under each school");
+      const pc = page.locator(".poly-cmp");
+      await pc.waitFor({timeout: 5000});
+      assert.match(await pc.innerText(), /IU to win\s+Kalshi 72¢ · Polymarket 71¢[\s\S]*MICH to win\s+Kalshi 32¢ · Polymarket 30¢/);
+      assert.equal(await pc.locator("b").count(), 2, "the cheaper price is marked on both rows");
+      assert.match(await pc.innerText(), /MICH win chance: Kalshi 31% · Polymarket 30%\./);
       await pg.screenshot({path: OUT + "cfb-open.png", fullPage: true});
       await page.locator(".back-more").click();
       await pg.locator("#panel-home").waitFor({state: "visible"});
