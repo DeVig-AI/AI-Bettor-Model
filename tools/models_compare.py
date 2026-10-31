@@ -703,6 +703,45 @@ def props_rows(sport):
             "roi": round(profit / cost, 4) if cost else None, "breakeven": round(cost / n, 4) if n else None}
 
 
+CAL_BINS = ((0.5, 0.6), (0.6, 0.7), (0.7, 0.8), (0.8, 1.0001))
+
+
+def calibration(sport, by_game, results):
+    """Do a model's win chances come true? For each model with a win chance, on the graded games of this sport: how
+    often the side it favoured won, per band of the chance it gave (50-60%, ... 80%+), plus log loss and Brier score
+    (lower = better) next to Kalshi's on the same games. A tie or a game without Kalshi's chance is left out."""
+    rows = []
+    for m in MODELS:
+        if sport not in m["sports"] or m["key"] not in COVERS[sport]["ml"]:
+            continue
+        pairs = []
+        for (sp, gid), x in by_game.items():
+            res, p, k = results.get((sp, gid)), x["picks"].get(m["key"]), x["picks"].get("kalshi")
+            if sp != sport or res is None or res["home_score"] == res["away_score"] or not p or not k \
+                    or p.get("home_wp") is None or k.get("home_wp") is None:
+                continue
+            pairs.append((p["home_wp"], k["home_wp"], 1.0 if res["home_score"] > res["away_score"] else 0.0))
+        if not pairs:
+            continue
+
+        def scores(i):
+            ps = [min(max(t[i], 1e-4), 1 - 1e-4) for t in pairs]
+            ys = [t[2] for t in pairs]
+            ll = -sum(y * math.log(q) + (1 - y) * math.log(1 - q) for q, y in zip(ps, ys)) / len(ps)
+            return round(ll, 4), round(sum((q - y) ** 2 for q, y in zip(ps, ys)) / len(ps), 4)
+        bins = []
+        for lo, hi in CAL_BINS:
+            inside = [(max(t[0], 1 - t[0]), t[2] if t[0] >= 0.5 else 1 - t[2]) for t in pairs if lo <= max(t[0], 1 - t[0]) < hi]
+            bins.append({"lo": lo, "hi": min(hi, 1.0), "n": len(inside),
+                         "said": round(sum(a for a, _ in inside) / len(inside), 4) if inside else None,
+                         "won": round(sum(b for _, b in inside) / len(inside), 4) if inside else None})
+        ll, br = scores(0)
+        mll, mbr = scores(1)
+        rows.append({"key": m["key"], "name": m["name"], "n": len(pairs), "logloss": ll, "brier": br,
+                     "mkt_logloss": mll, "mkt_brier": mbr, "bins": bins})
+    return rows
+
+
 def export(now):
     picks = read_jsonl(PICKS)
     results = {(r["sport"], r["game_id"]): r for r in read_jsonl(RESULTS)}
@@ -780,6 +819,7 @@ def export(now):
                 tabs["close"].append({"key": m["key"], "name": m["name"], "n": len(mv or []),
                                       "beat": sum(1 for c in mv or [] if c > 0), "same": sum(1 for c in mv or [] if c == 0),
                                       "avg": round(sum(mv) / len(mv), 4) if mv else None})
+        tabs["calib"] = calibration(sport, by_game, results)
         sports[sport] = tabs
 
     # the page's game list: upcoming (latest.json) and the last few days (picks.jsonl)

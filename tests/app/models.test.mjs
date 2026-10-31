@@ -23,7 +23,13 @@ const EXPORT = {generated_at: new Date().toISOString(), docs: [{collection: "mod
   sports: {NBA: {ml: [row("devig", "DeVig", {n: 14, w: 9, l: 5, pct: 0.643}), row("kalshi", "Market", {n: 14, w: 10, l: 4, pct: 0.714})],
                  spread: [], total: [], props: [],
                  close: [{key: "devig", name: "DeVig", n: 14, beat: 6, same: 1, avg: -0.003},
-                         {key: "blotny", name: "Blotny NBA", n: 9, beat: 6, same: 0, avg: 0.021}]}}}}]};
+                         {key: "blotny", name: "Blotny NBA", n: 9, beat: 6, same: 0, avg: 0.021}],
+                 calib: [{key: "devig", name: "DeVig", n: 68, logloss: 0.6197, brier: 0.21, mkt_logloss: 0.5686, mkt_brier: 0.19,
+                          bins: [{lo: 0.5, hi: 0.6, n: 19, said: 0.5529, won: 0.5263}, {lo: 0.6, hi: 0.7, n: 22, said: 0.6513, won: 0.5455},
+                                 {lo: 0.7, hi: 0.8, n: 17, said: 0.7435, won: 0.8235}, {lo: 0.8, hi: 1, n: 8, said: 0.85, won: 0.75}]},
+                         {key: "kalshi", name: "Market", n: 71, logloss: 0.5607, brier: 0.19, mkt_logloss: 0.5607, mkt_brier: 0.19,
+                          bins: [{lo: 0.5, hi: 0.6, n: 28, said: 0.5441, won: 0.5357}, {lo: 0.6, hi: 0.7, n: 0, said: null, won: null},
+                                 {lo: 0.7, hi: 0.8, n: 16, said: 0.7473, won: 0.8125}, {lo: 0.8, hi: 1, n: 9, said: 0.8567, won: 1}]}]}}}}]};
 const MIME = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png"};
 const server = http.createServer((req, res) => {
   const u = new URL(req.url, "http://x");
@@ -61,6 +67,13 @@ test("Models page: beat the closing line", async () => {
     assert.match(txt, /Blotny NBA\s+9\s+6 of 9\s+\+2\.1 pts/);
     await pg.locator("#mdClose").scrollIntoViewIfNeeded();
     await pg.screenshot({path: OUT + "models-close.png"});
+    // do the percentages come true: won vs said per band, accuracy next to the market's, small groups greyed out
+    const cal = await pg.locator("#mdCalib").innerText();
+    assert.match(cal, /DeVig\s+68\s+0\.620\s+Market 0\.569\s+won 53%\s+said 55% · 19\s+won 55%\s+said 65% · 22/);
+    assert.match(cal, /Market\s+71\s+0\.561\s+won 54%[\s\S]*—/);
+    assert.equal(await pg.locator("#mdCalib td.faint").count(), 2);
+    await pg.locator("#mdCalib").scrollIntoViewIfNeeded();
+    await pg.screenshot({path: OUT + "models-calib.png"});
     const w = await pg.evaluate(() => document.documentElement.scrollWidth);
     assert.ok(w <= 390, `page is ${w}px wide`);
     assert.deepEqual(errors, []);
