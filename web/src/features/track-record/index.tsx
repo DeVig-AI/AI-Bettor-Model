@@ -7,23 +7,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
-import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 
 export function TrackRecord() {
   return (
     <>
-      <Header fixed>
-        <Search className='me-auto' placeholder='Go to…' />
+      <Header>
+        <h1 className='me-auto text-lg font-bold'>Track record</h1>
         <ThemeSwitch />
-        <ConfigDrawer />
       </Header>
       <Main className='flex flex-col gap-6'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight'>Track record</h1>
           <p className='text-muted-foreground'>
             Every locked pick, graded, with profit at Kalshi&apos;s price and fee.
           </p>

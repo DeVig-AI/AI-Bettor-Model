@@ -1,48 +1,26 @@
-import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
-  fixed?: boolean
   ref?: React.Ref<HTMLElement>
 }
 
-export function Header({ className, fixed, children, ...props }: HeaderProps) {
-  const [offset, setOffset] = useState(0)
-
-  useEffect(() => {
-    const onScroll = () => {
-      setOffset(document.body.scrollTop || document.documentElement.scrollTop)
-    }
-
-    // Add scroll listener to the body
-    document.addEventListener('scroll', onScroll, { passive: true })
-
-    // Clean up the event listener on unmount
-    return () => document.removeEventListener('scroll', onScroll)
-  }, [])
-
+// Sticky top bar. On phones it carries the DeVig mark (navigation lives in the bottom tab bar);
+// from md up the sidebar toggle takes that place.
+export function Header({ className, children, ...props }: HeaderProps) {
   return (
     <header
       className={cn(
-        'z-50 h-16',
-        fixed && 'header-fixed peer/header sticky top-0 w-[inherit]',
-        offset > 10 && fixed ? 'shadow' : 'shadow-none',
+        'sticky top-0 z-40 border-b bg-background pt-[env(safe-area-inset-top)]',
         className
       )}
       {...props}
     >
-      <div
-        className={cn(
-          'relative flex h-full items-center gap-3 p-4 sm:gap-4',
-          offset > 10 &&
-            fixed &&
-            'after:absolute after:inset-0 after:-z-10 after:bg-background/20 after:backdrop-blur-lg'
-        )}
-      >
-        <SidebarTrigger variant='outline' className='max-md:scale-125' />
-        <Separator orientation='vertical' className='h-6' />
+      <div className='flex h-14 items-center gap-3 px-4 md:h-16'>
+        <img src='./icon.svg' alt='DeVig' className='size-7 rounded-md md:hidden' />
+        <SidebarTrigger variant='ghost' className='max-md:hidden' />
+        <Separator orientation='vertical' className='h-6 max-md:hidden' />
         {children}
       </div>
     </header>
