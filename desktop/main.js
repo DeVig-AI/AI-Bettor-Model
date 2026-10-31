@@ -12,7 +12,7 @@ function onSite(url) {
 
 function createWindow(url) {
   const win = new BrowserWindow({
-    width: 480, height: 920, minWidth: 360, minHeight: 600,
+    width: 1320, height: 880, minWidth: 360, minHeight: 600,   // wide: the site's computer layout (sidebar, grid); narrow it for the phone one
     title: "DeVig", backgroundColor: "#0c0f14", autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, sandbox: true },
   });

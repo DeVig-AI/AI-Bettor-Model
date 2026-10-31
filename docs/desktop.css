@@ -1,0 +1,58 @@
+/* DeVig on a computer (the Mac and Windows apps, or any browser window 1000px or wider): a sidebar instead of the
+   phone's bottom tabs, the board's games in a grid, and the bet slip as a side panel. Phones and narrow windows keep the
+   phone layout; nothing here applies below 1000px. */
+@media (min-width: 1000px) {
+  body { padding-bottom: 0; }
+  .wrap { max-width: none; margin: 0; padding: 22px 40px 48px 272px; }
+
+  /* sidebar: logo and greeting on top, then the tabs as a list */
+  header.top { position: fixed; top: 0; bottom: 0; left: 0; width: 232px; box-sizing: border-box; z-index: 30;
+    display: flex; flex-direction: column; gap: 22px; padding: 22px 14px; overflow-y: auto;
+    background: var(--surface); border-right: 1px solid var(--line); }
+  header.top .brand { padding: 0 6px; }
+  header.top .brand h1 { font-size: 17px; white-space: normal; overflow: visible; line-height: 1.2; }
+  nav.tabs { position: static; flex-direction: column; justify-content: flex-start; gap: 2px; padding: 0;
+    background: none; border: none; -webkit-backdrop-filter: none; backdrop-filter: none; overflow: visible; }
+  nav.tabs button { flex: none; width: 100%; flex-direction: row; justify-content: flex-start; gap: 12px;
+    padding: 10px 12px; border-radius: 10px; font-size: 14px; color: var(--ink-soft); cursor: pointer; }
+  nav.tabs button svg { width: 20px; height: 20px; }
+  nav.tabs button:hover { background: var(--surface-2); color: var(--ink); }
+  nav.tabs button[aria-selected="true"] { background: var(--accent-wash); color: var(--accent-strong); }
+
+  /* the pages under More, listed in the sidebar too (index.html builds .side-more) */
+  .side-more { display: flex; flex-direction: column; gap: 2px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .side-more button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px; border: none;
+    border-radius: 10px; background: none; color: var(--ink-faint); font: 500 13.5px var(--font-sans); text-align: left; cursor: pointer; }
+  .side-more button svg { width: 18px; height: 18px; flex: none; }
+  .side-more button:hover { background: var(--surface-2); color: var(--ink); }
+  .side-more button[aria-current="true"] { color: var(--accent-strong); background: var(--accent-wash); }
+  #panel-models > .back-more, #panel-lab > .back-more, #panel-about > .back-more,
+  #panel-me > .back-more, #panel-research > .back-more { display: none; }      /* the sidebar is the way back */
+
+  /* pages: reading width for text pages, full width for the boards */
+  .panel { max-width: 980px; }
+  #panel-home, #panel-scan, #panel-models, #panel-research { max-width: 1400px; }
+  #panel-game { max-width: 880px; }
+
+  /* the board: game cards side by side; section titles, buttons and folds span the row */
+  #homeSlate { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; align-items: start; }
+  #homeSlate > * { grid-column: 1 / -1; }
+  #homeSlate > .card.game { grid-column: auto; margin: 0; }
+  #homeSlate .game-head:hover, #pastGames .game-head:hover { background: var(--surface-2); }
+  #pastGames { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; align-items: start; }
+  #pastGames > * { grid-column: 1 / -1; }
+  #pastGames > .card.game { grid-column: auto; margin: 0; }
+
+  /* bet slip: a panel in the bottom-right corner, and the full slip as a drawer on the right */
+  .slip-bar { left: auto; right: 24px; bottom: 20px; width: 380px; max-width: none; margin: 0; }
+  .slip-sheet { left: auto; top: 0; right: 0; bottom: 0; width: 440px; max-height: none; border-radius: 0;
+    border-left: 1px solid var(--line); }
+
+  .free-foot { max-width: none; padding-left: 272px; padding-right: 40px; text-align: left; }
+  .itip { display: none !important; }      /* "Add to Home Screen" is a phone tip */
+}
+
+@media (min-width: 1000px) and (hover: hover) {
+  .card.game { transition: border-color .15s ease; }
+  .card.game:hover { border-color: var(--line-strong); }
+}
