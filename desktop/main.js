@@ -6,8 +6,12 @@ const path = require("path");
 const APP_URL = "https://devigai.pages.dev/";
 const SITE = "https://devigai.pages.dev/";
 
+// Sign-in is Cloudflare Access's email-code page on <team>.cloudflareaccess.com; it has to stay in the app window (its
+// form posts the email there, and the sign-in cookie must land in this window), so it counts as part of the site.
+const SIGN_IN = /^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com\//;
+
 function onSite(url) {
-  return url.startsWith(SITE);
+  return url.startsWith(SITE) || SIGN_IN.test(url);
 }
 
 function createWindow(url) {
