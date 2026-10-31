@@ -7,8 +7,9 @@
   2020
  ],
  "sha256": {
-  "games": "cdc79714a0f6917183e4370fe31205b00c0763963efe301b2275200f7f302dee",
-  "team_games": "a16a9939a6fad2b09076b51ff18074ca6bf1f81b1776939b1182080158bb6a8b"
+  "games": "8378800036b6745a1066cceeaa893d5e83c185bfe0b4676af4391dbfa71dd90e",
+  "team_games": "bc051cc275acbc20d04abff21874d014e02c83739b2d07ad516afbf9d25edae0",
+  "goalie_games": "ebbf2e9c03d3e2e9e3dccef5cf926a32d3f0934896d61b688d00565015c83c2b"
  },
  "games_by_season": {
   "2011": 1314,
@@ -53,10 +54,43 @@
   "no_date_or_team": 10,
   "duplicate": 4,
   "no_score": 1,
+  "box_matched": 12263,
+  "box_unmatched": 1401,
   "total_lines": 13662,
   "total_no_line": 1,
   "moneyline_lines": 13662,
   "moneyline_no_line": 1
+ },
+ "box_scores": {
+  "source": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/",
+  "files": {
+   "schedule": "nhl_schedules/nhl_schedule_{y}.csv",
+   "goalie_box": "nhl_goalie_boxscores/goalie_box_{y}.csv"
+  },
+  "pinned": {
+   "2011": "bc626b33bfdac79a274468236994fd86e68739d49691078ff10a198ad1878454",
+   "2012": "896668afa6fffe46313088b216ba0c7aee1c1edcbefff52e8fadc8ebfdd05880",
+   "2013": "4d4a92cb10e21e07c4bf7224dfe7190f772073cb837c741d1ba4930cbb46275e",
+   "2014": "25cf3eafb3f4d486789d7b32f52d60734f1eb8d81ce51330c6aec66a024e61e3",
+   "2015": "91b60a149659a84e8ddce088a76cf9c39e45f104cb135ada15d01b106acb6237",
+   "2016": "93abc22adb6944c3c6d6f00f4b4baf6f17a0df903dd92783ffeaa7d48d358ce9",
+   "2017": "db3e7d51dc3e9d086a3355327658187322e5ae5c4d78e5c330218ad3658b6eb1",
+   "2018": "c7f1de97c68e4df13f95e19da1d8e0f89beba4be230d3f96017b3c036f2861f8",
+   "2019": "66d3586e6e8369ce7b760c912b973db1399a0ea40b5c67f008726ad6425d7371",
+   "2020": "86b811cf60ae45fbe6916e2f9298422f10ebe96bad0673173c0d93fadf9c6334"
+  },
+  "team_rows_by_season": {
+   "2011": 2628,
+   "2012": 1610,
+   "2013": 2644,
+   "2014": 2636,
+   "2015": 2640,
+   "2016": 2632,
+   "2017": 2706,
+   "2018": 2714,
+   "2019": 2422,
+   "2020": 1894
+  }
  },
  "note": "Lab cache (Constitution D1), seasons 2011-2020 only. The csv files are never committed; 2021 is sealed and never stored."
 }
