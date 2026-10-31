@@ -1,5 +1,6 @@
 import { type GameRow } from '@/lib/devig'
 import { type Leg } from '@/lib/parlay'
+import { type LivePrice, type PropLine, overTxt, priceToAmerican, propSide, underTxt } from '@/lib/props'
 
 const hex = (c?: string | null) => {
   if (!c) return null
@@ -33,5 +34,33 @@ export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
     devigNote: devig == null ? null : `${r.sport} model, locked pregame`,
     colors: away && home ? { away, home } : null,
     sideIsHome: side === 'home',
+  }
+}
+
+// A player prop side as a parlay leg, priced at Kalshi's live price when we have one (fee included)
+export function propLeg(l: PropLine, side: 'over' | 'under', live?: LivePrice | null): Leg | null {
+  const priced = live ? { ...l, bid: live.bid, ask: live.ask } : l
+  const ps = propSide(priced, side)
+  if (!ps) return null
+  const odds = priceToAmerican(ps.cost)
+  if (odds == null) return null
+  const last = l.player.split(' ').slice(-1)[0]
+  const devig = l.modelOver == null ? null : side === 'over' ? l.modelOver : 1 - l.modelOver
+  return {
+    id: `${l.key}|${side}`,
+    kind: 'prop',
+    label: `${last} ${side === 'over' ? overTxt(l.stat, l.line) : underTxt(l.stat, l.line)}`,
+    short: last,
+    game: `${l.away} at ${l.home}`,
+    gameId: `${l.sport}|${l.gameKey}`,
+    sport: l.sport,
+    kickoff: l.kickoff,
+    odds: Math.round(odds),
+    fair: ps.fair,
+    devig,
+    devigNote: devig == null ? null : 'props model: Kalshi beat it on past games',
+    colors: null,
+    sideIsHome: null,
+    ticker: l.ticker,
   }
 }

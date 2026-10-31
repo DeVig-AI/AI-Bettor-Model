@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import { BookOpen, RefreshCw, Search as SearchIcon } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
@@ -10,10 +11,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { useSlip } from '@/lib/parlay'
-import { mlLeg } from '../parlay/legs'
 import { ExplainSheet } from './explain-sheet'
 import { Plate, isPick } from './plate'
+import { PlateTaps } from './plate-taps'
 
 type Day = 'today' | 'tomorrow' | 'week'
 const DAYS: { id: Day; label: string }[] = [
@@ -84,6 +84,13 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
           <span className='font-condensed text-muted-foreground tabular-nums'>
             {fmtAmerican(row.ml?.away)} / {fmtAmerican(row.ml?.home)}
           </span>
+          <Link
+            to='/game/$id'
+            params={{ id: row.id }}
+            className='flex h-8 items-center rounded-full border px-3 text-sm font-semibold text-muted-foreground transition-colors duration-150 hover:text-foreground'
+          >
+            Game
+          </Link>
           {picked && (
             <button
               type='button'
@@ -96,39 +103,6 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
         </span>
       </div>
     </li>
-  )
-}
-
-// Tap a team's half of the plate to add that team to win to the parlay slip (tap again to take it out)
-function PlateTaps({ row }: { row: GameRow }) {
-  const { toggle, has } = useSlip()
-  return (
-    <div className='absolute inset-0 grid grid-cols-2'>
-      {(['away', 'home'] as const).map((side) => {
-        const leg = mlLeg(row, side)
-        if (!leg) return <span key={side} />
-        const on = has(leg.id)
-        return (
-          <button
-            key={side}
-            type='button'
-            aria-pressed={on}
-            aria-label={`${on ? 'Remove' : 'Add'} ${leg.label} (${fmtAmerican(leg.odds)}) ${on ? 'from' : 'to'} parlay`}
-            onClick={() => toggle(leg)}
-            className={cn(
-              'group relative rounded-[18px] transition-colors duration-150 hover:bg-white/5 focus-visible:outline-offset-[-3px]',
-              side === 'away' ? 'rounded-e-none' : 'rounded-s-none'
-            )}
-          >
-            {on && (
-              <span className={cn('absolute top-2.5 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-black', side === 'away' ? 'start-[42%]' : 'end-[42%]')}>
-                In parlay
-              </span>
-            )}
-          </button>
-        )
-      })}
-    </div>
   )
 }
 

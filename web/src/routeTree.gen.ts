@@ -17,7 +17,9 @@ import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated/parlay'
+import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
+import { Route as AuthenticatedGameIdRouteImport } from './routes/_authenticated/game/$id'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -58,12 +60,22 @@ const AuthenticatedParlayRoute = AuthenticatedParlayRouteImport.update({
   path: '/parlay',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPropsRoute = AuthenticatedPropsRouteImport.update({
+  id: '/props',
+  path: '/props',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTrackRecordRoute =
   AuthenticatedTrackRecordRouteImport.update({
     id: '/track-record',
     path: '/track-record',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGameIdRoute = AuthenticatedGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -73,7 +85,9 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/parlay': typeof AuthenticatedParlayRoute
+  '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
+  '/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRoutesByTo {
   '/401': typeof errors401Route
@@ -82,8 +96,10 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/parlay': typeof AuthenticatedParlayRoute
+  '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/': typeof AuthenticatedIndexRoute
+  '/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,8 +110,10 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/parlay': typeof AuthenticatedParlayRoute
+  '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,7 +125,9 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/parlay'
+    | '/props'
     | '/track-record'
+    | '/game/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/401'
@@ -116,8 +136,10 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/parlay'
+    | '/props'
     | '/track-record'
     | '/'
+    | '/game/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -127,8 +149,10 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/parlay'
+    | '/_authenticated/props'
     | '/_authenticated/track-record'
     | '/_authenticated/'
+    | '/_authenticated/game/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedParlayRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/props': {
+      id: '/_authenticated/props'
+      path: '/props'
+      fullPath: '/props'
+      preLoaderRoute: typeof AuthenticatedPropsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/track-record': {
       id: '/_authenticated/track-record'
       path: '/track-record'
@@ -205,19 +236,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/game/$id': {
+      id: '/_authenticated/game/$id'
+      path: '/game/$id'
+      fullPath: '/game/$id'
+      preLoaderRoute: typeof AuthenticatedGameIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedParlayRoute: typeof AuthenticatedParlayRoute
+  AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedGameIdRoute: typeof AuthenticatedGameIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedParlayRoute: AuthenticatedParlayRoute,
+  AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedGameIdRoute: AuthenticatedGameIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
