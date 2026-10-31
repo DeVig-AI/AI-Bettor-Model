@@ -176,6 +176,18 @@ def main():
                         outcome=outcome, spread_read=None, teaser_signal=None)
         if shown != "devig":
             decision.update(model_key=shown, model_label=label, compare=compare)
+        else:
+            # what DeVig's own model looked at, for the app's "Why?" explanation: the tracker's locked inputs, as-is
+            def dec(x, nd):                           # num() rounds to whole numbers; inputs keep their decimals
+                return None if x is None else round(float(x), nd)
+
+            def side_in(prefix):
+                b2b = r[f"{prefix}_b2b"]
+                return {"ppg_last10": dec(r[f"{prefix}_trail10_ppg"], 1), "papg_last10": dec(r[f"{prefix}_trail10_papg"], 1),
+                        "winpct_last10": dec(r[f"{prefix}_trail10_winpct"], 3), "rest_days": dec(r[f"{prefix}_rest_days"], 1),
+                        "back_to_back": None if b2b is None else bool(b2b)}
+            decision["inputs"] = {"model_version": r["model_version"], "home": side_in("home"), "away": side_in("away"),
+                                  "market_prob_home_at_lock": dec(r["market_prob_home_devigged"], 4), "market_book": book}
         for coll, data in (("slate", slate), ("decisions", decision)):
             data["export_hash"] = doc_hash(data)
             docs.append({"collection": coll, "doc_id": gid, "data": data})

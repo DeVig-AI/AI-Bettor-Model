@@ -1,21 +1,22 @@
 ---
 name: DeVig
-description: Odds, read straight. Night-game ink, slate sides, and DeVig amber reserved for DeVig's own read.
+description: Odds, read straight. Matchup Plates: each game in its teams' colors, cut at Kalshi's fair split, with DeVig's read as an amber slash.
 colors:
-  ink-ground: "#0c0f14"
-  ink-row: "#151a22"
+  ink-ground: "#0a0b0f"
+  ink-row: "#12151c"
   ink-raised: "#1b212b"
   ink-rail: "#0f1218"
-  chalk: "#e9ecf2"
+  chalk: "#f2f4f8"
   chalk-soft: "#9aa4b6"
   hairline: "#2a313d"
   hairline-strong: "#38414f"
-  devig-amber: "#e0a656"
+  devig-amber: "#ffb547"
   devig-amber-ink: "#1a1206"
   side-away: "#3a4556"
   side-home: "#66748b"
-  live-green: "#57c98c"
-  loss-red: "#e2807f"
+  live-green: "#4ade80"
+  win-green: "#8ef0b4"
+  loss-red: "#ffa3a3"
   day-ground: "#f6f4ef"
   day-row: "#ffffff"
   day-ink: "#161a21"
@@ -88,57 +89,56 @@ components:
     rounded: "{rounded.pill}"
 ---
 
-# DeVig design system
+# DeVig design system: Matchup Plates
 
 ## Overview
 
-DeVig is a working tool for reading sports prices honestly. The screen is a product of its category first: a ruled list of games with standard controls (chips, a segmented day switch, search, a bottom tab bar on phones, a sidebar on computers). The identity lives in four places only: night-game ink, Barlow's broadcast-condensed figures, the density of a scoreboard list, and one signature move, the **fair line**.
+DeVig is a working tool for reading sports prices honestly, dressed like a broadcast matchup graphic. Every game is a
+**Matchup Plate**: the two teams' real colors (from `live/game_lines.json`) meet in a diagonal cut placed at Kalshi's
+fair split (away on the left), with team codes and percentages set huge in Big Shoulders Display. DeVig's own read is
+an **amber slash** through the plate at the model's chance; the gap between cut and slash is the gap between DeVig and
+the market. The slash echoes the logo: a V with its tip sliced off.
 
-The fair line is every game's 100% split at Kalshi's price with the fee gap removed: away on the left, home on the right, slate on slate. When DeVig's model picks a side, an amber notch marks its chance and an amber band fills the gap between the market split and the notch. That gap is the product.
-
-Phone first, never phone only: rows stack on phones and spread into columns (status, matchup, fair line) from 1024px up. Dark is the default because games are watched at night on a couch; the daytime twin is complete, not an afterthought.
+The rest of the screen stays a standard product: chips, a segmented day switch, search, a bottom tab bar on phones, a
+sidebar on computers, a bottom sheet for explanations. Phone first, never phone only: plates stack on phones and sit two
+across from 1024px.
 
 ## Colors
 
-- **Ink** (`ink-ground`, `ink-row`, `ink-raised`, `ink-rail`): blue-black grounds. Rows sit one step above the page; group headers and the sidebar use the rail tone.
-- **Chalk** (`chalk`, `chalk-soft`): text. Secondary text is `chalk-soft`, never a plain grey.
-- **DeVig amber** (`devig-amber`, light: `day-amber`): only DeVig's own read. The notch, the edge band, the "DeVig:" line, the active tab, the primary button of the level question. Never decoration, never a hover color for generic UI.
-- **Sides** (`side-away`, `side-home`): the two halves of the fair line. Neutral on purpose so amber reads instantly.
-- **State**: `live-green` for games in progress (dot, clock, a 4% row wash); `loss-red` for a lost pick. Win and loss are always also written as words.
+- **Team colors** paint the plates. A 25% black veil keeps white type readable on light team colors, and a dark seam
+  marks the cut so two similar colors still read as two sides. Without colors, the plate falls back to the neutral sides.
+- **Ink** (`ink-ground` #0a0b0f, `ink-row` #12151c): grounds; everything that isn't a plate.
+- **DeVig amber** (#ffb547 dark, #8a5a12 light): only DeVig's read and DeVig's own actions: the slash, the "DeVig:" line,
+  the Why? button, the DeVig picks filter, the active tab. Never decoration.
+- **State:** live green (#4ade80) dot and clock; won (#8ef0b4) and lost (#ffa3a3) always also written as words.
 
 ## Typography
 
-Barlow everywhere; Barlow Semi Condensed for anything read as a figure: team codes, scores, prices, percentages, spreads, counts. Figures use tabular numerals so columns align. A tight fixed rem scale (0.75 / 0.875 / 1.0625 / 1.125rem); weight does the hierarchy, not size jumps. No display face, no all-caps labels except real abbreviations (team codes, league codes).
+Big Shoulders Display (900/800) for team codes, scores, percentages and page/section titles: the broadcast voice.
+Barlow for everything people read; Barlow Semi Condensed with tabular figures for prices and data. No all-caps labels
+except real abbreviations.
 
 ## Layout
 
-- Phone: sticky top bar (DeVig mark, page title with a one-line summary in plain words, refresh with age, explain toggle, theme), filter row (league chips scroll sideways with a bleed), day switch + search, then groups. Bottom tab bar respects the safe area.
-- Computer (lg, 1024px+): row grid `8.5rem | minmax(15rem,1fr) | minmax(16rem,1.15fr)`; filters on one line with day switch and search pushed right.
-- Group order: DeVig's picks, Live now, Upcoming, Final (final newest first).
-- Row padding 14px × 16px (20px from md). More space above a group than inside it.
-
-## Elevation & Depth
-
-Flat and tonal. Depth comes from the ink steps (ground → row → raised) and 1px hairlines, not shadows. The only shadow is the small one under the selected day in the segmented switch. The amber notch carries a 2px ring in the row color so it cuts cleanly through the bar.
-
-## Shapes
-
-Groups are rounded 16px; controls 10–12px; chips and the fair line are full pills. Rows inside a group are ruled with hairlines and have no radius of their own.
+- Group order on Games: DeVig's picks, Live now, Upcoming, Final.
+- A plate is 132px tall in lists (248px as a game-page hero); the line under it carries DeVig's read, Kalshi's prices
+  and the Why? button.
+- Track record leads with a Won/Lost plate (cut at the win share), then units in big type, then the graded list.
 
 ## Components
 
-- **Game row**: status (live clock in green with a pulsing dot, or local time; league code) · two team lines (code, name, score, Kalshi price) · fair line · DeVig line + spread/total. Optional plain-English sentence when the reader chose "explain".
-- **Fair line**: see Overview. Labelled at both ends with code and fair %. Exposed to screen readers as one sentence.
-- **DeVig line**: "DeVig: MEM 64%  −10.6 pts vs. Kalshi" in amber; "DeVig: pass · not far enough from the market" in muted text; omitted for sports without a DeVig model.
-- **Level question**: amber-tinted callout on first visit, "New to betting odds?" with "Yes, explain" / "I know odds". The book button in the top bar flips it later.
-- **Chips**: outline pills; active is solid chalk on ink. "DeVig picks" sits after a divider as a filter, not a league.
-- **Empty state**: says what's empty and offers the way out (clear filters, show next 7 days).
+- **Matchup Plate** (`web/src/features/games/plate.tsx`).
+- **Why? sheet** (`explain-sheet.tsx`): bottom sheet with a three-level switch (New to this / Sometimes / Numbers). Same
+  numbers at every level. Built only from the model's locked inputs (`inputs` in the lineboard export) and real prices;
+  it says which side each input favors, never how much it moved the number. Live and finished games say the read is
+  pregame.
+- **How do you bet?** first-run card: three tinted half-plates; the book button in the header cycles the level.
+- **Track record**: win–loss plus units at the locked price (before fee), and the plain sentence when a winning record
+  lost money.
 
 ## Do's and Don'ts
 
 - Do keep amber for DeVig's read and nothing else.
-- Do show losses, passes and negative gaps as plainly as wins.
-- Do write numbers' meaning in plain words when the reader asked for it.
-- Don't add KPI cards, hero metrics or sparklines over the list.
-- Don't use eyebrow labels above headings or "A · B · C" meta strings in headers.
-- Don't add glass, gradients or decorative motion; motion is 150ms state change only (the live dot is the one exception).
+- Do show losses, passes, negative gaps and "pregame" labels as plainly as wins.
+- Don't compare DeVig's pregame number with an in-game price as if it were an edge.
+- Don't add KPI cards, sparklines or decorative motion; motion is 150ms state change (the live dot is the exception).

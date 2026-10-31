@@ -1,36 +1,39 @@
-/* DeVig palette: dark matches the classic app (docs/index.html); light is its daytime twin. */
+/* DeVig, Matchup Plates (DESIGN.md). Dark = night-game ink with DeVig amber reserved for DeVig's own read;
+   light is its daytime twin. Team colors come from the data, never from these tokens. */
 :root {
-  --radius: 0.75rem;
-  --background: #f6f4ef;
-  --foreground: #161a21;
+  --radius: 0.875rem;
+  --background: #f4f2ee;
+  --foreground: #12151c;
   --card: #ffffff;
-  --card-foreground: #161a21;
+  --card-foreground: #12151c;
   --popover: #ffffff;
-  --popover-foreground: #161a21;
-  --primary: #a8711f;
+  --popover-foreground: #12151c;
+  --primary: #8a5a12;
   --primary-foreground: #ffffff;
-  --secondary: #ece8df;
-  --secondary-foreground: #161a21;
-  --muted: #ece8df;
-  --muted-foreground: #5d6575;
-  --accent: #f3e6cf;
-  --accent-foreground: #4a3109;
-  --destructive: #b8423f;
-  --good: #1f8a52;
+  --secondary: #e9e5dd;
+  --secondary-foreground: #12151c;
+  --muted: #e9e5dd;
+  --muted-foreground: #565e6e;
+  --accent: #f3e3c6;
+  --accent-foreground: #3d2a08;
+  --destructive: #a8302c;
+  --good: #1d7a47;
+  --bad: #a8302c;
+  --live: #1d7a47;
   --side-away: #b9c2d0;
   --side-home: #7d8aa0;
   --devig: #8a5a12;
-  --bad: #b8423f;
-  --border: #dfd9cc;
-  --input: #d4cdbd;
-  --ring: #a8711f;
-  --chart-1: #a8711f;
+  --devig-ink: #ffffff;
+  --border: #ddd7cb;
+  --input: #cfc8b9;
+  --ring: #8a5a12;
+  --chart-1: #8a5a12;
   --chart-2: #2f6fb0;
-  --chart-3: #1f8a52;
-  --chart-4: #8a5cc2;
-  --chart-5: #b8423f;
+  --chart-3: #1d7a47;
+  --chart-4: #7a4fb8;
+  --chart-5: #a8302c;
 
-  --sidebar: #efece5;
+  --sidebar: #ebe8e1;
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
@@ -41,42 +44,45 @@
 }
 
 .dark {
-  --background: #0c0f14;
-  --foreground: #e9ecf2;
-  --card: #151a22;
-  --card-foreground: #e9ecf2;
-  --popover: #1b212b;
-  --popover-foreground: #e9ecf2;
-  --primary: #e0a656;
+  --background: #0a0b0f;
+  --foreground: #f2f4f8;
+  --card: #12151c;
+  --card-foreground: #f2f4f8;
+  --popover: #161a22;
+  --popover-foreground: #f2f4f8;
+  --primary: #ffb547;
   --primary-foreground: #1a1206;
-  --secondary: #1b212b;
-  --secondary-foreground: #e9ecf2;
-  --muted: #1b212b;
-  --muted-foreground: #9aa4b6;
-  --accent: #2c2214;
-  --accent-foreground: #f2bd78;
-  --destructive: #e2807f;
-  --good: #57c98c;
+  --secondary: #1e222c;
+  --secondary-foreground: #f2f4f8;
+  --muted: #1e222c;
+  --muted-foreground: #9aa3b5;
+  --accent: #241a0c;
+  --accent-foreground: #ffcf85;
+  --destructive: #ffa3a3;
+  --good: #8ef0b4;
+  --bad: #ffa3a3;
+  --live: #4ade80;
   --side-away: #3a4556;
   --side-home: #66748b;
-  --devig: #e0a656;
-  --bad: #e2807f;
-  --border: #2a313d;
-  --input: #38414f;
-  --ring: #e0a656;
-  --chart-1: #e0a656;
+  --devig: #ffb547;
+  --devig-ink: #1a1206;
+  --border: #262b37;
+  --input: #2e3442;
+  --ring: #ffb547;
+  --chart-1: #ffb547;
   --chart-2: #6aa8e8;
-  --chart-3: #57c98c;
+  --chart-3: #8ef0b4;
   --chart-4: #b48ae6;
-  --chart-5: #e2807f;
+  --chart-5: #ffa3a3;
 
-  --sidebar: #0f1218;
+  --sidebar: #0d0f14;
 }
 
 @theme inline {
   --font-barlow: 'Barlow', ui-sans-serif, system-ui, sans-serif;
   --font-system: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-condensed: 'Barlow Semi Condensed', 'Barlow', ui-sans-serif, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Barlow Semi Condensed', ui-sans-serif, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -101,6 +107,8 @@
   --color-side-away: var(--side-away);
   --color-side-home: var(--side-home);
   --color-devig: var(--devig);
+  --color-devig-ink: var(--devig-ink);
+  --color-live: var(--live);
   --color-bad: var(--bad);
   --color-border: var(--border);
   --color-input: var(--input);

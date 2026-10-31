@@ -58,7 +58,30 @@ type Decision = {
     side: string | null
     tier: string | null
   }
-  outcome?: { resolved: boolean; decision_correct: boolean | null }
+  outcome?: {
+    resolved: boolean
+    decision_correct: boolean | null
+    home_score?: number | null
+    away_score?: number | null
+  }
+  market_snapshot?: { moneyline_home?: number | null; moneyline_away?: number | null }
+  inputs?: ModelInputs
+}
+
+// What DeVig's own model looked at when it locked (NBA Model C exports these; other sports don't yet)
+export type SideInputs = {
+  ppg_last10: number | null
+  papg_last10: number | null
+  winpct_last10: number | null
+  rest_days: number | null
+  back_to_back: boolean | null
+}
+export type ModelInputs = {
+  model_version: string
+  home: SideInputs
+  away: SideInputs
+  market_prob_home_at_lock: number | null
+  market_book: string
 }
 
 type Lineboard = {
@@ -100,6 +123,10 @@ export type Pick = {
   tier: string | null
   lockedAt: string | null
   correct: boolean | null
+  // the price when the pick locked (American odds for the picked side) and the market's fair chance for it then
+  lockedOdds: number | null
+  fairAtLock: number | null
+  inputs: ModelInputs | null
 }
 
 export type GameRow = {
@@ -118,12 +145,39 @@ export type GameRow = {
   fairHome: number | null
   spread: GameLine['spread']
   total: GameLine['total']
+  colors: { away: string; home: string } | null
   pick: Pick | null
   // DeVig's chance for its side minus Kalshi's fair chance for that side (null when there's no pick or no price)
   edge: number | null
 }
 
 const SPORTS_WITH_PICKS = ['nfl', 'nba', 'mlb'] as const
+
+function toPick(d: Decision, home: string): Pick {
+  const side = d.decision?.side ?? null
+  const snap = d.market_snapshot
+  const lockedOdds =
+    side == null ? null : ((side === home ? snap?.moneyline_home : snap?.moneyline_away) ?? null)
+  const fairHomeLock =
+    d.inputs?.market_prob_home_at_lock ??
+    fairHomeProb({ home: snap?.moneyline_home ?? null, away: snap?.moneyline_away ?? null })
+  return {
+    action: d.decision?.action ?? 'PASS',
+    side,
+    prob: d.decision?.prob ?? null,
+    tier: d.decision?.tier ?? null,
+    lockedAt: d.locked_at ?? null,
+    correct: d.outcome?.resolved ? (d.outcome.decision_correct ?? null) : null,
+    lockedOdds,
+    fairAtLock: side == null || fairHomeLock == null ? null : side === home ? fairHomeLock : 1 - fairHomeLock,
+    inputs: d.inputs ?? null,
+  }
+}
+
+// 1 unit at American odds: what a win pays
+export function winUnits(odds: number) {
+  return odds > 0 ? odds / 100 : 100 / -odds
+}
 
 function matchKey(sport: string, away: string, home: string) {
   return `${sport.toUpperCase()}|${away}|${home}`
@@ -159,16 +213,7 @@ function buildRows(
     const ml = lv?.kalshi_game?.moneyline ?? g.ml ?? null
     const fairHome = fairHomeProb(ml)
     const d = findPick(g)
-    const pick: Pick | null = d?.decision
-      ? {
-          action: d.decision.action,
-          side: d.decision.side,
-          prob: d.decision.prob,
-          tier: d.decision.tier,
-          lockedAt: d.locked_at ?? null,
-          correct: d.outcome?.resolved ? d.outcome.decision_correct : null,
-        }
-      : null
+    const pick: Pick | null = d?.decision ? toPick(d, g.home) : null
     let edge: number | null = null
     if (pick?.side && pick.prob != null && fairHome != null) {
       const fairSide = pick.side === g.home ? fairHome : 1 - fairHome
@@ -190,6 +235,7 @@ function buildRows(
       fairHome,
       spread: g.spread ?? null,
       total: g.total ?? null,
+      colors: g.colors ?? null,
       pick,
       edge,
     })
@@ -265,3 +311,62 @@ export function useGames() {
     isFetching: gameLines.isFetching || live.isFetching || boards.isFetching,
   }
 }
+
+// ---------- track record: every graded pick, units at the price it locked at ----------
+export type GradedPick = {
+  sport: string
+  away: string
+  home: string
+  side: string
+  kickoff: string
+  won: boolean
+  odds: number | null
+  units: number | null
+  awayScore: number | null
+  homeScore: number | null
+}
+export type SportRecord = { sport: string; won: number; lost: number; units: number; priced: number; picks: GradedPick[] }
+
+export function useRecord() {
+  const boards = useQuery({
+    queryKey: ['lineboards'],
+    queryFn: async () => {
+      const all = await Promise.allSettled(
+        SPORTS_WITH_PICKS.map((s) => getJson<Lineboard>(`${s}/lineboard_export.json`))
+      )
+      return all.flatMap((r) =>
+        r.status === 'fulfilled'
+          ? r.value.docs.filter((d) => d.collection === 'decisions').map((d) => d.data)
+          : []
+      )
+    },
+    refetchInterval: 10 * 60e3,
+  })
+  const records = useMemo(() => {
+    const by = new Map<string, SportRecord>()
+    for (const d of boards.data ?? []) {
+      const side = d.decision?.side
+      if (!side || d.decision?.action === 'PASS' || !d.outcome?.resolved || d.outcome.decision_correct == null) continue
+      const snap = d.market_snapshot
+      const odds = (side === d.home_team ? snap?.moneyline_home : snap?.moneyline_away) ?? null
+      const won = d.outcome.decision_correct
+      const units = odds == null || odds === 0 ? null : won ? winUnits(odds) : -1
+      const r = by.get(d.sport) ?? { sport: d.sport, won: 0, lost: 0, units: 0, priced: 0, picks: [] }
+      if (won) r.won++
+      else r.lost++
+      if (units != null) {
+        r.units += units
+        r.priced++
+      }
+      r.picks.push({
+        sport: d.sport, away: d.away_team, home: d.home_team, side, kickoff: d.kickoff_time, won, odds, units,
+        awayScore: d.outcome.away_score ?? null, homeScore: d.outcome.home_score ?? null,
+      })
+      by.set(d.sport, r)
+    }
+    for (const r of by.values()) r.picks.sort((a, b) => Date.parse(b.kickoff) - Date.parse(a.kickoff))
+    return ['NBA', 'NFL', 'MLB'].map((s) => by.get(s)).filter(Boolean) as SportRecord[]
+  }, [boards.data])
+  return { records, isLoading: boards.isLoading, error: boards.error }
+}
+

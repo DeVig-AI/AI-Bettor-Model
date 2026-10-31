@@ -1,14 +1,15 @@
-// How much the app explains. DeVig is for anyone, so it asks once ("new to odds?") and remembers the answer on
-// this device. 'new' adds a plain-English sentence under each number; 'experienced' keeps rows dense.
+// How much the app explains. DeVig is for anyone, so it asks once ("How do you bet?") and remembers the answer on
+// this device: 'new' = every number in plain words, 'sometimes' = the short version, 'numbers' = inputs and prices.
 import { useCallback, useSyncExternalStore } from 'react'
 
-export type Level = 'new' | 'experienced'
+export type Level = 'new' | 'sometimes' | 'numbers'
 const KEY = 'devig_level'
 const listeners = new Set<() => void>()
 function read(): Level | null {
   try {
     const v = localStorage.getItem(KEY)
-    return v === 'new' || v === 'experienced' ? v : null
+    if (v === 'experienced') return 'sometimes'          // answer saved by the first version of the question
+    return v === 'new' || v === 'sometimes' || v === 'numbers' ? v : null
   } catch {
     return null
   }
