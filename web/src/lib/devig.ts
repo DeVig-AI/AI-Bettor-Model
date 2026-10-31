@@ -1,5 +1,6 @@
 // DeVig data layer for v2. Reads the same public export files the classic app reads (docs/repo-data.js), which the
 // GitHub Actions bots commit to the repo, and joins them into one row per game for the Games board.
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 const RAW = 'https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/'
@@ -235,14 +236,18 @@ export function useGames() {
     refetchInterval: 10 * 60e3,
   })
 
-  const rows =
-    gameLines.data || live.data
-      ? buildRows(
-          gameLines.data?.games ?? [],
-          live.data?.games ?? [],
-          boards.data ?? []
-        )
-      : []
+  // rebuilt only when a file actually changes: a new array on every render makes the table reset itself in a loop
+  const rows = useMemo(
+    () =>
+      gameLines.data || live.data
+        ? buildRows(
+            gameLines.data?.games ?? [],
+            live.data?.games ?? [],
+            boards.data ?? []
+          )
+        : [],
+    [gameLines.data, live.data, boards.data]
+  )
   const stamps = [gameLines.data?.generated_at, live.data?.generated_at]
     .filter(Boolean)
     .map((s) => Date.parse(s as string))
