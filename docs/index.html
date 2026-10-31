@@ -999,7 +999,11 @@
   <section class="panel" id="panel-inj" hidden>
     <div class="card">
       <div class="inj-head"><h3>Injury report</h3><span class="faint" id="injAsOf"></span></div>
-      <p class="faint" style="margin:6px 0 10px">Tonight's official NBA list. Starters who are questionable or on a minutes limit are pulled to the top. Statuses change right up to tip, so check again close to game time.</p>
+      <div class="chips" id="injSports" style="margin-top:8px">
+        <button type="button" class="pill-tab active" data-inj-s="NBA">NBA</button>
+        <button type="button" class="pill-tab" data-inj-s="NFL">NFL</button>
+      </div>
+      <p class="faint" id="injBlurb" style="margin:8px 0 10px"></p>
       <div class="chips" id="injFilters">
         <button type="button" class="pill-tab active" data-inj-f="all">All</button>
         <button type="button" class="pill-tab" data-inj-f="gtd">Questionable / limits</button>
@@ -5563,7 +5567,12 @@
   })();
 
   // ---------- injuries tab ----------
-  var injDocs = [], injMeta = null, injLoaded = false, injFilter = "all";
+  var injDocs = [], injMeta = {}, injLoaded = false, injFilter = "all", injSport = "NBA";
+  try{ var _s = localStorage.getItem("devig_inj_sport"); if(_s === "NFL" || _s === "NBA") injSport = _s; }catch(e){}
+  var INJ_BLURB = {
+    NBA: "Tonight's official NBA list. Starters who are questionable or on a minutes limit are pulled to the top. Statuses change right up to tip, so check again close to game time.",
+    NFL: "This week's NFL games. Bold names are starters (60%+ of snaps). Starters who are questionable or doubtful are pulled to the top. Final game statuses come out Friday (Saturday for Monday games), and inactives 90 minutes before kickoff."
+  };
   function startInjurySub(){
     if(!dbApi){ injLoaded = true; renderInjuries(); return; }
     try{
@@ -5571,7 +5580,7 @@
         injDocs = snap.docs.map(function(d){ return d.data(); }); injLoaded = true; renderInjuries();
       });
       dbApi.collection("injury_meta").onSnapshot(function(snap){
-        injMeta = null; snap.docs.forEach(function(d){ injMeta = d.data(); }); renderInjuries();
+        injMeta = {}; snap.docs.forEach(function(d){ var m = d.data() || {}; injMeta[m.sport || "NBA"] = m; }); renderInjuries();
       });
     }catch(e){ injLoaded = true; renderInjuries(); }
   }
@@ -5584,7 +5593,10 @@
     return '<div class="inj-tags">' + (r.starter ? '<span class="pill st">Starter</span>' : '') +
       (r.minutes ? '<span class="pill warn">Min limit</span>' : '') + injPill(r.status) + '</div>';
   }
-  function injWatchable(r){ return r.starter && (r.minutes || r.status === "Questionable" || r.status === "Doubtful"); }
+  function injWatchable(r){
+    if(r.sport === "NFL") return r.starter && (r.status === "Doubtful" || (r.status === "Questionable" && r.confirmed));
+    return r.starter && (r.minutes || r.status === "Questionable" || r.status === "Doubtful");
+  }
   function injShow(r){
     if(injFilter === "gtd") return r.minutes || r.status === "Questionable" || r.status === "Doubtful";
     if(injFilter === "out") return r.status === "Out";
@@ -5593,21 +5605,25 @@
   function renderInjuries(){
     var games = document.getElementById("injGames"), watch = document.getElementById("injWatch");
     if(!games) return;
-    document.getElementById("injAsOf").textContent = injMeta && injMeta.as_of ? "as of " + injMeta.as_of : "";
+    var meta = injMeta[injSport], sp = injSport;
+    document.getElementById("injAsOf").textContent = meta && meta.as_of ? "as of " + meta.as_of : "";
+    document.getElementById("injBlurb").textContent = INJ_BLURB[sp];
+    document.querySelectorAll("#injSports [data-inj-s]").forEach(function(x){ x.classList.toggle("active", x.getAttribute("data-inj-s") === sp); });
+    var docs = injDocs.filter(function(r){ return (r.sport || "NBA") === sp; });
     if(!injLoaded){ games.innerHTML = '<div class="status">Loading…</div>'; return; }
-    if(!injDocs.length){ watch.innerHTML = ""; games.innerHTML = '<div class="card empty"><div class="icon">+</div>No injury report loaded yet. Ask Claude to update it.</div>'; return; }
-    var favs = (typeof favTeams === "function") ? favTeams("NBA") : [];
+    if(!docs.length){ watch.innerHTML = ""; games.innerHTML = '<div class="card empty"><div class="icon">+</div>No ' + sp + ' injury report loaded yet. Ask Claude to update it.</div>'; return; }
+    var favs = (typeof favTeams === "function") ? favTeams(sp) : [];
     // starters to watch
-    var w = injDocs.filter(injWatchable).sort(function(a, b){ return String(a.tip_sort).localeCompare(String(b.tip_sort)); });
+    var w = docs.filter(injWatchable).sort(function(a, b){ return String(a.tip_sort).localeCompare(String(b.tip_sort)); });
     watch.innerHTML = w.length ? '<div class="card inj-watch"><div class="bb-sec" style="margin-top:0">Starters to watch</div>' +
       w.map(function(r){
-        return '<div class="inj-row starter">' + teamBadge(r.sport || "NBA", r.team) + '<div><div class="nm">' + escapeHtml(r.player) + '</div>' +
+        return '<div class="inj-row starter">' + teamBadge(sp, r.team) + '<div><div class="nm">' + escapeHtml(r.player) + '</div>' +
           '<div class="why">' + escapeHtml(r.away + " @ " + r.home + " · " + (r.tip || "")) + (r.reason ? " · " + escapeHtml(r.reason) : "") + '</div>' +
           (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') + '</div>' + injTags(r) + '</div>';
       }).join("") + '</div>' : "";
     // group by game
     var byGame = {};
-    injDocs.forEach(function(r){ var k = r.away + "@" + r.home; (byGame[k] = byGame[k] || {away: r.away, home: r.home, tip: r.tip, tip_sort: r.tip_sort, rows: []}).rows.push(r); });
+    docs.forEach(function(r){ var k = r.away + "@" + r.home; (byGame[k] = byGame[k] || {away: r.away, home: r.home, tip: r.tip, tip_sort: r.tip_sort, rows: []}).rows.push(r); });
     var list = Object.keys(byGame).map(function(k){ return byGame[k]; }).sort(function(a, b){
       var fa = (favs.indexOf(a.away) >= 0 || favs.indexOf(a.home) >= 0) ? 0 : 1, fb = (favs.indexOf(b.away) >= 0 || favs.indexOf(b.home) >= 0) ? 0 : 1;
       return fa - fb || String(a.tip_sort).localeCompare(String(b.tip_sort));
@@ -5616,10 +5632,10 @@
     list.forEach(function(g){
       var teamsHtml = [g.away, g.home].map(function(t){
         var rows = g.rows.filter(function(r){ return r.team === t && injShow(r); }).sort(function(a, b){
-          return (b.starter ? 1 : 0) - (a.starter ? 1 : 0) || (INJ_RANK[a.status] - INJ_RANK[b.status]) || String(a.player).localeCompare(b.player);
+          return (b.starter ? 1 : 0) - (a.starter ? 1 : 0) || ((INJ_RANK[a.status] ?? 5) - (INJ_RANK[b.status] ?? 5)) || String(a.player).localeCompare(b.player);
         });
         if(!rows.length) return "";
-        return '<div class="inj-team"><div class="inj-tname">' + teamBadge("NBA", t) + escapeHtml(t) + '</div>' +
+        return '<div class="inj-team"><div class="inj-tname">' + teamBadge(sp, t) + escapeHtml(t) + '</div>' +
           rows.map(function(r){
             return '<div class="inj-row' + (r.starter ? ' starter' : '') + '"><div><div class="nm">' + escapeHtml(r.player) + '</div>' +
               (r.reason ? '<div class="why">' + escapeHtml(r.reason) + '</div>' : '') + (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') +
@@ -5627,11 +5643,17 @@
           }).join("") + '</div>';
       }).join("");
       if(!teamsHtml) return;
-      html += '<div class="card inj-game"><div class="inj-ghead">' + teamBadge("NBA", g.away) + '<span class="vs">' + escapeHtml(g.away) + ' @ ' + escapeHtml(g.home) + '</span>' +
-        teamBadge("NBA", g.home) + '<span class="tip">' + escapeHtml(g.tip || "") + '</span></div>' + teamsHtml + '</div>';
+      html += '<div class="card inj-game"><div class="inj-ghead">' + teamBadge(sp, g.away) + '<span class="vs">' + escapeHtml(g.away) + ' @ ' + escapeHtml(g.home) + '</span>' +
+        teamBadge(sp, g.home) + '<span class="tip">' + escapeHtml(g.tip || "") + '</span></div>' + teamsHtml + '</div>';
     });
     games.innerHTML = html || '<div class="card empty">Nothing matches this filter.</div>';
   }
+  document.getElementById("injSports").addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-inj-s]"); if(!b) return;
+    injSport = b.getAttribute("data-inj-s");
+    try{ localStorage.setItem("devig_inj_sport", injSport); }catch(e){}
+    renderInjuries();
+  });
   document.getElementById("injFilters").addEventListener("click", function(ev){
     var b = ev.target.closest("[data-inj-f]"); if(!b) return;
     injFilter = b.getAttribute("data-inj-f");
