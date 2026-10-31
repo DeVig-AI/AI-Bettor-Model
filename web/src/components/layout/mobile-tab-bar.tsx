@@ -9,9 +9,11 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label='Main'
-      className='fixed inset-x-0 bottom-0 z-40 border-t bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden'
+      // the after: block paints below the bar: when a phone browser's toolbar shrinks or the page bounces at the
+      // bottom, the space under the tabs stays solid instead of showing the cards scrolling behind it
+      className='fixed inset-x-0 bottom-0 z-40 border-t bg-sidebar pb-[env(safe-area-inset-bottom)] after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[50vh] after:bg-sidebar md:hidden'
     >
-      <ul className='grid grid-cols-2'>
+      <ul className='grid' style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
         {items.map((item) => {
           if (!item.url) return null
           const active = path === item.url

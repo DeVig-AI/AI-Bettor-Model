@@ -16,7 +16,11 @@ import { Route as errors404RouteImport } from './routes/(errors)/404'
 import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
+import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated/parlay'
+import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
+import { Route as AuthenticatedGameIdRouteImport } from './routes/_authenticated/game/$id'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -52,12 +56,32 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInjuriesRoute = AuthenticatedInjuriesRouteImport.update({
+  id: '/injuries',
+  path: '/injuries',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedParlayRoute = AuthenticatedParlayRouteImport.update({
+  id: '/parlay',
+  path: '/parlay',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPropsRoute = AuthenticatedPropsRouteImport.update({
+  id: '/props',
+  path: '/props',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTrackRecordRoute =
   AuthenticatedTrackRecordRouteImport.update({
     id: '/track-record',
     path: '/track-record',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGameIdRoute = AuthenticatedGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -66,7 +90,11 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/injuries': typeof AuthenticatedInjuriesRoute
+  '/parlay': typeof AuthenticatedParlayRoute
+  '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
+  '/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRoutesByTo {
   '/401': typeof errors401Route
@@ -74,8 +102,12 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/injuries': typeof AuthenticatedInjuriesRoute
+  '/parlay': typeof AuthenticatedParlayRoute
+  '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/': typeof AuthenticatedIndexRoute
+  '/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,14 +117,40 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
+  '/_authenticated/parlay': typeof AuthenticatedParlayRoute
+  '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/game/$id': typeof AuthenticatedGameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/401' | '/403' | '/404' | '/500' | '/503' | '/track-record'
+  fullPaths:
+    | '/'
+    | '/401'
+    | '/403'
+    | '/404'
+    | '/500'
+    | '/503'
+    | '/injuries'
+    | '/parlay'
+    | '/props'
+    | '/track-record'
+    | '/game/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/401' | '/403' | '/404' | '/500' | '/503' | '/track-record' | '/'
+  to:
+    | '/401'
+    | '/403'
+    | '/404'
+    | '/500'
+    | '/503'
+    | '/injuries'
+    | '/parlay'
+    | '/props'
+    | '/track-record'
+    | '/'
+    | '/game/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -101,8 +159,12 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/_authenticated/injuries'
+    | '/_authenticated/parlay'
+    | '/_authenticated/props'
     | '/_authenticated/track-record'
     | '/_authenticated/'
+    | '/_authenticated/game/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,6 +227,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/injuries': {
+      id: '/_authenticated/injuries'
+      path: '/injuries'
+      fullPath: '/injuries'
+      preLoaderRoute: typeof AuthenticatedInjuriesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/parlay': {
+      id: '/_authenticated/parlay'
+      path: '/parlay'
+      fullPath: '/parlay'
+      preLoaderRoute: typeof AuthenticatedParlayRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/props': {
+      id: '/_authenticated/props'
+      path: '/props'
+      fullPath: '/props'
+      preLoaderRoute: typeof AuthenticatedPropsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/track-record': {
       id: '/_authenticated/track-record'
       path: '/track-record'
@@ -172,17 +255,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/game/$id': {
+      id: '/_authenticated/game/$id'
+      path: '/game/$id'
+      fullPath: '/game/$id'
+      preLoaderRoute: typeof AuthenticatedGameIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
+  AuthenticatedParlayRoute: typeof AuthenticatedParlayRoute
+  AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedGameIdRoute: typeof AuthenticatedGameIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
+  AuthenticatedParlayRoute: AuthenticatedParlayRoute,
+  AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedGameIdRoute: AuthenticatedGameIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

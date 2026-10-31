@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import { BookOpen, RefreshCw, Search as SearchIcon } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
@@ -12,6 +13,7 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ExplainSheet } from './explain-sheet'
 import { Plate, isPick } from './plate'
+import { PlateTaps } from './plate-taps'
 
 type Day = 'today' | 'tomorrow' | 'week'
 const DAYS: { id: Day; label: string }[] = [
@@ -56,7 +58,10 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
     .join(' · ')
   return (
     <li className='flex flex-col gap-2'>
-      <Plate row={row} showDay={showDay} />
+      <div className='relative'>
+        <Plate row={row} showDay={showDay} />
+        {row.state === 'pre' && <PlateTaps row={row} />}
+      </div>
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-sm'>
         {picked && p?.prob != null ? (
           <span className='flex items-center gap-2 font-semibold text-devig'>
@@ -79,6 +84,13 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
           <span className='font-condensed text-muted-foreground tabular-nums'>
             {fmtAmerican(row.ml?.away)} / {fmtAmerican(row.ml?.home)}
           </span>
+          <Link
+            to='/game/$id'
+            params={{ id: row.id }}
+            className='flex h-8 items-center rounded-full border px-3 text-sm font-semibold text-muted-foreground transition-colors duration-150 hover:text-foreground'
+          >
+            Game
+          </Link>
           {picked && (
             <button
               type='button'
@@ -343,7 +355,7 @@ export function Games() {
         )}
 
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
-          Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
+          Tap a team on an upcoming game to add it to your parlay. Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
           exchange&apos;s mid price), in the two teams&apos; colors. The amber slash is DeVig&apos;s model. Scores are ESPN&apos;s,
           unofficial. DeVig&apos;s picks are paper picks, locked before the game; nothing is bet.
         </p>
