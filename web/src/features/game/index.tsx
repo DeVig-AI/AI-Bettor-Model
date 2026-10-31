@@ -140,7 +140,7 @@ export function GamePage({ id }: { id: string }) {
                 </li>
               ))}
             </ul>
-            <p className='mt-1.5 px-1 text-xs text-muted-foreground'>DeVig&apos;s game models don&apos;t read injuries; Kalshi&apos;s price may already include them.</p>
+            <p className='mt-1.5 px-1 text-xs text-muted-foreground'>{row.sport === 'NFL' ? "DeVig's NFL Model 2.0 counts who's out" : `DeVig's ${row.sport} model doesn't read injuries`}; Kalshi&apos;s price may already include them.</p>
           </section>
         )}
 

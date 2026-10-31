@@ -66,7 +66,23 @@ type Row = {
   player: string; stat: string; line: number; k?: { bid?: number; ask?: number; oi?: number; t?: string } | null
   model_p?: number | null; expected?: number | null; n_games?: number; injury?: string | null; stale?: unknown
 }
-type Doc = { data: { game_key: string; away_team: string; home_team: string; kickoff_time: string; sport?: string; rows?: Row[] } }
+type Doc = {
+  collection?: string
+  doc_id?: string
+  data: { game_key: string; away_team: string; home_team: string; kickoff_time: string; sport?: string; rows?: Row[] }
+}
+
+// The prop-pick test for one sport (props_model_report): picks locked under pre-registered rules, graded after.
+export type PropsTest = {
+  sport: string
+  doc: string
+  graded: number
+  wins: number
+  profit: number // per $1 contract, after Kalshi's fee
+  roi: number | null
+  prereg: string | null
+  updated: string | null
+}
 
 export function useProps() {
   const q = useQuery({
@@ -80,10 +96,29 @@ export function useProps() {
         )
       )
       const out: PropLine[] = []
+      const tests: PropsTest[] = []
       all.forEach((res, i) => {
         if (res.status !== 'fulfilled') return
         const sport = SPORTS[i].toUpperCase()
+        let best: { ver: number; t: PropsTest } | null = null
         for (const d of res.value.docs || []) {
+          if (d.collection === 'props_model_report') {
+            const r = d.data as unknown as Record<string, unknown>
+            const m = /^([A-Z]+)_PROPS_MODEL_V(\d+)$/.exec(String(r.doc ?? d.doc_id ?? ''))
+            if (m && m[1] === sport && (!best || Number(m[2]) > best.ver)) {
+              const num = (x: unknown) => (typeof x === 'number' && isFinite(x) ? x : null)
+              best = {
+                ver: Number(m[2]),
+                t: {
+                  sport, doc: m[0], graded: num(r.paper_picks_graded) ?? 0, wins: num(r.wins) ?? 0,
+                  profit: num(r.profit_per_1_contract_sum) ?? 0, roi: num(r.roi),
+                  prereg: typeof r.prereg_sha256 === 'string' ? r.prereg_sha256 : null,
+                  updated: typeof r.updated_utc === 'string' ? r.updated_utc : null,
+                },
+              }
+            }
+            continue
+          }
           const g = d.data
           for (const r of g.rows || []) {
             if (r.stale) continue
@@ -96,12 +131,17 @@ export function useProps() {
             })
           }
         }
+        if (best) tests.push(best.t)
       })
-      return out
+      return { lines: out, tests }
     },
     refetchInterval: 15 * 60e3,
   })
-  return { lines: useMemo(() => q.data ?? [], [q.data]), isLoading: q.isLoading }
+  return {
+    lines: useMemo(() => q.data?.lines ?? [], [q.data]),
+    tests: useMemo(() => q.data?.tests ?? [], [q.data]),
+    isLoading: q.isLoading,
+  }
 }
 
 // Kalshi's live price for prop tickers (40 per call, the server caches 30 s). Returns ticker -> {bid, ask, title}.
