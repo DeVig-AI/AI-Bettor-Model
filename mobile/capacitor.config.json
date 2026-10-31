@@ -4,7 +4,10 @@
   "webDir": "www",
   "server": {
     "url": "https://devigai.pages.dev/",
-    "cleartext": false
+    "cleartext": false,
+    "allowNavigation": [
+      "*.cloudflareaccess.com"
+    ]
   },
   "backgroundColor": "#0c0f14"
 }
