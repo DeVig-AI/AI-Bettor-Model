@@ -36,7 +36,7 @@ def games(season, rows):
                                "points": pts // 4 - 10 * k, "rebounds": 5, "assists": 4, "three_point_field_goals_made": 2,
                                "steals": 1, "blocks": 0, "turnovers": 2, "field_goals_made": 9, "field_goals_attempted": 18,
                                "three_point_field_goals_attempted": 5, "free_throws_made": 4, "free_throws_attempted": 5,
-                               "home_away": ha, "starter": k == 0})
+                               "home_away": ha, "starter": k == 0, "athlete_jersey": None if k else 11})
     return pd.DataFrame(team), pd.DataFrame(player)
 
 
@@ -85,6 +85,8 @@ class StatsNBA(unittest.TestCase):
         bench = [p for p in self.nyk["players"] if p["name"] == "NY Bench"][0]
         self.assertEqual(bench["last"]["gp"], 2)                                # the did-not-play game left out
         self.assertEqual(self.nyk["players"][0]["name"], "NY Star")              # most minutes first
+        self.assertEqual(self.nyk["players"][0]["num"], 11)                     # his jersey number, for the app's jersey
+        self.assertNotIn("num", self.nyk["players"][1])                         # no number in the box score: none
 
     def test_srs_and_record(self):
         r, home = S.srs([("A", "B", 10), ("B", "A", -10)] * 50, ["A", "B"])   # A by 10 home and away
