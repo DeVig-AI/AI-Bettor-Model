@@ -213,6 +213,19 @@ search:
   max_disagreement_corr: 0.95
   learned_samples: 200
   random_samples: 100
-  signal_pairs_of: 0
-  signal_trios_of: 0
+  # v14 (D1a): box-score and starting-goalie signals. Pairs of the best 6, trios of the best 4.
+  signal_pairs_of: 6
+  signal_trios_of: 4
   max_new_per_round: 400
+# v14: the bases signals are added to = each market's best single model in the search so far (search seasons only,
+# 2026-10-31): Elo win chance (t 2.42) and the points team rating (t 1.47).
+signal_bases:
+  moneyline:
+  - type: elo_ml
+    params: {bye_elo: 0, bye_rest_days: 13, elo_per_point: 100, hfa_elo: 110, hfa_mode: fixed, hfa_seasons: 3, k: 6,
+             market_blend: 0.5, market_resist: 0.0, mean: 1505, mov: none, nfelo_log_base: 10, playoff_mult: 1.0,
+             prob: elo, qb: none, qb_alpha: 0.1, qb_elo_per_value: 3.3, qb_new_below_avg: 10, revert: 0.3333,
+             revert_center: none, travel_elo_per_1000mi: 0}
+  total:
+  - type: team_rating
+    params: {def_weight: 0.5, halflife: 60, league_window: 2600, metric: points, pace: none, season_carry: 0.65}

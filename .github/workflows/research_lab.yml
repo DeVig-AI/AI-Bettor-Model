@@ -8,7 +8,7 @@ name: Research Lab -- loop (back to back)
 # research/candidates/; NFL candidates without a ledger row (search
 # finds, queued or hand-written, at most 18) are confirmed on 2017-19, 2020-22, 2023-24. Then college football, the
 # same loop (Part C): search on 2018, 2019, 2021, confirmation on 2022 / 2023 / 2024, files under research/cfb/.
-# Then NBA, NHL and MLB, one after another (Part D, v11): search on 2014, 2015, 2016, confirmation on 2017 / 2018 / 2019,
+# Then NBA and NHL, one after another (Part D, v11; MLB suspended since v14, D1b): search on 2014, 2015, 2016, confirmation on 2017 / 2018 / 2019,
 # files under research/<sport>/, data built each run from the pinned public archive (never committed, D1).
 # Each sport ends with the Inspector General's review. Deterministic; no AI in the loop.
 on:
@@ -200,7 +200,7 @@ jobs:
       max-parallel: 1          # one sport at a time: each writes research/status.json and pushes to main
       fail-fast: false
       matrix:
-        sport: [NBA, NHL, MLB]
+        sport: [NBA, NHL]       # MLB suspended (Constitution v14 D1b): its archive rows are not real games
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:

@@ -223,6 +223,16 @@ search:
   max_disagreement_corr: 0.95
   learned_samples: 200
   random_samples: 100
-  signal_pairs_of: 0
-  signal_trios_of: 0
+  # v14 (D1a): box-score signals. Pairs of the best 6, trios of the best 4.
+  signal_pairs_of: 6
+  signal_trios_of: 4
   max_new_per_round: 400
+# v14: the bases signals are added to = each market's best single model in the search so far (search seasons only,
+# 2026-10-31): SRS s-6ae5d711 (t 2.69) and the points team rating (t 1.05).
+signal_bases:
+  spread:
+  - type: srs
+    params: {carry: 0.75, hfa_pts: 0.0, margin_cap: 22, prior_w: 40.0}
+  total:
+  - type: team_rating
+    params: {def_weight: 1.0, halflife: 2, league_window: 2460, metric: points, pace: none, season_carry: 0.4}

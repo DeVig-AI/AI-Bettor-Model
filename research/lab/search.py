@@ -927,6 +927,7 @@ def main(argv=None):
     ap.add_argument("--progress", action="store_true", help="post the round's progress to /lab (GitHub Actions)")
     a = ap.parse_args(argv)
     C.use(a.sport)
+    C.refuse_if_suspended()                          # D1b
     if a.cmd == "migrate-scores":
         migrate_scores()
         return 0
