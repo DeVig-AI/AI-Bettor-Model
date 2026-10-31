@@ -1,8 +1,8 @@
-# DeVig Research Lab -- Constitution v12
+# DeVig Research Lab -- Constitution v13
 
-Version: **v12** · adopted 2026-10-27 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
-Part D (NBA, NHL, MLB) · replaces v11 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v11.md`; v10
-to v1 alongside it; what changed: sections "Changes from v1" to "Changes from v11" at the end)
+Version: **v13** · adopted 2026-10-30 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
+Part D (NBA, NHL, MLB) · replaces v12 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v12.md`; v11
+to v1 alongside it; what changed: sections "Changes from v1" to "Changes from v12" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -196,8 +196,9 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
 2. It is paper-tracked **at real Kalshi prices before kickoff**, under `research/` only: every eligible game is logged
    (pick or no pick) before it starts, at the Kalshi ask for the chosen side plus the A4 fee, on Kalshi's main line
    (the line priced closest to 50¢). Logs are append-only. Nothing is bet.
-3. It is described everywhere as **"Promoted, not proven"**. It is not shown in the public app unless the owner later
-   decides so, in a separate change.
+3. It is described everywhere as **"Promoted, not proven"**. Since v13 (the owner's decision) whether it is shown in
+   the app is decided by `CHAMPION_CHALLENGER_V1_PREREG.md`: it may be registered there as a challenger and enters
+   the app only by beating the app's current model under that rule's entry test, on a trial that keeps or removes it.
 4. **Stop rule:** from the sport's mid-season point on (see its Part), once at least 40 picks are graded, the model is
    **stopped** if the upper end of the 90% Wilson interval of its win rate is below its average break-even price
    (clearly behind Kalshi). A stopped model stays logged and is never restarted in that season.
@@ -661,3 +662,17 @@ The owner asked for injury data in the lab and for a generator of signals, both 
 
 Unchanged: every scoring, correction, gate, lab-pass, exam, promotion and stop rule; the shortlist (t ≥ 2.5, at most 2
 per market in any 7 days), so the attempt rate does not rise; Parts C and D.
+
+## Changes from v12 (2026-10-30)
+
+The owner asked that a model which does better than the one the app uses replace it, be tracked against the old one,
+and be kept only if it stays better:
+1. **A9.3:** a promoted model is no longer kept out of the app until a separate owner decision; the owner made that
+   decision once, as a standing rule, in `CHAMPION_CHALLENGER_V1_PREREG.md` (locked in `FROZEN.sha256`). Under it a
+   model replaces the app's pick only after beating the current model on at least 300 graded same games logged after
+   it was registered (log loss interval below 0 and profit at Kalshi prices no worse), then runs a fixed trial (150
+   games, 64 for the NFL) and is kept only if it is more accurate in all four quarters of it and no worse on profit.
+
+Unchanged: every scoring, correction, gate, lab-pass, exam, promotion and stop rule (A1.4 is not touched: no test is
+loosened; a model still has to pass the exam to be promoted, and then has to beat the app's model live as well);
+Parts B, C and D.

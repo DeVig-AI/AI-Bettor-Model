@@ -19,11 +19,23 @@ jobs:
           python-version: '3.11'
       - name: Read every model's pick, lock started games, grade finals, write the app's file
         run: python3 tools/models_compare.py
+      - name: Champion / challenger review (CHAMPION_CHALLENGER_V1_PREREG.md)
+        continue-on-error: true   # a review failure must not stop the scoreboard's own data from being saved
+        run: python3 tools/champion_review.py
+      - name: Re-export the app's NBA games (a challenger on trial is locked up to an hour after DeVig's tracker)
+        continue-on-error: true
+        run: |
+          # only while an NBA challenger is on trial or was kept; otherwise grade_nba.yml's export is the only one
+          if python3 -c "import json,sys; s=json.load(open('live/champions.json'))['slots']['NBA.ml']; sys.exit(0 if s.get('trial') or s['champion'] != 'devig' else 1)"; then
+            (cd nba && python3 export_lineboard_nba_v2.py)
+          fi
       - name: Save it
         run: |
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json; do
+          for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json \
+                   live/champions.json live/champions/MODEL_LOCKS.csv live/champions/DECISIONS.csv live/champions_export.json \
+                   nba/lineboard_export.json; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0

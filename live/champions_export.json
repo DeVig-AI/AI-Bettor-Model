@@ -1,0 +1,62 @@
+{
+ "generated_at": "2026-10-31T02:46:34Z",
+ "n_docs": 1,
+ "docs": [
+  {
+   "collection": "champions",
+   "doc_id": "CHAMPIONS_V1",
+   "data": {
+    "doc": "CHAMPIONS_V1",
+    "generated_at": "2026-10-31T02:46:34Z",
+    "rule": "CHAMPION_CHALLENGER_V1_PREREG.md",
+    "slots": {
+     "NBA.ml": {
+      "champion": "devig",
+      "since": "2026-10-19T00:00:00Z",
+      "trial": null,
+      "challengers": [
+       {
+        "id": "blotny",
+        "games": 0,
+        "needed": 300,
+        "ll_diff": null,
+        "ci_hi": null,
+        "profit_challenger": 0,
+        "profit_champion": 0
+       }
+      ]
+     },
+     "NFL.ml": {
+      "champion": "devig2",
+      "since": "2026-10-22T23:00:00Z",
+      "trial": null,
+      "challengers": [],
+      "hold": "Model 2.0's own review (nfl/app_model.json, review 2026-11-04); not checked until it is recorded"
+     },
+     "MLB.ml": {
+      "champion": "devig",
+      "since": "2026-10-19T00:00:00Z",
+      "trial": null,
+      "challengers": []
+     },
+     "CFB.ml": {
+      "champion": "market",
+      "since": "2026-10-19T00:00:00Z",
+      "trial": null,
+      "challengers": [
+       {
+        "id": "cfbrank",
+        "games": 0,
+        "needed": 300,
+        "ll_diff": null,
+        "ci_hi": null,
+        "profit_challenger": 0,
+        "profit_champion": 0
+       }
+      ]
+     }
+    }
+   }
+  }
+ ]
+}
