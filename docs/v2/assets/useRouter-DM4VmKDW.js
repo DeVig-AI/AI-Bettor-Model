@@ -1,1 +1,0 @@
-import{f as e,u as t}from"./button-CAN_9LXY.js";var n=e(t(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

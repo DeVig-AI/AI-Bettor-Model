@@ -1,0 +1,1 @@
+import{n as e}from"./props-BoUXM890.js";var t=e;export{t as component};

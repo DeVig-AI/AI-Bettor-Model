@@ -1,1 +1,0 @@
-import{n as e}from"./props-DAPX-oNl.js";var t=e;export{t as component};

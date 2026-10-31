@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
 import { useInjuries } from '@/lib/injuries'
 import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
+import { RS_SPORTS } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExplainSheet } from '../games/explain-sheet'
@@ -122,6 +123,21 @@ export function GamePage({ id }: { id: string }) {
         {row.state === 'pre' && <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap a team on the plate to add it to your parlay.</p>}
 
         <Read row={row} onWhy={() => setWhy(true)} />
+
+        {(RS_SPORTS as readonly string[]).includes(row.sport) && (
+          <section aria-label='Team research' className='grid grid-cols-2 gap-2'>
+            {([[row.away, row.awayName], [row.home, row.homeName]] as const).map(([code, name]) => (
+              <Link key={code} to='/research/team/$sport/$code' params={{ sport: row.sport, code }}
+                className='flex min-h-14 items-center justify-between gap-2 rounded-2xl bg-card px-4 py-2.5 hover:bg-muted/50'>
+                <span className='min-w-0'>
+                  <span className='block truncate font-semibold'>{name}</span>
+                  <span className='block text-xs text-muted-foreground'>Stats, games, roster</span>
+                </span>
+                <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+              </Link>
+            ))}
+          </section>
+        )}
 
         {hurt.length > 0 && (
           <section aria-label='Injuries'>

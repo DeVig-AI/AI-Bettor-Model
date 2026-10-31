@@ -25,6 +25,9 @@ import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
 import { Route as AuthenticatedGameIdRouteImport } from './routes/_authenticated/game/$id'
+import { Route as AuthenticatedResearchIndexRouteImport } from './routes/_authenticated/research/index'
+import { Route as AuthenticatedResearchTeamSportCodeRouteImport } from './routes/_authenticated/research/team/$sport/$code'
+import { Route as AuthenticatedResearchPlayerSportTeamIdRouteImport } from './routes/_authenticated/research/player/$sport/$team/$id'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -106,6 +109,24 @@ const AuthenticatedGameIdRoute = AuthenticatedGameIdRouteImport.update({
   path: '/game/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedResearchIndexRoute =
+  AuthenticatedResearchIndexRouteImport.update({
+    id: '/research/',
+    path: '/research/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedResearchTeamSportCodeRoute =
+  AuthenticatedResearchTeamSportCodeRouteImport.update({
+    id: '/research/team/$sport/$code',
+    path: '/research/team/$sport/$code',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedResearchPlayerSportTeamIdRoute =
+  AuthenticatedResearchPlayerSportTeamIdRouteImport.update({
+    id: '/research/player/$sport/$team/$id',
+    path: '/research/player/$sport/$team/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -123,6 +144,9 @@ export interface FileRoutesByFullPath {
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/game/$id': typeof AuthenticatedGameIdRoute
+  '/research/': typeof AuthenticatedResearchIndexRoute
+  '/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
+  '/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
 }
 export interface FileRoutesByTo {
   '/401': typeof errors401Route
@@ -140,6 +164,9 @@ export interface FileRoutesByTo {
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/': typeof AuthenticatedIndexRoute
   '/game/$id': typeof AuthenticatedGameIdRoute
+  '/research': typeof AuthenticatedResearchIndexRoute
+  '/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
+  '/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +186,9 @@ export interface FileRoutesById {
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/game/$id': typeof AuthenticatedGameIdRoute
+  '/_authenticated/research/': typeof AuthenticatedResearchIndexRoute
+  '/_authenticated/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
+  '/_authenticated/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +208,9 @@ export interface FileRouteTypes {
     | '/props'
     | '/track-record'
     | '/game/$id'
+    | '/research/'
+    | '/research/team/$sport/$code'
+    | '/research/player/$sport/$team/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/401'
@@ -195,6 +228,9 @@ export interface FileRouteTypes {
     | '/track-record'
     | '/'
     | '/game/$id'
+    | '/research'
+    | '/research/team/$sport/$code'
+    | '/research/player/$sport/$team/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -213,6 +249,9 @@ export interface FileRouteTypes {
     | '/_authenticated/track-record'
     | '/_authenticated/'
     | '/_authenticated/game/$id'
+    | '/_authenticated/research/'
+    | '/_authenticated/research/team/$sport/$code'
+    | '/_authenticated/research/player/$sport/$team/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -338,6 +377,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGameIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/research/': {
+      id: '/_authenticated/research/'
+      path: '/research'
+      fullPath: '/research/'
+      preLoaderRoute: typeof AuthenticatedResearchIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/research/team/$sport/$code': {
+      id: '/_authenticated/research/team/$sport/$code'
+      path: '/research/team/$sport/$code'
+      fullPath: '/research/team/$sport/$code'
+      preLoaderRoute: typeof AuthenticatedResearchTeamSportCodeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/research/player/$sport/$team/$id': {
+      id: '/_authenticated/research/player/$sport/$team/$id'
+      path: '/research/player/$sport/$team/$id'
+      fullPath: '/research/player/$sport/$team/$id'
+      preLoaderRoute: typeof AuthenticatedResearchPlayerSportTeamIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -352,6 +412,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedGameIdRoute: typeof AuthenticatedGameIdRoute
+  AuthenticatedResearchIndexRoute: typeof AuthenticatedResearchIndexRoute
+  AuthenticatedResearchTeamSportCodeRoute: typeof AuthenticatedResearchTeamSportCodeRoute
+  AuthenticatedResearchPlayerSportTeamIdRoute: typeof AuthenticatedResearchPlayerSportTeamIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -365,6 +428,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedGameIdRoute: AuthenticatedGameIdRoute,
+  AuthenticatedResearchIndexRoute: AuthenticatedResearchIndexRoute,
+  AuthenticatedResearchTeamSportCodeRoute:
+    AuthenticatedResearchTeamSportCodeRoute,
+  AuthenticatedResearchPlayerSportTeamIdRoute:
+    AuthenticatedResearchPlayerSportTeamIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

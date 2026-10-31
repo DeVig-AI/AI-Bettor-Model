@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import { fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { useSlip } from '@/lib/parlay'
 import { type LivePrice, type PropLine, fetchLiveProps, overTxt, statName, underTxt, useProps } from '@/lib/props'
+import { useRsPlayerLink } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
@@ -25,6 +27,17 @@ export function withLive(l: PropLine, live: Record<string, LivePrice>): Shown | 
   return { ...l, bid, ask, mid: (bid + ask) / 2, spread: ask - bid, live: !!lv }
 }
 
+function PlayerName({ l }: { l: Shown }) {
+  const to = useRsPlayerLink(l.sport, l.player)
+  if (!to) return <span className='truncate font-semibold'>{l.player}</span>
+  return (
+    <Link to='/research/player/$sport/$team/$id' params={to} search={{ stat: l.stat, line: l.line }}
+      className='truncate font-semibold underline decoration-muted-foreground/40 underline-offset-4 hover:text-devig'>
+      {l.player}
+    </Link>
+  )
+}
+
 export function PropRow({ l }: { l: Shown }) {
   const { toggle, has } = useSlip()
   const over = propLeg(l, 'over', { bid: l.bid, ask: l.ask, title: null })
@@ -38,7 +51,7 @@ export function PropRow({ l }: { l: Shown }) {
   return (
     <li className='flex flex-col gap-2 border-b px-4 py-3 last:border-b-0'>
       <div className='flex items-baseline justify-between gap-3'>
-        <span className='truncate font-semibold'>{l.player}</span>
+        <PlayerName l={l} />
         <span className='shrink-0 text-sm text-muted-foreground'>{overTxt(l.stat, l.line)}</span>
       </div>
       <div className='flex justify-between text-sm font-semibold tabular-nums'>
