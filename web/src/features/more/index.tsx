@@ -13,7 +13,7 @@ const PAGES = [
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
 ] as const
 
-const CLASSIC = ['Testing: every test and backtest', 'Research: rankings, team and player stats', 'History: past games and odds-screen scans', 'Profile: name and favorite teams']
+const CLASSIC = ['Research: rankings, team and player stats', 'History: past games and odds-screen scans', 'Profile: name and favorite teams']
 
 export function More() {
   return (

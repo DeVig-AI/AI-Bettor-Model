@@ -1,1 +1,0 @@
-import{n as e}from"./props-D0nOEmI2.js";var t=e;export{t as component};
