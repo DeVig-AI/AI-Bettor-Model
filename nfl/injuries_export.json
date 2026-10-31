@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Oct 31 \u00b7 6:19 AM ET \u00b7 Week 8",
+    "as_of": "Sat Oct 31 \u00b7 12:02 PM ET \u00b7 Week 8",
     "date": "2026-10-31",
     "sport": "NFL"
    },
@@ -2847,6 +2847,30 @@
     "confirmed": true,
     "home": "CIN",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (82% of snaps): about 0.5 points each in DeVig's injury study \u00b7 14% of TEN's targets and carries"
+    },
+    "note": "Downgraded from doubtful",
+    "player": "Carnell Tate",
+    "reason": "WR \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Out",
+    "team": "TEN",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1101-1300"
+   },
+   "doc_id": "nfl-ten-carnell-tate"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TEN",
+    "confirmed": true,
+    "home": "CIN",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2933,30 +2957,6 @@
     "tip_sort": "1101-1300"
    },
    "doc_id": "nfl-ten-tyjae-spears"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TEN",
-    "confirmed": true,
-    "home": "CIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (82% of snaps): about 0.5 points each in DeVig's injury study \u00b7 14% of TEN's targets and carries"
-    },
-    "note": "Downgraded from doubtful",
-    "player": "Carnell Tate",
-    "reason": "WR \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Out",
-    "team": "TEN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1101-1300"
-   },
-   "doc_id": "nfl-ten-carnell-tate"
   },
   {
    "collection": "injuries",
@@ -3146,6 +3146,6 @@
    "doc_id": "nfl-was-charles-omenihu"
   }
  ],
- "generated_at": "2026-10-31T10:19:41Z",
+ "generated_at": "2026-10-31T16:02:36Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
