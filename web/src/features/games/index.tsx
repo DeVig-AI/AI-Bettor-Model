@@ -308,6 +308,7 @@ export function Games() {
     columns,
     state: { sorting },
     onSortingChange: setSorting,
+    autoResetPageIndex: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
