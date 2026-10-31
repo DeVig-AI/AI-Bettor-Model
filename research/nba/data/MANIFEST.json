@@ -7,8 +7,8 @@
   2020
  ],
  "sha256": {
-  "games": "7a8cbfcc04e2037b5a1f458a45147ccd5f0ab66fd3d638b5e3ab517925960020",
-  "team_games": "bb80df687b462d3cd6d0710665a29463f8e9bdfae47a4373646b7decc4f7a587"
+  "games": "49a311d43c7670da6002e8ca4f7f38bdbf7c0b5e64f603d1870e2eae4f47868c",
+  "team_games": "e351689dfee9d10d1b31451ee0331e6066c025d67ce8fb8561c2bb4a03f4af31"
  },
  "games_by_season": {
   "2011": 1073,
@@ -53,10 +53,42 @@
   "no_date_or_team": 10,
   "duplicate": 0,
   "no_score": 0,
+  "box_matched": 12557,
+  "box_unmatched": 1336,
   "spread_lines": 12960,
   "spread_no_line": 933,
   "total_lines": 12960,
   "total_no_line": 933
+ },
+ "box_scores": {
+  "source": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/",
+  "files": {
+   "team_box": "espn_nba_team_boxscores/team_box_{y}.csv"
+  },
+  "pinned": {
+   "2011": "9f5c6e019e3c73e936634e248235b719259a17c296ecaba3c7f13c87baaee8dc",
+   "2012": "f9a7a39d5fbcea8dadeceeb5dc50f234a5e00417a49c29715c9eb95223e5b87b",
+   "2013": "27607ee77c69ad21fb224ee0c403954b2dce6623456b7a4db72e7e60d3379896",
+   "2014": "03d5c79417c62dfa8dfc58120af70373835fce53f6e1a3cf17765f29366b73fd",
+   "2015": "db1b9299b5f9e6c0a75ed837e132cf827d75c19251439a74f6ef0eb6440aa3d3",
+   "2016": "551ac6a35c22beff3d1c0ad145381163f486ef6520b1b84daa2637504fcf7432",
+   "2017": "1bb8e5650347408f3d3f9be8dde30dbf33b2ff1bc6edefb9ee3454ae05a0a234",
+   "2018": "ea707b6dd4eb0dc7176c04874962d2760216aec4b9e329e595dad970d9570fa5",
+   "2019": "c6de7b36e1b28dad21a0fb68c71162b7b1fec84ded97591edf90831851ad6efa",
+   "2020": "5c29d8b5b1793960bf5da1338bb1a3062ffae9b7df9c0a5ab11602580f099c62"
+  },
+  "team_rows_by_season": {
+   "2011": 2146,
+   "2012": 2616,
+   "2013": 2634,
+   "2014": 2620,
+   "2015": 2630,
+   "2016": 2614,
+   "2017": 2620,
+   "2018": 2622,
+   "2019": 2284,
+   "2020": 2328
+  }
  },
  "note": "Lab cache (Constitution D1), seasons 2011-2020 only. The csv files are never committed; 2021 is sealed and never stored."
 }

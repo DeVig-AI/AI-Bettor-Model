@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-31T20:41:23Z",
+ "updated_at": "2026-10-31T20:54:25Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -13,8 +13,8 @@
   "note": "Holm correction over this sport's 22 attempts decides; across all sports there are 25 attempts (reported only)."
  },
  "constitution": {
-  "version": "v13",
-  "sha256": "9b932a4581d2c2cc44e5d2d0e18937d1978c2d3657b30f22e4eabea6a489ac49"
+  "version": "v14",
+  "sha256": "bd1b9d5249183b4febc71d1d7eaa7309d57189b8144188fbbac4703588cbc6b2"
  },
  "links": {
   "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -3284,7 +3284,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-10-31T20:40:52Z",
+   "updated_at": "2026-10-31T20:57:54Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3298,8 +3298,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
-    "version": "v13",
-    "sha256": "9b932a4581d2c2cc44e5d2d0e18937d1978c2d3657b30f22e4eabea6a489ac49"
+    "version": "v14",
+    "sha256": "bd1b9d5249183b4febc71d1d7eaa7309d57189b8144188fbbac4703588cbc6b2"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -5148,7 +5148,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-10-31T20:44:44Z",
+   "updated_at": "2026-10-31T20:54:11Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5162,8 +5162,8 @@
     "note": "Holm correction over this sport's 2 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
-    "version": "v13",
-    "sha256": "9b932a4581d2c2cc44e5d2d0e18937d1978c2d3657b30f22e4eabea6a489ac49"
+    "version": "v14",
+    "sha256": "bd1b9d5249183b4febc71d1d7eaa7309d57189b8144188fbbac4703588cbc6b2"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -5352,10 +5352,231 @@
       "s-e4891f12"
      ],
      "at": "2026-10-25T08:27:35Z"
+    },
+    {
+     "text": "Signal def-ft-rate (total) on top of a base model: helped in 2014, then faded (helped in all three on 0 of 1); on average +0.01 / +0.00 / +0.00 pts in 2014 / 2015 / 2016.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-tov-rate (spread) on top of a base model: helped in 2014, then faded (helped in all three on 0 of 1); on average +0.02 / +0.01 / -0.06 pts in 2014 / 2015 / 2016.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-tov-rate (total) on top of a base model: helped in 2014, then faded (helped in all three on 0 of 1); on average +0.01 / -0.01 / +0.00 pts in 2014 / 2015 / 2016.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-3pa-rate (spread) on top of a base model: helped in 2014, then faded (helped in all three on 0 of 1); on average +0.12 / +0.03 / -0.19 pts in 2014 / 2015 / 2016.",
+     "kind": "faded",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-drtg (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.28 / -0.11 / -0.35 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-drtg (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.06 / +0.00 / +0.04 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-efg (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.17 / -0.12 / -0.23 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-efg (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.06 / +0.00 / +0.04 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-ft-rate (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.02 / -0.05 / -0.10 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-oreb (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.07 / -0.05 / +0.00 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-oreb (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.08 / +0.00 / +0.04 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal def-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.11 / +0.03 / +0.06 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-3pa-rate (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.16 / -0.13 / +0.08 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-efg (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.15 / -0.02 / -0.34 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-efg (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.08 / +0.05 / +0.06 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-ft-rate (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.29 / -0.20 / -0.34 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-ft-rate (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.13 / +0.07 / +0.06 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-oreb (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.04 / -0.06 / -0.09 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-oreb (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.01 / -0.05 / +0.00 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-ortg (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.19 / -0.35 / -0.63 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-ortg (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.08 / +0.00 / +0.04 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-pace (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.11 / +0.03 / +0.06 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-tov-rate (spread) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.05 / -0.07 / -0.02 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
+    },
+    {
+     "text": "Signal off-tov-rate (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.07 / +0.00 / +0.04 pts in 2014 / 2015 / 2016.",
+     "kind": "no_effect",
+     "candidates": [],
+     "source": "search",
+     "from": "search · 2014–2016 only",
+     "at": "2026-10-31T20:54:09Z"
     }
    ],
    "promoted": [],
    "runs": [
+    {
+     "kind": "search",
+     "name": "Search round 412",
+     "started_at": "2026-10-31T20:54:09Z",
+     "finished_at": "2026-10-31T20:54:09Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41235946544",
+     "summary": "479 models scored → 278 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 479
+      },
+      {
+       "label": "consistent",
+       "count": 278
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 26
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 411",
@@ -5616,40 +5837,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 402",
-     "started_at": "2026-10-31T11:32:54Z",
-     "finished_at": "2026-10-31T11:32:54Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41196255912",
-     "summary": "300 models scored → 204 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 300
-      },
-      {
-       "label": "consistent",
-       "count": 204
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "NHL": {
-   "updated_at": "2026-10-31T20:44:56Z",
+   "updated_at": "2026-10-31T20:58:23Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5663,8 +5855,8 @@
     "note": "Holm correction over this sport's 0 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
-    "version": "v13",
-    "sha256": "9b932a4581d2c2cc44e5d2d0e18937d1978c2d3657b30f22e4eabea6a489ac49"
+    "version": "v14",
+    "sha256": "bd1b9d5249183b4febc71d1d7eaa7309d57189b8144188fbbac4703588cbc6b2"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
@@ -5976,7 +6168,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-10-31T20:45:06Z",
+   "updated_at": "2026-10-31T20:58:34Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5990,8 +6182,8 @@
     "note": "Holm correction over this sport's 1 attempts decides; across all sports there are 25 attempts (reported only)."
    },
    "constitution": {
-    "version": "v13",
-    "sha256": "9b932a4581d2c2cc44e5d2d0e18937d1978c2d3657b30f22e4eabea6a489ac49"
+    "version": "v14",
+    "sha256": "bd1b9d5249183b4febc71d1d7eaa7309d57189b8144188fbbac4703588cbc6b2"
    },
    "links": {
     "constitution": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
