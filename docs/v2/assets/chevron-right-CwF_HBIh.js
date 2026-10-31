@@ -1,0 +1,1 @@
+import{J as e}from"./dropdown-menu-M0l0qCme.js";var t={name:`chevron-right`,size:24,node:[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]};t.node;var n=e(t);export{n as t};

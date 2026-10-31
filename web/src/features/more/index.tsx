@@ -38,14 +38,16 @@ export function More() {
           ))}
         </ul>
 
-        <section aria-label='In the classic app' className='rounded-[18px] border border-dashed p-4'>
-          <h2 className='font-display text-xl font-extrabold'>Still in the classic app</h2>
-          <p className='mt-1 text-sm text-muted-foreground'>These are moving to the new look next. Until then they work as before.</p>
+        <section aria-label='Beta' className='rounded-[18px] border border-dashed p-4'>
+          <h2 className='font-display text-xl font-extrabold'>This is the new DeVig, in beta</h2>
+          <p className='mt-1 text-sm text-muted-foreground'>
+            The classic app stays the main one until this is finished and reviewed. These are still only in the classic app, and move here next:
+          </p>
           <ul className='mt-3 flex flex-col gap-1 text-sm'>
             {CLASSIC.map((c) => <li key={c}>{c}</li>)}
           </ul>
           <a href='../' className='mt-4 inline-flex h-10 items-center gap-1.5 rounded-full bg-foreground px-4 text-sm font-bold text-background'>
-            Open the classic app <ExternalLink className='size-4' aria-hidden='true' />
+            Back to the classic app <ExternalLink className='size-4' aria-hidden='true' />
           </a>
         </section>
       </Main>

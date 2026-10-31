@@ -714,6 +714,14 @@
   .brand-date{font-size:12.5px; color:var(--ink-faint);}
   .brand h1{font-size:21px; letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .me-btn{width:36px; height:36px; border:none; background:var(--surface-2); color:var(--ink);}
+  /* the link to the new app while it's in beta */
+  .beta-btn{margin-left:auto; align-self:center; flex:none; display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 6px 0 12px;
+    border-radius:999px; background:var(--accent-wash); color:var(--accent-strong); font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap;}
+  .beta-btn span{font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--accent); color:var(--accent-ink); border-radius:999px; padding:3px 7px;}
+  .beta-btn:hover{background:#3a2c18;}
+  .beta-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .beta-btn + .me-btn{margin-left:0;}
   /* bottom tab bar with icons */
   nav.tabs{position:fixed; left:0; right:0; bottom:0; z-index:30; justify-content:space-around; gap:0; overflow:visible;
     background:rgba(8,9,11,.94); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border-top:1px solid var(--line);
@@ -850,6 +858,7 @@
     <div class="brand">
       <svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/><path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg>
       <div class="brand-txt"><span class="brand-date" id="brandDate"></span><h1 id="brandHi">DeVig</h1></div>
+      <a class="beta-btn" href="v2/" title="Try the new DeVig (beta)">New DeVig <span>Beta</span></a>
       <button type="button" class="me-btn" id="meBtn" aria-pressed="false" aria-label="Your profile and settings" title="Profile and settings"></button>
     </div>
     <nav class="tabs" role="tablist">
