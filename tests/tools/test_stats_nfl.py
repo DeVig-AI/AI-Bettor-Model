@@ -62,6 +62,11 @@ class StatsNFL(unittest.TestCase):
         for y in (2025, 2026):
             stat_rows(y).to_csv(os.path.join(self.cache, f"nfl_player_{y}.csv"), index=False)
             team_rows(y).to_csv(os.path.join(self.cache, f"nfl_team_{y}.csv"), index=False)
+        # rosters: the QB changed numbers this season; the backer has no ESPN id (nflverse leaves some blank)
+        for y, n in ((2025, 9), (2026, 15)):
+            pd.DataFrame([{"gsis_id": "KC-qb", "jersey_number": n, "espn_id": 3139477, "week": 1},
+                          {"gsis_id": "KC-lb", "jersey_number": 54, "espn_id": None, "week": 1}]
+                         ).to_csv(os.path.join(self.cache, f"nfl_roster_{y}.csv"), index=False)
         F.build(NOW, self.cache)
         self.idx = json.load(open(os.path.join(F.OUT, "index.json")))
         self.kc = json.load(open(os.path.join(F.OUT, "team_KC.json")))
@@ -85,6 +90,13 @@ class StatsNFL(unittest.TestCase):
         self.assertEqual(qb["log"][0][:6], ["2026-09-13", "BUF", "H", 20, 30, 250])
         self.assertEqual(qb["log"][0][-2:], ["R", 2027])
         self.assertEqual(qb["log"][-1][-2:], ["R", 2026])                       # the 2025 season
+
+    def test_jersey_numbers_and_espn_ids(self):
+        qb, lb = self.kc["players"]
+        self.assertEqual((qb["num"], qb["espn"]), (15, 3139477))               # this season's number wins
+        self.assertEqual(lb["num"], 54)
+        self.assertNotIn("espn", lb)
+        self.assertNotIn("num", json.load(open(os.path.join(F.OUT, "team_BUF.json")))["players"][0])   # not on a roster
 
 
 if __name__ == "__main__":

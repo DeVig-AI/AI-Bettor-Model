@@ -196,6 +196,9 @@ def build(now, cache):
                    for r in x.itertuples()][::-1]
             pl = {"id": int(pid), "name": latest.athlete_display_name, "pos": latest.athlete_position_abbreviation
                   if isinstance(latest.athlete_position_abbreviation, str) else "", "this": this, "last": last, "log": log}
+            shirt = pd.to_numeric(getattr(latest, "athlete_jersey", None), errors="coerce")   # his latest game's number
+            if shirt == shirt and shirt is not None:
+                pl["num"] = int(shirt)
             if this or gp_this.get(latest.team, 0) < S.PRIOR_GAMES:   # gone since last season: off the roster by game 10
                 roster[latest.team].append(pl)
             cur = this or last or {}

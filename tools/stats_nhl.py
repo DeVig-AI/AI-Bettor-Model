@@ -101,6 +101,18 @@ def results(start):
     return out
 
 
+def sweaters():
+    """{player id: sweater number} from each team's current NHL roster (empty when the API can't be read)."""
+    out = {}
+    for team in sorted(TEAMS):
+        d = get(f"/roster/{API_CODE.get(team, team)}/current") or {}
+        for grp in ("forwards", "defensemen", "goalies"):
+            for p in d.get(grp) or []:
+                if p.get("id") is not None and p.get("sweaterNumber") is not None:
+                    out[int(p["id"])] = int(p["sweaterNumber"])
+    return out
+
+
 def skaters(start):
     path = os.path.join(DATA, f"player_games_{start}.csv.gz")
     if not os.path.exists(path):
@@ -207,6 +219,7 @@ def build(now, fetch_results=results):
 
     players = pd.concat([d for d in sk.values() if len(d)], ignore_index=True) if any(len(d) for d in sk.values()) else pd.DataFrame()
     roster, search = {k: [] for k in TEAMS}, []
+    shirts = sweaters() if len(players) else {}
     if len(players):
         players = players.sort_values(["game_date", "game_id"])
         for pid, x in players.groupby("player_id"):
@@ -216,6 +229,8 @@ def build(now, fetch_results=results):
                     int(r.sog), int(r.ppg), TYPES[int(r.game_type)], int(r.season)] for r in x.itertuples()][::-1]
             pl = {"id": int(pid), "name": latest.full, "pos": latest.position if isinstance(latest.position, str) else "",
                   "this": this, "last": last, "log": log}
+            if int(pid) in shirts:
+                pl["num"] = shirts[int(pid)]
             if this or gp_this.get(latest.team, 0) < S.PRIOR_GAMES:
                 roster[latest.team].append(pl)
             cur = this or last or {}

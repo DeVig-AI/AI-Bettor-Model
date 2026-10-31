@@ -21,7 +21,7 @@ import stats_common as S  # noqa: E402
 OUT = os.path.join(os.path.dirname(__file__), "..", "stats", "nfl")
 REL = "https://github.com/nflverse/nflverse-data/releases/download/"
 URLS = {"games": REL + "schedules/games.csv", "player": REL + "stats_player/stats_player_week_{y}.csv",
-        "team": REL + "stats_team/stats_team_week_{y}.csv"}
+        "team": REL + "stats_team/stats_team_week_{y}.csv", "roster": REL + "rosters/roster_{y}.csv"}
 PRIOR = 4                                       # a 17-game season: last season's rating counts as 4 games
 OFFENSE, DEFENSE = ["QB", "RB", "WR", "TE"], ["DL", "LB", "DB"]   # nflverse position groups, in roster order
 GROUPS = set(OFFENSE + DEFENSE)
@@ -203,6 +203,24 @@ def load_players(cache, y, sched):
     return p
 
 
+def jerseys(cache, years):
+    """{gsis id: (jersey number or None, ESPN id or None)} from nflverse's rosters, the latest season and week winning.
+    The app draws the number on a jersey, and an ESPN id lets signed-in accounts see the player's photo."""
+    out = {}
+    for y in years:                             # oldest first, so the latest season overwrites
+        path = fetch("roster", cache, y)
+        if not path:
+            continue
+        r = pd.read_csv(path, low_memory=False)
+        if "week" in r:
+            r = r.sort_values("week")
+        for x in r.itertuples():
+            if isinstance(x.gsis_id, str):
+                n, e = (pd.to_numeric(getattr(x, c, None), errors="coerce") for c in ("jersey_number", "espn_id"))
+                out[x.gsis_id] = (int(n) if n == n and n is not None else None, int(e) if e == e and e is not None else None)
+    return out
+
+
 def build(now, cache):
     y = season_of(now)
     sched = pd.read_csv(fetch("games", cache), low_memory=False)
@@ -226,6 +244,7 @@ def build(now, cache):
     frames = [d for d in (load_players(cache, y - 1, sched), load_players(cache, y, sched)) if len(d)]
     players = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
     roster, search = {k: [] for k in TEAMS}, []
+    shirts = jerseys(cache, (y - 1, y))
     if len(players):
         players = players.sort_values(["gameday", "game_id"])
         for pid, x in players.groupby("player_id"):
@@ -236,6 +255,11 @@ def build(now, cache):
                    + [TYPES.get(r.game_type, "R"), int(r.season)] for r in x.itertuples()][::-1]
             pl = {"id": str(pid), "name": latest.player_display_name, "pos": latest.position if isinstance(latest.position, str) else "",
                   "grp": grp, "this": this, "last": last, "log": log}
+            n, espn = shirts.get(str(pid), (None, None))
+            if n is not None:
+                pl["num"] = n
+            if espn is not None:
+                pl["espn"] = espn
             if this or gp.get(latest.team, 0) < PRIOR:
                 roster[latest.team].append(pl)
             cur = this or last or {}
