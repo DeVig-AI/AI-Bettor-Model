@@ -450,6 +450,8 @@ def main(argv=None):
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
     a = ap.parse_args(argv)
     C.use(a.sport)
+    if a.cmd != "review":                            # D1b: a suspended chamber spends no exam and logs no paper picks
+        C.refuse_if_suspended()
     {"review": review, "exam-register": exam_register, "exam-run": exam_run, "paper": paper}[a.cmd]()
     return 0
 

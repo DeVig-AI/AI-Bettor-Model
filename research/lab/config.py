@@ -1,4 +1,4 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v13: Part B NFL,
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v14: Part B NFL,
 Part C college football, Part D NBA / NHL / MLB); the Constitution wins if they ever disagree.
 
 The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB") switches every
@@ -8,7 +8,7 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v13"
+CONSTITUTION_VERSION = "v14"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -66,6 +66,7 @@ LESSONS_MD = None
 STOP_MIN_PICKS = 40
 STOP_AFTER_WEEK = 9
 STOP_Z = 1.6449                                # 90% two-sided Wilson interval
+SUSPENDED = None                # D1b (v14): a reason string = this sport's chamber does not run
 
 GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 PBP_URL = "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz"
@@ -146,6 +147,40 @@ _NHL = _part_d("NHL", "nhl", ("moneyline", "total"), 800, 16, "nhl_archive_10Y.j
                "399b65039c909907011827907285ede97982b3ce89e6224c323c5031c2885168", "NHL")
 _MLB = _part_d("MLB", "mlb", ("moneyline", "total"), 1500, 14, "mlb_archive_10Y.json",
                "ee4904dee0ee1474e7ac75697cea2c28f0084e5fb576553e48627e4cf90dd77d", "MLB")
+# D1b (v14): the MLB archive pairs teams that did not play each other (0 of 2011-2020's rows are real matchups), so the
+# MLB chamber is suspended: no fetch, search, lab run or exam until a later version gives it another source.
+_MLB["SUSPENDED"] = ("MLB is suspended (Constitution v14 D1b): the pinned archive's MLB rows pair teams that did not "
+                     "play each other, so no MLB result can be measured on it.")
+
+# D1a (v14): fingerprints of the box scores built from sportsdataverse for each lab season (sdv_data.season_fingerprint:
+# the date-fixed game keys, the team box rows and, NHL, the goalie rows). The sealed season is never fingerprinted here.
+SDV_SHA = {
+    "NBA": {
+        2011: "9f5c6e019e3c73e936634e248235b719259a17c296ecaba3c7f13c87baaee8dc",
+        2012: "f9a7a39d5fbcea8dadeceeb5dc50f234a5e00417a49c29715c9eb95223e5b87b",
+        2013: "27607ee77c69ad21fb224ee0c403954b2dce6623456b7a4db72e7e60d3379896",
+        2014: "03d5c79417c62dfa8dfc58120af70373835fce53f6e1a3cf17765f29366b73fd",
+        2015: "db1b9299b5f9e6c0a75ed837e132cf827d75c19251439a74f6ef0eb6440aa3d3",
+        2016: "551ac6a35c22beff3d1c0ad145381163f486ef6520b1b84daa2637504fcf7432",
+        2017: "1bb8e5650347408f3d3f9be8dde30dbf33b2ff1bc6edefb9ee3454ae05a0a234",
+        2018: "ea707b6dd4eb0dc7176c04874962d2760216aec4b9e329e595dad970d9570fa5",
+        2019: "c6de7b36e1b28dad21a0fb68c71162b7b1fec84ded97591edf90831851ad6efa",
+        2020: "5c29d8b5b1793960bf5da1338bb1a3062ffae9b7df9c0a5ab11602580f099c62",
+    },
+    "NHL": {
+        2011: "bc626b33bfdac79a274468236994fd86e68739d49691078ff10a198ad1878454",
+        2012: "896668afa6fffe46313088b216ba0c7aee1c1edcbefff52e8fadc8ebfdd05880",
+        2013: "4d4a92cb10e21e07c4bf7224dfe7190f772073cb837c741d1ba4930cbb46275e",
+        2014: "25cf3eafb3f4d486789d7b32f52d60734f1eb8d81ce51330c6aec66a024e61e3",
+        2015: "91b60a149659a84e8ddce088a76cf9c39e45f104cb135ada15d01b106acb6237",
+        2016: "93abc22adb6944c3c6d6f00f4b4baf6f17a0df903dd92783ffeaa7d48d358ce9",
+        2017: "db3e7d51dc3e9d086a3355327658187322e5ae5c4d78e5c330218ad3658b6eb1",
+        2018: "c7f1de97c68e4df13f95e19da1d8e0f89beba4be230d3f96017b3c036f2861f8",
+        2019: "66d3586e6e8369ce7b760c912b973db1399a0ea40b5c67f008726ad6425d7371",
+        2020: "86b811cf60ae45fbe6916e2f9298422f10ebe96bad0673173c0d93fadf9c6334",
+    },
+}
+
 _PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB}
 
 
@@ -157,6 +192,13 @@ def use(sport):
     globals().update(_NFL)
     globals().update(_PARTS.get(sport, {}))
     return sport
+
+
+def refuse_if_suspended():
+    """Exit (status 0: nothing to do, not an error) when the sport in use is suspended (D1b)."""
+    if SUSPENDED:
+        print(SUSPENDED)
+        raise SystemExit(0)
 
 
 def dir_for(sport):

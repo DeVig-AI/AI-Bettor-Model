@@ -2,10 +2,34 @@
  "rule": "CHAMPION_CHALLENGER_V1_PREREG.md",
  "note": "Current state only; every change is appended to live/champions/DECISIONS.csv. Written by tools/champion_review.py.",
  "slots": {
-  "NBA.ml": {"champion": "devig", "since": "2026-10-19T00:00:00Z", "app_support": true, "trial": null, "retired": []},
-  "NFL.ml": {"champion": "devig2", "since": "2026-10-22T23:00:00Z", "app_support": false, "trial": null, "retired": [],
-             "hold": "Model 2.0's own review (nfl/app_model.json, review 2026-11-04); not checked until it is recorded"},
-  "MLB.ml": {"champion": "devig", "since": "2026-10-19T00:00:00Z", "app_support": false, "trial": null, "retired": []},
-  "CFB.ml": {"champion": "market", "since": "2026-10-19T00:00:00Z", "app_support": false, "trial": null, "retired": []}
+  "NBA.ml": {
+   "champion": "devig",
+   "since": "2026-10-19T00:00:00Z",
+   "app_support": true,
+   "trial": null,
+   "retired": []
+  },
+  "NFL.ml": {
+   "champion": "devig2",
+   "since": "2026-10-22T23:00:00Z",
+   "app_support": false,
+   "trial": null,
+   "retired": [],
+   "hold": "Model 2.0's own review (nfl/app_model.json, review 2026-11-04); not checked until it is recorded"
+  },
+  "MLB.ml": {
+   "champion": "devig",
+   "since": "2026-10-19T00:00:00Z",
+   "app_support": false,
+   "trial": null,
+   "retired": []
+  },
+  "CFB.ml": {
+   "champion": "market",
+   "since": "2026-10-19T00:00:00Z",
+   "app_support": false,
+   "trial": null,
+   "retired": []
+  }
  }
 }

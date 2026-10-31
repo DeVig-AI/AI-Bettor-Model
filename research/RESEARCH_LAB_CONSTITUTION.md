@@ -1,8 +1,9 @@
-# DeVig Research Lab -- Constitution v13
+# DeVig Research Lab -- Constitution v14
 
-Version: **v13** · adopted 2026-10-30 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
-Part D (NBA, NHL, MLB) · replaces v12 (kept unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v12.md`; v11
-to v1 alongside it; what changed: sections "Changes from v1" to "Changes from v12" at the end)
+Version: **v14** · adopted 2026-10-31 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
+Part D (NBA, NHL; MLB suspended, D1b) · replaces v13 (kept unchanged at
+`research/constitution/RESEARCH_LAB_CONSTITUTION_v13.md`; v12 to v1 alongside it; what changed: sections "Changes from
+v1" to "Changes from v13" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -116,7 +117,12 @@ result, and it will be reported exactly like a success: every number, plainly.
    defense), rest, bye, short week, travel and divisional games, quarterback changes and, since v12, **injuries**
    (NFL only, spread only): home minus away of last game's quarterback unavailable, regular starters unavailable and
    regular starters questionable, from the week's official injury report and roster (B1), all published before
-   kickoff. The code rejects any other field, so weather, dates, kickoff times, prices and situational spots cannot be
+   kickoff. **Since v14, Part D (D1a):** NBA team signals may also read the box-score columns possessions, field
+   goals and threes (attempted and made), free throws (attempted and made), offensive and defensive rebounds,
+   turnovers and assists; NHL team signals may read shots, even-strength shots, power-play shots and power-play goals;
+   and the NHL has one more kind, **goalie**: the starting goalie's earlier save percentage above the league's (rolling,
+   shrunk toward the league), home minus away (moneyline) or summed (total). The starter is the goalie the box score
+   marks as starting, who is known before the puck drops, as the closing line is. The code rejects any other field, so weather, dates, kickoff times, prices and situational spots cannot be
    expressed (A3.5 still applies to what may be proposed). Each round the search tests every signal alone on each of
    the menu's `signal_bases`, then pairs and trios of the signals with the best search t so far; a signal's weights
    are fit once on the training seasons' residuals (actual − base forecast). **Exception (v12):** the NFL training
@@ -388,7 +394,8 @@ was scored. This is stated so the split below can be judged knowing it.
 **Expected result, stated up front:** closing lines in these sports are very good forecasts, and the models this data
 allows know only scores, schedules and the lines themselves (no injuries, lineups or starting pitchers: MLB models
 here cannot see who is pitching, which is the most important input to an MLB price). The most likely outcome for all
-three sports is that **no candidate passes the sealed exam**, and quite possibly none passes the lab.
+three sports is that **no candidate passes the sealed exam**, and quite possibly none passes the lab. Since v14 NBA and
+NHL models may also read box scores and the NHL's starting goalie (D1a); the expected result is the same.
 
 ### D1. Data
 - **Source:** the public archive of closing lines and final scores in the GitHub repository
@@ -421,6 +428,43 @@ three sports is that **no candidate passes the sealed exam**, and quite possibly
   and derived outputs (results, ledger, verdicts, reports). The sealed season is read only by the Inspector General's
   exam, in memory, and never written anywhere.
 
+### D1a. Box scores and dates (NBA and NHL, since v14)
+- **Source:** the public data releases of `github.com/sportsdataverse/sportsdataverse-data` (box scores from ESPN and
+  the NHL, republished by the sportsdataverse project): NBA `espn_nba_team_boxscores/team_box_<Y>.csv`; NHL
+  `nhl_schedules/nhl_schedule_<Y>.csv` and `nhl_goalie_boxscores/goalie_box_<Y>.csv`, where `<Y>` is the year the
+  season ends (lab season S reads file S + 1). Read by `research/lab/sdv_data.py`; nothing else from those files is kept.
+- **Matching:** each archive game (D1) is matched to the sportsdataverse game with the same home and away team on the
+  archive's date, one day either side; failing that, **one year later**, one day either side; each sportsdataverse
+  game is matched once. A game matched one year later takes sportsdataverse's date: the archive dates the NBA and NHL
+  2020 summer "bubble" games a year early (as 2019) and the NHL's 2020-21 season (January to July 2021) a year early,
+  which put those games, in date order, before or among earlier seasons' games, so later results reached earlier
+  forecasts. Every other game keeps the archive's date (one-day differences are time-zone conventions); so the 2011-2018
+  seasons, and with them every search season, are exactly as they were. An unmatched game keeps its date and has no
+  box score; its result and lines are used as before.
+- **Columns kept:** NBA, per team per game: possessions (field-goal attempts − offensive rebounds + turnovers + 0.44 ×
+  free-throw attempts), field goals and threes attempted and made, free throws attempted and made, offensive and
+  defensive rebounds, turnovers (the players' count, complete in every season) and assists. NHL, per team per game:
+  shots on goal, even-strength shots, power-play shots and power-play goals (from the other team's goalies' lines);
+  per goalie per game: the starter flag, shots against and saves. They become columns of the lab's team rows and, for
+  the NHL, a goalie file; they are read only through signals (A3.3e).
+- **Pinned:** the fingerprint of each lab season's derived rows (2011-2020, `config.SDV_SHA`, computed by
+  `sdv_data.season_fingerprint`) is fixed; the lab refuses to run on any other, and a different file needs a new
+  version. The cache is built each run and never committed, as D1. The sealed season's box scores are read only by the
+  Inspector General's exam, in memory; their fingerprint is logged there, never fixed in advance.
+- **What was seen before this section was written:** per season, how many archive games match a sportsdataverse game,
+  which columns the files have and how often each is filled, the archive's misdated games, and the spread of each new
+  signal's input across games (to check that it is computed). No model with a box-score or goalie signal was scored
+  on any season, and no signal was compared with a result.
+
+### D1b. MLB is suspended (since v14)
+The archive's MLB file (D1) pairs teams that did not play each other: checked against MLB's own schedule, **none** of
+its 2011-2020 rows is a real matchup (each team's own score is real, its opponent is another game's team), and many of
+its moneyline pairs are impossible (both teams favoured), which is why D1's check dropped most of them. No MLB result
+can be measured on it. So, from v14: no MLB cache is built and no MLB search round, lab run, exam or paper pick runs
+(the code exits, and the workflow no longer starts MLB). Everything MLB recorded under v11-v13 (search scores, one
+attempt, its verdict) stays as it is, marked by this section as measured on invalid data. The sealed 2021 MLB exam is
+unspent and its budget (3) is unchanged. Restarting MLB needs a later version with another source of closing lines.
+
 ### D2. Season split (the same for all three sports)
 | Use | Seasons | Notes |
 |---|---|---|
@@ -429,7 +473,7 @@ three sports is that **no candidate passes the sealed exam**, and quite possibly
 | Search | 2014, 2015, 2016 | the search (A3.3c) scores configurations here; each season is a search sub-period |
 | Gate 1 | 2017 | confirmation |
 | Gate 2 | 2018 | confirmation |
-| Gate 3 | 2019 | confirmation (NBA and NHL: the season paused in March 2020 and finished in a bubble) |
+| Gate 3 | 2019 | confirmation (NBA and NHL: the season paused in March 2020 and finished in a bubble; since v14 its bubble games carry their real dates, D1a) |
 | (played through) | 2020 | COVID seasons (empty or limited arenas, short MLB season): ratings update through it, never scored, never fit on, never searched on |
 | Pooled | 2017-2019 | the pooled test of A7 |
 | **Sealed** | **2021** | the exam (A8); not in the lab |
@@ -492,7 +536,8 @@ named in D2 is reported. Lessons (A10) are exploratory.
 
 ## Part E -- reserved
 
-Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL and MLB.
+Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL and MLB (MLB
+suspended since v14, D1b).
 
 ---
 
@@ -676,3 +721,24 @@ and be kept only if it stays better:
 Unchanged: every scoring, correction, gate, lab-pass, exam, promotion and stop rule (A1.4 is not touched: no test is
 loosened; a model still has to pass the exam to be promoted, and then has to beat the app's model live as well);
 Parts B, C and D.
+
+## Changes from v13 (2026-10-31)
+
+The owner asked for new NBA and NHL signals from sportsdataverse's public box scores. Checking that data against the
+lab's archive found two problems, which v14 also handles:
+1. **Box scores and the NHL's starting goalie (D1a, A3.3e):** NBA and NHL team signals may read box-score columns, and
+   the NHL gets a goalie signal (the starter's earlier save percentage). Pinned by fingerprint per season; built each
+   run, never committed. Seeded with 13 NBA signals (efficiency, the four factors, pace) and 8 NHL signals (two
+   starting-goalie reads, shots, even-strength shots, shooting, power play) in `research/<sport>/search/SIGNALS.yaml`,
+   tested on each market's best single model so far (the menus' `signal_bases`), weights fit on 2012-2013 only.
+2. **Dates (D1a):** the archive dates the 2020 bubble games and the NHL's 2020-21 season a year early, which let 2020
+   and 2021 results reach earlier forecasts, including the 2019 gate. Those games now carry their real dates. Only the
+   2019 and 2020 seasons change; 2011-2018 (training and every search season) are unchanged. Said plainly: the two NBA
+   attempts already in the ledger (v11, v12) were confirmed on the old 2019 gate; per A1.2 their rows and verdicts
+   stand as recorded, and this note is their caveat. No NHL attempt had run.
+3. **MLB suspended (D1b):** the archive's MLB rows are not real games. MLB's search scores and its one attempt stay
+   recorded but measured on invalid data; its sealed 2021 exam stays unspent.
+
+Unchanged: every scoring, correction, gate, lab-pass, exam, promotion and stop rule; the shortlist (t ≥ 2.5, at most 2
+per market in any 7 days), so the attempt rate does not rise; the season split; Parts B and C. No rule is loosened
+(A1.4): new inputs are searched under the same bars, and a sport is stopped, not eased.

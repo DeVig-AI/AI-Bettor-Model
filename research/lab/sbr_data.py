@@ -11,6 +11,11 @@ each file's SHA-256 in config.py), seasons 2011-2021. Two ways in, kept apart on
 Only the fields D1 names are kept: date, teams, final scores, the closing home spread (NBA), the closing total and the
 closing moneylines (NHL, MLB), each checked before use. A value failing its check is "no closing line" for that market;
 the game keeps its result and still updates ratings.
+
+Since v14 (D1a), NBA and NHL also get box scores from sportsdataverse (sdv_data.py): each archive game is matched to
+its sportsdataverse game, takes that game's date (the archive's COVID-era dates are a year early), and its team rows
+gain box-score columns; NHL also gets goalie rows (goalie_games.csv). The derived files are pinned by fingerprint per
+season (config.SDV_SHA). MLB is suspended (D1b): its archive rows pair teams that did not play each other.
 """
 import datetime as dt
 import hashlib
@@ -25,10 +30,12 @@ import numpy as np
 import pandas as pd
 
 from . import config as C
+from . import sdv_data as SDV
 
 GAME_COLS = ["game_id", "season", "game_type", "week", "gameday", "gametime", "away_team", "home_team", "away_score",
              "home_score", "location", "away_rest", "home_rest", "spread_line", "total_line", "ml_line"]
 TEAM_COLS = ["season", "game_id", "team", "points", "plays", "epa"]    # no play-by-play: plays and epa are empty
+BOX_FILES = SDV.raw              # (sport, lab season) -> sportsdataverse files; tests replace it (None = no box scores)
 UA = "devig-research-lab/1.0 (personal research; read-only)"
 TOTAL_RANGE = {"NBA": (150, 280), "NHL": (4, 8), "MLB": (4, 16)}       # D1
 MAX_SPREAD = 25
@@ -99,8 +106,10 @@ def ml_line(home_ml, away_ml):
     return 100 * ph / (ph + pa)
 
 
-def parse(rows, sport):
-    """(games, counts): the archive's rows as the lab's schedule, with each D1 check applied and counted."""
+def parse(rows, sport, fix=None):
+    """(games, counts): the archive's rows as the lab's schedule, with each D1 check applied and counted. `fix`, when
+    given, takes the games (before game ids, weeks and rest are set) and returns them with D1a's dates and an sdv_id
+    column; the result then keeps sdv_id."""
     counts = {"rows": len(rows), "no_date_or_team": 0, "duplicate": 0, "no_score": 0}
     lo, hi = TOTAL_RANGE[sport]
     out, seen = [], set()
@@ -137,6 +146,10 @@ def parse(rows, sport):
         out.append({"season": int(season), "gameday": day.isoformat(), "home_team": h, "away_team": a,
                     "home_score": hs, "away_score": as_, "spread_line": spread, "total_line": total, "ml_line": ml})
     g = pd.DataFrame(out)
+    if fix is not None:
+        g = fix(g)
+        counts["box_matched"] = int(g.sdv_id.notna().sum())
+        counts["box_unmatched"] = int(g.sdv_id.isna().sum())
     g = g.sort_values(["gameday", "home_team", "away_team"], kind="stable").reset_index(drop=True)
     g["game_id"] = [f"{s}_{d.replace('-', '')}_{a}_{h}".replace(" ", "") for s, d, a, h in
                     zip(g.season, g.gameday, g.away_team, g.home_team)]
@@ -158,21 +171,55 @@ def parse(rows, sport):
         if m in C.MARKETS:
             counts[f"{m}_lines"] = int((played & g[col].notna()).sum())
             counts[f"{m}_no_line"] = int((played & g[col].isna()).sum())
-    return g[GAME_COLS], counts
+    return g[GAME_COLS + (["sdv_id"] if fix is not None else [])], counts
 
 
-def team_games(games):
-    """One row per team per played game: its points (goals, runs). The rating families read points from the schedule."""
+def team_games(games, box=None):
+    """One row per team per played game: its points (goals, runs), plus D1a's box-score columns when `box` (rows of
+    season, game_id, team, box columns) is given; a game with no box row has them empty. The rating families read
+    points from the schedule."""
     p = games[games.home_score.notna() & games.away_score.notna()]
     rows = pd.concat([
         pd.DataFrame({"season": p.season, "game_id": p.game_id, "team": p.home_team, "points": p.home_score}),
         pd.DataFrame({"season": p.season, "game_id": p.game_id, "team": p.away_team, "points": p.away_score})])
     rows["plays"] = rows["epa"] = np.nan              # the points-only models never read them (pace off)
-    return rows.sort_values(["season", "game_id", "team"]).reset_index(drop=True)[TEAM_COLS]
+    cols = list(TEAM_COLS)
+    if box is not None:
+        extra = [c for c in box.columns if c not in ("season", "game_id", "team")]
+        rows = rows.merge(box.drop(columns="season"), on=["game_id", "team"], how="left")
+        cols += extra
+    return rows.sort_values(["season", "game_id", "team"]).reset_index(drop=True)[cols]
+
+
+def box_fix(sport, files_by_season):
+    """parse's `fix` for D1a: each season's archive games matched to that season's sportsdataverse games."""
+    def fix(g):
+        parts = []
+        for s, x in g.groupby("season", sort=True):
+            if s in files_by_season:
+                parts.append(SDV.season(sport, x, files_by_season[s]))
+            else:
+                parts.append(x.assign(sdv_id=None))
+        return pd.concat(parts).sort_index()
+    return fix
+
+
+def load_box(sport, seasons, rows):
+    """(games, counts, team box rows, goalie rows) for `seasons` with D1a applied, or (games, counts, None, None) when
+    the sport has no box scores (MLB) or BOX_FILES is None (tests)."""
+    if sport not in SDV.FILES or BOX_FILES is None:
+        g, counts = parse(rows, sport)
+        return g, counts, None, None
+    files = {s: BOX_FILES(sport, s) for s in seasons}
+    g, counts = parse(rows, sport, fix=box_fix(sport, files))
+    g = g[g.season.isin(list(seasons))].reset_index(drop=True)
+    teams, goalies = SDV.box_frames(sport, g, files)
+    return g, counts, teams, goalies
 
 
 def _paths(data_dir):
-    return {k: os.path.join(data_dir, f"{k}.csv") for k in ("games", "team_games")}
+    names = ("games", "team_games") + (("goalie_games",) if C.SPORT == "NHL" else ())
+    return {k: os.path.join(data_dir, f"{k}.csv") for k in names}
 
 
 def sha_file(path):
@@ -188,10 +235,16 @@ def fetch_lab_cache(data_dir=None, log=print):
     os.makedirs(data_dir, exist_ok=True)
     P = _paths(data_dir)
     man_path = os.path.join(data_dir, "MANIFEST.json")
-    games, counts = parse(download(), C.SPORT)
+    C.refuse_if_suspended()
+    seasons = list(range(C.FIRST_SEASON, C.LAB_MAX_SEASON + 1))
+    games, counts, box, goalies = load_box(C.SPORT, seasons, download())
     games = games[(games.season >= C.FIRST_SEASON) & (games.season <= C.LAB_MAX_SEASON)].reset_index(drop=True)
-    games.to_csv(P["games"], index=False)
-    team_games(games).to_csv(P["team_games"], index=False)
+    if box is not None and BOX_FILES is SDV.raw:      # the real files: their fingerprints must be D1a's
+        SDV.check_pinned(C.SPORT, seasons, games, box, goalies)
+    games[GAME_COLS].to_csv(P["games"], index=False)
+    team_games(games, box).to_csv(P["team_games"], index=False)
+    if "goalie_games" in P:
+        (goalies if goalies is not None else pd.DataFrame(columns=SDV.GOALIE_COLS)).to_csv(P["goalie_games"], index=False)
     sha = {k: sha_file(p) for k, p in P.items()}      # every ledger row carries these (data_sha256)
     by_season = {int(s): int(n) for s, n in games.groupby("season").size().items()}
     lines = {}
@@ -202,6 +255,9 @@ def fetch_lab_cache(data_dir=None, log=print):
     manifest = {"source": C.SBR_URL.format(name=C.SBR_FILE), "commit": C.SBR_COMMIT, "file_sha256": C.SBR_SHA,
                 "seasons": [C.FIRST_SEASON, C.LAB_MAX_SEASON], "sha256": sha, "games_by_season": by_season,
                 "lines_by_season": lines, "checks_whole_file": counts,
+                "box_scores": (None if box is None else
+                               {"source": SDV.BASE, "files": SDV.FILES[C.SPORT], "pinned": C.SDV_SHA.get(C.SPORT, {}),
+                                "team_rows_by_season": {int(s): int(n) for s, n in box.groupby("season").size().items()}}),
                 "note": f"Lab cache (Constitution D1), seasons {C.FIRST_SEASON}-{C.LAB_MAX_SEASON} only. The csv files "
                         f"are never committed; {C.SEALED_SEASON} is sealed and never stored."}
     with open(man_path, "w") as f:
@@ -251,10 +307,17 @@ def blocked_markets(data):
 
 
 def fetch_live(seasons, log=print):
-    """Inspector General only: the archive's games for `seasons` (the sealed 2021), straight into memory."""
-    games, _ = parse(download(), C.SPORT)
+    """Inspector General only: the archive's games for `seasons` (the sealed 2021), straight into memory, with D1a's
+    box scores (not fingerprint-pinned: the sealed season is never read before its exam; their fingerprint is logged)."""
+    C.refuse_if_suspended()
+    games, _, box, goalies = load_box(C.SPORT, list(seasons), download())
     games = games[games.season.isin(list(seasons))].reset_index(drop=True)
-    return {"games": games, "team_games": team_games(games)}
+    out = {"games": games[GAME_COLS], "team_games": team_games(games, box)}
+    if box is not None:
+        out["goalie_games"] = goalies
+        log(f"{C.SPORT} sealed box scores: " + ", ".join(
+            f"{s} {SDV.season_fingerprint(C.SPORT, s, games, box, goalies)[:12]}" for s in seasons))
+    return out
 
 
 if __name__ == "__main__":
@@ -264,6 +327,7 @@ if __name__ == "__main__":
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NBA"))
     a = ap.parse_args()
     C.use(a.sport)
+    C.refuse_if_suspended()                          # D1b
     if a.cmd == "fetch":
         fetch_lab_cache()
     else:

@@ -1,4 +1,4 @@
-# Research Lab search (CFB) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c).
+# Research Lab search (CFB) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c; formula signals since v12).
 # Written by research/lab/search.py from search-season scores only; append-only, never edit.
 generations:
 - generation: 1
@@ -1566,4 +1566,498 @@ generations:
         league_window: 1600
         pace: true
         season_carry: 0.4375
+  signal_sets: 1
+- generation: 5
+  at: '2026-10-31T11:55:17Z'
+  round: 606
+  ladders:
+    carry:
+    - 0.775
+    - 0.8125
+    - 0.9062
+    - 0.9187
+    halflife:
+    - 31
+    - 34
+    hfa_pts:
+    - 1.062
+    - 1.188
+    - 1.375
+    k:
+    - 72
+    - 80
+    - 95
+    margin_cap:
+    - 50
+    - 54
+    market_blend:
+    - 0.00781
+    - 0.02344
+    - 0.03907
+    - 0.05469
+    mov_cap:
+    - 47
+    - 60
+    - 70
+    prior_w:
+    - 0.1875
+    - 0.2812
+    - 0.3438
+    season_carry:
+    - 0.4406
+    - 0.4468
+    - 0.4531
+  signals:
+  - id: off-ppa~c0.6~c0.8~c1~h3
+    kind: team
+    side: offense
+    num: &id017
+      epa: 1
+    den: plays
+    halflife: 3
+    carry: 1.0
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~c1 (half-life 3, carry 1): Automatic variant of off-ppa~c0.6~c0.8 (half-life
+      6, carry 1): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life 6,
+      carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~c1
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~c1~h12
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 12
+    carry: 1.0
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~c1 (half-life 12, carry 1): Automatic variant of off-ppa~c0.6~c0.8 (half-life
+      6, carry 1): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life 6,
+      carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~c1
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~c1~c0.8
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 6.0
+    carry: 0.8
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~c1 (half-life 6, carry 0.8): Automatic variant of off-ppa~c0.6~c0.8 (half-life
+      6, carry 1): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life 6,
+      carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~c1
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~h12~h6
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 6
+    carry: 0.8
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~h12 (half-life 6, carry 0.8): Automatic variant of off-ppa~c0.6~c0.8 (half-life
+      12, carry 0.8): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life
+      6, carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~h12~h24
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 24
+    carry: 0.8
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~h12 (half-life 24, carry 0.8): Automatic variant of off-ppa~c0.6~c0.8
+      (half-life 12, carry 0.8): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa
+      (half-life 6, carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~h12~c0.6
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 12.0
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~h12 (half-life 12, carry 0.6): Automatic variant of off-ppa~c0.6~c0.8
+      (half-life 12, carry 0.8): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa
+      (half-life 6, carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~h12
+    markets:
+    - spread
+    - total
+  - id: off-ppa~c0.6~c0.8~h12~c1
+    kind: team
+    side: offense
+    num: *id017
+    den: plays
+    halflife: 12.0
+    carry: 1.0
+    reason: 'Automatic variant of off-ppa~c0.6~c0.8~h12 (half-life 12, carry 1): Automatic variant of off-ppa~c0.6~c0.8 (half-life
+      12, carry 0.8): Automatic variant of off-ppa~c0.6 (half-life 6, carry 0.8): Automatic variant of off-ppa (half-life
+      6, carry 0.6): Offensive PPA per play: efficiency is steadier than points.'
+    variant_of: off-ppa~c0.6~c0.8~h12
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h3~c0.8~h2
+    kind: team
+    side: offense
+    num: &id018
+      points: 1
+    den: plays
+    halflife: 2
+    carry: 0.8
+    reason: 'Automatic variant of off-points-per-play~c0.6~h3~c0.8 (half-life 2, carry 0.8): Automatic variant of off-points-per-play~c0.6~h3
+      (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant
+      of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics):
+      college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6~h3~c0.8
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h3~c0.8~h6
+    kind: team
+    side: offense
+    num: *id018
+    den: plays
+    halflife: 6
+    carry: 0.8
+    reason: 'Automatic variant of off-points-per-play~c0.6~h3~c0.8 (half-life 6, carry 0.8): Automatic variant of off-points-per-play~c0.6~h3
+      (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant
+      of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics):
+      college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6~h3~c0.8
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h3~c0.8~c0.6
+    kind: team
+    side: offense
+    num: *id018
+    den: plays
+    halflife: 3.0
+    carry: 0.6
+    reason: 'Automatic variant of off-points-per-play~c0.6~h3~c0.8 (half-life 3, carry 0.6): Automatic variant of off-points-per-play~c0.6~h3
+      (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant
+      of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics):
+      college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6~h3~c0.8
+    markets:
+    - spread
+    - total
+  - id: off-points-per-play~c0.6~h3~c0.8~c1
+    kind: team
+    side: offense
+    num: *id018
+    den: plays
+    halflife: 3.0
+    carry: 1.0
+    reason: 'Automatic variant of off-points-per-play~c0.6~h3~c0.8 (half-life 3, carry 1): Automatic variant of off-points-per-play~c0.6~h3
+      (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant
+      of off-points-per-play (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics):
+      college tempos vary widely, so points per game overrate fast offenses and underrate slow ones.'
+    variant_of: off-points-per-play~c0.6~h3~c0.8
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h24~h12
+    kind: team
+    side: offense
+    num: &id019
+      epa: 1
+    den: plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h12~h24 (half-life 12, carry 0.4): Automatic variant of off-ppa~h12 (half-life 24,
+      carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than
+      points.'
+    variant_of: off-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h24~h48
+    kind: team
+    side: offense
+    num: *id019
+    den: plays
+    halflife: 48
+    carry: 0.4
+    reason: 'Automatic variant of off-ppa~h12~h24 (half-life 48, carry 0.4): Automatic variant of off-ppa~h12 (half-life 24,
+      carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than
+      points.'
+    variant_of: off-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h24~c0.2
+    kind: team
+    side: offense
+    num: *id019
+    den: plays
+    halflife: 24.0
+    carry: 0.2
+    reason: 'Automatic variant of off-ppa~h12~h24 (half-life 24, carry 0.2): Automatic variant of off-ppa~h12 (half-life 24,
+      carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than
+      points.'
+    variant_of: off-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-ppa~h12~h24~c0.6
+    kind: team
+    side: offense
+    num: *id019
+    den: plays
+    halflife: 24.0
+    carry: 0.6
+    reason: 'Automatic variant of off-ppa~h12~h24 (half-life 24, carry 0.6): Automatic variant of off-ppa~h12 (half-life 24,
+      carry 0.4): Automatic variant of off-ppa (half-life 12, carry 0.4): Offensive PPA per play: efficiency is steadier than
+      points.'
+    variant_of: off-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h12~h24~h12
+    kind: team
+    side: offense
+    num: &id020
+      comp_epa: 1
+    den: comp_plays
+    halflife: 12
+    carry: 0.4
+    reason: 'Automatic variant of off-comp-ppa~h12~h24 (half-life 12, carry 0.4): Automatic variant of off-comp-ppa~h12 (half-life
+      24, carry 0.4): Automatic variant of off-comp-ppa (half-life 12, carry 0.4): Offensive PPA per play with garbage time
+      removed: college blowouts are common, and plays against backups in a decided game say little about how good an offense
+      is.'
+    variant_of: off-comp-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h12~h24~h48
+    kind: team
+    side: offense
+    num: *id020
+    den: comp_plays
+    halflife: 48
+    carry: 0.4
+    reason: 'Automatic variant of off-comp-ppa~h12~h24 (half-life 48, carry 0.4): Automatic variant of off-comp-ppa~h12 (half-life
+      24, carry 0.4): Automatic variant of off-comp-ppa (half-life 12, carry 0.4): Offensive PPA per play with garbage time
+      removed: college blowouts are common, and plays against backups in a decided game say little about how good an offense
+      is.'
+    variant_of: off-comp-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h12~h24~c0.2
+    kind: team
+    side: offense
+    num: *id020
+    den: comp_plays
+    halflife: 24.0
+    carry: 0.2
+    reason: 'Automatic variant of off-comp-ppa~h12~h24 (half-life 24, carry 0.2): Automatic variant of off-comp-ppa~h12 (half-life
+      24, carry 0.4): Automatic variant of off-comp-ppa (half-life 12, carry 0.4): Offensive PPA per play with garbage time
+      removed: college blowouts are common, and plays against backups in a decided game say little about how good an offense
+      is.'
+    variant_of: off-comp-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: off-comp-ppa~h12~h24~c0.6
+    kind: team
+    side: offense
+    num: *id020
+    den: comp_plays
+    halflife: 24.0
+    carry: 0.6
+    reason: 'Automatic variant of off-comp-ppa~h12~h24 (half-life 24, carry 0.6): Automatic variant of off-comp-ppa~h12 (half-life
+      24, carry 0.4): Automatic variant of off-comp-ppa (half-life 12, carry 0.4): Offensive PPA per play with garbage time
+      removed: college blowouts are common, and plays against backups in a decided game say little about how good an offense
+      is.'
+    variant_of: off-comp-ppa~h12~h24
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.8~h3
+    kind: team
+    side: defense
+    num: &id021
+      points: 1
+    den: plays
+    halflife: 3
+    carry: 0.8
+    reason: 'Automatic variant of def-points-per-play~c0.6~c0.8 (half-life 3, carry 0.8): Automatic variant of def-points-per-play~c0.6
+      (half-life 6, carry 0.8): Automatic variant of def-points-per-play (half-life 6, carry 0.6): Points allowed per opponent
+      play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo
+      hands the opponent.'
+    variant_of: def-points-per-play~c0.6~c0.8
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.8~h12
+    kind: team
+    side: defense
+    num: *id021
+    den: plays
+    halflife: 12
+    carry: 0.8
+    reason: 'Automatic variant of def-points-per-play~c0.6~c0.8 (half-life 12, carry 0.8): Automatic variant of def-points-per-play~c0.6
+      (half-life 6, carry 0.8): Automatic variant of def-points-per-play (half-life 6, carry 0.6): Points allowed per opponent
+      play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo
+      hands the opponent.'
+    variant_of: def-points-per-play~c0.6~c0.8
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.8~c0.6
+    kind: team
+    side: defense
+    num: *id021
+    den: plays
+    halflife: 6.0
+    carry: 0.6
+    reason: 'Automatic variant of def-points-per-play~c0.6~c0.8 (half-life 6, carry 0.6): Automatic variant of def-points-per-play~c0.6
+      (half-life 6, carry 0.8): Automatic variant of def-points-per-play (half-life 6, carry 0.6): Points allowed per opponent
+      play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo
+      hands the opponent.'
+    variant_of: def-points-per-play~c0.6~c0.8
+    markets:
+    - spread
+    - total
+  - id: def-points-per-play~c0.6~c0.8~c1
+    kind: team
+    side: defense
+    num: *id021
+    den: plays
+    halflife: 6.0
+    carry: 1.0
+    reason: 'Automatic variant of def-points-per-play~c0.6~c0.8 (half-life 6, carry 1): Automatic variant of def-points-per-play~c0.6
+      (half-life 6, carry 0.8): Automatic variant of def-points-per-play (half-life 6, carry 0.6): Points allowed per opponent
+      play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense''s tempo
+      hands the opponent.'
+    variant_of: def-points-per-play~c0.6~c0.8
+    markets:
+    - spread
+    - total
+  - id: f-off-epa-per-comp_plays
+    kind: team
+    side: offense
+    num:
+      epa: 1
+    den: comp_plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): epa per comp_play (summed epa / comp_plays), by the team.
+      Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on search-season
+      scores and, if shortlisted, confirmation.'
+  - id: f-def-epa-per-comp_plays
+    kind: team
+    side: defense
+    num:
+      epa: 1
+    den: comp_plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): epa per comp_play (summed epa / comp_plays), allowed by the
+      team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on
+      search-season scores and, if shortlisted, confirmation.'
+  - id: f-off-comp_epa-per-plays
+    kind: team
+    side: offense
+    num:
+      comp_epa: 1
+    den: plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): comp_epa per play (summed comp_epa / plays), by the team.
+      Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on search-season
+      scores and, if shortlisted, confirmation.'
+  - id: f-def-comp_epa-per-plays
+    kind: team
+    side: defense
+    num:
+      comp_epa: 1
+    den: plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): comp_epa per play (summed comp_epa / plays), allowed by the
+      team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on
+      search-season scores and, if shortlisted, confirmation.'
+  - id: f-off-points-per-comp_plays
+    kind: team
+    side: offense
+    num:
+      points: 1
+    den: comp_plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): points per comp_play (summed points / comp_plays), by the
+      team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on
+      search-season scores and, if shortlisted, confirmation.'
+  - id: f-def-points-per-comp_plays
+    kind: team
+    side: defense
+    num:
+      points: 1
+    den: comp_plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): points per comp_play (summed points / comp_plays), allowed
+      by the team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes
+      only on search-season scores and, if shortlisted, confirmation.'
+  - id: f-off-comp_plays-per-plays
+    kind: team
+    side: offense
+    num:
+      comp_plays: 1
+    den: plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): share of plays that are comp plays (comp_plays / plays), by
+      the team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only
+      on search-season scores and, if shortlisted, confirmation.'
+  - id: f-def-comp_plays-per-plays
+    kind: team
+    side: defense
+    num:
+      comp_plays: 1
+    den: plays
+    halflife: 6
+    carry: 0.4
+    formula: true
+    reason: 'Automatic formula signal (Constitution v12 A3.3c): share of plays that are comp plays (comp_plays / plays), allowed
+      by the team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes
+      only on search-season scores and, if shortlisted, confirmation.'
+  signal_bases:
+    spread:
+    - type: srs
+      params:
+        carry: 0.975
+        hfa_pts: 0.875
+        margin_cap: 52
+        prior_w: 4
+    total:
+    - type: pace_eff
+      params:
+        calibrate: true
+        efficiency: epa
+        halflife: 3
+        league_window: 1600
+        pace: true
+        season_carry: 0.425
   signal_sets: 1

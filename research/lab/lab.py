@@ -33,7 +33,7 @@ LEDGER_COLS = ["attempt", "sport", "candidate_id", "market", "run_at", "status",
                "run_url", "games_pooled", "effect_pooled", "ci_lo", "ci_hi", "p_one_sided", "g1_effect", "g2_effect",
                "g3_effect", "error"]
 REQUIRED = ["id", "name", "market", "family", "parent", "reason", "model"]
-CODE_FILES = ["config.py", "data.py", "cfb_data.py", "sbr_data.py", "models.py", "metrics.py", "lab.py", "search.py",
+CODE_FILES = ["config.py", "data.py", "cfb_data.py", "sbr_data.py", "sdv_data.py", "models.py", "metrics.py", "lab.py", "search.py",
               "signals.py"]
 
 
@@ -331,6 +331,9 @@ def main(argv=None):
     ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
     a = ap.parse_args(argv)
     C.use(a.sport)
+    if C.SUSPENDED:                                  # D1b: nothing runs in a suspended chamber
+        print(0 if a.cmd == "pending" else C.SUSPENDED)
+        return 0
     if a.cmd == "pending":
         print(min(C.BATCH, len(pending(load_candidates(), read_ledger(), a.rerun or None)) + len(queued())))
         return 0

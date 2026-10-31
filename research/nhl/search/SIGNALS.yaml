@@ -1,0 +1,76 @@
+# Research Lab signal library, NHL (Constitution v14 A3.3e, D1a). Each signal is tested by the search on top of the
+# menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons (2012-2013)
+# only. Allowed: kind team, columns points (goals), shots, es_shots, pp_shots, pp_goals (from the goalies' box scores,
+# sportsdataverse, D1a); kind goalie, field save_pct (the starting goalie, NHL only). Anything else is rejected by the
+# code. New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
+# hockey reason; no known betting angles or situational spots (A3.5, D6).
+signals:
+- id: goalie-sv
+  kind: goalie
+  field: save_pct
+  halflife: 40
+  carry: 0.7
+  prior_shots: 600
+  markets: [moneyline, total]
+  reason: The starting goalie's save percentage above the league's, from his own recent games and shrunk toward the
+    league; the goalie is the one player who can swing a single game, and a backup starting is the classic NHL
+    price input. A goalie with few shots is treated as average.
+- id: goalie-sv-long
+  kind: goalie
+  field: save_pct
+  halflife: 120
+  carry: 0.85
+  prior_shots: 1500
+  markets: [moneyline, total]
+  reason: The same starting-goalie read over a much longer memory and a stronger pull to average, since save
+    percentage over a few weeks is mostly luck.
+- id: off-shots
+  kind: team
+  side: offense
+  num: {shots: 1}
+  halflife: 20
+  carry: 0.5
+  markets: [moneyline, total]
+  reason: Shots on goal per game, a steadier measure of how much a team controls play than goals.
+- id: def-shots
+  kind: team
+  side: defense
+  num: {shots: 1}
+  halflife: 20
+  carry: 0.5
+  markets: [moneyline, total]
+  reason: Shots on goal allowed per game, how much a team lets opponents play in its zone.
+- id: off-es-shots
+  kind: team
+  side: offense
+  num: {es_shots: 1}
+  halflife: 20
+  carry: 0.5
+  markets: [moneyline, total]
+  reason: Even-strength shots per game, play control without the noise of penalties and power plays.
+- id: def-es-shots
+  kind: team
+  side: defense
+  num: {es_shots: 1}
+  halflife: 20
+  carry: 0.5
+  markets: [moneyline, total]
+  reason: Even-strength shots allowed per game.
+- id: off-shooting
+  kind: team
+  side: offense
+  num: {points: 1}
+  den: shots
+  halflife: 30
+  carry: 0.3
+  markets: [moneyline, total]
+  reason: Goals per shot; mostly luck over short spells, so a team scoring on many of its shots is likely to cool off.
+- id: off-pp
+  kind: team
+  side: offense
+  num: {pp_goals: 1}
+  den: pp_shots
+  halflife: 30
+  carry: 0.5
+  markets: [moneyline, total]
+  reason: Power-play goals per power-play shot, how dangerous a team is with the extra skater.

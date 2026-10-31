@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- DeVig mark: a V whose right arm is sliced near the tip, the cut piece (the vig) knocked away. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2230"/>
+      <stop offset="1" stop-color="#0a0d13"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.55">
+      <stop offset="0" stop-color="#e0a656" stop-opacity="0.17"/>
+      <stop offset="1" stop-color="#e0a656" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="amber" x1="0" y1="150" x2="0" y2="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7cb8c"/>
+      <stop offset="1" stop-color="#d8953c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="232" fill="url(#glow)"/>
+  <rect x="6" y="6" width="1012" height="1012" rx="226" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="12"/>
+  <g transform="translate(512 512) scale(1.1) translate(-540 -500)">
+    <path d="M292 318 L512 736" stroke="url(#amber)" stroke-width="132" stroke-linecap="round" fill="none"/>
+    <path d="M453.6 705.2 L627.2 376.2 L743.9 437.8 L570.4 766.8 Z" fill="url(#amber)"/>
+    <path d="M668.8 352.9 L721.1 253.9 L837.8 315.4 L785.6 414.5 Z" fill="url(#amber)" opacity="0.6" transform="rotate(9 753.3 334.2)"/>
+  </g>
+</svg>

@@ -7,7 +7,9 @@ in the loop. Everything it proposes is scored by the same deterministic code as 
 owner merges its pull request.
 
 ## Each week
-1. Read, for each sport (NFL: `research/search/`; college football: `research/cfb/search/`):
+1. Read, for each sport (NFL: `research/search/`; college football: `research/cfb/search/`; since v14 NBA and NHL:
+   `research/nba/search/`, `research/nhl/search/`, with box-score columns and, NHL, the starting goalie; MLB is
+   suspended, D1b):
    `SIGNALS.yaml`, `MENU.yaml`, `AUTO.yaml` (the search's own widenings, including its automatic formula signals),
    `LEADERBOARD.md` (search seasons only), and `research/lab/signals.py` (what a signal can be built from). Read
    `research/RESEARCH_LAB_CONSTITUTION.md` A3.5 (no betting angles), A3.3c and A3.3e.

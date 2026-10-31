@@ -18,6 +18,8 @@ from research.lab import metrics as M       # noqa: E402
 from research.lab import models             # noqa: E402
 from research.lab import sbr_data as SD     # noqa: E402
 
+SD.BOX_FILES = None                          # synthetic archive only: no sportsdataverse box scores (D1a)
+
 TEAMS = ["Bruins", "Rangers", "Flyers", "Penguins", "Capitals", "Devils", "Sabres", "Senators"]
 
 

@@ -1,0 +1,113 @@
+# Research Lab signal library, NBA (Constitution v14 A3.3e, D1a). Each signal is tested by the search on top of the
+# menu's signal_bases (alone, then in pairs and trios of the best), weights fit on the training seasons (2012-2013)
+# only. Allowed: kind team, columns points, poss, fga, fgm, fg3a, fg3m, fta, ftm, oreb, dreb, tov, ast (box scores
+# from sportsdataverse, D1a; poss = fga - oreb + tov + 0.44 fta). Anything else is rejected by the code.
+# New signals come from the owner or the weekly researcher, by pull request the owner approves. Each needs a
+# basketball reason; no known betting angles or situational spots (A3.5, D6).
+# Seed list (v14): the "four factors" (Dean Oliver, Basketball on Paper, 2004) on offense and defense, plus
+# efficiency and pace. Half-life 10 games, half of last season carried over.
+signals:
+- id: off-ortg
+  kind: team
+  side: offense
+  num: {points: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Points per possession (offensive rating) separates scoring quality from pace; scoring margin mixes both.
+- id: def-drtg
+  kind: team
+  side: defense
+  num: {points: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Points allowed per possession (defensive rating), the defensive half of efficiency, free of pace.
+- id: off-efg
+  kind: team
+  side: offense
+  num: {fgm: 1, fg3m: 0.5}
+  den: fga
+  halflife: 10
+  carry: 0.5
+  reason: Effective field-goal percentage (a three counts 1.5 makes), the first and largest of the four factors.
+- id: def-efg
+  kind: team
+  side: defense
+  num: {fgm: 1, fg3m: 0.5}
+  den: fga
+  halflife: 10
+  carry: 0.5
+  reason: Effective field-goal percentage allowed, the defensive version of the first factor.
+- id: off-tov-rate
+  kind: team
+  side: offense
+  num: {tov: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Turnovers per possession, the second of the four factors; a turnover is a possession with no shot.
+- id: def-tov-rate
+  kind: team
+  side: defense
+  num: {tov: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Turnovers forced per possession, the defensive side of the second factor.
+- id: off-oreb
+  kind: team
+  side: offense
+  num: {oreb: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Offensive rebounds per possession, the third factor (second chances), per possession so pace does not inflate it.
+- id: def-oreb
+  kind: team
+  side: defense
+  num: {oreb: 1}
+  den: poss
+  halflife: 10
+  carry: 0.5
+  reason: Offensive rebounds allowed per possession, how well a defense finishes possessions with a rebound.
+- id: off-ft-rate
+  kind: team
+  side: offense
+  num: {fta: 1}
+  den: fga
+  halflife: 10
+  carry: 0.5
+  reason: Free-throw attempts per field-goal attempt, the fourth factor (getting to the line).
+- id: def-ft-rate
+  kind: team
+  side: defense
+  num: {fta: 1}
+  den: fga
+  halflife: 10
+  carry: 0.5
+  reason: Free-throw attempts allowed per field-goal attempt, how often a defense fouls.
+- id: off-3pa-rate
+  kind: team
+  side: offense
+  num: {fg3a: 1}
+  den: fga
+  halflife: 10
+  carry: 0.5
+  reason: Share of shots that are threes; shot selection drives efficiency and how much a team's scoring varies.
+- id: off-pace
+  kind: team
+  side: offense
+  num: {poss: 1}
+  halflife: 10
+  carry: 0.5
+  markets: [total]
+  reason: Possessions per game; more possessions mean more points, the main input to a totals forecast besides efficiency.
+- id: def-pace
+  kind: team
+  side: defense
+  num: {poss: 1}
+  halflife: 10
+  carry: 0.5
+  markets: [total]
+  reason: Possessions in games against this team; some defenses slow opponents down, which lowers totals.
