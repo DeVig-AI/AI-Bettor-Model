@@ -1,0 +1,31 @@
+name: Injuries tab -- official NBA report and NFL feed with the game changer scale
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '9 * * * *'   # hourly; information only, nothing reads it for a pick
+permissions:
+  contents: write
+concurrency:
+  group: injuries
+  cancel-in-progress: false
+jobs:
+  injuries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pdfplumber certifi
+      - name: Build both sports' injury lists (a source that fails keeps its previous file)
+        run: python3 tools/injuries_export.py
+      - name: Save it
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add nba/injuries_export.json nfl/injuries_export.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Injuries $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1

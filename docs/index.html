@@ -830,6 +830,13 @@
   .inj-row .why{font-size:12px; color:var(--ink-faint);}
   .inj-row .note{font-size:12.5px; color:var(--accent-strong); margin-top:2px;}
   .inj-tags{display:flex; gap:5px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+  .imp{font-family:var(--font-mono); font-size:11px; letter-spacing:.02em; white-space:nowrap;}
+  .imp .bars{letter-spacing:-1px; margin-right:5px;}
+  .imp-gamechanger{color:var(--bad); border-color:var(--bad);}
+  .imp-big{color:var(--accent-strong); border-color:var(--accent);}
+  .imp-some{color:var(--ink-soft);}
+  .imp-minor{color:var(--ink-faint);}
+  .inj-row .imp-why{font-size:12px; color:var(--ink-soft); margin-top:2px;}
   .pill.warn{background:var(--accent-wash); color:var(--accent-strong);}
   .pill.st{background:var(--surface-2); color:var(--ink); border:1px solid var(--line-strong);}
   .inj-watch .inj-row{grid-template-columns:auto 1fr auto;}
@@ -5797,8 +5804,8 @@
   var injDocs = [], injMeta = {}, injLoaded = false, injFilter = "all", injSport = "NBA";
   try{ var _s = localStorage.getItem("devig_inj_sport"); if(_s === "NFL" || _s === "NBA") injSport = _s; }catch(e){}
   var INJ_BLURB = {
-    NBA: "Tonight's official NBA list. Starters who are questionable or on a minutes limit are pulled to the top. Statuses change right up to tip, so check again close to game time.",
-    NFL: "This week's NFL games. Bold names are starters (60%+ of snaps). Starters who are questionable or doubtful are pulled to the top. Final game statuses come out Friday (Saturday for Monday games), and inactives 90 minutes before kickoff."
+    NBA: "The league's official injury report, refreshed every hour. Game changer scale = how much the team loses if he sits: his share of its minutes and points (Game changer = a top-3% share, the stars). Statuses change right up to tip, so check again close to game time.",
+    NFL: "This week's games from ESPN's injury feed, refreshed every hour. Game changer scale from DeVig's own injury study: a starting QB is worth about 3.8 points, any other regular (50%+ of snaps) about half a point. Bold names play 60%+ of snaps. Final statuses come out two days before the game, inactives 90 minutes before kickoff."
   };
   function startInjurySub(){
     if(!dbApi){ injLoaded = true; renderInjuries(); return; }
@@ -5816,11 +5823,22 @@
     var cls = (st === "Out" || st === "Doubtful") ? "bad" : st === "Questionable" ? "warn" : "";
     return '<span class="pill ' + cls + '">' + escapeHtml(st || "?") + '</span>';
   }
+  // How much the team loses if he sits (tools/injuries_export.py): four levels, shown as filled bars.
+  function injImpact(r){
+    var im = r.impact;
+    if(!im || !im.level) return "";
+    var bars = "\u25A0\u25A0\u25A0\u25A0".slice(0, im.bars) + "\u25A1\u25A1\u25A1\u25A1".slice(im.bars);
+    return '<span class="pill imp imp-' + escapeHtml(im.level) + '" title="' + escapeHtml(im.why || "") + '"><span class="bars">' + bars + '</span>' + escapeHtml(im.label) + '</span>';
+  }
+  function injBars(r){ return r.impact && r.impact.bars ? r.impact.bars : 0; }
   function injTags(r){
-    return '<div class="inj-tags">' + (r.starter ? '<span class="pill st">Starter</span>' : '') +
+    return '<div class="inj-tags">' + injImpact(r) + (r.starter ? '<span class="pill st">Starter</span>' : '') +
       (r.minutes ? '<span class="pill warn">Min limit</span>' : '') + injPill(r.status) + '</div>';
   }
   function injWatchable(r){
+    if(r.impact)                                   // with the game changer scale: the big names who may or may not play
+      return (injBars(r) >= 3 && (r.status === "Questionable" || r.status === "Doubtful" || r.minutes) && (r.sport !== "NFL" || r.confirmed)) ||
+        (r.starter && r.status === "Doubtful");
     if(r.sport === "NFL") return r.starter && (r.status === "Doubtful" || (r.status === "Questionable" && r.confirmed));
     return r.starter && (r.minutes || r.status === "Questionable" || r.status === "Doubtful");
   }
@@ -5841,16 +5859,21 @@
     if(!docs.length){ watch.innerHTML = ""; games.innerHTML = '<div class="card empty"><div class="icon">+</div>No ' + sp + ' injury report loaded yet. Ask Claude to update it.</div>'; return; }
     var favs = (typeof favTeams === "function") ? favTeams(sp) : [];
     // starters to watch
-    var w = docs.filter(injWatchable).sort(function(a, b){ return String(a.tip_sort).localeCompare(String(b.tip_sort)); });
-    watch.innerHTML = w.length ? '<div class="card inj-watch"><div class="bb-sec" style="margin-top:0">Starters to watch</div>' +
+    var w = docs.filter(injWatchable).sort(function(a, b){ return injBars(b) - injBars(a) || String(a.tip_sort).localeCompare(String(b.tip_sort)); });
+    watch.innerHTML = w.length ? '<div class="card inj-watch"><div class="bb-sec" style="margin-top:0">Key players to watch</div>' +
       w.map(function(r){
         return '<div class="inj-row starter">' + teamBadge(sp, r.team) + '<div><div class="nm">' + escapeHtml(r.player) + '</div>' +
           '<div class="why">' + escapeHtml(r.away + " @ " + r.home + " · " + (r.tip || "")) + (r.reason ? " · " + escapeHtml(r.reason) : "") + '</div>' +
+          (r.impact && r.impact.why ? '<div class="imp-why">' + escapeHtml(r.impact.why) + '</div>' : '') +
           (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') + '</div>' + injTags(r) + '</div>';
       }).join("") + '</div>' : "";
     // group by game
     var byGame = {};
     docs.forEach(function(r){ var k = r.away + "@" + r.home; (byGame[k] = byGame[k] || {away: r.away, home: r.home, tip: r.tip, tip_sort: r.tip_sort, rows: []}).rows.push(r); });
+    Object.keys((meta && meta.not_submitted) || {}).forEach(function(k){
+      var t = k.split("@");
+      if(!byGame[k]) byGame[k] = {away: t[0], home: t[1], tip: "", tip_sort: "~", rows: []};
+    });
     var list = Object.keys(byGame).map(function(k){ return byGame[k]; }).sort(function(a, b){
       var fa = (favs.indexOf(a.away) >= 0 || favs.indexOf(a.home) >= 0) ? 0 : 1, fb = (favs.indexOf(b.away) >= 0 || favs.indexOf(b.home) >= 0) ? 0 : 1;
       return fa - fb || String(a.tip_sort).localeCompare(String(b.tip_sort));
@@ -5859,19 +5882,24 @@
     list.forEach(function(g){
       var teamsHtml = [g.away, g.home].map(function(t){
         var rows = g.rows.filter(function(r){ return r.team === t && injShow(r); }).sort(function(a, b){
-          return (b.starter ? 1 : 0) - (a.starter ? 1 : 0) || ((INJ_RANK[a.status] ?? 5) - (INJ_RANK[b.status] ?? 5)) || String(a.player).localeCompare(b.player);
+          return injBars(b) - injBars(a) || (b.starter ? 1 : 0) - (a.starter ? 1 : 0) || ((INJ_RANK[a.status] ?? 5) - (INJ_RANK[b.status] ?? 5)) || String(a.player).localeCompare(b.player);
         });
         if(!rows.length) return "";
         return '<div class="inj-team"><div class="inj-tname">' + teamBadge(sp, t) + escapeHtml(t) + '</div>' +
           rows.map(function(r){
             return '<div class="inj-row' + (r.starter ? ' starter' : '') + '"><div><div class="nm">' + escapeHtml(r.player) + '</div>' +
-              (r.reason ? '<div class="why">' + escapeHtml(r.reason) + '</div>' : '') + (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') +
+              (r.reason ? '<div class="why">' + escapeHtml(r.reason) + '</div>' : '') +
+              (r.impact && r.impact.why ? '<div class="imp-why">' + escapeHtml(r.impact.why) + '</div>' : '') +
+              (r.note ? '<div class="note">' + escapeHtml(r.note) + '</div>' : '') +
               '</div>' + injTags(r) + '</div>';
           }).join("") + '</div>';
       }).join("");
-      if(!teamsHtml) return;
+      var waiting = ((meta && meta.not_submitted) || {})[g.away + "@" + g.home] || [];
+      if(!teamsHtml && !waiting.length) return;
       html += '<div class="card inj-game"><div class="inj-ghead">' + teamBadge(sp, g.away) + '<span class="vs">' + escapeHtml(g.away) + ' @ ' + escapeHtml(g.home) + '</span>' +
-        teamBadge(sp, g.home) + '<span class="tip">' + escapeHtml(g.tip || "") + '</span></div>' + teamsHtml + '</div>';
+        teamBadge(sp, g.home) + '<span class="tip">' + escapeHtml(g.tip || "") + '</span></div>' +
+        (waiting.length ? '<div class="note" style="font-size:12.5px; color:var(--accent-strong); padding:6px 16px 12px">' + escapeHtml(waiting.join(" and ")) + (waiting.length > 1 ? " haven't" : " hasn't") + " sent today's injury report yet</div>" : '') +
+        teamsHtml + '</div>';
     });
     games.innerHTML = html || '<div class="card empty">Nothing matches this filter.</div>';
   }
