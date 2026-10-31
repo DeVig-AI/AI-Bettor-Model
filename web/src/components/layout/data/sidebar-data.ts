@@ -4,7 +4,7 @@ import { type SidebarData } from '../types'
 export const sidebarData: SidebarData = {
   navGroups: [
     {
-      title: 'DeVig',
+      title: '',
       items: [
         { title: 'Games', url: '/', icon: CalendarDays },
         { title: 'Track record', url: '/track-record', icon: Trophy },

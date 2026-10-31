@@ -352,9 +352,12 @@ export function Games() {
     )
   }, [dayRows, league, picksOnly, query])
 
-  const live = shown.filter((r) => r.state === 'in')
-  const upcoming = shown.filter((r) => r.state === 'pre')
-  const final = shown.filter((r) => r.state === 'post').reverse()
+  // DeVig's own reads lead the board; every other game falls into live, upcoming or final
+  const picked = shown.filter(isPick)
+  const rest = shown.filter((r) => !isPick(r))
+  const live = rest.filter((r) => r.state === 'in')
+  const upcoming = rest.filter((r) => r.state === 'pre')
+  const final = rest.filter((r) => r.state === 'post').reverse()
   const picks = dayRows.filter(isPick).length
   const liveCount = dayRows.filter((r) => r.state === 'in').length
   const showDay = day !== 'today'
@@ -368,7 +371,7 @@ export function Games() {
           <p className='truncate text-xs text-muted-foreground'>
             {isLoading
               ? 'Loading prices…'
-              : `${dayRows.length} games · ${liveCount} live · ${picks} DeVig ${picks === 1 ? 'pick' : 'picks'}`}
+              : `${dayRows.length} games, ${liveCount} live, ${picks} DeVig ${picks === 1 ? 'pick' : 'picks'}`}
           </p>
         </div>
         <Button
@@ -519,6 +522,7 @@ export function Games() {
           </div>
         ) : (
           <>
+            <Group title="DeVig's picks" rows={picked} showDay={showDay} level={level} />
             <Group title='Live now' rows={live} showDay={false} level={level} />
             <Group title='Upcoming' rows={upcoming} showDay={showDay} level={level} />
             <Group title='Final' rows={final} showDay={showDay} level={level} />
