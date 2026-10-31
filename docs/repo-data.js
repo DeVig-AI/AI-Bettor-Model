@@ -38,7 +38,8 @@
   var firstRound = null;
 
   // The app reads props rows in the compact form the claude.ai sync used: columns + arrays.
-  var PROP_COLS = ["player", "stat", "line", "kb", "ka", "koi", "pp", "pliq", "mp", "ex", "n", "inj", "stale"];
+  // kt = the Kalshi market ticker, so the app can ask /api/props for the live price of that line
+  var PROP_COLS = ["player", "stat", "line", "kb", "ka", "koi", "pp", "pliq", "mp", "ex", "n", "inj", "stale", "kt"];
   function compactProps(d) {
     var out = {};
     Object.keys(d).forEach(function (k) { if (k !== "rows") out[k] = d[k]; });
@@ -46,7 +47,7 @@
     out.rows = (d.rows || []).map(function (r) {
       var k = r.k || {}, p = r.p || {};
       return [r.player, r.stat, r.line, nz(k.bid), nz(k.ask), nz(k.oi), nz(p.price), nz(p.liq), nz(r.model_p),
-              nz(r.expected), r.n_games || 0, r.injury || null, r.stale || null];
+              nz(r.expected), r.n_games || 0, r.injury || null, r.stale || null, k.t || null];
     });
     if (!out.prices_fetched) out.prices_fetched = d.scored_utc || null;
     return out;

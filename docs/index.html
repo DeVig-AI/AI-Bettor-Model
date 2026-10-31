@@ -3413,6 +3413,8 @@
     playsAll = false;
     renderGamePage(true);
     window.scrollTo(0, 0);
+    var pdocLive = propsDocFor(g), keyLive = gameKey(g);       // this game's props at Kalshi's live price
+    if(pdocLive) propsLiveRefresh(propsDocTickers(pdocLive), function(got){ if(got && gamePage && gamePage.key === keyLive) renderGamePage(true); });
     loadGameDetail().then(function(){ renderGamePage(); armMoments(); });
   }
   function closeGamePage(){
@@ -4096,7 +4098,7 @@
     return h.replace('<div class="sb-btn', '<div role="button" tabindex="0" aria-label="Add ' + escapeHtml(leg.desc) + ' to parlay" data-leg="' + escapeHtml(JSON.stringify(leg)) + '" class="sb-btn');
   }
   function propLeg(r, side, odds, book, g, e){
-    var desc = r.player + " " + (side === "OVER" ? propLineTxt(r.stat, r.line) : "Under " + r.line + " " + propStat(r.stat, true));
+    var desc = r.player + " " + (side === "OVER" ? propLineTxt(r.stat, r.line) : propUnderTxt(r.stat, r.line));
     var leg = Object.assign({desc: desc, odds: Math.round(odds), book: book, game: gameLabelFor(g), when: lsWhen(g.kickoff_time), kind: "prop",
       mk: "prop", player: r.player, stat: r.stat, line: r.line, side: side}, legMeta(g));
     if(r.mp != null) leg.model = Math.round((side === "OVER" ? r.mp : 1 - r.mp) * 100);
@@ -4630,11 +4632,19 @@
   function docSport(d){ return (d && d.sport) || "NFL"; }
   var PROP_ORDER = Object.keys(PROP_STATS);
   function propStat(s, short){ var x = PROP_STATS[s]; return x ? x[short ? 1 : 0] : String(s).replace(/_/g, " "); }
+  // Kalshi "N+" markets are stored as Over N-0.5. Show them the way Kalshi does ("6+ ast"), and the other side as
+  // "5 or fewer ast" (Kalshi's "No on 6+"), so the line reads the same here as on Kalshi. Touchdowns: "Anytime TD".
+  function propHalf(line){ return isFinite(line) && Math.abs(line - Math.floor(line) - 0.5) < 1e-9; }
   function propLineTxt(stat, line){
-    // Kalshi "N+" markets are stored as Over N-0.5. Touchdowns read better as "1+ TD".
     if(stat === "touchdowns" && line === 0.5) return "Anytime TD";
     if(stat === "touchdowns" && line === 1.5) return "2+ TDs";
+    if(propHalf(line)) return (line + 0.5) + "+ " + propStat(stat, true);
     return "Over " + line + " " + propStat(stat, true);
+  }
+  function propUnderTxt(stat, line){
+    if(stat === "touchdowns" && line === 0.5) return "No TD";
+    if(propHalf(line)) return (line - 0.5) + " or fewer " + propStat(stat, true);
+    return "Under " + line + " " + propStat(stat, true);
   }
   function centsTxt(p){ return (p == null || !isFinite(p)) ? "—" : Math.round(p * 100) + "¢"; }
   // Exchange price -> sportsbook odds. withFee adds Kalshi's fee (for a $10 order) to the cost, so the odds are what you really get.
@@ -4661,11 +4671,45 @@
     var n = Math.max(1, Math.floor((dollars || KALSHI_ORDER) / p + 1e-9));
     return Math.ceil(0.07 * n * p * (1 - p) * 100 - 1e-9) / 100 / n;
   }
+  // Live props prices. The props bots refresh Kalshi prices only every few hours, so when a props screen opens the app
+  // asks /api/props (Kalshi's public prices, 40 lines per call, 30 s server cache) for the lines on screen and layers the
+  // answer over the bot's snapshot: every place that reads propRows (board, game page, picks, parlays, long-shot builder)
+  // then uses the live price. Lines Kalshi has no two-sided price for right now show as such.
+  var propsLive = {byT: {}, asked: {}};
+  var PROPS_LIVE_MS = 60000;
+  function propsLiveRefresh(tickers, done){
+    var now = Date.now(), want = [];
+    (tickers || []).forEach(function(t){
+      if(t && want.indexOf(t) < 0 && !(propsLive.asked[t] && now - propsLive.asked[t] < PROPS_LIVE_MS)) want.push(t);
+    });
+    if(!want.length || !window.fetch){ if(done) done(false); return; }
+    want.forEach(function(t){ propsLive.asked[t] = now; });
+    var chunks = [];
+    for(var i = 0; i < want.length && chunks.length < 15; i += 40) chunks.push(want.slice(i, i + 40));
+    Promise.all(chunks.map(function(c){
+      return fetch("/api/props?tickers=" + encodeURIComponent(c.join(",")), {headers: {accept: "application/json"}})
+        .then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+    })).then(function(answers){
+      var got = false;
+      answers.forEach(function(a){
+        if(!a || !a.markets) return;
+        Object.keys(a.markets).forEach(function(t){ var m = a.markets[t]; propsLive.byT[t] = {bid: m.bid, ask: m.ask, title: m.title, at: a.fetched_at}; got = true; });
+      });
+      if(done) done(got);
+    });
+  }
+  function propsDocTickers(doc){ return doc ? propRows(doc).map(function(r){ return r.kt; }).filter(Boolean) : []; }
+  function propsLiveAt(doc){
+    return doc ? propRows(doc).reduce(function(m, r){ return r.klive && r.klive > m ? r.klive : m; }, "") : "";
+  }
   function propRows(doc){
     var cols = doc.cols || [], idx = {};
     cols.forEach(function(c, i){ idx[c] = i; });
     return (doc.rows || []).map(function(r){
-      var o = {}; cols.forEach(function(c){ o[c] = r[idx[c]]; }); return o;
+      var o = {}; cols.forEach(function(c){ o[c] = r[idx[c]]; });
+      var lv = o.kt && propsLive.byT[o.kt];
+      if(lv){ o.kb = lv.bid; o.ka = lv.ask; o.klive = lv.at; if(lv.title) o.ktitle = lv.title; }
+      return o;
     });
   }
   function propGameLabel(d){ return (d.away_team || "?") + " @ " + (d.home_team || "?"); }
@@ -4690,6 +4734,9 @@
       var next = games.filter(function(d){ return !propStarted(d); })[0] || games[0];
       propsSel.game = next.game_key;
     }
+    var selDoc = games.filter(function(d){ return d.game_key === propsSel.game; })[0], liveAt = propsLiveAt(selDoc);
+    if(liveAt) document.getElementById("propsAsOf").textContent = "Live Kalshi prices as of " + whenTxt(liveAt);
+    if(selDoc) propsLiveRefresh(propsDocTickers(selDoc), function(got){ if(got) renderProps(); });
     var gw = document.getElementById("propsGames");
     gw.innerHTML = "";
     games.forEach(function(d){
@@ -4838,7 +4885,7 @@
   }
   function propBetTxt(r, side){
     if(side === "OVER") return propLineTxt(r.stat, r.line);
-    return "Under " + r.line + " " + propStat(r.stat, true);
+    return propUnderTxt(r.stat, r.line);
   }
   var propsTopLimit = 5;
   function renderGameTop(doc, inj){
@@ -4982,7 +5029,7 @@
         byStat[st].forEach(function(x){
           var p = x.p;
           var lv = livePickFor(x.d, p), lb = lv && lv.status !== "pending" ? liveBadge(lv) : null;
-          html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : "Under " + p.line + " " + propStat(p.stat, true)) + '</div>' +
+          html += '<div class="pr-pick"><div><div style="font-weight:700">' + escapeHtml(p.player) + ' · ' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : propUnderTxt(p.stat, p.line)) + '</div>' +
             '<div class="faint">' + escapeHtml(propGameLabel(x.d)) + ' · at ' + exOddsTxt(p.price, true) + ' · needs ' + needsPct(p.price, true) + '% · model ' + Math.round((p.side === "OVER" ? p.model_p : 1 - p.model_p) * 100) + '%' +
             (lv && lv.current != null ? ' · has ' + lv.current : '') + '</div></div>' +
             '<div class="bb-right">' + (lb ? '<span class="pill ' + lb[0] + '">' + escapeHtml(lb[1]) + '</span>' : '') +
@@ -5066,7 +5113,7 @@
     var row = el("div", "lv-pk"), fill = cur != null ? Math.min(1, cur / Math.max(p.line, 0.5)) : 0;
     var barCls = p.status === "won" || p.status === "lost" ? p.status : (p.side === "OVER" ? "up" : (fill >= 0.75 ? "danger" : "warn"));
     row.innerHTML = '<div style="min-width:0"><div class="who">' + escapeHtml(p.player) + '</div>' +
-      '<div class="what">' + (p.side === "OVER" ? "Over " : "Under ") + '<span class="tabular">' + p.line + '</span> ' + escapeHtml(propStat(p.stat, true)) +
+      '<div class="what">' + escapeHtml(p.side === "OVER" ? propLineTxt(p.stat, p.line) : propUnderTxt(p.stat, p.line)) +
       '</div>' + (done && cur != null ? '<div class="ended">Ended with <b class="tabular">' + cur + '</b> ' + escapeHtml(propStat(p.stat, true)) + '</div>' : '') + '</div>' +
       '<div><span class="pill ' + b[0] + '">' + escapeHtml(b[1]) + '</span></div>' +
       (cur != null ? '<div class="lv-track"><div class="lv-bar ' + barCls + '"><i style="width:' + fill * 100 + '%"></i>' +
@@ -6470,7 +6517,7 @@
             if(!(cost >= 0.15 && cost <= 0.85)) return;   // skip near-sure and near-hopeless lines (they only pad the ticket)
             var dec = 1 / cost, leg = propLeg(r, x[0], priceAmerican(cost), "Kalshi", g, null);
             propPool.push({team: leg.desc, odds: leg.odds, dec: dec, fair: x[2], value: x[2] * dec, game: gameLabel, sport: sp,
-              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true, leg: leg});
+              book: "Kalshi", modelPick: false, kick: g.kickoff_time || null, prop: true, leg: leg, kt: r.kt || null});
           });
         });
       });
@@ -6563,6 +6610,15 @@
     return card;
   }
   document.getElementById("lsBuildBtn").addEventListener("click", function(){
+    var statusEl = document.getElementById("lsStatus");
+    var pre = lsCandidates(document.getElementById("ls-sport").value).filter(function(c){ return c.prop && c.kt; });
+    if(!pre.length){ lsBuild(); return; }
+    statusEl.className = "status"; statusEl.textContent = "Checking Kalshi's live prices for " + pre.length + " prop lines…";
+    var ran = false, go = function(){ if(!ran){ ran = true; lsBuild(); } };
+    propsLiveRefresh(pre.map(function(c){ return c.kt; }), go);
+    setTimeout(go, 6000);                          // never wait long on Kalshi: build with the latest prices we have
+  });
+  function lsBuild(){
     var statusEl = document.getElementById("lsStatus"), res = document.getElementById("lsResult");
     res.innerHTML = ""; statusEl.className = "status";
     var stake = parseFloat(document.getElementById("ls-stake").value), win = parseFloat(document.getElementById("ls-win").value);
@@ -6585,10 +6641,10 @@
     if(tickets.some(function(t){ return t.legs.some(function(l){ return l.prop; }); }))
       res.appendChild(el("p", "faint", "Prop legs use Kalshi's own price (mid = the fair chance, ask + fee = the payout). Kalshi doesn't sell these as one parlay, and a sportsbook will price the same props differently -- usually worse -- so check before betting."));
     res.appendChild(el("p", "faint", "Real chances use the market's no-vig odds, which have been the most accurate numbers in every test this project ran. " +
-      "Prices are from the last sync (the lock), not live -- check your book; if it pays less, the ticket gets worse. " +
+      "Game prices are from the last sync (the lock); prop legs use Kalshi's live price when it answered. Check your book; if it pays less, the ticket gets worse. " +
       "Played once a week for a full NFL season (18 weeks), the best build hits at least once about " + Math.round(atLeastOne * 100) + "% of the time. " +
       "Long shots lose most weeks -- keep it to a stake you're fine losing."));
-  });
+  }
 
   // ---------- parlay: ask DeVig.AI to pick its best combination from real candidates ----------
   function gatherParlayCandidates(){
