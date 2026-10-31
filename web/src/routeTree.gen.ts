@@ -17,6 +17,7 @@ import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
+import { Route as AuthenticatedAskRouteImport } from './routes/_authenticated/ask'
 import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
 import { Route as AuthenticatedModelsRouteImport } from './routes/_authenticated/models'
 import { Route as AuthenticatedMoreRouteImport } from './routes/_authenticated/more'
@@ -64,6 +65,11 @@ const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAskRoute = AuthenticatedAskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInjuriesRoute = AuthenticatedInjuriesRouteImport.update({
   id: '/injuries',
   path: '/injuries',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
+  '/ask': typeof AuthenticatedAskRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
+  '/ask': typeof AuthenticatedAskRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/about': typeof AuthenticatedAboutRoute
+  '/_authenticated/ask': typeof AuthenticatedAskRoute
   '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
   '/_authenticated/models': typeof AuthenticatedModelsRoute
   '/_authenticated/more': typeof AuthenticatedMoreRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/about'
+    | '/ask'
     | '/injuries'
     | '/models'
     | '/more'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/about'
+    | '/ask'
     | '/injuries'
     | '/models'
     | '/more'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/about'
+    | '/_authenticated/ask'
     | '/_authenticated/injuries'
     | '/_authenticated/models'
     | '/_authenticated/more'
@@ -270,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAboutRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ask': {
+      id: '/_authenticated/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AuthenticatedAskRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/injuries': {
       id: '/_authenticated/injuries'
       path: '/injuries'
@@ -324,6 +343,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
+  AuthenticatedAskRoute: typeof AuthenticatedAskRoute
   AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
   AuthenticatedModelsRoute: typeof AuthenticatedModelsRoute
   AuthenticatedMoreRoute: typeof AuthenticatedMoreRoute
@@ -336,6 +356,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
+  AuthenticatedAskRoute: AuthenticatedAskRoute,
   AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
   AuthenticatedModelsRoute: AuthenticatedModelsRoute,
   AuthenticatedMoreRoute: AuthenticatedMoreRoute,

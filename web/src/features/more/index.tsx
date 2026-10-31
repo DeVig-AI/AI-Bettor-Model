@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { BarChart3, ChevronRight, Cross, ExternalLink, Info } from 'lucide-react'
+import { BarChart3, ChevronRight, Cross, ExternalLink, Info, MessageCircle } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -7,12 +7,13 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // More: the pages that don't fit in five tabs, and the classic app for what hasn't moved over yet.
 
 const PAGES = [
+  { to: '/ask', icon: MessageCircle, title: 'Ask', note: 'Questions about the picks, answered from DeVig’s data' },
   { to: '/injuries', icon: Cross, title: 'Injuries', note: "Each league's report, game by game, starters first" },
   { to: '/models', icon: BarChart3, title: 'Models', note: "DeVig's models next to other people's, graded the same way" },
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
 ] as const
 
-const CLASSIC = ['Testing: every test and backtest', 'Research: rankings, team and player stats', 'Ask: questions about the picks', 'History: past games and odds-screen scans', 'Profile: name and favorite teams']
+const CLASSIC = ['Testing: every test and backtest', 'Research: rankings, team and player stats', 'History: past games and odds-screen scans', 'Profile: name and favorite teams']
 
 export function More() {
   return (

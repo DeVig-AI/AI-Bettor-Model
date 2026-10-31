@@ -9,7 +9,7 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 
 // Injuries: each league's official report, game by game, starters and the biggest impact first. Information only:
-// DeVig's game models don't read it, and Kalshi's price may already include it.
+// DeVig's NBA and MLB models don't read it (NFL Model 2.0 counts who's out), and Kalshi's price may already include it.
 
 const rank = (x: Injury) => (x.starter ? 0 : 10) + (/out/i.test(x.status) ? 0 : /doubt/i.test(x.status) ? 1 : 2) - (x.impact?.bars ?? 0) * 0.1
 
@@ -45,7 +45,7 @@ export function Injuries() {
       </Header>
       <Main className='flex flex-col gap-5'>
         <p className='rounded-2xl bg-card px-4 py-3 text-sm leading-relaxed'>
-          Information only. DeVig&apos;s game models don&apos;t read injuries, and Kalshi&apos;s price may already include them.
+          Information only. DeVig&apos;s NBA and MLB models don&apos;t read injuries (NFL Model 2.0 counts who&apos;s out), and Kalshi&apos;s price may already include them.
         </p>
         <div className='flex flex-wrap items-center gap-2'>
           {sports.map((s) => (

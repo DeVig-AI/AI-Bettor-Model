@@ -1,0 +1,1 @@
+import{n as e}from"./index-C_f7_TLk.js";var t=e;export{t as component};
