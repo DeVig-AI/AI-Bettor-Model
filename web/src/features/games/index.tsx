@@ -10,6 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { useSlip } from '@/lib/parlay'
+import { mlLeg } from '../parlay/legs'
 import { ExplainSheet } from './explain-sheet'
 import { Plate, isPick } from './plate'
 
@@ -56,7 +58,10 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
     .join(' · ')
   return (
     <li className='flex flex-col gap-2'>
-      <Plate row={row} showDay={showDay} />
+      <div className='relative'>
+        <Plate row={row} showDay={showDay} />
+        {row.state === 'pre' && <PlateTaps row={row} />}
+      </div>
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-sm'>
         {picked && p?.prob != null ? (
           <span className='flex items-center gap-2 font-semibold text-devig'>
@@ -91,6 +96,39 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
         </span>
       </div>
     </li>
+  )
+}
+
+// Tap a team's half of the plate to add that team to win to the parlay slip (tap again to take it out)
+function PlateTaps({ row }: { row: GameRow }) {
+  const { toggle, has } = useSlip()
+  return (
+    <div className='absolute inset-0 grid grid-cols-2'>
+      {(['away', 'home'] as const).map((side) => {
+        const leg = mlLeg(row, side)
+        if (!leg) return <span key={side} />
+        const on = has(leg.id)
+        return (
+          <button
+            key={side}
+            type='button'
+            aria-pressed={on}
+            aria-label={`${on ? 'Remove' : 'Add'} ${leg.label} (${fmtAmerican(leg.odds)}) ${on ? 'from' : 'to'} parlay`}
+            onClick={() => toggle(leg)}
+            className={cn(
+              'group relative rounded-[18px] transition-colors duration-150 hover:bg-white/5 focus-visible:outline-offset-[-3px]',
+              side === 'away' ? 'rounded-e-none' : 'rounded-s-none'
+            )}
+          >
+            {on && (
+              <span className={cn('absolute top-2.5 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-black', side === 'away' ? 'start-[42%]' : 'end-[42%]')}>
+                In parlay
+              </span>
+            )}
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -343,7 +381,7 @@ export function Games() {
         )}
 
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
-          Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
+          Tap a team on an upcoming game to add it to your parlay. Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
           exchange&apos;s mid price), in the two teams&apos; colors. The amber slash is DeVig&apos;s model. Scores are ESPN&apos;s,
           unofficial. DeVig&apos;s picks are paper picks, locked before the game; nothing is bet.
         </p>

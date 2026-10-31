@@ -12,7 +12,9 @@ export function Header({ className, children, ...props }: HeaderProps) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b bg-background pt-[env(safe-area-inset-top)]',
+        // the before: block paints above the bar, so pulling the page down past the top (or a phone's status-bar
+        // area) never shows the cards through it
+        'sticky top-0 z-40 border-b bg-background pt-[env(safe-area-inset-top)] before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-[100vh] before:bg-background',
         className
       )}
       {...props}

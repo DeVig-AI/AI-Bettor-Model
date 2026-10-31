@@ -1,0 +1,1 @@
+import{t as e}from"./useRouter-DM4VmKDW.js";import{f as t,u as n}from"./button-CAN_9LXY.js";var r=t(n(),1);function i(t){let n=e();return r.useCallback(e=>n.navigate({...e,from:e.from??t?.from}),[t?.from,n])}export{i as t};
