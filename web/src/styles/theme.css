@@ -1,0 +1,111 @@
+/* DeVig palette: dark matches the classic app (docs/index.html); light is its daytime twin. */
+:root {
+  --radius: 0.75rem;
+  --background: #f6f4ef;
+  --foreground: #161a21;
+  --card: #ffffff;
+  --card-foreground: #161a21;
+  --popover: #ffffff;
+  --popover-foreground: #161a21;
+  --primary: #a8711f;
+  --primary-foreground: #ffffff;
+  --secondary: #ece8df;
+  --secondary-foreground: #161a21;
+  --muted: #ece8df;
+  --muted-foreground: #5d6575;
+  --accent: #f3e6cf;
+  --accent-foreground: #4a3109;
+  --destructive: #b8423f;
+  --good: #1f8a52;
+  --bad: #b8423f;
+  --border: #dfd9cc;
+  --input: #d4cdbd;
+  --ring: #a8711f;
+  --chart-1: #a8711f;
+  --chart-2: #2f6fb0;
+  --chart-3: #1f8a52;
+  --chart-4: #8a5cc2;
+  --chart-5: #b8423f;
+
+  --sidebar: #efece5;
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  --background: #0c0f14;
+  --foreground: #e9ecf2;
+  --card: #151a22;
+  --card-foreground: #e9ecf2;
+  --popover: #1b212b;
+  --popover-foreground: #e9ecf2;
+  --primary: #e0a656;
+  --primary-foreground: #1a1206;
+  --secondary: #1b212b;
+  --secondary-foreground: #e9ecf2;
+  --muted: #1b212b;
+  --muted-foreground: #9aa4b6;
+  --accent: #2c2214;
+  --accent-foreground: #f2bd78;
+  --destructive: #e2807f;
+  --good: #57c98c;
+  --bad: #e2807f;
+  --border: #2a313d;
+  --input: #38414f;
+  --ring: #e0a656;
+  --chart-1: #e0a656;
+  --chart-2: #6aa8e8;
+  --chart-3: #57c98c;
+  --chart-4: #b48ae6;
+  --chart-5: #e2807f;
+
+  --sidebar: #0f1218;
+}
+
+@theme inline {
+  --font-inter: 'Inter', 'sans-serif';
+  --font-manrope: 'Manrope', 'sans-serif';
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
