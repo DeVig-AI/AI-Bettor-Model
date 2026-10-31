@@ -1,11 +1,11 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
-import { sidebarData } from './data/sidebar-data'
+import { morePages, sidebarData } from './data/sidebar-data'
 
 // Phone navigation: the same pages as the sidebar, as a bottom tab bar within thumb reach.
 export function MobileTabBar() {
   const path = useLocation({ select: (l) => l.pathname })
-  const items = sidebarData.navGroups.flatMap((g) => g.items)
+  const items = sidebarData.navGroups.flatMap((g) => g.items).filter((i) => i.only !== 'sidebar')
   return (
     <nav
       aria-label='Main'
@@ -16,7 +16,7 @@ export function MobileTabBar() {
       <ul className='grid' style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
         {items.map((item) => {
           if (!item.url) return null
-          const active = path === item.url
+          const active = path === item.url || (item.url === '/more' && morePages.includes(path))
           const Icon = item.icon
           return (
             <li key={item.title}>

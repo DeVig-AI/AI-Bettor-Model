@@ -4,6 +4,8 @@ type BaseNavItem = {
   title: string
   badge?: string
   icon?: React.ElementType
+  // where it shows: the phone's bottom tab bar, the computer's sidebar, or both (the default)
+  only?: 'tabs' | 'sidebar'
 }
 
 type NavLink = BaseNavItem & {
