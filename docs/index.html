@@ -1712,6 +1712,39 @@
         Math.abs(Date.parse(x.date + "T12:00:00Z") - kt) < 36 * 3600 * 1000;
     })[0] || null;
   }
+  // Polymarket's price for the same game (live/poly_lines.json): its win chance next to Kalshi's, and which of the two
+  // is cheaper for each team. Kalshi's cost includes its fee; Polymarket's is its ask, before any fee it charges.
+  var polyDoc = null;
+  function polyFor(g){
+    if(!polyDoc || !g.kickoff_time) return null;
+    var kt = new Date(g.kickoff_time).getTime();
+    return (polyDoc.games || []).filter(function(x){
+      return x.sport === (g.sport || "NFL") && x.away === g.away_team && x.home === g.home_team &&
+        Math.abs(Date.parse(x.kickoff) - kt) < 36 * 3600 * 1000;
+    })[0] || null;
+  }
+  function polyCompareEl(g){
+    var p = polyFor(g), m = g.market || {};
+    if(!p || Date.parse(p.kickoff) <= Date.now()) return null;
+    var kA = impliedProb(m.moneyline_away), kH = impliedProb(m.moneyline_home);
+    var kChance = devigTwoWay(m.moneyline_home, m.moneyline_away, m.book || "Kalshi");
+    var pChance = (p.home_bid + p.home_ask) / 2;
+    function cents(v){ return v == null ? "—" : Math.round(v * 100) + "¢"; }
+    function row(team, k, q){
+      var best = k != null && q != null && Math.round(k * 100) !== Math.round(q * 100) ? (k < q ? "k" : "p") : "";
+      return '<div class="stat-row"><span class="muted">' + escapeHtml(team) + ' to win</span><span class="v tabular">' +
+        (best === "k" ? '<b style="color:var(--good)">Kalshi ' + cents(k) + '</b>' : 'Kalshi ' + cents(k)) + ' · ' +
+        (best === "p" ? '<b style="color:var(--good)">Polymarket ' + cents(q) + '</b>' : 'Polymarket ' + cents(q)) + '</span></div>';
+    }
+    var box = el("div", "poly-cmp");
+    box.style.padding = "0 16px 12px";
+    var gap = kChance ? Math.round(Math.abs(kChance.a - pChance) * 100) : null;
+    box.innerHTML = '<div class="bb-sec">Kalshi vs Polymarket</div>' + row(g.away_team, kA, p.away_ask) + row(g.home_team, kH, p.home_ask) +
+      '<div class="faint" style="margin-top:6px">' + (kChance ? escapeHtml(g.home_team) + ' win chance: Kalshi ' + Math.round(kChance.a * 100) + '% · Polymarket ' +
+        Math.round(pChance * 100) + '%' + (gap >= 3 ? ' — the two markets disagree by ' + gap + ' points.' : '.') + ' ' : '') +
+      'Cost to win $1, cheaper one in green. Kalshi\'s includes its fee; Polymarket\'s is before any fee it charges.</div>';
+    return box;
+  }
   function spreadPt(p){ return (p > 0 ? "+" : "") + p; }
   function spreadKey(g, team, point){
     return "SPREAD|" + (g.sport || "NFL") + "|" + g.away_team + " @ " + g.home_team + "|" + String(g.kickoff_time || "").slice(0, 10) + "|" + team + "|" + point;
@@ -3273,6 +3306,8 @@
     var sum = gameHead(g, {});
     if(sum.live) card.classList.add("is-live");
     card.appendChild(el("div", "game-head gp-head", sum.html));
+    var pc = polyCompareEl(g);
+    if(pc) card.appendChild(pc);
     card.appendChild(gameDetailsEl(g, gamePageTabs(g, lg, gd)));
     root.appendChild(card);
     checkMoments(g, gd, card);
@@ -4398,6 +4433,7 @@
           var x = d.data();
           if(x && x.doc === "NFL_PROPS_LIVE") liveDoc = x;
           if(x && x.doc === "GAME_LINES"){ linesDoc = x; setTimeout(renderHome, 0); }
+          if(x && x.doc === "POLY_LINES"){ polyDoc = x; if(gamePage) setTimeout(function(){ renderGamePage(true); }, 0); }
           if(x && x.doc === "LIVE_LINES") otherLive = x;
           if(x && x.doc === "CFB_HISTORY"){ cfbHistory = x; setTimeout(renderPast, 0); }
           if(x && x.doc === "PROPS_ARCHIVE"){ propsArchive = x; setTimeout(renderProps, 0); }
