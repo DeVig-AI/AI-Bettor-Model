@@ -1,6 +1,6 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-10-31T16:25:02Z by research/lab/report.py. Constitution v13 (`9b932a4581d2`). Do not edit by hand._
+_Generated 2026-10-31T16:32:34Z by research/lab/report.py. Constitution v13 (`9b932a4581d2`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -18,7 +18,7 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Search round 611 (CFB, running)** 2026-10-31T16:05:00Z: 623 of 800 models scored on 2018–2021
+- **Search round 611** 2026-10-31T16:32:29Z: 800 models scored → 40 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 610** 2026-10-31T15:40:17Z: 800 models scored → 154 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 609** 2026-10-31T14:45:28Z: 800 models scored → 41 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 608** 2026-10-31T13:48:16Z: 810 models scored → 36 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
