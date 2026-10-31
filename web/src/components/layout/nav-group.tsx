@@ -40,7 +40,7 @@ export function NavGroup({ title, items }: NavGroupProps) {
     <SidebarGroup>
       {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
       <SidebarMenu>
-        {items.map((item) => {
+        {items.filter((item) => item.only !== 'tabs').map((item) => {
           const key = `${item.title}-${item.url}`
 
           if (!item.items)

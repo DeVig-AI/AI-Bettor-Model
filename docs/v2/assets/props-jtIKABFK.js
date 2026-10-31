@@ -1,0 +1,1 @@
+import{n as e}from"./props-D8KNtFus.js";var t=e;export{t as component};

@@ -36,7 +36,7 @@ export function CommandMenu() {
           <CommandEmpty>No results found.</CommandEmpty>
           {sidebarData.navGroups.map((group) => (
             <CommandGroup key={group.title} heading={group.title}>
-              {group.items.map((navItem, i) => {
+              {group.items.filter((n) => n.only !== 'tabs').map((navItem, i) => {
                 if (navItem.url)
                   return (
                     <CommandItem

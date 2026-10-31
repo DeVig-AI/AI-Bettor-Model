@@ -16,7 +16,10 @@ import { Route as errors404RouteImport } from './routes/(errors)/404'
 import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
 import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
+import { Route as AuthenticatedModelsRouteImport } from './routes/_authenticated/models'
+import { Route as AuthenticatedMoreRouteImport } from './routes/_authenticated/more'
 import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated/parlay'
 import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
@@ -56,9 +59,24 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInjuriesRoute = AuthenticatedInjuriesRouteImport.update({
   id: '/injuries',
   path: '/injuries',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModelsRoute = AuthenticatedModelsRouteImport.update({
+  id: '/models',
+  path: '/models',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMoreRoute = AuthenticatedMoreRouteImport.update({
+  id: '/more',
+  path: '/more',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedParlayRoute = AuthenticatedParlayRouteImport.update({
@@ -90,7 +108,10 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/about': typeof AuthenticatedAboutRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
+  '/models': typeof AuthenticatedModelsRoute
+  '/more': typeof AuthenticatedMoreRoute
   '/parlay': typeof AuthenticatedParlayRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
@@ -102,7 +123,10 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/about': typeof AuthenticatedAboutRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
+  '/models': typeof AuthenticatedModelsRoute
+  '/more': typeof AuthenticatedMoreRoute
   '/parlay': typeof AuthenticatedParlayRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
@@ -117,7 +141,10 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/_authenticated/about': typeof AuthenticatedAboutRoute
   '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
+  '/_authenticated/models': typeof AuthenticatedModelsRoute
+  '/_authenticated/more': typeof AuthenticatedMoreRoute
   '/_authenticated/parlay': typeof AuthenticatedParlayRoute
   '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
@@ -133,7 +160,10 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/about'
     | '/injuries'
+    | '/models'
+    | '/more'
     | '/parlay'
     | '/props'
     | '/track-record'
@@ -145,7 +175,10 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/about'
     | '/injuries'
+    | '/models'
+    | '/more'
     | '/parlay'
     | '/props'
     | '/track-record'
@@ -159,7 +192,10 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/_authenticated/about'
     | '/_authenticated/injuries'
+    | '/_authenticated/models'
+    | '/_authenticated/more'
     | '/_authenticated/parlay'
     | '/_authenticated/props'
     | '/_authenticated/track-record'
@@ -227,11 +263,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/about': {
+      id: '/_authenticated/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AuthenticatedAboutRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/injuries': {
       id: '/_authenticated/injuries'
       path: '/injuries'
       fullPath: '/injuries'
       preLoaderRoute: typeof AuthenticatedInjuriesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/models': {
+      id: '/_authenticated/models'
+      path: '/models'
+      fullPath: '/models'
+      preLoaderRoute: typeof AuthenticatedModelsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/more': {
+      id: '/_authenticated/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof AuthenticatedMoreRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/parlay': {
@@ -266,7 +323,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
   AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
+  AuthenticatedModelsRoute: typeof AuthenticatedModelsRoute
+  AuthenticatedMoreRoute: typeof AuthenticatedMoreRoute
   AuthenticatedParlayRoute: typeof AuthenticatedParlayRoute
   AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
@@ -275,7 +335,10 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAboutRoute: AuthenticatedAboutRoute,
   AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
+  AuthenticatedModelsRoute: AuthenticatedModelsRoute,
+  AuthenticatedMoreRoute: AuthenticatedMoreRoute,
   AuthenticatedParlayRoute: AuthenticatedParlayRoute,
   AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
