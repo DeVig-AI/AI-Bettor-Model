@@ -16,7 +16,7 @@ export function MobileTabBar() {
       <ul className='grid' style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
         {items.map((item) => {
           if (!item.url) return null
-          const active = path === item.url || (item.url === '/more' && morePages.includes(path))
+          const active = path === item.url || (item.url === '/more' && morePages.some((m) => path === m || path.startsWith(`${m}/`)))
           const Icon = item.icon
           return (
             <li key={item.title}>

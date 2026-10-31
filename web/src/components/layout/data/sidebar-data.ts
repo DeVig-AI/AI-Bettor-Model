@@ -1,4 +1,4 @@
-import { BarChart3, MessageCircle, CalendarDays, Cross, Ellipsis, Info, Layers, Trophy, UserRound } from 'lucide-react'
+import { BarChart3, MessageCircle, Search, CalendarDays, Cross, Ellipsis, Info, Layers, Trophy, UserRound } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 // Phones get five tabs (the last is More, which lists the rest); the computer's sidebar lists every page.
@@ -13,6 +13,7 @@ export const sidebarData: SidebarData = {
         { title: 'Record', url: '/track-record', icon: Trophy, only: 'tabs' },
         { title: 'Track record', url: '/track-record', icon: Trophy, only: 'sidebar' },
         { title: 'Ask', url: '/ask', icon: MessageCircle, only: 'sidebar' },
+        { title: 'Research', url: '/research', icon: Search, only: 'sidebar' },
         { title: 'Injuries', url: '/injuries', icon: Cross, only: 'sidebar' },
         { title: 'Models', url: '/models', icon: BarChart3, only: 'sidebar' },
         { title: 'About', url: '/about', icon: Info, only: 'sidebar' },
@@ -23,4 +24,4 @@ export const sidebarData: SidebarData = {
 }
 
 // the pages the More tab lists
-export const morePages = ['/ask', '/injuries', '/models', '/about']
+export const morePages = ['/ask', '/research', '/injuries', '/models', '/about']
