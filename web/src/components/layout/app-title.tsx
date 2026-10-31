@@ -25,6 +25,7 @@ export function AppTitle() {
               <span className='flex items-center gap-2 truncate font-bold'>
                 <img src='./icon.svg' alt='' className='size-6 rounded-md' />
                 DeVig
+                <span className='rounded-full bg-devig px-1.5 font-mono text-[10px] leading-4 font-bold tracking-wider text-devig-ink'>BETA</span>
               </span>
               <span className='truncate text-xs text-muted-foreground'>
                 Odds, read straight.

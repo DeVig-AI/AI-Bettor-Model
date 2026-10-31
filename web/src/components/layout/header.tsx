@@ -20,7 +20,12 @@ export function Header({ className, children, ...props }: HeaderProps) {
       {...props}
     >
       <div className='flex h-14 items-center gap-3 px-4 md:h-16'>
-        <img src='./icon.svg' alt='DeVig' className='size-7 rounded-md md:hidden' />
+        <span className='relative shrink-0 md:hidden'>
+          <img src='./icon.svg' alt='DeVig' className='size-7 rounded-md' />
+          <span className='absolute -bottom-1.5 left-1/2 -translate-x-1/2 rounded-full bg-devig px-1 font-mono text-[8px] leading-[12px] font-bold tracking-wider text-devig-ink'>
+            BETA
+          </span>
+        </span>
         <SidebarTrigger variant='ghost' className='max-md:hidden' />
         <Separator orientation='vertical' className='h-6 max-md:hidden' />
         {children}
