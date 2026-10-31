@@ -1055,6 +1055,7 @@
       <div class="md-tabs" id="mdBet" role="tablist" aria-label="Bet type"></div>
       <div class="lab-scroll"><table class="lab-table" id="mdTable"></table></div>
       <div class="faint" id="mdNote" style="margin-top:8px"></div>
+      <div id="mdChampion" style="margin-top:10px; font-size:13px"></div>
     </div>
     <div class="card">
       <h3 style="margin-bottom:6px">Beat the closing line?</h3>
@@ -2300,6 +2301,30 @@
 
   // ---------- Models: DeVig next to published open-source models, graded the same way (comparison only) ----------
   var mdReport = null, mdGames = [], mdLoaded = false, mdSport = "NFL", mdBet = "ml";
+  var champDoc = null;   // live/champions_export.json: which model the app uses per sport, and any trial (CHAMPION_CHALLENGER_V1)
+
+  // "Who the app uses" under the Models table: the champion, a trial's progress, challengers' progress toward entry.
+  function championHtml(sport){
+    var slot = champDoc && champDoc.slots ? champDoc.slots[sport + ".ml"] : null;
+    if(!slot) return "";
+    var names = {devig: "DeVig", devig2: "DeVig 2.0", market: "Kalshi's price (DeVig has no model here)"};
+    ((mdReport && mdReport.models) || []).forEach(function(m){ if(!names[m.key]) names[m.key] = m.name; });
+    function nm(k){ return escapeHtml(names[k] || k); }
+    var out = '<b>Who the app uses:</b> ' + nm(slot.champion) + '.';
+    if(slot.trial){
+      out += ' <span class="pill neutral">Trial</span> ' + nm(slot.trial.challenger) + ' replaced ' + nm(slot.trial.previous) +
+        ' on ' + new Date(slot.trial.start).toLocaleDateString([], {month: "short", day: "numeric"}) + ': ' + (slot.trial.games || 0) +
+        ' of ' + slot.trial.target + ' trial games graded. It stays only if it\'s more accurate in every quarter of the trial and no worse on profit; ' +
+        nm(slot.trial.previous) + ' is still tracked beside it.';
+    }else if(slot.hold){
+      out += ' ' + escapeHtml(slot.hold) + '.';
+    }
+    (slot.challengers || []).forEach(function(c){
+      out += '<br><span class="faint">Challenger ' + nm(c.id) + ': ' + c.games + ' of ' + c.needed +
+        ' same games needed before it can replace it (it must be more accurate and no worse on profit).</span>';
+    });
+    return out;
+  }
   var MD_BETS = [["ml", "Moneyline"], ["spread", "Spread"], ["total", "Total"], ["props", "Props"]];
   function mdPct(x, dec){ return x == null ? "—" : dec ? (Math.round(x * 1000) / 10).toFixed(1) + "%" : Math.round(x * 100) + "%"; }
   function mdLine(team, pt){
@@ -2369,6 +2394,7 @@
       var since = r.tracking_since ? new Date(r.tracking_since) : null;
       noteEl.textContent = notes[mdBet] + " Pushes and ties don't count." + (since && !isNaN(since) && mdBet !== "props" ? " Tracking since " + since.toLocaleDateString([], {month: "short", day: "numeric", year: "numeric"}) + "; earlier games aren't counted." : "") + " — means the model doesn't make this kind of pick.";
     }
+    document.getElementById("mdChampion").innerHTML = championHtml(mdSport);
     var cl = r && r.sports && r.sports[mdSport] ? r.sports[mdSport].close || [] : [];
     document.getElementById("mdClose").innerHTML = !cl.length ? '<tr><td class="faint">' + (mdLoaded ? "Nothing to show yet." : "Loading…") + '</td></tr>' :
       '<tr><th>Model</th><th>Picks</th><th>Moved our way</th><th>Avg move</th></tr>' + cl.map(function(m){
@@ -3029,13 +3055,21 @@
     return d;
   }
 
+  // A model that replaced DeVig's own under CHAMPION_CHALLENGER_V1 brings its own cutoffs, fixed from its entry games.
+  function challengerTiers(g){
+    var t = g.model && g.model.tiers;
+    if(!t || t.top25 == null || t.top50 == null) return null;
+    function pct(x){ return x == null ? "n/a" : (Math.round(x * 1000) / 10) + "%"; }
+    return {top25: t.top25, top50: t.top50, top25AccPct: pct(t.acc_top25), top50AccPct: pct(t.acc_top50)};
+  }
+
   function computeDecisionBase(g){
     if(g.marketOnly)                 // a Kalshi-only game: its note says why there's no pick (no model for the sport, ...)
       return {action: "NO PICK", cls: "neutral", detail: (g.model && g.model.note) || "No model pick for this game."};
     if(!g.model || !g.model.available || g.model.winner_prob == null){
       return {action: "NO READ", cls: "neutral", detail: "Model hasn't synced a read for this game yet."};
     }
-    var th = CONF_THRESHOLDS[g.sport || "NFL"] || CONF_THRESHOLDS.NFL;
+    var th = challengerTiers(g) || CONF_THRESHOLDS[g.sport || "NFL"] || CONF_THRESHOLDS.NFL;
     var p = g.model.winner_prob;
     if(p >= th.top25){
       return {action: "ML", cls: "good", detail: "High confidence -- top 25% historically, " + th.top25AccPct + " accurate."};
@@ -3232,6 +3266,7 @@
         (started ? ' · ' + lt.won + ' won · ' + lt.lost + ' lost' + (lt.live ? ' · ' + lt.live + ' live' : '') : ' locked') + '</span>');
     }
     var tags = (g.trial ? ' <span class="pill neutral">Preseason trial</span>' : '') +
+      (g.model && g.model.model_label === "Trial" ? ' <span class="pill neutral" title="A new model that beat DeVig\'s on past games is on trial; DeVig\'s own pick is still tracked beside it.">Trial · new model</span>' : '') +
       (isPreviewGame(g) ? ' <span class="pill neutral">Preview</span>' : '');
     var pdoc = propsDocFor(g);
     if(pdoc && adv){
@@ -4453,6 +4488,13 @@
     try{
       dbApi.collection("models_games").onSnapshot(function(snap){
         mdGames = snap.docs.map(function(d){ return d.data(); });
+        renderModels();
+      });
+    }catch(e){}
+    try{
+      dbApi.collection("champions").onSnapshot(function(snap){
+        champDoc = null;
+        snap.docs.forEach(function(d){ var x = d.data(); if(x && x.doc === "CHAMPIONS_V1") champDoc = x; });
         renderModels();
       });
     }catch(e){}

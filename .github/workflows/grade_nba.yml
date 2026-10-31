@@ -70,7 +70,7 @@ jobs:
       - name: Export the app's NBA games (locked picks and results)
         if: always()
         working-directory: nba
-        run: python3 export_lineboard_nba.py
+        run: python3 export_lineboard_nba_v2.py
 
       - name: Commit and push if the database changed
         if: always()           # keep any grading/locking that succeeded even if a later step failed
