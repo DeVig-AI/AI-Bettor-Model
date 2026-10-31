@@ -1062,6 +1062,11 @@
       <div class="faint" style="margin-top:8px">The test professional bettors use. For each pick: Kalshi's price for the picked team when the pick was made, then its last price before the game. If the price keeps moving toward a model's picks, the market is coming round to it, which is the best early sign of a real edge. Win-loss records take hundreds of games to mean anything; this shows sooner. Points = percentage points of win chance (vig removed); "Moved our way" counts picks where the price moved toward the pick.</div>
     </div>
     <div class="card">
+      <h3 style="margin-bottom:6px">Do the percentages come true?</h3>
+      <div class="lab-scroll"><table class="lab-table" id="mdCalib"></table></div>
+      <div class="faint" style="margin-top:8px">Each model's win chances, grouped: of the games where it gave its side 60–70%, how many did that side win? An honest model's 65% wins about 65% of the time. Accuracy scores how close every chance was to what happened (log loss, lower is better), next to the Market's on the same games. Groups under 10 games are greyed out: too few to judge.</div>
+    </div>
+    <div class="card">
       <h3 style="margin-bottom:6px" id="mdGamesTitle">Picks</h3>
       <div id="mdGames"></div>
     </div>
@@ -1207,11 +1212,27 @@
     var s = (Math.abs(r % 1) === 0.5) ? Math.abs(r).toFixed(1) : Math.abs(r).toFixed(0);
     return (r > 0 ? "+" : (r < 0 ? "-" : "")) + s;
   }
-  function devigTwoWay(oA, oB){
+  // Fair chances with the vig removed. simpleA/simpleB split the vig in proportion. For a sportsbook, a/b use the power
+  // method instead (find k with pA^k + pB^k = 1), which takes more of the vig off the long shot: on 3,861 NFL closing
+  // moneylines (2006-2020) it scored better than the proportional split, which said big underdogs (under 15%) win
+  // 11.9% of the time when they won 10.1%. An exchange (Kalshi, Polymarket) has no built-in vig, only the bid-ask gap and
+  // the fee; there the proportional split matches the exchange's own mid price, so a/b stay proportional.
+  function isExchange(book){ return /kalshi|polymarket|novig|prophet|exchange/i.test(String(book || "")); }
+  function devigTwoWay(oA, oB, book){
     var pA = impliedProb(oA), pB = impliedProb(oB);
     if(pA == null || pB == null) return null;
-    var total = pA + pB;
-    return {a: pA/total, b: pB/total, vig: total - 1};
+    var total = pA + pB, a = pA / total;
+    if(!isExchange(book)){
+      var lo = 0.01, hi = 20;
+      for(var i = 0; i < 60; i++){ var k = (lo + hi) / 2; if(Math.pow(pA, k) + Math.pow(pB, k) > 1) lo = k; else hi = k; }
+      a = Math.pow(pA, (lo + hi) / 2);
+    }
+    return {a: a, b: 1 - a, simpleA: pA/total, simpleB: pB/total, vig: total - 1};
+  }
+
+  function fairRange(p, q){
+    if(q == null || Math.abs(p - q) < 0.0005) return "";
+    return ' <span class="faint">(' + fmtPct(q) + ')</span>';
   }
 
   // ---------- theme-free helpers ----------
@@ -1346,14 +1367,15 @@
 
     // de-vig for exactly-two-line entries of the same market
     if((entry.lines || []).length === 2){
-      var dv = devigTwoWay(entry.lines[0].odds, entry.lines[1].odds);
+      var dv = devigTwoWay(entry.lines[0].odds, entry.lines[1].odds, entry.book || entry.lines[0].book);
       if(dv){
         var statCard = el("div", null);
         statCard.style.marginTop = "12px";
         statCard.innerHTML =
           '<div class="stat-row"><span class="muted">Book\'s built-in edge (vig)</span><span class="v tabular">' + fmtPct(dv.vig) + '</span></div>' +
-          '<div class="stat-row"><span class="muted">Fair probability — ' + escapeHtml(entry.lines[0].side || "A") + '</span><span class="v tabular">' + fmtPct(dv.a) + '</span></div>' +
-          '<div class="stat-row"><span class="muted">Fair probability — ' + escapeHtml(entry.lines[1].side || "B") + '</span><span class="v tabular">' + fmtPct(dv.b) + '</span></div>';
+          '<div class="stat-row"><span class="muted">Fair probability — ' + escapeHtml(entry.lines[0].side || "A") + '</span><span class="v tabular">' + fmtPct(dv.a) + fairRange(dv.a, dv.simpleA) + '</span></div>' +
+          '<div class="stat-row"><span class="muted">Fair probability — ' + escapeHtml(entry.lines[1].side || "B") + '</span><span class="v tabular">' + fmtPct(dv.b) + fairRange(dv.b, dv.simpleB) + '</span></div>' +
+          (Math.abs(dv.a - dv.simpleA) >= 0.0005 ? '<div class="faint" style="margin-top:4px">Fair = the vig taken off mostly the long shot: books overprice long shots, and on past NFL odds this was closer to what happened. In brackets: the vig split in proportion instead.</div>' : '');
         var barA = el("div", "bar-track"); var fillA = el("div","bar-fill"); fillA.style.width = (dv.a*100).toFixed(1)+"%"; barA.appendChild(fillA);
         statCard.appendChild(barA);
         card.appendChild(statCard);
@@ -2267,6 +2289,7 @@
     if(mdBet === "total") return p.total != null ? "O/U " + p.total : null;
     return null;
   }
+  var CAL_LABELS = ["50–60%", "60–70%", "70–80%", "80%+"];
   function renderModels(){
     var sp = document.getElementById("mdSport");
     if(!sp || panels.models.hidden) return;
@@ -2320,6 +2343,19 @@
         var avg = m.avg == null ? "—" : (m.avg > 0 ? "+" : m.avg < 0 ? "\u2212" : "") + (Math.abs(m.avg) * 100).toFixed(1) + " pts";
         return '<tr><td>' + escapeHtml(m.name) + '</td><td>' + (m.n || 0) + '</td><td>' + (m.n ? m.beat + " of " + m.n : "—") + '</td>' +
           '<td style="color:' + col + '">' + avg + '</td></tr>';
+      }).join("");
+    var cal = r && r.sports && r.sports[mdSport] ? r.sports[mdSport].calib || [] : [];
+    document.getElementById("mdCalib").innerHTML = !cal.length ? '<tr><td class="faint">' + (mdLoaded ? "No graded games with win chances yet." : "Loading…") + '</td></tr>' :
+      '<tr><th>Model</th><th>Games</th><th>Accuracy</th>' + CAL_LABELS.map(function(l){ return '<th>' + l + '</th>'; }).join("") + '</tr>' + cal.map(function(m){
+        var bench = m.key === "kalshi";
+        var acc = m.logloss.toFixed(3) + (bench ? "" : '<br><span class="faint" style="font-size:11px">Market ' + m.mkt_logloss.toFixed(3) + '</span>');
+        var col = bench || m.logloss === m.mkt_logloss ? "inherit" : (m.logloss < m.mkt_logloss ? "var(--good)" : "var(--bad)");
+        return '<tr' + (bench ? ' class="bench"' : '') + '><td>' + escapeHtml(m.name) + '</td><td>' + m.n + '</td><td style="color:' + col + '">' + acc + '</td>' +
+          (m.bins || []).map(function(b){
+            if(!b.n) return '<td>—</td>';
+            return '<td' + (b.n < 10 ? ' class="faint"' : '') + '>won ' + Math.round(b.won * 100) + '%<br><span class="faint" style="font-size:11px">said ' +
+              Math.round(b.said * 100) + '% · ' + b.n + '</span></td>';
+          }).join("") + '</tr>';
       }).join("");
     // this sport's games: upcoming first, then the last few days' finals
     var gw = document.getElementById("mdGames");
@@ -3736,7 +3772,7 @@
     }
     // no model %: Kalshi's win chance (its live price while the game is on), vig taken out
     var kml = lg && lg.state === "in" && lg.kalshi_game && lg.kalshi_game.moneyline;
-    var kLive = kml ? devigTwoWay(kml.home, kml.away) : null, kPre = devigTwoWay(m.moneyline_home, m.moneyline_away);
+    var kLive = kml ? devigTwoWay(kml.home, kml.away, "Kalshi") : null, kPre = devigTwoWay(m.moneyline_home, m.moneyline_away, m.book);
     [["away", g.away_team], ["home", g.home_team]].forEach(function(x){
       var side = x[0], team = x[1] || (side === "away" ? "Away" : "Home");
       var pct = (mm.available && mm.winner_prob != null && mm.winner_side) ? (mm.winner_side === team ? mm.winner_prob : 1 - mm.winner_prob) : null;
@@ -3881,6 +3917,7 @@
         row.innerHTML = '<div class="rk">' + (i + 1) + '</div>' +
           '<div style="min-width:0"><div class="bet">' + escapeHtml(x.r.player) + ' · ' + escapeHtml(propBetTxt(x.r, x.e.side)) + '</div>' +
           '<div class="sub">' + propTierPill(x.e.tier) + ' needs ' + needsPct(x.e.price, true) + '% · model ' + Math.round(x.e.chance * 100) + '%' +
+          ' · ' + retTxt(x.e.chance, x.e.price + propFee(x.e.price)) + ' per $1 if the model is right' +
           (x.e.injury ? ' · ' + escapeHtml(x.e.injury) : '') + ' ' + trkBtn("p", pickTrackKey(doc, {player: x.r.player, stat: x.r.stat, line: x.r.line, side: x.e.side})) + '</div></div>' +
           '<div class="edge">' + exOddsTxt(x.e.price, true) + '<small>Kalshi</small></div>';
         if(g){
@@ -4446,7 +4483,7 @@
     return "Over " + line + " " + propStat(stat, true);
   }
   function centsTxt(p){ return (p == null || !isFinite(p)) ? "—" : Math.round(p * 100) + "¢"; }
-  // Exchange price -> sportsbook odds. withFee adds Kalshi's estimated fee to the cost, so the odds are what you really get.
+  // Exchange price -> sportsbook odds. withFee adds Kalshi's fee (for a $10 order) to the cost, so the odds are what you really get.
   function exOdds(price, withFee){
     if(price == null || !isFinite(price)) return null;
     var c = withFee ? price + propFee(price) : price;
@@ -4458,7 +4495,18 @@
     if(c == null || !isFinite(c) || c <= 0 || c >= 1) return null;
     return c >= 0.5 ? -100 * c / (1 - c) : 100 * (1 - c) / c;
   }
-  function propFee(p){ return 0.07 * p * (1 - p); }
+  function retTxt(chance, cost){
+    var r = chance / cost - 1;
+    return (r >= 0 ? "+" : "−") + Math.round(Math.abs(r) * 100) + "%";
+  }
+  // Kalshi's taker fee is 0.07 x contracts x P x (1-P) for the whole order, rounded up to the next cent, so a small order
+  // pays more per contract (one 5c contract pays 1c, not 0.33c). Shown per contract for a $KALSHI_ORDER order.
+  var KALSHI_ORDER = 10;
+  function propFee(p, dollars){
+    if(!(p > 0 && p < 1)) return 0;
+    var n = Math.max(1, Math.floor((dollars || KALSHI_ORDER) / p + 1e-9));
+    return Math.ceil(0.07 * n * p * (1 - p) * 100 - 1e-9) / 100 / n;
+  }
   function propRows(doc){
     var cols = doc.cols || [], idx = {};
     cols.forEach(function(c, i){ idx[c] = i; });
@@ -4641,7 +4689,7 @@
     var box = document.getElementById("propsGameTop");
     if(!box) return;
     box.innerHTML = "";
-    box.appendChild(el("h3", null, "Most confident · " + escapeHtml(propGameLabel(doc))));
+    box.appendChild(el("h3", null, "Biggest gaps vs Kalshi · " + escapeHtml(propGameLabel(doc))));
     if(propStarted(doc)){ box.appendChild(el("div", "bb-empty", "This game has started, so these prices are old.")); return; }
     var best = {};
     propRows(doc).forEach(function(r){
@@ -4657,6 +4705,7 @@
       row.innerHTML = '<div class="rk">' + (i + 1) + '</div>' +
         '<div style="min-width:0"><div class="bet">' + escapeHtml(x.r.player) + ' · ' + escapeHtml(propBetTxt(x.r, x.e.side)) + '</div>' +
         '<div class="sub">' + propTierPill(x.e.tier) + ' needs ' + needsPct(x.e.price, true) + '% · model ' + Math.round(x.e.chance * 100) + '%' +
+          ' · ' + retTxt(x.e.chance, x.e.price + propFee(x.e.price)) + ' per $1 if the model is right' +
         (x.e.injury ? ' · ' + escapeHtml(x.e.injury) : '') + '</div></div>' +
         '<div class="edge">' + exOddsTxt(x.e.price, true) + '<small>Kalshi odds</small></div>';
       row.style.cursor = "pointer";
@@ -5083,7 +5132,7 @@
     function line(fn){ return pts.map(function(q, i){ return (i ? "L" : "M") + x(q[0]).toFixed(1) + " " + y(fn(q)).toFixed(1); }).join(" "); }
     var cHome = chartColor(g.home_team, "var(--accent)", g.sport), cAway = chartColor(g.away_team, "var(--ink-soft)", g.sport);
     if(cHome === cAway) cAway = "var(--ink-soft)";
-    var dv = devigTwoWay((g.market || {}).moneyline_home, (g.market || {}).moneyline_away);
+    var dv = devigTwoWay((g.market || {}).moneyline_home, (g.market || {}).moneyline_away, (g.market || {}).book);
     var ko = g.kickoff_time ? new Date(g.kickoff_time).getTime() / 1000 : null;
     var koIn = ko && ko > t0 && ko < t1;
     var grid = [0.25, 0.5, 0.75].map(function(v){
@@ -6097,12 +6146,13 @@
       if(isFinite(k) && k <= now) return;                                    // already started
       var pc = priceCheck(g), mm = g.model || {};
       if(!pc) return;                                                        // the model has no pick here
-      var m = g.market, dv = devigTwoWay(m.moneyline_home, m.moneyline_away);
+      var m = g.market, dv = devigTwoWay(m.moneyline_home, m.moneyline_away, m.book);
       var fair = dv ? (mm.winner_side === g.home_team ? dv.a : dv.b) : null;
       out.push({g: g, team: mm.winner_side, odds: pc.odds, p: pc.p, fair: fair, dec: decOdds(pc.odds), sport: sp, game: gameLabelFor(g), steep: pc.steep});
     });
-    // fairly priced picks first (most confident first), then the ones the model thinks cost too much
-    return out.sort(function(a, b){ return (a.steep ? 1 : 0) - (b.steep ? 1 : 0) || b.p - a.p; });
+    // fairly priced picks first, likeliest by the market's fair chance first (the models haven't beaten the market),
+    // then the ones the model thinks cost too much
+    return out.sort(function(a, b){ return (a.steep ? 1 : 0) - (b.steep ? 1 : 0) || ((b.fair != null ? b.fair : b.p) - (a.fair != null ? a.fair : a.p)); });
   }
   var bpPage = 0;
   function bpStake(){ var v = parseFloat(String((document.getElementById("bpStake") || {}).value || "").replace(/[$,]/g, "")); return isFinite(v) && v > 0 ? v : 10; }
@@ -6194,7 +6244,7 @@
       var sp = g.sport || "NFL";
       if(sportFilter !== "ALL" && sp !== sportFilter) return;
       var m = g.market;
-      var dv = devigTwoWay(m.moneyline_home, m.moneyline_away);
+      var dv = devigTwoWay(m.moneyline_home, m.moneyline_away, m.book);
       if(!dv) return;
       var d = computeDecision(g), mm = g.model || {};
       var gameLabel = gameLabelFor(g);
@@ -6445,7 +6495,7 @@
       return (a.kickoff_time || "").localeCompare(b.kickoff_time || "");
     }).map(function(g){
       var d = computeDecision(g), m = g.market || {}, mm = g.model || {};
-      var dv = devigTwoWay(m.moneyline_home, m.moneyline_away);
+      var dv = devigTwoWay(m.moneyline_home, m.moneyline_away, m.book);
       var side = mm.winner_side;
       var mktSide = dv ? (side === g.home_team ? dv.a : (side === g.away_team ? dv.b : null)) : null;
       var o = {
