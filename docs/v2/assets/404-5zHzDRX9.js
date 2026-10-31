@@ -1,0 +1,1 @@
+import{t as e}from"./index-0Fs_-9yr.js";var t=e;export{t as component};

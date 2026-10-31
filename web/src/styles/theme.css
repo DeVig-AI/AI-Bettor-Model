@@ -1,0 +1,129 @@
+/* DeVig, Matchup Plates (DESIGN.md). Dark = night-game ink with DeVig amber reserved for DeVig's own read;
+   light is its daytime twin. Team colors come from the data, never from these tokens. */
+:root {
+  --radius: 0.875rem;
+  --background: #f4f2ee;
+  --foreground: #12151c;
+  --card: #ffffff;
+  --card-foreground: #12151c;
+  --popover: #ffffff;
+  --popover-foreground: #12151c;
+  --primary: #8a5a12;
+  --primary-foreground: #ffffff;
+  --secondary: #e9e5dd;
+  --secondary-foreground: #12151c;
+  --muted: #e9e5dd;
+  --muted-foreground: #565e6e;
+  --accent: #f3e3c6;
+  --accent-foreground: #3d2a08;
+  --destructive: #a8302c;
+  --good: #1d7a47;
+  --bad: #a8302c;
+  --live: #1d7a47;
+  --side-away: #b9c2d0;
+  --side-home: #7d8aa0;
+  --devig: #8a5a12;
+  --devig-ink: #ffffff;
+  --border: #ddd7cb;
+  --input: #cfc8b9;
+  --ring: #8a5a12;
+  --chart-1: #8a5a12;
+  --chart-2: #2f6fb0;
+  --chart-3: #1d7a47;
+  --chart-4: #7a4fb8;
+  --chart-5: #a8302c;
+
+  --sidebar: #ebe8e1;
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  --background: #0a0b0f;
+  --foreground: #f2f4f8;
+  --card: #12151c;
+  --card-foreground: #f2f4f8;
+  --popover: #161a22;
+  --popover-foreground: #f2f4f8;
+  --primary: #ffb547;
+  --primary-foreground: #1a1206;
+  --secondary: #1e222c;
+  --secondary-foreground: #f2f4f8;
+  --muted: #1e222c;
+  --muted-foreground: #9aa3b5;
+  --accent: #241a0c;
+  --accent-foreground: #ffcf85;
+  --destructive: #ffa3a3;
+  --good: #8ef0b4;
+  --bad: #ffa3a3;
+  --live: #4ade80;
+  --side-away: #3a4556;
+  --side-home: #66748b;
+  --devig: #ffb547;
+  --devig-ink: #1a1206;
+  --border: #262b37;
+  --input: #2e3442;
+  --ring: #ffb547;
+  --chart-1: #ffb547;
+  --chart-2: #6aa8e8;
+  --chart-3: #8ef0b4;
+  --chart-4: #b48ae6;
+  --chart-5: #ffa3a3;
+
+  --sidebar: #0d0f14;
+}
+
+@theme inline {
+  --font-barlow: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  --font-system: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-condensed: 'Barlow Semi Condensed', 'Barlow', ui-sans-serif, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Barlow Semi Condensed', ui-sans-serif, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-good: var(--good);
+  --color-side-away: var(--side-away);
+  --color-side-home: var(--side-home);
+  --color-devig: var(--devig);
+  --color-devig-ink: var(--devig-ink);
+  --color-live: var(--live);
+  --color-bad: var(--bad);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
