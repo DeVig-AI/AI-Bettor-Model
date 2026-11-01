@@ -11,6 +11,7 @@ import { overTxt, statName, underTxt } from '@/lib/props'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { PlayerPhoto } from '@/components/team-logo'
+import { useRosterPlayer } from '@/lib/headshots'
 import { propLeg } from '../parlay/legs'
 import type { Shown } from '.'
 
@@ -88,10 +89,14 @@ const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'nu
 const hex = (c?: string | null) => (c ? (c.startsWith('#') ? c : `#${c}`) : null)
 
 // The player's team and its color, when DeVig knows the team (the NBA explainer says which side the player is on)
-export function propTeam(w: PropWhy | null, game?: GameRow | null) {
-  const team = w?.team ?? null
+// who the player is for the photo: the props explanation's id and team when there is one (NBA), else the roster map
+export function usePropPlayer(l: Shown, w: PropWhy | null, game?: GameRow | null) {
+  const r = useRosterPlayer(l.sport, l.player, l.away, l.home)
+  const unit = /\bD\/ST$/.test(l.player)
+  const pid = w?.pid ?? r.pid
+  const team = w?.team ?? r.team ?? (unit ? [l.away, l.home].find((c) => l.player.startsWith(`${c} `)) ?? null : null)
   const color = team && game?.colors ? hex(team === game.home ? game.colors.home : team === game.away ? game.colors.away : null) : null
-  return { team, color }
+  return { pid, team, color, unit }
 }
 
 // What opens when someone taps Over or Under on a prop (Props, a game's page, or a leg in the parlay): the player,
@@ -101,7 +106,7 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
   open: boolean; onOpenChange: (v: boolean) => void
 }) {
   const { toggle, has } = useSlip()
-  const { team, color } = propTeam(w, game)
+  const { pid, team, color, unit } = usePropPlayer(l, w, game)
   const bg = color ?? 'var(--side-home)'
   const over = side === 'over'
   const st = statName(l.stat, true)
@@ -125,7 +130,7 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
         <div className='relative flex shrink-0 flex-col items-center gap-2 overflow-hidden rounded-t-3xl px-5 pt-7 pb-5 text-white' style={{ background: bg }}>
           <span aria-hidden='true' className='absolute inset-0 bg-linear-to-b from-transparent from-40% to-black/35' />
           <span aria-hidden='true' className='absolute top-2.5 h-1.5 w-10 rounded-full bg-white/45' />
-          <PlayerPhoto sport={l.sport} pid={w?.pid} team={team} teamColor={color} className='size-24 [&>span:first-child]:bg-white/90 [&>span:first-child]:shadow-[0_6px_24px_rgba(0,0,0,0.4)]' badge='size-9 text-[11px]' />
+          <PlayerPhoto sport={l.sport} unit={unit} pid={pid} team={team} teamColor={color} className='size-24 [&>span:first-child]:bg-white/90 [&>span:first-child]:shadow-[0_6px_24px_rgba(0,0,0,0.4)]' badge='size-9 text-[11px]' />
           <div className='relative text-center'>
             <SheetTitle className='font-display text-[28px] leading-none font-black text-white'>{l.player}</SheetTitle>
             <SheetDescription className='mt-1 text-sm text-white/85'>{sub}</SheetDescription>

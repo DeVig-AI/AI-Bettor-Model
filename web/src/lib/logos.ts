@@ -9,12 +9,15 @@ const ESPN_CODE: Record<string, Record<string, string>> = {
 }
 const sized = (path: string, px: number) => `https://a.espncdn.com/combiner/i?img=${path}&w=${px}&h=${px}`
 
+// the board's team code as ESPN spells it (lowercase), e.g. NBA GSW -> gs
+export const espnCode = (sport: string, code: string) => (ESPN_CODE[sport]?.[code] ?? code).toLowerCase()
+
 // id: ESPN's team id, which college teams need (their codes aren't unique)
 export function teamLogo(sport: string, code: string, id?: string | null, px = 128): string | null {
   const lg = LEAGUE[sport]
   if (!lg || !code) return null
   if (lg === 'ncaa') return id ? sized(`/i/teamlogos/ncaa/500/${id}.png`, px) : null
-  return sized(`/i/teamlogos/${lg}/500/${(ESPN_CODE[sport]?.[code] ?? code).toLowerCase()}.png`, px)
+  return sized(`/i/teamlogos/${lg}/500/${espnCode(sport, code)}.png`, px)
 }
 
 // pid: ESPN's athlete id (the NBA props model learns from ESPN box scores, so its explanations carry it)
