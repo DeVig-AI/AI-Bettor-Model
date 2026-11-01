@@ -20,6 +20,8 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { mlLeg } from './legs'
+import { LinkReader } from '../check-bet/link-reader'
+import { ScreenshotReader } from '../check-bet/scan'
 
 const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—')
 const money = (x: number) => `$${x.toFixed(2)}`
@@ -77,7 +79,7 @@ function SlipCard() {
   const weakestGap = weakest ? weakest.devig! - weakest.fair! : 0
   if (!legs.length) {
     return (
-      <section className='rounded-[18px] border border-dashed p-6 text-center'>
+      <section id='your-parlay' className='scroll-mt-20 rounded-[18px] border border-dashed p-6 text-center'>
         <p className='font-display text-2xl font-black'>Your slip is empty</p>
         <p className='mx-auto mt-1 max-w-sm text-sm text-muted-foreground'>
           Tap a team on any game in <Link to='/' className='text-devig'>Games</Link> to add it, or let the long-shot builder below
@@ -88,7 +90,7 @@ function SlipCard() {
   }
   const value = m.devig != null && m.devig > m.needs
   return (
-    <section aria-label='Your parlay' className='flex flex-col gap-4'>
+    <section id='your-parlay' aria-label='Your parlay' className='flex scroll-mt-20 flex-col gap-4'>
       <div className='flex items-baseline justify-between px-1'>
         <h2 className='font-display text-[22px] font-extrabold'>Your parlay, explained</h2>
         <button type='button' onClick={() => replace([])} className='text-sm text-muted-foreground hover:text-foreground'>Clear</button>
@@ -384,6 +386,33 @@ function LongShot() {
   )
 }
 
+// ---------- check a bet you already made: a screenshot (any book) or a Kalshi link ----------
+function CheckBet() {
+  const [how, setHow] = useState<'shot' | 'link'>('shot')
+  const toSlip = () => setTimeout(() => document.getElementById('your-parlay')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+  return (
+    <section aria-label='Check a bet you made' className='flex flex-col gap-3'>
+      <div className='flex flex-wrap items-end justify-between gap-3'>
+        <div>
+          <h2 className='font-display text-[22px] font-extrabold'>Check a bet you made</h2>
+          <p className='mt-0.5 text-sm text-muted-foreground'>See every leg, what it needs, and how the price compares.</p>
+        </div>
+        <div role='radiogroup' aria-label='How' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
+          {([['shot', 'Screenshot'], ['link', 'Kalshi link']] as const).map(([k, t]) => (
+            <button key={k} type='button' role='radio' aria-checked={how === k} onClick={() => setHow(k)}
+              className={cn('h-9 rounded-lg px-3 text-sm font-semibold transition-colors duration-150', how === k ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+      {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : (
+        <LinkReader title='From a Kalshi link' blurb={<>On Kalshi, tap Share on your bet and paste the link here: a combo shows every leg, what&apos;s won, and the prices now.</>} />
+      )}
+    </section>
+  )
+}
+
 export function Parlay() {
   return (
     <>
@@ -395,6 +424,7 @@ export function Parlay() {
         <ThemeSwitch />
       </Header>
       <Main className='flex flex-col gap-8'>
+        <CheckBet />
         <SlipCard />
         <LongShot />
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>

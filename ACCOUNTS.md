@@ -75,6 +75,13 @@ It uses the first of these that's set up:
 Set up both and Gemini answers first, with Cloudflare as the backup when Gemini's daily allowance runs out.
 Retry the deployment after adding either. When everything is used up, the chat says so and works again the next day.
 
+## Screenshot reading (Parlay → Check a bet you made)
+
+`functions/api/scan.js` reads a screenshot of a bet slip with the same AI and the same setup as the chat: Gemini
+(`GEMINI_API_KEY`, reads images well) first, then Cloudflare's Llama vision model through the `AI` binding (weaker). The
+first time the Cloudflare model runs it accepts Meta's license for the account automatically. Open accounts only, 20
+screenshots each per day; the image isn't stored. On Google's free tier Google may use the images to improve its products.
+
 ## Check it
 
 Open the site, tap the profile button (top right) → **Sign in or create account**, enter the email code, then type the
