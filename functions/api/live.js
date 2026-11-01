@@ -6,6 +6,8 @@
 // situation (down, distance, field spot) for the field tracker. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
+// &event=<id>&wrap=1 also returns wrap: ESPN's summary cut down to what the v2 game wrap-up reads (header, box score,
+// win chances, and the play-by-play as text), so a phone doesn't download the whole thing.
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
 const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
@@ -348,6 +350,7 @@ export async function handle(request, fetcher = fetch) {
       const kind = KIND[sport], d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
       const body = {sport, event, at: new Date().toISOString(), players: kind === "hoops" ? nbaBox(d) : kind === "football" ? nflBox(d) : {}};
       if (q.get("game") === "1") body.game = GAME[kind](d, teamCode(sport));
+      if (q.get("wrap") === "1") body.wrap = slimSummary(d);
       return json(body, 200, 10);
     }
     const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${QUERY[sport] || ""}`, SCORE_TTL, fetcher);
@@ -355,6 +358,29 @@ export async function handle(request, fetcher = fetch) {
   } catch (e) {
     return json({error: "scores unavailable"}, 502);
   }
+}
+
+// a play reduced to what the wrap-up shows or matches on
+const slimPlay = p => ({id: p.id, text: p.text, type: {text: (p.type || {}).text}, scoringPlay: !!p.scoringPlay,
+  awayScore: p.awayScore, homeScore: p.homeScore, period: {number: (p.period || {}).number}, clock: {displayValue: (p.clock || {}).displayValue}});
+
+export function slimSummary(d) {
+  const comp = (((d.header || {}).competitions) || [])[0] || {};
+  return {
+    header: {competitions: [{status: comp.status, competitors: (comp.competitors || []).map(c => ({homeAway: c.homeAway, score: c.score,
+      team: {id: (c.team || {}).id, abbreviation: (c.team || {}).abbreviation}}))}]},
+    boxscore: {
+      teams: ((d.boxscore || {}).teams || []).map(t => ({homeAway: t.homeAway, team: {id: (t.team || {}).id},
+        statistics: (t.statistics || []).map(x => ({name: x.name, displayValue: x.displayValue}))})),
+      players: ((d.boxscore || {}).players || []).map(t => ({team: {id: (t.team || {}).id},
+        statistics: (t.statistics || []).map(g => ({name: g.name, keys: g.keys,
+          athletes: (g.athletes || []).map(a => ({athlete: {id: (a.athlete || {}).id, displayName: (a.athlete || {}).displayName}, stats: a.stats}))}))})),
+    },
+    winprobability: (d.winprobability || []).map(w => ({homeWinPercentage: w.homeWinPercentage, playId: w.playId})),
+    scoringPlays: (d.scoringPlays || []).map(slimPlay),
+    plays: (d.plays || []).map(slimPlay),
+    drives: {previous: (((d.drives || {}).previous) || []).map(dr => ({plays: (dr.plays || []).map(slimPlay)}))},
+  };
 }
 
 export async function onRequest(context) {

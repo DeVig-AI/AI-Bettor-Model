@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
+import { GameWrap } from './wrap'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
 // see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
@@ -126,6 +127,8 @@ export function GamePage({ id }: { id: string }) {
         <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
 
         <Read row={row} />
+
+        <GameWrap row={row} />
 
         {(RS_SPORTS as readonly string[]).includes(row.sport) && (
           <section aria-label='Team research' className='grid grid-cols-2 gap-2'>
