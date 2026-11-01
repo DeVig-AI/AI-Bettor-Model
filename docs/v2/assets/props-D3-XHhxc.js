@@ -1,0 +1,1 @@
+import{n as e}from"./props-DrtQb_kH.js";var t=e;export{t as component};
