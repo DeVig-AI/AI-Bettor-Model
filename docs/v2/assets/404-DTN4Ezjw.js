@@ -1,0 +1,1 @@
+import{i as e}from"./index-BIs_zi73.js";var t=e;export{t as component};
