@@ -6,16 +6,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 // Favorite teams are team codes per sport, e.g. {NBA: ['BOS'], NFL: ['KC']}, matching the games data.
 
 const PREFS_KEY = 'devig.prefs.v1'
-const TRACK_KEY = 'devig.tracked.v1'
-const CHANGED = 'devig:prefs-changed'
+export const TRACK_KEY = 'devig.tracked.v1'
+export const CHANGED = 'devig:prefs-changed'
 
 export type Prefs = { name: string; teams: Record<string, string[]>; mode?: string; updated?: number }
-type Tracked = { g: Record<string, number>; p: Record<string, number>; parlays?: Record<string, { removed?: number }>; updated?: number }
+export type Tracked = { g: Record<string, number>; p: Record<string, number>; parlays?: Record<string, { removed?: number }>; updated?: number }
 
-function read<T>(k: string): T | null {
+export function read<T>(k: string): T | null {
   try { return JSON.parse(localStorage.getItem(k) || 'null') as T | null } catch { return null }
 }
-function write(k: string, v: unknown) {
+export function write(k: string, v: unknown) {
   try { localStorage.setItem(k, JSON.stringify(v)) } catch { /* private mode: stays in memory for this visit */ }
 }
 
@@ -88,7 +88,7 @@ function merge(local: { tracked: Partial<Tracked>; prefs: Partial<Prefs> }, remo
   return { tracked: t, prefs }
 }
 
-function push(delay = 800) {
+export function push(delay = 800) {
   if (!joinedEmail) return
   clearTimeout(pushTimer)
   pushTimer = setTimeout(async () => {

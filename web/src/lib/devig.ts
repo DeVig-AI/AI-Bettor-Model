@@ -131,6 +131,7 @@ export type Pick = {
 
 export type GameRow = {
   id: string
+  trackKey: string // ★ Track key, shared with the classic app (the pick's game_id, else the ESPN id)
   sport: string
   away: string
   home: string
@@ -221,6 +222,7 @@ function buildRows(
     }
     rows.push({
       id: key,
+      trackKey: d?.game_id ? String(d.game_id) : String(g.espn_id),
       sport: g.sport,
       away: g.away,
       home: g.home,

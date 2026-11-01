@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
-import { Check, LogIn, LogOut, X } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { Check, LogIn, LogOut, Star, X } from 'lucide-react'
 import { type Account, SIGN_IN, SIGN_OUT, type Prefs, useAccount, useJoin, usePrefs, useSyncNote } from '@/lib/profile'
 import { gameCode, rsIndexQuery } from '@/lib/research'
 import { useGames } from '@/lib/devig'
+import { overTxt, underTxt, useProps } from '@/lib/props'
+import { parsePropKey, useTracked } from '@/lib/track'
+import { TrackButton } from '@/components/track-button'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
@@ -14,6 +18,7 @@ import { TeamChip } from '@/features/research'
 // Profile: the name tag, favorite teams, and the free account that keeps them on every device.
 // Same rules as the classic app: without an account (where accounts exist), name and teams are locked.
 
+const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const SPORTS = ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA', 'CFB'] as const
 
 type Team = { code: string; name: string; color?: string | null }
@@ -57,7 +62,7 @@ function AccountCard({ acct }: { acct: Account | undefined }) {
       <section className='flex flex-col gap-3 rounded-[18px] bg-card p-4'>
         <h2 className='font-display text-[22px] font-extrabold leading-tight'>You&apos;re using DeVig as a guest</h2>
         <p className='text-sm leading-relaxed text-muted-foreground'>
-          A free account saves your name tag and favorite teams on every device (and tracking, in the classic app). Sign in
+          A free account saves what you track, your name tag and favorite teams on every device. Sign in
           with your email: you get a 6-digit code, no password. A new account needs the invite code from the person who
           shared DeVig.
         </p>
@@ -127,7 +132,7 @@ function Favorites({ prefs, update, locked }: { prefs: Prefs; update: (fn: (p: P
   return (
     <section aria-label='Favorite teams' className='flex flex-col gap-2'>
       <h2 className='px-1 font-display text-[22px] font-extrabold'>Favorite teams</h2>
-      <p className='px-1 text-sm text-muted-foreground'>Their games come first on Games, and in My tracking in the classic app.</p>
+      <p className='px-1 text-sm text-muted-foreground'>Their games come first on Games and show under Mine, here and in the classic app.</p>
       {loading ? <Skeleton className='h-72 w-full rounded-[18px]' /> : (
         <ul className={cn('overflow-hidden rounded-[18px] bg-card', locked && 'pointer-events-none opacity-50')} aria-disabled={locked || undefined}>
           {sports.map((s) => {
@@ -169,6 +174,75 @@ function Favorites({ prefs, update, locked }: { prefs: Prefs; update: (fn: (p: P
   )
 }
 
+function Tracking({ locked }: { locked: boolean }) {
+  const { tracked, set, clear } = useTracked()
+  const { rows } = useGames()
+  const { lines } = useProps()
+  const [sure, setSure] = useState(false)
+  const gKeys = Object.keys(tracked.g)
+  const pKeys = Object.keys(tracked.p).filter((k) => parsePropKey(k))
+  const games = rows.filter((r) => tracked.g[r.trackKey]).sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))
+  const props = pKeys.map((k) => {
+    const f = parsePropKey(k)!
+    const l = lines.find((x) => x.away === f.away && x.home === f.home && x.player === f.player && x.stat === f.stat && x.line === f.line && x.kickoff.slice(0, 10) === f.date)
+    return { k, f, l }
+  }).sort((a, b) => a.f.date.localeCompare(b.f.date) || a.f.player.localeCompare(b.f.player))
+  const off = gKeys.length - games.length
+  return (
+    <section aria-label='Tracking' className='flex flex-col gap-2'>
+      <h2 className='px-1 font-display text-[22px] font-extrabold'>Tracking</h2>
+      {!gKeys.length && !pKeys.length ? (
+        <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>
+          Nothing tracked yet. Tap <Star className='inline size-3.5 align-[-2px]' aria-hidden='true' /> Track on a game or a prop; Games&apos; <b>Mine</b> filter shows them with your teams&apos; games.
+        </p>
+      ) : (
+        <ul className={cn('overflow-hidden rounded-[18px] bg-card', locked && 'pointer-events-none opacity-50')}>
+          {games.map((r) => (
+            <li key={r.id} className='flex items-center gap-3 border-b px-4 py-2.5 last:border-b-0'>
+              <Link to='/game/$id' params={{ id: r.id }} className='min-w-0 flex-1'>
+                <span className='block truncate font-semibold'>{r.awayName} at {r.homeName}</span>
+                <span className='block text-xs text-muted-foreground'>
+                  {r.sport} · {r.state === 'in' ? `Live · ${r.detail}` : r.state === 'post' ? `Final ${r.awayScore}–${r.homeScore}` : whenFmt.format(new Date(r.kickoff))}
+                </span>
+              </Link>
+              <TrackButton kind='g' compact keys={[r.trackKey]} label={`${r.awayName} at ${r.homeName}`} />
+            </li>
+          ))}
+          {props.map(({ k, f, l }) => (
+            <li key={k} className='flex items-center gap-3 border-b px-4 py-2.5 last:border-b-0'>
+              <span className='min-w-0 flex-1'>
+                <span className='block truncate font-semibold'>
+                  {f.player} {f.side === 'UNDER' ? underTxt(f.stat, f.line) : overTxt(f.stat, f.line)}
+                </span>
+                <span className='block text-xs text-muted-foreground tabular-nums'>
+                  {f.away} at {f.home} · {l && l.bid != null && l.ask != null
+                    ? `Kalshi ${f.side === 'UNDER' ? `${Math.round((1 - l.ask) * 100)}–${Math.round((1 - l.bid) * 100)}` : `${Math.round(l.bid * 100)}–${Math.round(l.ask * 100)}`}¢ now`
+                    : 'not on the board now'}
+                </span>
+              </span>
+              <button type='button' onClick={() => set('p', [k], false)} aria-label={`Stop tracking ${f.player}`}
+                className='grid size-8 shrink-0 place-items-center rounded-full border border-devig bg-devig/15 text-devig'>
+                <Star className='size-4 fill-current' aria-hidden='true' />
+              </button>
+            </li>
+          ))}
+          {off > 0 && (
+            <li className='px-4 py-2.5 text-xs text-muted-foreground'>
+              And {off} tracked {off === 1 ? 'game' : 'games'} that {off === 1 ? 'is' : 'are'}n&apos;t on the board now.
+            </li>
+          )}
+        </ul>
+      )}
+      {(gKeys.length > 0 || pKeys.length > 0) && !locked && (
+        <button type='button' onClick={() => { if (sure) { clear(); setSure(false) } else setSure(true) }} onBlur={() => setSure(false)}
+          className={cn('h-10 self-start rounded-full border px-4 text-sm font-semibold', sure ? 'border-bad text-bad' : 'text-muted-foreground')}>
+          {sure ? 'Tap again to stop tracking everything' : 'Clear tracking'}
+        </button>
+      )}
+    </section>
+  )
+}
+
 export function Profile() {
   const { data: acct } = useAccount()
   const { prefs, update } = usePrefs()
@@ -188,9 +262,10 @@ export function Profile() {
         <AccountCard acct={acct} />
         {acct && locked && (
           <p className='-mt-3 px-1 text-sm text-muted-foreground'>
-            Name tag and favorite teams open once you have an account.
+            Tracking, name tag and favorite teams open once you have an account.
           </p>
         )}
+        <Tracking locked={locked} />
         <NameTag prefs={prefs} update={update} locked={locked} />
         <Favorites prefs={prefs} update={update} locked={locked} />
       </Main>

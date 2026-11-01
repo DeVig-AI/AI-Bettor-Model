@@ -13,10 +13,10 @@ const PAGES = [
   { to: '/injuries', icon: Cross, title: 'Injuries', note: "Each league's report, game by game, starters first" },
   { to: '/models', icon: BarChart3, title: 'Models', note: "DeVig's models next to other people's, graded the same way" },
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
-  { to: '/profile', icon: CircleUserRound, title: 'Profile', note: 'Your name tag, favorite teams, and account' },
+  { to: '/profile', icon: CircleUserRound, title: 'Profile', note: 'What you track, your name tag, favorite teams, and account' },
 ] as const
 
-const CLASSIC = ['Odds-screen photo scans', 'Tracking games and props (★ Track)']
+const CLASSIC = ['Odds-screen photo scans']
 
 export function More() {
   return (
@@ -44,7 +44,7 @@ export function More() {
         <section aria-label='Beta' className='rounded-[18px] border border-dashed p-4'>
           <h2 className='font-display text-xl font-extrabold'>This is the new DeVig, in beta</h2>
           <p className='mt-1 text-sm text-muted-foreground'>
-            The classic app stays the main one until this is finished and reviewed. These are still only in the classic app, and move here next:
+            The classic app stays the main one until this is finished and reviewed. Still only in the classic app, because it works only inside Claude:
           </p>
           <ul className='mt-3 flex flex-col gap-1 text-sm'>
             {CLASSIC.map((c) => <li key={c}>{c}</li>)}

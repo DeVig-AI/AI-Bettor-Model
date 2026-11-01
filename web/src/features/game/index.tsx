@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { TrackButton } from '@/components/track-button'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useExperience } from '@/lib/experience'
@@ -109,6 +110,7 @@ export function GamePage({ id }: { id: string }) {
         <Link to='/' className='inline-flex h-10 items-center gap-1 rounded-full ps-2 pe-4 text-sm font-semibold text-muted-foreground hover:text-foreground'>
           <ChevronLeft className='size-4' /> Games
         </Link>
+        {row.state !== 'post' && <TrackButton kind='g' keys={[row.trackKey]} label={`${row.awayName} at ${row.homeName}`} className='float-end me-2 mt-0.5' />}
       </div>
       <div className='relative'>
         <Plate row={row} showDay size='lg' />
