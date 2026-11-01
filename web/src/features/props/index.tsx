@@ -13,7 +13,7 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { propLeg } from '../parlay/legs'
 import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
-import { type PropSide, PropSheet, propTeam, usePropWhy } from './why'
+import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from './why'
 
 // Player props: DeVig's props model next to Kalshi's live price. The model has lost to Kalshi on past games, and the
 // page says so first. Lines are worded the way Kalshi words them (6+ ast). Thin markets and small samples are flagged.
@@ -51,7 +51,7 @@ export function PropRow({ l, game }: { l: Shown; game?: GameRow | null }) {
   const w = usePropWhy(l)
   const [open, setOpen] = useState(false)
   const [side, setSide] = useState<PropSide>('over')
-  const { team, color } = propTeam(w, game)
+  const { pid, team, color, unit } = usePropPlayer(l, w, game)
   const overBg = color ?? 'var(--side-home)'
   const thin = l.spread > 0.05 || (l.oi || 0) < 100
   const small = l.games < 40
@@ -61,7 +61,7 @@ export function PropRow({ l, game }: { l: Shown; game?: GameRow | null }) {
   return (
     <li className='flex flex-col gap-2.5 border-b px-4 py-3 last:border-b-0'>
       <div className='flex items-center gap-3'>
-        <PlayerPhoto sport={l.sport} pid={w?.pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
+        <PlayerPhoto sport={l.sport} unit={unit} pid={pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
         <span className='flex min-w-0 flex-1 flex-col'>
           <PlayerName l={l} />
           <span className={cn('truncate text-xs', thin || small ? 'font-semibold text-bad' : 'text-muted-foreground')}>

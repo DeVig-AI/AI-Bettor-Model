@@ -22,7 +22,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
 import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
-import { type PropSide, PropSheet, propTeam, usePropWhy } from '../props/why'
+import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
 import { mlLeg } from './legs'
 import { LinkReader } from '../check-bet/link-reader'
 import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
@@ -89,8 +89,8 @@ function LegPlate({ leg, right, src, onOpen }: { leg: Leg; right?: React.ReactNo
 
 function PropLegPhoto({ src }: { src: Extract<LegSrc, { kind: 'prop' }> }) {
   const w = usePropWhy(src.line)
-  const { team, color } = propTeam(w, src.game)
-  return <PlayerPhoto sport={src.line.sport} pid={w?.pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
+  const { pid, team, color, unit } = usePropPlayer(src.line, w, src.game)
+  return <PlayerPhoto sport={src.line.sport} unit={unit} pid={pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
 }
 
 // the sheet for whichever leg was tapped: the team's (ml) or the prop's, with Remove when it's in the slip

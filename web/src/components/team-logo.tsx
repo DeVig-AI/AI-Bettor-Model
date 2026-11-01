@@ -31,10 +31,12 @@ export function LogoMark({ sport, code, id, className }: { sport: string; code: 
 }
 
 // A player's headshot on a dark disc, with their team's logo as a small badge; a plain figure when there's no photo
-export function PlayerPhoto({ sport, pid, team, teamColor, className, badge = 'size-[42%]' }: {
-  sport: string; pid?: string | null; team?: string | null; teamColor?: string | null; className?: string; badge?: string
+// unit: a team prop (an NFL defense, "ARI Cardinals D/ST"), shown as the team's logo instead of a face
+export function PlayerPhoto({ sport, pid, team, teamColor, className, badge = 'size-[42%]', unit }: {
+  sport: string; pid?: string | null; team?: string | null; teamColor?: string | null; className?: string; badge?: string; unit?: boolean
 }) {
   const [bad, setBad] = useState(false)
+  if (unit && team) return <TeamLogo sport={sport} code={team} color={teamColor} px={128} className={cn('shrink-0', className)} />
   const src = headshot(sport, pid)
   return (
     <span aria-hidden='true' className={cn('relative shrink-0', className)}>

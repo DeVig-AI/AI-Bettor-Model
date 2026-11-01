@@ -1,0 +1,28 @@
+name: Player headshots -- ESPN rosters (display only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 9 * * *'   # daily; public ESPN rosters, no keys
+permissions:
+  contents: write
+concurrency:
+  group: espn-headshots
+  cancel-in-progress: false
+jobs:
+  headshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Map players to ESPN ids from every NBA, NFL and NHL roster
+        run: python3 tools/espn_headshots_v1.py
+      - name: Save
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for f in nba/headshots.json nfl/headshots.json nhl/headshots.json; do [ -f "$f" ] && git add "$f"; done
+          git diff --cached --quiet || git commit -q -m "Player headshot ids $(date -u +%Y-%m-%d)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
