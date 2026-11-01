@@ -1,1 +1,0 @@
-import{t as e}from"./research-Hr_SB3kk.js";var t=e;export{t as component};

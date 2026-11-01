@@ -26,16 +26,17 @@ export function BackBar({ to = '/research', label = 'Research' }: { to?: string;
   )
 }
 
-export function TeamPlate({ sport, code, color, title, sub, right }: {
-  sport: string; code: string; color?: string | null; title: string; sub: string; right?: React.ReactNode
+// mark: the big faded text behind the plate (the team code, or a player's jersey number)
+export function TeamPlate({ sport, code, color, title, sub, right, mark }: {
+  sport: string; code: string; color?: string | null; title: string; sub: string; right?: React.ReactNode; mark?: string
 }) {
   const c = teamColor(sport, code, color)
   const light = isLight(c)
   return (
     <section aria-label={title} className={cn('relative overflow-hidden', light ? 'text-[#111]' : 'text-white')}
       style={{ background: `linear-gradient(102deg, ${c} 0 68%, color-mix(in srgb, ${c} 70%, #000) 68% 100%)` }}>
-      <span aria-hidden='true' className='pointer-events-none absolute -end-3 -bottom-6 font-display text-[120px] leading-none font-black opacity-15'>
-        {code}
+      <span aria-hidden='true' className={cn('pointer-events-none absolute -bottom-6 font-display leading-none font-black opacity-15', mark ? 'end-[104px] text-[150px] md:end-[124px]' : '-end-3 text-[120px]')}>
+        {mark ?? code}
       </span>
       <div className='relative flex min-h-[132px] items-end justify-between gap-3 px-4 py-4 md:px-6'>
         <div className='min-w-0'>
@@ -98,7 +99,7 @@ function Roster({ idx, t, sport, lines }: { idx: RsIndex; t: RsTeam; sport: stri
       {lines && (
         <p className='-mt-1 px-1 text-xs text-muted-foreground'>
           Lines: {lines.home ? 'vs' : 'at'} {lines.opp}, {timeFmt.format(new Date(lines.kickoff))}. Kalshi&apos;s main line (priced nearest 50/50), and how often
-          he went over it in his last 5 games.
+          each player went over it in their last 5 games.
         </p>
       )}
       {units && (
@@ -144,7 +145,7 @@ function Roster({ idx, t, sport, lines }: { idx: RsIndex; t: RsTeam; sport: stri
         </div>
       ))}
       <p className='px-1 text-xs text-muted-foreground'>
-        {(onDef ? idx.player_note_def : idx.player_note) || ''} A player&apos;s team is the team of his latest game. Updated {updatedFmt.format(new Date(t.generated_at))}.
+        {(onDef ? idx.player_note_def : idx.player_note) || ''} A player&apos;s team is the team of their latest game. Updated {updatedFmt.format(new Date(t.generated_at))}.
       </p>
     </section>
   )

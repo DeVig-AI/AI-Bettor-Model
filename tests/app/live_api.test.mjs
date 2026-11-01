@@ -106,3 +106,14 @@ test("every sport answers an event with its game page data", async () => {
     assert.equal(r.game.plays.length, n, sport);
   }
 });
+
+test("wrap=1 returns ESPN's summary cut down to what the wrap-up reads", async () => {
+  const { slimSummary } = await import("../../functions/api/live.js");
+  const s = slimSummary(summary());
+  assert.ok(Array.isArray(s.boxscore.teams) && Array.isArray(s.boxscore.players));
+  assert.ok(s.header.competitions[0].competitors.every(c => c.homeAway && c.team.id));
+  for (const p of [...s.scoringPlays, ...s.plays, ...s.drives.previous.flatMap(d => d.plays)])
+    assert.deepEqual(Object.keys(p).sort(), ["awayScore", "clock", "homeScore", "id", "period", "scoringPlay", "text", "type"]);
+  assert.ok(JSON.stringify(s).length <= JSON.stringify(summary()).length);
+  assert.deepEqual(slimSummary({}).boxscore, { teams: [], players: [] });   // a sparse summary doesn't throw
+});

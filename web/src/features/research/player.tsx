@@ -91,6 +91,7 @@ export function ResearchPlayer({ sport, team, id, stat, line }: { sport: string;
       <BackBar label={t.name} />
       <TeamPlate sport={sport} code={t.code} color={t.color} title={p.name}
         sub={[p.pos, p.num != null && p.num !== '' ? `#${p.num}` : null, t.name].filter(Boolean).join(' · ')}
+        mark={p.num != null && p.num !== '' ? String(p.num) : undefined}
         right={<Photo sport={sport} team={t.code} id={String(p.id)} name={p.name} />} />
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         <section aria-label='Season stats' className='overflow-x-auto rounded-[18px] bg-card'>
@@ -113,8 +114,8 @@ export function ResearchPlayer({ sport, team, id, stat, line }: { sport: string;
         </section>
 
         {hs && (
-          <section aria-label='How often he cleared a line' className='flex flex-col gap-2'>
-            <h2 className='px-1 font-display text-[22px] font-extrabold'>How often he cleared a line</h2>
+          <section aria-label='How often they cleared a line' className='flex flex-col gap-2'>
+            <h2 className='px-1 font-display text-[22px] font-extrabold'>How often they cleared a line</h2>
             <div className='flex gap-2'>
               <select value={hs[0]} onChange={(e) => { setPick(e.target.value); setTyped(null) }} aria-label='Stat'
                 className='h-11 min-w-0 flex-1 rounded-xl border bg-card px-3 text-base'>
@@ -135,7 +136,7 @@ export function ResearchPlayer({ sport, team, id, stat, line }: { sport: string;
               {lastSeason.length > 0 && <Count label={`Last season (${rsShort(t.last_season)})`} games={lastSeason.filter(reg)} line={ln} val={val} />}
             </ul>
             <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
-              Counts, not chances: games where he went over {ln} {hs[1].toLowerCase()}. Small samples swing a lot, and Kalshi&apos;s price usually
+              Counts, not chances: games where they went over {ln} {hs[1].toLowerCase()}. Small samples swing a lot, and Kalshi&apos;s price usually
               already knows about a streak. Compare with Kalshi&apos;s % before you buy. Season rows leave out playoff games.
             </p>
           </section>
