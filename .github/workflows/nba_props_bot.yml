@@ -33,6 +33,9 @@ jobs:
       - name: v3 shadow -- lock v3's chances next to v2 (no picks; NBA_PROPS_MODEL_V3_SHADOW)
         continue-on-error: true
         run: python3 nba/nba_props_model_v3_shadow.py
+      - name: Explain v2's expected numbers for the app (read-only; nba/props_why.json)
+        continue-on-error: true
+        run: python3 nba/nba_props_explain_v2.py
       - name: Save the exports and the paper log
         if: always()
         run: |
@@ -40,6 +43,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           [ -f nba/props_exchanges_export.json ] && git add nba/props_exchanges_export.json
           [ -f nba/props_model_export.json ] && git add nba/props_model_export.json
+          [ -f nba/props_why.json ] && git add nba/props_why.json
           [ -f nba/NBA_PROPS_MODEL_V2_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V2_LOG.sqlite3
           [ -f nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3
           git diff --cached --quiet || git commit -m "NBA props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"

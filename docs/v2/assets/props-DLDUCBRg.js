@@ -1,1 +1,0 @@
-import{n as e}from"./props-vKvaNlRt.js";var t=e;export{t as component};

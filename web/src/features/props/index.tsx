@@ -12,6 +12,7 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { propLeg } from '../parlay/legs'
+import { PropWhyButton } from './why'
 
 // Player props: DeVig's props model next to Kalshi's live price. The model has lost to Kalshi on past games, and the
 // page says so first. Lines are worded the way Kalshi words them (6+ ast). Thin markets and small samples are flagged.
@@ -83,6 +84,7 @@ export function PropRow({ l }: { l: Shown }) {
           {l.injury ? `. ${l.injury}` : ''}
         </span>
         <span className='flex gap-1.5'>
+          <PropWhyButton l={l} />
           {[over, under].map((leg, i) =>
             leg ? (
               <button
