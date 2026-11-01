@@ -51,14 +51,14 @@ export function GapChart({ row }: { row: GameRow }) {
   return (
     <section aria-label={`Kalshi against ESPN, ${code} to win`} className='overflow-hidden rounded-[22px] bg-card'>
       <div className='flex items-center justify-between gap-3 px-4 pt-4'>
-        <h2 className='font-display text-[22px] font-extrabold'>Kalshi vs the game</h2>
+        <h2 className='font-display text-[19px] font-extrabold whitespace-nowrap'>Kalshi vs the game</h2>
         <div role='tablist' aria-label='Team' className='flex gap-1 rounded-full bg-muted p-1'>
           {([pickSide, pickSide === 'home' ? 'away' : 'home'] as const).map((s) => {
             const c = chance(s)
             const color = (s === 'home' ? row.colors?.home : row.colors?.away) || undefined
             return (
               <button key={s} type='button' role='tab' aria-selected={side === s} onClick={() => setSide(s)}
-                className={cn('flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold tabular-nums transition-colors', side === s ? 'bg-foreground text-background' : 'text-muted-foreground')}>
+                className={cn('flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold tabular-nums transition-colors', side === s ? 'bg-foreground text-background' : 'text-muted-foreground')}>
                 <span aria-hidden='true' className='size-2 rounded-full' style={{ background: color ?? 'currentColor' }} />
                 {s === 'home' ? row.home : row.away}
                 {c != null && <span className={side === s ? 'opacity-70' : ''}>{n(c)}%</span>}

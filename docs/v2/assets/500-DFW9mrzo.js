@@ -1,1 +1,0 @@
-import{a as e}from"./index-D2IbONEG.js";var t=e;export{t as component};
