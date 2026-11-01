@@ -1,0 +1,1 @@
+import{t as e}from"./research-C_gp-VjA.js";var t=e;export{t as component};
