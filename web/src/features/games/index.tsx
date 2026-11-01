@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { BookOpen, RefreshCw, Search as SearchIcon, Star } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
-import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
+import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { isFavorite, usePrefs } from '@/lib/profile'
 import { labFor, useLab } from '@/lib/lab'
 import { useTracked } from '@/lib/track'
@@ -14,7 +14,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { ExplainSheet } from './explain-sheet'
 import { Plate, isPick } from './plate'
 import { PlateTaps } from './plate-taps'
 
@@ -49,7 +48,7 @@ function ago(d: Date | null) {
 }
 
 // ---------- one game: plate + the line under it ----------
-function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onWhy: (r: GameRow) => void }) {
+function GameItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
   const p = row.pick
   const picked = isPick(row)
   const passLean = !picked && p?.lean && p.leanProb != null ? p.lean : null // a pass: the side the model leaned to
@@ -67,7 +66,7 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
     <li className='flex flex-col gap-2'>
       <div className='relative'>
         <Plate row={row} showDay={showDay} />
-        {row.state === 'pre' && <PlateTaps row={row} />}
+        <PlateTaps row={row} />
       </div>
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-sm'>
         {picked && p?.prob != null ? (
@@ -109,24 +108,6 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
           >
             Game
           </Link>
-          {picked ? (
-            <button
-              type='button'
-              onClick={() => onWhy(row)}
-              className='h-8 rounded-full bg-devig px-3.5 text-sm font-bold text-devig-ink transition-opacity duration-150 hover:opacity-90'
-            >
-              Why?
-            </button>
-          ) : passLean ? (
-            <button
-              type='button'
-              onClick={() => onWhy(row)}
-              aria-label={`Why no pick on ${row.away} at ${row.home}?`}
-              className='h-8 rounded-full border border-devig/50 px-3.5 text-sm font-bold text-devig transition-colors duration-150 hover:bg-devig/10'
-            >
-              Why?
-            </button>
-          ) : null}
         </span>
       </div>
     </li>
@@ -137,13 +118,11 @@ function Group({
   title,
   rows,
   showDay,
-  onWhy,
   dot,
 }: {
   title: string
   rows: GameRow[]
   showDay: boolean
-  onWhy: (r: GameRow) => void
   dot?: boolean
 }) {
   if (!rows.length) return null
@@ -158,7 +137,7 @@ function Group({
       </h2>
       <ul className='grid gap-5 lg:grid-cols-2'>
         {rows.map((r) => (
-          <GameItem key={r.id} row={r} showDay={showDay} onWhy={onWhy} />
+          <GameItem key={r.id} row={r} showDay={showDay} />
         ))}
       </ul>
     </section>
@@ -220,7 +199,6 @@ const LEVEL_NAME: Record<Level, string> = { new: 'New to this', sometimes: 'I be
 // ---------- page ----------
 export function Games() {
   const { rows, updatedAt, isLoading, error, picksError, refetch, isFetching } = useGames()
-  const { records } = useRecord()
   const { prefs } = usePrefs()
   const { tracked } = useTracked()
   const [mineOnly, setMineOnly] = useState(false)
@@ -230,7 +208,6 @@ export function Games() {
   const [league, setLeague] = useState('ALL')
   const [picksOnly, setPicksOnly] = useState(false)
   const [query, setQuery] = useState('')
-  const [why, setWhy] = useState<GameRow | null>(null)
 
   const dayRows = useMemo(() => rows.filter((r) => inDay(r, day)), [rows, day])
   const leagues = useMemo(() => Array.from(new Set(dayRows.map((r) => r.sport))).sort(), [dayRows])
@@ -257,7 +234,6 @@ export function Games() {
   const liveCount = dayRows.filter((r) => r.state === 'in').length
   const showDay = day !== 'today'
   const filtered = league !== 'ALL' || picksOnly || mineOnly || query.trim() !== ''
-  const whyRow = why ? (rows.find((r) => r.id === why.id) ?? why) : null // keep the sheet on live data
 
   return (
     <>
@@ -393,28 +369,20 @@ export function Games() {
           </div>
         ) : (
           <>
-            <Group title="DeVig's picks" rows={picked} showDay={showDay} onWhy={setWhy} />
-            <Group title='Live now' rows={live} showDay={false} onWhy={setWhy} dot />
-            <Group title='Upcoming' rows={upcoming} showDay={showDay} onWhy={setWhy} />
-            <Group title='Final' rows={final} showDay={showDay} onWhy={setWhy} />
+            <Group title="DeVig's picks" rows={picked} showDay={showDay} />
+            <Group title='Live now' rows={live} showDay={false} dot />
+            <Group title='Upcoming' rows={upcoming} showDay={showDay} />
+            <Group title='Final' rows={final} showDay={showDay} />
           </>
         )}
 
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
-          Tap a team on an upcoming game to add it to your parlay. Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
+          Tap either team on a plate to see why DeVig gives it the chance it does, and to add it to your parlay. Each plate splits the game at Kalshi&apos;s price with the fee gap removed (a proportional split, which matches the
           exchange&apos;s mid price), in the two teams&apos; colors. The amber slash is DeVig&apos;s model. Scores are ESPN&apos;s,
           unofficial. DeVig&apos;s picks are paper picks, locked before the game; nothing is bet.
         </p>
       </Main>
 
-      <ExplainSheet
-        row={whyRow}
-        open={!!why}
-        onOpenChange={(v) => !v && setWhy(null)}
-        level={level ?? 'sometimes'}
-        onLevel={setLevel}
-        record={whyRow ? (records.find((r) => r.sport === whyRow.sport) ?? null) : null}
-      />
     </>
   )
 }

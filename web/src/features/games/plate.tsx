@@ -1,5 +1,6 @@
 import { type GameRow, fmtAmerican, fmtPct } from '@/lib/devig'
 import { cn } from '@/lib/utils'
+import { LogoMark, TeamLogo } from '@/components/team-logo'
 
 // A Matchup Plate: the game's two team colors meet in a diagonal cut placed at Kalshi's fair split (away on the left).
 // DeVig's own read is an amber slash at the model's chance; the gap between the cut and the slash is the gap between
@@ -66,6 +67,9 @@ export function Plate({
         background: `linear-gradient(${ANGLE}deg, ${away} 0 ${cut}, ${home} ${cut} 100%)`,
       }}
     >
+      {/* each team's logo, big and faint, behind its half */}
+      <LogoMark sport={row.sport} code={row.away} id={row.ids?.away} className={big ? '-start-10 top-6 size-56' : '-start-8 top-3 size-36'} />
+      <LogoMark sport={row.sport} code={row.home} id={row.ids?.home} className={big ? '-end-10 top-6 size-56' : '-end-8 top-3 size-36'} />
       {/* keeps white type readable on light team colors, and separates two similar colors at the cut */}
       <div aria-hidden='true' className='absolute inset-0 bg-black/25' />
       <div
@@ -99,6 +103,9 @@ export function Plate({
 
         <div className='flex items-end justify-between gap-3'>
           <Side
+            sport={row.sport}
+            teamId={row.ids?.away}
+            color={away}
             code={row.away}
             name={row.awayName}
             pct={row.fairHome == null ? null : split}
@@ -107,6 +114,9 @@ export function Plate({
             big={big}
           />
           <Side
+            sport={row.sport}
+            teamId={row.ids?.home}
+            color={home}
             code={row.home}
             name={row.homeName}
             pct={row.fairHome}
@@ -122,6 +132,9 @@ export function Plate({
 }
 
 function Side({
+  sport,
+  teamId,
+  color,
   code,
   name,
   pct,
@@ -130,6 +143,9 @@ function Side({
   big,
   right,
 }: {
+  sport: string
+  teamId?: string | null
+  color: string
   code: string
   name: string
   pct: number | null
@@ -140,13 +156,16 @@ function Side({
 }) {
   const hasScore = score != null
   return (
+    <div className={cn('flex min-w-0 items-end gap-3', right && 'flex-row-reverse')}>
+      <TeamLogo sport={sport} code={code} id={teamId} color={color.startsWith('#') ? color : null}
+        px={big ? 128 : 96} className={cn(big ? 'mb-1 size-[60px] text-[18px]' : 'mb-0.5 size-[44px] text-[14px]')} />
     <div className={cn('min-w-0', right && 'text-end')}>
       {big && name !== code && <div className='truncate text-sm font-semibold text-white/85'>{name}</div>}
       <div className={cn('flex items-baseline gap-2.5', right && 'flex-row-reverse')}>
         <span
           className={cn(
             'font-display leading-[0.85] font-black tracking-tight',
-            big ? 'text-[68px]' : 'text-[42px]'
+            big ? 'text-[58px]' : 'text-[36px]'
           )}
         >
           {code}
@@ -155,7 +174,7 @@ function Side({
           <span
             className={cn(
               'font-display leading-[0.85] font-extrabold tabular-nums',
-              big ? 'text-[52px]' : 'text-[34px]',
+              big ? 'text-[46px]' : 'text-[30px]',
               !won && 'opacity-80'
             )}
           >
@@ -166,6 +185,7 @@ function Side({
       <div className={cn('font-display font-extrabold tabular-nums', big ? 'mt-1 text-[30px]' : 'mt-1 text-[22px]')}>
         {pct == null ? '—' : fmtPct(pct)}
       </div>
+    </div>
     </div>
   )
 }

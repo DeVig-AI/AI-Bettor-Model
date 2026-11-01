@@ -2,7 +2,7 @@ import { TrackButton } from '@/components/track-button'
 import { propSides } from '@/lib/track'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { fmtAmerican, fmtPct, useGames } from '@/lib/devig'
+import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { useSlip } from '@/lib/parlay'
 import { type LivePrice, type PropLine, fetchLiveProps, overTxt, statName, underTxt, useProps } from '@/lib/props'
 import { useRsPlayerLink } from '@/lib/research'
@@ -12,7 +12,8 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { propLeg } from '../parlay/legs'
-import { PropWhyButton } from './why'
+import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
+import { type PropSide, PropSheet, propTeam, usePropWhy } from './why'
 
 // Player props: DeVig's props model next to Kalshi's live price. The model has lost to Kalshi on past games, and the
 // page says so first. Lines are worded the way Kalshi words them (6+ ast). Thin markets and small samples are flagged.
@@ -41,69 +42,73 @@ function PlayerName({ l }: { l: Shown }) {
   )
 }
 
-export function PropRow({ l }: { l: Shown }) {
-  const { toggle, has } = useSlip()
-  const over = propLeg(l, 'over', { bid: l.bid, ask: l.ask, title: null })
-  const under = propLeg(l, 'under', { bid: l.bid, ask: l.ask, title: null })
+const UNDER_BG = '#343b4a'
+
+// One prop as a two-sided bar, like a game's plate: Over in the player's team color on the left, Under in gray on the
+// right, meeting at Kalshi's price; the amber slash is DeVig's props model. Tap a side for why (and the parlay button).
+export function PropRow({ l, game }: { l: Shown; game?: GameRow | null }) {
+  const { has } = useSlip()
+  const w = usePropWhy(l)
+  const [open, setOpen] = useState(false)
+  const [side, setSide] = useState<PropSide>('over')
+  const { team, color } = propTeam(w, game)
+  const overBg = color ?? 'var(--side-home)'
   const thin = l.spread > 0.05 || (l.oi || 0) < 100
   const small = l.games < 40
   const m = l.modelOver
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`
-  const lo = m == null ? null : Math.min(m, l.mid)
-  const hi = m == null ? null : Math.max(m, l.mid)
+  const pre = Date.parse(l.kickoff) > Date.now()
   return (
-    <li className='flex flex-col gap-2 border-b px-4 py-3 last:border-b-0'>
-      <div className='flex items-center justify-between gap-3'>
-        <span className='flex min-w-0 items-center gap-2'>
-          <TrackButton kind='p' compact label={`${l.player} ${overTxt(l.stat, l.line)}`}
-            keys={m != null && m < l.mid ? propSides(l).reverse() : propSides(l)} />
+    <li className='flex flex-col gap-2.5 border-b px-4 py-3 last:border-b-0'>
+      <div className='flex items-center gap-3'>
+        <PlayerPhoto sport={l.sport} pid={w?.pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
+        <span className='flex min-w-0 flex-1 flex-col'>
           <PlayerName l={l} />
+          <span className={cn('truncate text-xs', thin || small ? 'font-semibold text-bad' : 'text-muted-foreground')}>
+            {l.expected != null ? `DeVig expects ${(Math.round(l.expected * 10) / 10).toFixed(1)} ${statName(l.stat, true)}` : 'No DeVig number'}
+            {l.games ? `, from ${l.games} games` : ''}
+            {small ? '. Small sample' : ''}
+            {thin ? '. Thin market' : ''}
+            {l.injury ? `. ${l.injury}` : ''}
+          </span>
         </span>
-        <span className='shrink-0 text-sm text-muted-foreground'>{overTxt(l.stat, l.line)}</span>
+        <span className='shrink-0 font-condensed text-[15px] font-bold text-muted-foreground'>{overTxt(l.stat, l.line)}</span>
+        <TrackButton kind='p' compact label={`${l.player} ${overTxt(l.stat, l.line)}`}
+          keys={m != null && m < l.mid ? propSides(l).reverse() : propSides(l)} />
       </div>
-      <div className='flex justify-between text-sm font-semibold tabular-nums'>
-        <span className='text-devig'>{m == null ? 'No DeVig number' : `DeVig ${fmtPct(m)}`}</span>
-        <span>Kalshi {Math.round(l.bid! * 100)}–{Math.round(l.ask! * 100)}¢</span>
-      </div>
-      <div aria-hidden='true' className='relative h-3.5'>
-        <div className='absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-muted' />
-        {lo != null && hi != null && (
-          <div className='absolute top-1/2 h-1.5 -translate-y-1/2 bg-devig/45' style={{ left: pct(lo), width: pct(hi - lo) }} />
-        )}
-        <div className='absolute top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-foreground' style={{ left: pct(l.mid) }} />
+      <div className='relative h-[72px] overflow-hidden rounded-[14px]'
+        style={{ background: `linear-gradient(102deg, ${overBg} 0 ${pct(l.mid)}, ${UNDER_BG} ${pct(l.mid)} 100%)` }}>
+        <div aria-hidden='true' className='absolute inset-0 bg-black/20' />
         {m != null && (
-          <div className='absolute -top-0.5 h-[18px] w-1 rounded-full bg-devig' style={{ left: pct(m), transform: 'translateX(-50%) rotate(12deg)' }} />
+          <div aria-hidden='true' className='absolute -inset-y-3 w-[5px] -translate-x-1/2 rotate-12 rounded-full bg-devig shadow-[0_0_0_2px_#0a0b0f]' style={{ left: pct(m) }} />
         )}
-      </div>
-      <div className='flex flex-wrap items-center justify-between gap-2'>
-        <span className={cn('text-xs', thin || small ? 'font-semibold text-bad' : 'text-muted-foreground')}>
-          {l.expected != null ? `DeVig expects ${(Math.round(l.expected * 10) / 10).toFixed(1)} ${statName(l.stat, true)}` : ''}
-          {l.games ? `, from ${l.games} games` : ''}
-          {small ? '. Small sample' : ''}
-          {thin ? '. Thin market' : ''}
-          {l.injury ? `. ${l.injury}` : ''}
-        </span>
-        <span className='flex gap-1.5'>
-          <PropWhyButton l={l} />
-          {[over, under].map((leg, i) =>
-            leg ? (
-              <button
-                key={leg.id}
-                type='button'
-                aria-pressed={has(leg.id)}
-                onClick={() => toggle(leg)}
-                className={cn(
-                  'h-8 rounded-full border px-3 text-xs font-semibold tabular-nums transition-colors duration-150',
-                  has(leg.id) ? 'border-devig bg-devig text-devig-ink' : 'text-muted-foreground hover:text-foreground'
-                )}
-                aria-label={`${has(leg.id) ? 'Remove' : 'Add'} ${leg.label} ${fmtAmerican(leg.odds)} ${has(leg.id) ? 'from' : 'to'} parlay`}
-              >
-                {i === 0 ? overTxt(l.stat, l.line) : underTxt(l.stat, l.line)} {fmtAmerican(leg.odds)}
+        <div className='absolute inset-0 grid grid-cols-2'>
+          {(['over', 'under'] as const).map((s) => {
+            const leg = pre ? propLeg(l, s, { bid: l.bid, ask: l.ask, title: null }) : null
+            const on = leg ? has(leg.id) : false
+            const p = m == null ? (s === 'over' ? l.mid : 1 - l.mid) : s === 'over' ? m : 1 - m
+            const txt = s === 'over' ? overTxt(l.stat, l.line) : underTxt(l.stat, l.line)
+            return (
+              <button key={s} type='button' aria-haspopup='dialog'
+                aria-label={`Why ${l.player} ${txt}: ${m == null ? 'Kalshi' : 'DeVig'} ${fmtPct(p)}${leg ? `, ${fmtAmerican(leg.odds)}` : ''}${on ? ', in your parlay' : ''}`}
+                onClick={() => { setSide(s); setOpen(true) }}
+                className={cn('relative flex flex-col justify-center px-3 text-white transition-colors duration-150 hover:bg-white/5 focus-visible:outline-offset-[-3px]',
+                  s === 'over' ? 'items-start text-start' : 'items-end text-end')}>
+                <span className='text-[13px] font-bold opacity-90'>
+                  {s === 'over' ? overTxt(l.stat, l.line).replace(` ${statName(l.stat, true)}`, '') : 'Under'}
+                  {leg ? ` · ${fmtAmerican(leg.odds)}` : ''}
+                </span>
+                <span className='flex items-center gap-1.5 font-display text-[28px] leading-none font-extrabold tabular-nums'>
+                  {s === 'under' && on && <span className='rounded-full bg-white px-1.5 py-0.5 font-sans text-[10px] font-bold text-black'>In parlay</span>}
+                  {fmtPct(p)}
+                  {s === 'over' && on && <span className='rounded-full bg-white px-1.5 py-0.5 font-sans text-[10px] font-bold text-black'>In parlay</span>}
+                </span>
               </button>
-            ) : null
-          )}
-        </span>
+            )
+          })}
+        </div>
       </div>
+      <PropSheet l={l} w={w} game={game} side={side} onSide={setSide} open={open} onOpenChange={setOpen} />
     </li>
   )
 }
@@ -163,8 +168,7 @@ export function Props() {
     return () => { off = true }
   }, [tickers])
 
-  const colorsFor = (l: PropLine) =>
-    rows.find((r) => r.sport === l.sport && r.away === l.away && r.home === l.home)?.colors ?? null
+  const gameFor = (l: PropLine) => rows.find((r) => r.sport === l.sport && r.away === l.away && r.home === l.home) ?? null
   const byGame = useMemo(() => {
     const g = new Map<string, Shown[]>()
     shown.forEach((l) => g.set(l.gameKey, [...(g.get(l.gameKey) ?? []), l]))
@@ -177,7 +181,7 @@ export function Props() {
         <div className='me-auto min-w-0'>
           <h1 className='font-display text-[26px] leading-none font-black'>Player props</h1>
           <p className='mt-0.5 truncate text-xs text-muted-foreground'>
-            {liveAt ? `Kalshi's live prices as of ${clockFmt.format(liveAt)}` : "Kalshi's price next to DeVig's props model"}
+            {liveAt ? `Kalshi's live prices as of ${clockFmt.format(liveAt)}` : "Tap Over or Under to see why"}
           </p>
         </div>
         <ThemeSwitch />
@@ -216,7 +220,8 @@ export function Props() {
           <div className='grid gap-4 lg:grid-cols-2'>
             {byGame.map((ls) => {
               const g = ls[0]
-              const c = colorsFor(g)
+              const game = gameFor(g)
+              const c = game?.colors ?? null
               return (
                 <section key={g.gameKey} aria-label={`${g.away} at ${g.home}`} className='overflow-hidden rounded-[18px] bg-card'>
                   <div
@@ -224,13 +229,19 @@ export function Props() {
                     style={{ background: c ? `linear-gradient(102deg, ${c.away} 0 50%, ${c.home} 50% 100%)` : 'linear-gradient(102deg, var(--side-away) 0 50%, var(--side-home) 50% 100%)' }}
                   >
                     <div aria-hidden='true' className='absolute inset-0 bg-black/25' />
-                    <span className='relative'>{g.away}</span>
+                    <span className='relative flex items-center gap-2'>
+                      <TeamLogo sport={g.sport} code={g.away} id={game?.ids?.away} color={c?.away} px={64} className='size-7 text-[10px]' />
+                      {g.away}
+                    </span>
                     <span className='relative font-sans text-xs font-semibold'>{timeFmt.format(new Date(g.kickoff))}</span>
-                    <span className='relative'>{g.home}</span>
+                    <span className='relative flex items-center gap-2'>
+                      {g.home}
+                      <TeamLogo sport={g.sport} code={g.home} id={game?.ids?.home} color={c?.home} px={64} className='size-7 text-[10px]' />
+                    </span>
                   </div>
                   <ul>
                     {ls.map((l) => (
-                      <PropRow key={l.key} l={l} />
+                      <PropRow key={l.key} l={l} game={game} />
                     ))}
                   </ul>
                 </section>
@@ -239,8 +250,9 @@ export function Props() {
           </div>
         )}
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
-          White tick: Kalshi&apos;s midpoint. Amber slash: DeVig&apos;s props model. Buttons show what you&apos;d really pay,
-          Kalshi&apos;s fee included. Thin market = buy and sell prices more than 5¢ apart or little traded.
+          Tap Over or Under to see why, or to add it to your parlay. Each bar splits at Kalshi&apos;s midpoint: the team color is
+          Over, gray is Under. Amber slash: DeVig&apos;s props model; the big numbers are its chances (Kalshi&apos;s when DeVig has
+          none). Prices next to Over and Under are what you&apos;d really pay, Kalshi&apos;s fee included. Thin market = buy and sell prices more than 5¢ apart or little traded.
         </p>
       </Main>
     </>

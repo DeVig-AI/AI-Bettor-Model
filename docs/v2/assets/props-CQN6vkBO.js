@@ -1,0 +1,1 @@
+import{n as e}from"./props-DQfU--2S.js";var t=e;export{t as component};
