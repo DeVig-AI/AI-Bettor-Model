@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { TrackButton } from '@/components/track-button'
+import { PriceAlert } from './price-alert'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
@@ -127,6 +128,7 @@ export function GamePage({ id }: { id: string }) {
           <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
         </div>
         <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
+        <PriceAlert row={row} />
 
         <Read row={row} />
 

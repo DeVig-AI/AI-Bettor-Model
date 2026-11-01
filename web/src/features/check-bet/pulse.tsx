@@ -3,6 +3,7 @@ import type { KRead } from '@/lib/kalshi-link'
 import { type PricePoint, pulse, useLegLines } from '@/lib/pulse'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ParlayAlert } from './parlay-alert'
 
 // The parlay pulse: the chance a saved parlay hits, minute by minute, from each leg's Kalshi price multiplied together.
 // Settled legs count as 1 (won) or 0 (lost) from the minute they settled, and each one is marked on the line.
@@ -15,7 +16,7 @@ const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2
 const pct = (p: number) => (p > 0 && p < 0.1 ? `${(p * 100).toFixed(p < 0.001 ? 2 : 1).replace(/\.0+$/, '')}%` : `${Math.round(p * 100)}%`)
 const TOPS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 1]
 
-export function PulseCard({ d, savedAt }: { d: Combo; savedAt: string | null }) {
+export function PulseCard({ d, savedAt, label = null }: { d: Combo; savedAt: string | null; label?: string | null }) {
   const live = d.combo.result == null && d.lost === 0 && d.won < d.legs.length
   // from an hour before it was saved (or the last 12 hours for a combo read without saving), at most two days back
   const start = useMemo(() => {
@@ -69,6 +70,7 @@ export function PulseCard({ d, savedAt }: { d: Combo; savedAt: string | null }) 
         Each leg&apos;s Kalshi price, multiplied{live && n && n > 1 ? `: about 1 in ${n} right now` : ''}. Legs from the same game move together, so
         it&apos;s a rough read. Updates every minute while it plays.
       </p>
+      {live && <ParlayAlert legs={d.legs} now={now} label={label} />}
     </section>
   )
 }

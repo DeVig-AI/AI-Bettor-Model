@@ -26,6 +26,7 @@ jobs:
         env:
           FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
           GH_TOKEN: ${{ github.token }}
+          RUN_KEY: ${{ secrets.ALERTS_RUN_KEY }}
         run: |
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
@@ -47,6 +48,8 @@ jobs:
                 [ $pushed = 1 ] || echo "::warning::could not push this round; the next round tries again"
               fi
             fi
+            # DeVig alerts (price targets, line moves, parlays) right after each refresh
+            curl -sS -m 55 -o /dev/null -X POST -H "x-run-key: $RUN_KEY" "https://devigai.pages.dev/api/alerts?run=1" || true
             if [ "$working" -gt 0 ]; then wait=180
             elif [ -n "$next" ] && [ "$next" -lt $((end - SECONDS)) ]; then wait=$(( next < 60 ? 60 : next ))
             else break; fi                                      # next game further off: the hourly schedule takes over

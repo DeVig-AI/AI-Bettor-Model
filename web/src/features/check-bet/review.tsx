@@ -106,7 +106,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
 
   return (
     <div className='flex flex-col gap-3'>
-      <PulseCard d={d} savedAt={entry?.savedAt ?? null} />
+      <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />
       <GradeCard g={snap && anyStarted ? { ...g, letter: snap.letter, score: snap.score, summary: SUMMARY[snap.letter] } : g} snap={snap} started={anyStarted} />
       {weak.length > 0 && !decided && (
         <section aria-label='Weak spots' className='rounded-[18px] bg-card p-4'>
