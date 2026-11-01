@@ -117,3 +117,13 @@ test("wrap=1 returns ESPN's summary cut down to what the wrap-up reads", async (
   assert.ok(JSON.stringify(s).length <= JSON.stringify(summary()).length);
   assert.deepEqual(slimSummary({}).boxscore, { teams: [], players: [] });   // a sparse summary doesn't throw
 });
+
+test("date=YYYYMMDD asks ESPN for that day's scoreboard; a bad date is refused", async () => {
+  const urls = [];
+  const f = async url => { urls.push(url); return new Response(JSON.stringify({events: []}), {status: 200}); };
+  assert.equal((await handle(new Request("https://x/api/live?sport=cfb&date=20261031"), f)).status, 200);
+  assert.match(urls[0], /college-football\/scoreboard\?groups=80&limit=500&dates=20261031$/);
+  await handle(new Request("https://x/api/live?sport=nba&date=20261030"), f);
+  assert.match(urls[1], /basketball\/nba\/scoreboard\?dates=20261030$/);
+  assert.equal((await handle(new Request("https://x/api/live?sport=nba&date=yesterday"), f)).status, 400);
+});

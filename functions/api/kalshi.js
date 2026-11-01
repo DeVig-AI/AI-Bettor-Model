@@ -4,6 +4,8 @@
 //     every leg with its pick, price and result, plus the legs' chances multiplied together
 //   - one market: its pick, price, status and result
 //   - an event (a game page link): each of its markets
+// GET /api/kalshi?history=<ticker>&from=<unix seconds> returns that market's Yes price by the hour (the midpoint of buy
+// and sell, else the last trade) for the parlay review's "what changed": the price when saved, at kickoff, and after.
 // Display only. Answers are kept for 30 seconds so many viewers share one Kalshi request.
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const TTL = 30, MAX_LEGS = 80, MAX_EVENT_MARKETS = 40;
@@ -70,6 +72,8 @@ export function priced(m, side = "yes") {
     result,
     bid: round(bid), ask: round(ask), last: round(last), chance: round(chance),
     closes: m.close_time || null,
+    strike: isFinite(parseFloat(m.floor_strike)) ? parseFloat(m.floor_strike) : null,   // 224.5 for "225+"
+    strike_type: m.strike_type || null,
   };
 }
 
@@ -119,8 +123,39 @@ export async function read(ticker, fetcher = fetch) {
   return null;
 }
 
+// Kalshi's hourly candles -> [{t: unix seconds at the hour's end, p: Yes chance}]
+export function candles(d) {
+  const f = v => parseFloat(v);
+  return ((d && d.candlesticks) || []).map(c => {
+    const b = f((c.yes_bid || {}).close_dollars), a = f((c.yes_ask || {}).close_dollars), last = f((c.price || {}).close_dollars);
+    const p = ok(b) && ok(a) ? (a + b) / 2 : ok(last) ? last : null;
+    return p == null ? null : {t: c.end_period_ts, p: Math.round(p * 10000) / 10000};
+  }).filter(Boolean);
+}
+
+async function history(q, fetcher, now) {
+  const ticker = parseLink(q.get("history"));
+  if (!ticker || !ticker.includes("-")) return json({error: "bad ticker"}, 400);
+  const end = Math.floor(now() / 1000), from = Math.max(parseInt(q.get("from"), 10) || 0, end - 30 * 86400);
+  const key = `h:${ticker}:${Math.floor(from / 3600)}`;
+  const hit = mem.get(key);
+  if (hit && now() - hit.at < 300e3) return json(hit.data, 200, 120);
+  try {
+    const series = ticker.split("-")[0];
+    const d = await get(fetcher, `/series/${encodeURIComponent(series)}/markets/${encodeURIComponent(ticker)}/candlesticks?start_ts=${from}&end_ts=${end}&period_interval=60`);
+    const data = {ticker, points: candles(d)};
+    mem.set(key, {at: now(), data});
+    if (mem.size > 200) mem.delete(mem.keys().next().value);
+    return json(data, 200, 120);
+  } catch (e) {
+    return json({error: "Kalshi isn't answering right now. Try again in a minute.", code: "unavailable"}, 502);
+  }
+}
+
 export async function handle(request, fetcher = fetch, now = Date.now) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
+  const q = new URL(request.url).searchParams;
+  if (q.has("history")) return history(q, fetcher, now);
   const ticker = parseLink(new URL(request.url).searchParams.get("link"));
   if (!ticker) return json({error: "That doesn't look like a Kalshi link.", code: "bad_link"}, 400);
   const hit = mem.get(ticker);

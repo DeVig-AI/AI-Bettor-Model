@@ -8,6 +8,7 @@
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
 // &event=<id>&wrap=1 also returns wrap: ESPN's summary cut down to what the v2 game wrap-up reads (header, box score,
 // win chances, and the play-by-play as text), so a phone doesn't download the whole thing.
+// ?sport=..&date=YYYYMMDD returns that day's scoreboard (the parlay review finds a past leg's game this way).
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
 const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
@@ -353,8 +354,11 @@ export async function handle(request, fetcher = fetch) {
       if (q.get("wrap") === "1") body.wrap = slimSummary(d);
       return json(body, 200, 10);
     }
-    const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${QUERY[sport] || ""}`, SCORE_TTL, fetcher);
-    return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, 10);
+    const date = q.get("date");                     // YYYYMMDD (ET), for an earlier or later day's games
+    if (date != null && !/^20\d{6}$/.test(date)) return json({error: "bad date"}, 400);
+    const qs = [QUERY[sport] ? QUERY[sport].slice(1) : "", date ? `dates=${date}` : ""].filter(Boolean).join("&");
+    const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${qs ? "?" + qs : ""}`, date ? 60 : SCORE_TTL, fetcher);
+    return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, date ? 30 : 10);
   } catch (e) {
     return json({error: "scores unavailable"}, 502);
   }

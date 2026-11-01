@@ -2,7 +2,7 @@
 //   node --test tests/app/kalshi_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { handle, parseLink, priced, multiply } from "../../functions/api/kalshi.js";
+import { handle, parseLink, priced, multiply, candles } from "../../functions/api/kalshi.js";
 
 const COMBO = "KXMVECROSSCATEGORY-S20266MUJGEYGGMBSSJPK-ZNGMGDKXX";
 
@@ -70,4 +70,24 @@ test("a game page link reads the event; unknown and bad links say so", async () 
   assert.equal((await handle(new Request("https://x/api/kalshi?link=KXNOPE-1"), kalshi(calls))).status, 404);
   assert.equal((await handle(new Request("https://x/api/kalshi?link=https://evil.com/a/b"), kalshi(calls))).status, 400);
   assert.equal((await handle(new Request("https://x/api/kalshi?link=KXNOPE-1", {method: "POST"}), kalshi(calls))).status, 405);
+});
+
+test("a prop's strike rides along: 224.5 'greater' is 225+", () => {
+  const p = priced({ticker: "KXNFLPASSYDS-26NOV01TENCIN-CINJBURROW9-225", title: "Joe Burrow: 225+ passing yards", floor_strike: 224.5, strike_type: "greater"});
+  assert.deepEqual([p.strike, p.strike_type], [224.5, "greater"]);
+  assert.deepEqual([priced({}).strike, priced({}).strike_type], [null, null]);
+});
+
+test("history: hourly Yes chances from Kalshi's candles (midpoint, else the last trade)", async () => {
+  assert.deepEqual(candles({candlesticks: [
+    {end_period_ts: 100, yes_bid: {close_dollars: "0.40"}, yes_ask: {close_dollars: "0.44"}, price: {close_dollars: "0.41"}},
+    {end_period_ts: 200, yes_bid: {close_dollars: "0.0000"}, yes_ask: {close_dollars: "1.0000"}, price: {close_dollars: "0.0100"}},
+    {end_period_ts: 300, yes_bid: {}, yes_ask: {}, price: {}},
+  ]}), [{t: 100, p: 0.42}, {t: 200, p: 0.01}]);
+  const calls = [];
+  const f = async url => { calls.push(url); return new Response(JSON.stringify({candlesticks: [{end_period_ts: 5, price: {close_dollars: "0.5"}}]}), {status: 200}); };
+  const r = await handle(new Request("https://x/api/kalshi?history=KXNBAGAME-26OCT31PHICHA-CHA&from=1793400000"), f, () => 1793500000e3);
+  assert.deepEqual(await r.json(), {ticker: "KXNBAGAME-26OCT31PHICHA-CHA", points: [{t: 5, p: 0.5}]});
+  assert.match(calls[0], /\/series\/KXNBAGAME\/markets\/KXNBAGAME-26OCT31PHICHA-CHA\/candlesticks\?start_ts=1793400000&end_ts=1793500000&period_interval=60$/);
+  assert.equal((await handle(new Request("https://x/api/kalshi?history=nope"), f)).status, 400);
 });
