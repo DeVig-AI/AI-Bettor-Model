@@ -13,10 +13,11 @@
 //                       and issuer; with it, only logins for this exact app.
 //   INVITE_CODE         secret; the code friends type once to open an account (several allowed, comma-separated)
 
-const MAX_BODY = 120000;           // bytes; a season of tracking plus tracked parlays stays well under this
+const MAX_BODY = 250000;           // bytes; a season of tracking, tracked parlays and 500 logged bets stays under this
 const MAX_PARLAYS = 60;            // tracked parlays kept (removed ones are kept as a small tombstone so devices agree)
 const LEG_STR = ["desc", "book", "game", "when", "kind", "mk", "side", "player", "stat", "sport", "away", "home", "kickoff", "gkey"];
 const LEG_NUM = ["odds", "point", "line"];
+const MAX_BETS = 500;              // logged bets (My bets on the Fair price page), removed ones kept as a tombstone
 const MAX_TRACKED = 2000;          // per kind (games, picks)
 const MAX_TEAMS = 60;              // per sport
 const SAVE_GAP_MS = 2000;          // at most one save every 2 seconds per person
@@ -92,6 +93,26 @@ export async function accessUser(request, env, fetcher = fetch) {
 export async function userKey(email) {
   const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(email));
   return "user:" + [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// My bets: {bets: {id: {at, sport, game, away, home, kickoff, side, odds, other, book, stake} | {removed}}, updated}.
+// null when the request has none (the classic app doesn't send them), so a save from classic keeps what's stored.
+export function cleanBets(b) {
+  if (!b || typeof b !== "object" || !b.bets || typeof b.bets !== "object" || Array.isArray(b.bets)) return null;
+  const out = {bets: {}, updated: Number(b.updated) || 0};
+  const str = (v, n) => String(v == null ? "" : v).slice(0, n);
+  for (const id of Object.keys(b.bets).slice(-MAX_BETS)) {
+    const x = b.bets[id];
+    if (!/^[a-z0-9]{1,24}$/.test(id) || !x || typeof x !== "object") continue;
+    if (x.removed) { out.bets[id] = {removed: Number(x.removed) || 1}; continue; }
+    const odds = Number(x.odds);
+    if (!isFinite(odds) || (odds > -100 && odds < 100) || (x.side !== "home" && x.side !== "away")) continue;
+    const other = Number(x.other), stake = Number(x.stake);
+    out.bets[id] = {id, at: str(x.at, 30), sport: str(x.sport, 8), game: str(x.game, 40), away: str(x.away, 12), home: str(x.home, 12),
+      kickoff: str(x.kickoff, 30), side: x.side, odds, other: x.other != null && isFinite(other) ? other : null,
+      book: str(x.book, 24), stake: x.stake != null && isFinite(stake) && stake >= 0 ? stake : null};
+  }
+  return out;
 }
 
 // Keep only the shapes the app writes: tracked {g:{key:time}, p:{key:time}, parlays:{id:{at, stake, odds, legs}|{removed}},
@@ -190,7 +211,7 @@ export async function handle(request, env, fetcher = fetch) {
   const rec = await env.USERS.get(key, "json");
   const joined = !!(rec && rec.joined_at);
   if (request.method === "GET") {
-    return json({email, joined, data: joined ? {tracked: rec.tracked, prefs: rec.prefs} : null});
+    return json({email, joined, data: joined ? {tracked: rec.tracked, prefs: rec.prefs, bets: rec.bets || null} : null});
   }
   if (request.method === "POST") {                      // open the account with the invite code
     if (joined) return json({ok: true, email, joined});
@@ -217,6 +238,8 @@ export async function handle(request, env, fetcher = fetch) {
     const {body, error} = await readJson(request);
     if (error) return error;
     const data = clean(body);
+    const bets = cleanBets(body && body.bets) || rec.bets;
+    if (bets) data.bets = bets;
     Object.assign(data, {joined_at: rec.joined_at, saved_at: new Date(now).toISOString(), day, writes: writes + 1});
     await env.USERS.put(key, JSON.stringify(data));
     return json({ok: true, email, saved_at: data.saved_at});

@@ -18,6 +18,7 @@ import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
 import { Route as AuthenticatedAskRouteImport } from './routes/_authenticated/ask'
+import { Route as AuthenticatedFairRouteImport } from './routes/_authenticated/fair'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
 import { Route as AuthenticatedModelsRouteImport } from './routes/_authenticated/models'
@@ -73,6 +74,11 @@ const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
 const AuthenticatedAskRoute = AuthenticatedAskRouteImport.update({
   id: '/ask',
   path: '/ask',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFairRoute = AuthenticatedFairRouteImport.update({
+  id: '/fair',
+  path: '/fair',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
   '/ask': typeof AuthenticatedAskRoute
+  '/fair': typeof AuthenticatedFairRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
   '/ask': typeof AuthenticatedAskRoute
+  '/fair': typeof AuthenticatedFairRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/about': typeof AuthenticatedAboutRoute
   '/_authenticated/ask': typeof AuthenticatedAskRoute
+  '/_authenticated/fair': typeof AuthenticatedFairRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
   '/_authenticated/models': typeof AuthenticatedModelsRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/about'
     | '/ask'
+    | '/fair'
     | '/history'
     | '/injuries'
     | '/models'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/about'
     | '/ask'
+    | '/fair'
     | '/history'
     | '/injuries'
     | '/models'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/about'
     | '/_authenticated/ask'
+    | '/_authenticated/fair'
     | '/_authenticated/history'
     | '/_authenticated/injuries'
     | '/_authenticated/models'
@@ -350,6 +362,13 @@ declare module '@tanstack/react-router' {
       path: '/ask'
       fullPath: '/ask'
       preLoaderRoute: typeof AuthenticatedAskRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fair': {
+      id: '/_authenticated/fair'
+      path: '/fair'
+      fullPath: '/fair'
+      preLoaderRoute: typeof AuthenticatedFairRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/history': {
@@ -442,6 +461,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
   AuthenticatedAskRoute: typeof AuthenticatedAskRoute
+  AuthenticatedFairRoute: typeof AuthenticatedFairRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
   AuthenticatedModelsRoute: typeof AuthenticatedModelsRoute
@@ -460,6 +480,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
   AuthenticatedAskRoute: AuthenticatedAskRoute,
+  AuthenticatedFairRoute: AuthenticatedFairRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
   AuthenticatedModelsRoute: AuthenticatedModelsRoute,
