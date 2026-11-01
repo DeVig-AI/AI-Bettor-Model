@@ -1,0 +1,104 @@
+# Research Lab candidate s-b7ed7469 -- sent by the owner from the search; registered before it runs (A3). Never edit after it has run.
+id: s-b7ed7469
+name: 'Blend of 3: s-82cfaa9d + s-8592ab8e + s-fafdfaae'
+market: moneyline
+family: Blend · search, sent by the owner
+parent: null
+reason: 'The owner''s pick (2026-11-01): the NHL search''s best moneyline model by t after 127k configurations (round 152:
+  +0.47 win-chance pts a game on 2014–2016, t = 2.54; search periods -0.02 / +0.33 / +1.10). It did not make the automatic
+  shortlist (one search period below zero); sent by hand (A3.1) so the app''s NHL model is checked on 2017–2019, which the
+  search never saw, before it is shown.'
+source: owner, from the automatic search (NHL, Constitution v14 A3.3c); registered by hand (A3.1)
+search:
+  round: 152
+  t: 2.542
+  effect: 0.4709
+  periods:
+  - -0.0178
+  - 0.3336
+  - 1.0982
+  games: 3954
+  sent_at: '2026-11-01T03:53:48Z'
+model:
+  type: blend
+  params:
+    components:
+    - market: moneyline
+      model:
+        params:
+          bye_elo: 0
+          bye_rest_days: 13
+          elo_per_point: 100
+          hfa_elo: 110
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 6
+          market_blend: 0.5
+          market_resist: 0.0
+          mean: 1505
+          mov: none
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          prob: elo
+          qb: none
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.4
+          revert_center: none
+          travel_elo_per_1000mi: 0
+        type: elo_ml
+    - market: moneyline
+      model:
+        params:
+          bye_elo: 0
+          bye_rest_days: 13
+          elo_per_point: 100
+          hfa_elo: 110
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 6
+          market_blend: 0.6875
+          market_resist: 0.0
+          mean: 1505
+          mov: '538'
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          prob: elo
+          qb: none
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.2916
+          revert_center: none
+          travel_elo_per_1000mi: 0
+        type: elo_ml
+    - market: moneyline
+      model:
+        params:
+          bye_elo: 0
+          bye_rest_days: 13
+          elo_per_point: 100
+          hfa_elo: 110
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 6
+          market_blend: 0.5
+          market_resist: 0.0
+          mean: 1505
+          mov: none
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          prob: elo
+          qb: none
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.25
+          revert_center: none
+          travel_elo_per_1000mi: 0
+        type: elo_ml
+    weights:
+    - 0.3333
+    - 0.3333
+    - 0.3333
