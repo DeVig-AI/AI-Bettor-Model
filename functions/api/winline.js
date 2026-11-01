@@ -1,8 +1,9 @@
-// DeVig win-chance graph for any sport: GET /api/winline?ticker=KXNBAGAME-26OCT20BOSDET-DET&start=<unix seconds>
-// returns Kalshi's 1-minute price history for that team's win market as [[unix, chance]] (bid/ask midpoint, at
+// DeVig price graph for any sport: GET /api/winline?ticker=KXNBAGAME-26OCT20BOSDET-DET&start=<unix seconds>
+// returns Kalshi's 1-minute price history for that market (a team to win, or any sports market a parlay leg can be:
+// a spread, a total, a player prop) as [[unix, chance]] (bid/ask midpoint, at
 // most 150 points; &fine=1: 360, every minute of a game), plus the latest bid and ask. Display only. Answers are kept for a minute so viewers share them.
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
-const TTL = 60, MAX_POINTS = 150, FINE_POINTS = 360;
+const TTL = 60, MAX_POINTS = 150, FINE_POINTS = 360, WIDE = 0.25;
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -25,7 +26,8 @@ export function points(candles, max = MAX_POINTS) {
   let pts = [], last = null;
   for (const c of candles || []) {
     const b = close(c, "yes_bid"), a = close(c, "yes_ask");
-    let v = b != null && a != null && b > 0 && b <= a && a < 1 ? (b + a) / 2 : close(c, "price");
+    // a thin market's minute with nobody near (2¢ bid, 98¢ ask) isn't a price: use the last trade, else skip it
+    let v = b != null && a != null && b > 0 && b <= a && a < 1 && a - b <= WIDE ? (b + a) / 2 : close(c, "price");
     if (v != null && v >= 0 && v <= 1 && c.end_period_ts) pts.push([Number(c.end_period_ts), Math.round(v * 1000) / 1000]);
     if (b != null && a != null) last = {bid: b, ask: a};
   }
@@ -40,7 +42,7 @@ export async function handle(request, fetcher = fetch) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
   const q = new URL(request.url).searchParams;
   const ticker = String(q.get("ticker") || "");
-  const m = /^(KX(?:NFL|NBA|MLB|NHL|WNBA|NCAAF)GAME)-[A-Z0-9]{6,30}-[A-Z]{2,6}$/.exec(ticker);
+  const m = /^(KX(?:NFL|NBA|MLB|NHL|WNBA|NCAAF|NCAAB|NCAAMB)[A-Z0-9]{0,20})-[A-Z0-9]{6,30}-[A-Z0-9.][A-Z0-9.-]{0,40}$/.exec(ticker);
   if (!m) return json({error: "bad ticker"}, 400);
   const now = Math.floor(Date.now() / 1000);
   let start = parseInt(q.get("start"), 10);
