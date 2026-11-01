@@ -12,6 +12,7 @@ import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
 import { FieldMovers } from './field'
+import { GapChart } from './gap'
 import { GameWrap } from './wrap'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
@@ -129,7 +130,8 @@ export function GamePage({ id }: { id: string }) {
 
         <Read row={row} />
 
-        <FieldMovers row={row} />
+          <GapChart row={row} />
+          <FieldMovers row={row} />
 
         <GameWrap row={row} />
 

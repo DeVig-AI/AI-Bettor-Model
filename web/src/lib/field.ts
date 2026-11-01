@@ -10,7 +10,16 @@ export * from './field-math'
 // than the play (injuries, other news), so it's what happened around the play, not proof the play caused it.
 // Display only: no model reads this.
 
-type Feed = { away: string; home: string; plays: FieldPlay[] } // plays newest first
+// plays newest first; wp: ESPN's own win chance for the home team after each play; keys: scores and turnovers;
+// periods: when each quarter started (the gap chart's axis)
+type Feed = {
+  away: string
+  home: string
+  plays: FieldPlay[]
+  wp?: [number, number][]
+  keys?: { at: number; kind: string; q: number | null; clock: string; text: string; away_score: number | null; home_score: number | null }[]
+  periods?: [number, number][]
+}
 
 export const FOOTBALL = ['NFL', 'CFB']
 
