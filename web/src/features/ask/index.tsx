@@ -3,6 +3,7 @@ import { ArrowUp, Square } from 'lucide-react'
 import { type AskError, ASK_RULES, ask, askContext, askErrorText } from '@/lib/ask'
 import { useGames, useRecord } from '@/lib/devig'
 import { useInjuries } from '@/lib/injuries'
+import { useNflWhy } from '@/features/games/nfl-why'
 import { cn } from '@/lib/utils'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -12,6 +13,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // (the server caps questions per person per day). Answers stream in; Stop cancels.
 
 const CHIPS = [
+  ['Why did it pass?', 'Pick one NFL game DeVig passed on and explain, step by step, why the model gave it the chance it did.'],
   ['Best bets now', 'What are the best picks right now, and is the price worth it on each?'],
   ['What to avoid', 'Which picks should I be careful with, and why?'],
   ['Safest 2-leg parlay', 'Build the safest 2-leg parlay from the current picks and explain the risk.'],
@@ -25,6 +27,7 @@ export function Ask() {
   const { rows } = useGames()
   const { records } = useRecord()
   const injuries = useInjuries()
+  const why = useNflWhy(true)
   const [turns, setTurns] = useState<Turn[]>([])
   const [draft, setDraft] = useState('')
   const [live, setLive] = useState<string | null>(null) // the answer streaming in
@@ -40,7 +43,7 @@ export function Ask() {
     if (!q || busy) return
     setErr('')
     setDraft('')
-    const ctx = `RULES:\n${ASK_RULES}\n\nAPP DATA (JSON):\n${JSON.stringify(askContext(rows, records, injuries.data ?? []))}`
+    const ctx = `RULES:\n${ASK_RULES}\n\nAPP DATA (JSON):\n${JSON.stringify(askContext(rows, records, injuries.data ?? [], why.data?.games))}`
     const past = turns.slice(-8)
     // the app's data rides on the first question of the conversation (the server keeps the last 12 messages)
     const msgs: Turn[] = past.length

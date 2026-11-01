@@ -14,7 +14,7 @@ type TeamStats = Partial<Record<
   | 's12_win' | 's12_margin' | 's12_net_epa' | 's12_off_epa' | 's12_def_epa_allowed' | 'rest',
   number | null
 >>
-type Why = {
+export type NflWhyGame = {
   home: string
   away: string
   home_wp: number
@@ -26,7 +26,7 @@ type Why = {
 export function useNflWhy(enabled: boolean) {
   return useQuery({
     queryKey: ['nfl-why'],
-    queryFn: () => getJson<{ generated_at: string; games: Record<string, Why> }>('nfl/model2/why.json'),
+    queryFn: () => getJson<{ generated_at: string; games: Record<string, NflWhyGame> }>('nfl/model2/why.json'),
     enabled,
     staleTime: 10 * 60e3,
   })
