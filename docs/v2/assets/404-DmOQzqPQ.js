@@ -1,0 +1,1 @@
+import{i as e}from"./index-KPYDR964.js";var t=e;export{t as component};

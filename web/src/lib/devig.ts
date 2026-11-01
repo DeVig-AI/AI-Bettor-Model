@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 
 const RAW = 'https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/'
 
-async function getJson<T>(path: string): Promise<T> {
+export async function getJson<T>(path: string): Promise<T> {
   // raw.githubusercontent.com caches for up to ~5 minutes; the minute stamp lets each refresh skip the browser cache.
   const r = await fetch(`${RAW}${path}?t=${Math.floor(Date.now() / 60000)}`)
   if (!r.ok) throw new Error(`${path}: ${r.status}`)
