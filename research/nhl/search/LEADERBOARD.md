@@ -1,10 +1,10 @@
 # Research Lab search (NHL) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-10-31T22:59:02Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-10-31T23:59:33Z by research/lab/search.py. Scores are on the search seasons 2014–2016 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-125707 configurations scored so far.
+126007 configurations scored so far.
 
-## Moneyline -- top 25 of 124434
+## Moneyline -- top 25 of 124734
 
 | # | id | model | effect | t | 2014 | 2015 | 2016 |
 |---|---|---|---|---|---|---|---|
@@ -66,13 +66,13 @@ _Generated 2026-10-31T22:59:02Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `hfa_elo`: best 20 (median t -inf), worst 20 (-inf) over 119596 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 119596 configurations
-- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 119596 configurations
-- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 119596 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 119596 configurations
-- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 119596 configurations
-- moneyline · elo_ml · `revert`: best 0.25 (median t -inf), worst 0.25 (-inf) over 119596 configurations
+- moneyline · elo_ml · `hfa_elo`: best 20 (median t -inf), worst 20 (-inf) over 119896 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 119896 configurations
+- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 119896 configurations
+- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 119896 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 119896 configurations
+- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 119896 configurations
+- moneyline · elo_ml · `revert`: best 0.25 (median t -inf), worst 0.25 (-inf) over 119896 configurations
 - moneyline · rating_ml · `halflife`: best 55 (median t +0.96), worst 10 (-0.67) over 624 configurations
 - moneyline · rating_ml · `season_carry`: best 0.7 (median t +0.99), worst 0.2 (+0.07) over 624 configurations
 - moneyline · signals · `signals`: best [{'carry': 0.5, 'den': 'pp_shots', 'halflife': 30, 'id': 'off-pp', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'pp_goals': 1}, 'reason': 'Power-play goals per power-play shot, how dangerous a team is with the extra skater.', 'side': 'offense'}, {'carry': 0.3, 'den': 'shots', 'halflife': 30, 'id': 'off-shooting', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'points': 1}, 'reason': 'Goals per shot; mostly luck over short spells, so a team scoring on many of its shots is likely to cool off.', 'side': 'offense'}] (median t +2.49), worst [{'carry': 0.85, 'field': 'save_pct', 'halflife': 120, 'id': 'goalie-sv-long', 'kind': 'goalie', 'markets': ['moneyline', 'total'], 'prior_shots': 1500, 'reason': 'The same starting-goalie read over a much longer memory and a stronger pull to average, since save percentage over a few weeks is mostly luck.'}, {'carry': 0.5, 'halflife': 20, 'id': 'off-es-shots', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'es_shots': 1}, 'reason': 'Even-strength shots per game, play control without the noise of penalties and power plays.', 'side': 'offense'}] (-1.48) over 40 configurations
