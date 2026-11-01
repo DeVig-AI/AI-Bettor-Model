@@ -1,6 +1,7 @@
 import { useQueries } from '@tanstack/react-query'
 import { type GameRow, useGames } from './devig'
 import { normName } from './headshots'
+import { hexColor } from '@/components/leg-bar'
 import type { KLeg, KRead } from './kalshi-link'
 import { useProps } from './props'
 import { type Raw, boxPlayers, first, num, sideMap } from './wrap'
@@ -78,7 +79,7 @@ export function parseLeg(leg: KLeg): LegInfo {
     ...base, sport: lg[1], match: `${yy}${mon}${dd}${teams}`, date: `20${yy}${String(mi + 1).padStart(2, '0')}${dd}`, teams,
     strike: strike != null && leg.strike == null ? strike - 0.5 : strike,
   }
-  if (rest === 'GAME') return { ...out, kind: 'game', code: tail || null }
+  if (rest === 'GAME') return { ...out, kind: 'game', code: tail || null, label: tail ? `${leg.side === 'no' ? 'No: ' : ''}${tail} to win` : label }
   if (rest === 'SPREAD') return { ...out, kind: 'spread', code: tail.replace(/\d+$/, '') || null }
   if (rest === 'TOTAL') return { ...out, kind: 'total' }
   const stat = STATS[FAMILY[lg[1]] ?? '']?.[rest]
@@ -90,9 +91,11 @@ export function parseLeg(leg: KLeg): LegInfo {
 export type LegGame = {
   sport: string; eid: string; away: string; home: string; kickoff: string
   state: 'pre' | 'in' | 'post'; detail: string; awayScore: number | null; homeScore: number | null
+  colors: { away: string; home: string } | null; ids: { away?: string; home?: string } | null
   row: GameRow | null
 }
-type ScoreGame = { id: string; kickoff: string; away: string; home: string; away_score: number | null; home_score: number | null; state: 'pre' | 'in' | 'post'; detail: string }
+type ScoreGame = { id: string; kickoff: string; away: string; home: string; away_score: number | null; home_score: number | null; state: 'pre' | 'in' | 'post'; detail: string
+  away_color?: string | null; home_color?: string | null; away_id?: string; home_id?: string }
 
 // Kalshi and ESPN spell a few teams differently
 const SYN = [['JAX', 'JAC'], ['LA', 'LAR'], ['WAS', 'WSH'], ['GSW', 'GS'], ['NOP', 'NO'], ['NYK', 'NY'], ['SAS', 'SA'], ['UTA', 'UTAH'],
@@ -134,16 +137,19 @@ export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame |
   for (const i of infos) {
     const r = onBoard(i)
     if (r) {
-      out[i.key] = { sport: r.sport, eid: r.id.split('|')[1], away: r.away, home: r.home, kickoff: r.kickoff, state: r.state, detail: r.detail, awayScore: r.awayScore, homeScore: r.homeScore, row: r }
+      out[i.key] = { sport: r.sport, eid: r.id.split('|')[1], away: r.away, home: r.home, kickoff: r.kickoff, state: r.state, detail: r.detail, awayScore: r.awayScore, homeScore: r.homeScore, row: r,
+        colors: pair(r.colors?.away, r.colors?.home), ids: r.ids ?? null }
       continue
     }
     const g = i.teams && i.sport && i.date ? findGame(i.teams, day[`${i.sport}|${i.date}`] ?? []) : null
     out[i.key] = g && i.sport
-      ? { sport: i.sport, eid: g.id, away: g.away, home: g.home, kickoff: g.kickoff, state: g.state, detail: g.detail, awayScore: g.away_score, homeScore: g.home_score, row: null }
+      ? { sport: i.sport, eid: g.id, away: g.away, home: g.home, kickoff: g.kickoff, state: g.state, detail: g.detail, awayScore: g.away_score, homeScore: g.home_score, row: null,
+        colors: pair(g.away_color, g.home_color), ids: g.away_id ? { away: g.away_id, home: g.home_id } : null }
       : null
   }
   return { games: out, loading: isLoading || boards.some((b) => b.isLoading) }
 }
+const pair = (a?: string | null, h?: string | null) => { const x = hexColor(a), y = hexColor(h); return x && y ? { away: x, home: y } : null }
 const dayKey = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date(iso)).replace(/-/g, '')
 
 // a full game row for the wrap-up, for a game DeVig's board doesn't carry any more

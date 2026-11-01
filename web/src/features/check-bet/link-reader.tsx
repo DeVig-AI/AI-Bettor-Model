@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Link2, Minus, X } from 'lucide-react'
 import {
-  type KLeg, type KRead, type Saved, LinkError, labelFor, legLabel, loadSaved, readLink, storeSaved, useReadLink,
+  type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
 import { cn } from '@/lib/utils'
@@ -84,7 +84,7 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
             </div>
           ))}
         </div>
-        {!c.result && d.lost === 0 && (
+        {!c.result && d.lost === 0 && d.ticker !== 'slip' && (
           <dl className='mt-3 grid grid-cols-2 gap-2 text-sm'>
             <div>
               <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
@@ -99,7 +99,7 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
           </dl>
         )}
       </section>
-      {!c.result && d.lost === 0 && (
+      {!c.result && d.lost === 0 && d.ticker !== 'slip' && (
         <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
           Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
           usually move together, so treat it as a rough check on the combo price, not a fair price.
@@ -133,18 +133,17 @@ function Legs({ legs, won }: { legs: KLeg[]; won: number }) {
 }
 const rank = (l: KLeg) => (l.result === 'lost' ? 0 : l.result ? 2 : 1)
 
-export function LinkReader({ title = 'Check a Kalshi bet', blurb }: { title?: string; blurb?: React.ReactNode } = {}) {
+// everything a reader keeps: the link being read, the answer (kept on screen while a refresh runs), the saved list
+function useBetReader() {
   const read = useReadLink()
-  const [link, setLink] = useState('')
-  const [saved, setSaved] = useState<Saved[]>(loadSaved)
+  const saved = useSaved()
   const [lastLink, setLastLink] = useState('')
-  // the last answer stays on screen while a refresh runs
   const [data, setData] = useState<KRead | null>(null)
   const go = (l: string) => {
     if (!l.trim()) return
     setLastLink(l.trim())
     setData(null)
-    read.mutate(l, { onSuccess: setData })
+    read.mutate(l.trim(), { onSuccess: setData })
   }
   // live prices: while a combo has legs to go, read it again every minute (only while the tab is in view)
   const live = data?.kind === 'combo' && data.combo.result == null && data.lost === 0 && data.won < data.legs.length
@@ -157,89 +156,123 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb }: { title?: st
   }, [live, lastLink])
 
   const isSaved = saved.some((s) => s.link === lastLink)
-  const save = () => {
-    if (!data || isSaved) return
-    const next = [{ link: lastLink, label: labelFor(data), savedAt: new Date().toISOString() }, ...saved]
-    setSaved(next)
-    storeSaved(next)
-  }
   // combos are saved as soon as they're read, with the review's snapshot, so you can look back at how they went
   const store = (patch: Partial<Saved>) => {
     if (!data || !lastLink) return
-    setSaved((cur) => {
-      const old = cur.find((s) => s.link === lastLink)
-      const next = old
-        ? cur.map((s) => (s.link === lastLink ? { ...s, ...patch } : s))
-        : [{ link: lastLink, label: labelFor(data), savedAt: new Date().toISOString(), ...patch }, ...cur]
-      storeSaved(next)
-      return next
-    })
-  }
-  const entry = saved.find((s) => s.link === lastLink) ?? null
-  const remove = (l: string) => {
-    const next = saved.filter((s) => s.link !== l)
-    setSaved(next)
-    storeSaved(next)
+    const cur = getSaved()
+    const old = cur.find((s) => s.link === lastLink)
+    storeSaved(old
+      ? cur.map((s) => (s.link === lastLink ? { ...s, ...patch } : s))
+      : [{ link: lastLink, label: labelFor(data), savedAt: new Date().toISOString(), ...patch }, ...cur])
   }
   const err = read.error instanceof LinkError ? read.error.message : read.error ? 'Something went wrong. Try again.' : null
+  return {
+    go, data, lastLink, saved, isSaved, store, err, pending: read.isPending,
+    entry: saved.find((s) => s.link === lastLink) ?? null,
+    save: () => { if (data && !isSaved) store({}) },
+    remove: (l: string) => storeSaved(getSaved().filter((s) => s.link !== l)),
+  }
+}
+type Reader = ReturnType<typeof useBetReader>
 
+function ReaderBody({ r }: { r: Reader }) {
+  if (r.pending) return <Skeleton className='h-48 w-full rounded-[18px]' />
+  if (!r.data) return null
+  const d = r.data
+  return (
+    <>
+      <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
+      <div className='flex gap-2'>
+        <button type='button' onClick={r.save} disabled={r.isSaved}
+          className='h-10 rounded-full border px-4 text-sm font-semibold disabled:text-muted-foreground'>
+          {r.isSaved ? 'Saved' : 'Save this'}
+        </button>
+        <button type='button' onClick={() => r.go(r.lastLink)} className='h-10 rounded-full border px-4 text-sm font-semibold'>Check again</button>
+      </div>
+    </>
+  )
+}
+
+function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick: (s: Saved) => void }) {
+  if (!list.length) return null
+  return (
+    <div className='flex flex-col gap-2'>
+      <h3 className='px-1 pt-2 font-display text-xl font-extrabold'>{title}</h3>
+      <ul className='overflow-hidden rounded-[18px] bg-card'>
+        {list.map((s) => (
+          <li key={s.link} className={cn('flex items-center border-b last:border-b-0', s.link === r.lastLink && 'bg-muted/40')}>
+            <button type='button' onClick={() => onPick(s)} className='flex min-h-14 min-w-0 flex-1 flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
+              <span className='w-full truncate font-semibold'>{s.label}</span>
+              <span className='text-xs text-muted-foreground'>
+                {s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`} · tap to review
+              </span>
+            </button>
+            <button type='button' onClick={() => r.remove(s.link)} aria-label={`Remove ${s.label}`}
+              className='grid size-12 shrink-0 place-items-center text-muted-foreground hover:text-foreground'>
+              <X className='size-4' />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className='px-1 text-xs text-muted-foreground'>Saved on this device only.</p>
+    </div>
+  )
+}
+
+export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = true }: { title?: string; blurb?: React.ReactNode; showSaved?: boolean } = {}) {
+  const r = useBetReader()
+  const [link, setLink] = useState('')
   return (
     <section aria-label={title} className='flex flex-col gap-3'>
       <div className='rounded-[18px] bg-card p-4'>
         <h2 className='font-display text-[22px] font-extrabold'>{title}</h2>
         <p className='mt-1 text-sm text-muted-foreground'>{blurb ?? <>Paste a link from Kalshi&apos;s Share button: one bet, a game, or a combo. You&apos;ll see every leg, what&apos;s won, and the prices now.</>}</p>
-        <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); go(link) }}>
+        <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); r.go(link) }}>
           <label className='flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border bg-background px-3 focus-within:border-foreground'>
             <Link2 className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
             <input value={link} onChange={(e) => setLink(e.target.value)} placeholder='kalshi.com/markets/…' aria-label='Kalshi link'
               inputMode='url' autoComplete='off' autoCapitalize='off' spellCheck={false}
               className='h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground' />
           </label>
-          <button type='submit' disabled={!link.trim() || read.isPending}
+          <button type='submit' disabled={!link.trim() || r.pending}
             className='h-11 shrink-0 rounded-xl bg-devig px-5 text-sm font-bold text-devig-ink disabled:opacity-50'>
-            {read.isPending ? 'Reading…' : 'Check'}
+            {r.pending ? 'Reading…' : 'Check'}
           </button>
         </form>
-        {err && <p role='alert' className='mt-2 text-sm text-bad'>{err}</p>}
+        {r.err && <p role='alert' className='mt-2 text-sm text-bad'>{r.err}</p>}
       </div>
-
-      {read.isPending && <Skeleton className='h-48 w-full rounded-[18px]' />}
-      {data && !read.isPending && (
-        <>
-          <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={entry} all={saved} onStore={store} /> : undefined} />
-          <div className='flex gap-2'>
-            <button type='button' onClick={save} disabled={isSaved}
-              className='h-10 rounded-full border px-4 text-sm font-semibold disabled:text-muted-foreground'>
-              {isSaved ? 'Saved' : 'Save this link'}
-            </button>
-            <button type='button' onClick={() => go(lastLink)} className='h-10 rounded-full border px-4 text-sm font-semibold'>Check again</button>
-          </div>
-        </>
-      )}
-
-      {saved.length > 0 && (
-        <div className='flex flex-col gap-2'>
-          <h3 className='px-1 pt-2 font-display text-xl font-extrabold'>Saved links</h3>
-          <ul className='overflow-hidden rounded-[18px] bg-card'>
-            {saved.map((s) => (
-              <li key={s.link} className='flex items-center border-b last:border-b-0'>
-                <button type='button' onClick={() => { setLink(s.link); go(s.link) }} className='flex min-h-14 min-w-0 flex-1 flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
-                  <span className='w-full truncate font-semibold'>{s.label}</span>
-                  <span className='text-xs text-muted-foreground'>
-                    {s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`} · tap to check
-                  </span>
-                </button>
-                <button type='button' onClick={() => remove(s.link)} aria-label={`Remove ${s.label}`}
-                  className='grid size-12 shrink-0 place-items-center text-muted-foreground hover:text-foreground'>
-                  <X className='size-4' />
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className='px-1 text-xs text-muted-foreground'>Saved on this device only.</p>
-        </div>
+      <ReaderBody r={r} />
+      {showSaved && (
+        <SavedList r={r} list={r.saved} title='Saved bets' onPick={(s) => { setLink(s.link.startsWith('slip:') ? '' : s.link); r.go(s.link) }} />
       )}
     </section>
   )
 }
 
+// Parlay page: the parlays you saved (built here or read from Kalshi), each reviewed when tapped
+export function SavedParlays() {
+  const r = useBetReader()
+  const list = r.saved
+  // the slip's Save button asks for its parlay to be opened here
+  const go = r.go
+  useEffect(() => {
+    const on = (e: Event) => go((e as CustomEvent<string>).detail)
+    window.addEventListener('devig:review', on)
+    return () => window.removeEventListener('devig:review', on)
+  }, [go])
+  return (
+    <section id='saved-parlays' aria-label='Saved parlays' className='flex scroll-mt-20 flex-col gap-3'>
+      {list.length ? <SavedList r={r} list={list} title={`Saved parlays (${list.length})`} onPick={(s) => r.go(s.link)} /> : (
+        <div className='flex flex-col gap-2'>
+          <h3 className='px-1 font-display text-xl font-extrabold'>Saved parlays</h3>
+          <p className='rounded-[18px] border border-dashed p-4 text-sm text-muted-foreground'>
+            Nothing saved yet. Tap Save this parlay on your slip, or check a Kalshi combo link (it saves itself). Each one keeps its grade, follows
+            the games live, and tells you what happened and what to learn.
+          </p>
+        </div>
+      )}
+      {r.err && <p role='alert' className='px-1 text-sm text-bad'>{r.err}</p>}
+      <ReaderBody r={r} />
+    </section>
+  )
+}
