@@ -11,12 +11,29 @@ concurrency:
 jobs:
   models:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
+      - name: Lab models' packages (pinned, as the Research Lab uses)
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+      - name: Restore the CFB data cache (read-only here; never committed, Constitution C1a)
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+      - name: DeVig Lab models, NHL and CFB (tools/lab_live.py -> live/lab/; new, not proven)
+        continue-on-error: true   # the Lab's numbers are extra: the scoreboard runs without them
+        run: python3 tools/lab_live.py
       - name: Read every model's pick, lock started games, grade finals, write the app's file
         run: python3 tools/models_compare.py
       - name: Champion / challenger review (CHAMPION_CHALLENGER_V1_PREREG.md)
@@ -35,7 +52,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json \
                    live/champions.json live/champions/MODEL_LOCKS.csv live/champions/DECISIONS.csv live/champions_export.json \
-                   nba/lineboard_export.json; do
+                   nba/lineboard_export.json live/lab/nhl.json live/lab/cfb.json; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0
