@@ -12,6 +12,23 @@ export const CHANGED = 'devig:prefs-changed'
 export type Prefs = { name: string; teams: Record<string, string[]>; mode?: string; updated?: number }
 export type Tracked = { g: Record<string, number>; p: Record<string, number>; parlays?: Record<string, { removed?: number }>; updated?: number }
 
+// My bets (lib/bets.ts): their own key, because the classic app rewrites the tracked key without fields it doesn't know.
+export const BETS_KEY = 'devig.bets.v1'
+export type LoggedBet = {
+  id: string; at: string; sport: string; game: string; away: string; home: string; kickoff: string
+  side: 'home' | 'away'; odds: number; other: number | null; book: string; stake: number | null
+}
+export type BetStore = { bets: Record<string, LoggedBet | { removed: number }>; updated?: number }
+
+// Every bet either device has; one removed on either device stays removed.
+export function mergeBets(a: Partial<BetStore> | null | undefined, b: Partial<BetStore> | null | undefined): BetStore {
+  const out: BetStore = { bets: {}, updated: Math.max(a?.updated || 0, b?.updated || 0) }
+  for (const src of [b?.bets || {}, a?.bets || {}]) {
+    for (const [id, x] of Object.entries(src)) if (!out.bets[id] || 'removed' in x) out.bets[id] = x
+  }
+  return out
+}
+
 export function read<T>(k: string): T | null {
   try { return JSON.parse(localStorage.getItem(k) || 'null') as T | null } catch { return null }
 }
@@ -95,7 +112,7 @@ export function push(delay = 800) {
     try {
       const r = await fetch('/api/me', {
         method: 'PUT', credentials: 'same-origin', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {} }),
+        body: JSON.stringify({ tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {}, bets: read(BETS_KEY) || { bets: {} } }),
       })
       if (r.status === 429) {
         const e = await r.json().catch(() => ({}))
@@ -110,12 +127,13 @@ export function push(delay = 800) {
   }, delay)
 }
 
-function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs> } | null) {
+function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs>; bets?: Partial<BetStore> } | null) {
   joinedEmail = email
   const local = { tracked: read<Partial<Tracked>>(TRACK_KEY) || {}, prefs: read<Partial<Prefs>>(PREFS_KEY) || {} }
   const m = data ? merge(local, data) : local
   write(TRACK_KEY, m.tracked)
   write(PREFS_KEY, m.prefs)
+  write(BETS_KEY, mergeBets(read<BetStore>(BETS_KEY), data?.bets))
   window.dispatchEvent(new Event(CHANGED))
   note('Saved to your account.')
   push() // store the combined copy (the first sign-in uploads this device's)

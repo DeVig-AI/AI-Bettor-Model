@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { BarChart3, ChevronRight, CircleUserRound, Cross, ExternalLink, History, Info, MessageCircle, Search } from 'lucide-react'
+import { BarChart3, Calculator, ChevronRight, CircleUserRound, Cross, ExternalLink, History, Info, MessageCircle, Search } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -7,6 +7,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // More: the pages that don't fit in five tabs, and the classic app for what hasn't moved over yet.
 
 const PAGES = [
+  { to: '/fair', icon: Calculator, title: 'Fair price', note: 'Take the vig off any sportsbook’s price, size the bet, and see if your bets beat the close' },
   { to: '/ask', icon: MessageCircle, title: 'Ask', note: 'Questions about the picks, answered from DeVig’s data' },
   { to: '/research', icon: Search, title: 'Research', note: 'Power rankings, team and player stats, and how often a player cleared a line' },
   { to: '/history', icon: History, title: 'History', note: 'Check a Kalshi bet from its link, combos leg by leg, and recent finals' },
