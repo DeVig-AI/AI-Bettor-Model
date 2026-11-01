@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useMutation } from '@tanstack/react-query'
-import { ImageUp } from 'lucide-react'
+import { ImageUp, Link2 } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, impliedProb, useGames } from '@/lib/devig'
 import { decimal, toAmerican, useSlip } from '@/lib/parlay'
 import { cn } from '@/lib/utils'
@@ -37,9 +37,21 @@ async function shrink(file: File): Promise<string> {
 async function scan(file: File): Promise<Scan> {
   let image: string
   try { image = await shrink(file) } catch { throw new ScanError("That file isn't an image this browser can open.") }
+  return send({ image })
+}
+
+// a sportsbook's Share link: the server opens the page and reads its picture of the slip
+export const isBookLink = (s: string) => /^(https:\/\/)?([a-z0-9-]+\.)*(draftkings|fanduel|betmgm|caesars|espnbet|fanatics|hardrock|bet365|betrivers|fliff|prizepicks|underdogfantasy)\.(com|bet|app)(\/|$)/i.test(s.trim())
+async function scanLink(link: string): Promise<Scan> {
+  const l = link.trim()
+  if (!isBookLink(l)) throw new ScanError("That isn't a sportsbook share link. Paste the link from your book's Share button.")
+  return send({ link: l.startsWith('https://') ? l : `https://${l}` })
+}
+
+async function send(body: { image: string } | { link: string }): Promise<Scan> {
   let r: Response
   try {
-    r = await fetch('/api/scan', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image }) })
+    r = await fetch('/api/scan', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
   } catch {
     throw new ScanError("You're offline. Try again when you're connected.")
   }
@@ -50,6 +62,8 @@ async function scan(file: File): Promise<Scan> {
   if (code === 'limit') throw new ScanError("That's today's screenshots for your account. More tomorrow.")
   if (code === 'quota') throw new ScanError('The free AI has used up its reads for today. Try again tomorrow, or paste a Kalshi link instead.')
   if (code === 'off' || r.status === 404) throw new ScanError("Screenshot reading isn't switched on for this site yet. A Kalshi link works now.")
+  if (code === 'noimage') throw new ScanError("That book's page doesn't show the bet. Take a screenshot of it instead.")
+  if (code === 'link' && d?.error) throw new ScanError(`Couldn't open that link: ${d.error}. A screenshot works too.`)
   throw new ScanError("Couldn't read that one. Try again, or a clearer screenshot.")
 }
 
@@ -135,7 +149,7 @@ function LegRow({ l, m }: { l: ScanLeg; m: ReturnType<typeof matchLeg> }) {
   )
 }
 
-function ScanResult({ d, onExplain }: { d: Scan; onExplain?: () => void }) {
+function ScanResult({ d, onExplain, source = 'screenshot' }: { d: Scan; onExplain?: () => void; source?: string }) {
   const { rows } = useGames()
   const matches = d.legs.map((l) => matchLeg(l, rows))
   const priced = d.legs.every((l) => l.odds != null)
@@ -144,7 +158,7 @@ function ScanResult({ d, onExplain }: { d: Scan; onExplain?: () => void }) {
     ? matches.reduce((a, m) => a * (m!.side === 'home' ? m!.row.fairHome! : 1 - m!.row.fairHome!), 1) : null
   const matched = matches.filter(Boolean).length
   if (!d.legs.length) {
-    return <p role='alert' className='rounded-[18px] bg-card p-4 text-sm'>No bets found in that screenshot.{d.notes ? ` ${d.notes}` : ''} Try a closer one.</p>
+    return <p role='alert' className='rounded-[18px] bg-card p-4 text-sm'>No bets found in that {source}.{d.notes ? ` ${d.notes}` : ''} Try a screenshot of the whole slip.</p>
   }
   return (
     <div className='flex flex-col gap-2'>
@@ -153,8 +167,9 @@ function ScanResult({ d, onExplain }: { d: Scan; onExplain?: () => void }) {
           <span className='font-display text-2xl font-black'>{d.legs.length > 1 ? `${d.legs.length}-leg parlay` : 'One bet'}</span>
           <span className='text-sm text-muted-foreground'>{d.book ?? 'Book not shown'}</span>
         </div>
-        {dec != null && (
+        {(dec != null || fairAll != null) && (
           <dl className='mt-3 grid grid-cols-2 gap-2 text-sm'>
+            {dec != null && (<>
             <div>
               <dt className='text-xs text-muted-foreground'>{d.total_odds != null ? 'Odds on the slip' : 'Legs multiplied'}</dt>
               <dd className='font-condensed text-[17px] font-bold tabular-nums'>{fmtAmerican(Math.round(toAmerican(dec)))}</dd>
@@ -163,18 +178,21 @@ function ScanResult({ d, onExplain }: { d: Scan; onExplain?: () => void }) {
               <dt className='text-xs text-muted-foreground'>Needs to hit</dt>
               <dd className='font-condensed text-[17px] font-bold tabular-nums'>{fmtPct(1 / dec, 1)}</dd>
             </div>
+            </>)}
             {fairAll != null && (
               <div className='col-span-2'>
                 <dt className='text-xs text-muted-foreground'>Kalshi&apos;s fair chance, legs multiplied</dt>
-                <dd className={cn('font-condensed text-[17px] font-bold tabular-nums', fairAll >= 1 / dec ? 'text-good' : 'text-bad')}>
-                  {fmtPct(fairAll, 1)} {fairAll >= 1 / dec ? '· the payout is fair or better' : '· the payout is short of fair'}
+                <dd className={cn('font-condensed text-[17px] font-bold tabular-nums', dec != null && (fairAll >= 1 / dec ? 'text-good' : 'text-bad'))}>
+                  {fmtPct(fairAll, 1)}{dec == null ? '' : fairAll >= 1 / dec ? ' · the payout is fair or better' : ' · the payout is short of fair'}
                 </dd>
               </div>
             )}
           </dl>
         )}
-        {d.stake != null && d.payout != null && (
-          <p className='mt-2 text-xs text-muted-foreground tabular-nums'>${d.stake.toFixed(2)} to win ${d.payout.toFixed(2)}, as shown on the slip.</p>
+        {d.stake != null && (
+          <p className='mt-2 text-xs text-muted-foreground tabular-nums'>
+            {d.payout != null ? `$${d.stake.toFixed(2)} to win $${d.payout.toFixed(2)}, as shown on the slip.` : `$${d.stake.toFixed(2)} bet, as shown on the slip.`}
+          </p>
         )}
       </section>
       <ul className='overflow-hidden rounded-[18px] bg-card'>
@@ -186,9 +204,67 @@ function ScanResult({ d, onExplain }: { d: Scan; onExplain?: () => void }) {
         </button>
       )}
       <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
-        Read by AI, which can misread a number: check the legs against your screenshot. Legs multiplied treats legs as unrelated; same-game legs
+        Read by AI, which can misread a number: check the legs against your {source === 'link' ? 'bet' : 'screenshot'}. Legs multiplied treats legs as unrelated; same-game legs
         usually aren&apos;t.
       </p>
+    </div>
+  )
+}
+
+// put the legs DeVig knows on the slip below
+function useExplain(d: Scan | undefined, onExplained?: () => void) {
+  const { rows } = useGames()
+  const { replace } = useSlip()
+  return () => {
+    if (!d) return
+    replace(d.legs.map((l) => { const m = matchLeg(l, rows); return m ? mlLeg(m.row, m.side) : null }).filter((x) => x != null))
+    onExplained?.()
+  }
+}
+
+function ErrorLine({ err }: { err: ScanError | null }) {
+  if (!err) return null
+  return (
+    <p role='alert' className='px-1 text-sm text-bad'>
+      {err.message}{' '}
+      {err.account && <Link to='/profile' className='font-semibold text-foreground underline underline-offset-2'>Open Profile</Link>}
+    </p>
+  )
+}
+
+export function BookLinkReader({ onExplained }: { onExplained?: () => void }) {
+  const [link, setLink] = useState('')
+  const read = useMutation({ mutationFn: scanLink })
+  const explain = useExplain(read.data, onExplained)
+  return (
+    <div className='flex flex-col gap-3'>
+      <div className='rounded-[18px] bg-card p-4'>
+        <p className='text-sm text-muted-foreground'>
+          On your sportsbook, tap Share on the bet and paste the link. DeVig reads the picture of the slip the link shows, so odds for
+          each leg may be missing; a screenshot shows more.
+        </p>
+        <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); if (link.trim()) read.mutate(link) }}>
+          <label className='flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border bg-background px-3 focus-within:border-foreground'>
+            <Link2 className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+            <input value={link} onChange={(e) => setLink(e.target.value)} placeholder='sportsbook.draftkings.com/social/post/…' aria-label='Sportsbook share link'
+              inputMode='url' autoComplete='off' autoCapitalize='off' spellCheck={false}
+              className='h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground' />
+          </label>
+          <button type='submit' disabled={!link.trim() || read.isPending}
+            className='h-11 shrink-0 rounded-xl bg-devig px-5 text-sm font-bold text-devig-ink disabled:opacity-50'>
+            {read.isPending ? 'Reading…' : 'Check'}
+          </button>
+        </form>
+        <p className='mt-2 text-xs text-muted-foreground'>Tested with DraftKings. FanDuel, BetMGM, Caesars, ESPN BET, Fanatics and others are tried the same way.</p>
+      </div>
+      {read.isPending && (
+        <>
+          <p className='px-1 text-sm text-muted-foreground' role='status'>Opening the link and reading the bet…</p>
+          <Skeleton className='h-48 w-full rounded-[18px]' />
+        </>
+      )}
+      {!read.isPending && <ErrorLine err={read.error as ScanError | null} />}
+      {read.data && !read.isPending && <ScanResult d={read.data} onExplain={explain} source='link' />}
     </div>
   )
 }
@@ -197,20 +273,12 @@ export function ScreenshotReader({ onExplained }: { onExplained?: () => void }) 
   const input = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const read = useMutation({ mutationFn: scan })
-  const { rows } = useGames()
-  const { replace } = useSlip()
+  const explain = useExplain(read.data, onExplained)
   const pick = (f: File | null | undefined) => {
     if (!f || !f.type.startsWith('image/')) return
     setPreview((old) => { if (old) URL.revokeObjectURL(old); return URL.createObjectURL(f) })
     read.mutate(f)
   }
-  const explain = () => {
-    if (!read.data) return
-    const legs = read.data.legs.map((l) => { const m = matchLeg(l, rows); return m ? mlLeg(m.row, m.side) : null }).filter((x) => x != null)
-    replace(legs)
-    onExplained?.()
-  }
-  const err = read.error as ScanError | null
   return (
     <div className='flex flex-col gap-3' onPaste={(e) => pick([...e.clipboardData.files].find((f) => f.type.startsWith('image/')))}>
       <button type='button' onClick={() => input.current?.click()}
@@ -231,12 +299,7 @@ export function ScreenshotReader({ onExplained }: { onExplained?: () => void }) 
           <Skeleton className='h-48 w-full rounded-[18px]' />
         </>
       )}
-      {err && !read.isPending && (
-        <p role='alert' className='px-1 text-sm text-bad'>
-          {err.message}{' '}
-          {err.account && <Link to='/profile' className='font-semibold text-foreground underline underline-offset-2'>Open Profile</Link>}
-        </p>
-      )}
+      {!read.isPending && <ErrorLine err={read.error as ScanError | null} />}
       {read.data && !read.isPending && <ScanResult d={read.data} onExplain={explain} />}
     </div>
   )
