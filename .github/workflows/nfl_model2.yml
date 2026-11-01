@@ -28,11 +28,14 @@ jobs:
           key: nfl-model2-history-v1
       - name: Forecast the coming week
         run: python3 nfl/model2/nfl_model2_v1.py live
+      - name: Explain each game's number (home field, form, who is out) for the app
+        # read-only next to the locked model; if it fails, the forecasts still save
+        run: python3 nfl/model2/explain_v1.py || echo "::warning::explainer failed"
       - name: Save (the app file is rebuilt on top of the latest main, so it never conflicts)
         run: |
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add nfl/model2/upcoming.json nfl/model2/MODEL2_LIVE_LOG.jsonl 2>/dev/null || true
+          git add nfl/model2/upcoming.json nfl/model2/MODEL2_LIVE_LOG.jsonl nfl/model2/why.json 2>/dev/null || true
           git diff --cached --quiet || git commit -q -m "NFL Model 2.0 forecasts $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git checkout -q -- nfl/lineboard_export.json 2>/dev/null || true
           for i in 1 2 3 4 5; do

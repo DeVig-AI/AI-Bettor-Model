@@ -8,6 +8,7 @@ import {
   impliedProb,
 } from '@/lib/devig'
 import { cn } from '@/lib/utils'
+import { NflWhy } from './nfl-why'
 import {
   Sheet,
   SheetContent,
@@ -17,8 +18,9 @@ import {
 } from '@/components/ui/sheet'
 
 // "Why?": DeVig explains one pick from the model's real locked inputs and the real prices, at the reader's level.
-// The numbers are the same at every level; only how much is said changes. The model stores its inputs, not how much
-// each one moved the number, so this says what the model looked at and which side each input favors, never more.
+// The numbers are the same at every level; only how much is said changes. NBA/MLB store their inputs, not how much
+// each moved the number, so for them this says what the model looked at and which side each favors, never more.
+// NFL Model 2.0's number splits exactly into home field, form and who is out (nfl-why.tsx), so it shows those steps.
 
 const LEVELS: { id: Level; label: string }[] = [
   { id: 'new', label: 'New to this' },
@@ -188,7 +190,12 @@ export function ExplainSheet({
               DeVig thinks {sideName} wins about{' '}
               <span className='text-devig'>{Math.round(p.prob * 10)} times out of 10</span> ({fmtPct(p.prob)}).
             </p>
-            {fs.length ? (
+            <NflWhy
+              row={row}
+              side={side}
+              prob={p.prob}
+              level={level}
+              fallback={fs.length ? (
               <ul className='flex flex-col gap-3'>
                 {fs.map((f) => (
                   <li key={f.title} className='text-[15px] leading-relaxed'>
@@ -201,6 +208,7 @@ export function ExplainSheet({
                 This model doesn&apos;t publish what it looked at yet, so DeVig can only show its chance and the price.
               </p>
             )}
+            />
             {fairNow != null && (
               <div className='rounded-2xl bg-muted p-3.5'>
                 <p className='font-semibold'>What the price says</p>
@@ -251,6 +259,7 @@ export function ExplainSheet({
                 </ul>
               </div>
             )}
+            <NflWhy row={row} side={side} prob={p.prob} level={level} />
             {edgeLock != null && edgeNow != null && (
               <div className='rounded-2xl bg-muted p-3.5'>
                 <p className='font-semibold'>{Math.sign(edgeLock) !== Math.sign(edgeNow) ? 'The price moved past it' : 'How the price moved'}</p>
@@ -309,7 +318,15 @@ export function ExplainSheet({
                 </tbody>
               </table>
             ) : (
-              <p className='font-sans text-sm text-muted-foreground'>This model&apos;s inputs aren&apos;t published yet.</p>
+              <div className='font-sans'>
+                <NflWhy
+                  row={row}
+                  side={side}
+                  prob={p.prob}
+                  level={level}
+                  fallback={<p className='text-sm text-muted-foreground'>This model&apos;s inputs aren&apos;t published yet.</p>}
+                />
+              </div>
             )}
             <div className='grid grid-cols-3 gap-1.5'>
               <Box label={`Model ${side}`} value={fmtPct(p.prob, 1)} amber />
@@ -412,6 +429,8 @@ function PassSheet({ row, open, onOpenChange, level, onLevel }: {
               picked right more often than the rest. Below it, it passes.
             </p>
           )}
+
+          <NflWhy row={row} side={lean} prob={prob} level={level} />
 
           {fs.length > 0 && (
             <div>
