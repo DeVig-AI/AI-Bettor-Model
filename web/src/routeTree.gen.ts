@@ -23,6 +23,7 @@ import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedModelsRouteImport } from './routes/_authenticated/models'
 import { Route as AuthenticatedMoreRouteImport } from './routes/_authenticated/more'
 import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated/parlay'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
 import { Route as AuthenticatedGameIdRouteImport } from './routes/_authenticated/game/$id'
@@ -99,6 +100,11 @@ const AuthenticatedParlayRoute = AuthenticatedParlayRouteImport.update({
   path: '/parlay',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPropsRoute = AuthenticatedPropsRouteImport.update({
   id: '/props',
   path: '/props',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
   '/parlay': typeof AuthenticatedParlayRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/game/$id': typeof AuthenticatedGameIdRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
   '/parlay': typeof AuthenticatedParlayRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/': typeof AuthenticatedIndexRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/_authenticated/models': typeof AuthenticatedModelsRoute
   '/_authenticated/more': typeof AuthenticatedMoreRoute
   '/_authenticated/parlay': typeof AuthenticatedParlayRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/more'
     | '/parlay'
+    | '/profile'
     | '/props'
     | '/track-record'
     | '/game/$id'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/more'
     | '/parlay'
+    | '/profile'
     | '/props'
     | '/track-record'
     | '/'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/_authenticated/models'
     | '/_authenticated/more'
     | '/_authenticated/parlay'
+    | '/_authenticated/profile'
     | '/_authenticated/props'
     | '/_authenticated/track-record'
     | '/_authenticated/'
@@ -375,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedParlayRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/props': {
       id: '/_authenticated/props'
       path: '/props'
@@ -428,6 +447,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedModelsRoute: typeof AuthenticatedModelsRoute
   AuthenticatedMoreRoute: typeof AuthenticatedMoreRoute
   AuthenticatedParlayRoute: typeof AuthenticatedParlayRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -445,6 +465,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedModelsRoute: AuthenticatedModelsRoute,
   AuthenticatedMoreRoute: AuthenticatedMoreRoute,
   AuthenticatedParlayRoute: AuthenticatedParlayRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
