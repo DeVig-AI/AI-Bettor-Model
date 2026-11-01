@@ -73,7 +73,9 @@ function WrapBody({ row, wrap, compact }: { row: GameRow; wrap: Wrap; compact: b
             </ul>
           </>
         ) : (
-          <p className='mt-2 text-sm text-muted-foreground'>No one stat stands out: a close, even game.</p>
+          <p className='mt-2 text-sm text-muted-foreground'>
+            {wrap.final ? 'No one stat stands out: a close, even game.' : "Nothing stands out yet. Players are measured against their usual pace for this point in the game once a quarter's played."}
+          </p>
         )}
       </div>
 
@@ -104,7 +106,7 @@ function WrapBody({ row, wrap, compact }: { row: GameRow; wrap: Wrap; compact: b
         </div>
       )}
       <p className='px-1 text-xs text-muted-foreground'>
-        From ESPN&apos;s box score and play-by-play. &quot;Usual&quot; is the player&apos;s last 15 games before this one.
+        From ESPN&apos;s box score and play-by-play. &quot;Usual&quot; is the player&apos;s last 15 games before this one{wrap.final ? '' : ', scaled to how much of the game is played'}.
       </p>
     </section>
   )

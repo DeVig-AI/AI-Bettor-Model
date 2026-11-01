@@ -144,7 +144,20 @@ const stat = (b: Box, key: string) => b.s[key] ?? Object.entries(b.s).find(([k])
 
 const fmtAvg = (v: number) => (v >= 10 ? Math.round(v) : Math.round(v * 10) / 10)
 
-function playerFactors(sport: string, box: Box[], teams: Record<Side, RsTeam | undefined>, cols: string[], day: string, code: Record<Side, string>): WrapPlayer[] {
+// how much of the game is played, 0..1, from ESPN's status (period + seconds left in it); null once it's over
+const GAME: Record<string, [number, number]> = { NFL: [4, 900], CFB: [4, 900], NBA: [4, 720], WNBA: [4, 600], CBB: [2, 1200], NHL: [3, 1200] }
+export function playedShare(sport: string, status: Raw, final: boolean): number | null {
+  if (final) return null
+  const g = GAME[sport], per = num(status?.period), left = num(status?.clock)
+  if (!g || !per) return 0
+  const [n, len] = g
+  if (per > n) return 1 // overtime
+  return Math.min(1, Math.max(0, ((per - 1) * len + (len - Math.min(len, left ?? len))) / (n * len)))
+}
+
+// played: the share of the game played so far (null when it's over), so a live game is judged against the player's
+// usual pace by now, not a full game: 24 yards at halftime is behind a 225-yard passer's pace, not "201 fewer than usual"
+function playerFactors(sport: string, box: Box[], teams: Record<Side, RsTeam | undefined>, cols: string[], day: string, code: Record<Side, string>, played: number | null = null): WrapPlayer[] {
   const specs = SPECS[sport]
   if (!specs) return []
   const at = Object.fromEntries(cols.map((c, i) => [c, i]))
@@ -164,7 +177,24 @@ function playerFactors(sport: string, box: Box[], teams: Record<Side, RsTeam | u
       const hist = sp.log && at[sp.log] != null ? before.map((g) => Number(g[at[sp.log!]])).filter(Number.isFinite) : []
       const avg = hist.length >= 3 ? hist.reduce((a, x) => a + x, 0) / hist.length : null
       let weight = 0, good = !sp.bad, why = ''
-      if (avg != null && sp.up && v - avg >= sp.up && v >= (sp.min ?? 0)) {
+      if (played != null) {
+        // live: nothing about pace until a quarter of the game is in; "behind" waits for halftime
+        const pace = avg == null ? null : avg * played
+        if (avg != null && sp.up && played >= 0.25 && v >= avg && v - avg >= sp.up * 0.25 && v >= (sp.min ?? 0) * 0.5) {
+          weight = (v - pace!) / sp.up
+          why = ` so far, already past their usual ${fmtAvg(avg)} for a whole game`
+        } else if (avg != null && sp.up && played >= 0.25 && v - pace! >= sp.up * played && v >= (sp.min ?? 0) * played) {
+          weight = (v - pace!) / sp.up
+          why = ` so far, ahead of their usual pace (${fmtAvg(avg)} a game, about ${fmtAvg(pace!)} by now)`
+        } else if (avg != null && sp.down && sp.floor && played >= 0.5 && avg >= sp.floor && pace! - v >= sp.down * played) {
+          weight = (pace! - v) / sp.down
+          good = false
+          why = ` so far, behind their usual pace (${fmtAvg(avg)} a game, about ${fmtAvg(pace!)} by now)`
+        } else if (sp.at && v >= sp.at) {
+          weight = v / sp.at
+          why = ' so far'
+        } else continue
+      } else if (avg != null && sp.up && v - avg >= sp.up && v >= (sp.min ?? 0)) {
         weight = (v - avg) / sp.up
         const high = hist.length >= 5 && v > Math.max(...hist)
         why = `, ${Math.round(v - avg)} more than usual (${fmtAvg(avg)})${high ? `, the most in their last ${hist.length + 1} games` : ''}`
@@ -203,7 +233,7 @@ function teamFactors(sport: string, ts: Record<Side, Record<string, string>>, co
     }
     const [da, dh] = [first(ts.away.thirdDownEff), first(ts.home.thirdDownEff)]
     const [aa, ah] = [second(ts.away.thirdDownEff), second(ts.home.thirdDownEff)]
-    if (da != null && dh != null && aa && ah) {
+    if (da != null && dh != null && aa && ah && aa >= 5 && ah >= 5) {
       const pa = da / aa, ph = dh / ah
       if (Math.abs(pa - ph) >= 0.3) {
         const s: Side = pa > ph ? 'away' : 'home'
@@ -304,12 +334,14 @@ export function buildWrap(row: Pick<GameRow, 'sport' | 'away' | 'home' | 'kickof
   const score = (s: Side) => num(comp?.competitors?.find((c: Raw) => c.homeAway === s)?.score) ?? (s === 'away' ? row.awayScore : row.homeScore) ?? 0
   const away = score('away'), home = score('home')
   const final = comp?.status?.type?.completed ?? row.state === 'post'
+  const played = playedShare(row.sport, comp?.status, final)
   const winner: Side | null = !final || away === home ? null : away > home ? 'away' : 'home'
   return {
     final, winner, away, home,
     swing: swingPlay(sum, row.sport),
     forGood: final ? forGoodPlay(sum, row.sport, winner) : null,
-    players: playerFactors(row.sport, boxPlayers(sum, sides), teams, cols, dayOf(row.kickoff), code),
-    teams: teamFactors(row.sport, teamStats(sum, sides), code),
+    players: playerFactors(row.sport, boxPlayers(sum, sides), teams, cols, dayOf(row.kickoff), code, played),
+    // a quarter in, team gaps are noise (one third down, one turnover); wait until a quarter of the game is played
+    teams: (played ?? 1) < 0.25 ? [] : teamFactors(row.sport, teamStats(sum, sides), code),
   }
 }
