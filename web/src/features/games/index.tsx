@@ -52,6 +52,7 @@ function ago(d: Date | null) {
 function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onWhy: (r: GameRow) => void }) {
   const p = row.pick
   const picked = isPick(row)
+  const passLean = !picked && p?.lean && p.leanProb != null ? p.lean : null // a pass: the side the model leaned to
   const result = p?.correct === true ? 'Won' : p?.correct === false ? 'Lost' : null
   const lab = labFor(useLab().data, row) // NHL / CFB: the Research Lab's model, new and not proven
   const labSide = lab ? (lab.home_wp >= 0.5 ? row.home : row.away) : null
@@ -83,7 +84,10 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
           </span>
         ) : p ? (
           <span className='text-muted-foreground'>
-            <span className='font-semibold text-foreground/85'>No pick</span> · DeVig isn&apos;t far enough from the market
+            <span className='font-semibold text-foreground/85'>No pick</span>
+            {passLean && p.leanProb != null
+              ? <> · <span className='font-condensed tabular-nums'>leaned {passLean} {fmtPct(p.leanProb)}{p.bar != null ? `, needs ${fmtPct(p.bar)}` : ''}</span></>
+              : <> · the model isn&apos;t sure enough</>}
           </span>
         ) : lab && labPct != null ? (
           <span className='flex flex-wrap items-center gap-x-2'>
@@ -105,7 +109,7 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
           >
             Game
           </Link>
-          {picked && (
+          {picked ? (
             <button
               type='button'
               onClick={() => onWhy(row)}
@@ -113,7 +117,16 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
             >
               Why?
             </button>
-          )}
+          ) : passLean ? (
+            <button
+              type='button'
+              onClick={() => onWhy(row)}
+              aria-label={`Why no pick on ${row.away} at ${row.home}?`}
+              className='h-8 rounded-full border border-devig/50 px-3.5 text-sm font-bold text-devig transition-colors duration-150 hover:bg-devig/10'
+            >
+              Why?
+            </button>
+          ) : null}
         </span>
       </div>
     </li>
