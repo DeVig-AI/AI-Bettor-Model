@@ -10,6 +10,8 @@ import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
 import { PulseCard } from './pulse'
+import { ShareCard } from './share-card'
+import { type ShareLeg, shareText } from '@/lib/share-math'
 import { LegBar } from '@/components/leg-bar'
 import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
 import { useRosterPlayer } from '@/lib/headshots'
@@ -20,6 +22,7 @@ import { useRosterPlayer } from '@/lib/headshots'
 
 type Combo = Extract<KRead, { kind: 'combo' }>
 const pct = (p: number | null | undefined) => (p == null ? '—' : `${Math.round(p * 100)}%`)
+const shareDay = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
 const TONE: Record<string, string> = { A: 'bg-good/15 text-good', B: 'bg-good/10 text-good', C: 'bg-muted text-foreground', D: 'bg-[#F5C77A]/15 text-[#F5C77A]', F: 'bg-bad/15 text-bad' }
 
@@ -85,6 +88,18 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
     return [...m.entries()].sort(([a, x], [b, y]) => (a === 'other' ? 1 : b === 'other' ? -1 : Date.parse(games[x[0].key]!.kickoff) - Date.parse(games[y[0].key]!.kickoff)))
   }, [infos, games])
 
+  // the share card, once it's decided: each leg with its game's final score, and Kalshi's odds at kickoff
+  const share = useMemo(() => {
+    if (!decided) return null
+    const legs: ShareLeg[] = infos.map((i) => {
+      const gm = games[i.key]
+      const score = gm && gm.awayScore != null && gm.homeScore != null ? `${gm.state === 'post' ? 'Final' : 'Now'}: ${gm.away} ${gm.awayScore}, ${gm.home} ${gm.homeScore}` : null
+      return { label: i.label, result: i.leg.result, score, weakest: i.key === weakestKey }
+    })
+    const kicks = infos.map((i) => games[i.key]?.kickoff).filter((x): x is string => !!x).sort()
+    return { legs, t: shareText(legs, anyStarted ? g.hit : (snap?.hit ?? g.hit), shareDay.format(new Date(kicks[0] ?? d.fetched_at))) }
+  }, [decided, infos, games, weakestKey, anyStarted, g.hit, snap?.hit, d.fetched_at])
+
   const learn = decided ? takeaways(take, snap?.hit ?? g.hit, snap?.letter ?? g.letter) : []
   const outs = all.map((s) => s.outcome).filter((o): o is Outcome => !!o)
   const past = lessons(outs)
@@ -108,6 +123,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
           <ul className='mt-2 flex list-disc flex-col gap-2 ps-5 text-sm leading-relaxed'>{learn.map((t, n) => <li key={n}>{t}</li>)}</ul>
         </section>
       )}
+      {decided && share && <ShareCard t={share.t} legs={share.legs} letter={snap?.letter ?? g.letter} won={won} />}
       {outs.length >= 2 && (
         <section aria-label='What your saved parlays say' className='rounded-[18px] bg-card p-4'>
           <h3 className='font-display text-lg font-extrabold'>What your {outs.length} finished parlays say</h3>
