@@ -1,0 +1,143 @@
+# Research Lab candidate s-a543cfcd -- sent by the owner from the search; registered before it runs (A3). Never edit after it has run.
+id: s-a543cfcd
+name: 'Blend of 2: s-308a9755 + s-02c519e2'
+market: spread
+family: Blend · search, sent by the owner
+parent: null
+reason: 'The owner''s pick (2026-11-01): the CFB search''s best spread model by t after 218k configurations (round 367: +0.74
+  pts a game on 2018, 2019, 2021, t = 1.94; search periods +0.72 / +1.29 / +0.19). It did not make the automatic shortlist
+  (t below 2.5); sent by hand (A3.1) so the app''s CFB model is checked on 2022–2024, which the search never saw, before it
+  is shown.'
+source: owner, from the automatic search (CFB, Constitution v14 A3.3c); registered by hand (A3.1)
+search:
+  round: 367
+  t: 1.9388
+  effect: 0.7351
+  periods:
+  - 0.7215
+  - 1.2913
+  - 0.1896
+  games: 2316
+  sent_at: '2026-11-01T03:53:48Z'
+model:
+  type: blend
+  params:
+    components:
+    - market: spread
+      model:
+        params:
+          base:
+            params:
+              carry: 0.975
+              hfa_pts: 0.5
+              margin_cap: null
+              prior_w: 4
+            type: srs
+          ridge: 1.0
+          signals:
+          - carry: 0.4
+            den: comp_plays
+            halflife: 6
+            id: off-comp-ppa
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              comp_epa: 1
+            reason: 'Offensive PPA per play with garbage time removed: college blowouts are common, and plays against backups
+              in a decided game say little about how good an offense is.'
+            side: offense
+          - carry: 0.6
+            den: plays
+            halflife: 3
+            id: off-points-per-play~c0.6~h3
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              points: 1
+            reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant of off-points-per-play
+              (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos
+              vary widely, so points per game overrate fast offenses and underrate slow ones.'
+            side: offense
+            variant_of: off-points-per-play~c0.6
+          - carry: 0.8
+            den: plays
+            halflife: 3.0
+            id: off-points-per-play~c0.6~h3~c0.8
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              points: 1
+            reason: 'Automatic variant of off-points-per-play~c0.6~h3 (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6
+              (half-life 3, carry 0.6): Automatic variant of off-points-per-play (half-life 6, carry 0.6): Points per play
+              (tempo-free scoring, as in public college analytics): college tempos vary widely, so points per game overrate
+              fast offenses and underrate slow ones.'
+            side: offense
+            variant_of: off-points-per-play~c0.6~h3
+        type: signals
+    - market: spread
+      model:
+        params:
+          base:
+            params:
+              carry: 0.975
+              hfa_pts: 0.5
+              margin_cap: null
+              prior_w: 4
+            type: srs
+          ridge: 1.0
+          signals:
+          - carry: 0.6
+            den: plays
+            halflife: 3
+            id: off-points-per-play~c0.6~h3
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              points: 1
+            reason: 'Automatic variant of off-points-per-play~c0.6 (half-life 3, carry 0.6): Automatic variant of off-points-per-play
+              (half-life 6, carry 0.6): Points per play (tempo-free scoring, as in public college analytics): college tempos
+              vary widely, so points per game overrate fast offenses and underrate slow ones.'
+            side: offense
+            variant_of: off-points-per-play~c0.6
+          - carry: 0.8
+            den: plays
+            halflife: 3.0
+            id: off-points-per-play~c0.6~h3~c0.8
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              points: 1
+            reason: 'Automatic variant of off-points-per-play~c0.6~h3 (half-life 3, carry 0.8): Automatic variant of off-points-per-play~c0.6
+              (half-life 3, carry 0.6): Automatic variant of off-points-per-play (half-life 6, carry 0.6): Points per play
+              (tempo-free scoring, as in public college analytics): college tempos vary widely, so points per game overrate
+              fast offenses and underrate slow ones.'
+            side: offense
+            variant_of: off-points-per-play~c0.6~h3
+          - carry: 0.2
+            den: plays
+            halflife: 12.0
+            id: off-ppa~h12~c0.2
+            kind: team
+            markets:
+            - spread
+            - total
+            num:
+              epa: 1
+            reason: 'Automatic variant of off-ppa~h12 (half-life 12, carry 0.2): Automatic variant of off-ppa (half-life 12,
+              carry 0.4): Offensive PPA per play: efficiency is steadier than points.'
+            side: offense
+            variant_of: off-ppa~h12
+        type: signals
+    weights:
+    - 0.5
+    - 0.5
