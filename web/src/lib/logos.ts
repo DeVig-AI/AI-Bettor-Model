@@ -28,3 +28,12 @@ export function headshot(sport: string, pid?: string | null, px = 200): string |
   // The circle crops the sides.
   return sized(`/i/headshots/${lg}/players/full/${pid}.png`, px, Math.round((px * 600) / 436))
 }
+
+// The cut-out photo on a player's stats page. The stats files use each league's own player id: ESPN's for the NBA,
+// WNBA and college football, MLB's own for baseball. NFL and NHL ids aren't ESPN's, so those come in as `espn`
+// (matched by name from the ESPN rosters). All come back with a see-through background.
+export function statsPhoto(sport: string, id: string, espn?: string | null, px = 240): string | null {
+  if (sport === 'MLB') return /^\d+$/.test(id) ? `https://img.mlbstatic.com/mlb-photos/image/upload/w_${px},q_auto:best/v1/people/${id}/headshot/silo/current` : null
+  if (sport === 'CFB') return /^\d+$/.test(id) ? sized(`/i/headshots/college-football/players/full/${id}.png`, px, Math.round((px * 600) / 436)) : null
+  return headshot(sport, sport === 'NFL' || sport === 'NHL' ? espn : id, px)
+}
