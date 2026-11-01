@@ -1,13 +1,16 @@
 import { useEffect, useMemo } from 'react'
-import { AlertTriangle, Check, Lightbulb, Minus, X } from 'lucide-react'
-import type { KLeg, KRead, Saved } from '@/lib/kalshi-link'
+import { AlertTriangle, Check, Lightbulb, X } from 'lucide-react'
+import type { KRead, Saved } from '@/lib/kalshi-link'
 import {
   type GradeLeg, type LegGame, type LegInfo, type Outcome, type Snap, type TakeLeg,
-  SUMMARY, grade, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, useDevigViews, useHistories, useLegGames, weakSpots, weakestOf,
+  SUMMARY, codes, grade, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, useDevigViews, useHistories, useLegGames, weakSpots, weakestOf,
 } from '@/lib/review'
 import { useSummary } from '@/lib/wrap'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
+import { LegBar } from '@/components/leg-bar'
+import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
+import { useRosterPlayer } from '@/lib/headshots'
 
 // The parlay review under a Kalshi combo: a grade with its reasons, the weak spots, each game's legs with what they
 // needed and what happened, the price path (when you saved it, at kickoff, now), and what to learn from it. The first
@@ -142,28 +145,26 @@ function GradeCard({ g, snap, started }: { g: ReturnType<typeof grade>; snap: Sn
   )
 }
 
-function Mark({ r }: { r: KLeg['result'] }) {
-  if (r === 'won') return <span className='grid size-6 shrink-0 place-items-center rounded-full bg-good/15 text-good'><Check className='size-3.5' aria-label='Won' /></span>
-  if (r === 'lost') return <span className='grid size-6 shrink-0 place-items-center rounded-full bg-bad/15 text-bad'><X className='size-3.5' aria-label='Lost' /></span>
-  return <span className='grid size-6 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground'><Minus className='size-3.5' aria-label='Not decided' /></span>
-}
-
 function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
   legs: LegInfo[]; game: LegGame | null | undefined; devig: Record<string, { p: number; note: string } | null>; snap: Snap | null
   kick: (i: LegInfo) => number | null; weakestKey: string | null
 }) {
   const row = game ? rowOf(game) : null
   const { data: sum } = useSummary(row && row.state !== 'pre' ? row : null)
-  const head = game
-    ? `${game.away} at ${game.home} · ${game.state === 'pre' ? dayFmt.format(new Date(game.kickoff)) : game.state === 'post' ? `Final ${game.awayScore}–${game.homeScore}` : `${game.awayScore}–${game.homeScore}, ${game.detail}`}`
-    : 'Other legs'
+  const when = game
+    ? game.state === 'post' || game.state === 'in'
+      ? [game.state === 'post' ? 'Final' : 'Live', game.awayScore != null && game.homeScore != null ? `${game.away} ${game.awayScore}, ${game.home} ${game.homeScore}` : null, game.state === 'in' ? game.detail : null].filter(Boolean).join(' · ')
+      : dayFmt.format(new Date(game.kickoff))
+    : null
   return (
-    <section aria-label={head} className='overflow-hidden rounded-[18px] bg-card'>
-      <h3 className='flex items-center gap-2 border-b px-4 py-3 text-sm font-bold'>
-        {game?.state === 'in' && <span className='size-2 rounded-full bg-bad' aria-label='Live' />}
-        {head}
-      </h3>
-      <ul>
+    <section aria-label={game ? `${game.away} at ${game.home}` : 'Other legs'} className='flex flex-col gap-3'>
+      {when && (
+        <p className='flex items-center gap-2 px-1 text-xs font-semibold text-muted-foreground'>
+          {game?.state === 'in' && <span className='size-2 rounded-full bg-bad' aria-label='Live' />}
+          {when}
+        </p>
+      )}
+      <ul className='flex flex-col gap-3'>
         {legs.map((i) => {
           const l = i.leg
           const dv = devig[i.key]
@@ -176,24 +177,37 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
             if (v != null && (!steps.length || pct(steps[steps.length - 1][1]) !== pct(v))) steps.push([w, v])
           const path = steps.length > 1 || steps[0]?.[0] === 'kickoff' ? steps.map(([w, v]) => `${w} ${pct(v)}`) : []
           const moved = !l.result && before != null && l.chance != null ? l.chance - before : null
+          const ref = k ?? before ?? l.chance
+          const gap = dv && ref != null ? dv.p - ref : 0
           return (
-            <li key={i.key} className='flex gap-3 border-b px-4 py-3 last:border-b-0'>
-              <Mark r={l.result} />
-              <div className='min-w-0 flex-1'>
-                <div className='flex items-baseline justify-between gap-3'>
-                  <span className={cn('font-semibold', l.result === 'lost' && 'text-bad')}>{i.label}</span>
-                  <span className='shrink-0 text-end font-condensed text-[17px] font-bold tabular-nums'>
-                    {l.result ? (l.result === 'won' ? 'Won' : 'Lost') : pct(l.chance)}
+            <li key={i.key} className='flex flex-col gap-1.5'>
+              <KalshiLegBar i={i} game={game ?? null} right={
+                l.result ? (
+                  <span className={cn('flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-bold', l.result === 'won' ? 'bg-white text-[#0f7a3d]' : 'bg-black/45 text-white')}>
+                    {l.result === 'won' ? <Check className='size-3.5' aria-hidden='true' /> : <X className='size-3.5' aria-hidden='true' />}
+                    {l.result === 'won' ? 'Won' : 'Lost'}
+                  </span>
+                ) : (
+                  <span className='text-end'>
+                    <span className='block font-condensed text-[19px] leading-none font-bold tabular-nums'>{pct(l.chance)}</span>
                     {moved != null && Math.abs(moved) >= 0.02 && (
-                      <span className={cn('ms-1 text-xs', moved > 0 ? 'text-good' : 'text-bad')}>{moved > 0 ? '▲' : '▼'}{Math.round(Math.abs(moved) * 100)}</span>
+                      <span className='block text-xs font-semibold text-white/85'>{moved > 0 ? '▲' : '▼'} {Math.round(Math.abs(moved) * 100)} since saved</span>
                     )}
                   </span>
-                </div>
-                {out && <p className='mt-0.5 text-sm text-muted-foreground'>{out}</p>}
-                <p className='mt-0.5 text-xs text-muted-foreground'>
-                  {dv && <>DeVig {pct(dv.p)}{dv.p - (k ?? before ?? l.chance ?? dv.p) <= -0.03 ? ' (less sure than Kalshi)' : dv.p - (k ?? before ?? l.chance ?? dv.p) >= 0.03 ? ' (likes it more than Kalshi)' : ''} · </>}
-                  {path.length > 0 && <>Kalshi {path.join(' → ')}</>}
-                  {i.key === weakestKey && <> · <span className='text-[#F5C77A]'>weakest leg</span></>}
+                )
+              } />
+              <div className='flex flex-col gap-1 px-1 text-sm'>
+                {out && <p className={cn(l.result === 'lost' ? 'text-bad' : 'text-foreground')}>{out}</p>}
+                <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
+                  {dv && (
+                    <span className={cn('rounded-full px-2 py-0.5 text-xs font-bold', gap <= -0.03 ? 'bg-bad/15 text-bad' : gap >= 0.03 ? 'bg-devig/15 text-devig' : 'bg-muted text-muted-foreground')}>
+                      {gap <= -0.03 ? 'DeVig is less sure' : gap >= 0.03 ? 'DeVig likes it' : 'About even with Kalshi'}
+                    </span>
+                  )}
+                  {!dv && <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>Market only</span>}
+                  {i.key === weakestKey && legs.length > 0 && <span className='rounded-full bg-[#F5C77A]/15 px-2 py-0.5 text-xs font-bold text-[#F5C77A]'>Weakest leg</span>}
+                  {dv && <span className='font-semibold text-devig'>DeVig {pct(dv.p)}</span>}
+                  {path.length > 0 && <span className='text-muted-foreground'>Kalshi {path.join(' → ')}</span>}
                 </p>
               </div>
             </li>
@@ -201,10 +215,37 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
         })}
       </ul>
       {row && row.state !== 'pre' && (
-        <div className='border-t p-4'>
+        <div className='rounded-[18px] bg-card p-4'>
           <GameWrap row={row} compact />
         </div>
       )}
     </section>
+  )
+}
+
+// a Kalshi leg as the same team-colored bar the slip uses: the team (or player) it's about, and the matchup under it
+function KalshiLegBar({ i, game, right }: { i: LegInfo; game: LegGame | null; right: React.ReactNode }) {
+  const sport = game?.sport ?? i.sport ?? ''
+  const side = (c: string | null) => (!game || !c ? null : codes(game.away).includes(c) ? 'away' : codes(game.home).includes(c) ? 'home' : null)
+  const roster = useRosterPlayer(sport, i.kind === 'prop' ? i.player ?? '' : '', game?.away, game?.home)
+  const s = i.kind === 'prop' ? (roster.team ? (roster.team === game?.away ? 'away' : 'home') : null) : side(i.code)
+  const colors = game?.colors ?? null
+  const logoOf = (k: 'away' | 'home') => game && (
+    <TeamLogo sport={sport} code={game[k]} id={game.ids?.[k] ?? null} color={colors?.[k] ?? null} px={96} className='size-11 text-sm' />
+  )
+  const logo = i.kind === 'prop'
+    ? <PlayerPhoto sport={sport} pid={roster.pid} team={roster.team} teamColor={s && colors ? colors[s] : null} className='size-11' badge='size-5 text-[7px]' />
+    : s ? logoOf(s)
+      : game ? <span className='flex -space-x-3'>{logoOf('away')}{logoOf('home')}</span> : null
+  return (
+    <LegBar
+      title={i.label}
+      sub={game ? `${sport} · ${game.away} at ${game.home}` : [i.sport, i.teams].filter(Boolean).join(' · ') || 'Kalshi'}
+      colors={colors}
+      sideIsHome={s == null ? null : s === 'home'}
+      logo={logo}
+      right={right}
+      className={i.leg.result === 'lost' ? 'opacity-75' : undefined}
+    />
   )
 }

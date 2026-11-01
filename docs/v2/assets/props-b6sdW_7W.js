@@ -1,1 +1,0 @@
-import{n as e}from"./props-DZu-Yo8L.js";var t=e;export{t as component};

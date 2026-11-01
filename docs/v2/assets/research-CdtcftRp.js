@@ -1,0 +1,1 @@
+import{t as e}from"./research-CY_aO3_d.js";var t=e;export{t as component};

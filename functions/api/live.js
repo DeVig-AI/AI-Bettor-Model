@@ -59,7 +59,8 @@ export function scoreboard(d, sport) {
     const posTeam = [a, h].find(c => pos && (c.team || {}).id === pos);
     const out = {id: ev.id, kickoff: ev.date, away: code((a.team || {}).abbreviation), home: code((h.team || {}).abbreviation),
             away_score: num(a.score), home_score: num(h.score), state: ty.state || "pre",
-            detail: ty.shortDetail || ty.detail || "", possession: posTeam ? code(posTeam.team.abbreviation) : null};
+            detail: ty.shortDetail || ty.detail || "", possession: posTeam ? code(posTeam.team.abbreviation) : null,
+            away_color: (a.team || {}).color || null, home_color: (h.team || {}).color || null};
     if (sport === "cfb") {
       out.away_id = String((a.team || {}).id || ""); out.home_id = String((h.team || {}).id || "");
       out.away_name = (a.team || {}).location || ""; out.home_name = (h.team || {}).location || "";

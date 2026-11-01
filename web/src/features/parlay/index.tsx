@@ -20,10 +20,13 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
+import { LegBar } from '@/components/leg-bar'
 import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
-import { mlLeg } from './legs'
+import { kalshiTeam, mlLeg } from './legs'
+import { SavedParlays } from '../check-bet/link-reader'
+import { getSaved, slipLink, storeSaved, useSaved } from '@/lib/kalshi-link'
 import { LinkReader } from '../check-bet/link-reader'
 import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
 
@@ -54,36 +57,24 @@ function useLegSource() {
 
 function LegPlate({ leg, right, src, onOpen }: { leg: Leg; right?: React.ReactNode; src?: LegSrc | null; onOpen?: () => void }) {
   const c = leg.colors
-  const bg = c
-    ? leg.sideIsHome
-      ? `linear-gradient(102deg, ${c.away} 0 18%, ${c.home} 18% 100%)`
-      : `linear-gradient(102deg, ${c.away} 0 82%, ${c.home} 82% 100%)`
-    : 'linear-gradient(102deg, var(--side-away) 0 50%, var(--side-home) 50% 100%)'
   const row = src?.kind === 'ml' ? src.row : null
   return (
-    <div className='relative flex h-16 items-center justify-between gap-3 overflow-hidden rounded-2xl px-3 text-white' style={{ background: bg }}>
-      <div aria-hidden='true' className='absolute inset-0 bg-black/25' />
+    <LegBar
+      title={leg.label}
+      sub={`${leg.sport} · ${leg.game}`}
+      colors={c}
+      sideIsHome={leg.sideIsHome ?? false}
+      logo={leg.kind === 'ml' ? (
+        <TeamLogo sport={leg.sport} code={leg.short} id={row ? (leg.sideIsHome ? row.ids?.home : row.ids?.away) : null}
+          color={c ? (leg.sideIsHome ? c.home : c.away) : null} px={96} className='size-11 text-sm' />
+      ) : src?.kind === 'prop' ? <PropLegPhoto src={src} /> : null}
+      right={<><span className='pointer-events-none font-condensed text-[15px] font-bold tabular-nums'>{fmtAmerican(leg.odds)}</span>{right}</>}
+    >
       {onOpen && (
         <button type='button' aria-haspopup='dialog' aria-label={`Why ${leg.label}`} onClick={onOpen}
           className='absolute inset-0 rounded-2xl transition-colors duration-150 hover:bg-white/5 focus-visible:outline-offset-[-3px]' />
       )}
-      <div className='pointer-events-none relative flex min-w-0 items-center gap-3'>
-        {leg.kind === 'ml' ? (
-          <TeamLogo sport={leg.sport} code={leg.short} id={row ? (leg.sideIsHome ? row.ids?.home : row.ids?.away) : null}
-            color={c ? (leg.sideIsHome ? c.home : c.away) : null} px={96} className='size-11 text-sm' />
-        ) : src?.kind === 'prop' ? (
-          <PropLegPhoto src={src} />
-        ) : null}
-        <div className='min-w-0'>
-          <div className='truncate font-display text-[22px] leading-none font-black'>{leg.label}</div>
-          <div className='mt-0.5 truncate text-xs font-semibold text-white/85'>{leg.sport} · {leg.game}</div>
-        </div>
-      </div>
-      <div className='relative flex shrink-0 items-center gap-2'>
-        <span className='pointer-events-none font-condensed text-[15px] font-bold tabular-nums'>{fmtAmerican(leg.odds)}</span>
-        {right}
-      </div>
-    </div>
+    </LegBar>
   )
 }
 
@@ -148,6 +139,22 @@ function SlipCard() {
   const { legs, remove, replace } = useSlip()
   const sheet = useLegSheet()
   const [stake, setStake] = useState('10')
+  const { rows } = useGames()
+  const saved = useSaved()
+  // the slip as Kalshi markets (a team to win is Yes on that team; a prop's under is No), so it can be read back later
+  const link = slipLink(legs.map((l) => {
+    const row = l.kind === 'ml' ? rows.find((r) => r.id === l.gameId) : null
+    return { ticker: l.ticker ?? (row ? kalshiTeam(row.ticker, l.sideIsHome ? 'home' : 'away') : null), side: l.id.endsWith('|under') ? 'no' as const : 'yes' as const }
+  }))
+  const isSaved = !!link && saved.some((x) => x.link === link)
+  const saveSlip = () => {
+    if (!link) return
+    if (!isSaved) storeSaved([{ link, label: `Your parlay: ${legs.map((l) => l.short).join(', ')}`, savedAt: new Date().toISOString() }, ...getSaved()])
+    setTimeout(() => {
+      document.getElementById('saved-parlays')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      window.dispatchEvent(new CustomEvent('devig:review', { detail: link }))
+    }, 50)
+  }
   const m = slipMath(legs)
   const s = parseFloat(stake)
   const started = legs.filter((l) => Date.parse(l.kickoff) <= Date.now())
@@ -254,6 +261,18 @@ function SlipCard() {
           </li>
         ))}
       </ul>
+
+      <div className='flex flex-col gap-1.5'>
+        <button type='button' onClick={saveSlip} disabled={!link}
+          className='h-12 rounded-full bg-devig text-sm font-bold text-devig-ink disabled:opacity-50'>
+          {isSaved ? 'Saved · see its review' : 'Save this parlay'}
+        </button>
+        <p className='px-1 text-xs text-muted-foreground'>
+          {link
+            ? "Saved on this device. You'll get its grade now, live prices while it plays, and what happened and what to learn once it's done."
+            : "Some legs aren't on Kalshi's board any more, so this slip can't be followed. Re-add them to save it."}
+        </p>
+      </div>
 
       <label className='flex items-center gap-3 px-1 text-sm text-muted-foreground'>
         Stake $
@@ -490,7 +509,7 @@ function CheckBet() {
         </div>
       </div>
       {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : how === 'book' ? <BookLinkReader onExplained={toSlip} /> : (
-        <LinkReader title='From a Kalshi link' blurb={<>On Kalshi, tap Share on your bet and paste the link here: a combo shows every leg, what&apos;s won, and the prices now.</>} />
+        <LinkReader showSaved={false} title='From a Kalshi link' blurb={<>On Kalshi, tap Share on your bet and paste the link here: a combo shows every leg, what&apos;s won, and the prices now.</>} />
       )}
     </section>
   )
@@ -507,8 +526,9 @@ export function Parlay() {
         <ThemeSwitch />
       </Header>
       <Main className='flex flex-col gap-8'>
-        <CheckBet />
         <SlipCard />
+        <SavedParlays />
+        <CheckBet />
         <LongShot />
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
           Chances use Kalshi&apos;s prices with the fee gap removed; payouts use Kalshi&apos;s price with its fee. DeVig doesn&apos;t

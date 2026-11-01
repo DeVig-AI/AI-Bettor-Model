@@ -34,7 +34,18 @@ export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
     devigNote: devig == null ? null : `${r.sport} model, locked pregame`,
     colors: away && home ? { away, home } : null,
     sideIsHome: side === 'home',
+    ticker: kalshiTeam(r.ticker, side),
   }
+}
+
+// Kalshi's market for one team: the home ticker is on the board (KXNFLGAME-26NOV01ATLTB-TB); the away team's code is
+// what's left of the event's teams (ATLTB) once the home code (TB) is taken off the end
+export function kalshiTeam(home: string | null | undefined, side: 'away' | 'home') {
+  if (!home) return null
+  if (side === 'home') return home
+  const [series, ev, code] = home.split('-')
+  const teams = /^\d{2}[A-Z]{3}\d{2}(.+)$/.exec(ev ?? '')?.[1]
+  return code && teams?.endsWith(code) && teams.length > code.length ? `${series}-${ev}-${teams.slice(0, -code.length)}` : null
 }
 
 // A player prop side as a parlay leg, priced at Kalshi's live price when we have one (fee included)
