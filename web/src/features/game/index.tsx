@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
+import { FieldMovers } from './field'
 import { GameWrap } from './wrap'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
@@ -127,6 +128,8 @@ export function GamePage({ id }: { id: string }) {
         <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
 
         <Read row={row} />
+
+        <FieldMovers row={row} />
 
         <GameWrap row={row} />
 
