@@ -1,0 +1,1 @@
+import{n as e}from"./props-CLB1t6AP.js";var t=e;export{t as component};

@@ -33,3 +33,9 @@ jobs:
           git commit -q -m "Game lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
           exit 1
+      - name: Send DeVig alerts that are due (functions/api/alerts.js; fine if alerts aren't set up yet)
+        if: always()
+        env:
+          RUN_KEY: ${{ secrets.ALERTS_RUN_KEY }}
+        run: |
+          curl -sS -m 55 -X POST -H "x-run-key: $RUN_KEY" "https://devigai.pages.dev/api/alerts?run=1" || true

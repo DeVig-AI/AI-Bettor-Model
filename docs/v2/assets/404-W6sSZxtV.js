@@ -1,1 +1,0 @@
-import{i as e}from"./index-C1TRYTIV.js";var t=e;export{t as component};
