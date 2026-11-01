@@ -17,7 +17,9 @@ import { accessUser, userKey } from "./me.js";
 const CF_MODELS = ["@cf/meta/llama-3.1-8b-instruct-fast", "@cf/meta/llama-3.1-8b-instruct-fp8", "@cf/meta/llama-3.1-8b-instruct",
                    "@cf/meta/llama-3.2-3b-instruct"];
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
-const GEMINI_MODEL = "gemini-2.5-flash-lite";
+// Google retires model versions (the 2.5 family shut down 2026-10-16), so try the always-current alias first and
+// named versions after it; a model that's gone (404/400) just moves on to the next one
+const GEMINI_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-3.5-flash"];
 const PER_DAY = 50;                // questions per person per day
 const MAX_BODY = 60000;            // bytes of question + app data
 const MAX_TOKENS = 700;
@@ -73,12 +75,16 @@ export async function handle(request, env, fetcher = fetch) {
   let quota = false;
 
   if (env.GEMINI_API_KEY) {                       // OpenAI-style stream: data: {"choices":[{"delta":{"content":...}}]}
-    try {
-      const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-        body: JSON.stringify({model: env.GEMINI_MODEL || GEMINI_MODEL, messages, max_tokens: MAX_TOKENS, temperature: 0.4, stream: true})});
-      if (r.ok && r.body) return sse(r.body);
-      if (r.status === 429) quota = true;
-    } catch (e) {}
+    const models = env.GEMINI_MODEL ? [env.GEMINI_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
+    for (const model of models) {
+      try {
+        const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
+          body: JSON.stringify({model, messages, max_tokens: MAX_TOKENS, temperature: 0.4, stream: true})});
+        if (r.ok && r.body) return sse(r.body);
+        if (r.status === 429) { quota = true; break; }
+        if (r.status !== 404 && r.status !== 400) break;
+      } catch (e) { break; }
+    }
   }
   if (env.AI) {                                   // Workers AI stream: data: {"response":...}
     const models = env.AI_MODEL ? [env.AI_MODEL, ...CF_MODELS] : CF_MODELS;

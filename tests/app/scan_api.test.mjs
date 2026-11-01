@@ -138,3 +138,17 @@ test("share links: only sportsbook hosts, and a page without a picture says so",
   assert.equal(r.status, 422);
   assert.equal((await r.json()).code, "noimage");
 });
+
+test("a retired Gemini model (404) moves on to the next one", async () => {
+  const tried = [];
+  const s = await setup({gemini: b => {
+    tried.push(b.model);
+    if (tried.length === 1) return new Response(JSON.stringify({error: {message: "model not found"}}), {status: 404});
+    return new Response(JSON.stringify({choices: [{message: {content: JSON.stringify(SLIP)}}]}));
+  }});
+  s.env.GEMINI_VISION_MODEL = "gemini-2.5-flash";
+  const r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
+  assert.equal(r.status, 200);
+  assert.deepEqual(tried, ["gemini-2.5-flash", "gemini-flash-latest"]);
+  assert.equal((await r.json()).legs.length, 3);
+});
