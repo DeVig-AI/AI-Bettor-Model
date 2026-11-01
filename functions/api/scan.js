@@ -11,7 +11,9 @@
 import { accessUser, userKey } from "./me.js";
 
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
-const GEMINI_MODEL = "gemini-2.5-flash";
+// Google retires model versions (gemini-2.5-flash shut down 2026-10-16 and the reader broke), so try the always-current
+// alias first and named versions after it; a model that's gone (404/400) just moves on to the next one
+const GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash"];
 const CF_VISION = ["@cf/meta/llama-3.2-11b-vision-instruct"];
 const PER_DAY = 20;                     // screenshots per person per day
 const MAX_BODY = 4_000_000;             // the app shrinks photos to about 1600px JPEG first (~300 KB)
@@ -165,14 +167,18 @@ export async function handle(request, env, fetcher = fetch) {
 
   let quota = false, answer = null;
   if (env.GEMINI_API_KEY) {
-    try {
-      const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-        body: JSON.stringify({model: env.GEMINI_VISION_MODEL || GEMINI_MODEL, temperature: 0, max_tokens: 1500,
-          response_format: {type: "json_object"},
-          messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
-      if (r.ok) answer = (await r.json())?.choices?.[0]?.message?.content ?? null;
-      else if (r.status === 429) quota = true;
-    } catch (e) {}
+    const models = env.GEMINI_VISION_MODEL ? [env.GEMINI_VISION_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
+    for (const model of models) {
+      try {
+        const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
+          body: JSON.stringify({model, temperature: 0, max_tokens: 1500,
+            response_format: {type: "json_object"},
+            messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
+        if (r.ok) { answer = (await r.json())?.choices?.[0]?.message?.content ?? null; if (answer != null) break; }
+        else if (r.status === 429) { quota = true; break; }
+        else if (r.status !== 404 && r.status !== 400) break;
+      } catch (e) { break; }
+    }
   }
   if (answer == null && env.AI) {
     const bytes = [...Uint8Array.from(atob(m[2]), c => c.charCodeAt(0))];
