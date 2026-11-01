@@ -2,7 +2,8 @@
 // with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
 // (any sport) returns that game's box score as {players: {name: {stat: value}}} (NFL, CFB, NBA, WNBA), and &game=1 also returns
 // game: {plays, drive, situation, scoring, team_stats, box} for the game page (NBA: {plays with shot spots, run,
-// linescore, box}; NHL and MLB: {plays, linescore, box}). NFL and CFB scoreboard games in progress carry
+// linescore, box}; NHL and MLB: {plays, linescore, box}); NFL and CFB plays also carry at (unix seconds), from, to
+// and fd (field spots) and drive (its index) for the v2 3D field. NFL and CFB scoreboard games in progress carry
 // situation (down, distance, field spot) for the field tracker. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
 // (which land every 5-15 minutes). Answers are kept for a few seconds so many viewers share one ESPN request.
@@ -154,16 +155,26 @@ export function nflGame(d, code = x => String(x || "").toUpperCase()) {
   const drives = d.drives || {};
   const all = (drives.previous || []).concat(drives.current ? [drives.current] : []);
   const seen = {}, plays = [];
-  all.forEach(dr => {
+  all.forEach((dr, di) => {
     const offense = teamOf(dr.team);
     (dr.plays || []).forEach(p => {
       if (!p || !p.text || seen[p.id]) return;
       seen[p.id] = 1;
-      const st = p.start || {}, typ = (p.type || {}).text || "";
-      plays.push({id: String(p.id || plays.length), team: teamOf(st.team) || offense, q: num((p.period || {}).number),
+      const st = p.start || {}, en = p.end || {}, typ = (p.type || {}).text || "";
+      const team = teamOf(st.team) || offense, endTeam = teamOf(en.team) || team;
+      const play = {id: String(p.id || plays.length), team, q: num((p.period || {}).number),
         clock: (p.clock || {}).displayValue || "", text: String(p.text), type: typ, yards: num(p.statYardage),
         down: st.down > 0 ? (st.shortDownDistanceText || st.downDistanceText || "") : "",
-        scoring: !!p.scoringPlay, away_score: num(p.awayScore), home_score: num(p.homeScore)});
+        scoring: !!p.scoringPlay, away_score: num(p.awayScore), home_score: num(p.homeScore), drive: di};
+      // for the 3D field: when it happened (unix seconds, matched to Kalshi's price) and where it started and ended
+      const at = Date.parse(p.wallclock || "");
+      if (isFinite(at)) play.at = Math.round(at / 1000);
+      const from = nflSpot(null, num(st.yardsToEndzone), team, away, home), to = nflSpot(null, num(en.yardsToEndzone), endTeam, away, home);
+      if (from != null) play.from = from;
+      if (to != null) play.to = to;
+      if (from != null && st.down > 0 && num(st.distance) != null && st.distance < 50)   // the first-down line
+        play.fd = Math.max(0, Math.min(100, from + (team === away ? 1 : -1) * st.distance));
+      plays.push(play);
     });
   });
   const out = {away, home, plays: plays.slice(-PLAYS_KEPT).reverse()};

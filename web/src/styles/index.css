@@ -100,3 +100,9 @@
     height: 0;
   }
 }
+
+/* the 3D field: a ring that spreads from the end of a play that moved the price */
+@keyframes fm-ripple {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(5.5); }
+}

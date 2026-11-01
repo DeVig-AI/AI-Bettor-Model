@@ -1,0 +1,1 @@
+import{t as e}from"./research-CzpE2FCA.js";var t=e;export{t as component};
