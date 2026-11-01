@@ -19,6 +19,10 @@ import { Input } from '@/components/ui/input'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
+import { type Side, TeamSheet } from '../games/team-sheet'
+import { type Shown, withLive } from '../props'
+import { type PropSide, PropSheet, propTeam, usePropWhy } from '../props/why'
 import { mlLeg } from './legs'
 import { LinkReader } from '../check-bet/link-reader'
 import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
@@ -26,27 +30,100 @@ import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
 const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—')
 const money = (x: number) => `$${x.toFixed(2)}`
 
-// ---------- a leg as a small plate ----------
-function LegPlate({ leg, right }: { leg: Leg; right?: React.ReactNode }) {
+// ---------- a leg as a small plate (tap it for the same sheet Games and Props open) ----------
+type LegSrc = { kind: 'ml'; row: GameRow; side: Side } | { kind: 'prop'; line: Shown; side: PropSide; game: GameRow | null }
+
+// where a leg came from, still on the board: its game, or its prop line at the price we have
+function useLegSource() {
+  const { rows } = useGames()
+  const { lines } = useProps()
+  return (leg: Leg): LegSrc | null => {
+    if (leg.kind === 'ml') {
+      const row = rows.find((r) => r.id === leg.gameId)
+      return row ? { kind: 'ml', row, side: leg.sideIsHome ? 'home' : 'away' } : null
+    }
+    const cut = leg.id.lastIndexOf('|')
+    const key = leg.id.slice(0, cut)
+    const line = lines.find((l) => l.key === key)
+    const shown = line ? withLive(line, {}) : null
+    if (!shown) return null
+    const game = rows.find((r) => r.sport === shown.sport && r.away === shown.away && r.home === shown.home) ?? null
+    return { kind: 'prop', line: shown, side: leg.id.slice(cut + 1) === 'under' ? 'under' : 'over', game }
+  }
+}
+
+function LegPlate({ leg, right, src, onOpen }: { leg: Leg; right?: React.ReactNode; src?: LegSrc | null; onOpen?: () => void }) {
   const c = leg.colors
   const bg = c
     ? leg.sideIsHome
       ? `linear-gradient(102deg, ${c.away} 0 18%, ${c.home} 18% 100%)`
       : `linear-gradient(102deg, ${c.away} 0 82%, ${c.home} 82% 100%)`
     : 'linear-gradient(102deg, var(--side-away) 0 50%, var(--side-home) 50% 100%)'
+  const row = src?.kind === 'ml' ? src.row : null
   return (
-    <div className='relative flex h-14 items-center justify-between gap-3 overflow-hidden rounded-2xl px-4 text-white' style={{ background: bg }}>
+    <div className='relative flex h-16 items-center justify-between gap-3 overflow-hidden rounded-2xl px-3 text-white' style={{ background: bg }}>
       <div aria-hidden='true' className='absolute inset-0 bg-black/25' />
-      <div className='relative min-w-0'>
-        <div className='truncate font-display text-[22px] leading-none font-black'>{leg.label}</div>
-        <div className='mt-0.5 truncate text-xs font-semibold text-white/85'>{leg.sport} · {leg.game}</div>
+      {onOpen && (
+        <button type='button' aria-haspopup='dialog' aria-label={`Why ${leg.label}`} onClick={onOpen}
+          className='absolute inset-0 rounded-2xl transition-colors duration-150 hover:bg-white/5 focus-visible:outline-offset-[-3px]' />
+      )}
+      <div className='pointer-events-none relative flex min-w-0 items-center gap-3'>
+        {leg.kind === 'ml' ? (
+          <TeamLogo sport={leg.sport} code={leg.short} id={row ? (leg.sideIsHome ? row.ids?.home : row.ids?.away) : null}
+            color={c ? (leg.sideIsHome ? c.home : c.away) : null} px={96} className='size-11 text-sm' />
+        ) : src?.kind === 'prop' ? (
+          <PropLegPhoto src={src} />
+        ) : null}
+        <div className='min-w-0'>
+          <div className='truncate font-display text-[22px] leading-none font-black'>{leg.label}</div>
+          <div className='mt-0.5 truncate text-xs font-semibold text-white/85'>{leg.sport} · {leg.game}</div>
+        </div>
       </div>
       <div className='relative flex shrink-0 items-center gap-2'>
-        <span className='font-condensed text-[15px] font-bold tabular-nums'>{fmtAmerican(leg.odds)}</span>
+        <span className='pointer-events-none font-condensed text-[15px] font-bold tabular-nums'>{fmtAmerican(leg.odds)}</span>
         {right}
       </div>
     </div>
   )
+}
+
+function PropLegPhoto({ src }: { src: Extract<LegSrc, { kind: 'prop' }> }) {
+  const w = usePropWhy(src.line)
+  const { team, color } = propTeam(w, src.game)
+  return <PlayerPhoto sport={src.line.sport} pid={w?.pid} team={team} teamColor={color} className='size-11' badge='size-5 text-[7px]' />
+}
+
+// the sheet for whichever leg was tapped: the team's (ml) or the prop's, with Remove when it's in the slip
+function LegSheet({ src, open, onOpenChange }: { src: LegSrc | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+  const [side, setSide] = useState<string | null>(null)
+  if (!src) return null
+  if (src.kind === 'ml') {
+    const s = (side as Side | null) ?? src.side
+    return <TeamSheet row={src.row} side={s} onSide={setSide} open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setSide(null) }} />
+  }
+  return <PropLegSheet src={src} side={(side as PropSide | null) ?? src.side} onSide={setSide} open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setSide(null) }} />
+}
+
+function PropLegSheet({ src, side, onSide, open, onOpenChange }: {
+  src: Extract<LegSrc, { kind: 'prop' }>; side: PropSide; onSide: (s: PropSide) => void; open: boolean; onOpenChange: (v: boolean) => void
+}) {
+  const w = usePropWhy(src.line)
+  return <PropSheet l={src.line} w={w} game={src.game} side={side} onSide={onSide} open={open} onOpenChange={onOpenChange} />
+}
+
+// which leg's sheet is open (kept after closing so the sheet can animate out)
+function useLegSheet() {
+  const find = useLegSource()
+  const [src, setSrc] = useState<LegSrc | null>(null)
+  const [open, setOpen] = useState(false)
+  return {
+    find,
+    openFor: (leg: Leg) => {
+      const x = find(leg)
+      return x ? () => { setSrc(x); setOpen(true) } : undefined
+    },
+    sheet: <LegSheet key={src ? (src.kind === 'ml' ? src.row.id + src.side : src.line.key + src.side) : 'none'} src={src} open={open} onOpenChange={setOpen} />,
+  }
 }
 
 function ReadTag({ leg }: { leg: Leg }) {
@@ -69,6 +146,7 @@ function ReadTag({ leg }: { leg: Leg }) {
 // ---------- the slip, explained ----------
 function SlipCard() {
   const { legs, remove, replace } = useSlip()
+  const sheet = useLegSheet()
   const [stake, setStake] = useState('10')
   const m = slipMath(legs)
   const s = parseFloat(stake)
@@ -82,7 +160,7 @@ function SlipCard() {
       <section id='your-parlay' className='scroll-mt-20 rounded-[18px] border border-dashed p-6 text-center'>
         <p className='font-display text-2xl font-black'>Your slip is empty</p>
         <p className='mx-auto mt-1 max-w-sm text-sm text-muted-foreground'>
-          Tap a team on any game in <Link to='/' className='text-devig'>Games</Link> to add it, or let the long-shot builder below
+          Tap a team on any game in <Link to='/' className='text-devig'>Games</Link> and add it from its sheet, or let the long-shot builder below
           build one and explain it.
         </p>
       </section>
@@ -91,6 +169,7 @@ function SlipCard() {
   const value = m.devig != null && m.devig > m.needs
   return (
     <section id='your-parlay' aria-label='Your parlay' className='flex scroll-mt-20 flex-col gap-4'>
+      {sheet.sheet}
       <div className='flex items-baseline justify-between px-1'>
         <h2 className='font-display text-[22px] font-extrabold'>Your parlay, explained</h2>
         <button type='button' onClick={() => replace([])} className='text-sm text-muted-foreground hover:text-foreground'>Clear</button>
@@ -158,6 +237,8 @@ function SlipCard() {
           <li key={l.id} className='flex flex-col gap-1.5'>
             <LegPlate
               leg={l}
+              src={sheet.find(l)}
+              onOpen={sheet.openFor(l)}
               right={
                 <button type='button' aria-label={`Remove ${l.label}`} onClick={() => remove(l.id)} className='grid size-8 place-items-center rounded-full bg-black/35 hover:bg-black/55'>
                   <X className='size-4' />
@@ -277,6 +358,7 @@ function LongShot() {
   const { rows } = useGames()
   const { lines } = useProps()
   const { replace } = useSlip()
+  const sheet = useLegSheet()
   const [target, setTarget] = useState(11)
   const [sport, setSport] = useState('ALL')
   const [withProps, setWithProps] = useState(true)
@@ -311,6 +393,7 @@ function LongShot() {
 
   return (
     <section aria-label='Long-shot builder' className='flex flex-col gap-4'>
+      {sheet.sheet}
       <div className='px-1'>
         <h2 className='font-display text-[22px] font-extrabold'>Long-shot builder</h2>
         <p className='text-sm text-muted-foreground'>Pick a payout. DeVig builds the ticket most likely to hit at Kalshi&apos;s prices, then tells you why, and how likely it is to lose.</p>
@@ -359,7 +442,7 @@ function LongShot() {
             <ul className='flex flex-col gap-3'>
               {t.legs.map((c) => (
                 <li key={c.leg.id} className='flex flex-col gap-1.5'>
-                  <LegPlate leg={c.leg} />
+                  <LegPlate leg={c.leg} src={sheet.find(c.leg)} onOpen={sheet.openFor(c.leg)} />
                   <p className='px-1 text-sm leading-relaxed text-muted-foreground'>
                     <b className='text-foreground'>Picked because</b>{' '}
                     {c.dec >= 3

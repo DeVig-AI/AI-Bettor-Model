@@ -27,6 +27,7 @@ export type GameLine = {
   home_score: number | null
   names?: { away: string; home: string }
   colors?: { away: string; home: string }
+  ids?: { away: string; home: string } | null // ESPN team ids
   ml?: Moneyline | null
   home_ticker?: string
   spread?: { home_point: number; home: number; away: number } | null
@@ -165,6 +166,7 @@ export type GameRow = {
   spread: GameLine['spread']
   total: GameLine['total']
   colors: { away: string; home: string } | null
+  ids: { away: string; home: string } | null // ESPN team ids (for logos)
   pick: Pick | null
   // DeVig's chance for its side minus Kalshi's fair chance for that side (null when there's no pick or no price)
   edge: number | null
@@ -328,6 +330,7 @@ function buildRows(
       spread: g.spread ?? null,
       total: g.total ?? null,
       colors: g.colors ?? null,
+      ids: g.ids ?? null,
       pick,
       edge,
     })

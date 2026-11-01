@@ -2,20 +2,18 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { TrackButton } from '@/components/track-button'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useExperience } from '@/lib/experience'
-import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
+import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { useInjuries } from '@/lib/injuries'
 import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
 import { RS_SPORTS } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ExplainSheet } from '../games/explain-sheet'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
 
-// One game: the big plate, the prices, DeVig's read with Why?, who's hurt, and this game's props. Tap a team on the
-// plate to add it to the parlay slip, the same as on Games.
+// One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
+// see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
 
 function Box({ label, value }: { label: string; value: string }) {
   return (
@@ -26,27 +24,28 @@ function Box({ label, value }: { label: string; value: string }) {
   )
 }
 
-function Read({ row, onWhy }: { row: GameRow; onWhy: () => void }) {
+function Read({ row }: { row: GameRow }) {
   const p = row.pick
   if (!p) return null
   if (!isPick(row) || p.prob == null) {
     return (
       <section className='rounded-2xl bg-card p-4'>
         <p className='font-display text-xl font-extrabold'>No pick</p>
-        <p className='mt-1 text-sm text-muted-foreground'>DeVig&apos;s model isn&apos;t far enough from the market here to pick a side.</p>
+        <p className='mt-1 text-sm text-muted-foreground'>
+          DeVig&apos;s model isn&apos;t sure enough here to pick a side. Tap {p.lean ?? 'a team'} on the bar above to see how close it was.
+        </p>
       </section>
     )
   }
   const pre = row.state === 'pre'
   return (
     <section className='rounded-2xl bg-accent p-4'>
-      <div className='flex items-center justify-between gap-3'>
+      <div className='flex flex-col'>
         <span className='flex flex-col'>
           <span className='text-xs font-bold tracking-wide text-devig uppercase'>DeVig&apos;s pick{pre ? '' : ' (made before the game)'}</span>
           <span className='font-display text-2xl font-extrabold text-devig'>{pickName(row)} to win</span>
           <span className='text-sm font-semibold text-accent-foreground'>DeVig gives them {fmtPct(p.prob)}</span>
         </span>
-        <button type='button' onClick={onWhy} className='h-9 shrink-0 rounded-full bg-devig px-4 text-sm font-bold text-devig-ink'>Why?</button>
       </div>
       {row.edge != null && pre && (
         <p className='mt-1.5 text-sm leading-relaxed text-accent-foreground'>
@@ -55,6 +54,7 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: () => void }) {
           {p.correct === true ? ' Won.' : p.correct === false ? ' Lost.' : ' Locked before the game; graded after.'}
         </p>
       )}
+      <p className='mt-1.5 text-sm font-semibold text-devig'>Tap {p.side} on the bar above to see why.</p>
       {!pre && (
         <p className='mt-1.5 text-sm leading-relaxed text-accent-foreground'>
           {row.state === 'post'
@@ -68,11 +68,8 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: () => void }) {
 
 export function GamePage({ id }: { id: string }) {
   const { rows, isLoading } = useGames()
-  const { records } = useRecord()
-  const { level, setLevel } = useExperience()
   const injuries = useInjuries()
   const { lines } = useProps()
-  const [why, setWhy] = useState(false)
   const [live, setLive] = useState<Record<string, LivePrice>>({})
   const row = rows.find((r) => r.id === id)
 
@@ -118,7 +115,7 @@ export function GamePage({ id }: { id: string }) {
       </div>
       <div className='relative'>
         <Plate row={row} showDay size='lg' />
-        {row.state === 'pre' && <PlateTaps row={row} />}
+        <PlateTaps row={row} />
       </div>
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         <div className='grid grid-cols-3 gap-2'>
@@ -126,9 +123,9 @@ export function GamePage({ id }: { id: string }) {
           <Box label='Spread' value={spread} />
           <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
         </div>
-        {row.state === 'pre' && <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap a team on the plate to add it to your parlay.</p>}
+        <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
 
-        <Read row={row} onWhy={() => setWhy(true)} />
+        <Read row={row} />
 
         {(RS_SPORTS as readonly string[]).includes(row.sport) && (
           <section aria-label='Team research' className='grid grid-cols-2 gap-2'>
@@ -171,19 +168,11 @@ export function GamePage({ id }: { id: string }) {
             <h2 className='mb-2 px-1 font-display text-[22px] font-extrabold'>Player props</h2>
             <p className='mb-2 px-1 text-xs text-muted-foreground'>On past games Kalshi&apos;s price was more right than DeVig&apos;s props model.</p>
             <ul className='overflow-hidden rounded-[18px] bg-card'>
-              {props.map((l) => <PropRow key={l.key} l={l} />)}
+              {props.map((l) => <PropRow key={l.key} l={l} game={row} />)}
             </ul>
           </section>
         )}
       </main>
-      <ExplainSheet
-        row={row}
-        open={why}
-        onOpenChange={setWhy}
-        level={level ?? 'sometimes'}
-        onLevel={setLevel}
-        record={records.find((r) => r.sport === row.sport) ?? null}
-      />
     </>
   )
 }

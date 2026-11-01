@@ -9,20 +9,14 @@ import {
 } from '@/lib/devig'
 import { cn } from '@/lib/utils'
 import { NflWhy } from './nfl-why'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
 
-// "Why?": DeVig explains one pick from the model's real locked inputs and the real prices, at the reader's level.
+// Why DeVig gives a team its chance, for either team in a game (team-sheet.tsx opens it when someone taps a side of
+// the plate), from the model's real locked inputs and the real prices, at the reader's level.
 // The numbers are the same at every level; only how much is said changes. NBA/MLB store their inputs, not how much
 // each moved the number, so for them this says what the model looked at and which side each favors, never more.
 // NFL Model 2.0's number splits exactly into home field, form and who is out (nfl-why.tsx), so it shows those steps.
 
-const LEVELS: { id: Level; label: string }[] = [
+export const LEVELS: { id: Level; label: string }[] = [
   { id: 'new', label: 'New to this' },
   { id: 'sometimes', label: 'Sometimes' },
   { id: 'numbers', label: 'Numbers' },
@@ -34,7 +28,7 @@ const signed = (x: number) => (x >= 0 ? '+' : '−') + one(Math.abs(x))
 
 type Factor = { title: string; detail: string; favors: string | null; plain: string }
 
-function factors(row: GameRow, side: string): Factor[] {
+export function factors(row: GameRow, side: string): Factor[] {
   const inp = row.pick?.inputs
   if (!inp) return []
   const a: SideInputs = inp.away
@@ -99,44 +93,45 @@ function factors(row: GameRow, side: string): Factor[] {
   return out
 }
 
-export function ExplainSheet({
-  row,
-  open,
-  onOpenChange,
-  level,
-  onLevel,
-  record,
-}: {
-  row: GameRow | null
-  open: boolean
-  onOpenChange: (v: boolean) => void
-  level: Level
-  onLevel: (l: Level) => void
-  record: SportRecord | null
-}) {
-  const p = row?.pick
-  if (row && p && !p.side && p.lean && p.leanProb != null) {
-    return <PassSheet row={row} open={open} onOpenChange={onOpenChange} level={level} onLevel={onLevel} />
-  }
-  if (!row || !p?.side || p.prob == null) {
-    return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side='bottom' className='rounded-t-3xl'>
-          <SheetHeader>
-            <SheetTitle>No pick here</SheetTitle>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-    )
-  }
-  const side = p.side
-  const sideName = side === row.home ? row.homeName : row.awayName
+export function LevelPicker({ level, onLevel }: { level: Level; onLevel: (l: Level) => void }) {
+  return (
+    <div role='radiogroup' aria-label='How much to explain' className='grid grid-cols-3 gap-1 rounded-xl bg-muted p-1'>
+      {LEVELS.map((l) => (
+        <button
+          key={l.id}
+          type='button'
+          role='radio'
+          aria-checked={level === l.id}
+          onClick={() => onLevel(l.id)}
+          className={cn(
+            'h-9 rounded-lg text-sm font-medium text-muted-foreground transition-colors duration-150',
+            level === l.id && 'bg-foreground font-semibold text-background'
+          )}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+const nameOf = (row: GameRow, code: string) => (code === row.home ? row.homeName : code === row.away ? row.awayName : code)
+
+// A game DeVig picked, explained for one side: the picked team, or the other one ("why only 41%?")
+export function PickBody({ row, side, level, record }: { row: GameRow; side: string; level: Level; record: SportRecord | null }) {
+  const p = row.pick!
+  const pickSide = p.side!
+  const mine = side === pickSide
+  const prob = mine ? p.prob! : 1 - p.prob!
+  const sideName = nameOf(row, side)
+  const pickName = nameOf(row, pickSide)
   const odds = side === row.home ? row.ml?.home : row.ml?.away
   const fairNow = row.fairHome == null ? null : side === row.home ? row.fairHome : 1 - row.fairHome
+  const fairLock = p.fairAtLock == null ? null : mine ? p.fairAtLock : 1 - p.fairAtLock
   const breakEven = impliedProb(odds ?? null) // Kalshi prices here include its fee, so this is what you really need
-  const edgeNow = fairNow == null ? null : p.prob - fairNow
-  const edgeLock = p.fairAtLock == null ? null : p.prob - p.fairAtLock
-  const value = breakEven != null && p.prob > breakEven
+  const edgeNow = fairNow == null ? null : prob - fairNow
+  const edgeLock = fairLock == null ? null : prob - fairLock
+  const value = breakEven != null && prob > breakEven
   const fs = factors(row, side)
   const live = row.state === 'in'
   const done = row.state === 'post'
@@ -145,57 +140,27 @@ export function ExplainSheet({
     : null
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side='bottom'
-        className='max-h-[88svh] overflow-y-auto rounded-t-3xl border-t px-5 pt-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:mx-auto md:max-w-xl'
-      >
-        <div aria-hidden='true' className='mx-auto h-1.5 w-10 rounded-full bg-border' />
-        <SheetHeader className='p-0 text-start'>
-          <SheetTitle className='font-display text-3xl font-black'>
-            {level === 'numbers' ? 'The numbers' : `Why ${sideName}?`}
-          </SheetTitle>
-          <SheetDescription className='sr-only'>DeVig&apos;s reasoning for this pick</SheetDescription>
-        </SheetHeader>
+    <>
+      {(live || done) && (
+        <p className='rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground'>
+          {done
+            ? 'This game is over. The explanation is what DeVig saw before it started.'
+            : "The game is on, so Kalshi's price is a live price and DeVig's pregame number is getting old."}
+        </p>
+      )}
 
-        <div role='radiogroup' aria-label='How much to explain' className='grid grid-cols-3 gap-1 rounded-xl bg-muted p-1'>
-          {LEVELS.map((l) => (
-            <button
-              key={l.id}
-              type='button'
-              role='radio'
-              aria-checked={level === l.id}
-              onClick={() => onLevel(l.id)}
-              className={cn(
-                'h-9 rounded-lg text-sm font-medium text-muted-foreground transition-colors duration-150',
-                level === l.id && 'bg-foreground font-semibold text-background'
-              )}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
-
-        {(live || done) && (
-          <p className='rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground'>
-            {done
-              ? 'This game is over. The explanation is what DeVig saw before it started.'
-              : "The game is on, so Kalshi's price is a live price and DeVig's pregame number is getting old."}
+      {level === 'new' && (
+        <div className='flex flex-col gap-4'>
+          <p className='text-lg leading-snug font-semibold'>
+            {mine ? <>DeVig thinks {sideName} wins about </> : <>DeVig&apos;s pick is {pickName}. It gives {sideName} about </>}
+            <span className='text-devig'>{Math.round(prob * 10)} times out of 10</span> ({fmtPct(prob)}).
           </p>
-        )}
-
-        {level === 'new' && (
-          <div className='flex flex-col gap-4'>
-            <p className='text-lg leading-snug font-semibold'>
-              DeVig thinks {sideName} wins about{' '}
-              <span className='text-devig'>{Math.round(p.prob * 10)} times out of 10</span> ({fmtPct(p.prob)}).
-            </p>
-            <NflWhy
-              row={row}
-              side={side}
-              prob={p.prob}
-              level={level}
-              fallback={fs.length ? (
+          <NflWhy
+            row={row}
+            side={side}
+            prob={prob}
+            level={level}
+            fallback={fs.length ? (
               <ul className='flex flex-col gap-3'>
                 {fs.map((f) => (
                   <li key={f.title} className='text-[15px] leading-relaxed'>
@@ -208,274 +173,246 @@ export function ExplainSheet({
                 This model doesn&apos;t publish what it looked at yet, so DeVig can only show its chance and the price.
               </p>
             )}
-            />
-            {fairNow != null && (
-              <div className='rounded-2xl bg-muted p-3.5'>
-                <p className='font-semibold'>What the price says</p>
-                <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
-                  Kalshi&apos;s price gives {sideName} {fmtPct(fairNow)}.{' '}
-                  {Math.abs(edgeNow ?? 0) < 0.01
-                    ? "That's about what DeVig thinks too."
-                    : (edgeNow ?? 0) < 0
-                      ? `That's more than DeVig's ${fmtPct(p.prob)}, so a bet on ${sideName} here pays less than DeVig thinks it should.`
-                      : `That's less than DeVig's ${fmtPct(p.prob)}, so DeVig thinks the price is generous.`}
-                </p>
-              </div>
-            )}
-            <p className={cn('font-semibold', value ? 'text-good' : 'text-devig')}>
-              {value
-                ? `Bottom line: DeVig thinks ${sideName} wins more often than this price needs.`
-                : `Bottom line: DeVig expects ${sideName} to win, but the price is too high to call it a good bet.`}
-            </p>
-            <p className='text-xs text-muted-foreground'>A paper pick, locked before the game. Nothing is bet.</p>
-          </div>
-        )}
-
-        {level === 'sometimes' && (
-          <div className='flex flex-col gap-4'>
-            <div className='flex items-baseline justify-between'>
-              <span className='font-display text-3xl font-black text-devig'>DeVig {fmtPct(p.prob)}</span>
-              {fairNow != null && <span className='font-display text-2xl font-extrabold'>Kalshi {fmtPct(fairNow)}{live ? ' live' : ' now'}</span>}
-            </div>
-            {fs.length > 0 && (
-              <div>
-                <h3 className='mb-2 text-sm font-semibold text-muted-foreground'>What the model looked at</h3>
-                <ul className='flex flex-col gap-1.5'>
-                  {fs.map((f) => (
-                    <li key={f.title} className='flex items-center justify-between gap-3 rounded-xl bg-muted px-3 py-2.5'>
-                      <span>
-                        <span className='font-semibold'>{f.title}</span>
-                        <br />
-                        <span className='text-sm text-muted-foreground'>{f.detail}</span>
-                      </span>
-                      <span
-                        className='shrink-0 rounded-full px-2.5 py-1 text-xs font-bold text-white'
-                        style={{ background: f.favors ? (f.favors === row.home ? row.colors?.home : row.colors?.away) || 'var(--side-home)' : 'var(--muted)' }}
-                      >
-                        {f.favors ? `Favors ${f.favors}` : 'Even'}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <NflWhy row={row} side={side} prob={p.prob} level={level} />
-            {edgeLock != null && edgeNow != null && (
-              <div className='rounded-2xl bg-muted p-3.5'>
-                <p className='font-semibold'>{Math.sign(edgeLock) !== Math.sign(edgeNow) ? 'The price moved past it' : 'How the price moved'}</p>
-                <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
-                  When DeVig locked this pick{p.lockedAt ? ` (${lockFmt.format(new Date(p.lockedAt))})` : ''}, Kalshi had{' '}
-                  {side} at {fmtPct(p.fairAtLock)}, so DeVig was {Math.abs(edgeLock * 100).toFixed(1)} points{' '}
-                  {edgeLock >= 0 ? 'higher' : 'lower'}. {live ? 'Live' : 'Now'} it&apos;s {fmtPct(fairNow)}
-                  {odds != null ? `, ${fmtAmerican(odds)}` : ''}.
-                </p>
-              </div>
-            )}
-            {breakEven != null && (
-              <p className={cn('font-semibold', value ? 'text-good' : 'text-bad')}>
-                At {fmtAmerican(odds)} you need {fmtPct(breakEven)} to break even. DeVig says {fmtPct(p.prob)}:{' '}
-                {value ? 'worth it at this price.' : 'skip at this price.'}
+          />
+          {fairNow != null && (
+            <div className='rounded-2xl bg-muted p-3.5'>
+              <p className='font-semibold'>What the price says</p>
+              <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+                Kalshi&apos;s price gives {sideName} {fmtPct(fairNow)}.{' '}
+                {Math.abs(edgeNow ?? 0) < 0.01
+                  ? "That's about what DeVig thinks too."
+                  : (edgeNow ?? 0) < 0
+                    ? `That's more than DeVig's ${fmtPct(prob)}, so a bet on ${sideName} here pays less than DeVig thinks it should.`
+                    : `That's less than DeVig's ${fmtPct(prob)}, so DeVig thinks the price is generous.`}
               </p>
-            )}
-            {recTxt && <p className='text-xs text-muted-foreground'>{recTxt}</p>}
-          </div>
-        )}
-
-        {level === 'numbers' && (
-          <div className='flex flex-col gap-4 font-condensed tabular-nums'>
-            {p.inputs ? (
-              <table className='w-full border-collapse text-sm'>
-                <caption className='pb-1 text-start font-sans text-xs font-semibold text-muted-foreground'>
-                  Model inputs ({p.inputs.model_version})
-                </caption>
-                <thead>
-                  <tr className='text-xs text-muted-foreground'>
-                    <th scope='col' className='py-1 text-start font-semibold'>Last 10 games</th>
-                    <th scope='col' className='text-end font-bold text-foreground'>{row.away}</th>
-                    <th scope='col' className='text-end font-bold text-foreground'>{row.home}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(
-                    [
-                      ['Points for', 'ppg_last10', (v: number) => one(v)],
-                      ['Points against', 'papg_last10', (v: number) => one(v)],
-                      ['Win rate', 'winpct_last10', (v: number) => v.toFixed(3).replace(/^0/, '')],
-                      ['Rest days', 'rest_days', (v: number) => String(Math.round(v))],
-                    ] as const
-                  ).map(([label, k, f]) => (
-                    <tr key={k} className='border-t'>
-                      <td className='py-1.5'>{label}</td>
-                      <td className='text-end'>{p.inputs!.away[k] == null ? '—' : f(p.inputs!.away[k] as number)}</td>
-                      <td className='text-end'>{p.inputs!.home[k] == null ? '—' : f(p.inputs!.home[k] as number)}</td>
-                    </tr>
-                  ))}
-                  <tr className='border-t'>
-                    <td className='py-1.5'>Back-to-back</td>
-                    <td className='text-end'>{p.inputs.away.back_to_back ? 'Yes' : 'No'}</td>
-                    <td className='text-end'>{p.inputs.home.back_to_back ? 'Yes' : 'No'}</td>
-                  </tr>
-                </tbody>
-              </table>
-            ) : (
-              <div className='font-sans'>
-                <NflWhy
-                  row={row}
-                  side={side}
-                  prob={p.prob}
-                  level={level}
-                  fallback={<p className='text-sm text-muted-foreground'>This model&apos;s inputs aren&apos;t published yet.</p>}
-                />
-              </div>
-            )}
-            <div className='grid grid-cols-3 gap-1.5'>
-              <Box label={`Model ${side}`} value={fmtPct(p.prob, 1)} amber />
-              <Box label='Kalshi at lock' value={fmtPct(p.fairAtLock, 1)} sub={p.lockedOdds != null ? fmtAmerican(p.lockedOdds) : undefined} />
-              <Box label={live ? 'Kalshi live' : 'Kalshi now'} value={fmtPct(fairNow, 1)} sub={odds != null ? fmtAmerican(odds) : undefined} />
             </div>
-            <dl className='grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-sm'>
-              <dt className='text-muted-foreground'>Edge at lock</dt>
-              <dd className={cn('text-end font-semibold', (edgeLock ?? 0) >= 0 ? 'text-good' : 'text-bad')}>
-                {edgeLock == null ? '—' : `${signed(edgeLock * 100)} pts`}
-              </dd>
-              <dt className='text-muted-foreground'>Edge {live ? 'live' : 'now'}</dt>
-              <dd className={cn('text-end font-semibold', (edgeNow ?? 0) >= 0 ? 'text-good' : 'text-bad')}>
-                {edgeNow == null ? '—' : `${signed(edgeNow * 100)} pts`}
-              </dd>
-              <dt className='text-muted-foreground'>Break-even at {fmtAmerican(odds)}</dt>
-              <dd className='text-end font-semibold'>{fmtPct(breakEven, 1)}</dd>
-              <dt className='text-muted-foreground'>Locked</dt>
-              <dd className='text-end'>{p.lockedAt ? lockFmt.format(new Date(p.lockedAt)) : '—'}</dd>
-              {record && (
-                <>
-                  <dt className='text-muted-foreground'>Season record</dt>
-                  <dd className='text-end'>
-                    {record.won}–{record.lost}, {record.units >= 0 ? '+' : '−'}{Math.abs(record.units).toFixed(2)} u
-                  </dd>
-                </>
-              )}
-            </dl>
-            <p className='font-sans text-xs leading-relaxed text-muted-foreground'>
-              Fair chance splits Kalshi&apos;s two prices in proportion. Break-even uses Kalshi&apos;s price with its fee.
-              Units at the locked price, before fee. Not proven to beat market prices.
-            </p>
+          )}
+          <p className={cn('font-semibold', value ? 'text-good' : mine ? 'text-devig' : 'text-muted-foreground')}>
+            {mine
+              ? value
+                ? `Bottom line: DeVig thinks ${sideName} wins more often than this price needs.`
+                : `Bottom line: DeVig expects ${sideName} to win, but the price is too high to call it a good bet.`
+              : value
+                ? `Bottom line: DeVig still picks ${pickName}, but this price on ${sideName} pays more than its chance needs.`
+                : `Bottom line: DeVig thinks ${sideName} wins less often than this price needs.`}
+          </p>
+          <p className='text-xs text-muted-foreground'>A paper pick, locked before the game. Nothing is bet.</p>
+        </div>
+      )}
+
+      {level === 'sometimes' && (
+        <div className='flex flex-col gap-4'>
+          <div className='flex items-baseline justify-between'>
+            <span className='font-display text-3xl font-black text-devig'>DeVig {fmtPct(prob)}</span>
+            {fairNow != null && <span className='font-display text-2xl font-extrabold'>Kalshi {fmtPct(fairNow)}{live ? ' live' : ' now'}</span>}
           </div>
-        )}
-      </SheetContent>
-    </Sheet>
+          {!mine && <p className='text-[15px] leading-relaxed'>DeVig&apos;s pick in this game is {pickName}, so this is the other side of the same number.</p>}
+          {fs.length > 0 && <FactorList row={row} fs={fs} />}
+          <NflWhy row={row} side={side} prob={prob} level={level} />
+          {edgeLock != null && edgeNow != null && (
+            <div className='rounded-2xl bg-muted p-3.5'>
+              <p className='font-semibold'>{Math.sign(edgeLock) !== Math.sign(edgeNow) ? 'The price moved past it' : 'How the price moved'}</p>
+              <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+                When DeVig locked this pick{p.lockedAt ? ` (${lockFmt.format(new Date(p.lockedAt))})` : ''}, Kalshi had{' '}
+                {side} at {fmtPct(fairLock)}, so DeVig was {Math.abs(edgeLock * 100).toFixed(1)} points{' '}
+                {edgeLock >= 0 ? 'higher' : 'lower'}. {live ? 'Live' : 'Now'} it&apos;s {fmtPct(fairNow)}
+                {odds != null ? `, ${fmtAmerican(odds)}` : ''}.
+              </p>
+            </div>
+          )}
+          {breakEven != null && (
+            <p className={cn('font-semibold', value ? 'text-good' : 'text-bad')}>
+              At {fmtAmerican(odds)} you need {fmtPct(breakEven)} to break even. DeVig says {fmtPct(prob)}:{' '}
+              {value ? 'worth it at this price.' : 'skip at this price.'}
+            </p>
+          )}
+          {recTxt && <p className='text-xs text-muted-foreground'>{recTxt}</p>}
+        </div>
+      )}
+
+      {level === 'numbers' && (
+        <div className='flex flex-col gap-4 font-condensed tabular-nums'>
+          {p.inputs ? (
+            <InputsTable row={row} />
+          ) : (
+            <div className='font-sans'>
+              <NflWhy
+                row={row}
+                side={side}
+                prob={prob}
+                level={level}
+                fallback={<p className='text-sm text-muted-foreground'>This model&apos;s inputs aren&apos;t published yet.</p>}
+              />
+            </div>
+          )}
+          <div className='grid grid-cols-3 gap-1.5'>
+            <Box label={`Model ${side}`} value={fmtPct(prob, 1)} amber />
+            <Box label='Kalshi at lock' value={fmtPct(fairLock, 1)} sub={mine && p.lockedOdds != null ? fmtAmerican(p.lockedOdds) : undefined} />
+            <Box label={live ? 'Kalshi live' : 'Kalshi now'} value={fmtPct(fairNow, 1)} sub={odds != null ? fmtAmerican(odds) : undefined} />
+          </div>
+          <dl className='grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-sm'>
+            <dt className='text-muted-foreground'>Edge at lock</dt>
+            <dd className={cn('text-end font-semibold', (edgeLock ?? 0) >= 0 ? 'text-good' : 'text-bad')}>
+              {edgeLock == null ? '—' : `${signed(edgeLock * 100)} pts`}
+            </dd>
+            <dt className='text-muted-foreground'>Edge {live ? 'live' : 'now'}</dt>
+            <dd className={cn('text-end font-semibold', (edgeNow ?? 0) >= 0 ? 'text-good' : 'text-bad')}>
+              {edgeNow == null ? '—' : `${signed(edgeNow * 100)} pts`}
+            </dd>
+            <dt className='text-muted-foreground'>Break-even at {fmtAmerican(odds)}</dt>
+            <dd className='text-end font-semibold'>{fmtPct(breakEven, 1)}</dd>
+            <dt className='text-muted-foreground'>Locked</dt>
+            <dd className='text-end'>{p.lockedAt ? lockFmt.format(new Date(p.lockedAt)) : '—'}</dd>
+            {record && (
+              <>
+                <dt className='text-muted-foreground'>Season record</dt>
+                <dd className='text-end'>
+                  {record.won}–{record.lost}, {record.units >= 0 ? '+' : '−'}{Math.abs(record.units).toFixed(2)} u
+                </dd>
+              </>
+            )}
+          </dl>
+          <p className='font-sans text-xs leading-relaxed text-muted-foreground'>
+            Fair chance splits Kalshi&apos;s two prices in proportion. Break-even uses Kalshi&apos;s price with its fee.
+            Units at the locked price, before fee. Not proven to beat market prices.
+          </p>
+        </div>
+      )}
+    </>
   )
 }
 
-// "Why no pick?": the model's lean on a game DeVig passed on, the bar it didn't clear, and what it looked at.
-function PassSheet({ row, open, onOpenChange, level, onLevel }: {
-  row: GameRow; open: boolean; onOpenChange: (v: boolean) => void; level: Level; onLevel: (l: Level) => void
-}) {
+function FactorList({ row, fs }: { row: GameRow; fs: Factor[] }) {
+  return (
+    <div>
+      <h3 className='mb-2 text-sm font-semibold text-muted-foreground'>What the model looked at</h3>
+      <ul className='flex flex-col gap-1.5'>
+        {fs.map((f) => (
+          <li key={f.title} className='flex items-center justify-between gap-3 rounded-xl bg-muted px-3 py-2.5'>
+            <span>
+              <span className='font-semibold'>{f.title}</span>
+              <br />
+              <span className='text-sm text-muted-foreground'>{f.detail}</span>
+            </span>
+            <span
+              className='shrink-0 rounded-full px-2.5 py-1 text-xs font-bold text-white'
+              style={{ background: f.favors ? (f.favors === row.home ? row.colors?.home : row.colors?.away) || 'var(--side-home)' : 'var(--muted)' }}
+            >
+              {f.favors ? `Favors ${f.favors}` : 'Even'}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function InputsTable({ row }: { row: GameRow }) {
+  const inp = row.pick!.inputs!
+  return (
+    <table className='w-full border-collapse text-sm'>
+      <caption className='pb-1 text-start font-sans text-xs font-semibold text-muted-foreground'>
+        Model inputs ({inp.model_version})
+      </caption>
+      <thead>
+        <tr className='text-xs text-muted-foreground'>
+          <th scope='col' className='py-1 text-start font-semibold'>Last 10 games</th>
+          <th scope='col' className='text-end font-bold text-foreground'>{row.away}</th>
+          <th scope='col' className='text-end font-bold text-foreground'>{row.home}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {(
+          [
+            ['Points for', 'ppg_last10', (v: number) => one(v)],
+            ['Points against', 'papg_last10', (v: number) => one(v)],
+            ['Win rate', 'winpct_last10', (v: number) => v.toFixed(3).replace(/^0/, '')],
+            ['Rest days', 'rest_days', (v: number) => String(Math.round(v))],
+          ] as const
+        ).map(([label, k, f]) => (
+          <tr key={k} className='border-t'>
+            <td className='py-1.5'>{label}</td>
+            <td className='text-end'>{inp.away[k] == null ? '—' : f(inp.away[k] as number)}</td>
+            <td className='text-end'>{inp.home[k] == null ? '—' : f(inp.home[k] as number)}</td>
+          </tr>
+        ))}
+        <tr className='border-t'>
+          <td className='py-1.5'>Back-to-back</td>
+          <td className='text-end'>{inp.away.back_to_back ? 'Yes' : 'No'}</td>
+          <td className='text-end'>{inp.home.back_to_back ? 'Yes' : 'No'}</td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+// A game DeVig passed on, for one side: the model's lean (or the other side of it), the bar it didn't clear, and
+// what it looked at
+export function PassBody({ row, side, level }: { row: GameRow; side: string; level: Level }) {
   const p = row.pick!
   const lean = p.lean!
-  const prob = p.leanProb!
-  const leanName = lean === row.home ? row.homeName : lean === row.away ? row.awayName : lean
-  const fairNow = row.fairHome == null ? null : lean === row.home ? row.fairHome : 1 - row.fairHome
-  const fs = factors(row, lean)
-  const short = p.bar != null ? p.bar - prob : null
+  const mine = side === lean
+  const leanProb = p.leanProb!
+  const prob = mine ? leanProb : 1 - leanProb
+  const sideName = nameOf(row, side)
+  const leanName = nameOf(row, lean)
+  const fairNow = row.fairHome == null ? null : side === row.home ? row.fairHome : 1 - row.fairHome
+  const fs = factors(row, side)
+  const short = p.bar != null ? p.bar - leanProb : null
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side='bottom'
-        className='max-h-[88svh] overflow-y-auto rounded-t-3xl border-t px-5 pt-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:mx-auto md:max-w-xl'
-      >
-        <div aria-hidden='true' className='mx-auto h-1.5 w-10 rounded-full bg-border' />
-        <SheetHeader className='p-0 text-start'>
-          <SheetTitle className='font-display text-3xl font-black'>Why no pick?</SheetTitle>
-          <SheetDescription className='sr-only'>The model&apos;s read on a game DeVig passed on</SheetDescription>
-        </SheetHeader>
-
-        <div role='radiogroup' aria-label='How much to explain' className='grid grid-cols-3 gap-1 rounded-xl bg-muted p-1'>
-          {LEVELS.map((l) => (
-            <button
-              key={l.id}
-              type='button'
-              role='radio'
-              aria-checked={level === l.id}
-              onClick={() => onLevel(l.id)}
-              className={cn(
-                'h-9 rounded-lg text-sm font-medium text-muted-foreground transition-colors duration-150',
-                level === l.id && 'bg-foreground font-semibold text-background'
-              )}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
-
-        <div className='flex flex-col gap-4'>
-          {level === 'new' ? (
-            <p className='text-lg leading-snug font-semibold'>
-              The model leans {leanName}, but only a little: about {Math.round(prob * 10)} times out of 10 ({fmtPct(prob)}).
-              {p.bar != null && ` DeVig only picks when it's at least ${fmtPct(p.bar)} sure, so it sits this one out.`}
-            </p>
+    <div className='flex flex-col gap-4'>
+      {level === 'new' ? (
+        <p className='text-lg leading-snug font-semibold'>
+          {mine
+            ? <>The model leans {leanName}, but only a little: about {Math.round(prob * 10)} times out of 10 ({fmtPct(prob)}).</>
+            : <>The model gives {sideName} about {Math.round(prob * 10)} times out of 10 ({fmtPct(prob)}), so it leans a little to {leanName}.</>}
+          {p.bar != null && ` DeVig only picks when it's at least ${fmtPct(p.bar)} sure, so it sits this one out.`}
+        </p>
+      ) : (
+        <div className='flex items-baseline justify-between gap-3'>
+          <span className='font-display text-3xl font-black text-devig'>{side} {fmtPct(prob, level === 'numbers' ? 1 : 0)}</span>
+          {mine && p.bar != null ? (
+            <span className='font-display text-2xl font-extrabold'>needs {fmtPct(p.bar, level === 'numbers' ? 1 : 0)}</span>
           ) : (
-            <div className='flex items-baseline justify-between gap-3'>
-              <span className='font-display text-3xl font-black text-devig'>{lean} {fmtPct(prob, level === 'numbers' ? 1 : 0)}</span>
-              {p.bar != null && (
-                <span className='font-display text-2xl font-extrabold'>needs {fmtPct(p.bar, level === 'numbers' ? 1 : 0)}</span>
-              )}
-            </div>
-          )}
-
-          {level !== 'new' && p.bar != null && short != null && (
-            <p className='text-[15px] leading-relaxed'>
-              The model gives {leanName} {fmtPct(prob, 1)}, {(short * 100).toFixed(1)} points short of the {fmtPct(p.bar, 1)} bar.
-              DeVig only picks a side when the model is at least that sure: in past {row.sport} seasons, games above the bar were
-              picked right more often than the rest. Below it, it passes.
-            </p>
-          )}
-
-          <NflWhy row={row} side={lean} prob={prob} level={level} />
-
-          {fs.length > 0 && (
-            <div>
-              <h3 className='mb-2 text-sm font-semibold text-muted-foreground'>What the model looked at</h3>
-              <ul className='flex flex-col gap-1.5'>
-                {fs.map((f) =>
-                  level === 'new' ? (
-                    <li key={f.title} className='text-[15px] leading-relaxed'>{f.plain}</li>
-                  ) : (
-                    <li key={f.title} className='flex items-center justify-between gap-3 rounded-xl bg-muted px-3 py-2.5'>
-                      <span>
-                        <span className='font-semibold'>{f.title}</span>
-                        <br />
-                        <span className='text-sm text-muted-foreground'>{f.detail}</span>
-                      </span>
-                      <span
-                        className='shrink-0 rounded-full px-2.5 py-1 text-xs font-bold text-white'
-                        style={{ background: f.favors ? (f.favors === row.home ? row.colors?.home : row.colors?.away) || 'var(--side-home)' : 'var(--muted)' }}
-                      >
-                        {f.favors ? `Favors ${f.favors}` : 'Even'}
-                      </span>
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-          )}
-
-          {p.note && (
-            <div className='rounded-2xl bg-muted p-3.5'>
-              <p className='font-semibold'>About this model</p>
-              <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{p.note}</p>
-            </div>
-          )}
-
-          {fairNow != null && (
-            <p className='text-sm leading-relaxed text-muted-foreground'>
-              Kalshi&apos;s price gives {leanName} {fmtPct(fairNow)}
-              {Math.abs(fairNow - prob) < 0.01 ? ', about the same as the model.' : `; the model says ${fmtPct(prob)}.`}
-              {' '}A pass means DeVig has no call here, not that the game is a coin flip.
-            </p>
+            <span className='font-display text-2xl font-extrabold'>leans {lean}</span>
           )}
         </div>
-      </SheetContent>
-    </Sheet>
+      )}
+
+      {level !== 'new' && p.bar != null && short != null && (
+        <p className='text-[15px] leading-relaxed'>
+          The model gives {leanName} {fmtPct(leanProb, 1)}, {(short * 100).toFixed(1)} points short of the {fmtPct(p.bar, 1)} bar.
+          DeVig only picks a side when the model is at least that sure: in past {row.sport} seasons, games above the bar were
+          picked right more often than the rest. Below it, it passes.
+        </p>
+      )}
+
+      <NflWhy row={row} side={side} prob={prob} level={level} />
+
+      {fs.length > 0 &&
+        (level === 'new' ? (
+          <ul className='flex flex-col gap-3'>
+            {fs.map((f) => <li key={f.title} className='text-[15px] leading-relaxed'>{f.plain}</li>)}
+          </ul>
+        ) : (
+          <FactorList row={row} fs={fs} />
+        ))}
+
+      {p.note && (
+        <div className='rounded-2xl bg-muted p-3.5'>
+          <p className='font-semibold'>About this model</p>
+          <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{p.note}</p>
+        </div>
+      )}
+
+      {fairNow != null && (
+        <p className='text-sm leading-relaxed text-muted-foreground'>
+          Kalshi&apos;s price gives {sideName} {fmtPct(fairNow)}
+          {Math.abs(fairNow - prob) < 0.01 ? ', about the same as the model.' : `; the model says ${fmtPct(prob)}.`}
+          {' '}A pass means DeVig has no call here, not that the game is a coin flip.
+        </p>
+      )}
+    </div>
   )
 }
 

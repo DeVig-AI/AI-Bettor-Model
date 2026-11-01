@@ -70,7 +70,7 @@ def explaining_p_over(model, stat, fr, lines, _orig=F.p_over):
         steps.append([g, round(math.exp(z), 3)])
     r = fr.iloc[0]
     CAPTURED[(r["game_key"], str(r["player_id"]), stat)] = {
-        "team": r["team"], "opp": r["opp"], "expected": round(float(mu[0]), 3), "steps": steps,
+        "team": r["team"], "pid": str(r["player_id"]), "opp": r["opp"], "expected": round(float(mu[0]), 3), "steps": steps,
         "read": {
             "avg_recent": r2(r[f"{stat}_e5"]), "avg_longer": r2(r[f"{stat}_e20"]),
             "min_recent": r2(r["minutes_e5"]), "min_longer": r2(r["minutes_e20"]), "last_min": r2(r["last_min"]),
