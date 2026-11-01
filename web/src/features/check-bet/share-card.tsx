@@ -41,7 +41,7 @@ async function draw(t: ShareText, legs: ShareLeg[], letter: string | null, won: 
   const subLines = wrap(m, t.sub, inner)
   m.font = `600 36px ${F.body}`
   const weakLines = t.weak ? wrap(m, t.weak, inner - 40) : []
-  const H = Math.max(1350, 560 + subLines.length * 56 + legs.length * 128 + (weakLines.length ? weakLines.length * 48 + 90 : 0) + 230)
+  const H = Math.max(1350, 640 + subLines.length * 56 + legs.length * 128 + (weakLines.length ? weakLines.length * 48 + 90 : 0) + 230)
 
   const cv = document.createElement('canvas')
   cv.width = W
@@ -131,22 +131,28 @@ async function draw(t: ShareText, legs: ShareLeg[], letter: string | null, won: 
     ctx.font = `600 36px ${F.body}`
     let wy = y + 36
     for (const l of weakLines) { ctx.fillText(l, P + 40, wy); wy += 48 }
-    y = wy + 30
+    y = wy
   }
 
-  // footer
-  const fy = H - P - 10
-  ctx.fillStyle = C.line
-  ctx.fillRect(P, fy - 78, inner, 2)
-  ctx.fillStyle = C.devig
-  ctx.font = `900 54px ${F.display}`
-  ctx.fillText('devigai.pages.dev', P, fy)
-  ctx.fillStyle = C.muted
-  ctx.font = `500 32px ${F.body}`
-  ctx.textAlign = 'right'
-  ctx.fillText('Odds, read straight.', W - P, fy)
-  ctx.textAlign = 'left'
-  return cv
+  // crop to what was drawn (no shorter than square), then the footer
+  const out = document.createElement('canvas')
+  out.width = W
+  out.height = Math.max(W, Math.ceil(y + 210))
+  const o = out.getContext('2d')!
+  o.fillStyle = C.bg
+  o.fillRect(0, 0, W, out.height)
+  o.drawImage(cv, 0, 0)
+  const fy = out.height - P - 10
+  o.fillStyle = C.line
+  o.fillRect(P, fy - 78, inner, 2)
+  o.fillStyle = C.devig
+  o.font = `900 54px ${F.display}`
+  o.fillText('devigai.pages.dev', P, fy)
+  o.fillStyle = C.muted
+  o.font = `500 32px ${F.body}`
+  o.textAlign = 'right'
+  o.fillText('Odds, read straight.', W - P, fy)
+  return out
 }
 
 export function ShareCard({ t, legs, letter, won }: { t: ShareText; legs: ShareLeg[]; letter: string | null; won: boolean }) {
