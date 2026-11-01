@@ -1,5 +1,5 @@
 import { useQueries } from '@tanstack/react-query'
-import { type GameRow, useGames } from './devig'
+import { type GameRow, SCORE_EVERY, useGames } from './devig'
 import { normName } from './headshots'
 import { hexColor } from '@/components/leg-bar'
 import type { KLeg, KRead } from './kalshi-link'
@@ -126,8 +126,10 @@ export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame |
           if (!r.ok) throw new Error(`HTTP ${r.status}`)
           return ((await r.json()) as { games: ScoreGame[] }).games
         },
-        staleTime: 6e4,
-        refetchInterval: 6e4,
+        staleTime: 10e3,
+        // every 15 seconds while one of the day's games is on, otherwise once a minute
+        refetchInterval: (q: { state: { data?: ScoreGame[] } }) =>
+          q.state.data?.some((g) => g.state === 'in' || (g.state === 'pre' && Date.parse(g.kickoff) <= Date.now())) ? SCORE_EVERY : 6e4,
       }
     }),
   })

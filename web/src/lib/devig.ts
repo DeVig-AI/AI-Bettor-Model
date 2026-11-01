@@ -219,7 +219,7 @@ function matchKey(sport: string, away: string, home: string) {
 
 // ---------- fresh: Kalshi and ESPN right now ----------
 // The files above are only as new as the bots' last run (prices about every 30 minutes; the live file sleeps between
-// game windows), so refresh, and a timer while the board is open, also asks Kalshi (/api/prices) and ESPN (/api/live)
+// game windows), so refresh, and timers while the board is open, also ask Kalshi (/api/prices, every 2 min) and ESPN (/api/live, every 15s while a game is on)
 // directly for the games near now. What they return wins over the files.
 type LiveScore = { id: string; state: 'pre' | 'in' | 'post'; detail: string; away_score: number | null; home_score: number | null }
 export type Fresh = {
@@ -237,42 +237,53 @@ export function freshMoneyline(m: { bid: number | null; ask: number | null } | u
   return { home: Math.round(americanOf(m.ask) * 10) / 10, away: Math.round(americanOf(1 - m.bid) * 10) / 10 }
 }
 
-async function loadFresh(games: GameLine[], now = Date.now()): Promise<Fresh> {
-  // games that aren't over: started up to 6 hours ago, or starting within 36 hours
-  const near = games.filter((g) => {
+// games that aren't over: started up to 6 hours ago, or starting within 36 hours
+function nearNow(games: GameLine[], now = Date.now()) {
+  return games.filter((g) => {
     const t = Date.parse(g.kickoff)
     return isFinite(t) && t > now - 6 * 3600e3 && t < now + 36 * 3600e3 && g.state !== 'post'
   })
-  const tickers = [...new Set(near.map((g) => g.home_ticker).filter((t): t is string => !!t))]
-  const sports = [...new Set(near.map((g) => g.sport.toLowerCase()))].filter((s) =>
-    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb'].includes(s)
-  )
+}
+// a game is on (or about to be) when its kickoff has passed and it isn't final
+const anyOn = (games: GameLine[], scores?: Record<string, LiveScore>, now = Date.now()) =>
+  Object.values(scores ?? {}).some((g) => g.state === 'in') ||
+  nearNow(games, now).some((g) => Date.parse(g.kickoff) <= now && !(scores?.[`${g.sport}|${g.espn_id}`]?.state === 'post'))
+export const SCORE_EVERY = 15e3 // ESPN through /api/live (cached 15s on the server), only while a game is on
+const PRICE_EVERY = 2 * 60e3 // Kalshi through /api/prices
+
+async function loadPrices(games: GameLine[]): Promise<Fresh['prices']> {
+  const tickers = [...new Set(nearNow(games).map((g) => g.home_ticker).filter((t): t is string => !!t))]
   const chunks: string[][] = []
   for (let i = 0; i < tickers.length; i += 40) chunks.push(tickers.slice(i, i + 40))
-  const [priceRes, scoreRes] = await Promise.all([
-    Promise.allSettled(
-      chunks.map(async (c) => {
-        const r = await fetch(`/api/prices?tickers=${c.join(',')}`)
-        if (!r.ok) throw new Error(`prices: ${r.status}`)
-        return (await r.json()) as { markets: Fresh['prices'] }
-      })
-    ),
-    Promise.allSettled(
-      sports.map(async (s) => {
-        const r = await fetch(`/api/live?sport=${s}`)
-        if (!r.ok) throw new Error(`live: ${r.status}`)
-        return { sport: s.toUpperCase(), games: ((await r.json()) as { games: LiveScore[] }).games ?? [] }
-      })
-    ),
-  ])
+  const res = await Promise.allSettled(
+    chunks.map(async (c) => {
+      const r = await fetch(`/api/prices?tickers=${c.join(',')}`)
+      if (!r.ok) throw new Error(`prices: ${r.status}`)
+      return (await r.json()) as { markets: Fresh['prices'] }
+    })
+  )
   const prices: Fresh['prices'] = {}
-  for (const r of priceRes) if (r.status === 'fulfilled') Object.assign(prices, r.value.markets)
+  for (const r of res) if (r.status === 'fulfilled') Object.assign(prices, r.value.markets)
+  if (!Object.keys(prices).length && chunks.length) throw new Error('Kalshi did not answer')
+  return prices
+}
+
+async function loadScores(games: GameLine[]): Promise<Fresh['scores']> {
+  const sports = [...new Set(nearNow(games).map((g) => g.sport.toLowerCase()))].filter((s) =>
+    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb'].includes(s)
+  )
+  const res = await Promise.allSettled(
+    sports.map(async (s) => {
+      const r = await fetch(`/api/live?sport=${s}`)
+      if (!r.ok) throw new Error(`live: ${r.status}`)
+      return { sport: s.toUpperCase(), games: ((await r.json()) as { games: LiveScore[] }).games ?? [] }
+    })
+  )
   const scores: Fresh['scores'] = {}
-  for (const r of scoreRes)
+  for (const r of res)
     if (r.status === 'fulfilled') for (const g of r.value.games) scores[`${r.value.sport}|${g.id}`] = g
-  if (!Object.keys(prices).length && !Object.keys(scores).length && (chunks.length || sports.length))
-    throw new Error('Kalshi and ESPN did not answer')
-  return { at: now, prices, scores }
+  if (!Object.keys(scores).length && sports.length) throw new Error('ESPN did not answer')
+  return scores
 }
 
 function buildRows(
@@ -387,13 +398,32 @@ export function useGames() {
     queryFn: loadBoards,
     refetchInterval: 10 * 60e3,
   })
-  const fresh = useQuery({
-    queryKey: ['fresh'],
-    queryFn: () => loadFresh(gameLines.data?.games ?? []),
+  const prices = useQuery({
+    queryKey: ['fresh_prices'],
+    queryFn: () => loadPrices(gameLines.data?.games ?? []),
     enabled: !!gameLines.data,
-    refetchInterval: 2 * 60e3,
+    refetchInterval: PRICE_EVERY,
     retry: 1,
   })
+  // scores every 15 seconds while any game is on; every 2 minutes otherwise (to notice a kickoff)
+  const scores = useQuery({
+    queryKey: ['fresh_scores'],
+    queryFn: () => loadScores(gameLines.data?.games ?? []),
+    enabled: !!gameLines.data,
+    refetchInterval: (q) => (anyOn(gameLines.data?.games ?? [], q.state.data) ? SCORE_EVERY : PRICE_EVERY),
+    retry: 1,
+  })
+  const fresh = useMemo(
+    () => ({
+      data: prices.data || scores.data
+        ? { at: Math.max(prices.dataUpdatedAt, scores.dataUpdatedAt), prices: prices.data ?? {}, scores: scores.data ?? {} }
+        : undefined,
+      isFetching: prices.isFetching || scores.isFetching,
+      refetch: () => { prices.refetch(); scores.refetch() },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [prices.data, scores.data, prices.dataUpdatedAt, scores.dataUpdatedAt, prices.isFetching, scores.isFetching]
+  )
 
   // rebuilt only when a file actually changes: a new array on every render makes the table reset itself in a loop
   const rows = useMemo(
