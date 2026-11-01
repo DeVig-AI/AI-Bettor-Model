@@ -1,0 +1,1 @@
+import{n as e}from"./props-BlR85Wet.js";var t=e;export{t as component};

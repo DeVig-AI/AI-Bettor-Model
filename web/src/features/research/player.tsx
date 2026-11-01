@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { type RsPlayer, isDefense, logIdx, rsCell, rsDate, rsShort, seasonYear, statValue, useRsIndex, useRsTeam } from '@/lib/research'
+import { useRosterPlayer } from '@/lib/headshots'
+import { statsPhoto } from '@/lib/logos'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { BackBar, TeamPlate } from './team'
@@ -24,6 +26,18 @@ function Count({ label, games, line, val }: { label: string; games: Row[]; line:
         {n ? `${o} of ${n}` : 'no games'}
       </span>
     </li>
+  )
+}
+
+// the player's cut-out photo, standing on the bottom edge of the team plate; nothing if there's no photo
+function Photo({ sport, team, id, name }: { sport: string; team: string; id: string; name: string }) {
+  const [bad, setBad] = useState(false)
+  const espn = useRosterPlayer(sport === 'NFL' || sport === 'NHL' ? sport : '', name, team).pid
+  const src = statsPhoto(sport, id, espn)
+  if (!src || bad) return null
+  return (
+    <img src={src} alt='' aria-hidden='true' draggable={false} onError={() => setBad(true)}
+      className={cn('-me-2 -mb-4 h-[120px] w-auto shrink-0 self-end object-contain object-bottom md:h-[132px]', sport === 'MLB' ? 'aspect-square' : 'aspect-[600/436]')} />
   )
 }
 
@@ -76,7 +90,8 @@ export function ResearchPlayer({ sport, team, id, stat, line }: { sport: string;
     <>
       <BackBar label={t.name} />
       <TeamPlate sport={sport} code={t.code} color={t.color} title={p.name}
-        sub={[p.pos, p.num != null && p.num !== '' ? `#${p.num}` : null, t.name].filter(Boolean).join(' · ')} />
+        sub={[p.pos, p.num != null && p.num !== '' ? `#${p.num}` : null, t.name].filter(Boolean).join(' · ')}
+        right={<Photo sport={sport} team={t.code} id={String(p.id)} name={p.name} />} />
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         <section aria-label='Season stats' className='overflow-x-auto rounded-[18px] bg-card'>
           <table className='w-full whitespace-nowrap min-w-[420px] text-sm'>
