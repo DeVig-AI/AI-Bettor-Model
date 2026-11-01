@@ -1,1 +1,0 @@
-import{t as e}from"./research-ls42VRE5.js";var t=e;export{t as component};

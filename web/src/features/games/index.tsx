@@ -4,6 +4,7 @@ import { BookOpen, RefreshCw, Search as SearchIcon, Star } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
 import { isFavorite, usePrefs } from '@/lib/profile'
+import { labFor, useLab } from '@/lib/lab'
 import { useTracked } from '@/lib/track'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -52,6 +53,9 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
   const p = row.pick
   const picked = isPick(row)
   const result = p?.correct === true ? 'Won' : p?.correct === false ? 'Lost' : null
+  const lab = labFor(useLab().data, row) // NHL / CFB: the Research Lab's model, new and not proven
+  const labSide = lab ? (lab.home_wp >= 0.5 ? row.home : row.away) : null
+  const labPct = lab ? Math.max(lab.home_wp, 1 - lab.home_wp) : null
   const spreadTotal = [
     row.spread ? `${row.home} ${row.spread.home_point > 0 ? '+' : ''}${row.spread.home_point}` : null,
     row.total ? `O/U ${row.total.line}` : null,
@@ -80,6 +84,12 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
         ) : p ? (
           <span className='text-muted-foreground'>
             <span className='font-semibold text-foreground/85'>No pick</span> · DeVig isn&apos;t far enough from the market
+          </span>
+        ) : lab && labPct != null ? (
+          <span className='flex flex-wrap items-center gap-x-2'>
+            <span className='rounded-full border border-devig/60 px-2.5 py-0.5 text-xs font-bold text-devig'>DeVig Lab</span>
+            <span className='font-condensed font-semibold tabular-nums'>{labSide} {fmtPct(labPct)}</span>
+            <span className='text-xs text-muted-foreground'>new, not proven</span>
           </span>
         ) : (
           <span className='font-condensed text-muted-foreground tabular-nums'>{spreadTotal}</span>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { type CalibRow, type ModelRow, type Slot, useModels } from '@/lib/models'
+import { type LabFile, LAB_SPORTS, checkText, useLab } from '@/lib/lab'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
@@ -9,7 +10,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // Models: every model graded on the same games with the same rules, Kalshi's price as the baseline. Each model is a
 // row with its win rate drawn against the rate its prices needed (the amber tick). A comparison, not proof.
 
-const SPORTS = ['NFL', 'NBA', 'MLB', 'CFB']
+const SPORTS = ['NFL', 'NBA', 'MLB', 'CFB', 'NHL']
 const BETS = [['ml', 'Moneyline'], ['spread', 'Spread'], ['total', 'Total'], ['props', 'Props']] as const
 type Bet = (typeof BETS)[number][0]
 
@@ -39,7 +40,7 @@ function Row({ m, money, dec }: { m: ModelRow; money: boolean; dec: boolean }) {
         )}
       </div>
       {empty ? (
-        <span className='text-sm text-muted-foreground'>{m.bar_only ? `Kalshi's price needed ${pct(m.breakeven, dec)}` : 'No picks of this kind'}</span>
+        <span className='text-sm text-muted-foreground'>{m.bar_only ? `Kalshi's price needed ${pct(m.breakeven, dec)}` : m.none ? 'No picks of this kind' : 'No graded picks yet'}</span>
       ) : (
         <>
           <div aria-hidden='true' className='relative h-2.5 rounded-full bg-muted'>
@@ -81,6 +82,62 @@ function Calib({ c }: { c: CalibRow }) {
   )
 }
 
+const signed = (x: number, d = 2) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(d)}`
+const dayTime = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+
+// the Research Lab's model for this sport: what it is, how it did in the search and in the Lab's own check, its next games
+function LabCard({ f }: { f: LabFile }) {
+  const c = f.candidate
+  const s = c.search
+  const gates = f.check?.gates ?? []
+  const next = f.games.filter((g) => Date.parse(g.kickoff) > Date.now()).slice(0, 4)
+  return (
+    <section aria-label='DeVig Lab model' className='rounded-2xl border border-devig/40 bg-card p-4 text-sm leading-relaxed'>
+      <div className='flex flex-wrap items-baseline justify-between gap-2'>
+        <b className='text-devig'>DeVig Lab</b>
+        <span className='rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground'>new, not proven</span>
+      </div>
+      <p className='mt-1'>
+        The Research Lab&apos;s best {c.market} model for {f.sport === 'CFB' ? 'college football' : 'hockey'}, run on
+        today&apos;s games. It&apos;s shown next to the others here; it isn&apos;t one of DeVig&apos;s picks.
+      </p>
+      {s && (
+        <p className='mt-2 text-xs text-muted-foreground tabular-nums'>
+          In the search: {signed(s.effect)} pts a game beyond the closing line on {s.games.toLocaleString()} past games
+          (t = {s.t.toFixed(2)}). A search finds lucky models too, which is why the check below exists.
+        </p>
+      )}
+      <p className='mt-2 font-medium'>{checkText(f.check)} <span className='text-xs font-normal text-muted-foreground'>Model {c.id}</span></p>
+      {gates.length > 0 && (
+        <ul className='mt-1.5 grid grid-cols-3 gap-1.5'>
+          {gates.map((g) => (
+            <li key={g.name} className='rounded-xl bg-muted px-2 py-1.5 text-center'>
+              <div className='text-[11px] text-muted-foreground'>{g.name}</div>
+              <div className={cn('font-condensed text-base font-bold tabular-nums', g.passed ? 'text-good' : g.passed === false ? 'text-bad' : '')}>
+                {g.effect == null ? '—' : `${signed(g.effect)}`}
+              </div>
+              <div className='text-[11px] text-muted-foreground'>{g.games.toLocaleString()} games</div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {next.length > 0 && (
+        <ul className='mt-3 flex flex-col gap-1 border-t pt-2'>
+          {next.map((g) => {
+            const home = g.home_wp >= 0.5
+            return (
+              <li key={g.game_id} className='flex justify-between gap-3 tabular-nums'>
+                <span className='text-muted-foreground'>{g.away} at {g.home} · {dayTime.format(new Date(g.kickoff))}</span>
+                <span className='font-condensed font-semibold'>{home ? g.home : g.away} {pct(home ? g.home_wp : 1 - g.home_wp)}</span>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </section>
+  )
+}
+
 function Champion({ slot, names }: { slot: Slot | undefined; names: Record<string, string> }) {
   if (!slot) return null
   const nm = (k: string) => names[k] ?? k
@@ -100,6 +157,7 @@ function Champion({ slot, names }: { slot: Slot | undefined; names: Record<strin
 
 export function Models() {
   const q = useModels()
+  const lab = useLab().data
   const [sport, setSport] = useState('NFL')
   const [bet, setBet] = useState<Bet>('ml')
   const r = q.data?.report
@@ -126,10 +184,10 @@ export function Models() {
           DeVig&apos;s models next to open-source models other people publish, all graded here the same way. A comparison, not proof that any of them beats the market.
         </p>
         <div className='flex flex-col gap-2'>
-          <div className='flex gap-2'>
+          <div className='no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4'>
             {SPORTS.map((x) => (
               <button key={x} type='button' aria-pressed={sport === x} onClick={() => setSport(x)}
-                className={cn('h-9 rounded-full border px-4 text-sm font-medium text-muted-foreground', sport === x && 'border-foreground bg-foreground text-background')}>{x}</button>
+                className={cn('h-9 shrink-0 rounded-full border px-4 text-sm font-medium text-muted-foreground', sport === x && 'border-foreground bg-foreground text-background')}>{x}</button>
             ))}
           </div>
           <div className='no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4'>
@@ -154,6 +212,7 @@ export function Models() {
                 </p>
               </section>
               {bet === 'ml' && <Champion slot={q.data?.slots[`${sport}.ml`]} names={names} />}
+              {bet !== 'props' && (LAB_SPORTS as readonly string[]).includes(sport) && lab?.[sport] && <LabCard f={lab[sport]} />}
             </div>
 
             <div className='flex flex-col gap-5'>

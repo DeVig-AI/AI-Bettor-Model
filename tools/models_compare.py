@@ -22,14 +22,16 @@ Models (credits and licenses are also on the app's Models and About pages):
   cfbrank CFB, CFB Rankings by Brandon Keck (github.com/brandon-keck/cfb-rankings, MIT). Its published weekly Elo
           ratings (data/elo_full_field_weekly.csv) turned into a home win chance with its own documented formula
           (Elo 400 scale, +65 for the home team, none at a neutral site). Winner only: it publishes no spread.
-  kalshi  the market baseline in every tab: Kalshi's win price, main spread, main total (MLB: the 1.5 run line).
+  lab     NHL and CFB, DeVig's Research Lab: the search leader for each sport (research/<sport>/candidates), run live by
+          tools/lab_live.py into live/lab/<sport>.json. New, not proven: shown beside the others, never the app's pick.
+  kalshi  the market baseline in every tab: Kalshi's win price, main spread, main total (MLB / NHL: the 1.5 line).
 
 Every run (GitHub Actions, models_compare.yml):
-  1. read every model's current number for each game not yet started (NFL: next 8 days, NBA / MLB: next 36 hours)
+  1. read every model's current number for each game not yet started (NFL / CFB: next 8 days, NBA / MLB / NHL: next 36 hours)
      into live/models/latest.json -- overwritten each run, never touched for a game once it has started;
   2. once a game has started, its last pre-start numbers move from latest.json to live/models/picks.jsonl
      (append-only: one row per game and model, the pick that is graded);
-  3. finals are appended to live/models/results.jsonl (NFL from nflverse, as the NFL grader does; NBA / MLB ESPN);
+  3. finals are appended to live/models/results.jsonl (NFL from nflverse, as the NFL grader does; others ESPN);
   4. live/models_export.json is written for the app.
 
 Grading (the same rules for every model; nobody's self-reported record is used):
@@ -72,6 +74,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 import kalshi_games_v1 as KG  # noqa: E402  (frozen; read-only use)
+KG.ESPN.setdefault("NHL", "hockey/nhl")                      # the frozen file predates hockey; same as game_lines.py
 
 DIR = ROOT / "live" / "models"
 LATEST, PICKS, RESULTS = DIR / "latest.json", DIR / "picks.jsonl", DIR / "results.jsonl"
@@ -92,8 +95,12 @@ BLOTNY_URL = "https://raw.githubusercontent.com/Blotny/nba-win-probability-predi
 ESPN = "https://site.api.espn.com/apis/site/v2/sports/{}/scoreboard"
 UA = "devig-models-compare/1.0 (personal research; read-only)"
 ET = ZoneInfo("America/New_York")
-AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(hours=36), "CFB": timedelta(days=8)}
-SPORTS = ("NFL", "NBA", "MLB", "CFB")
+AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(hours=36), "CFB": timedelta(days=8),
+         "NHL": timedelta(hours=36)}
+SPORTS = ("NFL", "NBA", "MLB", "CFB", "NHL")
+LAB_DIR = ROOT / "live" / "lab"                               # tools/lab_live.py writes the Lab models' numbers here
+LAB_STALE = timedelta(hours=12)                               # an older Lab file is not read (its numbers would be old)
+NHL_TO_ESPN = {"TBL": "TB", "NJD": "NJ", "LAK": "LA", "SJS": "SJ"}   # NHL API code -> ESPN / Kalshi code
 RECENT = timedelta(days=4)                                    # finished games kept in the page's game list
 BREAKEVEN_110 = 110 / 210
 
@@ -120,7 +127,12 @@ MODELS = [
     {"key": "cfbrank", "name": "CFB Rankings", "sports": ["CFB"], "author": "Brandon Keck",
      "url": "https://github.com/brandon-keck/cfb-rankings", "license": "MIT",
      "note": "Its weekly Elo ratings, turned into a win chance with its own formula (+65 home, 400 scale). Winner only."},
-    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB", "CFB"], "author": "Kalshi prices",
+    {"key": "lab", "name": "DeVig Lab", "sports": ["NHL", "CFB"], "author": "DeVig.AI (this project)",
+     "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
+     "license": "this project",
+     "note": "New, not proven: the Research Lab's search leader for this sport, run live by tools/lab_live.py. "
+             "Its own confirmation check is on the Lab page; it is not the app's pick."},
+    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB", "CFB", "NHL"], "author": "Kalshi prices",
      "url": "https://kalshi.com", "license": "public prices",
      "note": "The baseline: Kalshi's favourite (moneyline, spread) and the over (total), at Kalshi's price."},
 ]
@@ -128,7 +140,8 @@ MODELS = [
 COVERS = {"NFL": {"ml": {"devig", "devig2", "nfelo", "elo538", "kalshi"}, "spread": {"devig", "nfelo", "elo538", "kalshi"}, "total": {"kalshi"}},
           "NBA": {"ml": {"devig", "blotny", "kalshi"}, "spread": {"blotny", "kalshi"}, "total": {"kalshi"}},
           "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
-          "CFB": {"ml": {"cfbelo", "cfbrank", "kalshi"}, "spread": {"cfbelo", "kalshi"}, "total": {"kalshi"}}}
+          "CFB": {"ml": {"cfbelo", "cfbrank", "lab", "kalshi"}, "spread": {"cfbelo", "lab", "kalshi"}, "total": {"kalshi"}},
+          "NHL": {"ml": {"lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}}}
 TO_538 = {"LV": "OAK", "WAS": "WSH", "LA": "LAR"}            # nflverse code -> 538 franchise code (2021 on)
 FROM_NFELO = {"LAR": "LA", "OAK": "LV", "WSH": "WAS", "JAC": "JAX"}
 errors = []
@@ -429,6 +442,34 @@ def devig_mlb(upcoming):
     return out
 
 
+def read_lab(sport, upcoming, now):
+    """The Research Lab's live model (live/lab/<sport>.json from tools/lab_live.py): its numbers for games coming up.
+    NHL games are matched by teams and start time (the NHL API's ids differ from ESPN's); CFB ids are ESPN's."""
+    f = LAB_DIR / f"{sport.lower()}.json"
+    if not f.exists():
+        return {}
+    d = json.loads(f.read_text())
+    at = parse_t(d.get("generated_at"))
+    if not at or now - at > LAB_STALE:
+        raise RuntimeError(f"{f.name} is stale ({d.get('generated_at')})")
+    by_id = {g["game_id"]: g for g in upcoming}
+    out = {}
+    for r in d.get("games") or []:
+        if sport == "NHL":
+            h, a, k = NHL_TO_ESPN.get(r["home"], r["home"]), NHL_TO_ESPN.get(r["away"], r["away"]), parse_t(r["kickoff"])
+            g = next((x for x in upcoming if x["home"] == KG.canon("NHL", h) and x["away"] == KG.canon("NHL", a)
+                      and k and abs((x["kickoff"] - k).total_seconds()) <= 6 * 3600), None)
+        else:
+            g = by_id.get(str(r["game_id"]))
+        if g is None or r.get("home_wp") is None:
+            continue
+        p = {"home_wp": r["home_wp"], "at": iso(at)}
+        if r.get("home_line") is not None:
+            p["home_line"] = r["home_line"]
+        out[g["game_id"]] = p
+    return out
+
+
 def read_kalshi(sport, upcoming):
     out = {}
     for g in KG.kalshi_games(sport).values():
@@ -443,7 +484,7 @@ def read_kalshi(sport, upcoming):
         p = {"home_wp": r4(mh / (mh + ma)) if mh is not None and ma is not None and mh + ma > 0 else None,
              "home_ml": KG.american(th["ask"]), "away_ml": KG.american(ta["ask"])}
         ms = KG.main_spread(g, g["away_code"], g["home_code"])
-        if sport == "MLB":
+        if sport in ("MLB", "NHL"):                    # run line / puck line: the 1.5 line, priced
             ms = KG.spread_at(g, g["away_code"], g["home_code"], 1.5)
         if ms:
             p.update(home_line=ms[0], home_spread_odds=ms[1], away_spread_odds=ms[2])
@@ -483,7 +524,7 @@ def update(now, nfl_csv=None, offline=False):
     except Exception as e:
         ng = []
         note("nflverse", e)
-    for sport in ("NBA", "MLB"):
+    for sport in ("NBA", "MLB", "NHL"):
         if offline:
             continue
         days = {et_day(now + timedelta(hours=h)) for h in (-24, 0, 24, 36)}
@@ -521,7 +562,10 @@ def update(now, nfl_csv=None, offline=False):
             sources = [("devig", lambda: devig_nba(by_id)), ("blotny", lambda: read_blotny(ups))]
         elif sport == "CFB":
             season = now.year if now.month >= 7 else now.year - 1
-            sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season))]
+            sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season)),
+                       ("lab", lambda u=ups: read_lab("CFB", u, now))]
+        elif sport == "NHL":
+            sources = [("lab", lambda u=ups: read_lab("NHL", u, now))]
         else:
             sources = [("devig", lambda: devig_mlb(ups))]
         if not offline:
@@ -632,11 +676,11 @@ def grade_game(sport, picks, res):
                     fav = "home" if line < 0 else "away"
                     pt = line if fav == "home" else -line
                     odds = p.get("home_spread_odds" if fav == "home" else "away_spread_odds")
-                    g["spread"] = (won_side(fav, pt), None, breakeven(odds) if sport == "MLB" else BREAKEVEN_110)
+                    g["spread"] = (won_side(fav, pt), None, breakeven(odds) if sport in ("MLB", "NHL") else BREAKEVEN_110)
             elif p.get("spread_side") and p.get("spread_point") is not None:
                 g["spread"] = (won_side(p["spread_side"], p["spread_point"]), None,
-                               breakeven(p.get("spread_price")) if sport == "MLB" else BREAKEVEN_110)
-            elif p.get("home_line") is not None and k.get("home_line") is not None and sport != "MLB" \
+                               breakeven(p.get("spread_price")) if sport in ("MLB", "NHL") else BREAKEVEN_110)
+            elif p.get("home_line") is not None and k.get("home_line") is not None and sport not in ("MLB", "NHL") \
                     and round(p["home_line"], 4) != round(k["home_line"], 4):
                 side = "home" if p["home_line"] < k["home_line"] else "away"
                 pt = k["home_line"] if side == "home" else -k["home_line"]
