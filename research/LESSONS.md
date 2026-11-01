@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-11-01T03:29:14Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-11-01T06:53:02Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2006–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -125,14 +125,14 @@ _Generated 2026-11-01T03:29:14Z by research/lab/report.py after each run. **Expl
 - Signal short-week-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 2); on average +0.00 / +0.00 / +0.00 pts in 2006–09 / 2010–13 / 2014–16.
 - Signal travel-diff (spread) on top of a base model: no consistent effect (helped in all three on 0 of 4); on average -0.07 / -0.01 / -0.06 pts in 2006–09 / 2010–13 / 2014–16.
 
-## What the search learned (1,202,620 configurations, 2006–2016 only)
+## What the search learned (1,204,620 configurations, 2006–2016 only)
 
-- spread · elo · `bye_elo`: best 55 (median t +0.72), worst 0 (+0.38) over 1177169 configurations
-- spread · elo · `k`: best 20 (median t +0.85), worst 6 (-0.05) over 1177169 configurations
-- spread · elo · `market_blend`: best 0.75 (median t +0.75), worst 0.0 (+0.23) over 1177169 configurations
-- spread · elo · `market_resist`: best 2.252 (median t +0.78), worst 0.375 (-0.59) over 1177169 configurations
-- spread · elo · `mov`: best nfelo (median t +0.69), worst 538 (+0.19) over 1177169 configurations
-- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.10) over 1177169 configurations
+- spread · elo · `bye_elo`: best 55 (median t +0.72), worst 0 (+0.38) over 1179169 configurations
+- spread · elo · `k`: best 20 (median t +0.85), worst 6 (-0.05) over 1179169 configurations
+- spread · elo · `market_blend`: best 0.75 (median t +0.75), worst 0.0 (+0.23) over 1179169 configurations
+- spread · elo · `market_resist`: best 2.252 (median t +0.78), worst 0.375 (-0.59) over 1179169 configurations
+- spread · elo · `mov`: best nfelo (median t +0.69), worst 538 (+0.19) over 1179169 configurations
+- spread · elo · `revert`: best 0.0667 (median t +0.98), worst 0.7 (-0.10) over 1179169 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.7, 'hfa_pts': 3.5, 'margin_cap': None, 'prior_w': 4}, 'type': 'srs'} (median t +3.94), worst {'params': {'def_weight': 1.0, 'halflife': 8, 'metric': 'epa', 'pace': 'none', 'season_carry': 0.6}, 'type': 'team_rating'} (+0.75) over 2885 configurations
 - spread · signals · `signals`: best [{'field': 'off_bye_diff', 'id': 'bye-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Coming off a bye means extra rest and game-planning time.'}, {'field': 'qb_out', 'id': 'inj-qb-out', 'kind': 'injury', 'markets': ['spread'], 'reason': "Last game's starting quarterback is out (injury report Out/Doubtful, or inactive / on a reserve list that week): the quarterback matters more than any other player, and the DeVig injury study (research/injuries/) found a missing starter worth about 3.8 points in game results."}, {'carry': 0.5, 'den': 'plays', 'halflife': 4, 'id': 'off-success~h4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'succ': 1}, 'reason': 'Automatic variant of off-success (half-life 4, carry 0.5): Success rate is a steadier read of an offense than points or yards.', 'side': 'offense', 'variant_of': 'off-success'}] (median t +3.46), worst [{'field': 'short_week_diff', 'id': 'short-week-diff', 'kind': 'schedule', 'markets': ['spread'], 'reason': 'Short weeks (Thursday games) limit recovery and preparation.'}] (-inf) over 2885 configurations
 - spread · srs · `hfa_pts`: best 3.5 (median t +2.06), worst 0.5 (+1.76) over 8712 configurations
