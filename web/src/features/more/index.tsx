@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { BarChart3, ChevronRight, Cross, ExternalLink, History, Info, MessageCircle, Search } from 'lucide-react'
+import { BarChart3, ChevronRight, CircleUserRound, Cross, ExternalLink, History, Info, MessageCircle, Search } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -13,9 +13,10 @@ const PAGES = [
   { to: '/injuries', icon: Cross, title: 'Injuries', note: "Each league's report, game by game, starters first" },
   { to: '/models', icon: BarChart3, title: 'Models', note: "DeVig's models next to other people's, graded the same way" },
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
+  { to: '/profile', icon: CircleUserRound, title: 'Profile', note: 'Your name tag, favorite teams, and account' },
 ] as const
 
-const CLASSIC = ['Odds-screen photo scans', 'Profile: name and favorite teams']
+const CLASSIC = ['Odds-screen photo scans', 'Tracking games and props (★ Track)']
 
 export function More() {
   return (

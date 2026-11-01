@@ -48,9 +48,14 @@ const ALIAS: Record<string, Record<string, string>> = { CFB: { AFA: 'AF', BUFF: 
 const teamPath = (sport: string, code: string) =>
   `${sport.toLowerCase()}/team_${String(ALIAS[sport]?.[code] ?? code).toUpperCase().replace(/[^A-Z0-9]/g, '_')}.json`
 
+export const rsIndexQuery = (sport: string) =>
+  ({ queryKey: ['rs_index', sport], queryFn: () => get<RsIndex>(`${sport.toLowerCase()}/index.json`), staleTime: 6e5 })
 export function useRsIndex(sport: string) {
-  return useQuery({ queryKey: ['rs_index', sport], queryFn: () => get<RsIndex>(`${sport.toLowerCase()}/index.json`), staleTime: 6e5 })
+  return useQuery(rsIndexQuery(sport))
 }
+// a stats file's team code -> the code the games data uses (they differ for a few college teams)
+export const gameCode = (sport: string, code: string) =>
+  Object.entries(ALIAS[sport] ?? {}).find(([, v]) => v === code)?.[0] ?? code
 export function useRsTeam(sport: string, code: string) {
   return useQuery({ queryKey: ['rs_team', sport, code], queryFn: () => get<RsTeam>(teamPath(sport, code)), staleTime: 6e5, enabled: !!code })
 }

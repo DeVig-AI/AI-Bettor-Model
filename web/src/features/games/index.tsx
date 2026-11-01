@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { BookOpen, RefreshCw, Search as SearchIcon } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
+import { isFavorite, usePrefs } from '@/lib/profile'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -194,6 +195,7 @@ const LEVEL_NAME: Record<Level, string> = { new: 'New to this', sometimes: 'I be
 export function Games() {
   const { rows, updatedAt, isLoading, error, picksError, refetch, isFetching } = useGames()
   const { records } = useRecord()
+  const { prefs } = usePrefs()
   const { level, asked, setLevel } = useExperience()
   const [day, setDay] = useState<Day>('today')
   const [league, setLeague] = useState('ALL')
@@ -213,8 +215,10 @@ export function Games() {
     )
   }, [dayRows, league, picksOnly, query])
 
-  const picked = shown.filter(isPick)
-  const rest = shown.filter((r) => !isPick(r))
+  // favorite teams' games first within each group (stable: kickoff order otherwise)
+  const favFirst = (list: GameRow[]) => [...list].sort((a, b) => Number(isFavorite(prefs, b.sport, b.away, b.home)) - Number(isFavorite(prefs, a.sport, a.away, a.home)))
+  const picked = favFirst(shown.filter(isPick))
+  const rest = favFirst(shown.filter((r) => !isPick(r)))
   const live = rest.filter((r) => r.state === 'in')
   const upcoming = rest.filter((r) => r.state === 'pre')
   const final = rest.filter((r) => r.state === 'post').reverse()

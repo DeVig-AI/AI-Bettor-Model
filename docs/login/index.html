@@ -9,11 +9,11 @@
 </head>
 <body>
 <!-- Cloudflare Access guards only this page: reaching it means the email sign-in worked. Back to the app's profile,
-     or to ?next= when it names a page on this site (a plain path, never another site). -->
+     or to ?next= when it names a page on this site (a plain path, optionally with a #/page, never another site). -->
 <p>Signed in. <a href="/#profile">Back to DeVig</a></p>
 <script>
 var next = new URLSearchParams(location.search).get("next") || "";
-location.replace(/^\/[A-Za-z0-9_\/-]*$/.test(next) && !/^\/\//.test(next) ? next : "/#profile");
+location.replace(/^\/[A-Za-z0-9_\/-]*(#\/[A-Za-z0-9_\/-]*)?$/.test(next) && !/^\/\//.test(next) ? next : "/#profile");
 </script>
 </body>
 </html>
