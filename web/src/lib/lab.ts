@@ -8,7 +8,7 @@ export const LAB_SPORTS = ['NHL', 'CFB'] as const
 const STALE_MS = 12 * 3600e3 // an older file is not shown: its numbers would be old
 const NHL_TO_ESPN: Record<string, string> = { TBL: 'TB', NJD: 'NJ', LAK: 'LA', SJS: 'SJ' }
 
-export type Gate = { name: string; effect: number | null; ci: [number, number] | null; games: number; passed: boolean | null }
+export type Gate = { name: string; effect: number | null; ci: [number, number] | null; games: number | null; passed: boolean | null }
 export type LabCheck = {
   state: string; fail_reason?: string | null; gates?: Gate[]
   pooled?: { name: string; effect: number; ci: [number, number]; adj_p?: number } | null

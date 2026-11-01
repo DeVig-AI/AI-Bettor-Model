@@ -1,0 +1,1 @@
+import{n as e}from"./props-DEkV2oX-.js";var t=e;export{t as component};
