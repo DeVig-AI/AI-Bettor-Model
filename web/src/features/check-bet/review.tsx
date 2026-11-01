@@ -8,6 +8,7 @@ import {
 import { useSummary } from '@/lib/wrap'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
+import { PulseCard } from './pulse'
 import { LegBar } from '@/components/leg-bar'
 import { PlayerPhoto, TeamLogo } from '@/components/team-logo'
 import { useRosterPlayer } from '@/lib/headshots'
@@ -89,6 +90,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
 
   return (
     <div className='flex flex-col gap-3'>
+      <PulseCard d={d} savedAt={entry?.savedAt ?? null} />
       <GradeCard g={snap && anyStarted ? { ...g, letter: snap.letter, score: snap.score, summary: SUMMARY[snap.letter] } : g} snap={snap} started={anyStarted} />
       {weak.length > 0 && !decided && (
         <section aria-label='Weak spots' className='rounded-[18px] bg-card p-4'>
