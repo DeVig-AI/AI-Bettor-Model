@@ -1,4 +1,5 @@
-import { Minus, Plus } from 'lucide-react'
+import { ChevronRight, Minus, Plus } from 'lucide-react'
+import { Link, useMatchRoute } from '@tanstack/react-router'
 import { type GameRow, fmtAmerican, fmtPct, useRecord } from '@/lib/devig'
 import { useExperience } from '@/lib/experience'
 import { checkText, labFor, useLab } from '@/lib/lab'
@@ -11,7 +12,7 @@ import { LevelPicker, PassBody, PickBody } from './explain-sheet'
 import { isPick } from './plate'
 
 // What opens when someone taps a team's half of a plate (Games, a game's page, or a leg in the parlay): the team's
-// logo big, why DeVig gives it the chance it does, a switch to the other team, and the parlay button.
+// logo big, why DeVig gives it the chance it does, a switch to the other team, the parlay button, and a link to the game's page.
 export type Side = 'away' | 'home'
 
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
@@ -44,7 +45,11 @@ export function TeamSheet({
   const { records } = useRecord()
   const lab = useLab().data
   const { toggle, has } = useSlip()
+  const matchRoute = useMatchRoute()
   if (!row) return null
+  // the game's own page (live field, plays that moved the price, injuries); no link when the sheet is already on it
+  const onGamePage = !!matchRoute({ to: '/game/$id', params: { id: row.id } })
+  const football = row.sport === 'NFL' || row.sport === 'CFB'
 
   const code = side === 'home' ? row.home : row.away
   const name = side === 'home' ? row.homeName : row.awayName
@@ -135,6 +140,23 @@ export function TeamSheet({
               {on ? <Minus className='size-4.5' aria-hidden='true' /> : <Plus className='size-4.5' aria-hidden='true' />}
               {on ? `Remove ${code} from parlay` : `Add ${code} to parlay ${fmtAmerican(leg.odds)}`}
             </button>
+          )}
+
+          {!onGamePage && (
+            <Link
+              to='/game/$id'
+              params={{ id: row.id }}
+              onClick={() => onOpenChange(false)}
+              className='flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-muted px-4 py-2.5 hover:bg-muted/70'
+            >
+              <span className='min-w-0'>
+                <span className='block text-[15px] font-semibold'>{row.away} at {row.home} game page</span>
+                <span className='block text-sm text-muted-foreground'>
+                  {football && row.state !== 'pre' ? 'The drive play by play and the plays that moved the price' : 'Score, prices and injuries'}
+                </span>
+              </span>
+              <ChevronRight className='size-5 shrink-0 text-muted-foreground' aria-hidden='true' />
+            </Link>
           )}
         </div>
       </SheetContent>
