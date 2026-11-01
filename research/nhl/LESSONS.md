@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NHL (EXPLORATORY)
 
-_Generated 2026-11-01T01:53:24Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-11-01T02:28:43Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2014–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -30,15 +30,15 @@ _Generated 2026-11-01T01:53:24Z by research/lab/report.py after each run. **Expl
 - Signal off-shots (moneyline) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average -0.21 / -0.33 / -1.20 pts in 2014 / 2015 / 2016.
 - Signal off-shots (total) on top of a base model: no consistent effect (helped in all three on 0 of 1); on average +0.00 / +0.00 / +0.00 pts in 2014 / 2015 / 2016.
 
-## What the search learned (126,607 configurations, 2014–2016 only)
+## What the search learned (126,907 configurations, 2014–2016 only)
 
-- moneyline · elo_ml · `hfa_elo`: best 20 (median t -inf), worst 20 (-inf) over 120496 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 120496 configurations
-- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 120496 configurations
-- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 120496 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 120496 configurations
-- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 120496 configurations
-- moneyline · elo_ml · `revert`: best 0.25 (median t -inf), worst 0.25 (-inf) over 120496 configurations
+- moneyline · elo_ml · `hfa_elo`: best 20 (median t -inf), worst 20 (-inf) over 120796 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 120796 configurations
+- moneyline · elo_ml · `k`: best 4 (median t -inf), worst 4 (-inf) over 120796 configurations
+- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 120796 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 120796 configurations
+- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 120796 configurations
+- moneyline · elo_ml · `revert`: best 0.25 (median t -inf), worst 0.25 (-inf) over 120796 configurations
 - moneyline · rating_ml · `halflife`: best 55 (median t +0.96), worst 10 (-0.67) over 624 configurations
 - moneyline · rating_ml · `season_carry`: best 0.7 (median t +0.99), worst 0.2 (+0.07) over 624 configurations
 - moneyline · signals · `signals`: best [{'carry': 0.5, 'den': 'pp_shots', 'halflife': 30, 'id': 'off-pp', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'pp_goals': 1}, 'reason': 'Power-play goals per power-play shot, how dangerous a team is with the extra skater.', 'side': 'offense'}, {'carry': 0.3, 'den': 'shots', 'halflife': 30, 'id': 'off-shooting', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'points': 1}, 'reason': 'Goals per shot; mostly luck over short spells, so a team scoring on many of its shots is likely to cool off.', 'side': 'offense'}] (median t +2.49), worst [{'carry': 0.85, 'field': 'save_pct', 'halflife': 120, 'id': 'goalie-sv-long', 'kind': 'goalie', 'markets': ['moneyline', 'total'], 'prior_shots': 1500, 'reason': 'The same starting-goalie read over a much longer memory and a stronger pull to average, since save percentage over a few weeks is mostly luck.'}, {'carry': 0.5, 'halflife': 20, 'id': 'off-es-shots', 'kind': 'team', 'markets': ['moneyline', 'total'], 'num': {'es_shots': 1}, 'reason': 'Even-strength shots per game, play control without the noise of penalties and power plays.', 'side': 'offense'}] (-1.48) over 40 configurations
