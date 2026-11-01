@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { BookOpen, RefreshCw, Search as SearchIcon } from 'lucide-react'
+import { BookOpen, RefreshCw, Search as SearchIcon, Star } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
 import { type GameRow, fmtAmerican, fmtPct, useGames, useRecord } from '@/lib/devig'
 import { isFavorite, usePrefs } from '@/lib/profile'
+import { useTracked } from '@/lib/track'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -196,6 +197,9 @@ export function Games() {
   const { rows, updatedAt, isLoading, error, picksError, refetch, isFetching } = useGames()
   const { records } = useRecord()
   const { prefs } = usePrefs()
+  const { tracked } = useTracked()
+  const [mineOnly, setMineOnly] = useState(false)
+  const mine = (r: GameRow) => !!tracked.g[r.trackKey] || isFavorite(prefs, r.sport, r.away, r.home)
   const { level, asked, setLevel } = useExperience()
   const [day, setDay] = useState<Day>('today')
   const [league, setLeague] = useState('ALL')
@@ -211,12 +215,14 @@ export function Games() {
       (r) =>
         (league === 'ALL' || r.sport === league) &&
         (!picksOnly || isPick(r)) &&
+        (!mineOnly || mine(r)) &&
         (!q || `${r.away} ${r.home} ${r.awayName} ${r.homeName}`.toLowerCase().includes(q))
     )
-  }, [dayRows, league, picksOnly, query])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayRows, league, picksOnly, mineOnly, query, tracked, prefs])
 
-  // favorite teams' games first within each group (stable: kickoff order otherwise)
-  const favFirst = (list: GameRow[]) => [...list].sort((a, b) => Number(isFavorite(prefs, b.sport, b.away, b.home)) - Number(isFavorite(prefs, a.sport, a.away, a.home)))
+  // tracked games and favorite teams' games first within each group (stable: kickoff order otherwise)
+  const favFirst = (list: GameRow[]) => [...list].sort((a, b) => Number(mine(b)) - Number(mine(a)))
   const picked = favFirst(shown.filter(isPick))
   const rest = favFirst(shown.filter((r) => !isPick(r)))
   const live = rest.filter((r) => r.state === 'in')
@@ -225,7 +231,7 @@ export function Games() {
   const picks = dayRows.filter(isPick).length
   const liveCount = dayRows.filter((r) => r.state === 'in').length
   const showDay = day !== 'today'
-  const filtered = league !== 'ALL' || picksOnly || query.trim() !== ''
+  const filtered = league !== 'ALL' || picksOnly || mineOnly || query.trim() !== ''
   const whyRow = why ? (rows.find((r) => r.id === why.id) ?? why) : null // keep the sheet on live data
 
   return (
@@ -297,6 +303,17 @@ export function Games() {
             >
               DeVig picks
             </button>
+            <button
+              type='button'
+              aria-pressed={mineOnly}
+              onClick={() => setMineOnly((v) => !v)}
+              className={cn(
+                'flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm font-semibold transition-colors duration-150',
+                mineOnly ? 'border-foreground bg-foreground text-background' : 'text-muted-foreground'
+              )}
+            >
+              <Star className={cn('size-3.5', mineOnly && 'fill-current')} aria-hidden='true' /> Mine
+            </button>
           </div>
           <div className='flex gap-2 lg:ms-auto'>
             <div role='radiogroup' aria-label='Day' className='flex h-10 shrink-0 rounded-xl border bg-sidebar p-1'>
@@ -339,11 +356,11 @@ export function Games() {
               {filtered ? 'No games match these filters' : `No games ${day === 'today' ? 'today' : day === 'tomorrow' ? 'tomorrow' : 'in the next 7 days'}`}
             </p>
             <p className='mt-1 text-sm text-muted-foreground'>
-              {filtered ? 'Clear the filters to see every game.' : 'Try another day; schedules fill in as leagues post them.'}
+              {mineOnly ? 'Open a game and tap Track, or add favorite teams in Profile.' : filtered ? 'Clear the filters to see every game.' : 'Try another day; schedules fill in as leagues post them.'}
             </p>
             <div className='mt-4 flex justify-center gap-2'>
               {filtered ? (
-                <Button variant='outline' onClick={() => { setLeague('ALL'); setPicksOnly(false); setQuery('') }}>Clear filters</Button>
+                <Button variant='outline' onClick={() => { setLeague('ALL'); setPicksOnly(false); setMineOnly(false); setQuery('') }}>Clear filters</Button>
               ) : (
                 day !== 'week' && <Button variant='outline' onClick={() => setDay('week')}>Show the next 7 days</Button>
               )}

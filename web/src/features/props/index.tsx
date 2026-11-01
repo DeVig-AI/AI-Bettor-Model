@@ -1,3 +1,5 @@
+import { TrackButton } from '@/components/track-button'
+import { propSides } from '@/lib/track'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { fmtAmerican, fmtPct, useGames } from '@/lib/devig'
@@ -50,8 +52,12 @@ export function PropRow({ l }: { l: Shown }) {
   const hi = m == null ? null : Math.max(m, l.mid)
   return (
     <li className='flex flex-col gap-2 border-b px-4 py-3 last:border-b-0'>
-      <div className='flex items-baseline justify-between gap-3'>
-        <PlayerName l={l} />
+      <div className='flex items-center justify-between gap-3'>
+        <span className='flex min-w-0 items-center gap-2'>
+          <TrackButton kind='p' compact label={`${l.player} ${overTxt(l.stat, l.line)}`}
+            keys={m != null && m < l.mid ? propSides(l).reverse() : propSides(l)} />
+          <PlayerName l={l} />
+        </span>
         <span className='shrink-0 text-sm text-muted-foreground'>{overTxt(l.stat, l.line)}</span>
       </div>
       <div className='flex justify-between text-sm font-semibold tabular-nums'>
