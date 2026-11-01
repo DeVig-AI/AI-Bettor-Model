@@ -12,6 +12,15 @@ export type Pace = {
   max: number // the bar's right edge
 }
 
+// seconds left in the period: ESPN's summary has only displayClock ("9:31"); the scoreboard also has clock (571)
+export function clockSecs(status: { clock?: unknown; displayClock?: unknown } | null | undefined): number | null {
+  if (typeof status?.clock === 'number') return status.clock
+  const m = /^(\d+):(\d{2})(?:\.\d+)?$/.exec(String(status?.displayClock ?? status?.clock ?? '').trim())
+  if (m) return +m[1] * 60 + +m[2]
+  const s = parseFloat(String(status?.displayClock ?? '')) // under a minute: "38.2"
+  return Number.isFinite(s) ? s : null
+}
+
 export const PACE_WORD: Record<PaceStatus, string> = { hit: 'Hit', missed: 'Missed', ahead: 'Ahead', behind: 'Behind', on: 'On pace', early: 'Early' }
 
 // the average of up to `n` games (null under 3), each game's value the sum of the given log columns

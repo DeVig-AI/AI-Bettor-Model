@@ -1,1 +1,0 @@
-import{n as e}from"./props-DBKT9tu4.js";var t=e;export{t as component};

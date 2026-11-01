@@ -2,7 +2,7 @@
 // node --test tests/app/pace.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pace, usualOf } from "../../web/src/lib/pace-math.ts";
+import { clockSecs, pace, usualOf } from "../../web/src/lib/pace-math.ts";
 
 test("usual: the last 15 games before tonight, summed columns, needs 3 games", () => {
   const at = { date: 0, rush_yds: 1, rec_yds: 2 };
@@ -25,4 +25,11 @@ test("pace: hit, missed, ahead, behind, on pace, early; a No leg flips", () => {
   assert.equal(pace(0, 1, "yes", 0.6, 0.5).status, "on"); // a one-touchdown prop at the half isn't "behind"
   assert.equal(pace(10, 225, "yes", 240, 0.1).status, "early");
   assert.equal(pace(10, 225, "yes", null, 0.5).usual, null);
+});
+
+test("clock: ESPN's summary only has displayClock (9:31 left is 571 seconds, not 931 or none)", () => {
+  assert.equal(clockSecs({ displayClock: "9:31" }), 571);
+  assert.equal(clockSecs({ clock: 571, displayClock: "9:31" }), 571);
+  assert.equal(clockSecs({ displayClock: "38.2" }), 38.2);
+  assert.equal(clockSecs({}), null);
 });
