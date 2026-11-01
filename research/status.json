@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-01T03:54:48Z",
+ "updated_at": "2026-11-01T04:04:49Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3284,7 +3284,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-01T03:54:17Z",
+   "updated_at": "2026-11-01T04:04:18Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -3314,7 +3314,63 @@
     "exam_budget_left": 3,
     "exam_budget_total": 3
    },
-   "candidates": [],
+   "candidates": [
+    {
+     "id": "s-a543cfcd",
+     "name": "Blend of 2: s-308a9755 + s-02c519e2",
+     "market": "spread",
+     "family": "Blend · search, sent by the owner",
+     "reason": "The owner's pick (2026-11-01): the CFB search's best spread model by t after 218k configurations (round 367: +0.74 pts a game on 2018, 2019, 2021, t = 1.94; search periods +0.72 / +1.29 / +0.19). It did not make the automatic shortlist (t below 2.5); sent by hand (A3.1) so the app's CFB model is checked on 2022–2024, which the search never saw, before it is shown.",
+     "state": "queued",
+     "fail_reason": "",
+     "gate_now": null,
+     "started_at": null,
+     "eta_at": null,
+     "gates": [
+      {
+       "name": "2022",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2023",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2024",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      }
+     ],
+     "pooled": null,
+     "attempts": 0,
+     "p_bar": 0.05,
+     "fade_ratio": null,
+     "fade_needed": 0.5,
+     "kalshi": null,
+     "rule_split": [],
+     "exam": {
+      "state": "not_taken",
+      "effect": null,
+      "ci": null,
+      "taken_at": null,
+      "note": ""
+     },
+     "verdict": "Registered; runs in the next nightly lab run.",
+     "graded_at": null,
+     "run_number": null,
+     "run_url": null,
+     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/cfb/candidates/s-a543cfcd.yaml",
+     "updated_at": null
+    }
+   ],
    "lessons": [
     {
      "text": "Signal def-finishing~c0.2 (spread) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 6); on average +0.03 / -0.03 / -0.03 pts in 2018 / 2019 / 2021.",
@@ -4863,11 +4919,11 @@
      "duration_s": null,
      "run_number": 2830,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41269093886",
-     "summary": "358 of 800 models scored on 2018–2021",
+     "summary": "792 of 800 models scored on 2018–2021",
      "funnel": [
       {
        "label": "models scored",
-       "count": 358
+       "count": 792
       },
       {
        "label": "planned this round",
@@ -5140,7 +5196,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-01T03:58:10Z",
+   "updated_at": "2026-11-01T04:08:13Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5833,7 +5889,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-01T03:58:22Z",
+   "updated_at": "2026-11-01T04:08:25Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5863,7 +5919,63 @@
     "exam_budget_left": 3,
     "exam_budget_total": 3
    },
-   "candidates": [],
+   "candidates": [
+    {
+     "id": "s-b7ed7469",
+     "name": "Blend of 3: s-82cfaa9d + s-8592ab8e + s-fafdfaae",
+     "market": "moneyline",
+     "family": "Blend · search, sent by the owner",
+     "reason": "The owner's pick (2026-11-01): the NHL search's best moneyline model by t after 127k configurations (round 152: +0.47 win-chance pts a game on 2014–2016, t = 2.54; search periods -0.02 / +0.33 / +1.10). It did not make the automatic shortlist (one search period below zero); sent by hand (A3.1) so the app's NHL model is checked on 2017–2019, which the search never saw, before it is shown.",
+     "state": "queued",
+     "fail_reason": "",
+     "gate_now": null,
+     "started_at": null,
+     "eta_at": null,
+     "gates": [
+      {
+       "name": "2017",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2018",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      },
+      {
+       "name": "2019",
+       "effect": null,
+       "ci": null,
+       "games": null,
+       "passed": null
+      }
+     ],
+     "pooled": null,
+     "attempts": 0,
+     "p_bar": 0.05,
+     "fade_ratio": null,
+     "fade_needed": 0.5,
+     "kalshi": null,
+     "rule_split": [],
+     "exam": {
+      "state": "not_taken",
+      "effect": null,
+      "ci": null,
+      "taken_at": null,
+      "note": ""
+     },
+     "verdict": "Registered; runs in the next nightly lab run.",
+     "graded_at": null,
+     "run_number": null,
+     "run_url": null,
+     "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/nhl/candidates/s-b7ed7469.yaml",
+     "updated_at": null
+    }
+   ],
    "lessons": [
     {
      "text": "Signal off-pp (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.00 / +0.01 / +0.00 pts in 2014 / 2015 / 2016.",
@@ -6289,7 +6401,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-01T03:58:33Z",
+   "updated_at": "2026-11-01T04:08:36Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
