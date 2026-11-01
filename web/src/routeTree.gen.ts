@@ -18,6 +18,7 @@ import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
 import { Route as AuthenticatedAskRouteImport } from './routes/_authenticated/ask'
+import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedInjuriesRouteImport } from './routes/_authenticated/injuries'
 import { Route as AuthenticatedModelsRouteImport } from './routes/_authenticated/models'
 import { Route as AuthenticatedMoreRouteImport } from './routes/_authenticated/more'
@@ -71,6 +72,11 @@ const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
 const AuthenticatedAskRoute = AuthenticatedAskRouteImport.update({
   id: '/ask',
   path: '/ask',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedInjuriesRoute = AuthenticatedInjuriesRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
   '/ask': typeof AuthenticatedAskRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/about': typeof AuthenticatedAboutRoute
   '/ask': typeof AuthenticatedAskRoute
+  '/history': typeof AuthenticatedHistoryRoute
   '/injuries': typeof AuthenticatedInjuriesRoute
   '/models': typeof AuthenticatedModelsRoute
   '/more': typeof AuthenticatedMoreRoute
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/about': typeof AuthenticatedAboutRoute
   '/_authenticated/ask': typeof AuthenticatedAskRoute
+  '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/injuries': typeof AuthenticatedInjuriesRoute
   '/_authenticated/models': typeof AuthenticatedModelsRoute
   '/_authenticated/more': typeof AuthenticatedMoreRoute
@@ -201,6 +210,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/about'
     | '/ask'
+    | '/history'
     | '/injuries'
     | '/models'
     | '/more'
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/about'
     | '/ask'
+    | '/history'
     | '/injuries'
     | '/models'
     | '/more'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/about'
     | '/_authenticated/ask'
+    | '/_authenticated/history'
     | '/_authenticated/injuries'
     | '/_authenticated/models'
     | '/_authenticated/more'
@@ -328,6 +340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAskRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/history': {
+      id: '/_authenticated/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/injuries': {
       id: '/_authenticated/injuries'
       path: '/injuries'
@@ -404,6 +423,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
   AuthenticatedAskRoute: typeof AuthenticatedAskRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedInjuriesRoute: typeof AuthenticatedInjuriesRoute
   AuthenticatedModelsRoute: typeof AuthenticatedModelsRoute
   AuthenticatedMoreRoute: typeof AuthenticatedMoreRoute
@@ -420,6 +440,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
   AuthenticatedAskRoute: AuthenticatedAskRoute,
+  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedInjuriesRoute: AuthenticatedInjuriesRoute,
   AuthenticatedModelsRoute: AuthenticatedModelsRoute,
   AuthenticatedMoreRoute: AuthenticatedMoreRoute,

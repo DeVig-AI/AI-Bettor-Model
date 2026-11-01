@@ -1,0 +1,1 @@
+import{a as e}from"./index-Pk5aUNuu.js";var t=e;export{t as component};
