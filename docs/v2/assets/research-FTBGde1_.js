@@ -1,1 +1,0 @@
-import{t as e}from"./research-ygF_N-qn.js";var t=e;export{t as component};

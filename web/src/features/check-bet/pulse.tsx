@@ -12,8 +12,8 @@ const W = 326, H = 150, PAD_T = 22, PAD_B = 22, PAD_R = 34
 const hourFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric' })
 const dayHourFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric' })
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
-const pct = (p: number) => (p > 0 && p < 0.01 ? '<1%' : `${Math.round(p * 100)}%`)
-const TOPS = [0.05, 0.1, 0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 1]
+const pct = (p: number) => (p > 0 && p < 0.1 ? `${(p * 100).toFixed(p < 0.001 ? 2 : 1).replace(/\.0+$/, '')}%` : `${Math.round(p * 100)}%`)
+const TOPS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.4, 0.5, 0.6, 0.8, 1]
 
 export function PulseCard({ d, savedAt }: { d: Combo; savedAt: string | null }) {
   const live = d.combo.result == null && d.lost === 0 && d.won < d.legs.length
