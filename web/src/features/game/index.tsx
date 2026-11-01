@@ -10,7 +10,7 @@ import { RS_SPORTS } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExplainSheet } from '../games/explain-sheet'
-import { Plate, isPick } from '../games/plate'
+import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
 
@@ -32,7 +32,7 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: () => void }) {
   if (!isPick(row) || p.prob == null) {
     return (
       <section className='rounded-2xl bg-card p-4'>
-        <p className='font-display text-xl font-extrabold'>DeVig: pass</p>
+        <p className='font-display text-xl font-extrabold'>No pick</p>
         <p className='mt-1 text-sm text-muted-foreground'>DeVig&apos;s model isn&apos;t far enough from the market here to pick a side.</p>
       </section>
     )
@@ -41,7 +41,11 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: () => void }) {
   return (
     <section className='rounded-2xl bg-accent p-4'>
       <div className='flex items-center justify-between gap-3'>
-        <span className='font-display text-2xl font-extrabold text-devig'>DeVig{pre ? '' : ' pregame'}: {p.side} {fmtPct(p.prob)}</span>
+        <span className='flex flex-col'>
+          <span className='text-xs font-bold tracking-wide text-devig uppercase'>DeVig&apos;s pick{pre ? '' : ' (made before the game)'}</span>
+          <span className='font-display text-2xl font-extrabold text-devig'>{pickName(row)} to win</span>
+          <span className='text-sm font-semibold text-accent-foreground'>DeVig gives them {fmtPct(p.prob)}</span>
+        </span>
         <button type='button' onClick={onWhy} className='h-9 shrink-0 rounded-full bg-devig px-4 text-sm font-bold text-devig-ink'>Why?</button>
       </div>
       {row.edge != null && pre && (
