@@ -83,21 +83,30 @@ export function spotText(spot: number, away: string, home: string) {
 
 // a play's text cut to its gist: "B.Purdy pass short right to C.McCaffrey to SF 35 for 9 yards." -> "Purdy pass to McCaffrey, 9 yds"
 export function playLabel(p: FieldPlay): string {
-  const t = p.text.replace(/^\([^)]*\)\s*/, '').replace(/\s+/g, ' ')
+  const base = baseLabel(p)
+  // a fumble the other team recovered: the play's own words, then what it cost
+  return /fumble/i.test(p.type) && /opponent/i.test(p.type) ? `${base.replace(/, -?−?\d+ yds?$/, '')}, fumble lost` : base
+}
+
+function baseLabel(p: FieldPlay): string {
+  const t = p.text.trim().replace(/^\([^)]*\)\s*/, '').replace(/\s+/g, ' ')
   const nm = (s: string) => s.replace(/^[A-Z][a-z]?\.\s?/, '')
   const yds = p.yards != null && p.yards !== 0 ? `, ${p.yards > 0 ? '' : '−'}${Math.abs(p.yards)} yd${Math.abs(p.yards) === 1 ? '' : 's'}` : ''
   const N = String.raw`((?:[A-Z][a-z]?\.)?\s?[A-Za-z'-]+)` // "K.Coleman", "Coleman"
   const re = (src: string) => new RegExp(src.replace(/NAME/g, N), 'i')
   let m: RegExpMatchArray | null
+  // a penalty that wiped out the play ("No Play", or a nullified score): the penalty is what happened
+  if ((/^penalty$/i.test(p.type) || /no play|nullified/i.test(t)) && (m = t.match(/PENALTY on ([A-Z]{2,4})-\S+?,\s*([^,]+?),/i)))
+    return `Penalty on ${m[1].toUpperCase()}: ${m[2].toLowerCase()}`
   if (/touchdown/i.test(t) && (m = t.match(re(String.raw`^(\S+)\s(?:.*? to NAME)?.*touchdown`))))
-    return m[2] && /pass/i.test(t) ? `${nm(m[1])} to ${nm(m[2])}, touchdown` : `${nm(m[1])} touchdown`
+    return m[2] && /pass/i.test(t) ? `${nm(m[1])} to ${nm(m[2])}, touchdown` : `${nm(m[1])} touchdown${yds}`
   if ((m = t.match(/^(\S+) pass incomplete/i))) return `${nm(m[1])} incomplete`
   if ((m = t.match(re(String.raw`^(\S+) pass .*?intercepted by NAME`)))) return `${nm(m[1])} intercepted by ${nm(m[2])}`
   if ((m = t.match(re(String.raw`^(\S+) pass .*? to NAME`)))) return `${nm(m[1])} to ${nm(m[2])}${yds}`
   if ((m = t.match(/^(\S+) sacked/i))) return `${nm(m[1])} sacked${yds}`
   if ((m = t.match(/^(\S+) (?:\d+ yard )?field goal is (good|no good)/i))) return `${nm(m[1])} field goal ${m[2].toLowerCase() === 'good' ? 'is good' : 'missed'}`
   if ((m = t.match(/^(\S+) punts (\d+) yards?/i))) return `${nm(m[1])} punts ${m[2]} yds`
-  if (/penalty/i.test(t) && (m = t.match(/PENALTY on (\S+?),? ([^,]+?),/i))) return `Penalty on ${m[1]}: ${m[2].toLowerCase()}`
+  if ((m = t.match(/PENALTY on ([A-Z]{2,4})-\S+?,\s*([^,]+?),/i))) return `Penalty on ${m[1].toUpperCase()}: ${m[2].toLowerCase()}`
   if ((m = t.match(/^(\S+) (?:up the middle|left|right|.*?)\s?(?:to|for)\b/i)) && /rush|run|left|right|middle|guard|tackle|end/i.test(p.type + ' ' + t))
     return `${nm(m[1])} run${yds}`
   return t.length > 44 ? t.slice(0, 42).trimEnd() + '…' : t.replace(/\.$/, '')
@@ -106,7 +115,7 @@ export function playLabel(p: FieldPlay): string {
 export type PlayKind = 'gain' | 'loss' | 'incomplete' | 'turnover' | 'score' | 'kick'
 export function kindOf(p: FieldPlay): PlayKind {
   const t = `${p.type} ${p.text}`
-  if (/intercept|fumble.*recovered by|turnover|lost/i.test(p.type) || /intercepted/i.test(p.text)) return 'turnover'
+  if (/intercept|turnover|lost|recovery \(opponent\)/i.test(p.type) || /intercepted/i.test(p.text)) return 'turnover'
   if (p.scoring || /touchdown|field goal good/i.test(p.type)) return 'score'
   if (/punt|field goal|kick/i.test(p.type)) return 'kick'
   if (/incomplet/i.test(t)) return 'incomplete'

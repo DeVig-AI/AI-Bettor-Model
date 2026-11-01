@@ -72,6 +72,11 @@ test("play labels and spots read like a person would say them", () => {
   assert.equal(playLabel(p("J.Allen sacked at BUF 39 for -3 yards (O.Oweh).", "Sack", -3)), "Allen sacked, −3 yds");
   assert.equal(playLabel(p("J.Cook up the middle to BUF 30 for 5 yards (R.Smith).", "Rush", 5)), "Cook run, 5 yds");
   assert.equal(playLabel(p("T.Bass 52 yard field goal is GOOD, Center-R.Ferguson.", "Field Goal Good")), "Bass field goal is good");
+  assert.equal(playLabel(p(" R.Davis left tackle to BLT 44 for 5 yards (J.Jenkins).", "Rush", 5)), "Davis run, 5 yds");
+  assert.equal(playLabel(p("J.Cook up the middle to BLT 35 for 9 yards (M.Starks). PENALTY on BUF-J.Hawes, Offensive Holding, 10 yards, enforced at BLT 44 - No Play.", "Penalty", -10)),
+    "Penalty on BUF: offensive holding");
+  const fum = {...p("(Shotgun) J.Allen pass short middle to D.Moore to BLT 20 for 19 yards (M.Starks). FUMBLES, recovered by BLT.", "Fumble Recovery (Opponent)"), yards: 0};
+  assert.equal(playLabel(fum), "Allen to Moore, fumble lost"); assert.equal(kindOf(fum), "turnover");
   assert.equal(spotText(38, "BAL", "BUF"), "BAL 38"); assert.equal(spotText(75, "BAL", "BUF"), "BUF 25"); assert.equal(spotText(50, "BAL", "BUF"), "midfield");
 });
 
