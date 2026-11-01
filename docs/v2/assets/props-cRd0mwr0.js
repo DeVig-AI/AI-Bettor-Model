@@ -1,0 +1,1 @@
+import{n as e}from"./props-DnSBHT2H.js";var t=e;export{t as component};
