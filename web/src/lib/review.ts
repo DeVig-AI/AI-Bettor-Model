@@ -11,36 +11,36 @@ import { type Raw, boxPlayers, first, num, sideMap } from './wrap'
 // happened (ESPN's box score), how the price moved, and what to take from it. Display only: no model reads this.
 
 export type LegKind = 'game' | 'spread' | 'total' | 'prop' | 'other'
-type Stat = { label: string; get: (s: Record<string, string>) => number | null }
+type Stat = { label: string; get: (s: Record<string, string>) => number | null; log: string[] } // log: the stats file's game-log columns, summed
 
 // Kalshi series -> league. Longest prefixes first (KXNCAAF before anything shorter; KXWNBA isn't KXNBA).
 const LEAGUES: [string, string][] = [['KXNCAAF', 'CFB'], ['KXWNBA', 'WNBA'], ['KXNFL', 'NFL'], ['KXNBA', 'NBA'], ['KXNHL', 'NHL'], ['KXMLB', 'MLB']]
 const add = (...v: (number | null)[]) => (v.every((x) => x == null) ? null : v.reduce<number>((a, b) => a + (b ?? 0), 0))
 const STATS: Record<string, Record<string, Stat>> = {
   football: {
-    PASSYDS: { label: 'passing yards', get: (s) => num(s['passing.passingYards']) },
-    PASSTDS: { label: 'passing touchdowns', get: (s) => num(s['passing.passingTouchdowns']) },
-    PASSCOMP: { label: 'completions', get: (s) => first(s['passing.completions/passingAttempts']) },
-    PASSINT: { label: 'interceptions thrown', get: (s) => num(s['passing.interceptions']) },
-    RSHYDS: { label: 'rushing yards', get: (s) => num(s['rushing.rushingYards']) },
-    RSHATT: { label: 'carries', get: (s) => num(s['rushing.rushingAttempts']) },
-    RECYDS: { label: 'receiving yards', get: (s) => num(s['receiving.receivingYards']) },
-    REC: { label: 'catches', get: (s) => num(s['receiving.receptions']) },
-    TD: { label: 'touchdowns', get: (s) => add(num(s['rushing.rushingTouchdowns']), num(s['receiving.receivingTouchdowns'])) ?? 0 },
+    PASSYDS: { label: 'passing yards', get: (s) => num(s['passing.passingYards']), log: ['pass_yds'] },
+    PASSTDS: { label: 'passing touchdowns', get: (s) => num(s['passing.passingTouchdowns']), log: ['pass_td'] },
+    PASSCOMP: { label: 'completions', get: (s) => first(s['passing.completions/passingAttempts']), log: ['cmp'] },
+    PASSINT: { label: 'interceptions thrown', get: (s) => num(s['passing.interceptions']), log: ['int'] },
+    RSHYDS: { label: 'rushing yards', get: (s) => num(s['rushing.rushingYards']), log: ['rush_yds'] },
+    RSHATT: { label: 'carries', get: (s) => num(s['rushing.rushingAttempts']), log: ['car'] },
+    RECYDS: { label: 'receiving yards', get: (s) => num(s['receiving.receivingYards']), log: ['rec_yds'] },
+    REC: { label: 'catches', get: (s) => num(s['receiving.receptions']), log: ['rec'] },
+    TD: { label: 'touchdowns', get: (s) => add(num(s['rushing.rushingTouchdowns']), num(s['receiving.receivingTouchdowns'])) ?? 0, log: ['rush_td', 'rec_td'] },
   },
   basketball: {
-    PTS: { label: 'points', get: (s) => num(s.points) },
-    REB: { label: 'rebounds', get: (s) => num(s.rebounds) },
-    AST: { label: 'assists', get: (s) => num(s.assists) },
-    '3PT': { label: 'threes', get: (s) => first(s['threePointFieldGoalsMade-threePointFieldGoalsAttempted']) },
-    STL: { label: 'steals', get: (s) => num(s.steals) },
-    BLK: { label: 'blocks', get: (s) => num(s.blocks) },
+    PTS: { label: 'points', get: (s) => num(s.points), log: ['pts'] },
+    REB: { label: 'rebounds', get: (s) => num(s.rebounds), log: ['reb'] },
+    AST: { label: 'assists', get: (s) => num(s.assists), log: ['ast'] },
+    '3PT': { label: 'threes', get: (s) => first(s['threePointFieldGoalsMade-threePointFieldGoalsAttempted']), log: ['fg3m'] },
+    STL: { label: 'steals', get: (s) => num(s.steals), log: ['stl'] },
+    BLK: { label: 'blocks', get: (s) => num(s.blocks), log: ['blk'] },
   },
   hockey: {
-    GOAL: { label: 'goals', get: (s) => num(s.goals) },
-    AST: { label: 'assists', get: (s) => num(s.assists) },
-    PTS: { label: 'points', get: (s) => add(num(s.goals), num(s.assists)) },
-    SOG: { label: 'shots on goal', get: (s) => num(s.shotsTotal) },
+    GOAL: { label: 'goals', get: (s) => num(s.goals), log: ['g'] },
+    AST: { label: 'assists', get: (s) => num(s.assists), log: ['a'] },
+    PTS: { label: 'points', get: (s) => add(num(s.goals), num(s.assists)), log: ['p'] },
+    SOG: { label: 'shots on goal', get: (s) => num(s.shotsTotal), log: ['sog'] },
   },
 }
 const FAMILY: Record<string, string> = { NFL: 'football', CFB: 'football', NBA: 'basketball', WNBA: 'basketball', NHL: 'hockey' }
