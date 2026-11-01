@@ -51,7 +51,7 @@ export function Plate({
     (row.fairHome != null
       ? ` Fair chance: ${row.away} ${fmtPct(split)}, ${row.home} ${fmtPct(row.fairHome)}.`
       : ' No Kalshi price yet.') +
-    (notch != null && p?.prob != null ? ` DeVig: ${p.side} ${fmtPct(p.prob)}.` : '')
+    (notch != null && p?.prob != null ? ` DeVig's pick: ${p.side} to win, ${fmtPct(p.prob)}.` : '')
 
   return (
     <div
@@ -173,4 +173,10 @@ function Side({
 // The line under a plate: DeVig's read (or a pass), Kalshi's prices, and the Why? button when there's a pick
 export function priceLine(row: GameRow) {
   return `${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`
+}
+
+// the picked team's full name ("Boston Celtics"), for saying the pick in words
+export function pickName(row: GameRow) {
+  const s = row.pick?.side
+  return s == null ? '' : s === row.home ? row.homeName : s === row.away ? row.awayName : s
 }

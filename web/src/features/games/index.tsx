@@ -66,18 +66,20 @@ function GameItem({ row, showDay, onWhy }: { row: GameRow; showDay: boolean; onW
       </div>
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-sm'>
         {picked && p?.prob != null ? (
-          <span className='flex items-center gap-2 font-semibold text-devig'>
-            DeVig{row.state === 'pre' ? '' : ' pregame'}: {p.side} {fmtPct(p.prob)}
-            {row.edge != null && row.state === 'pre' && (
-              <span className='font-condensed tabular-nums'>
-                {Math.abs(row.edge * 100).toFixed(1)} {row.edge >= 0 ? 'above' : 'below'} Kalshi
-              </span>
-            )}
+          <span className='flex flex-wrap items-center gap-x-2 font-semibold text-devig'>
+            <span className='rounded-full bg-devig px-2.5 py-0.5 font-bold text-devig-ink'>
+              Pick: {p.side} to win
+            </span>
+            <span className='font-condensed tabular-nums'>
+              DeVig{row.state === 'pre' ? '' : ' pregame'} {fmtPct(p.prob)}
+              {row.edge != null && row.state === 'pre' &&
+                ` · ${Math.abs(row.edge * 100).toFixed(1)} ${row.edge >= 0 ? 'above' : 'below'} Kalshi`}
+            </span>
             {result && <span className={p?.correct ? 'text-good' : 'text-bad'}>· {result}</span>}
           </span>
         ) : p ? (
           <span className='text-muted-foreground'>
-            <span className='font-semibold text-foreground/85'>DeVig: pass</span> · not far enough from the market
+            <span className='font-semibold text-foreground/85'>No pick</span> · DeVig isn&apos;t far enough from the market
           </span>
         ) : (
           <span className='font-condensed text-muted-foreground tabular-nums'>{spreadTotal}</span>
