@@ -1,11 +1,13 @@
 // The Kalshi link reader: paste a link from Kalshi's Share button (one bet, a game, or a combo) and /api/kalshi
 // (functions/api/kalshi.js) returns its prices now and, for a combo, every leg. Saved links live in this browser.
 import { useMutation } from '@tanstack/react-query'
+import type { Outcome, Snap } from './review'
 
 export type KLeg = {
   ticker: string | null; event: string | null; title: string | null; pick: string; side: 'yes' | 'no'
   status: string | null; result: 'won' | 'lost' | null
   bid: number | null; ask: number | null; last: number | null; chance: number | null; closes: string | null
+  strike?: number | null; strike_type?: string | null // 224.5 'greater' = 225+
 }
 export type KRead =
   | { kind: 'combo'; ticker: string; fetched_at: string; combo: KLeg; legs: KLeg[]; multiplied: number | null; won: number; lost: number; truncated: boolean }
@@ -36,7 +38,8 @@ export function legLabel(l: KLeg) {
   return l.side === 'no' ? `No: ${t}` : t
 }
 
-export type Saved = { link: string; label: string; savedAt: string }
+// snap: the review as it stood when first read (legs still to play); outcome: how it ended (see lib/review.ts)
+export type Saved = { link: string; label: string; savedAt: string; snap?: Snap; outcome?: Outcome }
 const KEY = 'devig_saved_links'
 export function loadSaved(): Saved[] {
   try {

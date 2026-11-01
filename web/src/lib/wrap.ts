@@ -12,7 +12,7 @@ const PATH: Record<string, string> = {
 }
 
 type Side = 'away' | 'home'
-type Raw = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+export type Raw = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export type WrapPlayer = {
   side: Side; team: string; name: string; pid: string; good: boolean; weight: number; text: string
@@ -29,7 +29,7 @@ export type Wrap = {
 }
 
 // ---------- reading ESPN's summary ----------
-function useSummary(row: GameRow | null) {
+export function useSummary(row: GameRow | null) {
   const path = row ? PATH[row.sport] : undefined // only sports /api/live serves
   const eid = row?.id.split('|')[1]
   const on = !!row && !!path && !!eid && row.state !== 'pre'
@@ -47,23 +47,23 @@ function useSummary(row: GameRow | null) {
   })
 }
 
-const num = (s: unknown): number | null => {
+export const num = (s: unknown): number | null => {
   if (s == null) return null
   const n = parseFloat(String(s).replace(/[^\d.-]/g, ''))
   return Number.isFinite(n) ? n : null
 }
-const first = (s: unknown): number | null => num(String(s ?? '').split(/[-/]/)[0]) // "4-28" -> 4, "16-44" -> 16
+export const first = (s: unknown): number | null => num(String(s ?? '').split(/[-/]/)[0]) // "4-28" -> 4, "16-44" -> 16
 const second = (s: unknown): number | null => num(String(s ?? '').split(/[-/]/)[1])
 
-type Box = { side: Side; id: string; name: string; s: Record<string, string> }
+export type Box = { side: Side; id: string; name: string; s: Record<string, string> }
 
-function sideMap(sum: Raw): Record<string, Side> {
+export function sideMap(sum: Raw): Record<string, Side> {
   const out: Record<string, Side> = {}
   for (const c of sum.header?.competitions?.[0]?.competitors ?? []) out[String(c.team?.id)] = c.homeAway
   return out
 }
 
-function boxPlayers(sum: Raw, sides: Record<string, Side>): Box[] {
+export function boxPlayers(sum: Raw, sides: Record<string, Side>): Box[] {
   const byId = new Map<string, Box>()
   for (const t of sum.boxscore?.players ?? []) {
     const side = sides[String(t.team?.id)]

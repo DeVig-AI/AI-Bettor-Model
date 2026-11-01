@@ -167,6 +167,7 @@ export type GameRow = {
   total: GameLine['total']
   colors: { away: string; home: string } | null
   ids: { away: string; home: string } | null // ESPN team ids (for logos)
+  ticker?: string | null // Kalshi's market for the home team (KXNBAGAME-26OCT31PHICHA-CHA): its event ties a Kalshi leg to this game
   pick: Pick | null
   // DeVig's chance for its side minus Kalshi's fair chance for that side (null when there's no pick or no price)
   edge: number | null
@@ -331,6 +332,7 @@ function buildRows(
       total: g.total ?? null,
       colors: g.colors ?? null,
       ids: g.ids ?? null,
+      ticker: g.home_ticker ?? null,
       pick,
       edge,
     })

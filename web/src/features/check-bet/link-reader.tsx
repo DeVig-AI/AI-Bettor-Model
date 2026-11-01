@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Check, Link2, Minus, X } from 'lucide-react'
 import {
-  type KLeg, type KRead, type Saved, LinkError, labelFor, legLabel, loadSaved, storeSaved, useReadLink,
+  type KLeg, type KRead, type Saved, LinkError, labelFor, legLabel, loadSaved, readLink, storeSaved, useReadLink,
 } from '@/lib/kalshi-link'
+import { ParlayReview } from './review'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -45,7 +46,7 @@ function LegRow({ l }: { l: KLeg }) {
   )
 }
 
-function Result({ d }: { d: KRead }) {
+function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   const updated = <p className='px-1 text-xs text-muted-foreground'>Kalshi&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
   if (d.kind === 'market') {
     return (
@@ -105,7 +106,7 @@ function Result({ d }: { d: KRead }) {
         </p>
       )}
       {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
-      <Legs legs={legs} won={d.won} />
+      {review ?? <Legs legs={legs} won={d.won} />}
       {updated}
     </div>
   )
@@ -137,18 +138,44 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb }: { title?: st
   const [link, setLink] = useState('')
   const [saved, setSaved] = useState<Saved[]>(loadSaved)
   const [lastLink, setLastLink] = useState('')
+  // the last answer stays on screen while a refresh runs
+  const [data, setData] = useState<KRead | null>(null)
   const go = (l: string) => {
     if (!l.trim()) return
     setLastLink(l.trim())
-    read.mutate(l)
+    setData(null)
+    read.mutate(l, { onSuccess: setData })
   }
+  // live prices: while a combo has legs to go, read it again every minute (only while the tab is in view)
+  const live = data?.kind === 'combo' && data.combo.result == null && data.lost === 0 && data.won < data.legs.length
+  useEffect(() => {
+    if (!live || !lastLink) return
+    const t = setInterval(() => {
+      if (document.visibilityState === 'visible') readLink(lastLink).then(setData).catch(() => {})
+    }, 60_000)
+    return () => clearInterval(t)
+  }, [live, lastLink])
+
   const isSaved = saved.some((s) => s.link === lastLink)
   const save = () => {
-    if (!read.data || isSaved) return
-    const next = [{ link: lastLink, label: labelFor(read.data), savedAt: new Date().toISOString() }, ...saved]
+    if (!data || isSaved) return
+    const next = [{ link: lastLink, label: labelFor(data), savedAt: new Date().toISOString() }, ...saved]
     setSaved(next)
     storeSaved(next)
   }
+  // combos are saved as soon as they're read, with the review's snapshot, so you can look back at how they went
+  const store = (patch: Partial<Saved>) => {
+    if (!data || !lastLink) return
+    setSaved((cur) => {
+      const old = cur.find((s) => s.link === lastLink)
+      const next = old
+        ? cur.map((s) => (s.link === lastLink ? { ...s, ...patch } : s))
+        : [{ link: lastLink, label: labelFor(data), savedAt: new Date().toISOString(), ...patch }, ...cur]
+      storeSaved(next)
+      return next
+    })
+  }
+  const entry = saved.find((s) => s.link === lastLink) ?? null
   const remove = (l: string) => {
     const next = saved.filter((s) => s.link !== l)
     setSaved(next)
@@ -177,9 +204,9 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb }: { title?: st
       </div>
 
       {read.isPending && <Skeleton className='h-48 w-full rounded-[18px]' />}
-      {read.data && !read.isPending && (
+      {data && !read.isPending && (
         <>
-          <Result d={read.data} />
+          <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={entry} all={saved} onStore={store} /> : undefined} />
           <div className='flex gap-2'>
             <button type='button' onClick={save} disabled={isSaved}
               className='h-10 rounded-full border px-4 text-sm font-semibold disabled:text-muted-foreground'>
@@ -198,7 +225,9 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb }: { title?: st
               <li key={s.link} className='flex items-center border-b last:border-b-0'>
                 <button type='button' onClick={() => { setLink(s.link); go(s.link) }} className='flex min-h-14 min-w-0 flex-1 flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
                   <span className='w-full truncate font-semibold'>{s.label}</span>
-                  <span className='text-xs text-muted-foreground'>Saved {timeFmt.format(new Date(s.savedAt))} · tap to check</span>
+                  <span className='text-xs text-muted-foreground'>
+                    {s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`} · tap to check
+                  </span>
                 </button>
                 <button type='button' onClick={() => remove(s.link)} aria-label={`Remove ${s.label}`}
                   className='grid size-12 shrink-0 place-items-center text-muted-foreground hover:text-foreground'>
