@@ -60,7 +60,7 @@ export async function handle(request, env, fetcher = fetch) {
   try { body = JSON.parse(text); } catch (e) { return json({error: "not JSON"}, 400); }
   const msgs = (Array.isArray(body && body.messages) ? body.messages : []).filter(m =>
     m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string").slice(-12)
-    .map(m => ({role: m.role, content: m.content.slice(0, 40000)}));
+    .map(m => ({role: m.role, content: m.content.slice(0, 55000)}));
   if (!msgs.length || msgs[msgs.length - 1].role !== "user") return json({error: "no question"}, 400);
 
   const day = new Date().toISOString().slice(0, 10), countKey = "ask:" + key.slice(5) + ":" + day;

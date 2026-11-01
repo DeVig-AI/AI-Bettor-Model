@@ -4,6 +4,7 @@
 // DeVig's data and nothing else.
 import { type GameRow, type SportRecord, impliedProb } from './devig'
 import { type Injury } from './injuries'
+import { type NflWhyGame } from '@/features/games/nfl-why'
 
 export const ASK_RULES = [
   'You are the assistant inside DeVig, a sports odds app. The user is probably on a phone. Answer in plain, short language (a few sentences or a short list).',
@@ -13,6 +14,11 @@ export const ASK_RULES = [
   "Be honest about money: none of DeVig's models has been proven to beat the betting odds. On past seasons the market's own prices were more accurate. Favorites win often but pay little. A bigger edge is where the model disagrees most with Kalshi, but that gap has not been proven profitable. The player props model was less accurate than Kalshi's prices.",
   "If a pick's break_even is higher than devig_prob, say the price is too steep: it loses money over time even if the model is right. For parlays: every leg adds Kalshi's fee, never put two legs from the same game together, and say a parlay is less likely than any one leg.",
   "Injuries are information only: DeVig's game models (except NFL Model 2.0) don't read them, and Kalshi's price may already include them.",
+  "WHY THE MODEL SAYS WHAT IT SAYS: each game has model_reasoning, the model's own read. Use it whenever someone asks why the model likes, leans to or passed on a team, or why its chance is what it is. Explain from it, not from general betting talk.",
+  "- model_reasoning.lean / lean_prob = the team the model favors and its chance, on picks and passes alike. pick_bar = how sure it must be to pick; a PASS means lean_prob was under pick_bar, not that the model has no view.",
+  "- model_reasoning.steps (NFL Model 2.0) = how its number was built, exact and in order, as the lean team's chance after each step: home_field (two average teams, nobody hurt), then form (both teams' last 6 and 12 games: margin, record, EPA per play, rest), then who_is_out (= the final chance). Each step's change is what that part added or took away. Form is one total because those stats overlap; don't credit it to a single stat. what_it_read lists the stats themselves (EPA = expected points added per play, net = offense minus defense allowed; higher is better). injuries_vs counts are home minus away (positive = the home team is missing more).",
+  "- model_reasoning.inputs (NBA) = what the model read for each team (last 10 games, rest, back-to-back). It doesn't say how much each moved the number, so say which side each favors, not how many points.",
+  "- models[sport] = each model's own description of itself. If a game has no steps or inputs, say the model doesn't publish its reasons for that game.",
   "record = DeVig's graded picks this season by sport (won, lost, units at the locked price). Count from it; don't claim results that aren't in it.",
   'Say where each number comes from in a few words: (DeVig model), (Kalshi), (past test), (price math). Keep the data apart from general advice and label general advice as general.',
   'Never tell the user how much to bet, never claim certainty, and remind them to check the latest price and injury news before betting. You are not a financial advisor.',
@@ -20,7 +26,35 @@ export const ASK_RULES = [
 
 const r3 = (x: number | null | undefined) => (x == null ? null : Math.round(x * 1000) / 1000)
 
-export function askContext(rows: GameRow[], records: SportRecord[], injuries: Injury[]) {
+// The model's own read on one game, from its side: lean, the bar, and (NFL) the exact steps or (NBA) the inputs.
+function reasoning(r: GameRow, why: Record<string, NflWhyGame> | undefined) {
+  const p = r.pick
+  if (!p) return null
+  const side = p.side ?? p.lean
+  const prob = p.side ? p.prob : p.leanProb
+  const out: Record<string, unknown> = { lean: side, lean_prob: r3(prob), pick_bar: r3(p.bar) }
+  const g = r.sport === 'NFL' ? why?.[r.trackKey] : undefined
+  if (g && side && prob != null) {
+    const f = (h: number) => r3(side === g.home ? h : 1 - h)
+    // only when the breakdown is for the same number the app shows (it is rebuilt each model run)
+    if (Math.abs((f(g.home_wp) ?? 0) - prob) < 0.006) {
+      out.steps = { home_field: f(g.steps.home_field), form: f(g.steps.form), who_is_out: f(g.steps.who_is_out) }
+      const r1 = (x: number | null | undefined) => (x == null ? null : Math.round(x * 10) / 10)
+      const r2 = (x: number | null | undefined) => (x == null ? null : Math.round(x * 100) / 100)
+      const t = (x: NflWhyGame['teams']['home']) => ({
+        last6: { margin: r1(x.s6_margin), pts_for: r1(x.s6_pf), pts_against: r1(x.s6_pa), net_epa: r3(x.s6_net_epa), off_epa: r3(x.s6_off_epa), def_epa_allowed: r3(x.s6_def_epa_allowed) },
+        last12: { margin: r1(x.s12_margin), win_rate: r2(x.s12_win), net_epa: r3(x.s12_net_epa) },
+        rest_days: x.rest,
+      })
+      out.what_it_read = { [g.home]: t(g.teams.home), [g.away]: t(g.teams.away) }
+      out.injuries_vs = { qb_out: g.injuries.d_qb, regulars_out: g.injuries.d_out, questionable: g.injuries.d_q }
+    }
+  }
+  if (p.inputs) out.inputs = { model: p.inputs.model_version, [r.home]: p.inputs.home, [r.away]: p.inputs.away }
+  return out
+}
+
+export function askContext(rows: GameRow[], records: SportRecord[], injuries: Injury[], why?: Record<string, NflWhyGame>) {
   const now = Date.now()
   const games = rows
     .filter((r) => r.state !== 'post' || now - Date.parse(r.kickoff) < 36 * 3600e3)
@@ -53,6 +87,7 @@ export function askContext(rows: GameRow[], records: SportRecord[], injuries: In
               result: p.correct == null ? null : p.correct ? 'won' : 'lost',
             }
           : null,
+        model_reasoning: reasoning(r, why),
       }
     })
   const record = records.map((s) => ({
@@ -66,7 +101,9 @@ export function askContext(rows: GameRow[], records: SportRecord[], injuries: In
     .filter((x) => x.starter || /out|doubt/i.test(x.status))
     .slice(0, 60)
     .map((x) => `${x.sport} ${x.away} at ${x.home}: ${x.player} (${x.team}) ${x.status}${x.impact?.label ? `, ${x.impact.label} impact` : ''}`)
-  return { now: new Date().toISOString(), games, record, injuries: hurt }
+  const models: Record<string, string> = {}
+  for (const r of rows) if (r.pick?.note && !models[r.sport]) models[r.sport] = r.pick.note
+  return { now: new Date().toISOString(), models, games, record, injuries: hurt }
 }
 
 export type AskError = { code: string; partial: string }

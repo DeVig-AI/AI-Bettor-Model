@@ -1,1 +1,0 @@
-import{n as e}from"./props-v396voAI.js";var t=e;export{t as component};
