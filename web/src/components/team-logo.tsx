@@ -42,7 +42,7 @@ export function PlayerPhoto({ sport, pid, team, teamColor, className, badge = 's
     <span aria-hidden='true' className={cn('relative shrink-0', className)}>
       <span className='grid size-full place-items-end overflow-hidden rounded-full bg-muted'>
         {src && !bad ? (
-          <img src={src} alt='' loading='lazy' decoding='async' draggable={false} onError={() => setBad(true)} className='size-full object-cover object-top' />
+          <img src={src} alt='' loading='lazy' decoding='async' draggable={false} onError={() => setBad(true)} className='size-full origin-top scale-[1.2] object-cover object-top' />
         ) : (
           <UserRound className='size-[78%] text-muted-foreground/70' />
         )}

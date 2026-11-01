@@ -1,1 +1,0 @@
-import{n as e}from"./props-m0ioLv8D.js";var t=e;export{t as component};

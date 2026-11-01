@@ -7,7 +7,7 @@ const ESPN_CODE: Record<string, Record<string, string>> = {
   NFL: { WAS: 'wsh', LA: 'lar' },
   MLB: { AZ: 'ari', CWS: 'chw' },
 }
-const sized = (path: string, px: number) => `https://a.espncdn.com/combiner/i?img=${path}&w=${px}&h=${px}`
+const sized = (path: string, px: number, w = px) => `https://a.espncdn.com/combiner/i?img=${path}&w=${w}&h=${px}`
 
 // the board's team code as ESPN spells it (lowercase), e.g. NBA GSW -> gs
 export const espnCode = (sport: string, code: string) => (ESPN_CODE[sport]?.[code] ?? code).toLowerCase()
@@ -24,5 +24,7 @@ export function teamLogo(sport: string, code: string, id?: string | null, px = 1
 export function headshot(sport: string, pid?: string | null, px = 200): string | null {
   const lg = LEAGUE[sport]
   if (!lg || lg === 'ncaa' || !pid || !/^\d+$/.test(pid)) return null
-  return sized(`/i/headshots/${lg}/players/full/${pid}.png`, px)
+  // ESPN's headshots are 600x436 (wider than tall): keep that shape, or the face gets squeezed into a square.
+  // The circle crops the sides.
+  return sized(`/i/headshots/${lg}/players/full/${pid}.png`, px, Math.round((px * 600) / 436))
 }
