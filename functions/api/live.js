@@ -143,6 +143,45 @@ const BOX_GROUPS = {passing: "Passing", rushing: "Rushing", receiving: "Receivin
 const PLAYS_KEPT = 60;
 
 // NFL summary -> what the game page shows. Every part is optional: a missing ESPN field leaves that part out.
+// For the gap chart: ESPN's own win chance for the home team after each play ([unix seconds, chance], at most
+// WP_KEPT, always the latest), the plays that swing a game (scores and turnovers) and when each quarter started.
+const WP_KEPT = 400;
+function swingKind(p) {
+  const t = String((p.type || {}).text || ""), x = String(p.text || "");
+  if (/no play|nullified/i.test(x) && !/touchdown/i.test(t)) return null;
+  if (/touchdown/i.test(t) || (p.scoringPlay && /touchdown/i.test(x))) return "TD";
+  if (/field goal good/i.test(t)) return "FG";
+  if (/safety/i.test(t)) return "SAF";
+  if (/interception/i.test(t)) return "INT";
+  if (/fumble recovery \(opponent\)|opp fumble recovery|fumble return touchdown/i.test(t)) return "FUM";
+  if (/blocked/i.test(t)) return "BLK";
+  return null;
+}
+export function nflSwing(d, all) {
+  const when = {}, keys = [], periods = [];
+  all.forEach(dr => (dr.plays || []).forEach(p => {
+    if (!p) return;
+    const at = Date.parse(p.wallclock || "");
+    if (!isFinite(at)) return;
+    const t = Math.round(at / 1000), q = num((p.period || {}).number);
+    when[p.id] = t;
+    if (q) { const e = periods.find(x => x[0] === q); if (!e) periods.push([q, t]); else if (t < e[1]) e[1] = t; }
+    const kind = swingKind(p);
+    if (kind && !keys.some(k => k.kind === kind && k.q === q && k.clock === ((p.clock || {}).displayValue || ""))) keys.push({at: t, kind, q, clock: (p.clock || {}).displayValue || "", text: String(p.text || "").trim().slice(0, 240),
+      away_score: num(p.awayScore), home_score: num(p.homeScore)});
+  }));
+  let wp = [];
+  (d.winprobability || []).forEach(w => {
+    const t = when[w.playId], v = num(w.homeWinPercentage);
+    if (t && v != null && v >= 0 && v <= 1 && (!wp.length || t >= wp[wp.length - 1][0])) wp.push([t, Math.round(v * 1000) / 1000]);
+  });
+  if (wp.length > WP_KEPT) {
+    const step = wp.length / WP_KEPT;
+    wp = [...Array.from({length: WP_KEPT - 1}, (_, i) => wp[Math.floor(i * step)]), wp[wp.length - 1]];
+  }
+  return {wp, keys: keys.sort((a, b) => a.at - b.at), periods: periods.sort((a, b) => a[0] - b[0])};
+}
+
 export function nflGame(d, code = x => String(x || "").toUpperCase()) {
   const comp = ((d.header || {}).competitions || [])[0] || {};
   const idTeam = {}, side = {};
@@ -178,6 +217,7 @@ export function nflGame(d, code = x => String(x || "").toUpperCase()) {
     });
   });
   const out = {away, home, plays: plays.slice(-PLAYS_KEPT).reverse()};
+  Object.assign(out, nflSwing(d, all));
   const cur = drives.current;
   if (cur) {
     const offense = teamOf(cur.team), start = cur.start || {};
