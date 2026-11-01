@@ -28,6 +28,7 @@ export type GameLine = {
   names?: { away: string; home: string }
   colors?: { away: string; home: string }
   ml?: Moneyline | null
+  home_ticker?: string
   spread?: { home_point: number; home: number; away: number } | null
   total?: { line: number; over: number; under: number } | null
 }
@@ -213,10 +214,69 @@ function matchKey(sport: string, away: string, home: string) {
   return `${sport.toUpperCase()}|${away}|${home}`
 }
 
+// ---------- fresh: Kalshi and ESPN right now ----------
+// The files above are only as new as the bots' last run (prices about every 30 minutes; the live file sleeps between
+// game windows), so refresh, and a timer while the board is open, also asks Kalshi (/api/prices) and ESPN (/api/live)
+// directly for the games near now. What they return wins over the files.
+type LiveScore = { id: string; state: 'pre' | 'in' | 'post'; detail: string; away_score: number | null; home_score: number | null }
+export type Fresh = {
+  at: number
+  prices: Record<string, { bid: number | null; ask: number | null }> // by the home team's Kalshi ticker
+  scores: Record<string, LiveScore> // by SPORT|ESPN id
+}
+
+function americanOf(p: number) {
+  return p >= 0.5 ? (-100 * p) / (1 - p) : (100 * (1 - p)) / p
+}
+// one "home team wins" market: buying home costs the ask, buying away costs 1 - the bid (the same as the bot's ml)
+export function freshMoneyline(m: { bid: number | null; ask: number | null } | undefined): Moneyline | null {
+  if (!m || m.bid == null || m.ask == null) return null
+  return { home: Math.round(americanOf(m.ask) * 10) / 10, away: Math.round(americanOf(1 - m.bid) * 10) / 10 }
+}
+
+async function loadFresh(games: GameLine[], now = Date.now()): Promise<Fresh> {
+  // games that aren't over: started up to 6 hours ago, or starting within 36 hours
+  const near = games.filter((g) => {
+    const t = Date.parse(g.kickoff)
+    return isFinite(t) && t > now - 6 * 3600e3 && t < now + 36 * 3600e3 && g.state !== 'post'
+  })
+  const tickers = [...new Set(near.map((g) => g.home_ticker).filter((t): t is string => !!t))]
+  const sports = [...new Set(near.map((g) => g.sport.toLowerCase()))].filter((s) =>
+    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb'].includes(s)
+  )
+  const chunks: string[][] = []
+  for (let i = 0; i < tickers.length; i += 40) chunks.push(tickers.slice(i, i + 40))
+  const [priceRes, scoreRes] = await Promise.all([
+    Promise.allSettled(
+      chunks.map(async (c) => {
+        const r = await fetch(`/api/prices?tickers=${c.join(',')}`)
+        if (!r.ok) throw new Error(`prices: ${r.status}`)
+        return (await r.json()) as { markets: Fresh['prices'] }
+      })
+    ),
+    Promise.allSettled(
+      sports.map(async (s) => {
+        const r = await fetch(`/api/live?sport=${s}`)
+        if (!r.ok) throw new Error(`live: ${r.status}`)
+        return { sport: s.toUpperCase(), games: ((await r.json()) as { games: LiveScore[] }).games ?? [] }
+      })
+    ),
+  ])
+  const prices: Fresh['prices'] = {}
+  for (const r of priceRes) if (r.status === 'fulfilled') Object.assign(prices, r.value.markets)
+  const scores: Fresh['scores'] = {}
+  for (const r of scoreRes)
+    if (r.status === 'fulfilled') for (const g of r.value.games) scores[`${r.value.sport}|${g.id}`] = g
+  if (!Object.keys(prices).length && !Object.keys(scores).length && (chunks.length || sports.length))
+    throw new Error('Kalshi and ESPN did not answer')
+  return { at: now, prices, scores }
+}
+
 function buildRows(
   gameLines: GameLine[],
   live: LiveLine[],
-  decisions: Decision[]
+  decisions: Decision[],
+  fresh?: Fresh
 ): GameRow[] {
   // fresher scores and Kalshi prices from live_lines (every ~2 min) win over game_lines (every ~10 min)
   const liveById = new Map(live.map((g) => [`${g.sport}|${g.espn_id}`, g]))
@@ -240,7 +300,8 @@ function buildRows(
     if (seen.has(key)) return
     seen.add(key)
     const lv = liveById.get(key)
-    const ml = lv?.kalshi_game?.moneyline ?? g.ml ?? null
+    const fs = fresh?.scores[key]
+    const ml = freshMoneyline(g.home_ticker ? fresh?.prices[g.home_ticker] : undefined) ?? lv?.kalshi_game?.moneyline ?? g.ml ?? null
     const fairHome = fairHomeProb(ml)
     const d = findPick(g)
     const pick: Pick | null = d?.decision ? toPick(d, g.home) : null
@@ -258,10 +319,10 @@ function buildRows(
       awayName: g.names?.away ?? g.away,
       homeName: g.names?.home ?? g.home,
       kickoff: g.kickoff,
-      state: lv?.state ?? g.state ?? stateByClock(g.kickoff),
-      detail: lv?.detail ?? g.detail ?? '',
-      awayScore: lv?.away_score ?? g.away_score,
-      homeScore: lv?.home_score ?? g.home_score,
+      state: fs?.state ?? lv?.state ?? g.state ?? stateByClock(g.kickoff),
+      detail: fs?.detail ?? lv?.detail ?? g.detail ?? '',
+      awayScore: fs?.away_score ?? lv?.away_score ?? g.away_score,
+      homeScore: fs?.home_score ?? lv?.home_score ?? g.home_score,
       ml,
       fairHome,
       spread: g.spread ?? null,
@@ -321,6 +382,13 @@ export function useGames() {
     queryFn: loadBoards,
     refetchInterval: 10 * 60e3,
   })
+  const fresh = useQuery({
+    queryKey: ['fresh'],
+    queryFn: () => loadFresh(gameLines.data?.games ?? []),
+    enabled: !!gameLines.data,
+    refetchInterval: 2 * 60e3,
+    retry: 1,
+  })
 
   // rebuilt only when a file actually changes: a new array on every render makes the table reset itself in a loop
   const rows = useMemo(
@@ -329,14 +397,16 @@ export function useGames() {
         ? buildRows(
             gameLines.data?.games ?? [],
             live.data?.games ?? [],
-            boards.data ?? []
+            boards.data ?? [],
+            fresh.data
           )
         : [],
-    [gameLines.data, live.data, boards.data]
+    [gameLines.data, live.data, boards.data, fresh.data]
   )
   const stamps = [gameLines.data?.generated_at, live.data?.generated_at]
     .filter(Boolean)
     .map((s) => Date.parse(s as string))
+  if (fresh.data) stamps.push(fresh.data.at)
   return {
     rows,
     updatedAt: stamps.length ? new Date(Math.max(...stamps)) : null,
@@ -347,8 +417,9 @@ export function useGames() {
       gameLines.refetch()
       live.refetch()
       boards.refetch()
+      fresh.refetch()
     },
-    isFetching: gameLines.isFetching || live.isFetching || boards.isFetching,
+    isFetching: gameLines.isFetching || live.isFetching || boards.isFetching || fresh.isFetching,
   }
 }
 
