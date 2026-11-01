@@ -103,8 +103,8 @@ function LabCard({ f }: { f: LabFile }) {
       </p>
       {s && (
         <p className='mt-2 text-xs text-muted-foreground tabular-nums'>
-          In the search: {signed(s.effect)} pts a game beyond the closing line on {s.games.toLocaleString()} past games
-          (t = {s.t.toFixed(2)}). A search finds lucky models too, which is why the check below exists.
+          In the search: {signed(s.effect)} pts a game beyond the closing line on {(s.games ?? 0).toLocaleString()} past games
+          (t = {s.t?.toFixed(2) ?? '—'}). A search finds lucky models too, which is why the check below exists.
         </p>
       )}
       <p className='mt-2 font-medium'>{checkText(f.check)} <span className='text-xs font-normal text-muted-foreground'>Model {c.id}</span></p>
@@ -116,7 +116,7 @@ function LabCard({ f }: { f: LabFile }) {
               <div className={cn('font-condensed text-base font-bold tabular-nums', g.passed ? 'text-good' : g.passed === false ? 'text-bad' : '')}>
                 {g.effect == null ? '—' : `${signed(g.effect)}`}
               </div>
-              <div className='text-[11px] text-muted-foreground'>{g.games.toLocaleString()} games</div>
+              <div className='text-[11px] text-muted-foreground'>{g.games == null ? 'waiting' : `${g.games.toLocaleString()} games`}</div>
             </li>
           ))}
         </ul>
