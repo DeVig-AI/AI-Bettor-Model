@@ -66,6 +66,14 @@ type Decision = {
   }
   market_snapshot?: { moneyline_home?: number | null; moneyline_away?: number | null }
   inputs?: ModelInputs
+  lean?: Lean // added here from the board's slate entry for the same game
+}
+
+// The model's read on every game, picked or not (the lineboard's "slate" collection)
+type Lean = { side: string | null; prob: number | null; note: string | null }
+type SlateDoc = {
+  game_id: string
+  model?: { available?: boolean; winner_side?: string | null; winner_prob?: number | null; note?: string | null }
 }
 
 // What DeVig's own model looked at when it locked (NBA Model C exports these; other sports don't yet)
@@ -86,8 +94,12 @@ export type ModelInputs = {
 
 type Lineboard = {
   generated_at: string
-  docs: { collection: string; data: Decision }[]
+  docs: ({ collection: 'decisions'; data: Decision } | { collection: 'slate'; data: SlateDoc } | { collection: string; data: unknown })[]
 }
+
+// How sure the model has to be before DeVig makes a pick: its tested top-50% confidence bar, the same cutoffs the
+// classic app uses. Below it the game is a pass. (Checked against the boards: every pick is above, every pass below.)
+export const PICK_BAR: Record<string, number> = { NFL: 0.6387, NBA: 0.6083, MLB: 0.5511 }
 
 // ---------- odds math (same rules as the classic app's devigTwoWay) ----------
 export function impliedProb(american: number | null | undefined) {
@@ -127,6 +139,11 @@ export type Pick = {
   lockedOdds: number | null
   fairAtLock: number | null
   inputs: ModelInputs | null
+  // on a pass: the team the model leaned to, its chance for that team, and the bar it didn't clear
+  lean: string | null
+  leanProb: number | null
+  bar: number | null
+  note: string | null // the model's own description (what it looks at)
 }
 
 export type GameRow = {
@@ -172,7 +189,19 @@ function toPick(d: Decision, home: string): Pick {
     lockedOdds,
     fairAtLock: side == null || fairHomeLock == null ? null : side === home ? fairHomeLock : 1 - fairHomeLock,
     inputs: d.inputs ?? null,
+    lean: side ?? d.lean?.side ?? null,
+    leanProb: side != null ? (d.decision?.prob ?? null) : (d.lean?.prob ?? null),
+    bar: PICK_BAR[d.sport] ?? null,
+    note: d.lean?.note ?? null,
   }
+}
+
+// When a file has no status for a game (game_lines leaves it to live_lines for the pro leagues, and live_lines can be
+// hours old between game windows), go by the clock so the game still lands in Upcoming, Live or Final.
+function stateByClock(kickoff: string, now = Date.now()): GameRow['state'] {
+  const t = Date.parse(kickoff)
+  if (!isFinite(t) || now < t) return 'pre'
+  return now - t < 4.5 * 3600e3 ? 'in' : 'post'
 }
 
 // 1 unit at American odds: what a win pays
@@ -229,8 +258,8 @@ function buildRows(
       awayName: g.names?.away ?? g.away,
       homeName: g.names?.home ?? g.home,
       kickoff: g.kickoff,
-      state: lv?.state ?? g.state,
-      detail: lv?.detail ?? g.detail,
+      state: lv?.state ?? g.state ?? stateByClock(g.kickoff),
+      detail: lv?.detail ?? g.detail ?? '',
       awayScore: lv?.away_score ?? g.away_score,
       homeScore: lv?.home_score ?? g.home_score,
       ml,
@@ -246,6 +275,28 @@ function buildRows(
   // games only live_lines knows about (e.g. started after game_lines was written)
   live.forEach((g) => add({ ...g, ml: g.kalshi_game?.moneyline ?? null }))
   return rows.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))
+}
+
+// Every pick and pass on the NFL, NBA and MLB boards, each with the model's lean from the slate. One loader for
+// every reader of the ['lineboards'] query, so the cache always has the same shape.
+const loadBoards = async () => {
+  const all = await Promise.allSettled(
+    SPORTS_WITH_PICKS.map((s) =>
+      getJson<Lineboard>(`${s}/lineboard_export.json`)
+    )
+  )
+  return all.flatMap((r) => {
+    if (r.status !== 'fulfilled') return []
+    const leans = new Map<string, Lean>()
+    for (const d of r.value.docs) {
+      if (d.collection !== 'slate') continue
+      const m = (d.data as SlateDoc).model
+      if (m?.available) leans.set((d.data as SlateDoc).game_id, { side: m.winner_side ?? null, prob: m.winner_prob ?? null, note: m.note ?? null })
+    }
+    return r.value.docs
+      .filter((d) => d.collection === 'decisions')
+      .map((d) => { const x = d.data as Decision; return { ...x, lean: leans.get(x.game_id) } })
+  })
 }
 
 export function useGames() {
@@ -267,20 +318,7 @@ export function useGames() {
   })
   const boards = useQuery({
     queryKey: ['lineboards'],
-    queryFn: async () => {
-      const all = await Promise.allSettled(
-        SPORTS_WITH_PICKS.map((s) =>
-          getJson<Lineboard>(`${s}/lineboard_export.json`)
-        )
-      )
-      return all.flatMap((r) =>
-        r.status === 'fulfilled'
-          ? r.value.docs
-              .filter((d) => d.collection === 'decisions')
-              .map((d) => d.data)
-          : []
-      )
-    },
+    queryFn: loadBoards,
     refetchInterval: 10 * 60e3,
   })
 
@@ -332,16 +370,7 @@ export type SportRecord = { sport: string; won: number; lost: number; units: num
 export function useRecord() {
   const boards = useQuery({
     queryKey: ['lineboards'],
-    queryFn: async () => {
-      const all = await Promise.allSettled(
-        SPORTS_WITH_PICKS.map((s) => getJson<Lineboard>(`${s}/lineboard_export.json`))
-      )
-      return all.flatMap((r) =>
-        r.status === 'fulfilled'
-          ? r.value.docs.filter((d) => d.collection === 'decisions').map((d) => d.data)
-          : []
-      )
-    },
+    queryFn: loadBoards,
     refetchInterval: 10 * 60e3,
   })
   const records = useMemo(() => {

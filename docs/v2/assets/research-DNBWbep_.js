@@ -1,0 +1,1 @@
+import{t as e}from"./research-BZ8LUxQL.js";var t=e;export{t as component};

@@ -113,6 +113,9 @@ export function ExplainSheet({
   record: SportRecord | null
 }) {
   const p = row?.pick
+  if (row && p && !p.side && p.lean && p.leanProb != null) {
+    return <PassSheet row={row} open={open} onOpenChange={onOpenChange} level={level} onLevel={onLevel} />
+  }
   if (!row || !p?.side || p.prob == null) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
@@ -341,6 +344,117 @@ export function ExplainSheet({
             </p>
           </div>
         )}
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+// "Why no pick?": the model's lean on a game DeVig passed on, the bar it didn't clear, and what it looked at.
+function PassSheet({ row, open, onOpenChange, level, onLevel }: {
+  row: GameRow; open: boolean; onOpenChange: (v: boolean) => void; level: Level; onLevel: (l: Level) => void
+}) {
+  const p = row.pick!
+  const lean = p.lean!
+  const prob = p.leanProb!
+  const leanName = lean === row.home ? row.homeName : lean === row.away ? row.awayName : lean
+  const fairNow = row.fairHome == null ? null : lean === row.home ? row.fairHome : 1 - row.fairHome
+  const fs = factors(row, lean)
+  const short = p.bar != null ? p.bar - prob : null
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side='bottom'
+        className='max-h-[88svh] overflow-y-auto rounded-t-3xl border-t px-5 pt-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:mx-auto md:max-w-xl'
+      >
+        <div aria-hidden='true' className='mx-auto h-1.5 w-10 rounded-full bg-border' />
+        <SheetHeader className='p-0 text-start'>
+          <SheetTitle className='font-display text-3xl font-black'>Why no pick?</SheetTitle>
+          <SheetDescription className='sr-only'>The model&apos;s read on a game DeVig passed on</SheetDescription>
+        </SheetHeader>
+
+        <div role='radiogroup' aria-label='How much to explain' className='grid grid-cols-3 gap-1 rounded-xl bg-muted p-1'>
+          {LEVELS.map((l) => (
+            <button
+              key={l.id}
+              type='button'
+              role='radio'
+              aria-checked={level === l.id}
+              onClick={() => onLevel(l.id)}
+              className={cn(
+                'h-9 rounded-lg text-sm font-medium text-muted-foreground transition-colors duration-150',
+                level === l.id && 'bg-foreground font-semibold text-background'
+              )}
+            >
+              {l.label}
+            </button>
+          ))}
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          {level === 'new' ? (
+            <p className='text-lg leading-snug font-semibold'>
+              The model leans {leanName}, but only a little: about {Math.round(prob * 10)} times out of 10 ({fmtPct(prob)}).
+              {p.bar != null && ` DeVig only picks when it's at least ${fmtPct(p.bar)} sure, so it sits this one out.`}
+            </p>
+          ) : (
+            <div className='flex items-baseline justify-between gap-3'>
+              <span className='font-display text-3xl font-black text-devig'>{lean} {fmtPct(prob, level === 'numbers' ? 1 : 0)}</span>
+              {p.bar != null && (
+                <span className='font-display text-2xl font-extrabold'>needs {fmtPct(p.bar, level === 'numbers' ? 1 : 0)}</span>
+              )}
+            </div>
+          )}
+
+          {level !== 'new' && p.bar != null && short != null && (
+            <p className='text-[15px] leading-relaxed'>
+              The model gives {leanName} {fmtPct(prob, 1)}, {(short * 100).toFixed(1)} points short of the {fmtPct(p.bar, 1)} bar.
+              DeVig only picks a side when the model is at least that sure: in past {row.sport} seasons, games above the bar were
+              picked right more often than the rest. Below it, it passes.
+            </p>
+          )}
+
+          {fs.length > 0 && (
+            <div>
+              <h3 className='mb-2 text-sm font-semibold text-muted-foreground'>What the model looked at</h3>
+              <ul className='flex flex-col gap-1.5'>
+                {fs.map((f) =>
+                  level === 'new' ? (
+                    <li key={f.title} className='text-[15px] leading-relaxed'>{f.plain}</li>
+                  ) : (
+                    <li key={f.title} className='flex items-center justify-between gap-3 rounded-xl bg-muted px-3 py-2.5'>
+                      <span>
+                        <span className='font-semibold'>{f.title}</span>
+                        <br />
+                        <span className='text-sm text-muted-foreground'>{f.detail}</span>
+                      </span>
+                      <span
+                        className='shrink-0 rounded-full px-2.5 py-1 text-xs font-bold text-white'
+                        style={{ background: f.favors ? (f.favors === row.home ? row.colors?.home : row.colors?.away) || 'var(--side-home)' : 'var(--muted)' }}
+                      >
+                        {f.favors ? `Favors ${f.favors}` : 'Even'}
+                      </span>
+                    </li>
+                  )
+                )}
+              </ul>
+            </div>
+          )}
+
+          {p.note && (
+            <div className='rounded-2xl bg-muted p-3.5'>
+              <p className='font-semibold'>About this model</p>
+              <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{p.note}</p>
+            </div>
+          )}
+
+          {fairNow != null && (
+            <p className='text-sm leading-relaxed text-muted-foreground'>
+              Kalshi&apos;s price gives {leanName} {fmtPct(fairNow)}
+              {Math.abs(fairNow - prob) < 0.01 ? ', about the same as the model.' : `; the model says ${fmtPct(prob)}.`}
+              {' '}A pass means DeVig has no call here, not that the game is a coin flip.
+            </p>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   )
