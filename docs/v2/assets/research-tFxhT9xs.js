@@ -1,0 +1,1 @@
+import{t as e}from"./research-Easpios4.js";var t=e;export{t as component};

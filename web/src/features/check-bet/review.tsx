@@ -5,7 +5,8 @@ import {
   type GradeLeg, type LegGame, type LegInfo, type Outcome, type Snap, type TakeLeg,
   SUMMARY, codes, grade, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, useDevigViews, useHistories, useLegGames, weakSpots, weakestOf,
 } from '@/lib/review'
-import { useSummary } from '@/lib/wrap'
+import { type Raw, useSummary } from '@/lib/wrap'
+import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
 import { PulseCard } from './pulse'
@@ -199,7 +200,7 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
                 )
               } />
               <div className='flex flex-col gap-1 px-1 text-sm'>
-                {out && <p className={cn(l.result === 'lost' ? 'text-bad' : 'text-foreground')}>{out}</p>}
+                <LegNow i={i} game={game ?? null} sum={sum ?? null} out={out} lost={l.result === 'lost'} />
                 <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
                   {dv && (
                     <span className={cn('rounded-full px-2 py-0.5 text-xs font-bold', gap <= -0.03 ? 'bg-bad/15 text-bad' : gap >= 0.03 ? 'bg-devig/15 text-devig' : 'bg-muted text-muted-foreground')}>
@@ -223,6 +224,13 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
       )}
     </section>
   )
+}
+
+// what's happened in the leg's game so far: a pace bar for a player prop, else the line of text
+function LegNow({ i, game, sum, out, lost }: { i: LegInfo; game: LegGame | null; sum: Raw | null; out: string | null; lost: boolean }) {
+  const p = usePropPace(i, game, sum)
+  if (p && i.stat) return <PaceBar p={p} label={i.stat.label} side={i.leg.side} />
+  return out ? <p className={cn(lost ? 'text-bad' : 'text-foreground')}>{out}</p> : null
 }
 
 // a Kalshi leg as the same team-colored bar the slip uses: the team (or player) it's about, and the matchup under it

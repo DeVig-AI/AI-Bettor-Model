@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import type { GameRow } from './devig'
 import { normName } from './headshots'
+import { clockSecs } from './pace-math'
 import { type RsPlayer, type RsTeam, rsIndexQuery, useRsTeam } from './research'
 
 // The wrap-up of a game: what actually happened, read from ESPN's box score and play-by-play, next to what DeVig
@@ -148,7 +149,7 @@ const fmtAvg = (v: number) => (v >= 10 ? Math.round(v) : Math.round(v * 10) / 10
 const GAME: Record<string, [number, number]> = { NFL: [4, 900], CFB: [4, 900], NBA: [4, 720], WNBA: [4, 600], CBB: [2, 1200], NHL: [3, 1200] }
 export function playedShare(sport: string, status: Raw, final: boolean): number | null {
   if (final) return null
-  const g = GAME[sport], per = num(status?.period), left = num(status?.clock)
+  const g = GAME[sport], per = num(status?.period), left = clockSecs(status)
   if (!g || !per) return 0
   const [n, len] = g
   if (per > n) return 1 // overtime

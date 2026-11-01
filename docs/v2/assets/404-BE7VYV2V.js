@@ -1,0 +1,1 @@
+import{i as e}from"./index-lD7_S2MK.js";var t=e;export{t as component};
