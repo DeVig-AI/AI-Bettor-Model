@@ -2,7 +2,7 @@
 // and only well-formed legs come back.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { handle, parseAnswer, clean } from "../../functions/api/scan.js";
+import { handle, parseAnswer, clean, bookOf, previewImage } from "../../functions/api/scan.js";
 import { userKey } from "../../functions/api/me.js";
 
 const DOMAIN = "t.cloudflareaccess.com";
@@ -27,13 +27,14 @@ const SLIP = {book: "FanDuel", legs: [
   {market: "weird", side: "Lakers", odds: 12},                 // odds that aren't American: null; unknown market: other
 ], total_odds: 264, stake: "$10", payout: 36.4, notes: ""};
 
-async function setup({joined = true, gemini, ai} = {}) {
+async function setup({joined = true, gemini, ai, web} = {}) {
   const email = "fan@example.com";
   const users = kv(joined ? {[await userKey(email)]: JSON.stringify({joined_at: "2026-10-01"})} : {});
   const env = {ACCESS_TEAM_DOMAIN: DOMAIN, USERS: users, ...(gemini ? {GEMINI_API_KEY: "g"} : {}), ...(ai ? {AI: ai} : {})};
   const fetcher = async (url, init) => {
     if (String(url).endsWith("/cdn-cgi/access/certs")) return new Response(JSON.stringify({keys: [jwk]}));
     if (String(url).includes("generativelanguage")) return gemini(JSON.parse(init.body));
+    if (web) return web(String(url), init);
     throw new Error("unexpected fetch " + url);
   };
   const req = async (body, auth = true) => new Request("https://devigai.pages.dev/api/scan", {method: "POST",
@@ -93,4 +94,47 @@ test("parseAnswer and clean handle junk", () => {
   assert.deepEqual(parseAnswer('sure! {"legs": []} hope that helps'), {legs: []});
   assert.equal(clean(null), null);
   assert.deepEqual(clean({legs: "x"}).legs, []);
+});
+
+test("a sportsbook share link: fetches the page, reads its preview picture, and names the book", async () => {
+  const PAGE = "https://sportsbook.draftkings.com/social/post/677c7f60?slipAdd";
+  const PIC = "https://sportsbook.draftkings.com/comments/seo/assets/abc.png";
+  const fetched = [];
+  let sent;
+  const s = await setup({
+    gemini: b => { sent = b; return new Response(JSON.stringify({choices: [{message: {content: JSON.stringify({book: null, legs: [
+      {sport: "NBA", away: null, home: null, market: "moneyline", side: "MIA Heat", point: null, odds: null},
+      {sport: "NBA", away: null, home: null, market: "moneyline", side: "ORL Magic", point: null, odds: null}],
+      total_odds: null, stake: 10, payout: null, notes: "Lost"})}}]})); },
+    web: (url) => {
+      fetched.push(url);
+      if (url === PAGE) return new Response(`<html><head><meta property="og:image" content="${PIC}"/></head></html>`, {headers: {"content-type": "text/html"}});
+      if (url === PIC) return new Response(new Uint8Array([137, 80, 78, 71]), {headers: {"content-type": "image/png"}});
+      return new Response("no", {status: 404});
+    },
+  });
+  const r = await handle(await s.req({link: PAGE}), s.env, s.fetcher);
+  assert.equal(r.status, 200);
+  const d = await r.json();
+  assert.deepEqual(fetched, [PAGE, PIC]);
+  assert.equal(d.book, "DraftKings");
+  assert.equal(d.legs.length, 2);
+  assert.equal(d.stake, 10);
+  assert.equal(sent.messages[0].content[1].image_url.url, "data:image/png;base64,iVBORw==");
+  assert.match(sent.messages[0].content[0].text, /preview picture of a shared bet/);
+});
+
+test("share links: only sportsbook hosts, and a page without a picture says so", async () => {
+  for (const bad of ["https://evil.example/x", "http://sportsbook.draftkings.com/x", "https://draftkings.com.evil.io/x", "https://kalshi.com/markets/x", "javascript:alert(1)"]) {
+    assert.equal(bookOf(bad), null, bad);
+  }
+  assert.equal(bookOf("https://sportsbook.fanduel.com/share/1").name, "FanDuel");
+  assert.equal(previewImage('<meta name="twitter:image" content="/a.png">', "https://x.draftkings.com/p"), "https://x.draftkings.com/a.png");
+  assert.equal(previewImage('<meta property="og:image" content="http://insecure/a.png">', "https://x.draftkings.com/p"), null);
+  let s = await setup({gemini: () => { throw new Error("no AI call expected"); }, web: () => new Response("<html></html>")});
+  let r = await handle(await s.req({link: "https://evil.example/x"}), s.env, s.fetcher);
+  assert.equal(r.status, 400);
+  r = await handle(await s.req({link: "https://sportsbook.draftkings.com/social/post/1"}), s.env, s.fetcher);
+  assert.equal(r.status, 422);
+  assert.equal((await r.json()).code, "noimage");
 });

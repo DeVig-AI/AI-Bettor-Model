@@ -1,1 +1,0 @@
-import{a as e}from"./index-Bf8GtbCp.js";var t=e;export{t as component};

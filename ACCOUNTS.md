@@ -82,6 +82,11 @@ Retry the deployment after adding either. When everything is used up, the chat s
 first time the Cloudflare model runs it accepts Meta's license for the account automatically. Open accounts only, 20
 screenshots each per day; the image isn't stored. On Google's free tier Google may use the images to improve its products.
 
+**Book link** does the same from a sportsbook's Share link: the function opens the share page (only DraftKings, FanDuel,
+BetMGM, Caesars, ESPN BET, Fanatics, Hard Rock, bet365, BetRivers, Fliff, PrizePicks and Underdog hosts, https only), takes
+its preview picture of the slip, and reads that. A DraftKings share picture lists every pick and the stake but not each
+leg's odds, and it counts toward the same 20 a day. Tested with DraftKings so far.
+
 ## Check it
 
 Open the site, tap the profile button (top right) → **Sign in or create account**, enter the email code, then type the

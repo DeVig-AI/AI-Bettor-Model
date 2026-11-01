@@ -21,7 +21,7 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { mlLeg } from './legs'
 import { LinkReader } from '../check-bet/link-reader'
-import { ScreenshotReader } from '../check-bet/scan'
+import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
 
 const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—')
 const money = (x: number) => `$${x.toFixed(2)}`
@@ -386,9 +386,9 @@ function LongShot() {
   )
 }
 
-// ---------- check a bet you already made: a screenshot (any book) or a Kalshi link ----------
+// ---------- check a bet you already made: a screenshot (any book), a sportsbook share link, or a Kalshi link ----------
 function CheckBet() {
-  const [how, setHow] = useState<'shot' | 'link'>('shot')
+  const [how, setHow] = useState<'shot' | 'book' | 'link'>('shot')
   const toSlip = () => setTimeout(() => document.getElementById('your-parlay')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
   return (
     <section aria-label='Check a bet you made' className='flex flex-col gap-3'>
@@ -397,8 +397,8 @@ function CheckBet() {
           <h2 className='font-display text-[22px] font-extrabold'>Check a bet you made</h2>
           <p className='mt-0.5 text-sm text-muted-foreground'>See every leg, what it needs, and how the price compares.</p>
         </div>
-        <div role='radiogroup' aria-label='How' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
-          {([['shot', 'Screenshot'], ['link', 'Kalshi link']] as const).map(([k, t]) => (
+        <div role='radiogroup' aria-label='How' className='grid grid-cols-3 gap-1 rounded-xl bg-muted p-1'>
+          {([['shot', 'Screenshot'], ['book', 'Book link'], ['link', 'Kalshi link']] as const).map(([k, t]) => (
             <button key={k} type='button' role='radio' aria-checked={how === k} onClick={() => setHow(k)}
               className={cn('h-9 rounded-lg px-3 text-sm font-semibold transition-colors duration-150', how === k ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
               {t}
@@ -406,7 +406,7 @@ function CheckBet() {
           ))}
         </div>
       </div>
-      {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : (
+      {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : how === 'book' ? <BookLinkReader onExplained={toSlip} /> : (
         <LinkReader title='From a Kalshi link' blurb={<>On Kalshi, tap Share on your bet and paste the link here: a combo shows every leg, what&apos;s won, and the prices now.</>} />
       )}
     </section>
