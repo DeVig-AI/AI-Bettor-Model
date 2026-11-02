@@ -78,8 +78,9 @@ export async function handle(request, env, fetcher = fetch) {
     const models = env.GEMINI_MODEL ? [env.GEMINI_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
     for (const model of models) {
       try {
+        // Gemini 3 models think first and the thinking counts against max_tokens: keep it low and leave room for it
         const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-          body: JSON.stringify({model, messages, max_tokens: MAX_TOKENS, temperature: 0.4, stream: true})});
+          body: JSON.stringify({model, messages, max_tokens: MAX_TOKENS + 1500, reasoning_effort: "low", temperature: 0.4, stream: true})});
         if (r.ok && r.body) return sse(r.body);
         if (r.status === 429) { quota = true; break; }
         if (r.status !== 404 && r.status !== 400) break;
