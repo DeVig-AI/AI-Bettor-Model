@@ -1,0 +1,1 @@
+import{t as e}from"./research-DDheaf_T.js";var t=e;export{t as component};

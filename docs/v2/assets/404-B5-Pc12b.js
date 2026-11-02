@@ -1,0 +1,1 @@
+import{i as e}from"./index-tdp9RvPI.js";var t=e;export{t as component};
