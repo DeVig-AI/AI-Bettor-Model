@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T03:29:30Z",
+ "updated_at": "2026-11-02T11:58:17Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -1439,6 +1439,116 @@
    "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40279939942",
    "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/s-0501d21a.json",
    "updated_at": "2026-10-26T06:48:14Z"
+  },
+  {
+   "id": "s-0680b479",
+   "name": "Signals (SRS · carry 0.7 · prior 4) + def-comp-epa, inj-qb-out, inj-regulars-out",
+   "market": "spread",
+   "family": "Signals · search",
+   "reason": "Found by search round 810: on 2006–2016 it beat the line by +1.32 pts a game (t = 4.50), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "queued",
+   "fail_reason": "",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2020–22",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2023–24",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    }
+   ],
+   "pooled": null,
+   "attempts": 22,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": null,
+   "rule_split": [],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Registered; runs in the next nightly lab run.",
+   "graded_at": null,
+   "run_number": null,
+   "run_url": null,
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/candidates/s-0680b479.yaml",
+   "updated_at": null
+  },
+  {
+   "id": "s-72bd1682",
+   "name": "Blend of 2: s-b4ff1842 + s-1314e7a1",
+   "market": "spread",
+   "family": "Blend · search",
+   "reason": "Found by search round 810: on 2006–2016 it beat the line by +1.16 pts a game (t = 3.86), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "queued",
+   "fail_reason": "",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2020–22",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2023–24",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    }
+   ],
+   "pooled": null,
+   "attempts": 22,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": null,
+   "rule_split": [],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Registered; runs in the next nightly lab run.",
+   "graded_at": null,
+   "run_number": null,
+   "run_url": null,
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/candidates/s-72bd1682.yaml",
+   "updated_at": null
   },
   {
    "id": "s-b07a5742",
@@ -2993,6 +3103,35 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 810",
+   "started_at": "2026-11-02T11:57:49Z",
+   "finished_at": "2026-11-02T11:57:49Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41438503713",
+   "summary": "2,000 models scored → 520 consistent → 20 strong (t ≥ 2.5) → 2 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 520
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 20
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 2
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 809",
    "started_at": "2026-11-02T02:46:54Z",
    "finished_at": "2026-11-02T02:46:54Z",
@@ -3251,40 +3390,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 800",
-   "started_at": "2026-11-01T00:11:01Z",
-   "finished_at": "2026-11-01T00:11:01Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41255162771",
-   "summary": "1,999 models scored → 520 consistent → 20 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 1999
-    },
-    {
-     "label": "consistent",
-     "count": 520
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 20
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-02T03:31:44Z",
+   "updated_at": "2026-11-02T12:02:18Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5204,7 +5314,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-02T03:32:06Z",
+   "updated_at": "2026-11-02T12:02:47Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5897,7 +6007,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-02T03:29:17Z",
+   "updated_at": "2026-11-02T12:02:58Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6409,7 +6519,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-02T03:32:15Z",
+   "updated_at": "2026-11-02T12:03:09Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
