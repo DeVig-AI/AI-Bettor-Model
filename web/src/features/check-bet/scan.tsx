@@ -64,7 +64,8 @@ async function send(body: { image: string } | { link: string }): Promise<Scan> {
   if (code === 'off' || r.status === 404) throw new ScanError("Screenshot reading isn't switched on for this site yet. A Kalshi link works now.")
   if (code === 'noimage') throw new ScanError("That book's page doesn't show the bet. Take a screenshot of it instead.")
   if (code === 'link' && d?.error) throw new ScanError(`Couldn't open that link: ${d.error}. A screenshot works too.`)
-  throw new ScanError("Couldn't read that one. Try again, or a clearer screenshot.")
+  const why = typeof d?.why === 'string' && d.why ? ` (${d.why.slice(0, 120)})` : r.ok ? '' : ` (error ${r.status})`
+  throw new ScanError(`Couldn't read that one. Try again, or a clearer screenshot.${why}`)
 }
 
 // ---------- matching a leg to a game ----------

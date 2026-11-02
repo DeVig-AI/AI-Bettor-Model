@@ -152,3 +152,18 @@ test("a retired Gemini model (404) moves on to the next one", async () => {
   assert.deepEqual(tried, ["gemini-2.5-flash", "gemini-flash-latest"]);
   assert.equal((await r.json()).legs.length, 3);
 });
+
+test("a cut-off answer tries the next model, and a failure says why", async () => {
+  const sent = [];
+  const s = await setup({gemini: b => {
+    sent.push(b);
+    return new Response(JSON.stringify({choices: [{message: {content: '{"book": "FanDuel", "legs": [{"sport'}, finish_reason: "length"}]}));
+  }});
+  const r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
+  assert.equal(r.status, 502);
+  const d = await r.json();
+  assert.equal(sent.length, 3);
+  assert.equal(sent[0].reasoning_effort, "low");
+  assert.ok(sent[0].max_tokens >= 4000);
+  assert.match(d.why, /gemini-flash-latest:unparsed\/length/);
+});

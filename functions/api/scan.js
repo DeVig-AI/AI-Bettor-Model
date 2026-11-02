@@ -166,20 +166,30 @@ export async function handle(request, env, fetcher = fetch) {
   const prompt = fromLink ? PROMPT + "\n" + SHARE_NOTE : PROMPT;
 
   let quota = false, answer = null;
+  const tries = [];                       // what happened with each model, sent back on a failure so it can be fixed
   if (env.GEMINI_API_KEY) {
     const models = env.GEMINI_VISION_MODEL ? [env.GEMINI_VISION_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
     for (const model of models) {
       try {
+        // Gemini 3 models think first, and the thinking counts against max_tokens: keep it low and leave room,
+        // or the JSON comes back cut off
         const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-          body: JSON.stringify({model, temperature: 0, max_tokens: 1500,
+          body: JSON.stringify({model, temperature: 0, max_tokens: 8192, reasoning_effort: "low",
             response_format: {type: "json_object"},
             messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
-        if (r.ok) { answer = (await r.json())?.choices?.[0]?.message?.content ?? null; if (answer != null) break; }
-        else if (r.status === 429) { quota = true; break; }
-        else if (r.status !== 404 && r.status !== 400) break;
-      } catch (e) { break; }
+        if (r.ok) {
+          const c = (await r.json())?.choices?.[0];
+          const text = c?.message?.content ?? null;
+          if (text != null && clean(parseAnswer(text))) { answer = text; break; }
+          tries.push(`${model}:${text == null ? "empty" : "unparsed"}${c?.finish_reason ? "/" + c.finish_reason : ""}`);
+          continue;
+        }
+        tries.push(`${model}:${r.status}`);
+        if (r.status === 429) { quota = true; break; }
+        if (r.status !== 404 && r.status !== 400) break;
+      } catch (e) { tries.push(`${model}:fetch`); break; }
     }
-  }
+  } else tries.push("no-gemini-key");
   if (answer == null && env.AI) {
     const bytes = [...Uint8Array.from(atob(m[2]), c => c.charCodeAt(0))];
     for (const model of CF_VISION) {
@@ -192,19 +202,21 @@ export async function handle(request, env, fetcher = fetch) {
           await env.AI.run(model, {prompt: "agree"});
           out = await run();
         }
-        answer = out && (out.response ?? out.result?.response) || null;
-        if (answer != null) break;
+        const text = out && (out.response ?? out.result?.response) || null;
+        if (text != null && (typeof text === "object" || clean(parseAnswer(text)))) { answer = text; break; }
+        tries.push(`cf:${text == null ? "empty" : "unparsed"}`);
       } catch (e) {
+        tries.push("cf:error");
         if (/limit|quota|neuron|429|capacity/i.test(String(e && e.message || e))) { quota = true; break; }
       }
     }
   }
   if (answer == null) {
     return json({error: quota ? "the free AI has used up today's reads; try again tomorrow" : "the AI couldn't read it right now",
-                 code: quota ? "quota" : "ai"}, quota ? 429 : 502);
+                 code: quota ? "quota" : "ai", why: tries.join(" ")}, quota ? 429 : 502);
   }
   const d = clean(typeof answer === "object" ? answer : parseAnswer(answer));
-  if (!d) return json({error: "the AI's answer wasn't readable; try again", code: "ai"}, 502);
+  if (!d) return json({error: "the AI's answer wasn't readable; try again", code: "ai", why: tries.join(" ")}, 502);
   if (book) d.book = book;
   return json(d);
 }
