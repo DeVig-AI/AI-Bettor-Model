@@ -3,6 +3,10 @@
 // sports-betting guide on top. Signed-in accounts only (the invite code), with a daily cap per person.
 //
 // Which AI, first that works:
+//   0. The model on the owner's Mac (Ollama, qwen3:4b-instruct) through the DeVig gate, if LOCAL_AI_URL and
+//      LOCAL_AI_KEY are set. It answers with tools (functions/lib/devig-tools.js): it looks up the game, record,
+//      injuries or a slang word itself instead of reading the whole board, so a small model stays fast and on point.
+//      Off, busy (one question at a time) or slow: the next AI answers instead.
 //   1. Google Gemini, if GEMINI_API_KEY is set (free key from Google AI Studio; about 1,000 answers a day free)
 //   2. Cloudflare Workers AI through the AI binding: a small, cheap model so the free daily allowance covers a few
 //      hundred answers (AI_MODEL picks another one)
@@ -12,6 +16,7 @@
 // Needs, in the Pages project settings (see ACCOUNTS.md): the USERS KV binding and Access variables (as for /api/me)
 // and either a Workers AI binding named AI or a GEMINI_API_KEY secret (or both).
 import { accessUser, userKey } from "./me.js";
+import { LINGO, LOCAL_GUIDE, TOOLS, runTool, splitAppMessage, termsIn } from "../lib/devig-tools.js";
 
 // Workers AI models to try in order (names change over time; a missing one is skipped)
 const CF_MODELS = ["@cf/meta/llama-3.1-8b-instruct-fast", "@cf/meta/llama-3.1-8b-instruct-fp8", "@cf/meta/llama-3.1-8b-instruct",
@@ -23,6 +28,9 @@ const GEMINI_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemin
 const PER_DAY = 50;                // questions per person per day
 const MAX_BODY = 60000;            // bytes of question + app data
 const MAX_TOKENS = 700;
+const LOCAL_MODEL = "qwen3:4b-instruct";
+const LOCAL_BUDGET = 60_000;        // the Mac gets this long for the whole answer, tools included
+const LOCAL_ROUNDS = 4;             // tool rounds before it must answer
 
 export const BETTING_GUIDE = [
   "GENERAL SPORTS-BETTING KNOWLEDGE (use it to explain; label it as general, not as the app's data):",
@@ -37,10 +45,59 @@ export const BETTING_GUIDE = [
   "- Small samples lie: 10-20 picks can't show skill; even hundreds can be luck. Past results don't guarantee future ones.",
   "- Common traps: chasing losses, betting more after wins, trusting 'locks', and stories about trends that weren't tested.",
   "- Betting is entertainment with an expected loss. If it stops being fun or someone can't stop, the US helpline is 1-800-GAMBLER.",
+  "Bettor lingo (read questions the way a bettor means them): " +
+    Object.entries(LINGO).map(([k, v]) => `${k.split(" / ")[0].toUpperCase()} = ${v}`).join(" "),
+  "Work out exactly what the user means in betting terms and answer that specific thing from the game's data.",
   "Never tell anyone how much to bet or that something is guaranteed. Keep answers short; the user is on a phone.",
   "Answer with what you have, even if it's incomplete, and say what's missing. End every answer with this line on its own: " +
   "\"AI can make mistakes, so double-check before betting.\"",
 ].join("\n");
+
+// The Mac: Ollama's /api/chat through the gate, with tools. The app's data stays here; the model asks for the part it
+// needs. Returns the answer text, or null to fall through to the cloud AIs.
+export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET) {
+  if (!env.LOCAL_AI_URL || !env.LOCAL_AI_KEY) return null;
+  const first = splitAppMessage(msgs[0].content);
+  const app = first ? first.app : null;
+  const convo = msgs.map((m, i) => (i === 0 && first ? {role: "user", content: first.question} : m));
+  const today = app && app.now ? `Now: ${app.now}.` : "";
+  const terms = termsIn(convo[convo.length - 1].content);
+  const said = terms.length ? `\nBettor terms in this question:\n${terms.join("\n")}` : "";
+  const messages = [{role: "system", content: `${LOCAL_GUIDE}\n${today}${said}`}, ...convo];
+  const end = Date.now() + budget;
+  for (let round = 0; round <= LOCAL_ROUNDS; round++) {
+    const left = end - Date.now();
+    if (left < 2000) return null;
+    let d;
+    try {
+      const r = await fetcher(`${env.LOCAL_AI_URL.replace(/\/$/, "")}/api/chat`, {method: "POST",
+        headers: {"content-type": "application/json", authorization: "Bearer " + env.LOCAL_AI_KEY},
+        body: JSON.stringify({model: env.LOCAL_CHAT_MODEL || LOCAL_MODEL, messages, stream: false, think: false,
+          tools: round < LOCAL_ROUNDS ? TOOLS : undefined, options: {temperature: 0.3, num_ctx: 8192, num_predict: MAX_TOKENS}}),
+        signal: AbortSignal.timeout(left)});
+      if (!r.ok) return null;                       // busy (503), off, or a bad key: the cloud answers
+      d = await r.json();
+    } catch (e) { return null; }
+    const m = d && d.message;
+    if (!m) return null;
+    const calls = Array.isArray(m.tool_calls) ? m.tool_calls : [];
+    if (!calls.length) return typeof m.content === "string" && m.content.trim() ? m.content.trim() : null;
+    messages.push({role: "assistant", content: m.content || "", tool_calls: calls});
+    for (const c of calls.slice(0, 3)) {
+      const f = c.function || {};
+      let args = f.arguments;
+      if (typeof args === "string") { try { args = JSON.parse(args); } catch (e) { args = {}; } }
+      const out = await runTool(f.name, args, {app, env, fetcher});
+      messages.push({role: "tool", tool_name: f.name, content: JSON.stringify(out).slice(0, 6000)});
+    }
+  }
+  return null;
+}
+
+// one finished answer as the same OpenAI-style stream the app already reads
+function sseText(text) {
+  return `data: ${JSON.stringify({choices: [{delta: {content: text}}]})}\n\ndata: [DONE]\n\n`;
+}
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {status, headers: {"content-type": "application/json", "cache-control": "no-store"}});
@@ -48,7 +105,7 @@ function json(body, status = 200) {
 
 export async function handle(request, env, fetcher = fetch) {
   if (request.method !== "POST") return json({error: "method not allowed"}, 405);
-  if (!env.AI && !env.GEMINI_API_KEY) return json({error: "chat isn't switched on yet", code: "off"}, 503);
+  if (!env.AI && !env.GEMINI_API_KEY && !env.LOCAL_AI_URL) return json({error: "chat isn't switched on yet", code: "off"}, 503);
   if (!env.USERS) return json({error: "accounts aren't switched on yet", code: "off"}, 503);
   const email = await accessUser(request, env, fetcher);
   if (!email) return json({error: "sign in to chat", code: "account"}, 401);
@@ -73,6 +130,9 @@ export async function handle(request, env, fetcher = fetch) {
   const messages = [{role: "system", content: BETTING_GUIDE}, ...msgs];
   const sse = body => new Response(body, {headers: {"content-type": "text/event-stream", "cache-control": "no-store"}});
   let quota = false;
+
+  const local = await askLocal(msgs, env, fetcher);
+  if (local) return sse(sseText(local));
 
   if (env.GEMINI_API_KEY) {                       // OpenAI-style stream: data: {"choices":[{"delta":{"content":...}}]}
     const models = env.GEMINI_MODEL ? [env.GEMINI_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
