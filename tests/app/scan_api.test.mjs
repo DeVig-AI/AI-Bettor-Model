@@ -167,3 +167,23 @@ test("a cut-off answer tries the next model, and a failure says why", async () =
   assert.ok(sent[0].max_tokens >= 4000);
   assert.match(d.why, /gemini-flash-latest:unparsed\/length/);
 });
+
+test("Gemini out: the owner's computer reads it, with the key; when it's off, the next AI is tried", async () => {
+  let seen;
+  const s = await setup({gemini: () => new Response("{}", {status: 429}), web: (url, init) => {
+    seen = {url, auth: init.headers.authorization, body: JSON.parse(init.body)};
+    return new Response(JSON.stringify({choices: [{message: {content: JSON.stringify(SLIP)}}]}));
+  }});
+  Object.assign(s.env, {LOCAL_AI_URL: "https://ai.example.com/", LOCAL_AI_KEY: "k"});
+  let r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
+  assert.equal(r.status, 200);
+  assert.equal(seen.url, "https://ai.example.com/v1/chat/completions");
+  assert.equal(seen.auth, "Bearer k");
+  assert.equal(seen.body.model, "qwen2.5vl:3b");
+
+  const off = await setup({gemini: () => new Response("{}", {status: 404}), web: () => { throw new TypeError("fetch failed"); }});
+  Object.assign(off.env, {LOCAL_AI_URL: "https://ai.example.com", LOCAL_AI_KEY: "k"});
+  r = await handle(await off.req({image: IMG}), off.env, off.fetcher);
+  assert.equal(r.status, 502);
+  assert.match((await r.json()).why, /local:offline/);
+});

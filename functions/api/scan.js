@@ -4,7 +4,9 @@
 // The app then matches the legs to today's games and does the math. The classic app did this with Claude inside
 // claude.ai; on the site it uses the same free AI as Ask (/api/ask), so the same account rule and keys apply:
 //   1. Google Gemini, if GEMINI_API_KEY is set (reads images well)
-//   2. Cloudflare Workers AI through the AI binding (a vision model; weaker, used when Gemini isn't set up or is out)
+//   2. the owner's own computer, if LOCAL_AI_URL is set: Ollama with a small vision model behind a tunnel and a key
+//      (scripts/local-ai), so reads keep working when Gemini is out; skipped when that computer is off
+//   3. Cloudflare Workers AI through the AI binding (a vision model; weaker, used when Gemini isn't set up or is out)
 // Signed-in accounts only (the invite code), with a daily cap per person. The image isn't stored.
 // A sportsbook share link works too: POST {link: "https://sportsbook.draftkings.com/social/post/..."}. The bet isn't in
 // the page's HTML, but the page's preview picture (og:image) is a picture of the slip, so that's what the AI reads.
@@ -14,6 +16,8 @@ const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat
 // Google retires model versions (gemini-2.5-flash shut down 2026-10-16 and the reader broke), so try the always-current
 // alias first and named versions after it; a model that's gone (404/400) just moves on to the next one
 const GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash"];
+const LOCAL_MODEL = "qwen2.5vl:3b";   // fits an 8 GB Mac; reads a slip in about 30 s
+const LOCAL_TIMEOUT = 90_000;
 const CF_VISION = ["@cf/meta/llama-3.2-11b-vision-instruct"];
 const PER_DAY = 20;                     // screenshots per person per day
 const MAX_BODY = 4_000_000;             // the app shrinks photos to about 1600px JPEG first (~300 KB)
@@ -85,7 +89,10 @@ export const PROMPT = [
   '{"book": string|null, "legs": [{"sport": string|null, "away": string|null, "home": string|null, ' +
   '"market": "moneyline"|"spread"|"total"|"prop"|"other", "side": string, "point": number|null, "odds": number|null}], ' +
   '"total_odds": number|null, "stake": number|null, "payout": number|null, "notes": string}',
-  "One leg per selection. \"side\" is what was picked, as shown (a team name or abbreviation, \"Over\", \"Under\", or a player and stat).",
+  "One leg per selection. \"side\" is what was picked, as shown (a team name or abbreviation, \"Over\", \"Under\", or a player and stat);",
+  "never write \"Home\" or \"Away\" as the side, write the team's name.",
+  "\"market\": \"moneyline\" for a straight win pick, \"spread\" when the team has a +/- point line, \"total\" for Over/Under game points, \"prop\" for a player stat.",
+  "\"book\" is the sportsbook only if its name or logo is visible; otherwise null.",
   "\"away\" and \"home\" are the two teams of that leg's game if shown (\"A @ B\" or \"A at B\" means A is away; \"A vs B\" with no other sign: A away).",
   "\"odds\" is that leg's American odds as a signed integer (-110, 145). Kalshi shows cents: 62¢ means a 62% price; write it as American odds (-163).",
   "\"total_odds\" is the whole parlay's American odds if shown; \"stake\" and \"payout\" are dollar amounts if shown.",
@@ -190,6 +197,21 @@ export async function handle(request, env, fetcher = fetch) {
       } catch (e) { tries.push(`${model}:fetch`); break; }
     }
   } else tries.push("no-gemini-key");
+  if (answer == null && env.LOCAL_AI_URL && env.LOCAL_AI_KEY) {
+    const model = env.LOCAL_AI_MODEL || LOCAL_MODEL;
+    try {
+      const r = await fetcher(String(env.LOCAL_AI_URL).replace(/\/+$/, "") + "/v1/chat/completions", {method: "POST",
+        headers: {"content-type": "application/json", authorization: "Bearer " + env.LOCAL_AI_KEY},
+        signal: AbortSignal.timeout(LOCAL_TIMEOUT),
+        body: JSON.stringify({model, temperature: 0, max_tokens: 1500, response_format: {type: "json_object"},
+          messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
+      if (r.ok) {
+        const text = (await r.json())?.choices?.[0]?.message?.content ?? null;
+        if (text != null && clean(parseAnswer(text))) answer = text;
+        else tries.push(`local:${text == null ? "empty" : "unparsed"}`);
+      } else tries.push(`local:${r.status}`);
+    } catch (e) { tries.push(e && e.name === "TimeoutError" ? "local:timeout" : "local:offline"); }
+  }
   if (answer == null && env.AI) {
     const bytes = [...Uint8Array.from(atob(m[2]), c => c.charCodeAt(0))];
     for (const model of CF_VISION) {
