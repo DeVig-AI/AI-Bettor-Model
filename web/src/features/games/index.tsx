@@ -223,13 +223,11 @@ export function Games() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dayRows, league, picksOnly, mineOnly, query, tracked, prefs])
 
-  // tracked games and favorite teams' games first within each group (stable: kickoff order otherwise)
-  const favFirst = (list: GameRow[]) => [...list].sort((a, b) => Number(mine(b)) - Number(mine(a)))
-  const picked = favFirst(shown.filter(isPick))
-  const rest = favFirst(shown.filter((r) => !isPick(r)))
-  const live = rest.filter((r) => r.state === 'in')
-  const upcoming = rest.filter((r) => r.state === 'pre')
-  const final = rest.filter((r) => r.state === 'post').reverse()
+  // every game in start-time order, earliest first, picks included (the DeVig picks button filters, same order)
+  const byStart = [...shown].sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))
+  const live = byStart.filter((r) => r.state === 'in')
+  const upcoming = byStart.filter((r) => r.state === 'pre')
+  const final = byStart.filter((r) => r.state === 'post')
   const picks = dayRows.filter(isPick).length
   const liveCount = dayRows.filter((r) => r.state === 'in').length
   const showDay = day !== 'today'
@@ -369,7 +367,6 @@ export function Games() {
           </div>
         ) : (
           <>
-            <Group title="DeVig's picks" rows={picked} showDay={showDay} />
             <Group title='Live now' rows={live} showDay={false} dot />
             <Group title='Upcoming' rows={upcoming} showDay={showDay} />
             <Group title='Final' rows={final} showDay={showDay} />
