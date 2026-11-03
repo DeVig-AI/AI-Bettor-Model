@@ -33,12 +33,12 @@ const SKIP = /kickoff|timeout|end of|two-minute|official|coin toss|end period|en
 // plays that can be drawn on the field: they have a start and an end spot
 export const drawable = (p: FieldPlay) => p.from != null && p.to != null && !SKIP.test(p.type)
 
-export type Move = { play: FieldPlay; before: number; after: number; delta: number; t0: number; t1: number }
+export type Move<P = FieldPlay> = { play: P; before: number; after: number; delta: number; t0: number; t1: number }
 
 // The price around one play, for `side` (a team code): just before the play, and at least a minute after it (up to
 // the next play, at most three minutes). Kalshi's history comes by the minute, so a play run in the same minute as
 // the one before it shares its window.
-export function moveOf(play: FieldPlay, next: FieldPlay | null, points: PricePoint[], side: 'home' | 'away', now: number): Move | null {
+export function moveOf<P extends { at?: number }>(play: P, next: P | null, points: PricePoint[], side: 'home' | 'away', now: number): Move<P> | null {
   if (play.at == null || !points.length) return null
   const t0 = play.at
   const t1 = Math.min(Math.max(t0 + 60, next?.at ?? now), t0 + 180, now)
@@ -57,8 +57,8 @@ export function allMoves(plays: FieldPlay[], points: PricePoint[], side: 'home' 
 }
 
 // The biggest moves, each from its own stretch of time (two plays in one minute don't both claim that minute's move)
-export function biggestMoves(moves: Move[], n = 3, min = 2): Move[] {
-  const out: Move[] = []
+export function biggestMoves<M extends { delta: number; t0: number; t1: number }>(moves: M[], n = 3, min = 2): M[] {
+  const out: M[] = []
   for (const m of [...moves].sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))) {
     if (Math.abs(m.delta) < min) break
     if (out.some((o) => m.t0 < o.t1 && o.t0 < m.t1)) continue

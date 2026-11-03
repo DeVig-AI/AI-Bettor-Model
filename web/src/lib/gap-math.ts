@@ -45,4 +45,4 @@ export function gapRead(kalshi: number | null, espn: number | null): { gap: numb
   return { gap, text: `Kalshi is ${Math.abs(gap)} point${Math.abs(gap) === 1 ? '' : 's'} ${gap < 0 ? 'behind' : 'ahead of'} ESPN` }
 }
 
-export const KIND_LABEL: Record<string, string> = { TD: 'TD', FG: 'FG', INT: 'INT', FUM: 'FUM', SAF: 'SAF', BLK: 'BLK' }
+export const KIND_LABEL: Record<string, string> = { TD: 'TD', FG: 'FG', INT: 'INT', FUM: 'FUM', SAF: 'SAF', BLK: 'BLK', RUN: 'RUN' }

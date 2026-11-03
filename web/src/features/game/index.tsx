@@ -13,6 +13,7 @@ import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { PropRow, type Shown, withLive } from '../props'
 import { FieldMovers } from './field'
+import { CourtMovers } from './court'
 import { GapChart } from './gap'
 import { GameWrap } from './wrap'
 
@@ -168,6 +169,7 @@ export function GamePage({ id }: { id: string }) {
 
           <GapChart row={row} />
           <FieldMovers row={row} />
+          <CourtMovers row={row} />
 
         <GameWrap row={row} />
 

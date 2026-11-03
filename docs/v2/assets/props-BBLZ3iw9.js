@@ -1,0 +1,1 @@
+import{n as e}from"./props-CH_-rE29.js";var t=e;export{t as component};

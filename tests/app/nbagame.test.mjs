@@ -71,9 +71,9 @@ test("NBA game page with the shot chart", async (t) => {
       assert.deepEqual(await page.locator(".sb-tabs .pill-tab").allInnerTexts(), ["Plays", "Picks & lines", "Matchup", "Box", "Quarters"]);
       assert.equal(await page.locator(".ct-shot").count(), 5, "five shots with a spot (no free throw, no foul)");
       assert.equal(await page.locator(".ct-shot.made").count(), 4);
-      // the newest shot (White's three from the far half, folded to x 4, y 20) gets the ring
+      // the newest shot (White's three from the far half, folded to x 4, y 25.3 from the baseline) gets the ring
       assert.equal(await page.locator(".ct-new").getAttribute("cx"), (4 * 7.2).toFixed(1));
-      assert.equal(await page.locator(".ct-new").getAttribute("cy"), (20 * 7.2).toFixed(1));
+      assert.equal(await page.locator(".ct-new").getAttribute("cy"), (25.3 * 7.2).toFixed(1));
       assert.match(await page.locator(".ct-run").innerText(), /BOS 9–0 run/);
       assert.match(await page.locator(".gp-play.big").first().innerText(), /\+3 · 80–90[\s\S]*Derrick White/);
       await pg.screenshot({path: OUT + "nba-game-plays.png", fullPage: true});

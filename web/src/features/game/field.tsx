@@ -20,7 +20,7 @@ const X = (spot: number) => EZ + Math.max(-2, Math.min(102, spot)) * PPY
 const STEP_MS = 1500
 const LOS = '#60a5fa', FD = '#f5e663', LOSS = '#ffa3a3', WIN = '#8ef0b4'
 
-function useReducedMotion() {
+export function useReducedMotion() {
   const [r, setR] = useState(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
   useEffect(() => {
     const m = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -73,7 +73,7 @@ function Body({ row, plays, points }: { row: GameRow; plays: FieldPlay[]; points
   )
 }
 
-function Pill({ d, className }: { d: number; className?: string }) {
+export function Pill({ d, className }: { d: number; className?: string }) {
   const up = d > 0, down = d < 0
   return (
     <span className={cn('inline-flex h-7 shrink-0 items-center justify-center gap-0.5 rounded-full px-2.5 font-condensed text-[15px] font-bold tabular-nums',

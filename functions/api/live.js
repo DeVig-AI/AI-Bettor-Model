@@ -257,16 +257,51 @@ export function nflGame(d, code = x => String(x || "").toUpperCase()) {
 
 // ---------- NBA game page: plays with shot spots, the current run, quarter scores, player box ----------
 // Shot spots are feet on a half court seen from above the basket: x 0-50 across, y 0-47 out from the baseline
-// (the rim is at about x 25, y 5). ESPN gives full-court coordinates for some shots and junk for free throws,
-// so anything off the court is dropped and the far half is folded onto the near one.
+// (the rim is at x 25, y 5.25). ESPN measures y out from the rim (a layup is y 0-2, a corner three can be y -3), so
+// 5.25 is added; junk spots (free throws, fouls) are dropped and a far-half spot is folded onto the near half.
+export const RIM_Y = 5.25;
 export function nbaShot(c) {
   if (!c) return null;
   let x = Number(c.x), y = Number(c.y);
-  if (!isFinite(x) || !isFinite(y) || x < 0 || x > 50 || y < 0 || y > 94) return null;
+  if (!isFinite(x) || !isFinite(y) || x < 0 || x > 50 || y < -RIM_Y || y > 94) return null;
   if (y > 47) { x = 50 - x; y = 94 - y; }
+  y = Math.min(47, y + RIM_Y);
   return {x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10};
 }
 const NBA_PLAYS_KEPT = 80, NBA_BOX = ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "+/-"];
+
+// For the gap chart: ESPN's own win chance for the home team after each play, the runs (8+ unanswered points,
+// marked at the run's last bucket) and when each quarter started. Same shape as nflSwing.
+export function nbaSwing(d, all) {
+  const when = {}, periods = [], keys = [];
+  all.forEach(p => {
+    if (p.at == null) return;
+    when[p.id] = p.at;
+    if (p.q) { const e = periods.find(x => x[0] === p.q); if (!e) periods.push([p.q, p.at]); else if (p.at < e[1]) e[1] = p.at; }
+  });
+  let team = null, pts = 0, lastBucket = null;
+  const close = () => {
+    if (team && pts >= 8 && lastBucket && lastBucket.at != null)
+      keys.push({at: lastBucket.at, kind: "RUN", q: lastBucket.q, clock: lastBucket.clock, text: `${team} ${pts}-0 run`,
+        away_score: lastBucket.away_score, home_score: lastBucket.home_score});
+  };
+  all.forEach(p => {
+    if (!p.pts || !p.team) return;
+    if (p.team !== team) { close(); team = p.team; pts = 0; }
+    pts += p.pts; lastBucket = p;
+  });
+  close();
+  let wp = [];
+  (d.winprobability || []).forEach(w => {
+    const t = when[String(w.playId)], v = num(w.homeWinPercentage);
+    if (t && v != null && v >= 0 && v <= 1 && (!wp.length || t >= wp[wp.length - 1][0])) wp.push([t, Math.round(v * 1000) / 1000]);
+  });
+  if (wp.length > WP_KEPT) {
+    const step = wp.length / WP_KEPT;
+    wp = [...Array.from({length: WP_KEPT - 1}, (_, i) => wp[Math.floor(i * step)]), wp[wp.length - 1]];
+  }
+  return {wp, keys, periods: periods.sort((a, b) => a[0] - b[0])};
+}
 
 export function nbaGame(d, code = x => String(x || "").toUpperCase()) {
   const comp = ((d.header || {}).competitions || [])[0] || {};
@@ -280,12 +315,19 @@ export function nbaGame(d, code = x => String(x || "").toUpperCase()) {
   const teamOf = t => t ? (idTeam[String(t.id)] || (t.abbreviation ? code(t.abbreviation) : null)) : null;
   const all = (d.plays || []).filter(p => p && p.text).map(p => {
     const shot = p.shootingPlay && !/free throw/i.test(((p.type || {}).text || "") + " " + p.text) ? nbaShot(p.coordinate) : null;
-    return {id: String(p.id || p.sequenceNumber || ""), team: teamOf(p.team), q: num((p.period || {}).number),
+    const play = {id: String(p.id || p.sequenceNumber || ""), team: teamOf(p.team), q: num((p.period || {}).number),
       clock: (p.clock || {}).displayValue || "", text: String(p.text), type: (p.type || {}).text || "",
       pts: p.scoringPlay ? (num(p.scoreValue) || 0) : 0, away_score: num(p.awayScore), home_score: num(p.homeScore),
       shot: shot ? Object.assign(shot, {made: !!p.scoringPlay}) : null};
+    const at = Date.parse(p.wallclock || "");   // when it happened (unix seconds), matched to Kalshi's price
+    if (isFinite(at)) play.at = Math.round(at / 1000);
+    return play;
   });
-  const out = {away, home, plays: all.slice(-NBA_PLAYS_KEPT).reverse()};
+  // the newest plays in full, plus every older bucket and turnover (the game's biggest price moves are picked from them)
+  const cut = Math.max(0, all.length - NBA_PLAYS_KEPT);
+  const older = all.slice(0, cut).filter(p => p.pts > 0 || /turnover/i.test(p.type));
+  const out = {away, home, plays: all.slice(cut).reverse().concat(older.reverse())};
+  Object.assign(out, nbaSwing(d, all));
   // the current run: points scored since the other team last scored (shown from 6 unanswered)
   let runTeam = null, runPts = 0;
   for (let i = all.length - 1; i >= 0; i--) {
