@@ -96,9 +96,13 @@ def change_note(row, prev):
     if not p or (p.get("away"), p.get("home")) != (row["away"], row["home"]):
         return None
     if p.get("status") != row["status"]:
-        worse = STATUS_RANK.get(row["status"], 5) < STATUS_RANK.get(p.get("status"), 5)
+        if p.get("status") not in STATUS_RANK or row["status"] not in STATUS_RANK:
+            return None                  # Out vs Injured Reserve / Suspension / PUP: not playing either way, no change
+        worse = STATUS_RANK[row["status"]] < STATUS_RANK[p["status"]]
         return f"{'Downgraded' if worse else 'Upgraded'} from {p.get('status', '?').lower()}"
     note = p.get("note") or ""
+    if row["status"] not in STATUS_RANK:
+        return None                      # long-term lists (IR ...) never carry a change note
     return note if note.startswith(("Downgraded", "Upgraded")) else None    # only this bot's own notes carry over
 
 
@@ -394,8 +398,10 @@ def run_nfl(now):
                 continue                                   # long-term lists (IR, PUP ...) only for regulars
             details = inj.get("details") or {}
             kick = g["kickoff"].astimezone(ET)
-            updated = inj.get("date")
-            fresh = bool(updated) and datetime.fromisoformat(updated.replace("Z", "+00:00")) >= g["kickoff"] - timedelta(days=3)
+            # official game statuses come out two days before the game (Friday for Sunday): by the calendar, since
+            # ESPN's timestamp is the latest news item, not when the status was set
+            final_due = (kick - timedelta(days=2)).replace(hour=16, minute=0, second=0, microsecond=0)
+            fresh = now.astimezone(ET) >= final_due
             row = {"sport": "NFL", "away": g["away"], "home": g["home"], "team": code, "player": name, "status": status,
                    "reason": " · ".join(x for x in (pos, details.get("type")) if x),
                    "tip": kick.strftime("%a %-I:%M %p"), "tip_sort": kick.strftime("%m%d-%H%M"),
@@ -403,7 +409,7 @@ def run_nfl(now):
                    "impact": nfl_impact(pos, share, code, touch.get(nm))}
             note = change_note(row, prev)
             if not fresh and status in NFL_DESIGNATIONS:
-                note = "Status from earlier in the week; final statuses come out two days before the game"
+                note = "Practice-week status; the official game status comes out " + final_due.strftime("%A")
             if note:
                 row["note"] = note
             rows.append(row)
