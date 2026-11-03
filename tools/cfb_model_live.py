@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-cfb_model_live.py -- DeVig's own college football model (FBS vs FBS), run on this season's games for the app. Written
-here, not the Research Lab's search (the Lab's leader keeps running beside it as a challenger, tools/lab_live.py).
-Display and comparison only: nothing here is bet. Not a claimed edge over Kalshi.
+cfb_model_live.py -- DeVig's own college football model (FBS vs FBS), run on this season's games. Tracked on the Models
+page as a challenger ("devigcfb"), graded on the same games as Kalshi, FBS Elo, CFB Rankings and the Research Lab's
+leader; it is not the app's CFB pick (CFB_MODEL_V1_PREREG.md). Display and comparison only: nothing here is bet.
+Not a claimed edge over Kalshi.
 
 Each team carries, game to game in date order (all from games already played):
   m    a margin rating in points: after each game both teams move by k x (margin - expected margin); k starts higher
@@ -21,11 +22,11 @@ C1a) plus this season's weekly refresh (research/cfb/current/<season>/). The sea
 ratings go from 2024 straight to 2026. This file only reads those tables; it makes no API call.
 
 The settings above (FROZEN) were picked by `fit` on 2012-2017 and are frozen with CFB_MODEL_V1_PREREG.md; any change
-is a v2. `fit` reruns the selection and prints only summary numbers (never rows).
+is a v2. `fit` reruns the selection and `compare` scores this season's graded games; both print summary numbers only.
 
 Out: live/devig/cfb.json -- {generated_at, sport, model, data_through, finals_used, games: [{game_id, kickoff, date,
 home, away, home_name, away_name, neutral, home_wp, home_line, parts: {m, e}}]} for games in the next 10 days. CFBD
-game ids are ESPN's, so tools/models_compare.py reads it as the "devig" CFB model by id.
+game ids are ESPN's, so tools/models_compare.py reads it as the "devigcfb" model by id.
 
 Usage:  python3 tools/cfb_model_live.py          (write live/devig/cfb.json; skipped when the data isn't here)
         python3 tools/cfb_model_live.py fit      (in Actions with the cache: settings search + backtest summary)

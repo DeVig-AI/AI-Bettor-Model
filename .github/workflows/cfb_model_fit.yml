@@ -4,7 +4,7 @@ name: CFB model fit (one-off; prints summary numbers only)
 # season is never read. Remove this workflow once the settings are frozen.
 on:
   push:
-    branches: [cfb-model-v1]
+    branches: [cfb-model-v1-live]
     paths: [tools/cfb_model_live.py, .github/workflows/cfb_model_fit.yml]
   workflow_dispatch:
 permissions:
@@ -31,8 +31,6 @@ jobs:
             research/cfb/data/advanced_ngt.csv
             research/cfb/data/returning.csv
             research/cfb/current
-      - name: Fit (summary numbers only)
-        run: python3 tools/cfb_model_live.py fit
       - name: This season's graded games vs the Models page (summary numbers only; needs FROZEN)
         continue-on-error: true
         run: |
@@ -40,3 +38,8 @@ jobs:
           git show origin/main:live/models/picks.jsonl > "$RUNNER_TEMP/picks.jsonl"
           git show origin/main:live/models/results.jsonl > "$RUNNER_TEMP/results.jsonl"
           python3 tools/cfb_model_live.py compare "$RUNNER_TEMP/picks.jsonl" "$RUNNER_TEMP/results.jsonl"
+      - name: Live dry run (the model's own output only)
+        run: |
+          python3 tools/cfb_model_live.py
+          python3 -c "import json; d=json.load(open('live/devig/cfb.json')); print({k: d[k] for k in ('generated_at','data_through','finals_used')}); [print(g['kickoff'], g['away'], '@', g['home'], g['home_wp'], g['home_line']) for g in d['games'][:12]]; print(len(d['games']), 'games')"
+          python3 tools/models_compare.py --help >/dev/null 2>&1 || true
