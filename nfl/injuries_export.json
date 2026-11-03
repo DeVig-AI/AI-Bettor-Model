@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 2 \u00b7 3:43 PM ET \u00b7 Week 8",
+    "as_of": "Mon Nov 2 \u00b7 9:52 PM ET \u00b7 Week 8",
     "date": "2026-11-02",
     "sport": "NFL"
    },
@@ -21,11 +21,12 @@
      "level": "some",
      "why": "Regular (75% of snaps): about 0.5 points each in DeVig's injury study"
     },
+    "note": "Downgraded from questionable",
     "player": "Malik Muhammad II",
     "reason": "CB \u00b7 Toe",
     "sport": "NFL",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "CHI",
     "tip": "Mon 8:15 PM",
     "tip_sort": "1102-2015"
@@ -39,21 +40,90 @@
     "confirmed": true,
     "home": "SEA",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (45% of snaps)"
     },
-    "player": "D'Marco Jackson",
-    "reason": "LB \u00b7 Ankle",
+    "player": "Case Keenum",
+    "reason": "QB \u00b7 Coach's Decision",
     "sport": "NFL",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "CHI",
     "tip": "Mon 8:15 PM",
     "tip_sort": "1102-2015"
    },
-   "doc_id": "nfl-chi-dmarco-jackson"
+   "doc_id": "nfl-chi-case-keenum"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (19% of snaps)"
+    },
+    "player": "Jordan van den Berg",
+    "reason": "DT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "CHI",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-chi-jordan-van-den-berg"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "No snaps this season"
+    },
+    "player": "Jayden Loving",
+    "reason": "DT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "CHI",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-chi-jayden-loving"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (0% of snaps)"
+    },
+    "player": "Jordan McFadden",
+    "reason": "G \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "CHI",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-chi-jordan-mcfadden"
   },
   {
    "collection": "injuries",
@@ -134,14 +204,62 @@
     "confirmed": true,
     "home": "SEA",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (8% of snaps)"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Brandon Pili",
+    "reason": "DT \u00b7 Back",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "SEA",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-sea-brandon-pili"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (98% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (51% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Downgraded from doubtful",
-    "player": "Charles Cross",
-    "reason": "OT \u00b7 Ankle",
+    "player": "Uchenna Nwosu",
+    "reason": "LB \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "SEA",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-sea-uchenna-nwosu"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (95% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Drew Lock",
+    "reason": "QB \u00b7 Elbow",
     "sport": "NFL",
     "starter": true,
     "status": "Out",
@@ -149,7 +267,54 @@
     "tip": "Mon 8:15 PM",
     "tip_sort": "1102-2015"
    },
-   "doc_id": "nfl-sea-charles-cross"
+   "doc_id": "nfl-sea-drew-lock"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (50% of snaps): about 0.5 points each in DeVig's injury study \u00b7 8% of SEA's targets and carries"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Rashid Shaheed",
+    "reason": "WR \u00b7 Knee",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "SEA",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-sea-rashid-shaheed"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CHI",
+    "confirmed": true,
+    "home": "SEA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (40% of snaps)"
+    },
+    "player": "Beau Stephens",
+    "reason": "G \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "SEA",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1102-2015"
+   },
+   "doc_id": "nfl-sea-beau-stephens"
   },
   {
    "collection": "injuries",
@@ -182,143 +347,24 @@
     "confirmed": true,
     "home": "SEA",
     "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (95% of snaps): about 3.8 points of final margin in DeVig's injury study"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (98% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "player": "Drew Lock",
-    "reason": "QB \u00b7 Elbow",
+    "note": "Downgraded from doubtful",
+    "player": "Charles Cross",
+    "reason": "OT \u00b7 Ankle",
     "sport": "NFL",
     "starter": true,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1102-2015"
-   },
-   "doc_id": "nfl-sea-drew-lock"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "SEA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (51% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Uchenna Nwosu",
-    "reason": "LB \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Doubtful",
-    "team": "SEA",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1102-2015"
-   },
-   "doc_id": "nfl-sea-uchenna-nwosu"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "SEA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (50% of snaps): about 0.5 points each in DeVig's injury study \u00b7 8% of SEA's targets and carries"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Rashid Shaheed",
-    "reason": "WR \u00b7 Knee",
-    "sport": "NFL",
-    "starter": false,
     "status": "Out",
     "team": "SEA",
     "tip": "Mon 8:15 PM",
     "tip_sort": "1102-2015"
    },
-   "doc_id": "nfl-sea-rashid-shaheed"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": false,
-    "home": "SEA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (8% of snaps)"
-    },
-    "note": "Status from earlier in the week; final statuses come out two days before the game",
-    "player": "Brandon Pili",
-    "reason": "DT \u00b7 Back",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1102-2015"
-   },
-   "doc_id": "nfl-sea-brandon-pili"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": false,
-    "home": "SEA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (100% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Status from earlier in the week; final statuses come out two days before the game",
-    "player": "Anthony Bradford",
-    "reason": "G \u00b7 Knee",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1102-2015"
-   },
-   "doc_id": "nfl-sea-anthony-bradford"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": false,
-    "home": "SEA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (1% of snaps)"
-    },
-    "note": "Status from earlier in the week; final statuses come out two days before the game",
-    "player": "Patrick O'Connell",
-    "reason": "LB \u00b7 Toe",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1102-2015"
-   },
-   "doc_id": "nfl-sea-patrick-oconnell"
+   "doc_id": "nfl-sea-charles-cross"
   }
  ],
- "generated_at": "2026-11-02T20:43:58Z",
+ "generated_at": "2026-11-03T02:52:57Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
