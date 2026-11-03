@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { TeamLogo } from '@/components/team-logo'
 import { mlLeg } from '../parlay/legs'
+import { inTen } from '../props/words'
 import { LevelPicker, PassBody, PickBody } from './explain-sheet'
 import { isPick } from './plate'
 
@@ -191,8 +192,8 @@ function NoModelBody({ row, side, labHome, labNote, devigHome }: {
       {dvP != null ? (
         <>
           <p className='text-lg leading-snug font-semibold'>
-            DeVig&apos;s {row.sport} model gives {name} about{' '}
-            <span className='text-devig'>{Math.round(dvP * 10)} times out of 10</span> ({fmtPct(dvP)}).
+            DeVig&apos;s {row.sport} model gives {name} {' '}
+            <span className='text-devig'>{inTen(dvP)}</span> ({fmtPct(dvP)}).
           </p>
           <div className='rounded-2xl bg-muted p-3.5'>
             <p className='font-semibold'>How it gets there</p>
@@ -205,8 +206,8 @@ function NoModelBody({ row, side, labHome, labNote, devigHome }: {
       ) : labP != null ? (
         <>
           <p className='text-lg leading-snug font-semibold'>
-            The DeVig Lab&apos;s {row.sport} model gives {name} about{' '}
-            <span className='text-devig'>{Math.round(labP * 10)} times out of 10</span> ({fmtPct(labP)}).
+            The DeVig Lab&apos;s {row.sport} model gives {name} {' '}
+            <span className='text-devig'>{inTen(labP)}</span> ({fmtPct(labP)}).
           </p>
           <div className='rounded-2xl bg-muted p-3.5'>
             <p className='font-semibold'>New, not proven</p>

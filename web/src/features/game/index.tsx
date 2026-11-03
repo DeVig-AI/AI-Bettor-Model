@@ -172,7 +172,7 @@ export function GamePage({ id }: { id: string }) {
           <>
             <div className='grid grid-cols-3 gap-2'>
               <Box label='Kalshi, no fee' value={row.fairHome == null ? '—' : `${fmtPct(1 - row.fairHome)} / ${fmtPct(row.fairHome)}`}
-                sub={`Price ${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
+                sub={`${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
               <Box label='Spread' value={spread} />
               <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
             </div>
