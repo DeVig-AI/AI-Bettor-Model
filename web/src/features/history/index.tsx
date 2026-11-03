@@ -45,7 +45,7 @@ function FinalRow({ r }: { r: GameRow }) {
   )
 }
 
-const ORDER = ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA', 'CFB']
+const ORDER = ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA', 'CFB', 'CBB']
 const order = (s: string) => (ORDER.indexOf(s) + 1 || 99)
 
 function RecentFinals() {

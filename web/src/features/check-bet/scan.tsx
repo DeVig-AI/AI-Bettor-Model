@@ -81,7 +81,8 @@ const hits = (text: string, r: GameRow, side: 'away' | 'home') => {
   if (!t) return false
   return names(r, side).some((n) => t === n || ` ${t} `.includes(` ${n} `))
 }
-const SPORTS: Record<string, string> = { ncaaf: 'CFB', 'college football': 'CFB', ncaa: 'CFB', 'ncaa football': 'CFB', cfb: 'CFB', nfl: 'NFL',
+const SPORTS: Record<string, string> = { ncaaf: 'CFB', 'college football': 'CFB', ncaa: 'CFB', 'ncaa football': 'CFB', cfb: 'CFB', ncaab: 'CBB', ncaam: 'CBB',
+  ncaamb: 'CBB', 'college basketball': 'CBB', 'ncaa basketball': 'CBB', 'men s college basketball': 'CBB', cbb: 'CBB', nfl: 'NFL',
   football: 'NFL', nba: 'NBA', basketball: 'NBA', wnba: 'WNBA', nhl: 'NHL', hockey: 'NHL', mlb: 'MLB', baseball: 'MLB' }
 const sportOf = (s: string | null) => SPORTS[norm(s)] ?? (s ?? '').toUpperCase()
 // the game a moneyline leg is on, and which side it took (games not yet final, both teams agreeing when the slip names them)

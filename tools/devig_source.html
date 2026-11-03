@@ -1518,12 +1518,13 @@
   var linesDoc = null, wheelSel = {};
   // Games Kalshi lists that have no synced pick doc (e.g. an MLB postseason game skipped because a starter wasn't
   // announced): shown on the board with Kalshi's prices and the live score, marked "No model pick".
+  // College football has its own board here; men's college basketball (CBB) is on the v2 app only for now.
   var marketOnlyCache = {src: null, out: []};
   function marketOnlyGames(){
     if(!linesDoc) return [];
     if(marketOnlyCache.src === linesDoc && marketOnlyCache.n === homeDocs.length) return marketOnlyCache.out;
     var out = (linesDoc.games || []).filter(function(x){
-      return x.sport !== "CFB" && x.kickoff && x.away && x.home && !homeDocs.some(function(h){
+      return x.sport !== "CFB" && x.sport !== "CBB" && x.kickoff && x.away && x.home && !homeDocs.some(function(h){
         return (h.sport || "NFL") === x.sport && sameGame(h, x.away, x.home, x.kickoff);
       });
     }).map(function(x){

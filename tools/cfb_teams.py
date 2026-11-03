@@ -1,4 +1,4 @@
-"""cfb_teams.py -- one college football team name, whoever wrote it. Kalshi ("Missouri St."), ESPN ("Missouri State",
+"""cfb_teams.py -- one college team name (football, and men's basketball), whoever wrote it. Kalshi ("Missouri St."), ESPN ("Missouri State",
 "Missouri St", "Missouri State Bears"), CollegeFootballData ("Missouri State") and open models each spell schools
 their own way, and their short codes don't agree either (Kalshi MOSU, ESPN MOST), so CFB games are matched by name.
 Display and matching only.
@@ -22,6 +22,11 @@ ALIASES = {
     "uc davis": "california davis", "cal": "california", "kent": "kent state", "bowling green state": "bowling green",
     "georgia st": "georgia state", "florida intl": "florida international", "louisiana tech bulldogs": "louisiana tech",
     "uh": "houston", "umd": "maryland", "unc": "north carolina", "vt": "virginia tech", "gt": "georgia tech",
+    # men's college basketball (Division I schools beyond FBS), Kalshi's spelling or ESPN's -> one key
+    "lsu new orleans": "new orleans", "lsu n orleans": "new orleans", "se louisiana": "southeastern louisiana",
+    "liu": "long island university", "long island": "long island university", "ualbany": "albany",
+    "university at albany": "albany", "central connecticut state": "central connecticut", "nicholls state": "nicholls",
+    "usc upstate": "south carolina upstate", "sc upstate": "south carolina upstate", "southern university": "southern",
 }
 
 

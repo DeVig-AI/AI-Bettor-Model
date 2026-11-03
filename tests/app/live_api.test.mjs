@@ -164,3 +164,20 @@ test("schedule: a bad team code is refused before ESPN is asked", async () => {
   assert.equal(r.status, 400);
   assert.equal(asked, false);
 });
+
+// ---- men's college basketball (cbb): every Division I game, with ESPN ids and names like college football
+test("cbb reads ESPN's men's Division I scoreboard, with team ids and names, and box scores as basketball", async () => {
+  const urls = [];
+  const f = async url => { urls.push(url); return new Response(JSON.stringify({events: []}), {status: 200}); };
+  assert.equal((await handle(new Request("https://x/api/live?sport=cbb&date=20261103"), f)).status, 200);
+  assert.match(urls[0], /basketball\/mens-college-basketball\/scoreboard\?groups=50&limit=500&dates=20261103$/);
+  const ev = {id: "401906848", date: "2026-11-03T23:00Z", status: {type: {state: "pre", shortDetail: "6:00 PM"}},
+    competitions: [{competitors: [
+      {homeAway: "home", score: "0", team: {id: "2633", abbreviation: "TENN", location: "Tennessee", color: "ff8200"}},
+      {homeAway: "away", score: "0", team: {id: "2747", abbreviation: "WOF", location: "Wofford"}}]}]};
+  const [g] = scoreboard({events: [ev]}, "cbb");
+  assert.equal(g.home, "TENN"); assert.equal(g.away_id, "2747"); assert.equal(g.home_name, "Tennessee");
+  const r = await (await handle(new Request("https://x/api/live?sport=cbb&event=9701&game=1"),
+    async url => ({ok: true, status: 200, json: async () => /summary/.test(url) ? nbaSummary() : {events: []}}))).json();
+  assert.equal(r.game.plays.length, 7);
+});

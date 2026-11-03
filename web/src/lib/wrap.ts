@@ -10,6 +10,7 @@ import { type RsPlayer, type RsTeam, rsIndexQuery, useRsTeam } from './research'
 
 const PATH: Record<string, string> = {
   NFL: 'football/nfl', CFB: 'football/college-football', NBA: 'basketball/nba', WNBA: 'basketball/wnba', NHL: 'hockey/nhl', MLB: 'baseball/mlb',
+  CBB: 'basketball/mens-college-basketball',
 }
 
 type Side = 'away' | 'home'

@@ -13,8 +13,8 @@ import { type Raw, boxPlayers, first, num, sideMap } from './wrap'
 export type LegKind = 'game' | 'spread' | 'total' | 'prop' | 'other'
 type Stat = { label: string; get: (s: Record<string, string>) => number | null; log: string[] } // log: the stats file's game-log columns, summed
 
-// Kalshi series -> league. Longest prefixes first (KXNCAAF before anything shorter; KXWNBA isn't KXNBA).
-const LEAGUES: [string, string][] = [['KXNCAAF', 'CFB'], ['KXWNBA', 'WNBA'], ['KXNFL', 'NFL'], ['KXNBA', 'NBA'], ['KXNHL', 'NHL'], ['KXMLB', 'MLB']]
+// Kalshi series -> league. Longest prefixes first (KXNCAAMB, KXNCAAF before anything shorter; KXWNBA isn't KXNBA).
+const LEAGUES: [string, string][] = [['KXNCAAMB', 'CBB'], ['KXNCAAF', 'CFB'], ['KXWNBA', 'WNBA'], ['KXNFL', 'NFL'], ['KXNBA', 'NBA'], ['KXNHL', 'NHL'], ['KXMLB', 'MLB']]
 const add = (...v: (number | null)[]) => (v.every((x) => x == null) ? null : v.reduce<number>((a, b) => a + (b ?? 0), 0))
 const STATS: Record<string, Record<string, Stat>> = {
   football: {
@@ -43,7 +43,7 @@ const STATS: Record<string, Record<string, Stat>> = {
     SOG: { label: 'shots on goal', get: (s) => num(s.shotsTotal), log: ['sog'] },
   },
 }
-const FAMILY: Record<string, string> = { NFL: 'football', CFB: 'football', NBA: 'basketball', WNBA: 'basketball', NHL: 'hockey' }
+const FAMILY: Record<string, string> = { NFL: 'football', CFB: 'football', NBA: 'basketball', WNBA: 'basketball', CBB: 'basketball', NHL: 'hockey' }
 
 export type LegInfo = {
   key: string // ticker|side
@@ -109,7 +109,7 @@ export function findGame<G extends { away: string; home: string }>(teams: string
   return loose.length === 1 ? loose[0] : null
 }
 
-const LIVE_SPORTS = ['NFL', 'CFB', 'NBA', 'WNBA', 'NHL', 'MLB']
+const LIVE_SPORTS = ['NFL', 'CFB', 'NBA', 'WNBA', 'CBB', 'NHL', 'MLB']
 export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame | null>; loading: boolean } {
   const { rows, isLoading } = useGames()
   const onBoard = (i: LegInfo) =>

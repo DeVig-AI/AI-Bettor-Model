@@ -1,5 +1,5 @@
-// DeVig live scores: GET /api/live?sport=nfl|nba|mlb|nhl|wnba|cfb returns ESPN's scoreboard in a small form (cfb: FBS games,
-// with team names and ESPN ids, which the college football board matches on); adding &event=<ESPN id>
+// DeVig live scores: GET /api/live?sport=nfl|nba|mlb|nhl|wnba|cfb|cbb returns ESPN's scoreboard in a small form (cfb: FBS
+// games, cbb: men's Division I basketball games, both with team names and ESPN ids, which the college boards match on); adding &event=<ESPN id>
 // (any sport) returns that game's box score as {players: {name: {stat: value}}} (NFL, CFB, NBA, WNBA), and &game=1 also returns
 // game: {plays, drive, situation, scoring, team_stats, box} for the game page (NBA: {plays with shot spots, run,
 // linescore, box}; NHL and MLB: {plays, linescore, box}); NFL and CFB plays also carry at (unix seconds), from, to
@@ -14,8 +14,9 @@
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
 const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
-                cfb: "football/college-football"};
-const QUERY = {cfb: "?groups=80&limit=500"};       // every FBS game, not just ESPN's featured ones
+                cfb: "football/college-football", cbb: "basketball/mens-college-basketball"};
+const QUERY = {cfb: "?groups=80&limit=500",        // every FBS game, not just ESPN's featured ones
+               cbb: "?groups=50&limit=500"};       // every men's Division I game
 // ESPN codes -> the app's team codes (same table as kalshi_games_v1.ALIASES, ESPN side)
 const ALIASES = {
   nfl: {JAC: "JAX", LAR: "LA", WSH: "WAS"},
@@ -24,7 +25,7 @@ const ALIASES = {
 };
 const SCORE_TTL = 15, BOX_TTL = 25, SCHED_TTL = 1800;          // seconds
 // each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
-const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", nhl: "hockey", mlb: "baseball"};
+const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball"};
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -89,7 +90,7 @@ export function scoreboard(d, sport) {
             away_score: num(a.score), home_score: num(h.score), state: ty.state || "pre",
             detail: ty.shortDetail || ty.detail || "", possession: posTeam ? code(posTeam.team.abbreviation) : null,
             away_color: (a.team || {}).color || null, home_color: (h.team || {}).color || null};
-    if (sport === "cfb") {
+    if (sport === "cfb" || sport === "cbb") {
       out.away_id = String((a.team || {}).id || ""); out.home_id = String((h.team || {}).id || "");
       out.away_name = (a.team || {}).location || ""; out.home_name = (h.team || {}).location || "";
     }
