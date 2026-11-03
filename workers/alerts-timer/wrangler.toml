@@ -1,0 +1,8 @@
+# Only needed if this Worker is ever deployed with wrangler; the dashboard setup in index.js works without it.
+name = "devig-alerts-timer"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[triggers]
+crons = ["* * * * *"]
+# secret: ALERTS_RUN_KEY (wrangler secret put ALERTS_RUN_KEY); never commit it

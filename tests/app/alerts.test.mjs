@@ -93,7 +93,7 @@ test("subscriptions: only browsers' push services, and real key sizes", async ()
 });
 
 // ---------- the rules ----------
-const rec = (o = {}) => ({devices: [{endpoint: "https://fcm.googleapis.com/x"}], prefs: cleanPrefs({tz: "America/New_York"}),
+const rec = (o = {}) => ({devices: [{endpoint: "https://fcm.googleapis.com/x"}], prefs: cleanPrefs({tz: "America/New_York", picks: ["NFL", "NBA", "MLB"], moves: true, lab: true}),
   targets: [], parlays: [], since: "2026-11-01T00:00:00Z", labSeen: [], sent: {}, ...o});
 const mk = (ticker, bid, ask, extra = {}) => ({ticker, yes_bid_dollars: String(bid), yes_ask_dollars: String(ask), status: "active", ...extra});
 const KC = "KXNFLGAME-26NOV01KCBUF-BUF";
@@ -276,7 +276,7 @@ test("checker: sends what's due once, drops a fired target, forgets a gone devic
   const sent = [];
   const sender = async (dev, msg) => { if (dev.endpoint.endsWith("gone")) return 410; sent.push(msg.title); return 201; };
   const report = await run(env, {fetcher, now: NOW, sender});
-  assert.deepEqual(report, {people: 1, sent: 3, gone: 1});
+  assert.deepEqual(report, {people: 1, sent: 3, gone: 1, live: 0});
   assert.deepEqual(sent.sort(), ["DeVig pick: KC to beat BUF", "KC is +108 on Kalshi", "Line move: BUF 47% → 53%"].sort());
   const after = JSON.parse(env.USERS.m.get(`alerts:${h}`));
   assert.equal(after.targets.length, 0);

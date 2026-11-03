@@ -1,1 +1,0 @@
-import{i as e}from"./index-d67iduek.js";var t=e;export{t as component};
