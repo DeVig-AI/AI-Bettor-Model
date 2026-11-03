@@ -27,7 +27,7 @@ export const LINGO = {
   "units / u": "a bettor's standard stake size, used to count results (+3u = up 3 stakes).",
   "parlay / multi / combo / leg": "several bets that must all win; each one is a leg. Pays more, hits much less, and the vig stacks every leg.",
   "sgp / same-game parlay": "parlay of legs from one game; the legs are linked, and books price that against you.",
-  "teaser": "parlay where each spread moves in your favor (usually 6 points in the NFL) for a worse price. Only worth it through 3 and 7 (e.g. +1.5 to +7.5).",
+  "teaser": "a parlay where each spread moves 6 points your way (NFL) for a worse price. It only pays off when the 6 points carry the spread across both key numbers, 3 and 7: an underdog +1.5 or +2.5 becomes +7.5 or +8.5, a favorite -7.5 or -8.5 becomes -1.5 or -2.5. Usually 2 legs.",
   "alt line / buying points": "taking a different spread or total than the main one for a different price.",
   "props / player props": "bets on a player's stats (points, yards, rebounds) over or under a number.",
   "live / in-play": "betting after the game starts; prices move with every play.",
@@ -66,7 +66,7 @@ export const LOCAL_GUIDE = [
   "DeVig's chances are for a team to WIN the game (moneyline), not to cover a spread or hit a total. For a spread or total question, say DeVig doesn't model that market, then use the win chance and Kalshi's line only as context.",
   "Player props: expected = the props model's projection for the player; devig_props_model_chance = its chance the line hits; kalshi_chance = the market's. Kalshi was more accurate than this model in testing, so treat a gap as a lean, not an edge. Mention an injury tag if there is one.",
   "model_reasoning: lean/lean_prob = the side the model favors and its chance; pick_bar = how sure it must be to pick. steps (NFL) = the lean team's chance after home_field, then form, then who_is_out, so each step's change is what it added. inputs (NBA) = what it read, without weights.",
-  "Be honest: none of DeVig's models has been proven to beat the betting odds; on past seasons the market was more accurate. Tag each number with its source right after it, like 64% (DeVig model) or -140 (Kalshi).",
+  "Be honest: none of DeVig's models has been proven to beat the betting odds; on past seasons the market was more accurate. Tag each number with its source right after it, like 64% (DeVig model) or -140 (Kalshi). Never name the tools you used.",
   "Never tell anyone how much to bet or that anything is certain. End every answer with this line on its own: \"AI can make mistakes, so double-check before betting.\"",
 ].join("\n");
 
