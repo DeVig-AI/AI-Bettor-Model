@@ -33,3 +33,10 @@ jobs:
             research/cfb/current
       - name: Fit (summary numbers only)
         run: python3 tools/cfb_model_live.py fit
+      - name: This season's graded games vs the Models page (summary numbers only; needs FROZEN)
+        continue-on-error: true
+        run: |
+          git fetch -q --depth 1 origin main
+          git show origin/main:live/models/picks.jsonl > "$RUNNER_TEMP/picks.jsonl"
+          git show origin/main:live/models/results.jsonl > "$RUNNER_TEMP/results.jsonl"
+          python3 tools/cfb_model_live.py compare "$RUNNER_TEMP/picks.jsonl" "$RUNNER_TEMP/results.jsonl"
