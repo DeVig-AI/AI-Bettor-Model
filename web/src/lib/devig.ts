@@ -274,7 +274,7 @@ async function loadPrices(games: GameLine[]): Promise<Fresh['prices']> {
 
 async function loadScores(games: GameLine[]): Promise<Fresh['scores']> {
   const sports = [...new Set(nearNow(games).map((g) => g.sport.toLowerCase()))].filter((s) =>
-    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb'].includes(s)
+    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb', 'cbb'].includes(s)
   )
   const res = await Promise.allSettled(
     sports.map(async (s) => {

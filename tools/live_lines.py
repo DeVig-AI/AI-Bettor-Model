@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-live_lines.py -- the live file for NBA, MLB, NHL, WNBA and college football, as nfl/nfl_props_live_v1.py is for
+live_lines.py -- the live file for NBA, MLB, NHL, WNBA, college football and men's college basketball, as nfl/nfl_props_live_v1.py is for
 the NFL: for each game Kalshi lists (live/game_lines.json), ESPN's score and state, Kalshi's live moneyline, and the
 win-chance line (Kalshi price history from 2 hours before the start) while the game is on. A finished game keeps its
 line, so the app shows the graph after the final too, and in the apps that have no /api/live or /api/winline.
@@ -28,10 +28,11 @@ import kalshi_games_v1 as KG  # noqa: E402  keyless get(), canon(), american()
 HERE = os.path.dirname(os.path.abspath(__file__))
 LINES = os.path.join(HERE, "..", "live", "game_lines.json")
 OUT = os.path.join(HERE, "..", "live", "live_lines.json")
-SPORTS = ("NBA", "MLB", "NHL", "WNBA", "CFB")
+SPORTS = ("NBA", "MLB", "NHL", "WNBA", "CFB", "CBB")
 ESPN = {"NBA": "basketball/nba", "MLB": "baseball/mlb", "NHL": "hockey/nhl", "WNBA": "basketball/wnba",
-        "CFB": "football/college-football"}
-ESPN_Q = {"CFB": {"groups": 80, "limit": 500}}         # every FBS game, not just ESPN's featured ones
+        "CFB": "football/college-football", "CBB": "basketball/mens-college-basketball"}
+ESPN_Q = {"CFB": {"groups": 80, "limit": 500},          # every FBS game, not just ESPN's featured ones
+          "CBB": {"groups": 50, "limit": 500}}          # every men's Division I game
 ET = ZoneInfo("America/New_York")
 WINDOW_BEFORE, WINDOW_AFTER = timedelta(minutes=30), timedelta(hours=6)
 AHEAD, KEEP_DAYS = timedelta(days=1), 3
