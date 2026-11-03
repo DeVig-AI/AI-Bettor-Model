@@ -65,7 +65,8 @@ function PropTestCard({ t }: { t: PropsTest }) {
       <div className='flex items-baseline justify-between gap-3'>
         <h3 className='font-display text-xl font-extrabold'>{t.sport} props</h3>
         <span className={cn('font-condensed text-lg font-bold tabular-nums', t.graded ? (t.profit >= 0 ? 'text-good' : 'text-bad') : 'text-muted-foreground')}>
-          {t.graded ? `${sign(t.profit)} per $1` : 'No picks graded'}
+          {t.graded ? `${t.profit >= 0 ? '+' : '−'}$${Math.abs(t.profit).toFixed(2)}` : 'No picks graded'}
+          {t.graded > 0 && <span className='block text-end text-[11px] font-normal text-muted-foreground'>one $1 contract a pick</span>}
         </span>
       </div>
       {t.graded > 0 && (

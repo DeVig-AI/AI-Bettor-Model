@@ -115,6 +115,7 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
   const over = side === 'over'
   const st = statName(l.stat, true)
   const sideTxt = over ? overTxt(l.stat, l.line) : underTxt(l.stat, l.line)
+  const sideIn = sideTxt.replace(/^No\b/, 'no') // mid-sentence: "gives no pts a 46% chance"
   const m = l.modelOver == null ? null : over ? l.modelOver : 1 - l.modelOver
   const k = over ? l.mid : 1 - l.mid
   const gap = m == null ? null : m - k
@@ -178,14 +179,14 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
                 <>
                   <p className='text-lg leading-snug font-semibold'>
                     DeVig expects <span className='text-devig'>{w.expected.toFixed(1)} {st}</span>
-                    {over ? ' and gives ' : ', so it gives '}{sideTxt} a <span className='text-devig'>{fmtPct(m)}</span> chance.
+                    {over ? ' and gives ' : ', so it gives '}{sideIn} a <span className='text-devig'>{fmtPct(m)}</span> chance.
                   </p>
                   <Steps w={w} l={l} over={over} d={d} />
                   <div className='rounded-xl border border-devig/30 bg-devig/10 px-3 py-2.5'>
                     <span className='font-semibold text-devig'>From {w.expected.toFixed(1)} {st} to {fmtPct(m)}</span>
                     <p className='mt-1 text-sm leading-relaxed'>
                       Players don&apos;t hit their expected number every night. In past seasons, players the model expected to get
-                      about {w.expected.toFixed(1)} {st} got {sideTxt} about {fmtPct(m)} of the time.
+                      about {w.expected.toFixed(1)} {st} got {sideIn} about {fmtPct(m)} of the time.
                       {(w.expected > l.line) === over
                         ? ` The expected number is on the ${over ? 'over' : 'under'} side of the line, so this side is the likelier one.`
                         : ` The expected number is on the other side of the line, so this side needs a ${over ? 'better' : 'quieter'}-than-usual night.`}
@@ -194,7 +195,7 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
                 </>
               ) : m != null ? (
                 <p className='text-[15px] leading-relaxed'>
-                  DeVig&apos;s {l.sport} props model gives {sideTxt} a <span className='font-semibold text-devig'>{fmtPct(m)}</span> chance
+                  DeVig&apos;s {l.sport} props model gives {sideIn} a <span className='font-semibold text-devig'>{fmtPct(m)}</span> chance
                   {l.expected != null ? `, expecting ${l.expected.toFixed(1)} ${st}` : ''}. It doesn&apos;t publish the steps behind
                   {l.sport === 'NBA' ? ' this number yet (the explainer runs after the model; check back soon).' : ` ${l.sport} numbers yet.`}
                 </p>
