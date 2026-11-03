@@ -47,8 +47,10 @@ VERSION = "cfb-v1"
 
 FIT, CHECK, TEST = range(2012, 2018), range(2018, 2020), range(2021, 2025)
 
-# frozen settings (CFB_MODEL_V1_PREREG.md), filled from `fit`
-FROZEN = None
+# frozen settings (CFB_MODEL_V1_PREREG.md), from `fit` (Actions run 41660284149's selection)
+FROZEN = {"settings": {"k": 0.09, "k_early": 0.18, "early_n": 4, "carry": 0.9, "ke": 0.04, "carry_e": 0.0, "ret": 80},
+          "weights": {"home": 3.0538, "m": 0.9227, "e": 0.1124},
+          "win_chance": {"a": -0.04246, "b": 0.11428}}
 
 
 def iso(t):
