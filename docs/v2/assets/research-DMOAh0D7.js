@@ -1,0 +1,1 @@
+import{t as e}from"./research-COmQRE3R.js";var t=e;export{t as component};

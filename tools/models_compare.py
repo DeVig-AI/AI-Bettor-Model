@@ -99,15 +99,16 @@ AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(
          "NHL": timedelta(hours=36)}
 SPORTS = ("NFL", "NBA", "MLB", "CFB", "NHL")
 LAB_DIR = ROOT / "live" / "lab"                               # tools/lab_live.py writes the Lab models' numbers here
+DEVIG_DIR = ROOT / "live" / "devig"                           # tools/nhl_model_live.py writes DeVig's NHL model here
 LAB_STALE = timedelta(hours=12)                               # an older Lab file is not read (its numbers would be old)
 NHL_TO_ESPN = {"TBL": "TB", "NJD": "NJ", "LAK": "LA", "SJS": "SJ"}   # NHL API code -> ESPN / Kalshi code
 RECENT = timedelta(days=4)                                    # finished games kept in the page's game list
 BREAKEVEN_110 = 110 / 210
 
 MODELS = [
-    {"key": "devig", "name": "DeVig", "sports": ["NFL", "NBA", "MLB"], "author": "DeVig.AI (this project)",
+    {"key": "devig", "name": "DeVig", "sports": ["NFL", "NBA", "MLB", "NHL"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model", "license": "this project",
-     "note": "DeVig's own locked picks: NFL Model 1.0, NBA and MLB Model C, the props models v1."},
+     "note": "DeVig's own locked picks: NFL Model 1.0, NBA and MLB Model C, NHL v1 (ratings: Elo, back-to-backs, shot share), the props models v1."},
     {"key": "devig2", "name": "DeVig 2.0", "sports": ["NFL"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/nfl/model2/NFL_MODEL_2_0_LIVE_PREREG.md",
      "license": "this project",
@@ -141,7 +142,7 @@ COVERS = {"NFL": {"ml": {"devig", "devig2", "nfelo", "elo538", "kalshi"}, "sprea
           "NBA": {"ml": {"devig", "blotny", "kalshi"}, "spread": {"blotny", "kalshi"}, "total": {"kalshi"}},
           "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
           "CFB": {"ml": {"cfbelo", "cfbrank", "lab", "kalshi"}, "spread": {"cfbelo", "lab", "kalshi"}, "total": {"kalshi"}},
-          "NHL": {"ml": {"lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}}}
+          "NHL": {"ml": {"devig", "lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}}}
 TO_538 = {"LV": "OAK", "WAS": "WSH", "LA": "LAR"}            # nflverse code -> 538 franchise code (2021 on)
 FROM_NFELO = {"LAR": "LA", "OAK": "LV", "WSH": "WAS", "JAC": "JAX"}
 errors = []
@@ -442,10 +443,11 @@ def devig_mlb(upcoming):
     return out
 
 
-def read_lab(sport, upcoming, now):
-    """The Research Lab's live model (live/lab/<sport>.json from tools/lab_live.py): its numbers for games coming up.
+def read_lab(sport, upcoming, now, folder=None):
+    """The Research Lab's live model (live/lab/<sport>.json from tools/lab_live.py), or DeVig's own NHL model
+    (live/devig/nhl.json from tools/nhl_model_live.py, same shape): its numbers for games coming up.
     NHL games are matched by teams and start time (the NHL API's ids differ from ESPN's); CFB ids are ESPN's."""
-    f = LAB_DIR / f"{sport.lower()}.json"
+    f = (folder or LAB_DIR) / f"{sport.lower()}.json"
     if not f.exists():
         return {}
     d = json.loads(f.read_text())
@@ -565,7 +567,8 @@ def update(now, nfl_csv=None, offline=False):
             sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season)),
                        ("lab", lambda u=ups: read_lab("CFB", u, now))]
         elif sport == "NHL":
-            sources = [("lab", lambda u=ups: read_lab("NHL", u, now))]
+            sources = [("devig", lambda u=ups: read_lab("NHL", u, now, DEVIG_DIR)),
+                       ("lab", lambda u=ups: read_lab("NHL", u, now))]
         else:
             sources = [("devig", lambda: devig_mlb(ups))]
         if not offline:

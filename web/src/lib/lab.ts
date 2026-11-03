@@ -48,8 +48,37 @@ export function useLab() {
   })
 }
 
-// the Lab's chance for one game on the Games page (NHL by teams and start time, CFB by ESPN id)
-export function labFor(files: Record<string, LabFile> | undefined, row: GameRow): LabGame | null {
+// DeVig's own models that run off the Lab's file shape (live/devig/<sport>.json): NHL v1 (tools/nhl_model_live.py,
+// nhl/NHL_MODEL_V1_PREREG.md), a ratings model. It is the app's NHL number; the Lab's NHL model is its challenger.
+export const DEVIG_FILE_SPORTS = ['NHL'] as const
+export type DevigFile = { generated_at: string; sport: string; model: { id: string; name: string }; games: LabGame[] }
+
+export function useDevigFiles() {
+  return useQuery({
+    queryKey: ['devig-files'],
+    queryFn: async () => {
+      const t = Math.floor(Date.now() / 60000)
+      const out: Record<string, DevigFile> = {}
+      await Promise.all(
+        DEVIG_FILE_SPORTS.map(async (s) => {
+          try {
+            const r = await fetch(`${RAW}live/devig/${s.toLowerCase()}.json?t=${t}`)
+            if (!r.ok) return
+            const f = (await r.json()) as DevigFile
+            if (Date.now() - Date.parse(f.generated_at) < STALE_MS) out[s] = f
+          } catch {
+            /* without it the game shows the Lab's number or Kalshi's */
+          }
+        })
+      )
+      return out
+    },
+    refetchInterval: 15 * 60e3,
+  })
+}
+
+// the Lab's (or DeVig's file model's) chance for one game (NHL by teams and start time, CFB by ESPN id)
+export function labFor(files: Record<string, { games: LabGame[] }> | undefined, row: GameRow): LabGame | null {
   const f = files?.[row.sport]
   if (!f) return null
   if (row.sport === 'CFB') {
