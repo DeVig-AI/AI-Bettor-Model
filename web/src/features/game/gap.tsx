@@ -1,13 +1,13 @@
 import { useId, useMemo, useState } from 'react'
 import { type GameRow } from '@/lib/devig'
-import { LIVE_PLAYS, playLabel, useFieldPlays, usePriceLine } from '@/lib/field'
+import { LIVE_PLAYS, periodLabel, playLabel, useFieldPlays, usePriceLine } from '@/lib/field'
 import { type Pt, KIND_LABEL, forSide, gapRead, since, valueAt, yRange } from '@/lib/gap-math'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { isPick } from '../games/plate'
 
-// The gap chart on an NFL, college football or NBA game page: Kalshi's price for a team next to ESPN's own win chance,
-// play by play, with the scores and turnovers (NBA: runs of 8+) marked and DeVig's pregame read as a dashed line. When the two lines
+// The gap chart on an NFL, college football, NBA or college basketball game page: Kalshi's price for a team next to ESPN's own win chance,
+// play by play, with the scores and turnovers (basketball: runs of 8+) marked and DeVig's pregame read as a dashed line. When the two lines
 // split, the market and ESPN's model disagree about the same game. Display only.
 
 const W = 340, H = 190, PAD_T = 14, PAD_B = 40, PAD_R = 58
@@ -72,7 +72,7 @@ export function GapChart({ row }: { row: GameRow }) {
         <p className={cn('font-display text-[26px] leading-tight font-black', read.gap != null && Math.abs(read.gap) >= 3 ? 'text-devig' : '')}>{read.text}</p>
         <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
           {lastKey && eNow != null
-            ? <>After {lastKey.kind === 'RUN' ? `a ${lastKey.text}` : playLabel({ id: '', team: null, q: lastKey.q, clock: lastKey.clock, text: lastKey.text, type: lastKey.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })} ({lastKey.q ? `${lastKey.q > 4 ? 'OT' : `Q${lastKey.q}`} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
+            ? <>After {lastKey.kind === 'RUN' ? `a ${lastKey.text}` : playLabel({ id: '', team: null, q: lastKey.q, clock: lastKey.clock, text: lastKey.text, type: lastKey.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })} ({lastKey.q ? `${periodLabel(lastKey.q, row.sport)} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
             : <>ESPN&apos;s win chance and Kalshi&apos;s price for {code} to win, play by play.</>}
         </p>
       </div>
@@ -88,7 +88,7 @@ export function GapChart({ row }: { row: GameRow }) {
         </div>
       )}
 
-      <Chart e={e} k={k} start={start} end={end} devig={devig} keys={keys} periods={plays.data?.periods ?? []} live={row.state === 'in'} code={code} />
+      <Chart e={e} k={k} start={start} end={end} devig={devig} keys={keys} periods={plays.data?.periods ?? []} live={row.state === 'in'} code={code} sport={row.sport} />
 
       <div className='flex flex-wrap items-center gap-x-4 gap-y-1 px-4 text-xs text-muted-foreground'>
         <span className='flex items-center gap-1.5'><i aria-hidden='true' className='h-0.5 w-4 rounded-full bg-foreground' />Kalshi price</span>
@@ -102,8 +102,8 @@ export function GapChart({ row }: { row: GameRow }) {
   )
 }
 
-function Chart({ e, k, start, end, devig, keys, periods, live, code }: {
-  e: Pt[]; k: Pt[]; start: number; end: number; devig: number | null; live: boolean; code: string
+function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
+  e: Pt[]; k: Pt[]; start: number; end: number; devig: number | null; live: boolean; code: string; sport: string
   keys: { at: number; kind: string; q: number | null; clock: string; text: string }[]; periods: [number, number][]
 }) {
   const gid = useId().replace(/:/g, '')
@@ -163,7 +163,7 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code }: {
       {quarters.map((p) => (
         <g key={p.q}>
           <line x1={p.mx} x2={p.mx} y1={PAD_T} y2={H - PAD_B} stroke='currentColor' strokeOpacity='0.1' />
-          <text x={p.mx + 3} y={H - PAD_B + 30} className='fill-muted-foreground text-[10px] font-semibold'>{p.q > 4 ? 'OT' : `Q${p.q}`}</text>
+          <text x={p.mx + 3} y={H - PAD_B + 30} className='fill-muted-foreground text-[10px] font-semibold'>{periodLabel(p.q, sport)}</text>
         </g>
       ))}
       {devig != null && devig >= lo && devig <= hi && (

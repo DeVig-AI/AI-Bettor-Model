@@ -2,22 +2,27 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowDown, ArrowUp, RotateCcw } from 'lucide-react'
 import { type GameRow } from '@/lib/devig'
 import {
-  type FieldPlay, type Move, FOOTBALL, allMoves, biggestMoves, kindOf, latestDrive, playLabel, spotText,
-  useFieldPlays, usePriceLine,
+  type Call, type FieldPlay, type Move, FOOTBALL, allMoves, biggestMoves, callText, callsOf, kindOf, latestDrive, playLabel,
+  spotText, useFieldPlays, usePriceLine,
 } from '@/lib/field'
 import { teamLogo } from '@/lib/logos'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TeamLogo } from '@/components/team-logo'
 import { isPick } from '../games/plate'
+import { Confetti } from './confetti'
+import { CALL_AT, CallBanner } from './field-call'
 
 // The latest drive on a tilted 3D field: each play draws in one after another, the ball follows, the line of
 // scrimmage and the first-down line move, and the ticker under the field shows what Kalshi's price did around that
-// play. Then the plays that moved the price most this game. NFL and college football, during and after a game.
+// play. A score, a turnover or a missed kick gets a call (field-call.tsx): the end zone flashes, a field goal sails
+// through the posts, TOUCHDOWN! +6 +1 slams in and the score ticks over. Then the plays that moved the price most
+// this game. NFL and college football, during and after a game.
 
 const FW = 326, FH = 200, EZ = 26, PPY = (FW - 2 * EZ) / 100
 const X = (spot: number) => EZ + Math.max(-2, Math.min(102, spot)) * PPY
 const STEP_MS = 1500
+const POSTS = 11 // half the goalposts' width, in px (18.5 ft across, the field 53⅓ yds tall)
 const LOS = '#60a5fa', FD = '#f5e663', LOSS = '#ffa3a3', WIN = '#8ef0b4'
 
 export function useReducedMotion() {
@@ -52,9 +57,10 @@ function Body({ row, plays, points }: { row: GameRow; plays: FieldPlay[]; points
   const byId = useMemo(() => new Map(moves.map((m) => [m.play.id, m])), [moves])
   const drive = useMemo(() => latestDrive(plays), [plays])
   const big = useMemo(() => biggestMoves(moves), [moves])
+  const calls = useMemo(() => callsOf(plays, row.away, row.home), [plays, row.away, row.home])
   return (
     <>
-      {drive.length > 0 && <DriveCard row={row} drive={drive} byId={byId} />}
+      {drive.length > 0 && <DriveCard row={row} drive={drive} byId={byId} calls={calls} />}
       {big.length > 0 && (
         <section aria-label='Biggest moves this game'>
           <div className='mb-2 flex items-baseline justify-between px-1'>
@@ -102,7 +108,7 @@ function MoveRow({ row, m }: { row: GameRow; m: Move }) {
   )
 }
 
-function DriveCard({ row, drive, byId }: { row: GameRow; drive: FieldPlay[]; byId: Map<string, Move> }) {
+function DriveCard({ row, drive, byId, calls }: { row: GameRow; drive: FieldPlay[]; byId: Map<string, Move>; calls: Map<string, Call> }) {
   const reduce = useReducedMotion()
   const n = drive.length
   const key = String(drive[0].drive ?? drive[0].id)
@@ -150,11 +156,19 @@ function DriveCard({ row, drive, byId }: { row: GameRow; drive: FieldPlay[]; byI
   const startSpot = spotText(drive[0].from!, row.away, row.home)
   const ballSpot = spotText(drive[n - 1].to!, row.away, row.home)
   const live = row.state === 'in'
+  // the call on the play shown: the end zone it happens at is the one the team it belongs to attacks (away: right)
+  const call = tick ? calls.get(tick.id) : undefined
+  const go = !!call && !reduce
+  const callColor = call?.team === row.away ? colors.away : call?.team === row.home ? colors.home : '#4b5260'
+  const right = call?.team ? call.team === row.away : (tick?.to ?? 0) >= 50
+  const kick = call?.kind === 'fg' || call?.kind === 'miss'
+  const callAt = kick ? 1.3 : CALL_AT // a kick's flight comes first
+  const animKey = tick ? `${tick.id}-${run}-${pick ?? 'n'}` : 'none'
   const label = `3D field: ${offName}'s ${live ? 'current' : 'last'} drive, ${n} play${n === 1 ? '' : 's'} from the ${startSpot} to the ${ballSpot}.`
 
   return (
     <section aria-label={live ? 'The drive' : 'Last drive'} className='overflow-hidden rounded-2xl bg-card'>
-      <div role='img' aria-label={label} className='relative mx-auto w-full max-w-[420px]'
+      <div role='img' aria-label={label} className='relative mx-auto w-full max-w-[420px] overflow-hidden'
         style={{ aspectRatio: `${FW + 32} / 218`, perspective: 820, perspectiveOrigin: '50% -20%',
           background: 'radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--muted) 70%, #1f2b3a) 0%, var(--card) 62%)' }}>
         <div aria-hidden='true' className='absolute inset-x-[8%] bottom-[9%] h-[21%] rounded-[50%] blur-md'
@@ -167,6 +181,7 @@ function DriveCard({ row, drive, byId }: { row: GameRow; drive: FieldPlay[]; byI
             {fdNow != null && <line x1={X(fdNow)} x2={X(fdNow)} y1='0' y2={FH} stroke={FD} strokeWidth='3' style={{ transition: 'all .5s ease' }} />}
             <line x1={X(los)} x2={X(los)} y1='0' y2={FH} stroke={LOS} strokeWidth='3' style={{ transition: 'all .5s ease' }} />
             {drive.map((p, i) => <Trace key={p.id} p={p} y={rowY(i)} on={i < shown} big={Math.abs(byId.get(p.id)?.delta ?? 0) >= 3} sel={pick === i} dir={dir} />)}
+            {go && <CallFx key={animKey} call={call!} p={tick!} y={rowY(cur)} right={right} color={callColor} />}
             <g style={{ transform: `translate(${ball.x}px, ${ball.y}px)`, transition: reduce ? 'none' : 'transform .9s cubic-bezier(.3,.7,.3,1)' }}>
               <ellipse cx='1.5' cy='4' rx='8' ry='3.5' fill='#000' opacity='.45' />
               <ellipse cx='0' cy='-3' rx='8' ry='5' fill='url(#fm-leather)' stroke='#2a1205' strokeWidth='.8' />
@@ -176,6 +191,12 @@ function DriveCard({ row, drive, byId }: { row: GameRow; drive: FieldPlay[]; byI
           <div aria-hidden='true' className='absolute inset-x-0 top-full h-2.5 rounded-b-[3px]'
             style={{ transformOrigin: '50% 0', transform: 'rotateX(-90deg)', background: 'linear-gradient(#0f3a22, #071a0f)' }} />
         </div>
+        {go && <CallBanner key={`b${animKey}`} row={row} call={call!} color={callColor} at={callAt} />}
+        {go && call!.kind === 'td' && <Confetti key={`c${animKey}`} color={callColor} delay={callAt + 0.1} className='top-[20%]' />}
+        {call && reduce && (
+          <span aria-hidden='true' className='absolute top-2 left-3 rounded-full px-2.5 py-0.5 font-condensed text-xs font-bold tracking-wide text-white uppercase'
+            style={{ background: call.kind === 'miss' ? '#4b5260' : callColor, boxShadow: '0 0 0 1px rgba(255,255,255,.35)' }}>{callText(call)}</span>
+        )}
       </div>
 
       <div className='px-4'>
@@ -191,7 +212,7 @@ function DriveCard({ row, drive, byId }: { row: GameRow; drive: FieldPlay[]; byI
         </div>
         <div className='flex min-h-12 items-center gap-3' aria-live='polite'>
           <div className='min-w-0 flex-1'>
-            <div className='text-[11px] font-semibold text-muted-foreground'>{tick ? `Play ${cur + 1} of ${n}` : 'Drive starts'}</div>
+            <div className='text-[11px] font-semibold text-muted-foreground'>{tick ? `Play ${cur + 1} of ${n}${call ? ` · ${callText(call)}` : ''}` : 'Drive starts'}</div>
             <div className='truncate text-[15px] font-bold'>{tick ? playLabel(tick) : `${offName} ball at the ${startSpot}`}</div>
           </div>
           {mv && (
@@ -254,6 +275,37 @@ function Trace({ p, y, on, big, sel, dir }: { p: FieldPlay; y: number; on: boole
   )
 }
 
+// what the field itself does on a call: the end zone flashes on a touchdown or safety; a field goal's flight arcs from
+// the line of scrimmage to the posts (through them, and they light up, or wide of them)
+function CallFx({ call, p, y, right, color }: { call: Call; p: FieldPlay; y: number; right: boolean; color: string }) {
+  if (call.kind === 'td' || call.kind === 'safety') {
+    const zx = right ? FW - EZ : 0
+    return (
+      <g>
+        <rect x={zx} y='0' width={EZ} height={FH} fill={color} opacity='0' style={{ animation: `ct-strobe 1.9s ${CALL_AT}s both` }} />
+        <rect x={zx} y='0' width={EZ} height={FH} fill='#fff' opacity='0' style={{ animation: `ct-glow 1.7s ${CALL_AT}s both`, mixBlendMode: 'overlay' }} />
+      </g>
+    )
+  }
+  if (call.kind !== 'fg' && call.kind !== 'miss') return null
+  const good = call.kind === 'fg'
+  const gx = right ? FW - 2.5 : 2.5
+  const x0 = X(p.from ?? (right ? 70 : 30))
+  const ey = good ? FH / 2 : FH / 2 + (y > FH / 2 ? POSTS + 12 : -POSTS - 12) // a miss goes wide
+  const d = `M${x0} ${y} Q${(x0 + gx) / 2} ${Math.min(y, ey) - 52} ${gx} ${ey}`
+  const glow = good ? 'drop-shadow(0 0 4px #ffd400)' : undefined
+  return (
+    <g>
+      <path d={d} pathLength={1} fill='none' stroke={good ? '#fff7c2' : '#c7ccd6'} strokeWidth='2.5' strokeLinecap='round' strokeDasharray='1'
+        style={{ animation: 'ct-trace 2.6s .4s both', filter: glow }} />
+      {good && (
+        <line x1={gx} x2={gx} y1={FH / 2 - POSTS} y2={FH / 2 + POSTS} stroke='#fff7c2' strokeWidth='5' strokeLinecap='round' opacity='0'
+          style={{ animation: 'ct-glow 1.7s 1.3s both', filter: 'drop-shadow(0 0 6px #ffd400)' }} />
+      )}
+    </g>
+  )
+}
+
 function Turf({ away, home, colors }: { away: string; home: string; colors: { away: string; home: string } }) {
   const stripes = Array.from({ length: 10 }, (_, i) => i)
   const fives = Array.from({ length: 19 }, (_, i) => (i + 1) * 5)
@@ -293,6 +345,11 @@ function Turf({ away, home, colors }: { away: string; home: string; colors: { aw
       )))}
       <text transform={`translate(${EZ / 2 + 6} ${FH / 2}) rotate(-90)`} textAnchor='middle' {...word}>{away}</text>
       <text transform={`translate(${FW - EZ / 2 - 6} ${FH / 2}) rotate(90)`} textAnchor='middle' {...word}>{home}</text>
+      {[2.5, FW - 2.5].map((px) => (
+        <g key={px} stroke='#ffd400' strokeWidth='2.2' strokeLinecap='round'>
+          <line x1={px} x2={px} y1={FH / 2 - POSTS} y2={FH / 2 + POSTS} />
+        </g>
+      ))}
       {[EZ, FW - EZ].map((px) => [0, FH - 5].map((py) => <rect key={`${px}-${py}`} x={px - 2.5} y={py} width='5' height='5' fill='#ff7a1a' />))}
     </g>
   )
