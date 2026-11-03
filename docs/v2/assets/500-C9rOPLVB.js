@@ -1,1 +1,0 @@
-import{a as e}from"./index-BPyGl5em.js";var t=e;export{t as component};

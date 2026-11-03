@@ -1,1 +1,0 @@
-import{t as e}from"./research-DVCQCsK7.js";var t=e;export{t as component};

@@ -1,0 +1,1 @@
+import{n as e}from"./props-CANP3SNJ.js";var t=e;export{t as component};
