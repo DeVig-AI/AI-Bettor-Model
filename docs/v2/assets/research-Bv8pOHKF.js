@@ -1,1 +1,0 @@
-import{t as e}from"./research-BWaPLe8y.js";var t=e;export{t as component};
