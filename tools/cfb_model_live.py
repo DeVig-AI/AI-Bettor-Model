@@ -213,10 +213,10 @@ def summary(out, W, A, B, seasons):
          "accuracy": round(acc / len(rows), 3), "margin_mae": round(mae / len(rows), 2), "bands": bands}
     if line:   # the closing line, never an input: how far its margin and ours were from what happened, same games
         s["with_line"] = {"games": len(line), "model_mae": round(sum(abs(g["margin"] - mu) for g, mu in line) / len(line), 2),
-                          "line_mae": round(sum(abs(g["margin"] + g["line"]) for g, _ in line) / len(line), 2),
-                          "line_ats_model": round(sum((mu + g["line"] > 0) == (g["margin"] + g["line"] > 0)
-                                                      for g, mu in line if g["margin"] + g["line"] != 0 and mu + g["line"] != 0)
-                                                  / max(1, sum(1 for g, mu in line if g["margin"] + g["line"] != 0 and mu + g["line"] != 0)), 3)}
+                          "line_mae": round(sum(abs(g["margin"] - g["line"]) for g, _ in line) / len(line), 2),
+                          "line_ats_model": round(sum((mu - g["line"] > 0) == (g["margin"] - g["line"] > 0)
+                                                      for g, mu in line if g["margin"] - g["line"] != 0 and mu - g["line"] != 0)
+                                                  / max(1, sum(1 for g, mu in line if g["margin"] - g["line"] != 0 and mu - g["line"] != 0)), 3)}
     return s
 
 
@@ -232,8 +232,8 @@ def solve(games, ret, P, seasons, rounds=3):
     return W, A, B, out
 
 
-GRID = {"k": [0.07, 0.09, 0.12], "k_early": [0.18], "early_n": [4], "carry": [0.9, 0.95],
-        "ke": [0.04, 0.07, 0.1], "carry_e": [0.4, 0.6, 0.8], "ret": [0, 15, 30]}
+GRID = {"k": [0.07, 0.09, 0.12], "k_early": [0.18], "early_n": [4], "carry": [0.9],
+        "ke": [0.01, 0.02, 0.04], "carry_e": [0.2, 0.3, 0.4], "ret": [30, 50, 80]}
 
 
 def fit(games, ret):
@@ -317,7 +317,6 @@ def main(argv):
     from research.lab import config as C, cfb_data as D
     raw = pd.concat([D._read(os.path.join(C.CFB_DIR, "current", str(season)), "games")], ignore_index=True)
     raw = raw.drop_duplicates("game_id").assign(game_id=lambda x: x.game_id.astype(str)).set_index("game_id")
-    names = {}
     up = []
     for g, p, mu in out:
         if g["season"] != season or g["margin"] is not None:
