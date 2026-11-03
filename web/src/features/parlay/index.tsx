@@ -4,6 +4,7 @@ import { Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { type Leg, decimal, legRead, slipMath, useSlip } from '@/lib/parlay'
 import { SaferSwap } from './safer'
+import { type Pair, REL_WORDS, adjustedMath, useSameGameHistory } from '@/lib/samegame'
 import {
   type LivePrice,
   type PropLine,
@@ -152,6 +153,51 @@ function trackedLeg(l: Leg, rows: GameRow[]): TrackedLeg {
   }
 }
 
+// ---------- same-game legs: what past games say about each pair ----------
+function SameGameNote({ pairs, changed, raw }: { pairs: Pair[]; changed: boolean; raw: number | null }) {
+  // pairs with a clear past-game link get their own line; the rest are grouped into one
+  const moved = pairs.filter((p) => p.factor !== 1)
+  const flat = pairs.filter((p) => p.factor === 1 && p.games > 0)
+  const none = pairs.filter((p) => p.games === 0)
+  const rels = (ps: Pair[]) => [...new Set(ps.map((p) => (p.rel ? REL_WORDS[p.rel] : 'other')))].join(', ')
+  const n = (ps: Pair[]) => (ps.length === 1 ? 'The other pair' : `The other ${ps.length} pairs`)
+  const sport = pairs[0].a.sport
+  return (
+    <div className='mt-3 flex flex-col gap-1.5 rounded-xl bg-muted p-3 text-sm leading-relaxed'>
+      <p className='font-semibold'>Same-game legs</p>
+      {moved.map((p) => (
+        <p key={`${p.a.id}~${p.b.id}`} className='text-muted-foreground'>
+          <span className='text-foreground'>{p.a.label}</span> + <span className='text-foreground'>{p.b.label}</span>
+          {p.rel && ` (${REL_WORDS[p.rel]})`}: on past {p.a.sport} games, legs like these both hit{' '}
+          <span className={cn('font-semibold', p.factor > 1 ? 'text-good' : 'text-bad')}>
+            {p.factor > 1 ? `${Math.round((p.factor - 1) * 100)}% more` : `${Math.round((1 - p.factor) * 100)}% less`}
+          </span>{' '}
+          often than their chances multiplied.
+        </p>
+      ))}
+      {flat.length > 0 && (
+        <p className='text-muted-foreground'>
+          {moved.length ? n(flat) : flat.length === 1 ? 'These two' : `All ${flat.length} pairs`} ({rels(flat)}): on past {sport} games, legs like
+          these hit together about as often as their chances multiplied, so nothing changes.
+        </p>
+      )}
+      {none.length > 0 && (
+        <p className='text-muted-foreground'>
+          {none.length === 1 ? 'One pair' : `${none.length} pairs`} ({rels(none)}): no past {sport} games to check, so they&apos;re multiplied as
+          if unrelated.
+        </p>
+      )}
+      {changed && raw != null && (
+        <p className='text-xs text-muted-foreground'>
+          The chances above include this. Multiplied straight, Kalshi&apos;s prices would say {fmtPct(raw, raw < 0.1 ? 1 : 0)}. From past prices
+          and results; it corrects the math, it isn&apos;t an edge.
+          {moved.some((p) => p.factor > 1) && ' Sportsbooks and Kalshi\u2019s own combos usually price this in, so a same-game ticket built there tends to pay less than the multiplied odds above.'}
+        </p>
+      )}
+    </div>
+  )
+}
+
 // ---------- the slip, explained ----------
 function SlipCard() {
   const { legs, remove, replace } = useSlip()
@@ -168,7 +214,11 @@ function SlipCard() {
     setSavedAs({ n: legs.length, stake: stakeN, win: stakeN * (mm.dec - 1), first })
     replace([]) // saved: the slip starts fresh, like classic's Track
   }
-  const m = slipMath(legs)
+  const sg = useSameGameHistory()
+  const raw = slipMath(legs)
+  const adj = adjustedMath(legs, sg)
+  // legs from one game: the whole-ticket chances use the same-game correction (lib/samegame)
+  const m = adj.changed ? { ...raw, market: adj.market, devig: raw.devig == null ? null : adj.devig } : raw
   const s = parseFloat(stake)
   const started = legs.filter((l) => Date.parse(l.kickoff) <= Date.now())
   const weakest = legs
@@ -263,7 +313,8 @@ function SlipCard() {
           {m.devigLegs > 0 && m.devigLegs < legs.length && ` DeVig has its own number for ${m.devigLegs} of ${legs.length} legs; the rest use Kalshi's price.`}
           {weakest && weakestGap < -0.03 && ` The weakest leg is ${weakest.label}: DeVig gives it ${fmtPct(weakest.devig)} vs Kalshi's ${fmtPct(weakest.fair)}.`}
         </p>
-        {m.sameGame.length > 0 && (
+        {adj.pairs.length > 0 && <SameGameNote pairs={adj.pairs} changed={adj.changed} raw={raw.market} />}
+        {m.sameGame.length > adj.pairs.length && adj.pairs.length === 0 && (
           <p className='mt-2 text-sm font-semibold text-bad'>
             Two legs are from the same game. They move together, so these chances aren&apos;t exact for this ticket.
           </p>

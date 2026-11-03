@@ -1,1 +1,0 @@
-import{n as e}from"./props-Durwbv3C.js";var t=e;export{t as component};
