@@ -99,7 +99,7 @@ AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(
          "NHL": timedelta(hours=36)}
 SPORTS = ("NFL", "NBA", "MLB", "CFB", "NHL")
 LAB_DIR = ROOT / "live" / "lab"                               # tools/lab_live.py writes the Lab models' numbers here
-DEVIG_DIR = ROOT / "live" / "devig"                           # tools/nhl_model_live.py writes DeVig's NHL model here
+DEVIG_DIR = ROOT / "live" / "devig"                           # DeVig's file models: tools/nhl_model_live.py, tools/cfb_model_live.py
 LAB_STALE = timedelta(hours=12)                               # an older Lab file is not read (its numbers would be old)
 NHL_TO_ESPN = {"TBL": "TB", "NJD": "NJ", "LAK": "LA", "SJS": "SJ"}   # NHL API code -> ESPN / Kalshi code
 RECENT = timedelta(days=4)                                    # finished games kept in the page's game list
@@ -128,6 +128,10 @@ MODELS = [
     {"key": "cfbrank", "name": "CFB Rankings", "sports": ["CFB"], "author": "Brandon Keck",
      "url": "https://github.com/brandon-keck/cfb-rankings", "license": "MIT",
      "note": "Its weekly Elo ratings, turned into a win chance with its own formula (+65 home, 400 scale). Winner only."},
+    {"key": "devigcfb", "name": "DeVig CFB v1", "sports": ["CFB"], "author": "DeVig.AI (this project)",
+     "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/cfb/CFB_MODEL_V1_PREREG.md", "license": "this project",
+     "note": "DeVig's own college football ratings (margins, play-by-play efficiency, returning production). "
+             "Tracked as a challenger: it is not the app's CFB pick."},
     {"key": "lab", "name": "DeVig Lab", "sports": ["NHL", "CFB"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
      "license": "this project",
@@ -141,7 +145,8 @@ MODELS = [
 COVERS = {"NFL": {"ml": {"devig", "devig2", "nfelo", "elo538", "kalshi"}, "spread": {"devig", "nfelo", "elo538", "kalshi"}, "total": {"kalshi"}},
           "NBA": {"ml": {"devig", "blotny", "kalshi"}, "spread": {"blotny", "kalshi"}, "total": {"kalshi"}},
           "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
-          "CFB": {"ml": {"cfbelo", "cfbrank", "lab", "kalshi"}, "spread": {"cfbelo", "lab", "kalshi"}, "total": {"kalshi"}},
+          "CFB": {"ml": {"devigcfb", "cfbelo", "cfbrank", "lab", "kalshi"}, "spread": {"devigcfb", "cfbelo", "lab", "kalshi"},
+                  "total": {"kalshi"}},
           "NHL": {"ml": {"devig", "lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}}}
 TO_538 = {"LV": "OAK", "WAS": "WSH", "LA": "LAR"}            # nflverse code -> 538 franchise code (2021 on)
 FROM_NFELO = {"LAR": "LA", "OAK": "LV", "WSH": "WAS", "JAC": "JAX"}
@@ -565,7 +570,8 @@ def update(now, nfl_csv=None, offline=False):
         elif sport == "CFB":
             season = now.year if now.month >= 7 else now.year - 1
             sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season)),
-                       ("lab", lambda u=ups: read_lab("CFB", u, now))]
+                       ("lab", lambda u=ups: read_lab("CFB", u, now)),
+                       ("devigcfb", lambda u=ups: read_lab("CFB", u, now, DEVIG_DIR))]
         elif sport == "NHL":
             sources = [("devig", lambda u=ups: read_lab("NHL", u, now, DEVIG_DIR)),
                        ("lab", lambda u=ups: read_lab("NHL", u, now))]
