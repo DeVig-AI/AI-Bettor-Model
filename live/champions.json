@@ -1,5 +1,5 @@
 {
- "rule": "CHAMPION_CHALLENGER_V1_PREREG.md",
+ "rule": "CHAMPION_CHALLENGER_V2_PREREG.md",
  "note": "Current state only; every change is appended to live/champions/DECISIONS.csv. Written by tools/champion_review.py.",
  "slots": {
   "NBA.ml": {
@@ -28,6 +28,13 @@
    "champion": "market",
    "since": "2026-10-19T00:00:00Z",
    "app_support": false,
+   "trial": null,
+   "retired": []
+  },
+  "CBB.ml": {
+   "champion": "devigcbb",
+   "since": "2026-11-03T00:00:00Z",
+   "app_support": true,
    "trial": null,
    "retired": []
   }
