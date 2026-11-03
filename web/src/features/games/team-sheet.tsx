@@ -2,7 +2,7 @@ import { ChevronRight, Minus, Plus } from 'lucide-react'
 import { Link, useMatchRoute } from '@tanstack/react-router'
 import { type GameRow, fmtAmerican, fmtPct, useRecord } from '@/lib/devig'
 import { useExperience } from '@/lib/experience'
-import { checkText, labFor, useLab } from '@/lib/lab'
+import { checkText, labFor, useDevigFiles, useLab } from '@/lib/lab'
 import { useSlip } from '@/lib/parlay'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
@@ -17,12 +17,14 @@ export type Side = 'away' | 'home'
 
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 
-// the chance shown for a side: DeVig's model (its pick or its lean), else the Lab's, else Kalshi's fair price
-export function sideChance(row: GameRow, side: Side, labHome?: number | null): { pct: number | null; who: string } {
+// the chance shown for a side: DeVig's model (its pick or its lean, or its NHL ratings model), else the Lab's, else
+// Kalshi's fair price
+export function sideChance(row: GameRow, side: Side, labHome?: number | null, devigHome?: number | null): { pct: number | null; who: string } {
   const code = side === 'home' ? row.home : row.away
   const p = row.pick
   if (p?.side && p.prob != null && p.action !== 'PASS') return { pct: p.side === code ? p.prob : 1 - p.prob, who: 'DeVig' }
   if (p?.lean && p.leanProb != null) return { pct: p.lean === code ? p.leanProb : 1 - p.leanProb, who: 'Model' }
+  if (devigHome != null) return { pct: side === 'home' ? devigHome : 1 - devigHome, who: 'DeVig' }
   if (labHome != null) return { pct: side === 'home' ? labHome : 1 - labHome, who: 'Lab' }
   const f = row.fairHome == null ? null : side === 'home' ? row.fairHome : 1 - row.fairHome
   return { pct: f, who: 'Kalshi' }
@@ -44,6 +46,7 @@ export function TeamSheet({
   const { level, setLevel } = useExperience()
   const { records } = useRecord()
   const lab = useLab().data
+  const devigFiles = useDevigFiles().data
   const { toggle, has } = useSlip()
   const matchRoute = useMatchRoute()
   if (!row) return null
@@ -57,6 +60,7 @@ export function TeamSheet({
   const color = (side === 'home' ? row.colors?.home : row.colors?.away) || 'var(--side-home)'
   const id = side === 'home' ? row.ids?.home : row.ids?.away
   const labGame = labFor(lab, row)
+  const dvGame = labFor(devigFiles, row)
   const lv = level ?? 'sometimes'
   const leg = row.state === 'pre' ? mlLeg(row, side) : null
   const on = leg ? has(leg.id) : false
@@ -96,7 +100,7 @@ export function TeamSheet({
         <div className='flex shrink-0 flex-col gap-4 px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]'>
           <div role='tablist' aria-label='Team' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
             {(['away', 'home'] as const).map((s) => {
-              const c = sideChance(row, s, labGame?.home_wp)
+              const c = sideChance(row, s, labGame?.home_wp, dvGame?.home_wp)
               return (
                 <button
                   key={s}
@@ -123,7 +127,8 @@ export function TeamSheet({
           ) : p?.lean && p.leanProb != null ? (
             <PassBody row={row} side={code} level={lv} />
           ) : (
-            <NoModelBody row={row} side={side} labHome={labGame?.home_wp ?? null} labNote={labGame ? checkText(lab?.[row.sport]?.check) : null} />
+            <NoModelBody row={row} side={side} labHome={labGame?.home_wp ?? null} labNote={labGame ? checkText(lab?.[row.sport]?.check) : null}
+              devigHome={dvGame?.home_wp ?? null} />
           )}
 
           {leg && (
@@ -164,16 +169,35 @@ export function TeamSheet({
   )
 }
 
-// No DeVig model for this game: the Lab's read when it has one (new, not proven), and what Kalshi's price says
-function NoModelBody({ row, side, labHome, labNote }: { row: GameRow; side: Side; labHome: number | null; labNote: string | null }) {
+// No DeVig pick for this game: DeVig's NHL ratings model when it has a number (the Lab's beside it), else the Lab's
+// read when it has one (new, not proven), and what Kalshi's price says
+function NoModelBody({ row, side, labHome, labNote, devigHome }: {
+  row: GameRow; side: Side; labHome: number | null; labNote: string | null; devigHome?: number | null
+}) {
   const code = side === 'home' ? row.home : row.away
   const name = (side === 'home' ? row.homeName : row.awayName) || code
   const fair = row.fairHome == null ? null : side === 'home' ? row.fairHome : 1 - row.fairHome
   const odds = side === 'home' ? row.ml?.home : row.ml?.away
   const labP = labHome == null ? null : side === 'home' ? labHome : 1 - labHome
+  const dvP = devigHome == null ? null : side === 'home' ? devigHome : 1 - devigHome
   return (
     <div className='flex flex-col gap-4'>
-      {labP != null ? (
+      {dvP != null ? (
+        <>
+          <p className='text-lg leading-snug font-semibold'>
+            DeVig&apos;s {row.sport} model gives {name} about{' '}
+            <span className='text-devig'>{Math.round(dvP * 10)} times out of 10</span> ({fmtPct(dvP)}).
+          </p>
+          <div className='rounded-2xl bg-muted p-3.5'>
+            <p className='font-semibold'>How it gets there</p>
+            <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+              Team ratings built from every result since 2022, who played the night before, and each team&apos;s recent share
+              of the shots. Starting goalies aren&apos;t in it. It&apos;s new this season and graded on the Models page.
+              {labP != null && ` The DeVig Lab's model says ${fmtPct(labP)}.`}
+            </p>
+          </div>
+        </>
+      ) : labP != null ? (
         <>
           <p className='text-lg leading-snug font-semibold'>
             The DeVig Lab&apos;s {row.sport} model gives {name} about{' '}
@@ -195,7 +219,8 @@ function NoModelBody({ row, side, labHome, labNote }: { row: GameRow; side: Side
         <p className='text-sm leading-relaxed text-muted-foreground'>
           Kalshi&apos;s price{odds != null ? ` (${fmtAmerican(odds)})` : ''} gives {name} {fmtPct(fair)} once its fee gap is
           split off. That&apos;s the market&apos;s guess, not DeVig&apos;s.
-          {labP != null && Math.abs(labP - fair) >= 0.01 && ` The Lab is ${Math.abs((labP - fair) * 100).toFixed(1)} points ${labP > fair ? 'higher' : 'lower'}.`}
+          {dvP != null && Math.abs(dvP - fair) >= 0.01 && ` DeVig is ${Math.abs((dvP - fair) * 100).toFixed(1)} points ${dvP > fair ? 'higher' : 'lower'}.`}
+          {dvP == null && labP != null && Math.abs(labP - fair) >= 0.01 && ` The Lab is ${Math.abs((labP - fair) * 100).toFixed(1)} points ${labP > fair ? 'higher' : 'lower'}.`}
         </p>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { Undo2, X } from 'lucide-react'
 import { fmtAmerican, useGames } from '@/lib/devig'
-import { labFor, useLab } from '@/lib/lab'
+import { labFor, useDevigFiles, useLab } from '@/lib/lab'
 import { type Graded, type LoggedBet, grade, useBets, useCloses } from '@/lib/bets'
 import { americanFrom, breakeven, expectedValue, kelly, noVig, parseAmerican } from '@/lib/odds'
 import { cn } from '@/lib/utils'
@@ -57,6 +57,7 @@ export function Fair() {
 function Calculator() {
   const { rows } = useGames()
   const { data: lab } = useLab()
+  const { data: devigFiles } = useDevigFiles()
   const { add } = useBets()
   const [gameId, setGameId] = useState('')
   const [side, setSide] = useState<'away' | 'home'>('away')
@@ -92,6 +93,10 @@ function Calculator() {
     if (row.fairHome != null) refs.push({ key: 'kalshi', name: 'Kalshi', chance: side === 'home' ? row.fairHome : 1 - row.fairHome })
     if (isPick(row) && row.pick?.prob != null) {
       refs.push({ key: 'devig', name: 'DeVig', note: `picked ${row.pick.side}`, chance: row.pick.side === code ? row.pick.prob : 1 - row.pick.prob })
+    }
+    const dg = labFor(devigFiles, row)
+    if (dg && !refs.some((r) => r.key === 'devig')) {
+      refs.push({ key: 'devig', name: 'DeVig', note: `${row.sport} model`, chance: side === 'home' ? dg.home_wp : 1 - dg.home_wp })
     }
     const lg = labFor(lab, row)
     if (lg) refs.push({ key: 'lab', name: 'DeVig Lab', note: 'new, not proven', chance: side === 'home' ? lg.home_wp : 1 - lg.home_wp })
