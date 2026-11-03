@@ -114,9 +114,7 @@ export function Ladder({ l, side, lv, open }: { l: PropLine; side: 'over' | 'und
       {off != null && (
         <p className='text-xs leading-relaxed text-muted-foreground'>
           {lv === 'new'
-            ? side === 'over'
-              ? `On past ${l.sport} games, Overs won a little less often than Kalshi's price said, at every line. A safer line costs more for each win; it's peace of mind for a parlay, not a bargain.`
-              : `On past ${l.sport} games, Unders won about as often as Kalshi's price said, so you mostly pay just the fee. A safer line costs more for each win; it's peace of mind for a parlay, not a bargain.`
+            ? `On past ${l.sport} games, ${side === 'over' ? 'Overs' : 'Unders'} won ${off <= 0.02 ? "about as often as Kalshi's price said, so you mostly pay just the fee" : "a little less often than Kalshi's price said"}. A safer line costs more for each win; it's peace of mind for a parlay, not a bargain.`
             : `Past ${l.sport} ${side === 'over' ? 'Overs' : 'Unders'} (${hist!.sports[l.sport].seasons.join(', ')}): paid about ${(off * 100).toFixed(1)}¢ more per $1 than they won back, fee in. Safer rungs aren't cheaper; DeVig marks the hardest one both it and Kalshi give 70%+.`}
         </p>
       )}

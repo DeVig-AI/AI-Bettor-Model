@@ -3,8 +3,9 @@
 props_ladder_history.py -- how often past Kalshi player-prop rungs actually hit, by the price you'd have paid.
 
 Reads the settled Kalshi prop markets the history bots already saved ({nba,nhl}/props_history/kalshi/*.csv: the
-price shortly before the game and how the market settled) and writes stats/props_ladder.json for the v2 app's
-ladder view. Descriptive only: it says "last season, overs bought at 70-80c hit 72% of the time"; it is not a
+price shortly before the game and how the market settled) plus every rung the live props bots locked before a game
+and later graded (nba/NBA_PROPS_MODEL_V2_LOG.sqlite3, nhl/NHL_PROPS_MODEL_V1_LOG.sqlite3: locked_rows + grades), and
+writes stats/props_ladder.json for the v2 app's ladder view. .github/workflows/props_ladder.yml reruns it daily. Descriptive only: it says "last season, overs bought at 70-80c hit 72% of the time"; it is not a
 pre-registered test and the app never calls it an edge. Prices this script reads were already used by the props
 back-tests.
 
@@ -19,7 +20,7 @@ Also counts ladder mistakes between neighbouring rungs of the same player, stat 
                 and pays at least $1 whatever happens).
 Run from the repo root:  python3 tools/props_ladder_history.py
 """
-import collections, csv, glob, json, os
+import collections, csv, glob, json, os, sqlite3
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,10 +44,45 @@ def load(sport):
                     b, a, line = float(r["yes_bid"]), float(r["yes_ask"]), float(r["line"])
                 except ValueError:
                     continue
-                if b <= 0 or a >= 1 or a - b > MAX_SPREAD or a < b:
+                if not ok_price(b, a):
                     continue
                 rows.append({"ev": r["event_ticker"], "player": r["player"], "stat": r["stat"], "line": line,
-                             "bid": b, "ask": a, "yes": r["result"] == "yes", "season": r.get("season", "")})
+                             "bid": b, "ask": a, "yes": r["result"] == "yes", "ticker": r.get("ticker", ""),
+                             "season": season_label(sport, r["season"]) if r.get("season", "").isdigit() else ""})
+    return rows
+
+
+LIVE_DB = {"nba": "nba/NBA_PROPS_MODEL_V2_LOG.sqlite3", "nhl": "nhl/NHL_PROPS_MODEL_V1_LOG.sqlite3"}
+
+
+def season_label(sport, y):
+    """'2025-26'. The NBA history labels a season by the year it ends, the NHL one by the year it starts."""
+    y = int(y)
+    start = y - 1 if sport == "nba" else y
+    return f"{start}-{(start + 1) % 100:02d}"
+
+
+def ok_price(b, a):
+    return b is not None and a is not None and 0 < b <= a < 1 and a - b <= MAX_SPREAD
+
+
+def load_live(sport, seen):
+    """Rungs the live bot locked before the game (its bid / ask) and graded from Kalshi's settlement."""
+    path = os.path.join(ROOT, LIVE_DB[sport])
+    if not os.path.exists(path):
+        return []
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    q = """select r.event_ticker, r.player, r.stat, r.line, r.k_bid, r.k_ask, g.result, r.lock_utc, r.ticker
+           from locked_rows r join grades g on g.ticker = r.ticker where g.result in ('yes', 'no')"""
+    rows = []
+    for ev, player, stat, line, b, a, res, lock, ticker in con.execute(q):
+        if ticker in seen or not ok_price(b, a):
+            continue
+        y, m = int(lock[:4]), int(lock[5:7])
+        start = y if m >= 8 else y - 1
+        rows.append({"ev": ev, "player": player, "stat": stat, "line": float(line), "bid": b, "ask": a,
+                     "yes": res == "yes", "season": f"{start}-{(start + 1) % 100:02d}"})
+    con.close()
     return rows
 
 
@@ -90,13 +126,15 @@ def main():
            "note": "Descriptive: past Kalshi prop prices vs how often they hit. Not a pre-registered test.",
            "max_spread": MAX_SPREAD, "min_n": MIN_N, "sports": {}}
     for s in SPORTS:
-        rows = load(s)
+        hist = load(s)
+        live = load_live(s, {r["ticker"] for r in hist})
+        rows = hist + live
         if not rows:
             continue
         seasons = sorted({r["season"] for r in rows if r["season"]})
-        doc["sports"][s.upper()] = {"rungs": len(rows), "seasons": seasons, "table": table(rows),
-                                    "mistakes": mistakes(rows)}
-        print(s, len(rows), "rungs", doc["sports"][s.upper()]["mistakes"])
+        doc["sports"][s.upper()] = {"rungs": len(rows), "history_rungs": len(hist), "live_rungs": len(live),
+                                    "seasons": seasons, "table": table(rows), "mistakes": mistakes(rows)}
+        print(s, len(hist), "history +", len(live), "live rungs", doc["sports"][s.upper()]["mistakes"])
     path = os.path.join(ROOT, "stats", "props_ladder.json")
     with open(path, "w") as fh:
         json.dump(doc, fh, separators=(",", ":"))
