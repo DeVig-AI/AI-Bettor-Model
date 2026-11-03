@@ -6,6 +6,7 @@ import { Check, Plus } from 'lucide-react'
 import { fmtAmerican, fmtPct } from '@/lib/devig'
 import { type Rung, pastHit, useLadder, useLadderHistory } from '@/lib/ladder'
 import { slipMath, useSlip } from '@/lib/parlay'
+import { adjustedMath, useSameGameHistory } from '@/lib/samegame'
 import { type PropLine, overTxt, priceToAmerican, propSide, underTxt } from '@/lib/props'
 import { cn } from '@/lib/utils'
 import { propLeg } from '../parlay/legs'
@@ -20,6 +21,7 @@ export function Ladder({ l, side, lv, open }: { l: PropLine; side: 'over' | 'und
   const rungs = useLadder(l, side, open)
   const hist = useLadderHistory()
   const { toggle, has, legs } = useSlip()
+  const sg = useSameGameHistory()
   const upcoming = Date.parse(l.kickoff) > Date.now()
   if (rungs.length < 2) return null
   const nums = lv === 'numbers'
@@ -90,7 +92,9 @@ export function Ladder({ l, side, lv, open }: { l: PropLine; side: 'over' | 'und
       </ul>
 
       {legs.length > 1 && (() => {
-        const m = slipMath(legs)
+        const raw = slipMath(legs)
+        const adj = adjustedMath(legs, sg) // legs from one game corrected for each other
+        const m = adj.changed ? { ...raw, market: adj.market, devig: raw.devig == null ? null : adj.devig } : raw
         return (
           <p className='rounded-xl bg-muted px-3 py-2 text-sm tabular-nums'>
             <span className='font-semibold'>Your parlay: </span>

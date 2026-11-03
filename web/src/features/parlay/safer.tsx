@@ -5,6 +5,7 @@ import { buildLadder } from '@/lib/ladder'
 import { type Leg, slipMath, useSlip } from '@/lib/parlay'
 import { overTxt, underTxt, useProps } from '@/lib/props'
 import { fmtAmerican, fmtPct } from '@/lib/devig'
+import { adjustedMath, useSameGameHistory } from '@/lib/samegame'
 import { propLeg } from './legs'
 
 const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—')
@@ -12,6 +13,7 @@ const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—'
 export function SaferSwap({ leg }: { leg: Leg }) {
   const { lines } = useProps()
   const { legs, replace } = useSlip()
+  const sg = useSameGameHistory()
   if (leg.kind !== 'prop' || Date.parse(leg.kickoff) <= Date.now()) return null
   const side = leg.id.endsWith('|under') ? 'under' : 'over'
   const key = leg.id.slice(0, -(side.length + 1))
@@ -24,8 +26,8 @@ export function SaferSwap({ leg }: { leg: Leg }) {
   const next = propLeg(safe.l, side, null)
   if (!next || legs.some((l) => l.id === next.id)) return null
   const swapped = legs.map((l) => (l.id === leg.id ? next : l))
-  const a = slipMath(legs)
-  const b = slipMath(swapped)
+  const a = { ...slipMath(legs), market: adjustedMath(legs, sg).market } // same-game legs corrected
+  const b = { ...slipMath(swapped), market: adjustedMath(swapped, sg).market }
   if (a.market == null || b.market == null) return null
   const txt = side === 'over' ? overTxt(safe.l.stat, safe.l.line) : underTxt(safe.l.stat, safe.l.line)
   return (
