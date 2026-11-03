@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
+import { type Side, TeamSheet } from '../games/team-sheet'
 import { PropRow, type Shown, withLive } from '../props'
 import { FieldMovers } from './field'
 import { CourtMovers } from './court'
@@ -20,11 +21,12 @@ import { GameWrap } from './wrap'
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
 // see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
 
-function Box({ label, value }: { label: string; value: string }) {
+function Box({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className='rounded-2xl bg-card px-3 py-2.5'>
       <div className='text-xs text-muted-foreground'>{label}</div>
       <div className='font-condensed text-[17px] font-bold tabular-nums'>{value}</div>
+      {sub && <div className='text-[11px] text-muted-foreground tabular-nums'>{sub}</div>}
     </div>
   )
 }
@@ -50,7 +52,7 @@ function finalBoxes(row: GameRow) {
   return [{ label: 'Kalshi at start', value: start }, mid, { label: 'Total points', value: String(a + h) }]
 }
 
-function Read({ row }: { row: GameRow }) {
+function Read({ row, onWhy }: { row: GameRow; onWhy: (s: Side) => void }) {
   const p = row.pick
   if (!p) return null
   if (!isPick(row) || p.prob == null) {
@@ -58,8 +60,14 @@ function Read({ row }: { row: GameRow }) {
       <section className='rounded-2xl bg-card p-4'>
         <p className='font-display text-xl font-extrabold'>No pick</p>
         <p className='mt-1 text-sm text-muted-foreground'>
-          DeVig&apos;s model isn&apos;t sure enough here to pick a side. Tap {p.lean ?? 'a team'} on the bar above to see how close it was.
+          DeVig&apos;s model isn&apos;t sure enough here to pick a side.
         </p>
+        {p.lean && (
+          <button type='button' onClick={() => onWhy(p.lean === row.home ? 'home' : 'away')}
+            className='mt-2 inline-flex h-10 items-center gap-1 rounded-full border px-4 text-sm font-semibold hover:bg-muted/50'>
+            See how close {p.lean} was <ChevronRight className='size-4' aria-hidden='true' />
+          </button>
+        )}
       </section>
     )
   }
@@ -80,7 +88,10 @@ function Read({ row }: { row: GameRow }) {
           {p.correct === true ? ' Won.' : p.correct === false ? ' Lost.' : ' Locked before the game; graded after.'}
         </p>
       )}
-      <p className='mt-1.5 text-sm font-semibold text-devig'>Tap {p.side} on the bar above to see why.</p>
+      <button type='button' onClick={() => onWhy(p.side === row.home ? 'home' : 'away')}
+        className='mt-2 inline-flex h-10 items-center gap-1 rounded-full bg-devig px-4 text-sm font-bold text-[#0a0b0f] hover:opacity-90'>
+        Why {p.side}? <ChevronRight className='size-4' aria-hidden='true' />
+      </button>
       {!pre && (
         <p className='mt-1.5 text-sm leading-relaxed text-accent-foreground'>
           {row.state === 'post'
@@ -98,6 +109,8 @@ export function GamePage({ id }: { id: string }) {
   const injuries = useInjuries()
   const { lines } = useProps()
   const [live, setLive] = useState<Record<string, LivePrice>>({})
+  const [sheet, setSheet] = useState<{ open: boolean; side: Side }>({ open: false, side: 'home' })
+  const why = (side: Side) => setSheet({ open: true, side })
   const row = rows.find((r) => r.id === id) ?? finals.find((r) => r.id === id)
 
   const hurt = useMemo(
@@ -145,6 +158,8 @@ export function GamePage({ id }: { id: string }) {
         <Plate row={row} showDay size='lg' />
         <PlateTaps row={row} />
       </div>
+      <TeamSheet row={row} side={sheet.side} onSide={(side) => setSheet({ open: true, side })} open={sheet.open}
+        onOpenChange={(open) => setSheet((v) => ({ ...v, open }))} />
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         {done ? (
           <>
@@ -156,16 +171,25 @@ export function GamePage({ id }: { id: string }) {
         ) : (
           <>
             <div className='grid grid-cols-3 gap-2'>
-              <Box label='Kalshi' value={`${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
+              <Box label='Kalshi, no fee' value={row.fairHome == null ? '—' : `${fmtPct(1 - row.fairHome)} / ${fmtPct(row.fairHome)}`}
+                sub={`Price ${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
               <Box label='Spread' value={spread} />
               <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
             </div>
-            <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
+            <div className='-mt-1 grid grid-cols-2 gap-2'>
+              {(['away', 'home'] as const).map((s) => (
+                <button key={s} type='button' onClick={() => why(s)}
+                  className='flex min-h-11 items-center justify-between gap-2 rounded-2xl border px-4 py-2 text-start text-sm font-semibold hover:bg-muted/50'>
+                  <span className='min-w-0 truncate'>Why {s === 'home' ? row.home : row.away}?{row.state === 'pre' && <span className='block text-xs font-normal text-muted-foreground'>or add to parlay</span>}</span>
+                  <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+                </button>
+              ))}
+            </div>
           </>
         )}
         <PriceAlert row={row} />
 
-        <Read row={row} />
+        <Read row={row} onWhy={why} />
 
           <GapChart row={row} />
           <FieldMovers row={row} />

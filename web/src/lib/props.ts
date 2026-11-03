@@ -27,6 +27,7 @@ export function overTxt(stat: string, line: number) {
 }
 export function underTxt(stat: string, line: number) {
   if (stat === 'touchdowns' && line === 0.5) return 'No TD'
+  if (line === 0.5) return `No ${statName(stat, true)}`
   if (half(line)) return `${line - 0.5} or fewer ${statName(stat, true)}`
   return `Under ${line} ${statName(stat, true)}`
 }

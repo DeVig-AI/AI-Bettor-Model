@@ -109,7 +109,7 @@ export function Plate({
             code={row.away}
             name={row.awayName}
             pct={row.fairHome == null ? null : split}
-            score={row.awayScore}
+            score={live || row.state === 'post' ? row.awayScore : null}
             won={done && row.awayScore! > row.homeScore!}
             big={big}
           />
@@ -120,7 +120,7 @@ export function Plate({
             code={row.home}
             name={row.homeName}
             pct={row.fairHome}
-            score={row.homeScore}
+            score={live || row.state === 'post' ? row.homeScore : null}
             won={done && row.homeScore! > row.awayScore!}
             big={big}
             right
