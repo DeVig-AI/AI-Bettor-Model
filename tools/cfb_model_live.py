@@ -29,6 +29,7 @@ game ids are ESPN's, so tools/models_compare.py reads it as the "devig" CFB mode
 
 Usage:  python3 tools/cfb_model_live.py          (write live/devig/cfb.json; skipped when the data isn't here)
         python3 tools/cfb_model_live.py fit      (in Actions with the cache: settings search + backtest summary)
+        python3 tools/cfb_model_live.py compare PICKS RESULTS   (this season's graded games vs the Models page)
 """
 import itertools
 import json
@@ -236,6 +237,9 @@ GRID = {"k": [0.09], "k_early": [0.18], "early_n": [4], "carry": [0.85, 0.9],
         "ke": [0.02, 0.04, 0.07], "carry_e": [0.0, 0.1, 0.2], "ret": [80, 120, 160]}
 
 
+SHRINK = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7]
+
+
 def fit(games, ret):
     fit_s = set(FIT)
     best = None
@@ -253,11 +257,61 @@ def fit(games, ret):
     _, out0 = run(games, dict(P), W0, ret)
     xs = [mu for g, _, mu in out0 if g["season"] in fit_s and g["margin"] not in (None, 0)]
     A0, B0 = fit_logit(xs, [1 if g["margin"] > 0 else 0 for g, _, _ in out0 if g["season"] in fit_s and g["margin"] not in (None, 0)])
-    rep = {"settings": P, "weights": {k: round(v, 4) for k, v in W.items()}, "win_chance": {"a": round(A, 5), "b": round(B, 5)}}
+    # the win chance came out a little too sure at the extremes on unseen seasons: shrink it toward 50%, the shrink
+    # picked on the check seasons (2018-2019) only
+    chk = set(CHECK)
+    c = min(SHRINK, key=lambda c: summary(out, W, A * c, B * c, chk)["log_loss"])
+    rep = {"settings": P, "weights": {k: round(v, 4) for k, v in W.items()}, "shrink": c,
+           "win_chance_unshrunk": {"a": round(A, 5), "b": round(B, 5)}}
+    A, B = A * c, B * c
+    rep["win_chance"] = {"a": round(A, 5), "b": round(B, 5)}
     for name, ss in (("fit", FIT), ("check", CHECK), ("test", TEST)):
         rep[name] = summary(out, W, A, B, set(ss))
         rep[name + "_scores_only"] = summary(out0, W0, A0, B0, set(ss))
     print("RESULT " + json.dumps(rep))
+    return rep
+
+
+def compare(out, A, B, picks_path, results_path, season):
+    """This season's graded CFB games on the Models page (live/models/picks.jsonl + results.jsonl): the frozen model's
+    chance for each from the ratings before that game (a replay, not a live lock) next to every other model's last
+    number before kickoff, on the games every model has. Prints summary numbers only."""
+    res = {}
+    for ln in open(results_path):
+        r = json.loads(ln)
+        if r.get("sport") == "CFB" and r.get("home_score") is not None and r["home_score"] != r["away_score"]:
+            res[str(r["game_id"])] = 1 if r["home_score"] > r["away_score"] else 0
+    last = {}
+    for ln in open(picks_path):
+        r = json.loads(ln)
+        if r.get("sport") != "CFB" or r.get("home_wp") is None or str(r["game_id"]) not in res:
+            continue
+        if r.get("at") and r.get("kickoff") and r["at"] > r["kickoff"]:
+            continue
+        k = (r["model"], str(r["game_id"]))
+        if k not in last or r["at"] >= last[k]["at"]:
+            last[k] = r
+    by = {}
+    for (m, gid), r in last.items():
+        by.setdefault(m, {})[gid] = float(r["home_wp"])
+    mine = {g["id"]: logistic(A, B, mu) for g, _, mu in out if g["season"] == season and g["id"] in res}
+    by["devig"] = mine
+    def table(models):
+        ids = sorted(set.intersection(*(set(by.get(m, {})) for m in models)))
+        rows = {}
+        for m in models:
+            ll = acc = 0.0
+            for gid in ids:
+                p, y = min(max(by[m][gid], 1e-6), 1 - 1e-6), res[gid]
+                ll -= y * math.log(p) + (1 - y) * math.log(1 - p)
+                acc += (p > 0.5) == (y == 1)
+            rows[m] = {"log_loss": round(ll / len(ids), 4), "accuracy": round(acc / len(ids), 3)} if ids else None
+        return {"games": len(ids), "models": rows}
+    others = sorted(m for m in by if m != "devig")
+    rep = {"graded_cfb_games": len(res), "devig_has": len(mine), "picks_by_model": {m: len(by[m]) for m in sorted(by)},
+           "all_four": table(["devig"] + [m for m in ("kalshi", "cfbelo", "cfbrank") if m in by]),
+           "each": {m: table(["devig", m]) for m in others}}
+    print("COMPARE " + json.dumps(rep))
     return rep
 
 
@@ -313,6 +367,9 @@ def main(argv):
         raise SystemExit("CFB model: no frozen settings yet (run `fit` first)")
     P, W, A, B = FROZEN["settings"], FROZEN["weights"], FROZEN["win_chance"]["a"], FROZEN["win_chance"]["b"]
     _, out = run(games, P, W, ret)
+    if argv[:1] == ["compare"]:
+        compare(out, A, B, argv[1], argv[2], season)
+        return 0
     import pandas as pd
     from research.lab import config as C, cfb_data as D
     raw = pd.concat([D._read(os.path.join(C.CFB_DIR, "current", str(season)), "games")], ignore_index=True)
@@ -325,7 +382,7 @@ def main(argv):
         if not k or not (now < k <= now + AHEAD):
             continue
         up.append({"game_id": g["id"], "kickoff": iso(k), "date": g["day"], "home": g["home"], "away": g["away"],
-                   "home_name": names.get(g["home"], g["home"]), "away_name": names.get(g["away"], g["away"]),
+                   "home_name": g["home"], "away_name": g["away"],
                    "neutral": g["neutral"], "home_wp": round(logistic(A, B, mu), 4), "home_line": round(-mu, 1),
                    "parts": {k2: round(v, 3) for k2, v in p.items()}})
     up.sort(key=lambda x: (x["kickoff"], x["game_id"]))
