@@ -1,0 +1,1 @@
+import{n as e}from"./props-Cea1Bnpl.js";var t=e;export{t as component};

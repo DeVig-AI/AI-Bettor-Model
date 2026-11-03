@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { Check, Plus } from 'lucide-react'
 import { fmtAmerican, fmtPct } from '@/lib/devig'
 import { type Rung, pastHit, useLadder, useLadderHistory } from '@/lib/ladder'
-import { useSlip } from '@/lib/parlay'
+import { slipMath, useSlip } from '@/lib/parlay'
 import { type PropLine, overTxt, priceToAmerican, propSide, underTxt } from '@/lib/props'
 import { cn } from '@/lib/utils'
 import { propLeg } from '../parlay/legs'
@@ -19,7 +19,7 @@ const label = (r: Rung, lv: Level) =>
 export function Ladder({ l, side, lv, open }: { l: PropLine; side: 'over' | 'under'; lv: Level; open: boolean }) {
   const rungs = useLadder(l, side, open)
   const hist = useLadderHistory()
-  const { toggle, has } = useSlip()
+  const { toggle, has, legs } = useSlip()
   const upcoming = Date.parse(l.kickoff) > Date.now()
   if (rungs.length < 2) return null
   const nums = lv === 'numbers'
@@ -88,6 +88,18 @@ export function Ladder({ l, side, lv, open }: { l: PropLine; side: 'over' | 'und
           )
         })}
       </ul>
+
+      {legs.length > 1 && (() => {
+        const m = slipMath(legs)
+        return (
+          <p className='rounded-xl bg-muted px-3 py-2 text-sm tabular-nums'>
+            <span className='font-semibold'>Your parlay: </span>
+            {legs.length} legs, pays {fmtAmerican(Math.round(m.american))}
+            {m.market != null && (lv === 'new' ? `, hits about 1 in ${Math.max(1, Math.round(1 / m.market))} by Kalshi's prices` : ` · Kalshi ${fmtPct(m.market, m.market < 0.1 ? 1 : 0)}`)}
+            {m.devig != null && lv !== 'new' && <span className='text-devig'> · DeVig {fmtPct(m.devig, m.devig < 0.1 ? 1 : 0)}</span>}
+          </p>
+        )
+      })()}
 
       {cross?.crossed && (
         <p className='rounded-xl border border-good/40 bg-good/10 p-3 text-sm leading-relaxed'>
