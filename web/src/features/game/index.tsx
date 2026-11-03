@@ -3,7 +3,7 @@ import { TrackButton } from '@/components/track-button'
 import { PriceAlert } from './price-alert'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
+import { type GameRow, fmtAmerican, fmtPct, useFinals, useGames } from '@/lib/devig'
 import { useInjuries } from '@/lib/injuries'
 import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
 import { RS_SPORTS } from '@/lib/research'
@@ -26,6 +26,27 @@ function Box({ label, value }: { label: string; value: string }) {
       <div className='font-condensed text-[17px] font-bold tabular-nums'>{value}</div>
     </div>
   )
+}
+
+// A finished game's three boxes: Kalshi's split just before the start, who won by how much (or who covered, when
+// DeVig saved the closing spread), and the total points. The live files drop a game's prices once it ends.
+function finalBoxes(row: GameRow) {
+  const a = row.awayScore ?? 0
+  const h = row.homeScore ?? 0
+  const c = row.closeHome
+  const start = c == null ? '—' : `${fmtPct(1 - c)} / ${fmtPct(c)}`
+  let mid: { label: string; value: string }
+  const sp = row.closeSpread
+  if (sp != null) {
+    const m = h - a + sp // home's margin against the line
+    mid = {
+      label: `Spread ${row.home} ${sp > 0 ? '+' : ''}${sp}`,
+      value: m === 0 ? 'Push' : `${m > 0 ? row.home : row.away} covered`,
+    }
+  } else {
+    mid = { label: 'Won by', value: a === h ? 'Tie' : `${a > h ? row.away : row.home} by ${Math.abs(a - h)}` }
+  }
+  return [{ label: 'Kalshi at start', value: start }, mid, { label: 'Total points', value: String(a + h) }]
 }
 
 function Read({ row }: { row: GameRow }) {
@@ -72,10 +93,11 @@ function Read({ row }: { row: GameRow }) {
 
 export function GamePage({ id }: { id: string }) {
   const { rows, isLoading } = useGames()
+  const { finals } = useFinals()
   const injuries = useInjuries()
   const { lines } = useProps()
   const [live, setLive] = useState<Record<string, LivePrice>>({})
-  const row = rows.find((r) => r.id === id)
+  const row = rows.find((r) => r.id === id) ?? finals.find((r) => r.id === id)
 
   const hurt = useMemo(
     () => (row ? (injuries.data ?? []).filter((x) => x.sport === row.sport && x.away === row.away && x.home === row.home) : []),
@@ -108,6 +130,7 @@ export function GamePage({ id }: { id: string }) {
       </div>
     )
   }
+  const done = row.state === 'post' && row.awayScore != null && row.homeScore != null
   const spread = row.spread ? `${row.home} ${row.spread.home_point > 0 ? '+' : ''}${row.spread.home_point}` : '—'
   return (
     <>
@@ -122,12 +145,23 @@ export function GamePage({ id }: { id: string }) {
         <PlateTaps row={row} />
       </div>
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
-        <div className='grid grid-cols-3 gap-2'>
-          <Box label='Kalshi' value={`${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
-          <Box label='Spread' value={spread} />
-          <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
-        </div>
-        <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
+        {done ? (
+          <>
+            <div className='grid grid-cols-3 gap-2'>
+              {finalBoxes(row).map((b) => <Box key={b.label} label={b.label} value={b.value} />)}
+            </div>
+            <p className='-mt-2 px-1 text-xs text-muted-foreground'>Kalshi at start is each team&apos;s chance ({row.away} / {row.home}) on Kalshi&apos;s last price before the start.</p>
+          </>
+        ) : (
+          <>
+            <div className='grid grid-cols-3 gap-2'>
+              <Box label='Kalshi' value={`${fmtAmerican(row.ml?.away)} / ${fmtAmerican(row.ml?.home)}`} />
+              <Box label='Spread' value={spread} />
+              <Box label='Total' value={row.total ? String(row.total.line) : '—'} />
+            </div>
+            <p className='-mt-2 px-1 text-xs text-muted-foreground'>Tap either team on the bar above to see why{row.state === 'pre' ? ' or add it to your parlay' : ''}.</p>
+          </>
+        )}
         <PriceAlert row={row} />
 
         <Read row={row} />

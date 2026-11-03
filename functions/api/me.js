@@ -15,7 +15,7 @@
 
 const MAX_BODY = 250000;           // bytes; a season of tracking, tracked parlays and 500 logged bets stays under this
 const MAX_PARLAYS = 60;            // tracked parlays kept (removed ones are kept as a small tombstone so devices agree)
-const LEG_STR = ["desc", "book", "game", "when", "kind", "mk", "side", "player", "stat", "sport", "away", "home", "kickoff", "gkey"];
+const LEG_STR = ["desc", "book", "game", "when", "kind", "mk", "side", "player", "stat", "sport", "away", "home", "kickoff", "gkey", "ticker"];
 const LEG_NUM = ["odds", "point", "line"];
 const MAX_BETS = 500;              // logged bets (My bets on the Fair price page), removed ones kept as a tombstone
 const MAX_TRACKED = 2000;          // per kind (games, picks)

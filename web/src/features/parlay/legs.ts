@@ -73,5 +73,8 @@ export function propLeg(l: PropLine, side: 'over' | 'under', live?: LivePrice | 
     colors: null,
     sideIsHome: null,
     ticker: l.ticker,
+    player: l.player,
+    stat: l.stat,
+    line: l.line,
   }
 }

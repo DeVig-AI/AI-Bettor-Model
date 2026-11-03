@@ -10,7 +10,7 @@ export const TRACK_KEY = 'devig.tracked.v1'
 export const CHANGED = 'devig:prefs-changed'
 
 export type Prefs = { name: string; teams: Record<string, string[]>; mode?: string; updated?: number }
-export type Tracked = { g: Record<string, number>; p: Record<string, number>; parlays?: Record<string, { removed?: number }>; updated?: number }
+export type Tracked = { g: Record<string, number>; p: Record<string, number>; parlays?: Record<string, { removed?: number; at?: string; stake?: number; odds?: number; legs?: unknown[] }>; updated?: number }
 
 // My bets (lib/bets.ts): their own key, because the classic app rewrites the tracked key without fields it doesn't know.
 export const BETS_KEY = 'devig.bets.v1'

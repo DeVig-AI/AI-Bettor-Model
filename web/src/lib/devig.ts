@@ -45,6 +45,7 @@ type LiveLine = {
   away_score: number | null
   home_score: number | null
   kalshi_game?: { moneyline?: Moneyline } | null
+  kalshi_line?: { team: string; points: [number, number][] } | null // one team's Kalshi chance over time (unix seconds)
 }
 
 type Decision = {
@@ -66,7 +67,7 @@ type Decision = {
     home_score?: number | null
     away_score?: number | null
   }
-  market_snapshot?: { moneyline_home?: number | null; moneyline_away?: number | null }
+  market_snapshot?: { moneyline_home?: number | null; moneyline_away?: number | null; spread_home?: number | null }
   inputs?: ModelInputs
   lean?: Lean // added here from the board's slate entry for the same game
 }
@@ -171,6 +172,9 @@ export type GameRow = {
   pick: Pick | null
   // DeVig's chance for its side minus Kalshi's fair chance for that side (null when there's no pick or no price)
   edge: number | null
+  // for a game that's started: Kalshi's chance for the home team just before the start, and the spread when DeVig saved it
+  closeHome?: number | null
+  closeSpread?: number | null
 }
 
 const SPORTS_WITH_PICKS = ['nfl', 'nba', 'mlb'] as const
@@ -346,12 +350,99 @@ function buildRows(
       ticker: g.home_ticker ?? null,
       pick,
       edge,
+      closeHome: closingHome(lv?.kalshi_line, g.home, g.kickoff) ?? fairFromSnap(d),
+      closeSpread: d?.market_snapshot?.spread_home ?? null,
     })
   }
   gameLines.forEach(add)
   // games only live_lines knows about (e.g. started after game_lines was written)
   live.forEach((g) => add({ ...g, ml: g.kalshi_game?.moneyline ?? null }))
   return rows.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))
+}
+
+// Kalshi's chance for the home team at the start: the last point of the team's price line before kickoff
+function closingHome(line: LiveLine['kalshi_line'], home: string, kickoff: string) {
+  const pts = line?.points
+  if (!line || !pts?.length) return null
+  const t = Date.parse(kickoff) / 1000
+  const before = pts.filter((p) => p[0] <= t)
+  const p = (before.length ? before[before.length - 1] : pts[0])[1]
+  if (p == null || !isFinite(p)) return null
+  return line.team === home ? p : 1 - p
+}
+function fairFromSnap(d: Decision | undefined) {
+  const m = d?.market_snapshot
+  return m ? fairHomeProb({ home: m.moneyline_home ?? null, away: m.moneyline_away ?? null }) : null
+}
+
+// A graded pick from DeVig's own board, as a finished game. The live files drop a game a day or so after it ends
+// (Sunday's NFL games are gone by Monday), so History and the game page fall back to these.
+export function boardFinal(d: Decision): GameRow | null {
+  const o = d.outcome
+  if (!o?.resolved || o.away_score == null || o.home_score == null) return null
+  const m = d.market_snapshot
+  const ml = m?.moneyline_home != null && m?.moneyline_away != null ? { home: m.moneyline_home, away: m.moneyline_away } : null
+  return {
+    id: `${d.sport}|d${d.game_id}`,
+    trackKey: String(d.game_id),
+    sport: d.sport,
+    away: d.away_team,
+    home: d.home_team,
+    awayName: TEAM_NAMES[d.sport]?.[d.away_team] ?? d.away_team,
+    homeName: TEAM_NAMES[d.sport]?.[d.home_team] ?? d.home_team,
+    kickoff: d.kickoff_time,
+    state: 'post',
+    detail: 'Final',
+    awayScore: o.away_score,
+    homeScore: o.home_score,
+    ml: null,
+    fairHome: null,
+    spread: null,
+    total: null,
+    colors: null,
+    ids: null,
+    ticker: null,
+    pick: d.decision ? toPick(d, d.home_team) : null,
+    edge: null,
+    closeHome: fairHomeProb(ml),
+    closeSpread: m?.spread_home ?? null,
+  }
+}
+const NFL_NAMES: Record<string, string> = {
+  ARI: 'Arizona Cardinals', ATL: 'Atlanta Falcons', BAL: 'Baltimore Ravens', BUF: 'Buffalo Bills', CAR: 'Carolina Panthers',
+  CHI: 'Chicago Bears', CIN: 'Cincinnati Bengals', CLE: 'Cleveland Browns', DAL: 'Dallas Cowboys', DEN: 'Denver Broncos',
+  DET: 'Detroit Lions', GB: 'Green Bay Packers', HOU: 'Houston Texans', IND: 'Indianapolis Colts', JAX: 'Jacksonville Jaguars',
+  KC: 'Kansas City Chiefs', LA: 'Los Angeles Rams', LAR: 'Los Angeles Rams', LAC: 'Los Angeles Chargers', LV: 'Las Vegas Raiders',
+  MIA: 'Miami Dolphins', MIN: 'Minnesota Vikings', NE: 'New England Patriots', NO: 'New Orleans Saints', NYG: 'New York Giants',
+  NYJ: 'New York Jets', PHI: 'Philadelphia Eagles', PIT: 'Pittsburgh Steelers', SEA: 'Seattle Seahawks', SF: 'San Francisco 49ers',
+  TB: 'Tampa Bay Buccaneers', TEN: 'Tennessee Titans', WAS: 'Washington Commanders', WSH: 'Washington Commanders',
+}
+const TEAM_NAMES: Record<string, Record<string, string>> = { NFL: NFL_NAMES }
+
+// Every finished game the app knows: the live files' finals, then graded board picks they've already dropped
+// (NFL for the last 8 days, other sports for the last 3), newest first.
+export function useFinals() {
+  const { rows, isLoading } = useGames()
+  const boards = useQuery({ queryKey: ['lineboards'], queryFn: loadBoards, refetchInterval: 10 * 60e3 })
+  const finals = useMemo(() => {
+    const out = rows.filter((r) => r.state === 'post')
+    const seen = new Set(out.map((r) => `${r.sport}|${r.away}|${r.home}|${r.kickoff.slice(0, 10)}`))
+    const near = (r: GameRow) => out.some((x) => x.sport === r.sport && x.away === r.away && x.home === r.home &&
+      Math.abs(Date.parse(x.kickoff) - Date.parse(r.kickoff)) < 18 * 3600e3)
+    const now = Date.now()
+    for (const d of boards.data ?? []) {
+      const r = boardFinal(d)
+      if (!r) continue
+      const age = now - Date.parse(r.kickoff)
+      if (!(age >= 0 && age < (r.sport === 'NFL' ? 8 : 3) * 86400e3)) continue
+      const k = `${r.sport}|${r.away}|${r.home}|${r.kickoff.slice(0, 10)}`
+      if (seen.has(k) || near(r)) continue
+      seen.add(k)
+      out.push(r)
+    }
+    return out.sort((a, b) => Date.parse(b.kickoff) - Date.parse(a.kickoff))
+  }, [rows, boards.data])
+  return { finals, isLoading: isLoading && boards.isLoading }
 }
 
 // Every pick and pass on the NFL, NBA and MLB boards, each with the model's lean from the slate. One loader for
