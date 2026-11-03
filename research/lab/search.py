@@ -923,7 +923,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["round", "migrate-scores"])
     ap.add_argument("--force", action="store_true", help="run a round even if the last one was under 20 hours ago")
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D), CBB (Part E)")
     ap.add_argument("--progress", action="store_true", help="post the round's progress to /lab (GitHub Actions)")
     a = ap.parse_args(argv)
     C.use(a.sport)
