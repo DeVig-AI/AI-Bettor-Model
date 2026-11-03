@@ -17,6 +17,7 @@ import { useExperience } from '@/lib/experience'
 import { LevelPicker } from '../games/explain-sheet'
 import { cents, gapWords, inTen, money, needs, payout, plainStat, sideShort } from './words'
 import type { Shown } from '.'
+import { Ladder } from './ladder'
 
 type Step = 'typical' | 'role' | 'form' | 'opponent' | 'rest' | 'out'
 type N = number | null
@@ -250,6 +251,8 @@ export function PropSheet({ l, w, game, side, onSide, open, onOpenChange }: {
               )}
             </>
           )}
+
+          <Ladder l={l} side={side} lv={lv} open={open} />
 
           {leg && (
             <button type='button' aria-pressed={on} onClick={() => toggle(leg)}
