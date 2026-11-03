@@ -48,9 +48,10 @@ export function useLab() {
   })
 }
 
-// DeVig's own models that run off the Lab's file shape (live/devig/<sport>.json): NHL v1 (tools/nhl_model_live.py,
-// nhl/NHL_MODEL_V1_PREREG.md), a ratings model. It is the app's NHL number; the Lab's NHL model is its challenger.
-export const DEVIG_FILE_SPORTS = ['NHL'] as const
+// DeVig's own models that run off the Lab's file shape (live/devig/<sport>.json), each the app's number for its sport:
+// NHL v1 (tools/nhl_model_live.py, nhl/NHL_MODEL_V1_PREREG.md; the Lab's NHL model is its challenger) and CBB v1
+// (tools/cbb_model_live.py, cbb/CBB_MODEL_V1_PREREG.md; champion of CBB.ml in CHAMPION_CHALLENGER_V2_PREREG.md)
+export const DEVIG_FILE_SPORTS = ['NHL', 'CBB'] as const
 export type DevigFile = { generated_at: string; sport: string; model: { id: string; name: string }; games: LabGame[] }
 
 export function useDevigFiles() {
@@ -77,11 +78,11 @@ export function useDevigFiles() {
   })
 }
 
-// the Lab's (or DeVig's file model's) chance for one game (NHL by teams and start time, CFB by ESPN id)
+// the Lab's (or DeVig's file model's) chance for one game (NHL by teams and start time, CFB and CBB by ESPN id)
 export function labFor(files: Record<string, { games: LabGame[] }> | undefined, row: GameRow): LabGame | null {
   const f = files?.[row.sport]
   if (!f) return null
-  if (row.sport === 'CFB') {
+  if (row.sport === 'CFB' || row.sport === 'CBB') {
     const id = row.id.split('|')[1]
     return f.games.find((g) => g.game_id === id) ?? null
   }

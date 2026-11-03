@@ -169,7 +169,13 @@ export function TeamSheet({
   )
 }
 
-// No DeVig pick for this game: DeVig's NHL ratings model when it has a number (the Lab's beside it), else the Lab's
+// how each of DeVig's ratings models gets its number, in a sentence or two
+const HOW: Record<string, string> = {
+  NHL: "Team ratings built from every result since 2022, who played the night before, and each team's recent share of the shots. Starting goalies aren't in it.",
+  CBB: "One rating per team, built from every Division I final since 2011 and moved after each game by the margin, plus home court. No injuries, lineups or prices go in.",
+}
+
+// No DeVig pick for this game: DeVig's NHL or CBB ratings model when it has a number (the Lab's beside it), else the Lab's
 // read when it has one (new, not proven), and what Kalshi's price says
 function NoModelBody({ row, side, labHome, labNote, devigHome }: {
   row: GameRow; side: Side; labHome: number | null; labNote: string | null; devigHome?: number | null
@@ -191,8 +197,7 @@ function NoModelBody({ row, side, labHome, labNote, devigHome }: {
           <div className='rounded-2xl bg-muted p-3.5'>
             <p className='font-semibold'>How it gets there</p>
             <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
-              Team ratings built from every result since 2022, who played the night before, and each team&apos;s recent share
-              of the shots. Starting goalies aren&apos;t in it. It&apos;s new this season and graded on the Models page.
+              {HOW[row.sport] ?? 'Team ratings built from past results.'} It&apos;s new this season and graded on the Models page.
               {labP != null && ` The DeVig Lab's model says ${fmtPct(labP)}.`}
             </p>
           </div>

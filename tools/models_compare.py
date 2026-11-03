@@ -25,7 +25,7 @@ Models (credits and licenses are also on the app's Models and About pages):
   lab     NHL and CFB, DeVig's Research Lab: the search leader for each sport (research/<sport>/candidates), run live by
           tools/lab_live.py into live/lab/<sport>.json. New, not proven: shown beside the others, never the app's pick.
   devigcbb CBB, DeVig's own men's college basketball ratings (tools/cbb_model_live.py -> live/devig/cbb.json,
-          cbb/CBB_MODEL_V1_PREREG.md), read by ESPN id. A challenger: the app has no CBB pick.
+          cbb/CBB_MODEL_V1_PREREG.md), read by ESPN id. The app's CBB number (CHAMPION_CHALLENGER_V2, slot CBB.ml).
   kalshi  the market baseline in every tab: Kalshi's win price, main spread, main total (MLB / NHL: the 1.5 line).
 
 Every run (GitHub Actions, models_compare.yml):
@@ -137,7 +137,7 @@ MODELS = [
     {"key": "devigcbb", "name": "DeVig CBB v1", "sports": ["CBB"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/cbb/CBB_MODEL_V1_PREREG.md", "license": "this project",
      "note": "DeVig's own men's college basketball ratings (margins, home court, Division I scoreboard). "
-             "Tracked as a challenger: it is not the app's CBB pick."},
+             "The app's CBB number (champion of CBB.ml)."},
     {"key": "lab", "name": "DeVig Lab", "sports": ["NHL", "CFB"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
      "license": "this project",

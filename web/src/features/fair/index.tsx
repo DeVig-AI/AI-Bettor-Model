@@ -17,7 +17,7 @@ import { isPick } from '../games/plate'
 // (beating the close) and the final.
 
 // the sports the model comparison logs a closing price for (tools/models_compare.py SPORTS)
-const GRADED = ['NFL', 'NBA', 'MLB', 'NHL', 'CFB']
+const GRADED = ['NFL', 'NBA', 'MLB', 'NHL', 'CFB', 'CBB']
 const BOOKS = ['DraftKings', 'FanDuel', 'BetMGM', 'Caesars', 'ESPN BET', 'Fanatics', 'Hard Rock', 'bet365', 'BetRivers', 'Kalshi', 'Other']
 const BANKROLL_KEY = 'devig.bankroll.v1'
 

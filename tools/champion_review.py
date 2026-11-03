@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-champion_review.py -- CHAMPION_CHALLENGER_V1_PREREG.md, run after tools/models_compare.py every hour.
+champion_review.py -- CHAMPION_CHALLENGER_V2_PREREG.md (V1 plus a CBB slot), run after tools/models_compare.py every hour.
 
 The app shows one model's pick per slot (sport + market; this version: who wins). A registered challenger that beats
 that model (the champion) on 300+ graded same games logged since its registration replaces it in the app at once, on
@@ -10,7 +10,7 @@ was more accurate in all four quarters and no worse on profit at Kalshi prices; 
 Each run:
   1. locks every model of every slot for upcoming games (live/champions/MODEL_LOCKS.csv, append-only): DeVig's
      trackers at their own lock, every other model at its current number in live/models/latest.json, taken against
-     DeVig's lock time (college football: 6 hours before the start);
+     DeVig's lock time (college football and basketball: 6 hours before the start);
   2. for a slot on trial: once the trial has its games, keeps or removes the challenger;
   3. for a slot not on trial: checks each registered challenger's entry test;
   4. appends every decision to live/champions/DECISIONS.csv, writes live/champions.json (current state) and
@@ -53,10 +53,10 @@ TRIAL_GAMES = {"NFL": 64}
 TRIAL_GAMES_DEFAULT = 150
 BOOT_DRAWS, BOOT_SEED = 10_000, 20261030
 CLIP = 0.01
-NO_TRACKER_LEAD = timedelta(hours=6)          # college football: reference time = 6 hours before the start
+NO_TRACKER_LEAD = timedelta(hours=6)          # CFB, CBB: reference time = 6 hours before the start
 TRACKER_SPORTS = {"NFL", "NBA", "MLB"}        # sports where DeVig's own tracker lock is the reference time
 ALLOWED_LICENSES = {"mit", "bsd", "apache", "apache-2.0", "public domain", "this project"}
-SEASON_END = {"NBA": (7, 1), "NFL": (3, 1), "MLB": (12, 1), "CFB": (2, 1)}   # a removed challenger waits until then
+SEASON_END = {"NBA": (7, 1), "NFL": (3, 1), "MLB": (12, 1), "CFB": (2, 1), "CBB": (4, 15)}   # a removed challenger waits until then
 
 
 def iso(t):
