@@ -1,0 +1,35 @@
+name: CFB model fit (one-off; prints summary numbers only)
+# Runs DeVig's CFB model settings search + backtest (tools/cfb_model_live.py fit) on the Lab's CollegeFootballData
+# copy in the Actions cache. The cache is only read; no rows are printed or saved (Constitution C1a); the sealed 2025
+# season is never read. Remove this workflow once the settings are frozen.
+on:
+  push:
+    branches: [cfb-model-v1]
+    paths: [tools/cfb_model_live.py, .github/workflows/cfb_model_fit.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+      - name: Restore the CFB data cache (read-only; never committed, Constitution C1a)
+        uses: actions/cache/restore@v4
+        with:
+          key: cfb-data-none
+          restore-keys: cfb-data-
+          path: |
+            research/cfb/data/games.csv
+            research/cfb/data/lines.csv
+            research/cfb/data/advanced.csv
+            research/cfb/data/advanced_ngt.csv
+            research/cfb/data/returning.csv
+            research/cfb/current
+      - name: Fit (summary numbers only)
+        run: python3 tools/cfb_model_live.py fit
