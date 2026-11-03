@@ -23,7 +23,7 @@ type Feed = {
 
 export const FOOTBALL = ['NFL', 'CFB']
 // sports whose game page reads plays and Kalshi's minute-by-minute price (the field or the court, and the gap chart)
-export const LIVE_PLAYS = [...FOOTBALL, 'NBA']
+export const LIVE_PLAYS = [...FOOTBALL, 'NBA', 'CBB']
 
 export function useFieldPlays(row: GameRow | null) {
   const eid = row?.id.split('|')[1]

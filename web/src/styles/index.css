@@ -107,6 +107,22 @@
   100% { opacity: 0; transform: scale(5.5); }
 }
 
+/* the field's call on a big play (features/game/field-call.tsx): the band sweeps in, the word and points pop, it clears */
+@keyframes fm-call {
+  0% { opacity: 0; }
+  4%, 86% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes fm-band {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes fm-chip {
+  0% { opacity: 0; transform: translateY(6px) scale(.4); }
+  70% { opacity: 1; transform: translateY(0) scale(1.12); }
+  100% { opacity: 1; transform: none; }
+}
+
 /* the NBA court (features/game/court.tsx): a bucket drops, its points pop over the hoop, the big screen flashes */
 @keyframes ct-drop {
   0% { opacity: 0; transform: translateY(-64px) scale(.75); }

@@ -1,7 +1,7 @@
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { type GameRow } from '@/lib/devig'
-import { biggestMoves, useFieldPlays, usePriceLine, type Move } from '@/lib/field'
+import { biggestMoves, periodLabel, useFieldPlays, usePriceLine, type Move } from '@/lib/field'
 import { type CourtPlay, assistOf, courtLabel, courtMoves, recentBuckets, scoreAfter } from '@/lib/court-math'
 import { teamLogo } from '@/lib/logos'
 import { cn } from '@/lib/utils'
@@ -9,24 +9,36 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { TeamLogo } from '@/components/team-logo'
 import { isPick } from '../games/plate'
 import { Pill, useReducedMotion } from './field'
+import { Confetti } from './confetti'
 
 // A tilted 3D full court, one standing hoop per team (away shoots left, home right, each paint in its team's colour).
 // The latest buckets play back one after another: the ball flies from where the shot was taken through that team's
 // net, the camera leans in, +2 / +3 pops over the rim, the floor lights up (a three traces its arc and rains
 // confetti, a dunk shakes the rim), the scoring team's fans jump, and the big screen over centre court calls it.
 // Under the court, the play and what Kalshi's price did around it. Then the plays that moved the price most this
-// game. NBA, during and after a game. With reduced motion, the court is still and the last bucket is shown.
+// game. NBA and men's college basketball (CBB: halves, the college three-point line and lane), during and after a
+// game. With reduced motion, the court is still and the last bucket is shown.
 
 const S = 3.5 // px per foot
 const CW = 94 * S, CH = 50 * S
 const X = (x: number) => x * S
 const Y = (y: number) => y * S
 const LINE = 'rgba(255,255,255,.85)'
+const HOOPS = ['NBA', 'CBB']
+
+// the lines that differ, in feet: the three-point arc's radius, how far in from the sideline its corners run, where
+// the arc meets the corner lines (from the baseline), and half the lane's width
+type Lines = { arc: number; corner: number; straight: number; lane: number }
+const NBA_LINES: Lines = { arc: 23.75, corner: 3, straight: 14.2, lane: 8 }
+const CBB_LINES: Lines = { arc: 22.146, corner: 3.35, straight: 9.91, lane: 6 }
+const linesOf = (sport: string) => (sport === 'CBB' ? CBB_LINES : NBA_LINES)
+const threePath = (f: (x: number) => number, sw: number, L: Lines) =>
+  `M${f(0)} ${Y(L.corner)} H${f(L.straight)} A${L.arc * S} ${L.arc * S} 0 0 ${sw} ${f(L.straight)} ${Y(50 - L.corner)} H${f(0)}`
 
 export function CourtMovers({ row }: { row: GameRow }) {
   const plays = useFieldPlays(row)
   const prices = usePriceLine(row)
-  if (row.sport !== 'NBA' || row.state === 'pre') return null
+  if (!HOOPS.includes(row.sport) || row.state === 'pre') return null
   if (plays.isLoading) return <Skeleton className='h-[330px] w-full rounded-2xl' />
   const feed = plays.data as unknown as { plays?: CourtPlay[]; run?: { team: string; points: number } } | undefined
   if (!feed?.plays?.length) return null
@@ -62,7 +74,7 @@ function Body({ row, plays, run, points }: { row: GameRow; plays: CourtPlay[]; r
   )
 }
 
-const when = (p: CourtPlay) => (p.q ? `${p.q > 4 ? (p.q === 5 ? 'OT' : `${p.q - 4}OT`) : `Q${p.q}`} ${p.clock}` : p.clock)
+const when = (p: CourtPlay, sport: string) => (p.q ? `${periodLabel(p.q, sport)} ${p.clock}` : p.clock)
 const playText = (p: CourtPlay) => { const a = assistOf(p); return a ? `${courtLabel(p)} · ${a} assist` : courtLabel(p) }
 
 function MoveRow({ row, m }: { row: GameRow; m: Move<CourtPlay> }) {
@@ -74,7 +86,7 @@ function MoveRow({ row, m }: { row: GameRow; m: Move<CourtPlay> }) {
       <span className='min-w-0 flex-1'>
         <span className='block truncate text-sm font-semibold'>{courtLabel(m.play)}</span>
         <span className='block font-condensed text-xs text-muted-foreground tabular-nums'>
-          {when(m.play)} · {m.before}¢ → {m.after}¢
+          {when(m.play, row.sport)} · {m.before}¢ → {m.after}¢
         </span>
       </span>
       <TeamLogo sport={row.sport} code={team} id={tid} px={64} className='size-6' />
@@ -171,7 +183,7 @@ function CourtCard({ row, buckets, byId, run }: { row: GameRow; buckets: CourtPl
               style={{ aspectRatio: `${CW} / ${CH}`, transformOrigin: '50% 100%', transform: 'rotateX(42deg)', transformStyle: 'preserve-3d' }}>
               <svg viewBox={`0 0 ${CW} ${CH}`} className='absolute inset-0 block size-full' aria-hidden='true'>
                 <Floor row={row} colors={colors} logo={logo} />
-                {go && <Glow key={animKey} p={tick!} left={left} kind={kind} color={color} />}
+                {go && <Glow key={animKey} p={tick!} left={left} kind={kind} color={color} L={linesOf(row.sport)} />}
               </svg>
               <Crowd k={k} colors={colors} cheer={go ? { key: animKey, color } : null} />
               <Hoop k={k} left dunk={go && left && kind === 'dunk' ? animKey : null} swish={go && left ? animKey : null} />
@@ -184,7 +196,7 @@ function CourtCard({ row, buckets, byId, run }: { row: GameRow; buckets: CourtPl
           </div>
         </div>
         <Jumbotron row={row} tick={tick} animKey={animKey} animate={go} color={color} kind={kind} />
-        {go && kind === 'three' && <Confetti key={`c${animKey}`} color={color} />}
+        {go && kind === 'three' && <Confetti key={`c${animKey}`} color={color} delay={HIT} className='top-[17%]' />}
       </div>
 
       <div className='px-4'>
@@ -208,7 +220,7 @@ function CourtCard({ row, buckets, byId, run }: { row: GameRow; buckets: CourtPl
           )}
           <div className='min-w-0 flex-1'>
             <div className='text-[11px] font-semibold text-muted-foreground tabular-nums'>
-              {tick ? `${tick.team ?? ''} · ${when(tick)} · ${score}` : `The last ${n} buckets`}
+              {tick ? `${tick.team ?? ''} · ${when(tick, row.sport)} · ${score}` : `The last ${n} buckets`}
             </div>
             <div className='line-clamp-2 text-[15px] leading-snug font-bold'>{tick ? playText(tick) : 'Tip-off…'}</div>
           </div>
@@ -336,7 +348,7 @@ function Crowd({ k, colors, cheer }: { k: number; colors: { away: string; home: 
 }
 
 // the floor lights up: a three traces its arc, a free throw its line, a two its paint; a ring where it was taken
-function Glow({ p, left, kind, color }: { p: CourtPlay; left: boolean; kind: string; color: string }) {
+function Glow({ p, left, kind, color, L }: { p: CourtPlay; left: boolean; kind: string; color: string; L: Lines }) {
   const f = (x: number) => (left ? X(x) : CW - X(x))
   const sw = left ? 1 : 0
   const o = originOf(p, left)
@@ -346,18 +358,18 @@ function Glow({ p, left, kind, color }: { p: CourtPlay; left: boolean; kind: str
       {p.shot && <circle cx={X(o.x)} cy={Y(o.y)} r='3' fill='none' stroke='#fff' strokeWidth='1.5' opacity='0'
         style={{ transformBox: 'fill-box', transformOrigin: 'center', animation: 'fm-ripple .9s ease-out' }} />}
       {kind === 'three' && (
-        <path d={`M${f(0)} ${Y(3)} H${f(14.2)} A${23.75 * S} ${23.75 * S} 0 0 ${sw} ${f(14.2)} ${Y(47)} H${f(0)}`} pathLength={1}
+        <path d={threePath(f, sw, L)} pathLength={1}
           fill='none' stroke={color} strokeWidth='3' strokeLinecap='round' strokeDasharray='1'
           style={{ ...glow, animation: `ct-trace 2.2s ${HIT}s both` }} />
       )}
       {kind === 'ft' && (
         <g style={{ ...glow, opacity: 0, animation: `ct-glow 1.8s ${HIT}s both` }}>
-          <path d={`M${f(19)} ${Y(17)} V${Y(33)}`} stroke='#fff' strokeWidth='3.2' strokeLinecap='round' />
+          <path d={`M${f(19)} ${Y(25 - L.lane)} V${Y(25 + L.lane)}`} stroke='#fff' strokeWidth='3.2' strokeLinecap='round' />
           <path d={`M${f(19)} ${Y(19)} A${6 * S} ${6 * S} 0 0 ${sw} ${f(19)} ${Y(31)}`} fill='none' stroke='#fff' strokeWidth='2.4' />
         </g>
       )}
       {(kind === 'two' || kind === 'dunk') && (
-        <rect x={Math.min(f(0), f(19))} y={Y(17)} width={X(19)} height={X(16)} fill='#fff' fillOpacity='.22' stroke='#fff' strokeWidth='2.6'
+        <rect x={Math.min(f(0), f(19))} y={Y(25 - L.lane)} width={X(19)} height={X(2 * L.lane)} fill='#fff' fillOpacity='.22' stroke='#fff' strokeWidth='2.6'
           style={{ ...glow, opacity: 0, animation: `ct-glow 1.8s ${HIT}s both` }} />
       )}
     </g>
@@ -381,23 +393,6 @@ function Pop({ k, at, pts, color }: { k: number; at: Pt; pts: number; color: str
         </span>
       </div>
     </Upright>
-  )
-}
-
-// a three rains confetti from the big screen
-function Confetti({ color }: { color: string }) {
-  const bits = Array.from({ length: 30 }, (_, i) => {
-    const r = (n: number) => { const v = Math.sin((i + 1) * n) * 10000; return v - Math.floor(v) }
-    return { x: (r(3.1) - 0.5) * 340, y: 120 + r(7.7) * 140, rot: (r(5.3) - 0.5) * 900, d: 1.5 + r(9.1) * 0.9, c: [color, '#fff', '#ffd23f'][i % 3], w: 3 + r(2.2) * 3 }
-  })
-  return (
-    <div aria-hidden='true' className='pointer-events-none absolute top-[17%] left-1/2'>
-      {bits.map((b, i) => (
-        <span key={i} className='absolute block rounded-[1px]' style={{ width: b.w, height: b.w * 1.8, background: b.c, opacity: 0,
-          ['--x' as string]: `${b.x}px`, ['--y' as string]: `${b.y}px`, ['--r' as string]: `${b.rot}deg`,
-          animation: `ct-confetti ${b.d}s ${HIT + 0.15 + (i % 6) * 0.03}s cubic-bezier(.15,.6,.4,1) both` } as CSSProperties} />
-      ))}
-    </div>
   )
 }
 
@@ -470,8 +465,8 @@ function Floor({ row, colors, logo }: { row: GameRow; colors: { away: string; ho
       <rect width={CW} height={CH} filter='url(#ct-grain)' opacity='.5' />
       {planks.map((y) => <line key={y} x1='0' x2={CW} y1={y} y2={y} stroke='#6e4220' strokeOpacity='.16' strokeWidth='.5' />)}
       {logo && <image href={logo} x={CW / 2 - 17} y={CH / 2 - 17} width='34' height='34' opacity='.3' preserveAspectRatio='xMidYMid meet' />}
-      <End side='left' color={colors.away} code={row.away} />
-      <End side='right' color={colors.home} code={row.home} />
+      <End side='left' color={colors.away} code={row.away} L={linesOf(row.sport)} />
+      <End side='right' color={colors.home} code={row.home} L={linesOf(row.sport)} />
       <rect width={CW} height={CH} fill='url(#ct-light)' />
       <rect x='1' y='1' width={CW - 2} height={CH - 2} rx='2' {...ln} strokeWidth='2' />
       <line x1={X(47)} x2={X(47)} y1='0' y2={CH} {...ln} />
@@ -482,20 +477,20 @@ function Floor({ row, colors, logo }: { row: GameRow; colors: { away: string; ho
 }
 
 // one end: the paint in the team's colour with its name, the lines, the backboard and the rim
-function End({ side, color, code }: { side: 'left' | 'right'; color: string; code: string }) {
+function End({ side, color, code, L }: { side: 'left' | 'right'; color: string; code: string; L: Lines }) {
   const f = (x: number) => (side === 'left' ? X(x) : CW - X(x))
   const sw = side === 'left' ? 1 : 0 // arcs bulge toward centre court
   const ln = { stroke: LINE, strokeWidth: 1.3, fill: 'none' }
   const rim = { x: f(5.25), y: Y(25) }
   return (
     <g>
-      <rect x={Math.min(f(0), f(19))} y={Y(17)} width={X(19)} height={X(16)} fill={color} opacity='.88' />
+      <rect x={Math.min(f(0), f(19))} y={Y(25 - L.lane)} width={X(19)} height={X(2 * L.lane)} fill={color} opacity='.88' />
       <text transform={`translate(${f(11.5)} ${Y(25)}) rotate(${side === 'left' ? -90 : 90})`} textAnchor='middle' dominantBaseline='central'
         fill='#fff' fillOpacity='.9' fontSize='17' fontWeight='900' letterSpacing='2' fontFamily='var(--font-display)'>{code}</text>
-      <rect x={Math.min(f(0), f(19))} y={Y(17)} width={X(19)} height={X(16)} {...ln} />
+      <rect x={Math.min(f(0), f(19))} y={Y(25 - L.lane)} width={X(19)} height={X(2 * L.lane)} {...ln} />
       <path d={`M${f(19)} ${Y(19)} A${6 * S} ${6 * S} 0 0 ${sw} ${f(19)} ${Y(31)}`} {...ln} />
       <path d={`M${f(19)} ${Y(19)} A${6 * S} ${6 * S} 0 0 ${1 - sw} ${f(19)} ${Y(31)}`} {...ln} strokeDasharray='3 3' strokeOpacity='.55' />
-      <path d={`M${f(0)} ${Y(3)} H${f(14.2)} A${23.75 * S} ${23.75 * S} 0 0 ${sw} ${f(14.2)} ${Y(47)} H${f(0)}`} {...ln} strokeWidth='1.6' />
+      <path d={threePath(f, sw, L)} {...ln} strokeWidth='1.6' />
       <path d={`M${f(4)} ${Y(21)} H${rim.x} A${4 * S} ${4 * S} 0 0 ${sw} ${rim.x} ${Y(29)} H${f(4)}`} {...ln} strokeWidth='1' strokeOpacity='.8' />
       <ellipse cx={rim.x - (side === 'left' ? 1 : -1) * 0.5 * S} cy={rim.y + 0.6 * S} rx={1.6 * S} ry={1.1 * S} fill='#000' opacity='.22' />
     </g>

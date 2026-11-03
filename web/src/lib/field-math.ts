@@ -16,6 +16,8 @@ export type FieldPlay = {
   from?: number // yards from the away goal line (0) to the home goal line (100)
   to?: number
   fd?: number // the first-down line
+  away_score?: number | null // the score after the play
+  home_score?: number | null
 }
 export type PricePoint = [number, number] // [unix seconds, the home team's chance 0-1]
 
@@ -121,4 +123,76 @@ export function kindOf(p: FieldPlay): PlayKind {
   if (/incomplet/i.test(t)) return 'incomplete'
   if ((p.yards ?? 0) < 0 || /sack/i.test(p.type)) return 'loss'
   return 'gain'
+}
+
+// The call the field makes on a big play: a score (TOUCHDOWN! +6 then +1 for the extra point or +2 for a two-point
+// conversion, FIELD GOAL IS GOOD +3, SAFETY! +2), a turnover (INTERCEPTION!, FUMBLE!) or a kick that failed (NO GOOD,
+// BLOCKED!). `team` is whose moment it is: the scorer, the defense on a turnover or block, the kicking team on a
+// miss. The points come from the score change when the play before it has a score, else from the play's words.
+export type CallKind = 'td' | 'fg' | 'safety' | 'miss' | 'block' | 'int' | 'fumble'
+export type Call = {
+  kind: CallKind
+  word: string
+  team: string | null
+  pts: { n: number; label: string }[]
+  before: [number, number] | null // [away, home]
+  after: [number, number] | null
+}
+
+const scoreOf = (p: FieldPlay | null): [number, number] | null =>
+  p && p.away_score != null && p.home_score != null ? [p.away_score, p.home_score] : null
+
+export function callOf(p: FieldPlay, prev: FieldPlay | null, away: string, home: string): Call | null {
+  const after = scoreOf(p), before = scoreOf(prev)
+  const da = after && before ? after[0] - before[0] : 0, dh = after && before ? after[1] - before[1] : 0
+  const scorer = da > 0 ? away : dh > 0 ? home : null
+  const total = after && before ? Math.max(da, dh) : null
+  const off = p.team, def = off === away ? home : off === home ? away : null
+  const ty = p.type, tx = p.text
+  const mk = (kind: CallKind, word: string, team: string | null, pts: Call['pts'] = []): Call =>
+    ({ kind, word, team, pts, before: pts.length ? before : null, after: pts.length ? after : null })
+  if (/touchdown/i.test(ty) || (p.scoring && /touchdown/i.test(tx))) {
+    const returned = /return|recovery|blocked/i.test(ty)
+    const word = /interception/i.test(ty) ? 'PICK SIX!' : returned && /fumble/i.test(ty) ? 'SCOOP AND SCORE!' : 'TOUCHDOWN!'
+    const pts = [{ n: 6, label: 'Touchdown' }]
+    const extra = total != null ? total - 6
+      : /extra point is good|kick attempt good/i.test(tx) ? 1 : /two-point.*(succeeds|good)/i.test(tx) ? 2 : 0
+    if (extra === 1) pts.push({ n: 1, label: 'Extra point' })
+    if (extra === 2) pts.push({ n: 2, label: 'Two-point conversion' })
+    return mk('td', word, scorer ?? (returned ? def : off), pts)
+  }
+  if (/field goal good/i.test(ty) || (p.scoring && /field goal is good/i.test(tx)))
+    return mk('fg', 'FIELD GOAL IS GOOD', scorer ?? off, [{ n: 3, label: 'Field goal' }])
+  if (/safety/i.test(ty) || (p.scoring && /safety/i.test(tx))) return mk('safety', 'SAFETY!', scorer ?? def, [{ n: 2, label: 'Safety' }])
+  if (/blocked/i.test(ty)) return mk('block', 'BLOCKED!', def)
+  if (/field goal missed/i.test(ty) || /field goal is no good/i.test(tx)) return mk('miss', 'NO GOOD', off)
+  if (/interception/i.test(ty) || (/intercepted/i.test(tx) && !/no play/i.test(tx))) return mk('int', 'INTERCEPTION!', def)
+  if (/fumble recovery \(opponent\)|opp fumble recovery/i.test(ty)) return mk('fumble', 'FUMBLE!', def)
+  return null
+}
+
+// every play's call, by play id (plays newest first, as the feed sends them)
+export function callsOf(plays: FieldPlay[], away: string, home: string): Map<string, Call> {
+  const out = new Map<string, Call>()
+  plays.forEach((p, i) => {
+    let prev: FieldPlay | null = null
+    for (let j = i + 1; j < plays.length && !prev; j++) if (scoreOf(plays[j])) prev = plays[j]
+    const c = callOf(p, prev, away, home)
+    if (c) out.set(p.id, c)
+  })
+  return out
+}
+
+// the call in words, for the ticker and screen readers: "Touchdown, +7"
+export function callText(c: Call): string {
+  const w = c.word.replace(/!$/, '').toLowerCase()
+  const sum = c.pts.reduce((a, b) => a + b.n, 0)
+  return `${w[0].toUpperCase()}${w.slice(1)}${sum ? `, +${sum}` : ''}`
+}
+
+// a period's short name: "Q3" (NFL, CFB, NBA) or "2H" (men's college basketball plays two halves), then "OT", "2OT"
+export function periodLabel(q: number, sport: string): string {
+  const reg = sport === 'CBB' ? 2 : 4
+  if (q > reg) return q === reg + 1 ? 'OT' : `${q - reg}OT`
+  return reg === 2 ? `${q}H` : `Q${q}`
 }

@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { nflGame } from "../../functions/api/live.js";
 import { points } from "../../functions/api/winline.js";
-import { allMoves, biggestMoves, kindOf, latestDrive, playLabel, priceAt, spotText } from "../../web/src/lib/field-math.ts";
+import { allMoves, biggestMoves, callText, callsOf, kindOf, latestDrive, periodLabel, playLabel, priceAt, spotText } from "../../web/src/lib/field-math.ts";
 
 const BAL = {id: "33", abbreviation: "BAL"}, BUF = {id: "2", abbreviation: "BUF"};
 const T0 = Date.parse("2026-11-01T19:00:00Z");
@@ -84,4 +84,59 @@ test("winline keeps every minute of a game when asked (fine=1), 150 points other
   const c = Array.from({length: 300}, (_, i) => ({end_period_ts: 1000 + i * 60, yes_bid: {close_dollars: "0.50"}, yes_ask: {close_dollars: "0.52"}}));
   assert.equal(points(c).points.length, 150);
   assert.equal(points(c, 360).points.length, 300);
+});
+
+// the field's call on a big play (2026-11-03): ESPN's play types and words, the points from the score change
+const fp = (id, team, type, text, a, h, scoring = false) => ({id, team, q: 2, clock: "5:00", text, type, yards: null, down: "", scoring, away_score: a, home_score: h});
+const calls = (...newestFirst) => callsOf(newestFirst, "MIA", "BUF");
+
+test("a touchdown and its extra point or two-point try", () => {
+  const xp = calls(fp("t", "BUF", "Passing Touchdown", "J.Allen pass deep left to D.Kincaid for 23 yards, TOUCHDOWN. T.Bass extra point is GOOD.", 10, 36, true),
+    fp("p", "BUF", "Pass Reception", "J.Allen pass to K.Shakir for 9 yards.", 10, 29)).get("t");
+  assert.equal(xp.word, "TOUCHDOWN!");
+  assert.equal(xp.team, "BUF");
+  assert.deepEqual(xp.pts.map((p) => p.n), [6, 1]);
+  assert.deepEqual([xp.before, xp.after], [[10, 29], [10, 36]]);
+  assert.equal(callText(xp), "Touchdown, +7");
+  const two = calls(fp("t", "MIA", "Rushing Touchdown", "D.Achane 4 yd run, TOUCHDOWN. TWO-POINT CONVERSION ATTEMPT. ATTEMPT SUCCEEDS.", 18, 29, true),
+    fp("p", "MIA", "Rush", "D.Achane for 3 yards.", 10, 29)).get("t");
+  assert.deepEqual(two.pts.map((p) => [p.n, p.label]), [[6, "Touchdown"], [2, "Two-point conversion"]]);
+  const failed = calls(fp("t", "MIA", "Rushing Touchdown", "TOUCHDOWN. TWO-POINT CONVERSION ATTEMPT. ATTEMPT FAILS.", 16, 29, true), fp("p", "MIA", "Rush", "", 10, 29)).get("t");
+  assert.deepEqual(failed.pts.map((p) => p.n), [6]);
+  // the oldest play in the feed has no play before it: the words tell the extra point (college: "kick attempt good")
+  const cfb = calls(fp("t", "MIA", "Rushing Touchdown", "#0 D.June rush middle for 1 yard gain to the BUF00 TOUCHDOWN #90 R.Verhoff kick attempt good", 7, 0, true)).get("t");
+  assert.deepEqual([cfb.pts.map((p) => p.n), cfb.before], [[6, 1], null]);
+});
+
+test("defensive and return scores belong to the team that scored", () => {
+  const pick6 = calls(fp("t", "MIA", "Interception Return Touchdown", "INTERCEPTED by R.Lane. R.Lane for 92 yards, TOUCHDOWN. extra point is GOOD.", 10, 36, true),
+    fp("p", "MIA", "Rush", "", 10, 29)).get("t");
+  assert.deepEqual([pick6.word, pick6.team], ["PICK SIX!", "BUF"]);
+  const scoop = calls(fp("t", "MIA", "Fumble Return Touchdown", "James Mitchell 0 Yd Fumble Recovery", 10, 36, true)).get("t");
+  assert.deepEqual([scoop.word, scoop.team], ["SCOOP AND SCORE!", "BUF"]);
+  const safety = calls(fp("s", "MIA", "Safety", "Demetrius Knight Jr. Safety", 10, 31, true), fp("p", "MIA", "Rush", "", 10, 29)).get("s");
+  assert.deepEqual([safety.word, safety.team, safety.pts.map((p) => p.n)], ["SAFETY!", "BUF", [2]]);
+});
+
+test("field goals, misses, blocks and turnovers", () => {
+  const c = calls(
+    fp("fg", "BUF", "Field Goal Good", "T.Bass 56 yard field goal is GOOD, Center-R.Ferguson.", 10, 32, true),
+    fp("miss", "MIA", "Field Goal Missed", "T.Loop 34 yard field goal is No Good, Hit Left Upright.", 10, 29),
+    fp("blk", "MIA", "Blocked Field Goal", "J.Myers 33 yard field goal is BLOCKED (A.Booker).", 10, 29),
+    fp("int", "MIA", "Pass Interception Return", "T.Tagovailoa pass short middle INTERCEPTED by T.Bernard at BUF 17.", 10, 29),
+    fp("fum", "MIA", "Sack Opp Fumble Recovery", "T.Huntley sacked. FUMBLES, RECOVERED by BUF-K.Elarms-Orr.", 10, 29),
+    fp("own", "MIA", "Fumble Recovery (Own)", "FUMBLES, recovered by MIA-C.Dike.", 10, 29),
+    fp("run", "MIA", "Rush", "D.Achane for 3 yards.", 10, 29));
+  assert.deepEqual([c.get("fg").word, c.get("fg").pts.map((p) => p.n), c.get("fg").team], ["FIELD GOAL IS GOOD", [3], "BUF"]);
+  assert.deepEqual([c.get("miss").word, c.get("miss").team, c.get("miss").after], ["NO GOOD", "MIA", null]);
+  assert.deepEqual([c.get("blk").word, c.get("blk").team], ["BLOCKED!", "BUF"]);
+  assert.deepEqual([c.get("int").word, c.get("int").team, callText(c.get("int"))], ["INTERCEPTION!", "BUF", "Interception"]);
+  assert.deepEqual([c.get("fum").word, c.get("fum").team], ["FUMBLE!", "BUF"]);
+  assert.equal(c.has("own"), false);
+  assert.equal(c.has("run"), false);
+});
+
+test("period names: quarters, college halves, overtimes", () => {
+  assert.deepEqual([1, 4, 5, 6].map((q) => periodLabel(q, "NFL")), ["Q1", "Q4", "OT", "2OT"]);
+  assert.deepEqual([1, 2, 3, 4].map((q) => periodLabel(q, "CBB")), ["1H", "2H", "OT", "2OT"]);
 });
