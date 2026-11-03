@@ -1,0 +1,1 @@
+import{n as e}from"./props-3xMYK28M.js";var t=e;export{t as component};

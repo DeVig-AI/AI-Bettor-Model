@@ -12,8 +12,8 @@
 // ?sport=..&date=YYYYMMDD returns that day's scoreboard (the parlay review finds a past leg's game this way).
 // ?sport=..&schedule=<team code> returns that team's next 10 games not started yet (the team page's "Next 10 games").
 
-const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
-const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
+export const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
+export const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
                 cfb: "football/college-football", cbb: "basketball/mens-college-basketball"};
 const QUERY = {cfb: "?groups=80&limit=500",        // every FBS game, not just ESPN's featured ones
                cbb: "?groups=50&limit=500"};       // every men's Division I game
@@ -25,7 +25,7 @@ const ALIASES = {
 };
 const SCORE_TTL = 15, BOX_TTL = 25, SCHED_TTL = 1800;          // seconds
 // each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
-const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball"};
+export const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball"};
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -519,4 +519,4 @@ export async function onRequest(context) {
   return handle(context.request);
 }
 
-const GAME = {football: (d, c) => nflGame(d, c), hoops: (d, c) => nbaGame(d, c), hockey: (d, c) => nhlGame(d, c), baseball: (d, c) => mlbGame(d, c)};
+export const GAME = {football: (d, c) => nflGame(d, c), hoops: (d, c) => nbaGame(d, c), hockey: (d, c) => nhlGame(d, c), baseball: (d, c) => mlbGame(d, c)};

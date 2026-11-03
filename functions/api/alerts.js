@@ -3,8 +3,8 @@
 //   GET  /api/alerts            this person's alert settings (needs a DeVig account, like /api/me)
 //   POST /api/alerts {op, ...}  device (turn on for this device), forget (turn off), prefs, target / untarget (a price
 //                               target on a game), parlay / unparlay (a saved parlay's alert), test (send a test)
-//   POST /api/alerts?run=1      the checker: the price bots call it after each refresh (GitHub Actions, see
-//                               game_lines.yml and live_lines.yml); it looks at everyone's alerts and sends what's due
+//   POST /api/alerts?run=1      the checker: a Cloudflare timer calls it every minute (workers/alerts-timer), and the
+//                               price bots after each refresh (GitHub Actions); it looks at everyone's alerts and sends what's due
 //
 // What can ping:
 //   - New DeVig pick: a pick locks in a sport the person follows (NFL, NBA, MLB)
@@ -13,6 +13,10 @@
 //     the start
 //   - Lab model passed: a Research Lab model passes its confirmation check, or the sealed exam
 //   - Parlay: a saved parlay's chance reaches a number the person picked, and/or each leg as it wins or loses
+//   - Live games (each one picked, all off until chosen): a game starting, halftime, lead changes, big plays
+//     (TOUCHDOWN, INTERCEPTION, a 10-0 run...), late go-aheads, the final, and saved parlays' legs as they hit or
+//     miss. Only for the person's games: ★ tracked, a ★ prop in it, or on a saved parlay (functions/lib/live-alerts.js)
+//   - Quiet hours: nothing is sent between the hours picked (in their time zone); what's still due goes after
 // Display only, like the rest of DeVig: an alert is information, never a bet.
 //
 // Needs, in the Pages project settings:
@@ -24,6 +28,8 @@ import { accessUser, userKey } from "./me.js";
 import { priced } from "./kalshi.js";
 import { points } from "./winline.js";
 import { b64uEncode, endpointOk, keysOk, send } from "../lib/webpush.js";
+import { ESPN, GAME, KIND, SPORTS, cachedJson, teamCode } from "./live.js";
+import { LIVE_PREFS, PER_GAME, compose, gameEvents, mine, statusOf, trackedLegs } from "../lib/live-alerts.js";
 
 export const VAPID_PUBLIC_KEY = "BGlnoV3g18sWFbndIEOaGr1St2hIcnYwgZpbjDjffAVlCRoLdLTHpArq8WFfTPR98MgCpdtT51c0d2YjC7G4ihg";
 const RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/";
@@ -32,7 +38,8 @@ const SITE = "https://devigai.pages.dev";
 const INDEX = "alerts:index";
 const PICK_SPORTS = ["NFL", "NBA", "MLB"];
 const MAX_DEVICES = 6, MAX_TARGETS = 20, MAX_PARLAYS = 10, MAX_LEGS = 12;
-const SAVE_GAP_MS = 1000, SAVES_PER_DAY = 200, SENDS_PER_DAY = 40, PER_RUN = 4;
+const SAVE_GAP_MS = 1000, SAVES_PER_DAY = 200, SENDS_PER_DAY = 80, PER_RUN = 5;
+const LIVE_SPORTS = ["NFL", "CFB", "NBA", "WNBA", "CBB", "NHL"], MAX_LIVE_GAMES = 12, LIVE_TTL = 15, RUN_GAP_KEYED_S = 25;
 const MOVE = 0.05, MOVE_HOURS = 6, RUN_GAP_S = 90, SENT_DAYS = 10;
 const GAME_TICKER = /^KX(?:NFL|NBA|WNBA|NHL|MLB|NCAAF|NCAAB|NCAAMB)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
 const LEG_TICKER = /^[A-Z0-9][A-Z0-9._-]{2,99}$/;
@@ -45,7 +52,9 @@ const str = (v, n) => String(v == null ? "" : v).slice(0, n);
 const hashOf = async s => b64uEncode(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))).slice(0, 16);
 
 // ---------- what people can save ----------
-export const DEFAULT_PREFS = {picks: [...PICK_SPORTS], moves: true, lab: true, tz: "America/New_York"};
+// Everything starts off: someone picks what pings them before anything does.
+export const DEFAULT_LIVE = Object.fromEntries(LIVE_PREFS.map(k => [k, false]));
+export const DEFAULT_PREFS = {picks: [], moves: false, lab: false, tz: "America/New_York", live: DEFAULT_LIVE, quiet: null};
 
 function tzOk(tz) {
   try { new Intl.DateTimeFormat("en-US", {timeZone: tz}); return true; } catch (e) { return false; }
@@ -57,7 +66,27 @@ export function cleanPrefs(p, old = DEFAULT_PREFS) {
     moves: typeof p.moves === "boolean" ? p.moves : old.moves,
     lab: typeof p.lab === "boolean" ? p.lab : old.lab,
     tz: typeof p.tz === "string" && p.tz.length < 60 && tzOk(p.tz) ? p.tz : old.tz,
+    live: cleanLive(p.live, old.live || DEFAULT_LIVE),
+    quiet: p.quiet === null ? null : cleanQuiet(p.quiet) || (p.quiet === undefined ? old.quiet ?? null : null),
   };
+}
+function cleanLive(v, old) {
+  const out = {};
+  for (const k of LIVE_PREFS) out[k] = v && typeof v[k] === "boolean" ? v[k] : !!(old && old[k]);
+  return out;
+}
+const hourOk = h => Number.isInteger(h) && h >= 0 && h <= 23;
+function cleanQuiet(q) {
+  return q && typeof q === "object" && hourOk(q.from) && hourOk(q.to) && q.from !== q.to ? {from: q.from, to: q.to} : null;
+}
+// inside the quiet hours picked, in the person's time zone (from 23 to 8 wraps past midnight)
+export function isQuiet(prefs, now) {
+  const q = prefs && prefs.quiet;
+  if (!q) return false;
+  let h;
+  try { h = Number(new Intl.DateTimeFormat("en-US", {timeZone: prefs.tz, hour: "numeric", hourCycle: "h23"}).format(new Date(now))); }
+  catch (e) { return false; }
+  return q.from < q.to ? h >= q.from && h < q.to : h >= q.from || h < q.to;
 }
 
 // a price target: one team on one game at American odds (Kalshi's price as the app shows it), before the start
@@ -313,12 +342,15 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
   const keys = {publicKey: VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY};
 
   const any = f => people.some(({rec}) => f(rec));
+  const wantsLive = rec => LIVE_PREFS.some(k => k !== "legs" && rec.prefs.live[k]);
   const needPicks = any(r => r.prefs.picks.length), needMoves = any(r => r.prefs.moves);
+  const needLive = any(wantsLive), needLegs = any(r => r.prefs.live.legs);
   const games = await raw("live/game_lines.json", fetcher, now).then(d => d.games || []).catch(() => []);
-  const decisions = needPicks || needMoves ? await boards(fetcher, now) : [];
+  const decisions = needPicks || needMoves || needLive ? await boards(fetcher, now) : [];
   const status = any(r => r.prefs.lab) ? await raw("research/status.json", fetcher, now).catch(() => null) : null;
   const users = {};
-  if (needMoves) for (const {h, rec} of people) if (rec.prefs.moves) users[h] = await env.USERS.get(`user:${h}`, "json");
+  for (const {h, rec} of people)
+    if (rec.prefs.moves || wantsLive(rec) || rec.prefs.live.legs) users[h] = await env.USERS.get(`user:${h}`, "json");
   const follows = {};
   for (const {h, rec} of people) follows[h] = rec.prefs.moves ? followed(users[h], games, decisions) : [];
 
@@ -327,20 +359,56 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
     rec.targets.forEach(t => tickers.push(t.ticker));
     rec.parlays.forEach(p => p.legs.forEach(l => tickers.push(l.ticker)));
     follows[h].forEach(g => g.home_ticker && tickers.push(g.home_ticker));
+    if (rec.prefs.live.legs) for (const p of Object.values((users[h] && users[h].tracked && users[h].tracked.parlays) || {}))
+      if (p && !p.removed && Array.isArray(p.legs)) p.legs.forEach(l => l && l.ticker && tickers.push(String(l.ticker).toUpperCase()));
   }
   const mkts = tickers.length ? await markets(tickers, fetcher).catch(() => ({})) : {};
   const then = {};
   for (const t of new Set(Object.values(follows).flat().filter(g => Date.parse(g.kickoff) > now).map(g => g.home_ticker).filter(Boolean)))
     then[t] = await before(t, fetcher, now).catch(() => null);
 
+  // live games: each person's games that are on or just ended, each read once from ESPN however many follow it
+  const onNow = g => LIVE_SPORTS.includes(g.sport) && g.espn_id && Date.parse(g.kickoff) <= now + 5 * 60e3 &&
+    now - Date.parse(g.kickoff) < 6 * 3600e3;
+  const liveOf = {};
+  for (const {h, rec} of people) liveOf[h] = wantsLive(rec) ? mine(users[h], rec, games.filter(onNow), decisions) : [];
+  const wanted = [...new Map(Object.values(liveOf).flat().map(g => [`${g.sport}:${g.espn_id}`, g])).values()]
+    .sort((a, b) => (a.state === "in" ? 0 : 1) - (b.state === "in" ? 0 : 1)).slice(0, MAX_LIVE_GAMES);
+  const events = {};
+  for (const g of wanted) {
+    const sp = g.sport.toLowerCase(), kind = KIND[sp];
+    try {
+      const d = await cachedJson(`${ESPN}${SPORTS[sp]}/summary?event=${encodeURIComponent(g.espn_id)}`, LIVE_TTL, fetcher);
+      const code = teamCode(sp), st = statusOf(d, code);
+      const plays = kind === "football" || kind === "hoops" ? (GAME[kind](d, code).plays || []) : [];
+      events[`${g.sport}:${g.espn_id}`] = gameEvents({sport: sp, id: g.espn_id, kind, kickoff: g.kickoff}, st, plays, now);
+    } catch (e) { /* one game's feed down doesn't stop the rest */ }
+  }
+  report.live = Object.keys(events).length;
+
   const day = new Date(now).toISOString().slice(0, 10);
   let indexChanged = false;
   for (const {h, rec} of people) {
     const targets = targetAlerts(rec, mkts, now), parlays = parlayAlerts(rec, mkts);
-    let due = [...targets.out, ...parlays.out,
+    const live = [];
+    for (const g of liveOf[h]) {
+      const evs = events[`${g.sport}:${g.espn_id}`];
+      if (!evs) continue;
+      const base = `ls:${g.sport.toLowerCase()}:${g.espn_id}:`;
+      let used = Object.keys(rec.sent).filter(k => k.startsWith(base) && !k.endsWith(":final")).length;
+      for (const m of compose(evs, rec.prefs.live, {sport: g.sport.toLowerCase(), url: gameUrl(g.sport, g.espn_id)})) {
+        if (rec.sent[m.key] || (!m.final && used >= PER_GAME)) continue;
+        if (!m.final) used++;
+        live.push({...m, tag: m.key, live: true});
+      }
+    }
+    const legs = rec.prefs.live.legs ? trackedLegs(users[h], mkts, priced, now, rec.sent)
+      .filter(m => !parlays.out.some(x => x.key && x.key.split(":").slice(2).join(":") === m.key.split(":").slice(2).join(":"))) : [];
+    let due = [...live, ...legs, ...targets.out, ...parlays.out,
       ...(rec.prefs.lab ? labAlerts(rec, status) : []),
       ...pickAlerts(rec, decisions, games, now),
       ...(rec.prefs.moves ? moveAlerts(rec, follows[h], mkts, then, now) : [])];
+    if (isQuiet(rec.prefs, now)) due = [];     // quiet hours: what's still due after goes then; live moments pass
     const sends = rec.sendDay === day ? rec.sends : 0;
     const room = Math.max(0, Math.min(PER_RUN, SENDS_PER_DAY - sends));
     // more than fits: the rest wait for the next run (picks and moves stay due), except into one summary when many
@@ -358,7 +426,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
         let st = 0;
         try {
           st = await sender(d, {title: m.title, body: m.body, url: m.url, tag: m.tag}, keys,
-            {fetcher, now, urgency: m.key && m.key.startsWith("pick:") ? "high" : "normal"});
+            {fetcher, now, urgency: m.live || (m.key && m.key.startsWith("pick:")) ? "high" : "normal", ...(m.live ? {ttl: 600} : {})});
         } catch (e) { st = 0; }
         if (st === 404 || st === 410) dead.add(d.endpoint);
         else if (st >= 200 && st < 300) ok = true;
@@ -407,11 +475,13 @@ export async function handle(request, env, {fetcher = fetch, now = Date.now(), s
     if (request.method !== "POST") return json({error: "method not allowed"}, 405);
     if (!env.VAPID_PRIVATE_KEY) return json({error: "alerts are not set up yet"}, 503);
     if (env.ALERTS_RUN_KEY && request.headers.get("x-run-key") !== env.ALERTS_RUN_KEY) return json({error: "not allowed"}, 403);
-    if (!env.ALERTS_RUN_KEY) {                       // open checker: at most once every RUN_GAP_S
-      const c = cache === undefined ? (typeof caches !== "undefined" ? caches.default : null) : cache;
-      const lock = new Request(`${SITE}/__alerts_run_lock`);
-      if (c ? await c.match(lock) : now - memRuns.at < RUN_GAP_S * 1000) return json({ok: true, skipped: "ran recently"});
-      if (c) await c.put(lock, new Response("1", {headers: {"cache-control": `max-age=${RUN_GAP_S}`}}));
+    // at most once every RUN_GAP_S when open; with the key, once every RUN_GAP_KEYED_S, so the minute timer and the
+    // price bots landing together don't both send the same moment
+    const c = cache === undefined ? (typeof caches !== "undefined" ? caches.default : null) : cache;
+    const lock = new Request(`${SITE}/__alerts_run_lock`), gap = env.ALERTS_RUN_KEY ? RUN_GAP_KEYED_S : RUN_GAP_S;
+    if (!env.ALERTS_RUN_KEY || c) {
+      if (c ? await c.match(lock) : now - memRuns.at < gap * 1000) return json({ok: true, skipped: "ran recently"});
+      if (c) await c.put(lock, new Response("1", {headers: {"cache-control": `max-age=${gap}`}}));
       memRuns.at = now;
     }
     return json({ok: true, ...(await run(env, {fetcher, now, sender}))});

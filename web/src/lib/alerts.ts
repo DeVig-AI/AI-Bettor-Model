@@ -4,7 +4,12 @@ import { useAccount } from '@/lib/profile'
 // DeVig alerts (functions/api/alerts.js): push notifications to this phone or computer, even with DeVig closed.
 // The settings live on the account; each device that turns alerts on gets its own push subscription.
 
-export type AlertPrefs = { picks: string[]; moves: boolean; lab: boolean; tz: string }
+export type LivePrefs = { start: boolean; half: boolean; lead: boolean; plays: boolean; winner: boolean; final: boolean; legs: boolean }
+export type AlertPrefs = {
+  picks: string[]; moves: boolean; lab: boolean; tz: string
+  live: LivePrefs
+  quiet: { from: number; to: number } | null   // hours 0–23 in tz; nothing sends inside them
+}
 export type PriceTarget = {
   id: string; sport: string; gid: string; away: string; home: string; kickoff: string
   ticker: string; side: 'home' | 'away'; odds: number
