@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { type Leg, decimal, legRead, slipMath, useSlip } from '@/lib/parlay'
+import { SaferSwap } from './safer'
 import {
   type LivePrice,
   type PropLine,
@@ -293,6 +294,7 @@ function SlipCard() {
               {l.fair != null && <span className='text-muted-foreground'>Kalshi {fmtPct(l.fair)}</span>}
               {l.devigNote && <span className='text-xs text-muted-foreground'>{l.devigNote}</span>}
             </div>
+            <SaferSwap leg={l} />
           </li>
         ))}
       </ul>
