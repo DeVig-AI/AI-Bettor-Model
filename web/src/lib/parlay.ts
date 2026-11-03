@@ -20,6 +20,10 @@ export type Leg = {
   colors: { away: string; home: string } | null
   sideIsHome: boolean | null
   ticker?: string | null
+  // a prop's player, stat and line, so a saved parlay can grade it from the box score (classic does)
+  player?: string
+  stat?: string
+  line?: number
 }
 
 const KEY = 'devig_slip_v2'

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { X } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { type Leg, decimal, legRead, slipMath, useSlip } from '@/lib/parlay'
 import {
@@ -25,8 +25,7 @@ import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
 import { kalshiTeam, mlLeg } from './legs'
-import { SavedParlays } from '../check-bet/link-reader'
-import { getSaved, slipLink, storeSaved, useSaved } from '@/lib/kalshi-link'
+import { type TrackedLeg, saveParlay } from '@/lib/track'
 import { LinkReader } from '../check-bet/link-reader'
 import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
 
@@ -134,26 +133,39 @@ function ReadTag({ leg }: { leg: Leg }) {
   )
 }
 
+// a slip leg in the shape classic's tracked parlays use, so either app (and the account copy) can follow it
+function trackedLeg(l: Leg, rows: GameRow[]): TrackedLeg {
+  const [away, home] = l.game.split(' at ')
+  const row = rows.find((r) => r.sport === l.sport && r.away === away && r.home === home &&
+    Math.abs(Date.parse(r.kickoff) - Date.parse(l.kickoff)) < 18 * 3600e3)
+  const when = l.kickoff ? new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(l.kickoff)) : ''
+  const base = { desc: l.label, odds: Math.round(l.odds), game: l.game, when, sport: l.sport, away, home, kickoff: l.kickoff, gkey: row?.trackKey }
+  if (l.kind === 'ml') {
+    const side = l.sideIsHome ? 'home' : 'away'
+    const ticker = l.ticker ?? (row ? kalshiTeam(row.ticker, side) : null)
+    return { ...base, kind: 'ml', mk: 'ml', side, ...(ticker ? { ticker } : {}) }
+  }
+  return {
+    ...base, kind: 'prop', mk: 'prop', side: l.id.endsWith('|under') ? 'UNDER' : 'OVER',
+    player: l.player, stat: l.stat, line: l.line, ...(l.ticker ? { ticker: l.ticker } : {}),
+  }
+}
+
 // ---------- the slip, explained ----------
 function SlipCard() {
   const { legs, remove, replace } = useSlip()
   const sheet = useLegSheet()
   const [stake, setStake] = useState('10')
   const { rows } = useGames()
-  const saved = useSaved()
-  // the slip as Kalshi markets (a team to win is Yes on that team; a prop's under is No), so it can be read back later
-  const link = slipLink(legs.map((l) => {
-    const row = l.kind === 'ml' ? rows.find((r) => r.id === l.gameId) : null
-    return { ticker: l.ticker ?? (row ? kalshiTeam(row.ticker, l.sideIsHome ? 'home' : 'away') : null), side: l.id.endsWith('|under') ? 'no' as const : 'yes' as const }
-  }))
-  const isSaved = !!link && saved.some((x) => x.link === link)
+  const [savedAs, setSavedAs] = useState<{ n: number; stake: number; win: number; first: string } | null>(null)
   const saveSlip = () => {
-    if (!link) return
-    if (!isSaved) storeSaved([{ link, label: `Your parlay: ${legs.map((l) => l.short).join(', ')}`, savedAt: new Date().toISOString() }, ...getSaved()])
-    setTimeout(() => {
-      document.getElementById('saved-parlays')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      window.dispatchEvent(new CustomEvent('devig:review', { detail: link }))
-    }, 50)
+    const st = parseFloat(stake)
+    const stakeN = isFinite(st) && st > 0 ? st : 0
+    const mm = slipMath(legs)
+    saveParlay({ stake: stakeN, odds: Math.round(mm.american), legs: legs.map((l) => trackedLeg(l, rows)) })
+    const first = legs.map((l) => l.kickoff).filter(Boolean).sort()[0] ?? ''
+    setSavedAs({ n: legs.length, stake: stakeN, win: stakeN * (mm.dec - 1), first })
+    replace([]) // saved: the slip starts fresh, like classic's Track
   }
   const m = slipMath(legs)
   const s = parseFloat(stake)
@@ -162,6 +174,29 @@ function SlipCard() {
     .filter((l) => l.devig != null && l.fair != null)
     .sort((a, b) => (a.devig! - a.fair!) - (b.devig! - b.fair!))[0]
   const weakestGap = weakest ? weakest.devig! - weakest.fair! : 0
+  if (savedAs) {
+    return (
+      <section id='your-parlay' aria-label='Saved to History' className='flex scroll-mt-20 flex-col gap-3 rounded-[18px] border border-good/30 bg-good/10 p-4'>
+        <div className='flex items-center gap-2.5'>
+          <span className='grid size-8 shrink-0 place-items-center rounded-full bg-good text-background'><Check className='size-[18px]' strokeWidth={3} aria-hidden='true' /></span>
+          <span className='flex flex-col'>
+            <span className='font-display text-xl font-extrabold'>Saved to History</span>
+            <span className='text-[13px] text-muted-foreground'>
+              {savedAs.n} {savedAs.n === 1 ? 'leg' : 'legs'}{savedAs.stake > 0 ? ` · ${money(savedAs.stake)} to win ${money(savedAs.win)}` : ''}
+            </span>
+          </span>
+        </div>
+        <p className='text-[13px] leading-relaxed'>
+          {savedAs.first && Date.parse(savedAs.first) > Date.now() ? `First game starts ${new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(savedAs.first))}. ` : ''}
+          You&apos;ll see each leg turn green or red as games finish, and a grade at the end.
+        </p>
+        <div className='grid grid-cols-2 gap-2'>
+          <Link to='/history' className='grid h-11 place-items-center rounded-full bg-good text-sm font-bold text-background'>Open in History</Link>
+          <button type='button' onClick={() => setSavedAs(null)} className='h-11 rounded-full border text-sm font-semibold'>Start a new slip</button>
+        </div>
+      </section>
+    )
+  }
   if (!legs.length) {
     return (
       <section id='your-parlay' className='scroll-mt-20 rounded-[18px] border border-dashed p-6 text-center'>
@@ -263,14 +298,12 @@ function SlipCard() {
       </ul>
 
       <div className='flex flex-col gap-1.5'>
-        <button type='button' onClick={saveSlip} disabled={!link}
-          className='h-12 rounded-full bg-devig text-sm font-bold text-devig-ink disabled:opacity-50'>
-          {isSaved ? 'Saved · see its review' : 'Save this parlay'}
+        <button type='button' onClick={saveSlip}
+          className='h-12 rounded-full bg-devig text-sm font-bold text-devig-ink'>
+          Save to History
         </button>
         <p className='px-1 text-xs text-muted-foreground'>
-          {link
-            ? "Saved on this device. You'll get its grade now, live prices while it plays, and what happened and what to learn once it's done."
-            : "Some legs aren't on Kalshi's board any more, so this slip can't be followed. Re-add them to save it."}
+          Saves all {legs.length} {legs.length === 1 ? 'leg' : 'legs'}{s > 0 ? ` and your ${money(s)} stake` : ''}, on this device and your account. History follows each leg live and grades it when its game ends.
         </p>
       </div>
 
@@ -323,7 +356,7 @@ function candidates(rows: GameRow[], props: PropLine[], live: Record<string, Liv
             id: `${l.key}|${side}`, kind: 'prop', label: `${l.player.split(' ').slice(-1)[0]} ${side === 'over' ? overTxt(l.stat, l.line) : underTxt(l.stat, l.line)}`,
             short: l.player.split(' ').slice(-1)[0], game: `${l.away} at ${l.home}`, gameId: `${l.sport}|${l.gameKey}`, sport: l.sport,
             kickoff: l.kickoff, odds, fair: ps.fair, devig, devigNote: devig == null ? null : 'props model: Kalshi beat it on past games',
-            colors: null, sideIsHome: null, ticker: l.ticker,
+            colors: null, sideIsHome: null, ticker: l.ticker, player: l.player, stat: l.stat, line: l.line,
           },
           dec: 1 / ps.cost, fair: ps.fair, game: `${l.sport}|${l.gameKey}`, why: '',
         })
@@ -527,7 +560,6 @@ export function Parlay() {
       </Header>
       <Main className='flex flex-col gap-8'>
         <SlipCard />
-        <SavedParlays />
         <CheckBet />
         <LongShot />
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>

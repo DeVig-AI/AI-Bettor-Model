@@ -57,3 +57,48 @@ export function parsePropKey(k: string) {
   const [away, home] = f[0].split(' @ ')
   return { away, home, date: f[1], player: f[2], stat: f[3], line: Number(f[4]), side: f[5] }
 }
+
+// ---------- tracked parlays: a saved slip with its stake, in the same shape as classic's Parlay tab ----------
+// legs: {desc, odds, game, when, kind, mk:"ml"|"prop", side:"home"|"away" (ml) or "OVER"|"UNDER" (prop),
+//        player, stat, line, sport, away, home, kickoff, gkey, ticker}
+export type TrackedLeg = {
+  desc: string
+  odds: number
+  game?: string
+  when?: string
+  kind?: string
+  mk?: string
+  side?: string
+  player?: string
+  stat?: string
+  line?: number
+  point?: number
+  sport?: string
+  away?: string
+  home?: string
+  kickoff?: string | null
+  gkey?: string
+  ticker?: string
+}
+export type TrackedParlay = { id: string; at: string; stake: number; odds: number; legs: TrackedLeg[] }
+
+export function trackedParlays(t: Tracked): TrackedParlay[] {
+  const ps = t.parlays && typeof t.parlays === 'object' ? t.parlays : {}
+  return Object.entries(ps)
+    .map(([id, x]) => ({ id, ...x }) as TrackedParlay & { removed?: number })
+    .filter((x) => !x.removed && Array.isArray(x.legs))
+    .sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')))
+}
+
+// saves a parlay and returns its id (classic's id format, which the account copy accepts)
+export function saveParlay(p: Omit<TrackedParlay, 'id' | 'at'>) {
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
+  const cur = snapshot()
+  save({ ...cur, parlays: { ...(cur.parlays ?? {}), [id]: { at: new Date().toISOString(), stake: p.stake, odds: p.odds, legs: p.legs.slice(0, 15) } } })
+  return id
+}
+// a removal is kept as a tombstone, so the account copy and other devices drop it too
+export function removeParlay(id: string) {
+  const cur = snapshot()
+  save({ ...cur, parlays: { ...(cur.parlays ?? {}), [id]: { removed: Date.now() } } })
+}

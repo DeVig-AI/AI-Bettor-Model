@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
-import { type GameRow, useGames } from '@/lib/devig'
+import { type GameRow, useFinals } from '@/lib/devig'
+import { trackedParlays, useTracked } from '@/lib/track'
+import { YourParlays } from './parlays'
 import { LinkReader } from '../check-bet/link-reader'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -10,8 +12,8 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { isPick } from '../games/plate'
 
-// History: check any Kalshi bet from its link (a combo leg by leg), keep the links you care about, and the games that
-// just finished with how DeVig's pick did. The full pick log is on Record.
+// History: your saved parlays (graded leg by leg) and Kalshi links you check, and the games that just finished with
+// how DeVig's pick did (NFL for the whole week, from DeVig's graded board). The full pick log is on Record.
 
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
 function FinalRow({ r }: { r: GameRow }) {
@@ -47,8 +49,7 @@ const ORDER = ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA', 'CFB']
 const order = (s: string) => (ORDER.indexOf(s) + 1 || 99)
 
 function RecentFinals() {
-  const { rows, isLoading } = useGames()
-  const finals = useMemo(() => rows.filter((r) => r.state === 'post').sort((a, b) => Date.parse(b.kickoff) - Date.parse(a.kickoff)), [rows])
+  const { finals, isLoading } = useFinals()
   const sports = useMemo(() => Array.from(new Set(finals.map((r) => r.sport))).sort((a, b) => order(a) - order(b) || a.localeCompare(b)), [finals])
   const [pickSport, setSport] = useState<string | null>(null)
   const sport = pickSport && sports.includes(pickSport) ? pickSport : sports[0]
@@ -60,10 +61,13 @@ function RecentFinals() {
     }
     return [...m]
   }, [finals, sport])
+  const rec = useMemo(() => {
+    const picks = finals.filter((x) => x.sport === sport && isPick(x) && x.pick?.correct != null)
+    return { w: picks.filter((x) => x.pick!.correct).length, l: picks.filter((x) => x.pick!.correct === false).length }
+  }, [finals, sport])
 
   return (
     <section aria-label='Recent finals' className='flex flex-col gap-2'>
-      <h2 className='px-1 font-display text-[22px] font-extrabold'>Recent finals</h2>
       {isLoading ? <Skeleton className='h-48 w-full rounded-[18px]' /> : !finals.length ? (
         <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>No finished games in the last few days.</p>
       ) : (
@@ -76,6 +80,12 @@ function RecentFinals() {
               </button>
             ))}
           </div>
+          <div className='flex items-baseline justify-between px-1'>
+            <h2 className='font-display text-[22px] font-extrabold'>{sport === 'NFL' ? 'This week' : 'Recent finals'}</h2>
+            {rec.w + rec.l > 0 && (
+              <span className={cn('text-sm font-semibold', rec.w >= rec.l ? 'text-good' : 'text-bad')}>DeVig picks {rec.w}–{rec.l}</span>
+            )}
+          </div>
           {days.map(([day, list]) => (
             <div key={day} className='flex flex-col gap-1.5'>
               <h3 className='px-1 pt-1 text-xs font-bold tracking-wide text-muted-foreground uppercase'>{day}</h3>
@@ -85,7 +95,7 @@ function RecentFinals() {
         </>
       )}
       <p className='px-1 text-xs text-muted-foreground'>
-        The last few days of finished games. Every graded DeVig pick, all season, is on{' '}
+        NFL shows the whole week; other sports the last few days. Every graded DeVig pick, all season, is on{' '}
         <Link to='/track-record' className='font-semibold text-devig'>Record</Link>.
       </p>
     </section>
@@ -93,18 +103,36 @@ function RecentFinals() {
 }
 
 export function History() {
+  const { tracked } = useTracked()
+  const list = useMemo(() => trackedParlays(tracked), [tracked])
+  const [pickView, setView] = useState<'parlays' | 'games' | null>(null)
+  const view = pickView ?? (list.length ? 'parlays' : 'games')
   return (
     <>
       <Header>
         <div className='me-auto min-w-0'>
           <h1 className='font-display text-[26px] leading-none font-black'>History</h1>
-          <p className='mt-0.5 truncate text-xs text-muted-foreground'>Check a Kalshi bet, and the games that just finished</p>
+          <p className='mt-0.5 truncate text-xs text-muted-foreground'>Your parlays, and the games that just finished</p>
         </div>
         <ThemeSwitch />
       </Header>
       <Main className='flex flex-col gap-6'>
-        <LinkReader />
-        <RecentFinals />
+        <div role='radiogroup' aria-label='Show' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
+          {([['parlays', `Your parlays${list.length ? ` (${list.length})` : ''}`], ['games', 'Games']] as const).map(([k, t]) => (
+            <button key={k} type='button' role='radio' aria-checked={view === k} onClick={() => setView(k)}
+              className={cn('h-10 rounded-lg text-sm font-semibold transition-colors duration-150', view === k ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
+              {t}
+            </button>
+          ))}
+        </div>
+        {view === 'parlays' ? (
+          <>
+            <YourParlays list={list} />
+            <LinkReader title='Check a Kalshi bet' />
+          </>
+        ) : (
+          <RecentFinals />
+        )}
       </Main>
     </>
   )

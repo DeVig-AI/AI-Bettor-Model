@@ -161,30 +161,35 @@ function Side({
         px={big ? 128 : 96} className={cn(big ? 'mb-1 size-[60px] text-[18px]' : 'mb-0.5 size-[44px] text-[14px]')} />
     <div className={cn('min-w-0', right && 'text-end')}>
       {big && name !== code && <div className='truncate text-sm font-semibold text-white/85'>{name}</div>}
-      <div className={cn('flex items-baseline gap-2.5', right && 'flex-row-reverse')}>
-        <span
-          className={cn(
-            'font-display leading-[0.85] font-black tracking-tight',
-            big ? 'text-[58px]' : 'text-[36px]'
-          )}
-        >
-          {code}
-        </span>
-        {hasScore && (
+      <div
+        className={cn(
+          'font-display leading-[0.85] font-black tracking-tight',
+          big ? 'text-[58px]' : 'text-[36px]'
+        )}
+      >
+        {code}
+      </div>
+      {/* once there's a score it takes the chance's place under the code, so the two never run into each other */}
+      {hasScore ? (
+        <div className={cn('mt-1.5 flex items-center gap-2', right && 'flex-row-reverse')}>
           <span
             className={cn(
-              'font-display leading-[0.85] font-extrabold tabular-nums',
-              big ? 'text-[46px]' : 'text-[30px]',
+              'font-display leading-[0.9] font-extrabold tabular-nums',
+              big ? 'text-[40px]' : 'text-[26px]',
               !won && 'opacity-80'
             )}
           >
             {score}
           </span>
-        )}
-      </div>
-      <div className={cn('font-display font-extrabold tabular-nums', big ? 'mt-1 text-[30px]' : 'mt-1 text-[22px]')}>
-        {pct == null ? '—' : fmtPct(pct)}
-      </div>
+          {won && big && (
+            <span className='rounded-full bg-white px-2 py-0.5 text-xs font-extrabold text-[#0a0b0f]'>WIN</span>
+          )}
+        </div>
+      ) : (
+        <div className={cn('font-display font-extrabold tabular-nums', big ? 'mt-1 text-[30px]' : 'mt-1 text-[22px]')}>
+          {pct == null ? '—' : fmtPct(pct)}
+        </div>
+      )}
     </div>
     </div>
   )
