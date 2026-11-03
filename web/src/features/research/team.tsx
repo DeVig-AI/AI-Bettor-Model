@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { ChevronLeft } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { ChevronDown, ChevronLeft } from 'lucide-react'
+import { useGames } from '@/lib/devig'
 import { useProps } from '@/lib/props'
 import {
-  type Col, type RsIndex, type RsPlayer, type RsTeam, isLight, logIdx, norm, ordinal, rsCell, rsDate, rsShort, rsSigned,
-  statValue, teamColor, useRsIndex, useRsTeam,
+  type Col, type RsIndex, type RsPlayer, type RsTeam, gameCode, isLight, logIdx, norm, ordinal, rsCell, rsDate, rsShort, rsSigned,
+  statValue, statsCode, teamColor, useRsIndex, useRsTeam,
 } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -45,6 +47,103 @@ export function TeamPlate({ sport, code, color, title, sub, right, mark }: {
         </div>
         {right}
       </div>
+    </section>
+  )
+}
+
+// ---- the next 10 games, from ESPN's team schedule through /api/live (&schedule=), folded under a button
+type NextGame = { id: string; kickoff: string; home: boolean; neutral: boolean; opp: string; opp_name: string | null; time_tbd: boolean; tv: string | null; playoffs: boolean }
+
+const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+const clockFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
+const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
+function when(k: string, tbd: boolean) {
+  const d = new Date(k), now = new Date(), tmw = new Date(now.getTime() + 864e5)
+  const day = sameDay(d, now) ? 'Today' : sameDay(d, tmw) ? 'Tomorrow' : dayFmt.format(d)
+  return { day, time: tbd ? 'Time TBA' : clockFmt.format(d) }
+}
+
+function NextGames({ idx, sport, code }: { idx: RsIndex; sport: string; code: string }) {
+  const [open, setOpen] = useState(false)
+  const team = gameCode(sport, code)
+  const q = useQuery({
+    queryKey: ['schedule', sport, team],
+    queryFn: async () => {
+      const r = await fetch(`/api/live?sport=${sport.toLowerCase()}&schedule=${encodeURIComponent(team)}`)
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      return (await r.json()) as { games: NextGame[] }
+    },
+    staleTime: 30 * 60e3,
+  })
+  const { rows } = useGames()
+  const games = q.data?.games ?? []
+  const byCode = useMemo(() => new Map(idx.teams.map((r) => [r.code, r])), [idx])
+  // a game on the board (Kalshi priced): same two teams, starting within 6 hours of ESPN's time
+  const board = (g: NextGame) => rows.find((r) => r.sport.toUpperCase() === sport.toUpperCase() && r.state === 'pre' &&
+    (g.home ? r.home === team && r.away === g.opp : r.away === team && r.home === g.opp) &&
+    Math.abs(Date.parse(r.kickoff) - Date.parse(g.kickoff)) < 6 * 36e5)
+  const first = games[0]
+  const peek = q.isLoading ? 'Loading the schedule…' : q.error ? 'Schedule unavailable right now' : first
+    ? (() => { const w = when(first.kickoff, first.time_tbd); return `Next: ${first.home ? 'vs' : 'at'} ${first.opp} · ${w.day}${first.time_tbd ? '' : `, ${w.time}`}` })()
+    : 'None scheduled right now'
+
+  return (
+    <section aria-label='Upcoming games' className='overflow-hidden rounded-[18px] bg-card'>
+      <button type='button' aria-expanded={open} aria-controls='next-games' onClick={() => setOpen((o) => !o)}
+        className='flex w-full items-center gap-3 px-4 py-3 text-start hover:bg-muted/40'>
+        <span className='min-w-0 flex-1'>
+          <span className='block font-display text-[17px] font-extrabold'>Next {games.length > 1 ? games.length : ''} games</span>
+          <span className='block truncate text-xs text-muted-foreground'>{peek}</span>
+        </span>
+        <ChevronDown aria-hidden='true' className={cn('size-5 shrink-0 text-muted-foreground transition-transform', open && 'rotate-180')} />
+      </button>
+      {open && (
+        <div id='next-games'>
+          {games.length === 0 ? (
+            <p className='border-t px-4 py-3 text-sm text-muted-foreground'>
+              {q.error ? 'The schedule could not be loaded. Try again in a bit.' : q.isLoading ? 'Loading…' : `ESPN has no upcoming games for ${code} yet, most likely because it's the offseason.`}
+            </p>
+          ) : (
+            <ul>
+              {games.map((g) => {
+                const w = when(g.kickoff, g.time_tbd)
+                const o = byCode.get(statsCode(sport, g.opp))
+                const row = board(g)
+                const fair = row?.fairHome != null ? (g.home ? row.fairHome : 1 - row.fairHome) : null
+                return (
+                  <li key={g.id} className='flex items-center gap-3 border-t px-4 py-2.5'>
+                    <span className='w-[76px] shrink-0 leading-tight'>
+                      <span className='block text-[13px] font-semibold'>{w.day}</span>
+                      <span className='block text-xs text-muted-foreground tabular-nums'>{w.time}</span>
+                    </span>
+                    <span className='min-w-0 flex-1 leading-tight'>
+                      <span className='block truncate text-sm'>
+                        <span className='text-muted-foreground'>{g.home || g.neutral ? 'vs' : 'at'}</span>{' '}
+                        {o ? (
+                          <Link to='/research/team/$sport/$code' params={{ sport, code: o.code }} className='font-semibold hover:text-devig'>{g.opp}</Link>
+                        ) : <span className='font-semibold'>{g.opp}</span>}
+                        {g.playoffs && <span className='ms-1.5 text-xs text-muted-foreground'>playoffs</span>}
+                      </span>
+                      <span className='block truncate text-xs text-muted-foreground tabular-nums'>
+                        {[o?.record?.replace(/-/g, '–'), o ? `#${o.rank} DeVig` : null, g.neutral ? 'neutral site' : null, g.tv].filter(Boolean).join(' · ') || g.opp_name}
+                      </span>
+                    </span>
+                    {row && fair != null && (
+                      <Link to='/game/$id' params={{ id: row.id }} aria-label={`Kalshi gives ${code} ${Math.round(fair * 100)}%, open the game`}
+                        className='shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold tabular-nums hover:bg-muted/50'>
+                        {Math.round(fair * 100)}%
+                      </Link>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+          {games.some((g) => board(g)) && (
+            <p className='border-t px-4 py-2 text-xs text-muted-foreground'>% = {code}&apos;s chance from Kalshi&apos;s price, no vig, for games already on the board. Tap it to open the game.</p>
+          )}
+        </div>
+      )}
     </section>
   )
 }
@@ -199,6 +298,7 @@ export function ResearchTeam({ sport, code }: { sport: string; code: string }) {
         sub={`#${t.rank} in DeVig's ${sport} power rankings · rating ${rsSigned(t.rating)}`}
         right={t.this?.record ? <span className='shrink-0 font-display text-4xl font-black tabular-nums'>{String(t.this.record).replace(/-/g, '–')}</span> : null} />
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
+        <NextGames idx={idx} sport={sport} code={t.code} />
         {best.length > 0 && t.this && (
           <div className='grid grid-cols-3 gap-2'>
             {best.map((c) => (

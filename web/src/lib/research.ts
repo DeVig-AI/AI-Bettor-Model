@@ -56,6 +56,8 @@ export function useRsIndex(sport: string) {
 // a stats file's team code -> the code the games data uses (they differ for a few college teams)
 export const gameCode = (sport: string, code: string) =>
   Object.entries(ALIAS[sport] ?? {}).find(([, v]) => v === code)?.[0] ?? code
+// the games data's code -> the stats file's (the other way)
+export const statsCode = (sport: string, code: string) => ALIAS[sport]?.[code] ?? code
 export function useRsTeam(sport: string, code: string) {
   return useQuery({ queryKey: ['rs_team', sport, code], queryFn: () => get<RsTeam>(teamPath(sport, code)), staleTime: 6e5, enabled: !!code })
 }
