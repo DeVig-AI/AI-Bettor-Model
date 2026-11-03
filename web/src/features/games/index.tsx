@@ -56,7 +56,7 @@ function GameItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
   const lab = labFor(useLab().data, row) // NHL / CFB: the Research Lab's model, new and not proven
   const labSide = lab ? (lab.home_wp >= 0.5 ? row.home : row.away) : null
   const labPct = lab ? Math.max(lab.home_wp, 1 - lab.home_wp) : null
-  const dv = labFor(useDevigFiles().data, row) // NHL: DeVig's own ratings model (v1)
+  const dv = labFor(useDevigFiles().data, row) // NHL, CBB: DeVig's own ratings models (v1)
   const dvSide = dv ? (dv.home_wp >= 0.5 ? row.home : row.away) : null
   const dvPct = dv ? Math.max(dv.home_wp, 1 - dv.home_wp) : null
   const spreadTotal = [
