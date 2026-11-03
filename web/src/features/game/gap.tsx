@@ -1,13 +1,13 @@
 import { useId, useMemo, useState } from 'react'
 import { type GameRow } from '@/lib/devig'
-import { FOOTBALL, playLabel, useFieldPlays, usePriceLine } from '@/lib/field'
+import { LIVE_PLAYS, playLabel, useFieldPlays, usePriceLine } from '@/lib/field'
 import { type Pt, KIND_LABEL, forSide, gapRead, since, valueAt, yRange } from '@/lib/gap-math'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { isPick } from '../games/plate'
 
-// The gap chart on an NFL or college football game page: Kalshi's price for a team next to ESPN's own win chance,
-// play by play, with the scores and turnovers marked and DeVig's pregame read as a dashed line. When the two lines
+// The gap chart on an NFL, college football or NBA game page: Kalshi's price for a team next to ESPN's own win chance,
+// play by play, with the scores and turnovers (NBA: runs of 8+) marked and DeVig's pregame read as a dashed line. When the two lines
 // split, the market and ESPN's model disagree about the same game. Display only.
 
 const W = 340, H = 190, PAD_T = 14, PAD_B = 40, PAD_R = 58
@@ -24,7 +24,7 @@ export function GapChart({ row }: { row: GameRow }) {
   const [side, setSide] = useState<'home' | 'away'>(pickSide)
   const [range, setRange] = useState<'recent' | 'game'>('game')
 
-  if (!FOOTBALL.includes(row.sport) || row.state === 'pre') return null
+  if (!LIVE_PLAYS.includes(row.sport) || row.state === 'pre') return null
   if (plays.isPending || prices.isPending) return <Skeleton className='h-[380px] w-full rounded-[22px]' />
   const wp = plays.data?.wp ?? []
   const kal = prices.data ?? []
@@ -72,7 +72,7 @@ export function GapChart({ row }: { row: GameRow }) {
         <p className={cn('font-display text-[26px] leading-tight font-black', read.gap != null && Math.abs(read.gap) >= 3 ? 'text-devig' : '')}>{read.text}</p>
         <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
           {lastKey && eNow != null
-            ? <>After {playLabel({ id: '', team: null, q: lastKey.q, clock: lastKey.clock, text: lastKey.text, type: lastKey.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })} ({lastKey.q ? `Q${lastKey.q} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
+            ? <>After {lastKey.kind === 'RUN' ? `a ${lastKey.text}` : playLabel({ id: '', team: null, q: lastKey.q, clock: lastKey.clock, text: lastKey.text, type: lastKey.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })} ({lastKey.q ? `${lastKey.q > 4 ? 'OT' : `Q${lastKey.q}`} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
             : <>ESPN&apos;s win chance and Kalshi&apos;s price for {code} to win, play by play.</>}
         </p>
       </div>
@@ -143,7 +143,7 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code }: {
     return { ...m, mx, ok }
   })
   const quarters = periods.filter(([, t]) => t >= start && t <= end).map(([q, t]) => ({ q, mx: x(t) })).filter((p) => p.mx > 10)
-  const summary = `${code}: ESPN ${eNow != null ? n(eNow) + '%' : 'no data'}, Kalshi ${kNow != null ? n(kNow) + '¢' : 'no data'}${devig != null ? `, DeVig pregame ${n(devig)}%` : ''}. ${keys.length} scores and turnovers marked.`
+  const summary = `${code}: ESPN ${eNow != null ? n(eNow) + '%' : 'no data'}, Kalshi ${kNow != null ? n(kNow) + '¢' : 'no data'}${devig != null ? `, DeVig pregame ${n(devig)}%` : ''}. ${keys.length} ${keys.some((m) => m.kind === 'RUN') ? 'runs' : 'scores and turnovers'} marked.`
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className='mt-3 block w-full touch-pan-y select-none px-4' role='img' aria-label={summary}

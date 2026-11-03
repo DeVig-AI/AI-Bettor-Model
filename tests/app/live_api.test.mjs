@@ -56,9 +56,11 @@ test("event + game=1 adds the game page data; without it the box score is unchan
 });
 
 // ---------- NBA ----------
-test("NBA shot spots: kept on the court, the far half folded onto the near one", () => {
-  assert.deepEqual(nbaShot({x: 8, y: 20}), {x: 8, y: 20});
-  assert.deepEqual(nbaShot({x: 46, y: 74}), {x: 4, y: 20});
+test("NBA shot spots: ESPN measures from the rim; kept on the court, moved to the baseline, the far half folded", () => {
+  assert.deepEqual(nbaShot({x: 8, y: 20}), {x: 8, y: 25.3});
+  assert.deepEqual(nbaShot({x: 46, y: 74}), {x: 4, y: 25.3});
+  assert.deepEqual(nbaShot({x: 2, y: -3}), {x: 2, y: 2.3}, "a corner three sits behind the rim");
+  assert.deepEqual(nbaShot({x: 25, y: 0}), {x: 25, y: 5.3}, "a dunk is at the rim");
   assert.equal(nbaShot({x: -214748340, y: -214748365}), null);
   assert.equal(nbaShot(null), null);
 });
@@ -67,10 +69,10 @@ test("the NBA summary becomes plays with shots, the run, quarter scores and the 
   const d = nbaGame(nbaSummary(), teamCode("nba"));
   assert.equal(d.away, "LAL"); assert.equal(d.home, "BOS");
   assert.match(d.plays[0].text, /personal foul/, "newest first");
-  assert.deepEqual(d.plays[1].shot, {x: 4, y: 20, made: true});
+  assert.deepEqual(d.plays[1].shot, {x: 4, y: 25.3, made: true});
   assert.equal(d.plays[1].pts, 3); assert.equal(d.plays[1].home_score, 90);
   assert.equal(d.plays[2].shot, null, "no spot for a free throw");
-  assert.deepEqual(d.plays[4].shot, {x: 16, y: 12, made: false});
+  assert.deepEqual(d.plays[4].shot, {x: 16, y: 17.3, made: false});
   assert.deepEqual(d.run, {team: "BOS", points: 9});
   assert.deepEqual(d.linescore, {away: [29, 26, 25], home: [24, 31, 35]});
   assert.deepEqual(d.box[0].labels, ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "+/-"]);

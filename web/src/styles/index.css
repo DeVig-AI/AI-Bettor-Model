@@ -106,3 +106,95 @@
   0% { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(5.5); }
 }
+
+/* the NBA court (features/game/court.tsx): a bucket drops, its points pop over the hoop, the big screen flashes */
+@keyframes ct-drop {
+  0% { opacity: 0; transform: translateY(-64px) scale(.75); }
+  15% { opacity: 1; }
+  70% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(12px) scale(.8); }
+}
+@keyframes ct-pop {
+  0% { opacity: 0; transform: scale(0); }
+  45% { opacity: 1; transform: scale(1.4); }
+  62% { transform: scale(.9); }
+  76% { transform: scale(1.08); }
+  86%, 100% { transform: scale(1); }
+}
+@keyframes ct-float {
+  0%, 62% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-22px); }
+}
+@keyframes ct-spark {
+  0% { opacity: 0; transform: rotate(var(--a)) translateY(-8px) scaleY(.2); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(-46px) scaleY(1); }
+}
+@keyframes ct-jumbo {
+  0% { opacity: 0; transform: scale(.3); }
+  18% { opacity: 1; transform: scale(1.18); }
+  28% { transform: scale(.96); }
+  36%, 88% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@keyframes ct-net {
+  0% { transform: scaleY(1) skewX(0); }
+  25% { transform: scaleY(1.45) skewX(6deg); }
+  45% { transform: scaleY(.85) skewX(-5deg); }
+  65% { transform: scaleY(1.12) skewX(3deg); }
+  100% { transform: scaleY(1) skewX(0); }
+}
+@keyframes ct-rim {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(14deg); }
+  55% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+}
+@keyframes ct-cam {
+  0% { transform: none; }
+  28%, 72% { transform: translateX(var(--dx)) scale(1.06); }
+  100% { transform: none; }
+}
+@keyframes ct-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, 0); }
+}
+@keyframes ct-confetti {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0); }
+  8% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)); }
+}
+@keyframes ct-cheer {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+  60% { transform: translateY(0); }
+  80% { transform: translateY(-2px); }
+}
+@keyframes ct-trace {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  35% { stroke-dashoffset: 0; opacity: 1; }
+  80% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes ct-glow {
+  0%, 100% { opacity: 0; }
+  8%, 18%, 28%, 70% { opacity: 1; }
+  13%, 23% { opacity: .35; }
+}
+@keyframes ct-marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes ct-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ct-strobe {
+  0%, 100% { opacity: 0; }
+  8%, 24%, 40% { opacity: .85; }
+  16%, 32% { opacity: .15; }
+  60% { opacity: .35; }
+}
