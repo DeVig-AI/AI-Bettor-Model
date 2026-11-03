@@ -1,1 +1,0 @@
-import{i as e}from"./index-BRC79_4h.js";var t=e;export{t as component};

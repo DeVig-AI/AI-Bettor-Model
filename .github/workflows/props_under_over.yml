@@ -1,0 +1,30 @@
+name: Props Unders vs Overs -- pre-registered paper test (PROPS_UNDER_OVER_V1)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '53 12 * * *'   # daily; prints counts only until 2027-02-03, then evaluates once and saves the result
+permissions:
+  contents: write
+concurrency:
+  group: props-under-over
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run (no keys, nothing bet)
+        run: python3 props_under_over_v1.py
+      - name: Save the one-time result
+        run: |
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f PROPS_UNDER_OVER_V1_RESULT.json PROPS_UNDER_OVER_V1_RESULT.md 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git commit -q -m "PROPS_UNDER_OVER_V1 result $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
+          exit 1
