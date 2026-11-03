@@ -1,9 +1,9 @@
-# DeVig Research Lab -- Constitution v14
+# DeVig Research Lab -- Constitution v15
 
-Version: **v14** · adopted 2026-10-31 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
-Part D (NBA, NHL; MLB suspended, D1b) · replaces v13 (kept unchanged at
-`research/constitution/RESEARCH_LAB_CONSTITUTION_v13.md`; v12 to v1 alongside it; what changed: sections "Changes from
-v1" to "Changes from v13" at the end)
+Version: **v15** · adopted 2026-11-03 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
+Part D (NBA, NHL; MLB suspended, D1b), Part E (men's college basketball, CBB) · replaces v14 (kept unchanged at
+`research/constitution/RESEARCH_LAB_CONSTITUTION_v14.md`; v13 to v1 alongside it; what changed: sections "Changes from
+v1" to "Changes from v14" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -62,7 +62,7 @@ result, and it will be reported exactly like a success: every number, plainly.
    cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
-3c. **The search (every sport with a search split: NFL Part B, college football Part C, NBA / NHL / MLB Part D).** Besides hand-written
+3c. **The search (every sport with a search split: NFL Part B, college football Part C, NBA / NHL / MLB Part D, CBB Part E).** Besides hand-written
    candidates, the lab finds candidates itself, per sport, in rounds, back to back (each run of the research loop does
    one round per sport; the menu's `round_every_hours` is 0), deterministically, with no AI. Each sport has its own menu and logs
    (NFL `research/search/`, CFB `research/cfb/search/`, Part D `research/<sport>/search/`):
@@ -203,8 +203,9 @@ A failed candidate gets a short reason: `not_significant`, `gate_<n>` (not posit
    (pick or no pick) before it starts, at the Kalshi ask for the chosen side plus the A4 fee, on Kalshi's main line
    (the line priced closest to 50¢). Logs are append-only. Nothing is bet.
 3. It is described everywhere as **"Promoted, not proven"**. Since v13 (the owner's decision) whether it is shown in
-   the app is decided by `CHAMPION_CHALLENGER_V1_PREREG.md`: it may be registered there as a challenger and enters
+   the app is decided by the champion/challenger rule: it may be registered there as a challenger and enters
    the app only by beating the app's current model under that rule's entry test, on a trial that keeps or removes it.
+   Since v15 that rule is `CHAMPION_CHALLENGER_V2_PREREG.md` (V1 plus a CBB slot; V1 kept unchanged).
 4. **Stop rule:** from the sport's mid-season point on (see its Part), once at least 40 picks are graded, the model is
    **stopped** if the upper end of the 90% Wilson interval of its win rate is below its average break-even price
    (clearly behind Kalshi). A stopped model stays logged and is never restarted in that season.
@@ -534,10 +535,119 @@ as candidates of their own (rest may enter only as a signal, A3.3e, if a later v
 As C7: no result is read from one team, one month or any slice smaller than 300 games, and no slice other than those
 named in D2 is reported. Lessons (A10) are exploratory.
 
-## Part E -- reserved
+## Part E -- Men's college basketball (CBB), added in v15
 
-Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL and MLB (MLB
-suspended since v14, D1b).
+Part E adds Division I men's college basketball (`research/cbb/`: candidates, search, ledger, exams, results and
+reports, kept apart exactly as each other sport is). Part A applies unchanged except where this Part says so
+explicitly (E3 measures the moneyline as Part D3 does; E7 says when the paper season can start). It was written at
+the owner's request: DeVig CBB v1 (`cbb/CBB_MODEL_V1_PREREG.md`) is the app's CBB number under
+`CHAMPION_CHALLENGER_V2_PREREG.md`, and a Lab model is wanted to challenge it.
+
+**What was seen before this Part was written and locked:**
+- For DeVig CBB v1 (before this Part, not by the Lab): ESPN's Division I finals of 2010-11 to 2025-26, results only.
+  Past ESPN games carry no odds there, so no result was ever compared with a line.
+- For this Part: on 4 dates of each season 2012-2026 (late November, mid December, late January, late February), how
+  many games ESPN's odds feed lists with a spread, total and moneyline, and which providers. Also the field layout of
+  the odds of two games (one 2019, one 2024: three providers each, whose entries include ESPN's flags for which side
+  won). Nothing else: no model was run, no line was compared with a result across games, and no season was scored.
+
+**Expected result, stated up front:** college basketball closing lines are very good forecasts, and the models this
+data allows know only scores, schedules and the lines (no injuries, lineups or box scores). The most likely outcome is
+that **no CBB candidate passes the sealed exam**, and quite possibly none passes the lab.
+
+### E1. Data
+- **Source:** ESPN's public sports data (no key):
+  - results from the Division I scoreboard
+    (`site.api.espn.com/.../basketball/mens-college-basketball/scoreboard?dates=<day>&groups=50`), every day from
+    November 1 to April 15 of each season;
+  - lines from each game's odds list (`sports.core.api.espn.com/.../mens-college-basketball/events/<id>/competitions/
+    <id>/odds`).
+- **Season** = the year the season ends (ESPN's own season year: 2026 = 2025-26), as DeVig CBB v1 counts it.
+- **Fields kept:** the ESPN game id, date and start time, season type (regular or postseason), neutral site, home and
+  away team (ESPN team id), final scores, and from each listed provider its moneylines (home and away). Everything else
+  is dropped: spreads, totals, opening lines, the juice, rankings, records, venues, attendance, and the odds feed's own
+  win flags.
+- **Providers used:** sportsbooks only. Dropped are projection sites (`teamrankings`, `numberfire`, `accuscore`), any
+  entry named `Opening`, and any entry whose name contains `Live`. A book's line is the moneyline ESPN keeps for it.
+  From 2024 on, ESPN marks that line as the book's close. Before 2024 it is the last line ESPN recorded for the book,
+  which cannot be checked against a separate close. Said plainly: this is the best closing line this source has.
+- **The closing price:** for each book whose two moneylines pass Part D1's check (both valid American prices, implied
+  probabilities summing to between 1.00 and 1.15), the vig-free home probability (D3). The game's closing price is the
+  median over those books; a game with no such book has no closing line.
+- **Division I:** a team is Division I in a season when it has at least 15 games on that season's Division I
+  scoreboard (DeVig CBB v1's rule).
+- **Eligible games:** **both teams Division I** that season, regular season and postseason, final scores, and a
+  closing line. Games against non-Division-I teams are excluded entirely: never scored, and never used to update any
+  rating or average (as C1, for the same reasons: their strength cannot be learned, and their prices are extreme and
+  thin).
+- **Line coverage gate:** as C1. If fewer than 70% of a training or gate season's eligible-team games have a closing
+  line, the lab refuses to run; only a new version may change the split.
+- **Where the data is kept:** as C1a. The cache (`research/cbb/data/`, seasons **2015-2025 only**; the lab refuses any
+  row from 2026 on) lives only in this repository's private GitHub Actions cache. It is filled by the workflow
+  "Research CBB -- data" and git-ignored. It is **never committed**: ESPN's data is not republished here.
+  - Committed: `research/cbb/data/MANIFEST.json` (seasons held, each season file's SHA-256, game and line counts) and
+    the derived outputs (results, ledger, verdicts, reports).
+  - Refetching: a season already cached is not fetched again. If the Actions cache is evicted, the missing seasons are
+    fetched once more, and the lab refuses to run when a refetched season used before does not match its fingerprint in
+    `MANIFEST.json`, until a new version says what to do.
+  - The sealed season is read only by the Inspector General's exam, in memory, and never written anywhere.
+
+### E2. Season split
+| Use | Seasons | Notes |
+|---|---|---|
+| Warm-up | 2015-2017 | ratings only; never scored, never fit on (lines here are under 70% coverage) |
+| Training | 2018 | the only season coefficients may be fit on; also sets the line-only baseline |
+| Search | 2019, 2020, 2022 | the search (A3.3c) scores configurations here; each season is a search sub-period |
+| (played through) | 2021 | COVID season (empty arenas, pauses, cancelled games; lines on about two thirds of games): ratings update through it, never scored, never fit on, never searched on |
+| Gate 1 | 2023 | confirmation |
+| Gate 2 | 2024 | confirmation |
+| Gate 3 | 2025 | confirmation |
+| Pooled | 2023-2025 | the pooled test of A7 |
+| **Sealed** | **2026** | the exam (A8); not in the lab |
+
+Reported, never used to pass: each gate on its own, and regular season vs postseason. The 2020 season (ended March
+2020 with no tournament) is used as it is. No CBB candidate had run and no CBB season had been scored against a line
+when this split was chosen.
+
+### E3. Market and how it is measured
+- One market, **`moneyline`** (who wins), measured exactly as Part D3: the vig-free closing price `q` (E1), forecast =
+  the model's home win probability, everything in win-chance points, `r = actual − 100·q`, the A5 effect, and D3's
+  pricing. Why only the moneyline: the app's CBB slot is `CBB.ml` (the champion/challenger rule), and every market
+  adds attempts to the correction. Spreads and totals can be added by a later version.
+- "Home" is the home team ESPN lists. At a neutral site (ESPN's flag) a model gives no home edge.
+
+### E4. Multiple testing
+As C4: Holm-Bonferroni over **every CBB attempt** (`research/cbb/LEDGER.csv`) decides. The global attempt count across
+all sports, and each attempt's Holm-adjusted p over that global set, are reported and never used.
+
+### E5. Season, budget and mid-season
+- v15 opens the **2026-27 CBB research season**, ending when the 2027 men's national championship game is played.
+  Sealed exam season 2026, budget **3 exams** (A8), recorded in `research/cbb/exam/EXAMS.csv`.
+- An exam needs at least **3,000** scored games in the sealed season, or it is recorded as an error (still spent).
+- Paper-season mid-season point for the stop rule (A9.4): after January 31.
+
+### E6. Seed ideas (points of the CBB search menu, not separate candidates)
+(a) a plain team rating (Elo) win chance, the baseline every rating idea is measured against; (b) ideas from public,
+open college basketball rating methods (FiveThirtyEight's Elo rules, Simple Rating System / least-squares margins as
+in sports-reference, opponent-adjusted points-for / against ratings), **each idea a setting of the menu**: K factor,
+home edge, preseason reversion, margin-of-victory multiplier, a margin cap, home edge learned from recent seasons,
+regression toward the market line, rating half-life, and a win probability fit once on the training season from a
+margin rating. A3.5 applies: no conference-tournament, rivalry, revenge, lookahead, "bubble team" or schedule-spot
+filters. The signal library (A3.3e) starts empty for CBB; its only team column is points.
+
+### E7. Paper season
+As D7: until a logger that reads Kalshi's men's college basketball game markets is merged, a CBB model promoted here is
+recorded as promoted with an empty paper log, and its paper season starts the day the logger is merged. No pick is
+back-filled.
+
+### E8. Small samples
+As C7: no result is read from one conference, one team, one month or any slice smaller than 300 games, and no slice
+other than those named in E2 is reported. Lessons (A10) are exploratory.
+
+## Part F -- reserved
+
+Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL, MLB (suspended
+since v14, D1b) and CBB.
 
 ---
 
@@ -742,3 +852,21 @@ lab's archive found two problems, which v14 also handles:
 Unchanged: every scoring, correction, gate, lab-pass, exam, promotion and stop rule; the shortlist (t ≥ 2.5, at most 2
 per market in any 7 days), so the attempt rate does not rise; the season split; Parts B and C. No rule is loosened
 (A1.4): new inputs are searched under the same bars, and a sport is stopped, not eased.
+
+---
+
+## Changes from v14 (2026-11-03)
+
+The owner made DeVig CBB v1 the app's CBB number (`CHAMPION_CHALLENGER_V2_PREREG.md`) and asked for a Lab model to
+challenge it:
+1. **Adds Part E, men's college basketball** (A1.3):
+   - data: ESPN's public Division I scoreboard and odds feed, kept only in the private Actions cache (E1);
+   - moneyline only (E3);
+   - split: training 2018, search 2019 / 2020 / 2022, gates 2023 / 2024 / 2025, 2021 played through, sealed 2026 (E2);
+   - 3 exams, at least 3,000 games each (E5).
+   It was written before any CBB line was compared with a result. What was seen is listed at the top of Part E.
+2. **A9.3** names `CHAMPION_CHALLENGER_V2_PREREG.md` (V1 plus a CBB slot) as the rule a promoted model enters the app
+   by. V1 is kept unchanged.
+
+Unchanged: Parts A (except A9.3's file name), B, C and D; every scoring, correction, gate, lab-pass, exam, promotion
+and stop rule; every other sport's budget. No rule is loosened (A1.4).

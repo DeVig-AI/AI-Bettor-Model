@@ -1,14 +1,14 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v14: Part B NFL,
-Part C college football, Part D NBA / NHL / MLB); the Constitution wins if they ever disagree.
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v15: Part B NFL,
+Part C college football, Part D NBA / NHL / MLB, Part E men's college basketball); the Constitution wins if they ever disagree.
 
-The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB") switches every
-constant below to that sport's Part (the lab's commands take `--sport`, or the LAB_SPORT environment variable)."""
+The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB", "CBB") switches
+every constant below to that sport's Part (the lab's commands take `--sport`, or the LAB_SPORT environment variable)."""
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v14"
+CONSTITUTION_VERSION = "v15"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -71,7 +71,7 @@ SUSPENDED = None                # D1b (v14): a reason string = this sport's cham
 GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 PBP_URL = "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz"
 
-SPORTS = ("NFL", "CFB", "NBA", "NHL", "MLB")
+SPORTS = ("NFL", "CFB", "NBA", "NHL", "MLB", "CBB")
 _NFL = {k: v for k, v in dict(globals()).items() if k.isupper() and k not in ("ROOT", "RESEARCH", "REPO", "BLOB",
                                                                              "CONSTITUTION", "SPORTS")}
 CFB_DIR = os.path.join(RESEARCH, "cfb")
@@ -181,7 +181,34 @@ SDV_SHA = {
     },
 }
 
-_PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB}
+# Part E (v15). Men's college basketball: ESPN's public data, moneyline only, one season per search period and gate (E2)
+CBB_DIR = os.path.join(RESEARCH, "cbb")
+_CBB = dict(
+    SPORT="CBB", MARKETS=("moneyline",),
+    DATA_DIR=os.path.join(CBB_DIR, "data"), CANDIDATES=os.path.join(CBB_DIR, "candidates"),
+    QUEUE=os.path.join(CBB_DIR, "queue"), RESULTS=os.path.join(CBB_DIR, "results"),
+    LEDGER=os.path.join(CBB_DIR, "LEDGER.csv"), EXAMS=os.path.join(CBB_DIR, "exam", "EXAMS.csv"),
+    PAPER_DIR=os.path.join(CBB_DIR, "paper"), PROMOTED=os.path.join(CBB_DIR, "promoted.json"),
+    STATUS_MD=os.path.join(CBB_DIR, "STATUS.md"), LESSONS_MD=os.path.join(CBB_DIR, "LESSONS.md"),
+    SEARCH_DIR=os.path.join(CBB_DIR, "search"),
+    FIRST_SEASON=2015,                       # warm-up 2015-2017: ratings only, never scored or fit on
+    TRAIN=(2018, 2018),
+    SEARCH=(2019, 2022),
+    SEARCH_PERIODS=[(2019, 2019), (2020, 2020), (2022, 2022)],
+    GATES=[("2023", 2023, 2023), ("2024", 2024, 2024), ("2025", 2025, 2025)],
+    POOLED=("Pooled 2023–25", 2023, 2025),
+    SKIP_SEASONS=(2021,),                    # COVID season: played through, never scored
+    RULE_SPLITS=[],
+    EXTRA_SPLITS=[("Regular season", "regular", "regular-season games"),
+                  ("Postseason", "post", "conference tournaments, NCAA tournament, NIT and the rest")],
+    LAB_MAX_SEASON=2025,
+    SEALED_SEASON=2026,
+    EXAM_MIN_GAMES=3000,                     # E5
+    STOP_AFTER_WEEK=13,                      # E5: after January 31 (week 1 starts in early November)
+    KALSHI_SPORT="NCAAMB",
+)
+
+_PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB, "CBB": _CBB}
 
 
 def use(sport):

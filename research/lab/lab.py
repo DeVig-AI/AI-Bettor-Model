@@ -33,15 +33,19 @@ LEDGER_COLS = ["attempt", "sport", "candidate_id", "market", "run_at", "status",
                "run_url", "games_pooled", "effect_pooled", "ci_lo", "ci_hi", "p_one_sided", "g1_effect", "g2_effect",
                "g3_effect", "error"]
 REQUIRED = ["id", "name", "market", "family", "parent", "reason", "model"]
-CODE_FILES = ["config.py", "data.py", "cfb_data.py", "sbr_data.py", "sdv_data.py", "models.py", "metrics.py", "lab.py", "search.py",
+CODE_FILES = ["config.py", "data.py", "cfb_data.py", "sbr_data.py", "sdv_data.py", "cbb_data.py", "models.py", "metrics.py", "lab.py", "search.py",
               "signals.py"]
 
 
 def dm():
-    """The data module for the sport in use (Part B1 nflverse, Part C1 CollegeFootballData, Part D1 the archive)."""
+    """The data module for the sport in use (Part B1 nflverse, Part C1 CollegeFootballData, Part D1 the archive,
+    Part E1 ESPN)."""
     if C.SPORT == "CFB":
         from . import cfb_data
         return cfb_data
+    if C.SPORT == "CBB":
+        from . import cbb_data
+        return cbb_data
     if C.SPORT in ("NBA", "NHL", "MLB"):
         from . import sbr_data
         return sbr_data
@@ -328,7 +332,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["pending", "start", "run"])
     ap.add_argument("--rerun", default=None, help="re-run one candidate whose last attempt crashed")
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D), CBB (Part E)")
     a = ap.parse_args(argv)
     C.use(a.sport)
     if C.SUSPENDED:                                  # D1b: nothing runs in a suspended chamber
