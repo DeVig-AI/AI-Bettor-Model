@@ -10,6 +10,7 @@
 // &event=<id>&wrap=1 also returns wrap: ESPN's summary cut down to what the v2 game wrap-up reads (header, box score,
 // win chances, and the play-by-play as text), so a phone doesn't download the whole thing.
 // ?sport=..&date=YYYYMMDD returns that day's scoreboard (the parlay review finds a past leg's game this way).
+// ?sport=..&schedule=<team code> returns that team's next 10 games not started yet (the team page's "Next 10 games").
 
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
 const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
@@ -21,7 +22,7 @@ const ALIASES = {
   mlb: {AZ: "ARI", CWS: "CHW", KCR: "KC", SDP: "SD", SFG: "SF", TBR: "TB", WAS: "WSH", OAK: "ATH", ANA: "LAA"},
   nba: {GS: "GSW", NO: "NOP", NY: "NYK", SA: "SAS", UTAH: "UTA", WSH: "WAS", PHO: "PHX", BRK: "BKN", CHO: "CHA"},
 };
-const SCORE_TTL = 15, BOX_TTL = 25;          // seconds
+const SCORE_TTL = 15, BOX_TTL = 25, SCHED_TTL = 1800;          // seconds
 // each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
 const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", nhl: "hockey", mlb: "baseball"};
 const mem = new Map();
@@ -46,6 +47,32 @@ const num = x => { const v = parseFloat(x); return isFinite(v) ? v : null; };
 
 // ESPN team code -> the app's
 export const teamCode = sport => a => { a = String(a || "").toUpperCase(); return (ALIASES[sport] || {})[a] || a; };
+
+// the app's team code -> ESPN's (the ALIASES table read backwards)
+export const espnCode = (sport, code) => {
+  code = String(code || "").toUpperCase();
+  return Object.entries(ALIASES[sport] || {}).find(([, v]) => v === code)?.[0] || code;
+};
+
+// a team's schedule from ESPN -> its next `n` games not started yet, soonest first
+export function schedule(d, sport, n = 10) {
+  const code = teamCode(sport), me = String(((d.team || {}).id) || "");
+  const out = [];
+  for (const ev of d.events || []) {
+    const comp = (ev.competitions || [{}])[0];
+    const st = (((comp.status || ev.status || {}).type) || {}).state;
+    if (st && st !== "pre") continue;
+    const cs = comp.competitors || [];
+    const us = cs.find(c => String((c.team || {}).id) === me) || null, them = cs.find(c => c !== us);
+    if (!us || !them) continue;
+    const tv = (comp.broadcasts || []).filter(b => ((b.market || {}).type) === "National").map(b => (b.media || {}).shortName).filter(Boolean);
+    out.push({id: String(ev.id), kickoff: ev.date, home: us.homeAway === "home", neutral: !!comp.neutralSite,
+              opp: code((them.team || {}).abbreviation), opp_name: (them.team || {}).displayName || null,
+              time_tbd: ev.timeValid === false || comp.timeValid === false, tv: tv[0] || null,
+              playoffs: ((ev.seasonType || {}).type) === 3});
+  }
+  return out.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff)).slice(0, n);
+}
 
 export function scoreboard(d, sport) {
   const code = teamCode(sport);
@@ -447,6 +474,12 @@ export async function handle(request, fetcher = fetch) {
       if (q.get("game") === "1") body.game = GAME[kind](d, teamCode(sport));
       if (q.get("wrap") === "1") body.wrap = slimSummary(d);
       return json(body, 200, 10);
+    }
+    const team = q.get("schedule");
+    if (team != null) {
+      if (!/^[A-Za-z0-9&]{1,6}$/.test(team)) return json({error: "bad team"}, 400);
+      const d = await cachedJson(`${ESPN}${SPORTS[sport]}/teams/${encodeURIComponent(espnCode(sport, team).toLowerCase())}/schedule`, SCHED_TTL, fetcher);
+      return json({sport, team: team.toUpperCase(), at: new Date().toISOString(), games: schedule(d, sport)}, 200, 600);
     }
     const date = q.get("date");                     // YYYYMMDD (ET), for an earlier or later day's games
     if (date != null && !/^20\d{6}$/.test(date)) return json({error: "bad date"}, 400);

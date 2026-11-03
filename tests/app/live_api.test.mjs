@@ -129,3 +129,38 @@ test("date=YYYYMMDD asks ESPN for that day's scoreboard; a bad date is refused",
   assert.match(urls[1], /basketball\/nba\/scoreboard\?dates=20261030$/);
   assert.equal((await handle(new Request("https://x/api/live?sport=nba&date=yesterday"), f)).status, 400);
 });
+
+// ---- ?schedule=: a team's next games (the team page's "Next 10 games")
+import { schedule as nextGames, espnCode } from "../../functions/api/live.js";
+
+test("schedule: next games not started, soonest first, codes in the app's spelling", () => {
+  const ev = (id, date, state, us, them, usHome, extra = {}) => ({id, date, timeValid: true, seasonType: {type: 2}, competitions: [{
+    neutralSite: false, status: {type: {state}},
+    broadcasts: [{market: {type: "National"}, media: {shortName: "TNT"}}],
+    competitors: [{homeAway: usHome ? "home" : "away", team: {id: "9", abbreviation: us}},
+                  {homeAway: usHome ? "away" : "home", team: {id: "1", abbreviation: them, displayName: "Them"}}]}], ...extra});
+  const d = {team: {id: "9"}, events: [
+    ev("1", "2026-11-01T00:00Z", "post", "GS", "NO", true),
+    ev("3", "2026-11-09T00:00Z", "pre", "GS", "SA", false, {timeValid: false}),
+    ev("2", "2026-11-05T00:00Z", "pre", "GS", "NY", true),
+  ]};
+  const g = nextGames(d, "nba");
+  assert.deepEqual(g.map(x => x.id), ["2", "3"]);
+  assert.equal(g[0].opp, "NYK");
+  assert.equal(g[0].home, true);
+  assert.equal(g[0].tv, "TNT");
+  assert.equal(g[1].opp, "SAS");
+  assert.equal(g[1].home, false);
+  assert.equal(g[1].time_tbd, true);
+  assert.equal(nextGames({team: {id: "9"}, events: Array.from({length: 15}, (_, i) => ev(String(i), `2026-12-${String(i + 1).padStart(2, "0")}T00:00Z`, "pre", "GS", "NO", true))}, "nba").length, 10);
+  assert.equal(espnCode("nba", "GSW"), "GS");
+  assert.equal(espnCode("nfl", "WAS"), "WSH");
+  assert.equal(espnCode("nhl", "TOR"), "TOR");
+});
+
+test("schedule: a bad team code is refused before ESPN is asked", async () => {
+  let asked = false;
+  const r = await handle(new Request("https://x/api/live?sport=nba&schedule=..%2Fx"), async () => { asked = true; return new Response("{}"); });
+  assert.equal(r.status, 400);
+  assert.equal(asked, false);
+});
