@@ -232,8 +232,8 @@ def solve(games, ret, P, seasons, rounds=3):
     return W, A, B, out
 
 
-GRID = {"k": [0.07, 0.09, 0.12], "k_early": [0.18], "early_n": [4], "carry": [0.9],
-        "ke": [0.01, 0.02, 0.04], "carry_e": [0.2, 0.3, 0.4], "ret": [30, 50, 80]}
+GRID = {"k": [0.09], "k_early": [0.18], "early_n": [4], "carry": [0.85, 0.9],
+        "ke": [0.02, 0.04, 0.07], "carry_e": [0.0, 0.1, 0.2], "ret": [80, 120, 160]}
 
 
 def fit(games, ret):
