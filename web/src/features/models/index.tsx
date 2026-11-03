@@ -10,7 +10,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 // Models: every model graded on the same games with the same rules, Kalshi's price as the baseline. Each model is a
 // row with its win rate drawn against the rate its prices needed (the amber tick). A comparison, not proof.
 
-const SPORTS = ['NFL', 'NBA', 'MLB', 'CFB', 'NHL']
+const SPORTS = ['NFL', 'NBA', 'MLB', 'CFB', 'NHL', 'CBB']
 const BETS = [['ml', 'Moneyline'], ['spread', 'Spread'], ['total', 'Total'], ['props', 'Props']] as const
 type Bet = (typeof BETS)[number][0]
 

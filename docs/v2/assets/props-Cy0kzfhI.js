@@ -1,1 +1,0 @@
-import{n as e}from"./props-Br4VWSch.js";var t=e;export{t as component};

@@ -24,10 +24,12 @@ Models (credits and licenses are also on the app's Models and About pages):
           (Elo 400 scale, +65 for the home team, none at a neutral site). Winner only: it publishes no spread.
   lab     NHL and CFB, DeVig's Research Lab: the search leader for each sport (research/<sport>/candidates), run live by
           tools/lab_live.py into live/lab/<sport>.json. New, not proven: shown beside the others, never the app's pick.
+  devigcbb CBB, DeVig's own men's college basketball ratings (tools/cbb_model_live.py -> live/devig/cbb.json,
+          cbb/CBB_MODEL_V1_PREREG.md), read by ESPN id. A challenger: the app has no CBB pick.
   kalshi  the market baseline in every tab: Kalshi's win price, main spread, main total (MLB / NHL: the 1.5 line).
 
 Every run (GitHub Actions, models_compare.yml):
-  1. read every model's current number for each game not yet started (NFL / CFB: next 8 days, NBA / MLB / NHL: next 36 hours)
+  1. read every model's current number for each game not yet started (NFL / CFB: next 8 days, CBB: 6, NBA / MLB / NHL: next 36 hours)
      into live/models/latest.json -- overwritten each run, never touched for a game once it has started;
   2. once a game has started, its last pre-start numbers move from latest.json to live/models/picks.jsonl
      (append-only: one row per game and model, the pick that is graded);
@@ -96,10 +98,10 @@ ESPN = "https://site.api.espn.com/apis/site/v2/sports/{}/scoreboard"
 UA = "devig-models-compare/1.0 (personal research; read-only)"
 ET = ZoneInfo("America/New_York")
 AHEAD = {"NFL": timedelta(days=8), "NBA": timedelta(hours=36), "MLB": timedelta(hours=36), "CFB": timedelta(days=8),
-         "NHL": timedelta(hours=36)}
-SPORTS = ("NFL", "NBA", "MLB", "CFB", "NHL")
+         "NHL": timedelta(hours=36), "CBB": timedelta(days=6)}
+SPORTS = ("NFL", "NBA", "MLB", "CFB", "NHL", "CBB")
 LAB_DIR = ROOT / "live" / "lab"                               # tools/lab_live.py writes the Lab models' numbers here
-DEVIG_DIR = ROOT / "live" / "devig"                           # DeVig's file models: tools/nhl_model_live.py, tools/cfb_model_live.py
+DEVIG_DIR = ROOT / "live" / "devig"                           # DeVig's file models: tools/nhl_model_live.py, tools/cfb_model_live.py, tools/cbb_model_live.py
 LAB_STALE = timedelta(hours=12)                               # an older Lab file is not read (its numbers would be old)
 NHL_TO_ESPN = {"TBL": "TB", "NJD": "NJ", "LAK": "LA", "SJS": "SJ"}   # NHL API code -> ESPN / Kalshi code
 RECENT = timedelta(days=4)                                    # finished games kept in the page's game list
@@ -132,12 +134,16 @@ MODELS = [
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/cfb/CFB_MODEL_V1_PREREG.md", "license": "this project",
      "note": "DeVig's own college football ratings (margins, play-by-play efficiency, returning production). "
              "Tracked as a challenger: it is not the app's CFB pick."},
+    {"key": "devigcbb", "name": "DeVig CBB v1", "sports": ["CBB"], "author": "DeVig.AI (this project)",
+     "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/cbb/CBB_MODEL_V1_PREREG.md", "license": "this project",
+     "note": "DeVig's own men's college basketball ratings (margins, home court, Division I scoreboard). "
+             "Tracked as a challenger: it is not the app's CBB pick."},
     {"key": "lab", "name": "DeVig Lab", "sports": ["NHL", "CFB"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/RESEARCH_LAB_CONSTITUTION.md",
      "license": "this project",
      "note": "New, not proven: the Research Lab's search leader for this sport, run live by tools/lab_live.py. "
              "Its own confirmation check is on the Lab page; it is not the app's pick."},
-    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB", "CFB", "NHL"], "author": "Kalshi prices",
+    {"key": "kalshi", "name": "Market", "sports": ["NFL", "NBA", "MLB", "CFB", "NHL", "CBB"], "author": "Kalshi prices",
      "url": "https://kalshi.com", "license": "public prices",
      "note": "The baseline: Kalshi's favourite (moneyline, spread) and the over (total), at Kalshi's price."},
 ]
@@ -147,7 +153,8 @@ COVERS = {"NFL": {"ml": {"devig", "devig2", "nfelo", "elo538", "kalshi"}, "sprea
           "MLB": {"ml": {"devig", "kalshi"}, "spread": {"devig", "kalshi"}, "total": {"kalshi"}},
           "CFB": {"ml": {"devigcfb", "cfbelo", "cfbrank", "lab", "kalshi"}, "spread": {"devigcfb", "cfbelo", "lab", "kalshi"},
                   "total": {"kalshi"}},
-          "NHL": {"ml": {"devig", "lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}}}
+          "NHL": {"ml": {"devig", "lab", "kalshi"}, "spread": {"kalshi"}, "total": {"kalshi"}},
+          "CBB": {"ml": {"devigcbb", "kalshi"}, "spread": {"devigcbb", "kalshi"}, "total": {"kalshi"}}}
 TO_538 = {"LV": "OAK", "WAS": "WSH", "LA": "LAR"}            # nflverse code -> 538 franchise code (2021 on)
 FROM_NFELO = {"LAR": "LA", "OAK": "LV", "WSH": "WAS", "JAC": "JAX"}
 errors = []
@@ -308,13 +315,14 @@ def read_blotny(upcoming):
     return best
 
 
-# ---- college football (keyless: ESPN's FBS scoreboard, Kalshi, the two open models' published files) ----
-def cfb_upcoming(now):
-    """ESPN's FBS games from 3 days ago to 9 days ahead, in this file's game shape (game_id = ESPN event id)."""
+# ---- college football and basketball (keyless: ESPN's FBS / Division I scoreboard, Kalshi, the open models' files) ----
+def cfb_upcoming(now, sport="CFB"):
+    """ESPN's FBS (CFB) or Division I (CBB) games around now (game_lines.COLLEGE's window), in this file's game shape
+    (game_id = ESPN event id)."""
     import game_lines as GL
     out = []
-    for e in GL.espn_cfb(now).values():
-        out.append({"sport": "CFB", "game_id": e["espn_id"], "kickoff": parse_t(e["kickoff"]), "date": e["date"],
+    for e in GL.espn_college(sport, now).values():
+        out.append({"sport": sport, "game_id": e["espn_id"], "kickoff": parse_t(e["kickoff"]), "date": e["date"],
                     "home": e["home"], "away": e["away"], "home_names": e["home_names"], "away_names": e["away_names"],
                     "neutral": e["neutral"], "final": e["state"] == "post", "home_score": e["home_score"],
                     "away_score": e["away_score"]})
@@ -355,11 +363,11 @@ def read_cfbrank(upcoming, season):
     return out
 
 
-def read_kalshi_cfb(now, upcoming):
+def read_kalshi_cfb(now, upcoming, sport="CFB"):
     import game_lines as GL
     ids = {g["game_id"] for g in upcoming}
     out = {}
-    for x in GL.cfb_games(now)[0]:
+    for x in GL.college_games(sport, now)[0]:
         if x["espn_id"] not in ids:
             continue
         p = {"home_wp": x["home_wp"], "home_ml": x["ml"]["home"], "away_ml": x["ml"]["away"]}
@@ -451,7 +459,7 @@ def devig_mlb(upcoming):
 def read_lab(sport, upcoming, now, folder=None):
     """The Research Lab's live model (live/lab/<sport>.json from tools/lab_live.py), or DeVig's own NHL model
     (live/devig/nhl.json from tools/nhl_model_live.py, same shape): its numbers for games coming up.
-    NHL games are matched by teams and start time (the NHL API's ids differ from ESPN's); CFB ids are ESPN's."""
+    NHL games are matched by teams and start time (the NHL API's ids differ from ESPN's); CFB and CBB ids are ESPN's."""
     f = (folder or LAB_DIR) / f"{sport.lower()}.json"
     if not f.exists():
         return {}
@@ -552,6 +560,12 @@ def update(now, nfl_csv=None, offline=False):
             finals["CFB"] = {g["game_id"]: g for g in allg if g["final"]}
         except Exception as e:
             note("espn CFB", e)
+        try:
+            allg = cfb_upcoming(now, "CBB")
+            upcoming["CBB"] = [g for g in allg if g["kickoff"] and now < g["kickoff"] <= now + AHEAD["CBB"]]
+            finals["CBB"] = {g["game_id"]: g for g in allg if g["final"]}
+        except Exception as e:
+            note("espn CBB", e)
 
     # every model's current number for each game not started yet
     readings = []                                   # (sport, game, model, values)
@@ -572,14 +586,16 @@ def update(now, nfl_csv=None, offline=False):
             sources = [("cfbelo", lambda: read_cfbelo(ups)), ("cfbrank", lambda: read_cfbrank(ups, season)),
                        ("lab", lambda u=ups: read_lab("CFB", u, now)),
                        ("devigcfb", lambda u=ups: read_lab("CFB", u, now, DEVIG_DIR))]
+        elif sport == "CBB":
+            sources = [("devigcbb", lambda u=ups: read_lab("CBB", u, now, DEVIG_DIR))]
         elif sport == "NHL":
             sources = [("devig", lambda u=ups: read_lab("NHL", u, now, DEVIG_DIR)),
                        ("lab", lambda u=ups: read_lab("NHL", u, now))]
         else:
             sources = [("devig", lambda: devig_mlb(ups))]
         if not offline:
-            if sport == "CFB":
-                sources.append(("kalshi", lambda u=ups: read_kalshi_cfb(now, u)))
+            if sport in ("CFB", "CBB"):
+                sources.append(("kalshi", lambda u=ups, s=sport: read_kalshi_cfb(now, u, s)))
             else:
                 sources.append(("kalshi", lambda s=sport: read_kalshi(s, ups)))
         for model, fn in sources:
