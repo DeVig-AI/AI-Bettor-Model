@@ -167,7 +167,7 @@ export function TeamSheet({
             </button>
           )}
 
-          <NarrativeButton row={row} />
+          <NarrativeButton row={row} level={lv} />
         </div>
       </SheetContent>
     </Sheet>

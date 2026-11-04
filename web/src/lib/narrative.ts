@@ -1,40 +1,55 @@
-// Narrative model (live/narrative/nba.json, written hourly by tools/narrative_nba.py): NBA picks made the way the
-// experts reason (rules written from expert picks shows). Not proven: the app never
-// uses it for its own picks.
+// Narrative model (live/narrative/<sport>.json, written hourly by tools/narrative.py): picks made the way the experts
+// reason, for NBA, NHL, NFL, CFB and CBB. Not proven: the app never uses it for its own picks. NBA's rules were tested
+// on past nights; the other sports' are new.
 import { useQuery } from '@tanstack/react-query'
 import { getJson } from './devig'
 
+export const NARRATIVE_SPORTS = ['NBA', 'NHL', 'NFL', 'CFB', 'CBB']
+
 export type NarrativePick = {
-  id: string; date: string; start: string; game: string; home: string; away: string; book: string | null
-  type: 'side' | 'total'; pick: string; line: number; score: number; why_for: string[]; why_opp: string[]
+  id: string; date: string; start: string; game: string; home: string; away: string; home_id?: string; away_id?: string
+  book: string | null; type: 'side' | 'total'; pick: string; line: number; score: number; why_for: string[]; why_opp: string[]
   result: 'W' | 'L' | 'P' | null; final: string | null
 }
 export type NarrativeFile = {
-  model: string; updated: string; live_since: string
+  model: string; sport: string; version: string; kind: 'spread' | 'ml'; tested: boolean; updated: string; live_since: string
   tests: { label: string; w: number; l: number; p: number }[]
   picks: NarrativePick[]
 }
 
-export function useNarrative() {
-  return useQuery({ queryKey: ['narrative'], queryFn: () => getJson<NarrativeFile>('live/narrative/nba.json'), staleTime: 10 * 60e3 })
+export function useNarrative(sport: string) {
+  const on = NARRATIVE_SPORTS.includes(sport)
+  return useQuery({
+    queryKey: ['narrative', sport],
+    queryFn: () => getJson<NarrativeFile>(`live/narrative/${sport.toLowerCase()}.json`),
+    enabled: on,
+    staleTime: 10 * 60e3,
+  })
 }
 
-// Record at standard -110 prices: a win pays 0.909 units, a loss costs 1, a push returns the stake.
-export const NEEDED = 110 / 210
 export function tally(picks: { result: 'W' | 'L' | 'P' | null }[]) {
   const w = picks.filter((p) => p.result === 'W').length
   const l = picks.filter((p) => p.result === 'L').length
   const pu = picks.filter((p) => p.result === 'P').length
-  return { w, l, p: pu, pct: w + l ? w / (w + l) : null, units: w * (100 / 110) - l }
+  return { w, l, p: pu }
 }
 
-export const betLabel = (p: { type: string; pick: string; line: number }) =>
-  p.type === 'side' ? `${p.pick} ${p.line > 0 ? '+' : p.line < 0 ? '−' : ''}${p.line === 0 ? 'PK' : Math.abs(p.line)}` : `${p.pick === 'OVER' ? 'Over' : 'Under'} ${p.line}`
+const odds = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`)
+export const betLabel = (p: { type: string; pick: string; line: number }, kind: 'spread' | 'ml' = 'spread') =>
+  p.type === 'total' ? `${p.pick === 'OVER' ? 'Over' : 'Under'} ${p.line}`
+    : kind === 'ml' ? `${p.pick} ${odds(p.line)}`
+    : `${p.pick} ${p.line > 0 ? '+' : p.line < 0 ? '−' : ''}${p.line === 0 ? 'PK' : Math.abs(p.line)}`
 
-// the Narrative model's picks for one game on the board (NBA only; its file uses ESPN's team codes)
-export function narrativeFor(file: NarrativeFile | undefined, row: { sport: string; away: string; home: string; kickoff: string }, code: (s: string, c: string) => string) {
-  if (!file || row.sport !== 'NBA') return []
+// the model's picks for one game on the board: by ESPN team ids when both sides have them (college codes aren't
+// unique), else by team code as ESPN spells it, within 12 hours of the start
+export function narrativeFor(file: NarrativeFile | undefined, row: { sport: string; away: string; home: string; kickoff: string; ids: { away: string; home: string } | null },
+  code: (s: string, c: string) => string) {
+  if (!file) return []
   const t = new Date(row.kickoff).getTime()
-  return file.picks.filter((p) => p.home.toLowerCase() === code('NBA', row.home) && p.away.toLowerCase() === code('NBA', row.away)
-    && Math.abs(new Date(p.start).getTime() - t) < 12 * 3600e3)
+  return file.picks.filter((p) => {
+    const same = row.ids && p.home_id && p.away_id
+      ? String(row.ids.home) === p.home_id && String(row.ids.away) === p.away_id
+      : p.home.toLowerCase() === code(row.sport, row.home) && p.away.toLowerCase() === code(row.sport, row.away)
+    return same && Math.abs(new Date(p.start).getTime() - t) < 12 * 3600e3
+  })
 }
