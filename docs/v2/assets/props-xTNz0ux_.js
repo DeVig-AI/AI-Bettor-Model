@@ -1,0 +1,1 @@
+import{n as e}from"./props-BtPL3xA6.js";var t=e;export{t as component};

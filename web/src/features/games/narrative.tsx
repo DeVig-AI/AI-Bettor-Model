@@ -16,7 +16,7 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
   const [open, setOpen] = useState(false)
   const picks = narrativeFor(f, row, espnCode)
   const read = readFor(f, row, espnCode)
-  if (!f || (!picks.length && !read)) return null
+  if (!f) return null
   const hasSide = picks.some((p) => p.type === 'side')
   const hasTotal = picks.some((p) => p.type === 'total')
   // leans that didn't clear the bar, shown next to the picks that did
@@ -26,7 +26,7 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
       ? { key: 'total', l: read.total, text: `Total leans ${read.total.lean === 'OVER' ? 'Over' : 'Under'} ${read.total.line}` } : null,
   ].filter((x): x is { key: string; l: NarrativeLean; text: string } => !!x)
   const summary = picks.length ? picks.map((p) => betLabel(p, p.type === 'side' ? f.kind : 'spread')).join(' · ')
-    : read?.note ? 'No read yet'
+    : !read || read.note ? 'No read yet'
     : read?.side?.lean ? `Leans ${read.side.lean} · no pick` : 'No lean · no pick'
 
   const rec = tally(f.picks)
@@ -68,7 +68,9 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
               </div>
             )
           })}
-          {read?.note && !picks.length && <p className='text-sm'>{read.note}.</p>}
+          {!picks.length && (read?.note || !read) && (
+            <p className='text-sm'>{read?.note ? `${read.note}.` : 'It reads every game on the board each hour, so this one is coming.'}</p>
+          )}
           {!read?.note && leans.map(({ key, l, text }) => {
             const reasons = level === 'new' ? l.why_for.slice(0, 2) : l.why_for
             return (
