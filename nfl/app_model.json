@@ -1,6 +1,7 @@
 {
- "nfl_game_model": "2.0",
+ "nfl_game_model": "1.0",
  "since": "2026-10-22T23:00:00Z",
+ "until": "2026-11-04T17:00:00Z",
  "review_after": "2026-11-04",
- "why": "Owner's call (2026-10-22): Model 2.0 (Model 1.0 + injuries) beat Model 1.0 in the pre-registered walk-forward test, so it is the app's NFL pick from week 7. After two weeks, if Model 1.0 is doing better on the same games, set nfl_game_model back to \"1.0\". Model 1.0's tracker keeps locking and grading its own picks either way."
+ "why": "Owner's rule (2026-10-22): Model 2.0 was the app's NFL pick from week 7, switching back if Model 1.0 did better after two weeks. Review 2026-11-04 on the 28 games both forecast (weeks 7-8): log loss Model 1.0 0.6087, Model 2.0 0.6190 (Kalshi 0.5960); both 20-8 picking favourites. Model 1.0 did better, so the app is back on Model 1.0 for games from 2026-11-04 17:00 UTC. Games from 'since' to 'until' keep the Model 2.0 picks the app showed. Model 2.0 keeps being paper-tracked on the Models page; its season-end decision rule (NFL_MODEL_2_0_LIVE_PREREG.md) is unchanged."
 }
