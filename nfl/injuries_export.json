@@ -3,11 +3,34 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 3 \u00b7 6:57 PM ET \u00b7 Week 9",
-    "date": "2026-11-03",
+    "as_of": "Wed Nov 4 \u00b7 1:04 AM ET \u00b7 Week 9",
+    "date": "2026-11-04",
     "sport": "NFL"
    },
    "doc_id": "nfl-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ARI",
+    "confirmed": false,
+    "home": "SEA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (50% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "James Conner",
+    "reason": "RB \u00b7 Foot",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Injured Reserve",
+    "team": "ARI",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1108-1625"
+   },
+   "doc_id": "nfl-ari-james-conner"
   },
   {
    "collection": "injuries",
@@ -413,29 +436,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "JAX",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (71% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "player": "Lamar Jackson",
-    "reason": "QB \u00b7 Thumb",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Out",
-    "team": "BAL",
-    "tip": "Thu 8:15 PM",
-    "tip_sort": "1105-2015"
-   },
-   "doc_id": "nfl-bal-lamar-jackson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "BUF",
     "confirmed": false,
     "home": "MIN",
@@ -556,26 +556,25 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "BUF",
+    "away": "DEN",
     "confirmed": false,
-    "home": "MIN",
+    "home": "CAR",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (40% of snaps)"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "note": "Practice-week status; the official game status comes out Saturday",
-    "player": "Tyrell Shavers",
-    "reason": "WR \u00b7 Knee - ACL",
+    "player": "Brady Christensen",
+    "reason": "G \u00b7 Hamstring",
     "sport": "NFL",
     "starter": false,
-    "status": "Out",
-    "team": "BUF",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1109-2015"
+    "status": "Injured Reserve",
+    "team": "CAR",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
    },
-   "doc_id": "nfl-buf-tyrell-shavers"
+   "doc_id": "nfl-car-brady-christensen"
   },
   {
    "collection": "injuries",
@@ -1710,6 +1709,52 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "Regular (75% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Travon Walker",
+    "reason": "DE \u00b7 Ribs",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "JAX",
+    "tip": "Thu 8:15 PM",
+    "tip_sort": "1105-2015"
+   },
+   "doc_id": "nfl-jax-travon-walker"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "JAX",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (67% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Eric Murray",
+    "reason": "S \u00b7 Elbow",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "JAX",
+    "tip": "Thu 8:15 PM",
+    "tip_sort": "1105-2015"
+   },
+   "doc_id": "nfl-jax-eric-murray"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "JAX",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "Regular (76% of snaps): about 0.5 points each in DeVig's injury study \u00b7 8% of JAX's targets and carries"
     },
     "player": "Jakobi Meyers",
@@ -1837,52 +1882,6 @@
     "tip_sort": "1105-2015"
    },
    "doc_id": "nfl-jax-jarrian-jones"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "JAX",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (67% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Eric Murray",
-    "reason": "S \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "JAX",
-    "tip": "Thu 8:15 PM",
-    "tip_sort": "1105-2015"
-   },
-   "doc_id": "nfl-jax-eric-murray"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "JAX",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (75% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Travon Walker",
-    "reason": "DE \u00b7 Ribs",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "JAX",
-    "tip": "Thu 8:15 PM",
-    "tip_sort": "1105-2015"
-   },
-   "doc_id": "nfl-jax-travon-walker"
   },
   {
    "collection": "injuries",
@@ -2893,30 +2892,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "No snaps this season"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Tre Brown",
-    "reason": "CB \u00b7 Finger",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "NYJ",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-nyj-tre-brown"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYJ",
-    "confirmed": false,
-    "home": "KC",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Part-time (45% of snaps)"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -3122,29 +3097,6 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-phi-michael-carter"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYG",
-    "confirmed": false,
-    "home": "PHI",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (79% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of PHI's targets and carries"
-    },
-    "player": "Dameon Pierce",
-    "reason": "RB \u00b7 Undisclosed",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "PHI",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-phi-dameon-pierce"
   },
   {
    "collection": "injuries",
@@ -3588,29 +3540,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (60% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Javon Kinlaw",
-    "reason": "DT \u00b7 Knee",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "WAS",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-was-javon-kinlaw"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LA",
-    "confirmed": false,
-    "home": "WAS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (74% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "player": "Daron Payne",
@@ -3623,6 +3552,29 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-was-daron-payne"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LA",
+    "confirmed": false,
+    "home": "WAS",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (60% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Javon Kinlaw",
+    "reason": "DT \u00b7 Knee",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "WAS",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nfl-was-javon-kinlaw"
   },
   {
    "collection": "injuries",
@@ -3671,6 +3623,6 @@
    "doc_id": "nfl-was-laremy-tunsil"
   }
  ],
- "generated_at": "2026-11-03T23:57:12Z",
+ "generated_at": "2026-11-04T06:04:40Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
