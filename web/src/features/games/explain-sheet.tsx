@@ -162,7 +162,7 @@ export function PickBody({ row, side, level, record }: { row: GameRow; side: str
             prob={prob}
             level={level}
             fallback={p.note && !fs.length ? (
-              <p className='text-[15px] leading-relaxed'>{p.note}</p>
+              <p className='text-[15px] leading-relaxed'>{plainNote(row.sport, p.note)}</p>
             ) : fs.length ? (
               <ul className='flex flex-col gap-3'>
                 {fs.map((f) => (
@@ -409,8 +409,8 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
 
       {p.note && (
         <div className='rounded-2xl bg-muted p-3.5'>
-          <p className='font-semibold'>About this model</p>
-          <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{p.note}</p>
+          <p className='font-semibold'>How DeVig reads {row.sport} games</p>
+          <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{plainNote(row.sport, p.note)}</p>
         </div>
       )}
 
@@ -423,6 +423,28 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
       )}
     </div>
   )
+}
+
+// The model's own note is written for the people who run it (tracker names, feature counts). This says the same in
+// plain words, keeping the one game-specific detail worth having (MLB's probable starters).
+export function plainNote(sport: string, note: string) {
+  const starters = note.match(/Probable starters (.+?)\./)?.[1]
+  switch (sport) {
+    case 'NBA':
+      return 'DeVig looks at how many points each team has scored and given up over its last 10 games, and who is rested or on a back-to-back. It locks its pick before the game. Prices come from Kalshi.'
+    case 'MLB':
+      return `DeVig looks at each team’s recent games and who is pitching${starters ? ` (${starters})` : ''}. It locks its pick before the game. Prices come from Kalshi.`
+    case 'NFL':
+      return /2\.0|who is out/.test(note)
+        ? 'DeVig rates every team from its results, then adjusts for who is out on the injury report. The pick updates until kickoff. The spread read is for information only.'
+        : 'DeVig rates every team from its results and locks its pick before kickoff. The spread read is for information only.'
+    case 'CBB':
+      return 'DeVig rates every team by how much it wins or loses by against Division I teams, plus home court. It locks its pick 6 hours before the start. Prices come from Kalshi. Not proven yet.'
+    case 'CFB':
+      return 'DeVig rates every team by its scoring margins, how its offense and defense do play by play against the teams it faced, and how many players came back, plus home field. It locks its pick 6 hours before the start. It has trailed Kalshi’s prices so far this season; not proven.'
+    default:
+      return note.replace(/\s*\([^)]*(_|=)[^)]*\)/g, '').replace(/ by the tracker/, '')
+  }
 }
 
 export function Box({ label, value, sub, amber }: { label: string; value: string; sub?: string; amber?: boolean }) {

@@ -1,0 +1,1 @@
+import{n as e}from"./team-Cyq-96hD.js";import{n as t}from"./index-nC4rDq96.js";import{t as n}from"./jsx-runtime-DyZJNswf.js";var r=n();function i(){let{sport:n,code:i}=t.useParams();return(0,r.jsx)(e,{sport:n.toUpperCase(),code:i.toUpperCase()},`${n}${i}`)}export{i as component};
