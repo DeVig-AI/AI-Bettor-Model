@@ -1,0 +1,1 @@
+import{t as e}from"./research-CAp8ff80.js";var t=e;export{t as component};

@@ -53,7 +53,6 @@ export function TeamSheet({
   if (!row) return null
   // the game's own page (live field, plays that moved the price, injuries); no link when the sheet is already on it
   const onGamePage = !!matchRoute({ to: '/game/$id', params: { id: row.id } })
-  const football = row.sport === 'NFL' || row.sport === 'CFB'
 
   const code = side === 'home' ? row.home : row.away
   const name = side === 'home' ? row.homeName : row.awayName
@@ -91,6 +90,18 @@ export function TeamSheet({
         <div className='relative flex shrink-0 flex-col items-center gap-2 overflow-hidden rounded-t-3xl px-5 pt-7 pb-5 text-white' style={{ background: color }}>
           <span aria-hidden='true' className='absolute inset-0 bg-linear-to-b from-transparent from-40% to-black/35' />
           <span aria-hidden='true' className='absolute top-2.5 h-1.5 w-10 rounded-full bg-white/45' />
+          {/* the game's page, up top so nobody has to scroll for it */}
+          {!onGamePage && (
+            <Link
+              to='/game/$id'
+              params={{ id: row.id }}
+              onClick={() => onOpenChange(false)}
+              className='absolute top-3.5 left-3.5 z-10 flex h-9 items-center gap-0.5 rounded-full bg-black/30 ps-3 pe-2 text-sm font-semibold text-white hover:bg-black/45'
+            >
+              Game page
+              <ChevronRight className='size-4' aria-hidden='true' />
+            </Link>
+          )}
           <TeamLogo sport={row.sport} code={code} id={id} color={color} px={256} className='relative size-24 text-3xl' />
           <div className='relative text-center'>
             <SheetTitle className='font-display text-[28px] leading-none font-black text-white'>{name || code}</SheetTitle>
@@ -155,22 +166,6 @@ export function TeamSheet({
             </button>
           )}
 
-          {!onGamePage && (
-            <Link
-              to='/game/$id'
-              params={{ id: row.id }}
-              onClick={() => onOpenChange(false)}
-              className='flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-muted px-4 py-2.5 hover:bg-muted/70'
-            >
-              <span className='min-w-0'>
-                <span className='block text-[15px] font-semibold'>{row.away} at {row.home} game page</span>
-                <span className='block text-sm text-muted-foreground'>
-                  {football && row.state !== 'pre' ? 'The drive play by play and the plays that moved the price' : 'Score, prices and injuries'}
-                </span>
-              </span>
-              <ChevronRight className='size-5 shrink-0 text-muted-foreground' aria-hidden='true' />
-            </Link>
-          )}
         </div>
       </SheetContent>
     </Sheet>
