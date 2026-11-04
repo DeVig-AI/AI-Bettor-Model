@@ -16,11 +16,14 @@ export type LabCheck = {
 export type LabGame = {
   game_id: string; kickoff: string; date: string; home: string; away: string
   home_name?: string; away_name?: string; home_wp: number; home_line?: number | null
+  neutral?: boolean; parts?: { m: number } // CBB v1: m = home rating minus away rating, in points
 }
 export type LabFile = {
   generated_at: string; sport: string; data_from?: string; data_through?: string
   candidate: { id: string; name: string; market: string; search?: { effect: number; games: number; t: number; round: number } }
   check: LabCheck | null
+  finals_used?: number
+  win_chance_fit?: { intercept: number; per_point: number; fit_seasons?: string } // CFB: chance from the model's margin
   games: LabGame[]
 }
 
@@ -52,7 +55,11 @@ export function useLab() {
 // NHL v1 (tools/nhl_model_live.py, nhl/NHL_MODEL_V1_PREREG.md; the Lab's NHL model is its challenger) and CBB v1
 // (tools/cbb_model_live.py, cbb/CBB_MODEL_V1_PREREG.md; champion of CBB.ml in CHAMPION_CHALLENGER_V2_PREREG.md)
 export const DEVIG_FILE_SPORTS = ['NHL', 'CBB'] as const
-export type DevigFile = { generated_at: string; sport: string; model: { id: string; name: string }; games: LabGame[] }
+export type DevigFile = {
+  generated_at: string; sport: string; data_through?: string; finals_used?: number
+  model: { id: string; name: string; weights?: { home: number; m: number }; win_chance?: { a: number; b: number } }
+  games: LabGame[]
+}
 
 export function useDevigFiles() {
   return useQuery({

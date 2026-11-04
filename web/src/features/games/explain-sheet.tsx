@@ -282,7 +282,7 @@ export function PickBody({ row, side, level, record }: { row: GameRow; side: str
   )
 }
 
-function FactorList({ row, fs }: { row: GameRow; fs: Factor[] }) {
+export function FactorList({ row, fs }: { row: GameRow; fs: Factor[] }) {
   return (
     <div>
       <h3 className='mb-2 text-sm font-semibold text-muted-foreground'>What the model looked at</h3>
@@ -416,7 +416,7 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
   )
 }
 
-function Box({ label, value, sub, amber }: { label: string; value: string; sub?: string; amber?: boolean }) {
+export function Box({ label, value, sub, amber }: { label: string; value: string; sub?: string; amber?: boolean }) {
   return (
     <div className='rounded-xl bg-muted px-2.5 py-2'>
       <div className='font-sans text-[11px] text-muted-foreground'>{label}</div>
