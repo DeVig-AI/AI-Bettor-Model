@@ -27,6 +27,8 @@ import { Route as AuthenticatedParlayRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPropsRouteImport } from './routes/_authenticated/props'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
+import { Route as AuthenticatedFriendsIndexRouteImport } from './routes/_authenticated/friends/index'
+import { Route as AuthenticatedFriendsCodeRouteImport } from './routes/_authenticated/friends/$code'
 import { Route as AuthenticatedGameIdRouteImport } from './routes/_authenticated/game/$id'
 import { Route as AuthenticatedResearchIndexRouteImport } from './routes/_authenticated/research/index'
 import { Route as AuthenticatedResearchTeamSportCodeRouteImport } from './routes/_authenticated/research/team/$sport/$code'
@@ -122,6 +124,18 @@ const AuthenticatedTrackRecordRoute =
     path: '/track-record',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedFriendsIndexRoute =
+  AuthenticatedFriendsIndexRouteImport.update({
+    id: '/friends/',
+    path: '/friends/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedFriendsCodeRoute =
+  AuthenticatedFriendsCodeRouteImport.update({
+    id: '/friends/$code',
+    path: '/friends/$code',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedGameIdRoute = AuthenticatedGameIdRouteImport.update({
   id: '/game/$id',
   path: '/game/$id',
@@ -164,7 +178,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
+  '/friends/$code': typeof AuthenticatedFriendsCodeRoute
   '/game/$id': typeof AuthenticatedGameIdRoute
+  '/friends/': typeof AuthenticatedFriendsIndexRoute
   '/research/': typeof AuthenticatedResearchIndexRoute
   '/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
   '/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
@@ -187,7 +203,9 @@ export interface FileRoutesByTo {
   '/props': typeof AuthenticatedPropsRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/': typeof AuthenticatedIndexRoute
+  '/friends/$code': typeof AuthenticatedFriendsCodeRoute
   '/game/$id': typeof AuthenticatedGameIdRoute
+  '/friends': typeof AuthenticatedFriendsIndexRoute
   '/research': typeof AuthenticatedResearchIndexRoute
   '/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
   '/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
@@ -212,7 +230,9 @@ export interface FileRoutesById {
   '/_authenticated/props': typeof AuthenticatedPropsRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/friends/$code': typeof AuthenticatedFriendsCodeRoute
   '/_authenticated/game/$id': typeof AuthenticatedGameIdRoute
+  '/_authenticated/friends/': typeof AuthenticatedFriendsIndexRoute
   '/_authenticated/research/': typeof AuthenticatedResearchIndexRoute
   '/_authenticated/research/team/$sport/$code': typeof AuthenticatedResearchTeamSportCodeRoute
   '/_authenticated/research/player/$sport/$team/$id': typeof AuthenticatedResearchPlayerSportTeamIdRoute
@@ -237,7 +257,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/props'
     | '/track-record'
+    | '/friends/$code'
     | '/game/$id'
+    | '/friends/'
     | '/research/'
     | '/research/team/$sport/$code'
     | '/research/player/$sport/$team/$id'
@@ -260,7 +282,9 @@ export interface FileRouteTypes {
     | '/props'
     | '/track-record'
     | '/'
+    | '/friends/$code'
     | '/game/$id'
+    | '/friends'
     | '/research'
     | '/research/team/$sport/$code'
     | '/research/player/$sport/$team/$id'
@@ -284,7 +308,9 @@ export interface FileRouteTypes {
     | '/_authenticated/props'
     | '/_authenticated/track-record'
     | '/_authenticated/'
+    | '/_authenticated/friends/$code'
     | '/_authenticated/game/$id'
+    | '/_authenticated/friends/'
     | '/_authenticated/research/'
     | '/_authenticated/research/team/$sport/$code'
     | '/_authenticated/research/player/$sport/$team/$id'
@@ -427,6 +453,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/friends/': {
+      id: '/_authenticated/friends/'
+      path: '/friends'
+      fullPath: '/friends/'
+      preLoaderRoute: typeof AuthenticatedFriendsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/friends/$code': {
+      id: '/_authenticated/friends/$code'
+      path: '/friends/$code'
+      fullPath: '/friends/$code'
+      preLoaderRoute: typeof AuthenticatedFriendsCodeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/game/$id': {
       id: '/_authenticated/game/$id'
       path: '/game/$id'
@@ -471,7 +511,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPropsRoute: typeof AuthenticatedPropsRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedFriendsCodeRoute: typeof AuthenticatedFriendsCodeRoute
   AuthenticatedGameIdRoute: typeof AuthenticatedGameIdRoute
+  AuthenticatedFriendsIndexRoute: typeof AuthenticatedFriendsIndexRoute
   AuthenticatedResearchIndexRoute: typeof AuthenticatedResearchIndexRoute
   AuthenticatedResearchTeamSportCodeRoute: typeof AuthenticatedResearchTeamSportCodeRoute
   AuthenticatedResearchPlayerSportTeamIdRoute: typeof AuthenticatedResearchPlayerSportTeamIdRoute
@@ -490,7 +532,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPropsRoute: AuthenticatedPropsRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedFriendsCodeRoute: AuthenticatedFriendsCodeRoute,
   AuthenticatedGameIdRoute: AuthenticatedGameIdRoute,
+  AuthenticatedFriendsIndexRoute: AuthenticatedFriendsIndexRoute,
   AuthenticatedResearchIndexRoute: AuthenticatedResearchIndexRoute,
   AuthenticatedResearchTeamSportCodeRoute:
     AuthenticatedResearchTeamSportCodeRoute,

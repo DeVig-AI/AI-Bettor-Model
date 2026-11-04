@@ -1,0 +1,1 @@
+import{n as e}from"./props--xv2J-lI.js";var t=e;export{t as component};

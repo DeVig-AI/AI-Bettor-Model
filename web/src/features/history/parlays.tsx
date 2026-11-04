@@ -6,13 +6,17 @@ import { decimal } from '@/lib/parlay'
 import { readLink } from '@/lib/kalshi-link'
 import { type TrackedLeg, type TrackedParlay, removeParlay } from '@/lib/track'
 import { cn } from '@/lib/utils'
+import { record } from '@/lib/friends'
 
-// Your saved parlays, graded leg by leg from what the app already has: a team to win from the score, a prop from
+// What a card can show at its foot: your own parlays have Remove; a friend's have none, or a Tail button
+export type Foot = { own: boolean; action?: (p: Graded) => ReactNode }
+
+// Your saved parlays (or a friend's, read-only), graded leg by leg from what the app already has: a team to win from the score, a prop from
 // Kalshi's own result for its market (a prop's under is the No side). Pushes drop out of the payout, like at a book.
 
 type St = 'won' | 'lost' | 'push' | 'live' | 'pending'
 type LegState = { st: St; note: string; chip: string }
-type Graded = TrackedParlay & { states: LegState[]; status: 'hit' | 'missed' | 'live' | 'upcoming'; payout: number }
+export type Graded = TrackedParlay & { states: LegState[]; status: 'hit' | 'missed' | 'live' | 'upcoming'; payout: number }
 
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
@@ -154,7 +158,7 @@ function LegList({ p }: { p: Graded }) {
   )
 }
 
-function OpenCard({ p }: { p: Graded }) {
+export function OpenCard({ p, foot, by }: { p: Graded; foot: Foot; by?: string }) {
   const n = p.legs.length
   const won = p.states.filter((s) => s.st === 'won').length
   const playing = p.states.filter((s) => s.st === 'live').length
@@ -164,6 +168,12 @@ function OpenCard({ p }: { p: Graded }) {
     <article className={cn('overflow-hidden rounded-[18px] bg-card', live && 'border border-devig/30')}>
       <div className='flex items-start justify-between gap-3 px-4 pt-3.5 pb-2.5'>
         <div className='flex min-w-0 flex-col gap-0.5'>
+          {by && (
+            <span className='flex min-w-0 items-center gap-1.5 pb-0.5 text-sm font-bold text-foreground'>
+              <span aria-hidden='true' className='grid size-5 shrink-0 place-items-center rounded-full bg-devig/15 text-[11px] font-black text-devig'>{(by.trim()[0] || '?').toUpperCase()}</span>
+              <span className='truncate'>{by}</span>
+            </span>
+          )}
           <span className={cn('flex items-center gap-1.5 text-xs font-bold', live ? 'text-[#b5ffd0]' : 'text-muted-foreground')}>
             {live && <span aria-hidden='true' className='size-1.5 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />}
             {live ? `${won} of ${n} hit${playing ? ` · ${playing} playing` : ''}` : `${n} ${n === 1 ? 'leg' : 'legs'} · saved ${p.at ? dayFmt.format(new Date(p.at)) : ''}`}
@@ -178,7 +188,9 @@ function OpenCard({ p }: { p: Graded }) {
         ))}
       </div>
       <LegList p={p} />
-      <div className='flex justify-end border-t px-2 py-1'><RemoveButton id={p.id} /></div>
+      {(foot.own || foot.action) && (
+        <div className='flex justify-end gap-1 border-t px-2 py-1'>{foot.action?.(p)}{foot.own && <RemoveButton id={p.id} />}</div>
+      )}
     </article>
   )
 }
@@ -195,7 +207,7 @@ function sankIt(p: Graded) {
   return `${l.desc} was the only leg that missed.`
 }
 
-function SettledCard({ p }: { p: Graded }) {
+function SettledCard({ p, foot }: { p: Graded; foot: Foot }) {
   const [open, setOpen] = useState(false)
   const stake = Number(p.stake) || 0
   const hit = p.status === 'hit'
@@ -232,8 +244,8 @@ function SettledCard({ p }: { p: Graded }) {
         <>
           <LegList p={p} />
           <div className='flex items-center justify-between border-t px-4 py-1'>
-            <span className='text-xs text-muted-foreground'>Odds when you saved it · {fmtAmerican(p.odds)}</span>
-            <RemoveButton id={p.id} />
+            <span className='text-xs text-muted-foreground'>Odds when {foot.own ? 'you' : 'they'} saved it · {fmtAmerican(p.odds)}</span>
+            {foot.own ? <RemoveButton id={p.id} /> : <span className='h-9' />}
           </div>
         </>
       )}
@@ -241,15 +253,41 @@ function SettledCard({ p }: { p: Graded }) {
   )
 }
 
-export function YourParlays({ list }: { list: TrackedParlay[] }) {
+const pct = (v: number) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(Math.round(v * 100))}%`
+
+// Hit, missed, net, and the return on what was put in, from settled parlays
+export function RecordTiles({ settled }: { settled: Graded[] }) {
+  const r = record(settled)
+  const tile = (label: string, value: string, tone?: string) => (
+    <div className='min-w-0 rounded-2xl bg-card px-2.5 py-2.5'>
+      <div className='text-xs text-muted-foreground'>{label}</div>
+      <div className={cn('truncate font-condensed text-xl font-bold tabular-nums', tone)}>{value}</div>
+    </div>
+  )
+  return (
+    <div className='flex flex-col gap-1.5'>
+      <div className='grid grid-cols-[minmax(0,.75fr)_minmax(0,.75fr)_minmax(0,1.4fr)_minmax(0,1fr)] gap-2'>
+        {tile('Hit', String(r.hit), 'text-good')}
+        {tile('Missed', String(r.missed), 'text-bad')}
+        {tile('Net', signed(r.net))}
+        {tile('Return', r.roi == null ? '–' : pct(r.roi), r.roi == null ? undefined : r.roi >= 0 ? 'text-good' : 'text-bad')}
+      </div>
+      <p className='px-1 text-xs text-muted-foreground tabular-nums'>
+        {money(r.staked)} put in across {settled.length} settled {settled.length === 1 ? 'parlay' : 'parlays'}, {r.net >= 0 ? `${money(r.net)} profit` : `${money(-r.net)} down`}.
+      </p>
+    </div>
+  )
+}
+
+export function YourParlays({ list, owner, action }: { list: TrackedParlay[]; owner?: string; action?: (p: Graded) => ReactNode }) {
+  const foot: Foot = { own: !owner, action }
   const graded = useGradedParlays(list)
   const settled = graded.filter((p) => p.status === 'hit' || p.status === 'missed')
   const live = graded.filter((p) => p.status === 'live')
   const upcoming = graded.filter((p) => p.status === 'upcoming')
-  const hit = settled.filter((p) => p.status === 'hit')
-  const net = settled.reduce((s, p) => s + (p.status === 'hit' ? p.payout - (Number(p.stake) || 0) : -(Number(p.stake) || 0)), 0)
 
   if (!list.length) {
+    if (owner) return <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>{owner} hasn&apos;t saved a parlay yet.</p>
     return (
       <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>
         No saved parlays yet. Build a slip on Parlay and tap Save to History: each leg is followed here and graded when its game ends.
@@ -258,27 +296,12 @@ export function YourParlays({ list }: { list: TrackedParlay[] }) {
   }
   return (
     <div className='flex flex-col gap-4'>
-      {settled.length > 0 && (
-        <div className='grid grid-cols-3 gap-2'>
-          <div className='rounded-2xl bg-card px-3 py-2.5'>
-            <div className='text-xs text-muted-foreground'>Hit</div>
-            <div className='font-condensed text-xl font-bold text-good'>{hit.length}</div>
-          </div>
-          <div className='rounded-2xl bg-card px-3 py-2.5'>
-            <div className='text-xs text-muted-foreground'>Missed</div>
-            <div className='font-condensed text-xl font-bold text-bad'>{settled.length - hit.length}</div>
-          </div>
-          <div className='rounded-2xl bg-card px-3 py-2.5'>
-            <div className='text-xs text-muted-foreground'>Net</div>
-            <div className='font-condensed text-xl font-bold tabular-nums'>{signed(net)}</div>
-          </div>
-        </div>
-      )}
-      {live.length > 0 && <Group title='Live now'>{live.map((p) => <OpenCard key={p.id} p={p} />)}</Group>}
-      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => <OpenCard key={p.id} p={p} />)}</Group>}
-      {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} />)}</Group>}
+      {settled.length > 0 && <RecordTiles settled={settled} />}
+      {live.length > 0 && <Group title='Live now'>{live.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
+      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
+      {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} foot={foot} />)}</Group>}
       <p className='px-1 text-xs text-muted-foreground'>
-        Teams are graded from the final score, props from Kalshi&apos;s result for that market. Saved on this device and your account. Tap a settled parlay for every leg.
+        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'} Tap a settled parlay for every leg.
       </p>
     </div>
   )
