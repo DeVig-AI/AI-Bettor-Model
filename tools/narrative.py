@@ -132,8 +132,10 @@ def lines(summary):
     return ln
 
 
-def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral):
-    """The rules for one game. Returns [{type, pick, line, score, why_for, why_opp}]. For NBA this is v0, unchanged."""
+def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral, read=None):
+    """The rules for one game. Returns [{type, pick, line, score, why_for, why_opp}]. For NBA this is v0, unchanged.
+    `read`, if given, is filled with the lean on the side and the total even when neither clears the bar for a pick."""
+    read = {} if read is None else read
     sc = {H: 0.0, A: 0.0}
     why = {H: [], A: []}
     sign = {}
@@ -219,6 +221,10 @@ def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral):
             why[fav].append("Never lay a price this big")
     diff = sc[H] - sc[A]
     side = H if diff > 0 else A
+    lo = A if side == H else H
+    read["side"] = dict(lean=ab[side] if diff else None, score=round(abs(diff), 2), capped=bool(cap[side] and side == fav),
+                        why_for=why[side] + [f"{ab[lo]}: {w}" for w in why[lo] if sign.get((lo, w), 0) < 0],
+                        why_opp=[f"{ab[lo]}: {w}" for w in why[lo] if sign.get((lo, w), 0) > 0])
     if cap[side] and side == fav:
         side = None
     if side and abs(diff) >= 2:
@@ -239,14 +245,21 @@ def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral):
         elif len(b2b) == 1:
             ts += 0.5
             tw.append(f"{ab[b2b[0]]} on tired legs (back-to-back)")
+    ts_pace = 0
     if enough and hist[H] and hist[A]:
         ex = sum(sum(x["pf"] + x["pa"] for x in hist[tm]) / len(hist[tm]) for tm in (H, A)) / 2
         if abs(ex - ln["to"]) >= S["gap"]:
-            ts += 1.5 if ex > ln["to"] else -1.5
+            ts_pace = 1.5 if ex > ln["to"] else -1.5
+            ts += ts_pace
             tw.append(f"Pace: their games average {ex:.1f} {u}, the total is {ln['to']:g}" if u == "goals" else f"Pace: their games average {ex:.0f} points, the total is {ln['to']:g}")
     if abs(ln["to"] - ln["to_o"]) >= S["tmove"]:
         ts += -1 if ln["to"] > ln["to_o"] else 1
         tw.append(f"{'Fade the inflated' if ln['to'] > ln['to_o'] else 'Buy low on the dropping'} total: {ln['to_o']:g} to {ln['to']:g}")
+    # each total reason's direction, for the read: pace is +-1.5, the move fade is -+1, back-to-backs always push over
+    tv = [(w, -1 if w.startswith("Fade the inflated") or (w.startswith("Pace") and ts_pace < 0) else 1) for w in tw]
+    tl = (1 if ts > 0 else -1) if ts else 0
+    read["total"] = dict(lean=("OVER" if ts > 0 else "UNDER") if ts else None, line=ln["to"], score=round(abs(ts), 2),
+                         why_for=[w for w, v in tv if v == tl], why_opp=[w for w, v in tv if v != tl])
     if abs(ts) >= 2:
         out.append(dict(type="total", pick="OVER" if ts > 0 else "UNDER", line=ln["to"], score=abs(ts), why_for=tw, why_opp=[]))
     return out
@@ -268,7 +281,10 @@ def run(sport):
     cache = load(S["cache"], {"games": {}})
     games = cache["games"]
     out_path = os.path.join(OUT, f"{sport.lower()}.json")
-    picks = {f"{p['id']}:{p['type']}": p for p in load(out_path, {"picks": []}).get("picks", [])}
+    prev = load(out_path, {"picks": []})
+    picks = {f"{p['id']}:{p['type']}": p for p in prev.get("picks", [])}
+    # what the model read on each game, pick or not, so the sheet can say "leans X" on a pass; kept 2 days
+    reads = {r["id"]: r for r in prev.get("reads", [])}
     today = dt.datetime.now(ZoneInfo("America/New_York")).date()
     done = [dt.date.fromisoformat(g["date"]) for g in games.values()]
     start = max(dt.date.fromisoformat(S["start"]), (max(done) - dt.timedelta(days=2)) if done else dt.date.fromisoformat(S["start"]))
@@ -307,15 +323,20 @@ def run(sport):
         H, A = str(h["team"]["id"]), str(a["team"]["id"])
         for k in [k for k in picks if k.startswith(e["id"] + ":")]:
             del picks[k]  # not started yet: the pick follows the current line, or drops if the rules no longer fire
+        ab = {H: h["team"]["abbreviation"], A: a["team"]["abbreviation"]}
+        rd = dict(id=e["id"], date=today.isoformat(), start=e["date"], game=f"{ab[A]} @ {ab[H]}", home=ab[H], away=ab[A],
+                  home_id=H, away_id=A, note=None)
+        reads[e["id"]] = rd
         if not all(len(hist[t]) >= max(1, S["min_games"]) for t in (H, A)) and sport != "NBA":
+            rd["note"] = f"Waits until both teams have played {S['min_games']} games"
             continue
         s = get(f"{base}summary?event={e['id']}")
         ln = lines(s)
         if not ln:
+            rd["note"] = "No line posted yet"
             continue
-        ab = {H: h["team"]["abbreviation"], A: a["team"]["abbreviation"]}
         inj = {str(i["team"]["id"]): {x["athlete"]["displayName"]: x.get("status") for x in i.get("injuries", [])} for i in s.get("injuries", [])}
-        for p in model(S, sport, today, H, A, ab, ln, inj, hist, ppts, bool(c.get("neutralSite"))):
+        for p in model(S, sport, today, H, A, ab, ln, inj, hist, ppts, bool(c.get("neutralSite")), rd):
             picks[f"{e['id']}:{p['type']}"] = dict(id=e["id"], date=today.isoformat(), start=e["date"], game=f"{ab[A]} @ {ab[H]}",
                                                     home=ab[H], away=ab[A], home_id=H, away_id=A, book=ln["book"],
                                                     result=None, final=None, **p)
@@ -331,7 +352,9 @@ def run(sport):
     with open(out_path, "w") as f:
         json.dump(dict(model="Narrative model", sport=sport, version="v0", kind=S["kind"], tested=bool(S["tests"]),
                        updated=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), live_since=LIVE_SINCE,
-                       tests=S["tests"], picks=allp), f, indent=1)
+                       tests=S["tests"], picks=allp,
+                       reads=sorted((r for r in reads.values() if r["date"] >= (today - dt.timedelta(days=2)).isoformat()),
+                                    key=lambda r: r["start"], reverse=True)), f, indent=1)
     graded = [p for p in allp if p["result"]]
     print(f"narrative {sport}: {len(allp)} picks, {sum(p['result'] == 'W' for p in graded)}-{sum(p['result'] == 'L' for p in graded)}, "
           f"{len(allp) - len(graded)} open; {len(games)} finals cached")
