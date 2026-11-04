@@ -122,6 +122,16 @@ test("picks: new locks in a followed sport, before the start, once", () => {
   assert.equal(pickAlerts(rec(), [DEC({kickoff_time: "2026-11-01T15:00:00Z"})], GAMES, NOW).length, 0);         // started
 });
 
+test("picks: college football and basketball picks ping too, when followed", () => {
+  const cbb = DEC({game_id: "cbb_1", sport: "CBB", away_team: "NKU", home_team: "SDAK", decision: {action: "ML", side: "SDAK", prob: 0.81, tier: "top50"}});
+  assert.deepEqual(cleanPrefs({picks: ["CFB", "CBB", "NHL"]}).picks, ["CFB", "CBB"]);                          // NHL has no picks
+  assert.equal(pickAlerts(rec(), [cbb], GAMES, NOW).length, 0);                                                   // CBB not followed
+  const out = pickAlerts(rec({prefs: {...rec().prefs, picks: ["CBB"]}}), [cbb], GAMES, NOW);
+  assert.equal(out.length, 1);
+  assert.equal(out[0].title, "DeVig pick: SDAK to beat NKU");
+  assert.equal(out[0].url, "/v2/");                                                                               // no ESPN game to link
+});
+
 const STATUS = {sport: "NFL", candidates: [{id: "a", name: "Rest edge", state: "failed"}, {id: "b", name: "QB form", state: "lab_pass"}],
   by_sport: {NBA: {candidates: [{id: "c", name: "Pace", state: "exam_pass"}]}}};
 

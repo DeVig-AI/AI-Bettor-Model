@@ -1,6 +1,7 @@
 import { type GameRow, fmtAmerican, fmtPct } from '@/lib/devig'
 import { cn } from '@/lib/utils'
 import { LogoMark, TeamLogo } from '@/components/team-logo'
+import { useGameClock } from '@/lib/game-clock'
 
 // A Matchup Plate: the game's two team colors meet in a diagonal cut placed at Kalshi's fair split (away on the left).
 // DeVig's own read is an amber slash at the model's chance; the gap between the cut and the slash is the gap between
@@ -17,8 +18,8 @@ function hex(c: string | undefined | null) {
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short' })
 
-function statusText(row: GameRow, showDay: boolean) {
-  if (row.state === 'in') return row.detail || 'Live'
+function statusText(row: GameRow, showDay: boolean, clock = row.detail) {
+  if (row.state === 'in') return clock || 'Live'
   if (row.state === 'post') return row.detail || 'Final'
   const d = new Date(row.kickoff)
   return (showDay ? `${dayFmt.format(d)} ` : '') + timeFmt.format(d)
@@ -45,10 +46,11 @@ export function Plate({
   const notch =
     isPick(row) && p?.prob != null ? (p.side === row.away ? p.prob : 1 - p.prob) : null
   const live = row.state === 'in'
+  const clock = useGameClock(row.id, row.detail, live)
   const done = row.state === 'post' && row.awayScore != null && row.homeScore != null
   const big = size === 'lg'
   const label =
-    `${row.awayName} at ${row.homeName}, ${statusText(row, showDay)}.` +
+    `${row.awayName} at ${row.homeName}, ${statusText(row, showDay, row.detail)}.` +
     (row.fairHome != null
       ? ` Fair chance: ${row.away} ${fmtPct(split)}, ${row.home} ${fmtPct(row.fairHome)}.`
       : ' No Kalshi price yet.') +
@@ -96,7 +98,7 @@ export function Plate({
             {live && (
               <span aria-hidden='true' className='size-1.5 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />
             )}
-            {statusText(row, showDay)}
+            {statusText(row, showDay, clock)}
           </span>
           <span>{row.sport}</span>
         </div>

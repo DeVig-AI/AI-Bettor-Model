@@ -44,8 +44,8 @@ export function useSummary(row: GameRow | null) {
       return ((await r.json()) as { wrap: Raw }).wrap
     },
     enabled: on,
-    staleTime: row?.state === 'post' ? 30 * 6e4 : 6e4,
-    refetchInterval: row?.state === 'in' ? 6e4 : false,
+    staleTime: row?.state === 'post' ? 30 * 6e4 : 12e3,
+    refetchInterval: row?.state === 'in' ? 15e3 : false,
   })
 }
 

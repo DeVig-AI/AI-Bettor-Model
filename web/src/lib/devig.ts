@@ -1,6 +1,7 @@
 // DeVig data layer for v2. Reads the same public export files the classic app reads (docs/repo-data.js), which the
 // GitHub Actions bots commit to the repo, and joins them into one row per game for the Games board.
 import { useMemo } from 'react'
+import { parse as parseClock } from './game-clock'
 import { useQuery } from '@tanstack/react-query'
 
 const RAW = 'https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/'
@@ -254,7 +255,7 @@ function nearNow(games: GameLine[], now = Date.now()) {
 const anyOn = (games: GameLine[], scores?: Record<string, LiveScore>, now = Date.now()) =>
   Object.values(scores ?? {}).some((g) => g.state === 'in') ||
   nearNow(games, now).some((g) => Date.parse(g.kickoff) <= now && !(scores?.[`${g.sport}|${g.espn_id}`]?.state === 'post'))
-export const SCORE_EVERY = 15e3 // ESPN through /api/live (cached 15s on the server), only while a game is on
+export const SCORE_EVERY = 5e3 // ESPN through /api/live (cached 5s on the server), only while a game is on
 const PRICE_EVERY = 2 * 60e3 // Kalshi through /api/prices
 
 async function loadPrices(games: GameLine[]): Promise<Fresh['prices']> {
@@ -287,9 +288,32 @@ async function loadScores(games: GameLine[]): Promise<Fresh['scores']> {
   )
   const scores: Fresh['scores'] = {}
   for (const r of res)
-    if (r.status === 'fulfilled') for (const g of r.value.games) scores[`${r.value.sport}|${g.id}`] = g
+    if (r.status === 'fulfilled')
+      for (const g of r.value.games) {
+        const k = `${r.value.sport}|${g.id}`
+        const was = lastScores.get(k)
+        scores[k] = was && Date.now() - was.at < 60e3 ? newer(was.g, g) : g
+        if (scores[k] === g) lastScores.set(k, { g, at: Date.now() })
+      }
   if (!Object.keys(scores).length && sports.length) throw new Error('ESPN did not answer')
   return scores
+}
+
+// ESPN answers come through more than one server copy, and one can be a few seconds behind another: never let a
+// game go backwards (a lower total score, or a later clock time in the same period, while it's on). After a minute
+// the new answer wins anyway, so a real score correction still shows.
+const lastScores = new Map<string, { g: LiveScore; at: number }>()
+const STATE_RANK = { pre: 0, in: 1, post: 2 }
+function newer(old: LiveScore | undefined, g: LiveScore): LiveScore {
+  if (!old) return g
+  if (STATE_RANK[g.state] !== STATE_RANK[old.state]) return STATE_RANK[g.state] > STATE_RANK[old.state] ? g : old
+  const tot = (x: LiveScore) => (x.away_score ?? 0) + (x.home_score ?? 0)
+  if (tot(g) !== tot(old)) return tot(g) > tot(old) ? g : old
+  if (g.state === 'in') {
+    const a = parseClock(old.detail), b = parseClock(g.detail)
+    if (a && b && a.rest === b.rest && b.secs > a.secs) return old
+  }
+  return g
 }
 
 function buildRows(
@@ -499,7 +523,7 @@ export function useGames() {
     refetchInterval: PRICE_EVERY,
     retry: 1,
   })
-  // scores every 15 seconds while any game is on; every 2 minutes otherwise (to notice a kickoff)
+  // scores every 5 seconds while any game is on; every 2 minutes otherwise (to notice a kickoff)
   const scores = useQuery({
     queryKey: ['fresh_scores'],
     queryFn: () => loadScores(gameLines.data?.games ?? []),

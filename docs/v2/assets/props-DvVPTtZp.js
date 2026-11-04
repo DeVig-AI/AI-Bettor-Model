@@ -1,1 +1,0 @@
-import{n as e}from"./props-BnTo6k6z.js";var t=e;export{t as component};

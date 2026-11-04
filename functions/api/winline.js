@@ -3,7 +3,7 @@
 // a spread, a total, a player prop) as [[unix, chance]] (bid/ask midpoint, at
 // most 150 points; &fine=1: 360, every minute of a game), plus the latest bid and ask. Display only. Answers are kept for a minute so viewers share them.
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
-const TTL = 60, MAX_POINTS = 150, FINE_POINTS = 360, WIDE = 0.25;
+const TTL = 10, MAX_POINTS = 150, FINE_POINTS = 360, WIDE = 0.25;
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -51,7 +51,7 @@ export async function handle(request, fetcher = fetch) {
   const max = q.get("fine") === "1" ? FINE_POINTS : MAX_POINTS;   // the 3D field matches plays to the minute
   const key = ticker + "|" + start + "|" + max;
   const hit = mem.get(key);
-  if (hit && Date.now() - hit.at < TTL * 1000) return json(hit.data, 200, 30);
+  if (hit && Date.now() - hit.at < TTL * 1000) return json(hit.data, 200, 8);
   try {
     const url = `${KALSHI}/series/${m[1]}/markets/${encodeURIComponent(ticker)}/candlesticks?start_ts=${start}&end_ts=${now}&period_interval=1`;
     const r = await fetcher(url, {headers: {accept: "application/json"}, cf: {cacheTtl: TTL, cacheEverything: true}});
@@ -59,7 +59,7 @@ export async function handle(request, fetcher = fetch) {
     const data = {ticker, ...points((await r.json()).candlesticks, max)};
     mem.set(key, {at: Date.now(), data});
     if (mem.size > 80) mem.delete(mem.keys().next().value);
-    return json(data, 200, 30);
+    return json(data, 200, 8);
   } catch (e) {
     return json({error: "prices unavailable"}, 502);
   }

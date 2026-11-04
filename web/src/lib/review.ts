@@ -127,7 +127,7 @@ export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame |
           return ((await r.json()) as { games: ScoreGame[] }).games
         },
         staleTime: 10e3,
-        // every 15 seconds while one of the day's games is on, otherwise once a minute
+        // every 5 seconds while one of the day's games is on, otherwise once a minute
         refetchInterval: (q: { state: { data?: ScoreGame[] } }) =>
           q.state.data?.some((g) => g.state === 'in' || (g.state === 'pre' && Date.parse(g.kickoff) <= Date.now())) ? SCORE_EVERY : 6e4,
       }

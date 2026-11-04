@@ -23,7 +23,7 @@ const ALIASES = {
   mlb: {AZ: "ARI", CWS: "CHW", KCR: "KC", SDP: "SD", SFG: "SF", TBR: "TB", WAS: "WSH", OAK: "ATH", ANA: "LAA"},
   nba: {GS: "GSW", NO: "NOP", NY: "NYK", SA: "SAS", UTAH: "UTA", WSH: "WAS", PHO: "PHX", BRK: "BKN", CHO: "CHA"},
 };
-const SCORE_TTL = 15, BOX_TTL = 25, SCHED_TTL = 1800;          // seconds
+const SCORE_TTL = 5, BOX_TTL = 6, SCHED_TTL = 1800;          // seconds
 // each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
 export const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball"};
 const mem = new Map();
@@ -474,7 +474,7 @@ export async function handle(request, fetcher = fetch) {
       const body = {sport, event, at: new Date().toISOString(), players: kind === "hoops" ? nbaBox(d) : kind === "football" ? nflBox(d) : {}};
       if (q.get("game") === "1") body.game = GAME[kind](d, teamCode(sport));
       if (q.get("wrap") === "1") body.wrap = slimSummary(d);
-      return json(body, 200, 10);
+      return json(body, 200, 4);
     }
     const team = q.get("schedule");
     if (team != null) {
@@ -486,7 +486,7 @@ export async function handle(request, fetcher = fetch) {
     if (date != null && !/^20\d{6}$/.test(date)) return json({error: "bad date"}, 400);
     const qs = [QUERY[sport] ? QUERY[sport].slice(1) : "", date ? `dates=${date}` : ""].filter(Boolean).join("&");
     const d = await cachedJson(`${ESPN}${SPORTS[sport]}/scoreboard${qs ? "?" + qs : ""}`, date ? 60 : SCORE_TTL, fetcher);
-    return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, date ? 30 : 10);
+    return json({sport, at: new Date().toISOString(), games: scoreboard(d, sport)}, 200, date ? 30 : 4);
   } catch (e) {
     return json({error: "scores unavailable"}, 502);
   }
