@@ -3,19 +3,32 @@ import { ChevronDown } from 'lucide-react'
 import { type GameRow } from '@/lib/devig'
 import { type Level } from '@/lib/experience'
 import { espnCode } from '@/lib/logos'
-import { betLabel, narrativeFor, tally, useNarrative } from '@/lib/narrative'
+import { betLabel, narrativeFor, readFor, tally, useNarrative, type NarrativeLean } from '@/lib/narrative'
 import { cn } from '@/lib/utils'
 
 // The Narrative button at the bottom of a game's sheet: picks from a model that reads games the way the experts do
 // (tired legs, bounce-back spots, key players out, what the line says), with its reasons. Not proven, and never
-// DeVig's own pick. Only shows when the model has a pick on this game.
+// DeVig's own pick. On a game it doesn't pick, it still says which way it leans and why.
 const RESULT = { W: ['Won', 'bg-good/15 text-good'], L: ['Lost', 'bg-bad/15 text-bad'], P: ['Push', 'bg-muted text-muted-foreground'] } as const
 
 export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) {
   const f = useNarrative(row.sport).data
   const [open, setOpen] = useState(false)
   const picks = narrativeFor(f, row, espnCode)
-  if (!f || !picks.length) return null
+  const read = readFor(f, row, espnCode)
+  if (!f || (!picks.length && !read)) return null
+  const hasSide = picks.some((p) => p.type === 'side')
+  const hasTotal = picks.some((p) => p.type === 'total')
+  // leans that didn't clear the bar, shown next to the picks that did
+  const leans = [
+    !hasSide && read?.side ? { key: 'side', l: read.side, text: read.side.lean ? `Leans ${read.side.lean}` : 'Even on the side' } : null,
+    !hasTotal && read?.total?.lean && level !== 'new'
+      ? { key: 'total', l: read.total, text: `Total leans ${read.total.lean === 'OVER' ? 'Over' : 'Under'} ${read.total.line}` } : null,
+  ].filter((x): x is { key: string; l: NarrativeLean; text: string } => !!x)
+  const summary = picks.length ? picks.map((p) => betLabel(p, p.type === 'side' ? f.kind : 'spread')).join(' · ')
+    : read?.note ? 'No read yet'
+    : read?.side?.lean ? `Leans ${read.side.lean} · no pick` : 'No lean · no pick'
+
   const rec = tally(f.picks)
   const tw = f.tests.reduce((a, t) => a + t.w, 0)
   const tl = f.tests.reduce((a, t) => a + t.l, 0)
@@ -25,7 +38,7 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
       <button type='button' aria-expanded={open} onClick={() => setOpen(!open)}
         className='flex h-12 w-full items-center gap-2 px-4 text-start hover:bg-muted/50'>
         <span className='font-semibold'>Narrative</span>
-        <span className='truncate text-sm text-muted-foreground tabular-nums'>{picks.map(label).join(' · ')}</span>
+        <span className='truncate text-sm text-muted-foreground tabular-nums'>{summary}</span>
         <ChevronDown aria-hidden='true' className={cn('ms-auto size-4.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none', open && 'rotate-180')} />
       </button>
       {open && (
@@ -51,6 +64,32 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
                 </ul>
                 {level === 'numbers' && (
                   <p className='text-xs text-muted-foreground tabular-nums'>Reasons add up to {p.score.toFixed(1)}. It picks at 2.0 or more.</p>
+                )}
+              </div>
+            )
+          })}
+          {read?.note && !picks.length && <p className='text-sm'>{read.note}.</p>}
+          {!read?.note && leans.map(({ key, l, text }) => {
+            const reasons = level === 'new' ? l.why_for.slice(0, 2) : l.why_for
+            return (
+              <div key={key} className='flex flex-col gap-1.5'>
+                <div className='flex items-baseline justify-between gap-3'>
+                  <span className='font-condensed text-xl leading-tight font-bold tabular-nums'>{text}</span>
+                  <span className='shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>No pick</span>
+                </div>
+                <p className='text-xs text-muted-foreground'>
+                  {l.capped ? 'It won’t lay a number this big, so it passes.'
+                    : l.lean ? 'The reasons point this way, just not strongly enough to make it a pick.'
+                    : 'Nothing in this game pushes the experts either way.'}
+                </p>
+                {reasons.length > 0 && (
+                  <ul className='flex flex-col gap-1 text-sm'>
+                    {reasons.map((w) => <li key={w} className='flex gap-2'><span aria-hidden='true' className='text-good'>+</span><span>{w}</span></li>)}
+                    {level !== 'new' && (l.why_opp ?? []).map((w) => <li key={w} className='flex gap-2 text-muted-foreground'><span aria-hidden='true'>−</span><span>{w}</span></li>)}
+                  </ul>
+                )}
+                {level === 'numbers' && l.lean && (
+                  <p className='text-xs text-muted-foreground tabular-nums'>Reasons add up to {l.score.toFixed(1)}. It picks at 2.0 or more.</p>
                 )}
               </div>
             )

@@ -372,6 +372,11 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
           {p.bar != null && ` DeVig only picks when it's at least ${fmtPct(p.bar)} sure, so it sits this one out.`}
         </p>
       ) : (
+        <>
+        <p className='-mb-2 flex items-center gap-2 text-sm font-semibold'>
+          <span>DeVig leans {lean}</span>
+          <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>Not a pick</span>
+        </p>
         <div className='flex items-baseline justify-between gap-3'>
           <span className='font-display text-3xl font-black text-devig'>{side} {fmtPct(prob, level === 'numbers' ? 1 : 0)}</span>
           {mine && p.bar != null ? (
@@ -380,6 +385,7 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
             <span className='font-display text-2xl font-extrabold'>leans {lean}</span>
           )}
         </div>
+        </>
       )}
 
       {level !== 'new' && p.bar != null && short != null && (
@@ -412,7 +418,7 @@ export function PassBody({ row, side, level }: { row: GameRow; side: string; lev
         <p className='text-sm leading-relaxed text-muted-foreground'>
           Kalshi&apos;s price gives {sideName} {fmtPct(fairNow)}
           {Math.abs(fairNow - prob) < 0.01 ? ', about the same as the model.' : `; the model says ${fmtPct(prob)}.`}
-          {' '}A pass means DeVig has no call here, not that the game is a coin flip.
+          {' '}DeVig’s lean is {leanName}, just not by enough to make it a pick.
         </p>
       )}
     </div>
