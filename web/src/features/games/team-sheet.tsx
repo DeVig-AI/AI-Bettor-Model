@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/
 import { TeamLogo } from '@/components/team-logo'
 import { mlLeg } from '../parlay/legs'
 import { LevelPicker, PassBody, PickBody } from './explain-sheet'
-import { NoModelBody } from './model-why'
+import { CollegeCall, NoModelBody } from './model-why'
 import { isPick } from './plate'
 
 // What opens when someone taps a team's half of a plate (Games, a game's page, or a leg in the parlay): the team's
@@ -123,7 +123,14 @@ export function TeamSheet({
 
           <LevelPicker level={lv} onLevel={setLevel} />
 
-          {isPick(row) && p?.prob != null ? (
+          {/* college picks: before the start the model's own explanation is still here, so the pick sits above it */}
+          {(row.sport === 'CBB' || row.sport === 'CFB') && dvGame && row.state === 'pre' && (isPick(row) || p?.lean) ? (
+            <>
+              <CollegeCall row={row} side={code} level={lv} record={record} />
+              <NoModelBody row={row} side={side} level={lv} labGame={labGame} labFile={lab?.[row.sport]}
+                devigGame={dvGame} devigFile={devigFiles?.[row.sport]} />
+            </>
+          ) : isPick(row) && p?.prob != null ? (
             <PickBody row={row} side={code} level={lv} record={record} />
           ) : p?.lean && p.leanProb != null ? (
             <PassBody row={row} side={code} level={lv} />
