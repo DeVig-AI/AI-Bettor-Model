@@ -1,0 +1,1 @@
+import{t as e}from"./research-B63F_UI6.js";var t=e;export{t as component};
