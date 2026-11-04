@@ -323,7 +323,9 @@ def load_model2():
         cfg = json.loads(APP_MODEL.read_text())
     except (OSError, ValueError):
         return None, {}
-    if str(cfg.get("nfl_game_model")) != "2.0" or not MODEL2_LOG.exists():
+    # Model 2.0 forecasts are needed while it is the app's model, and for the games it picked in an earlier spell
+    # ("until" set when the app went back to Model 1.0): those keep the picks the app actually showed
+    if (str(cfg.get("nfl_game_model")) != "2.0" and not cfg.get("until")) or not MODEL2_LOG.exists():
         return cfg, {}
     out = {}
     for line in MODEL2_LOG.read_text().splitlines():
@@ -398,6 +400,7 @@ def main():
     wx_tot = load_wx_totals()
     m2_cfg, m2 = load_model2()
     m2_since = datetime.fromisoformat(str((m2_cfg or {}).get("since", "2999-01-01T00:00:00Z")).replace("Z", "+00:00"))
+    m2_until = datetime.fromisoformat(str((m2_cfg or {}).get("until") or "2999-01-01T00:00:00Z").replace("Z", "+00:00"))
     docs = []
     for gid, r in sorted(latest.items(), key=lambda kv: kv[1]["kickoff_time"]):
         kickoff = datetime.fromisoformat(str(r["kickoff_time"]).replace("Z", "+00:00"))
@@ -410,7 +413,7 @@ def main():
         wp = max(p_home, 1 - p_home)
         tier = "top25" if wp >= CONF_TOP25 else ("top50" if wp >= CONF_TOP50 else None)
         v1 = {"side": side, "prob": wp, "tier": tier, "action": "ML" if tier else "PASS", "locked_at": r["lock_timestamp_utc"]}
-        f2 = m2.get(gid) if kickoff >= m2_since else None
+        f2 = m2.get(gid) if m2_since <= kickoff < m2_until else None
         if f2 is not None:                       # the app's pick is Model 2.0's last forecast before kickoff
             p2 = float(f2["home_wp"])
             side = home if p2 >= 0.5 else away
