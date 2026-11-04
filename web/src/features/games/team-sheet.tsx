@@ -10,6 +10,7 @@ import { TeamLogo } from '@/components/team-logo'
 import { mlLeg } from '../parlay/legs'
 import { LevelPicker, PassBody, PickBody } from './explain-sheet'
 import { CollegeCall, NoModelBody } from './model-why'
+import { NarrativeButton } from './narrative'
 import { isPick } from './plate'
 
 // What opens when someone taps a team's half of a plate (Games, a game's page, or a leg in the parlay): the team's
@@ -166,6 +167,7 @@ export function TeamSheet({
             </button>
           )}
 
+          <NarrativeButton row={row} />
         </div>
       </SheetContent>
     </Sheet>
