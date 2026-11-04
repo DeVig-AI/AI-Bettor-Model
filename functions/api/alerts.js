@@ -7,7 +7,7 @@
 //                               price bots after each refresh (GitHub Actions); it looks at everyone's alerts and sends what's due
 //
 // What can ping:
-//   - New DeVig pick: a pick locks in a sport the person follows (NFL, NBA, MLB)
+//   - New DeVig pick: a pick locks in a sport the person follows (NFL, college football, NBA, college basketball, MLB)
 //   - Price target: "tell me when KC is +105 or better" on one game, before it starts (Kalshi's price now)
 //   - Big line move: a game with a favorite team or a ★ tracked game moves 5+ points on Kalshi within 6 hours, before
 //     the start
@@ -36,7 +36,7 @@ const RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/";
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const SITE = "https://devigai.pages.dev";
 const INDEX = "alerts:index";
-const PICK_SPORTS = ["NFL", "NBA", "MLB"];
+const PICK_SPORTS = ["NFL", "CFB", "NBA", "CBB", "MLB"];
 const MAX_DEVICES = 6, MAX_TARGETS = 20, MAX_PARLAYS = 10, MAX_LEGS = 12;
 const SAVE_GAP_MS = 1000, SAVES_PER_DAY = 200, SENDS_PER_DAY = 80, PER_RUN = 5;
 const LIVE_SPORTS = ["NFL", "CFB", "NBA", "WNBA", "CBB", "NHL"], MAX_LIVE_GAMES = 12, LIVE_TTL = 15, RUN_GAP_KEYED_S = 25;
@@ -122,7 +122,7 @@ async function raw(path, fetcher, now) {
 
 async function boards(fetcher, now) {
   const out = [];
-  for (const s of ["nfl", "nba", "mlb"]) {
+  for (const s of PICK_SPORTS.map(x => x.toLowerCase())) {
     try {
       const d = await raw(`${s}/lineboard_export.json`, fetcher, now);
       for (const x of d.docs || []) if (x.collection === "decisions" && x.data) out.push(x.data);

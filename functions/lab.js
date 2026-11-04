@@ -30,7 +30,7 @@ export async function onRequest(context) {
 }
 
 const LOGO = '<svg class="dv-logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#16171B"/>' +
-  '<path d="M28 27 L49 75 L68 36" fill="none" stroke="#E8A64E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>' +
+  '<path d="M28 27 L49 75 L68 36" fill="none" stroke="#ffb547" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>' +
   '<rect x="66" y="16" width="12" height="12" rx="2" fill="#9C7A55" transform="rotate(18 72 22)"/></svg>';
 
 export const PAGE = `<!doctype html>
@@ -40,23 +40,24 @@ export const PAGE = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#08090B">
+<meta name="theme-color" content="#0a0b0f">
 <link rel="apple-touch-icon" href="/icons/icon-180.png">
 <meta name="apple-mobile-web-app-title" content="DeVig Lab">
 <title>DeVig Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Design B ("minimal dark"), same tokens as tools/devig_source.html; layout follows the owner-approved Lab sketch */
+  /* The DeVig v2 app's dark theme (web/src/styles/theme.css): same colors, fonts and radii; layout follows the owner-approved Lab sketch */
   :root{
-    --bg:#08090B; --surface:#111214; --surface-2:#18191D;
-    --ink:#F4F4F5; --ink-soft:#A1A1AA; --ink-faint:#80808A;
-    --accent:#E8A64E; --accent-strong:#F2BD78; --accent-ink:#1A1206; --accent-wash:#2A2013;
-    --line:#1E1F24; --line-strong:#2C2D33;
-    --good:#6EDC9A; --bad:#F08A8A; --bad-wash:#2E1515; --bad-line:#5A2626;
-    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    --bg:#0a0b0f; --surface:#12151c; --surface-2:#1e222c;
+    --ink:#f2f4f8; --ink-soft:#9aa3b5; --ink-faint:#7c8597;
+    --accent:#ffb547; --accent-strong:#ffcf85; --accent-ink:#1a1206; --accent-wash:#241a0c;
+    --line:#262b37; --line-strong:#2e3442;
+    --good:#8ef0b4; --bad:#ffa3a3; --bad-wash:#2a1416; --bad-line:#5c2a2e;
+    --mono:'Barlow Semi Condensed','Barlow',ui-sans-serif,sans-serif;
+    --sans:'Barlow',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    --display:'Big Shoulders Display','Barlow Semi Condensed',ui-sans-serif,sans-serif;
     color-scheme:dark;
   }
   *{box-sizing:border-box}
@@ -138,7 +139,7 @@ export const PAGE = `<!doctype html>
   .tabs::-webkit-scrollbar{display:none}
   .tabs button{flex:1 1 0;min-width:0;background:none;border:1px solid var(--line);border-radius:999px;color:var(--ink-soft);font:inherit;font-size:13px;
     font-weight:600;padding:0 6px;min-height:44px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#1A1206}
+  .tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#1a1206}
   .tabs .ct{font-family:var(--mono);font-weight:500;opacity:.75;margin-left:3px}
   .tabs .nw{display:inline-block;min-width:18px;border-radius:9px;background:var(--good);color:#06150c;font-size:11px;padding:1px 5px;margin-left:5px}
   .filt{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
@@ -221,6 +222,38 @@ export const PAGE = `<!doctype html>
   .sealed .h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
   .sealed .h svg{width:20px;height:20px}
   .sealed p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5}
+  /* v2 type: display face for titles and big numbers, tabular figures everywhere numbers line up */
+  .mono,.nums b,.funnel b,.promo .rec,.exam b,.ival span,.wf .m,.step .tm,.scale,.gate .row .mono{font-variant-numeric:tabular-nums}
+  header h1,h2,.dtitle,.nums b,.funnel b,.promo .rec{font-family:var(--display);font-weight:800;letter-spacing:0}
+  header h1{font-size:30px;line-height:1}
+  h2{font-size:24px;line-height:1.05}
+  .dtitle{font-size:36px;line-height:1}
+  .nums b{font-size:44px}
+  .funnel b{font-size:28px}
+  .gates h2{font-size:20px}
+  .kicker,.gh .grp,.ig .k,.lesson .k{font-family:var(--mono);letter-spacing:.06em}
+  .chip{font-family:var(--mono);font-weight:600;font-size:12px;border-radius:999px;padding:2px 9px}
+  .tabs{gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);top:var(--hh,0px);margin:4px 0 2px;box-shadow:0 -6px 0 var(--bg)}
+  .tabs button{border:0;border-radius:10px;min-height:40px;font-weight:600}
+  .tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+  .sports{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.sports::-webkit-scrollbar{display:none}
+  .sports .chip{flex:none;border-radius:999px;font-family:var(--sans);font-size:15px;font-weight:600;padding:0 18px}
+  .sports .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .filt button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .card,.cand,.lesson,.gh,.runs{border-radius:16px}
+  .btn{border-radius:999px}
+  .headline{font-size:17px;font-weight:600;line-height:1.35;color:var(--ink)}
+  .pipcol{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+  .pipcol .pips{gap:6px}
+  .pipcol .pips svg{width:24px;height:24px}
+  .pipl{display:flex;gap:6px}
+  .pipl span{width:24px;text-align:center;font-size:9.5px;letter-spacing:-.2px;color:var(--ink-faint);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .funnel{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:4px 14px 16px}
+  .funnel .f{display:grid;grid-template-columns:44px 1fr;column-gap:12px;row-gap:5px;align-items:end}
+  .funnel .f b{grid-row:1 / span 2;font-size:26px;line-height:1;text-align:right}
+  .funnel .f span{font-size:13px;color:var(--ink-soft);line-height:1.1}
+  .funnel .f > i{height:6px;border-radius:3px;background:var(--surface-2);display:block}
+  .funnel .f > i > i{display:block;height:100%;border-radius:3px;background:var(--ink-faint)}
 </style>
 </head>
 <body>
@@ -271,10 +304,10 @@ export const PAGE = `<!doctype html>
 
   // ---- shapes --------------------------------------------------------------------------------------------------
   var PIP = {
-    pass: '<circle cx="10" cy="10" r="9" fill="#6EDC9A"/><path d="M6 10.5l2.6 2.5L14 7.5" fill="none" stroke="#08090B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
-    fail: '<circle cx="10" cy="10" r="8" fill="none" stroke="#F08A8A" stroke-width="2"/><path d="M7 7l6 6M13 7l-6 6" stroke="#F08A8A" stroke-width="2" stroke-linecap="round"/>',
-    run:  '<circle cx="10" cy="10" r="8" fill="none" stroke="#E8A64E" stroke-width="2" stroke-dasharray="3 3"/>',
-    wait: '<circle cx="10" cy="10" r="8" fill="none" stroke="#2C2D33" stroke-width="2"/>'
+    pass: '<circle cx="10" cy="10" r="9" fill="#8ef0b4"/><path d="M6 10.5l2.6 2.5L14 7.5" fill="none" stroke="#0a0b0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+    fail: '<circle cx="10" cy="10" r="8" fill="none" stroke="#ffa3a3" stroke-width="2"/><path d="M7 7l6 6M13 7l-6 6" stroke="#ffa3a3" stroke-width="2" stroke-linecap="round"/>',
+    run:  '<circle cx="10" cy="10" r="8" fill="none" stroke="#ffb547" stroke-width="2" stroke-dasharray="3 3"/>',
+    wait: '<circle cx="10" cy="10" r="8" fill="none" stroke="#2e3442" stroke-width="2"/>'
   };
   var PIPWORD = {pass: "passed", fail: "failed", run: "running", wait: "waiting"};
   function gateKinds(c){
@@ -323,17 +356,17 @@ export const PAGE = `<!doctype html>
   function bar(g, scale, w, h, big, passed){
     var x = function(v){ return (w / 2 + Math.max(-1, Math.min(1, v / scale)) * (w / 2 - 8)).toFixed(1); };
     var lo = g.ci ? g.ci[0] : g.effect, hi = g.ci ? g.ci[1] : g.effect, y = h / 2;
-    var col = lo > 0 ? "#E8A64E" : hi < 0 ? "#F08A8A" : "#80808A";
-    var dot = lo > 0 ? "#F2BD78" : hi < 0 ? "#F08A8A" : "#A1A1AA";
-    if (passed === true) col = dot = "#6EDC9A"; else if (passed === false) col = dot = "#F08A8A";   // a gate: its verdict
+    var col = lo > 0 ? "#ffb547" : hi < 0 ? "#ffa3a3" : "#7c8597";
+    var dot = lo > 0 ? "#ffcf85" : hi < 0 ? "#ffa3a3" : "#9aa3b5";
+    if (passed === true) col = dot = "#8ef0b4"; else if (passed === false) col = dot = "#ffa3a3";   // a gate: its verdict
     var op = passed === true || passed === false ? ' opacity="0.55"' : "";
     return '<line x1="0" y1="' + y + '" x2="' + w + '" y2="' + y + '" stroke="#1E1F24" stroke-width="2"/>' +
-      '<line x1="' + w / 2 + '" y1="0" x2="' + w / 2 + '" y2="' + h + '" stroke="#80808A"/>' +
+      '<line x1="' + w / 2 + '" y1="0" x2="' + w / 2 + '" y2="' + h + '" stroke="#7c8597"/>' +
       '<line x1="' + x(lo) + '" y1="' + y + '" x2="' + x(hi) + '" y2="' + y + '" stroke="' + col + '" stroke-width="' + (big ? 7 : passed != null ? 5 : 4) + '" stroke-linecap="round"' + op + '/>' +
       '<circle cx="' + x(g.effect) + '" cy="' + y + '" r="' + (big ? 8 : 5) + '" fill="' + dot + '"/>';
   }
   function effText(g, unit, d){
-    return sgn(g.effect, d) + (unit ? " " + esc(unit) : "") + (g.ci ? ' <span class="faint">[' + sgn(g.ci[0], d) + ", " + sgn(g.ci[1], d) + "]</span>" : "");
+    return sgn(g.effect, d) + (unit ? " " + esc(unit) : "") + (g.ci ? ' <span class="faint">· likely ' + sgn(g.ci[0], d) + " to " + sgn(g.ci[1], d) + "</span>" : "");
   }
 
   // ---- overview --------------------------------------------------------------------------------------------------
@@ -351,7 +384,7 @@ export const PAGE = `<!doctype html>
     if (!bad.length) return "";
     var total = g.workflows.filter(function(w){ return !w.disabled; }).length;
     return '<div class="alertwrap"><a class="alert" href="#activity" role="alert">' +
-      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F08A8A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18v.5"/></svg>' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffa3a3" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18v.5"/></svg>' +
       '<span class="grow"><b>' + esc(shortName(bad[0].name)) + (bad.length > 1 ? " and " + (bad.length - 1) + " more" : "") + ' failed</b>' +
       '<small>' + esc(ago(bad[0].last && bad[0].last.started_at)) + " · " + bad.length + " of " + total + ' workflows red</small></span>' +
       '<span class="go">View</span></a>' +
@@ -365,26 +398,34 @@ export const PAGE = `<!doctype html>
   function viewSummary(s){
     var c = s.counts || {}, by = counted(s);
     var segs = [
-      ["failed", n(by.failed) + n(by.exam_fail) + n(by.stopped), "#5A2626", "#F08A8A", "■"],
-      ["running", n(by.running), "#2C2D33", "#80808A", "■"],
-      ["lab pass", n(by.lab_pass) + n(by.exam_pass) + n(by.promoted), "#E8A64E", "#E8A64E", "■"],
-      ["queued", n(by.queued), "#1E1F24", "#80808A", "□"]
+      ["failed", n(by.failed) + n(by.exam_fail) + n(by.stopped), "#5c2a2e", "#ffa3a3", "■"],
+      ["running", n(by.running), "#2e3442", "#7c8597", "■"],
+      ["lab pass", n(by.lab_pass) + n(by.exam_pass) + n(by.promoted), "#ffb547", "#ffb547", "■"],
+      ["queued", n(by.queued), "#1E1F24", "#7c8597", "□"]
     ].filter(function(x){ return x[1] > 0; });
     var tried = typeof c.tried === "number" ? c.tried : (s.candidates || []).length;
     var examName = s.exam_name || "Sealed exam";
     var left = typeof c.exam_budget_left === "number" ? c.exam_budget_left : null;
     var tot = typeof c.exam_budget_total === "number" ? c.exam_budget_total : null;
+    var ep = n(c.exam_pass), lp = n(c.lab_pass), busy = n(by.running) + n(by.queued);
+    var head = ep ? ep + (ep === 1 ? " idea" : " ideas") + " passed the " + esc(examName.replace(/^Sealed /, "sealed ")) + "." :
+      lp ? lp + (lp === 1 ? " idea" : " ideas") + " passed the lab. Nothing has passed the " + esc(examName.replace(/^Sealed /, "sealed ")) + " yet." :
+      "Nothing has passed the lab yet.";
+    if (busy) head += " " + busy + " still testing.";
+    var a = s.attempts, att = a && typeof a.this_sport === "number" ? a.this_sport : tried;
     return '<section class="card pad sumcard" aria-label="Research summary">' +
       '<div class="row"><div class="kicker">Research' + (s.scope ? " · " + esc(s.scope) : "") + '</div>' +
       (s.constitution && s.constitution.version ? '<div class="mono faint" style="font-size:12px">Constitution ' + esc(s.constitution.version) + '</div>' : "") + '</div>' +
+      '<div class="headline">' + head + '</div>' +
       '<div class="nums"><div><b>' + tried + '</b><span>tried</span></div>' +
       '<div><b style="color:var(--accent)">' + n(c.lab_pass) + '</b><span>passed lab</span></div>' +
       '<div><b>' + n(c.exam_pass) + '</b><span>passed exam</span></div></div>' +
       (segs.length ? '<div><div class="seg" role="img" aria-label="' + esc(segs.map(function(x){ return x[1] + " " + x[0]; }).join(", ")) + '">' +
-        segs.map(function(x){ return '<div style="flex-grow:' + x[1] + ";background:" + x[2] + (x[0] === "queued" ? ";border:1px dashed #2C2D33" : "") + '"></div>'; }).join("") +
+        segs.map(function(x){ return '<div style="flex-grow:' + x[1] + ";background:" + x[2] + (x[0] === "queued" ? ";border:1px dashed #2e3442" : "") + '"></div>'; }).join("") +
         '</div><div class="legend" aria-hidden="true">' + segs.map(function(x){ return '<span><span style="color:' + x[3] + '">' + x[4] + "</span> " + x[1] + " " + x[0] + "</span>"; }).join("") + '</div></div>' : "") +
       '<div class="exam"><span class="soft">' + esc(examName) + '</span><b>' + (left == null ? "—" : left + (tot == null ? "" : " of " + tot) + " left") + '</b></div>' +
-      '<div class="small">Bar to pass rises with every attempt (adjusted for ' + tried + ' tries).' + (s.note ? " " + esc(s.note) : "") +
+      '<div class="small">Every new try raises the bar, so a lucky result can’t slip through. This sport’s bar counts its ' + att + (att === 1 ? " try" : " tries") +
+        (a && typeof a.all_sports === "number" ? " (" + a.all_sports + " across all sports, shown only)" : "") + "." + (s.note ? " " + esc(s.note) : "") +
       ' <span class="faint">Lab status ' + esc(ago(s.updated_at)) + '.</span></div></section>';
   }
 
@@ -405,9 +446,12 @@ export const PAGE = `<!doctype html>
       bottom = '<div class="ival"><svg viewBox="0 0 120 16" aria-hidden="true">' + bar(c.pooled, scale, 120, 16) + '</svg>' +
         '<span' + (c.pooled.ci && c.pooled.ci[0] > 0 ? "" : ' class="soft"') + '>' + effText(c.pooled, unit, d) + '</span></div>';
     } else bottom = '<div class="small">No pooled result yet</div>';
+    var eras = (c.gates || []).slice(0, 3).map(function(g){ return String(g.name || "").replace(/^20/, "’"); });
+    while (eras.length < 3 && eras.length) eras.push("");
     return '<a class="cand' + (hi ? " hi" : "") + '" href="#c/' + encodeURIComponent(c.id || c.name) + '">' +
       '<div class="top"><div style="min-width:0"><div class="nm">' + esc(c.name) + '</div>' +
-      '<div class="chips"><span class="chip">' + marketName(c.market) + '</span>' + stateChip(c) + '</div></div>' + pips(c) + '</div>' +
+      '<div class="chips"><span class="chip">' + marketName(c.market) + '</span>' + stateChip(c) + '</div></div>' +
+      '<div class="pipcol">' + pips(c) + (eras.length ? '<div class="pipl" aria-hidden="true">' + eras.map(function(e){ return '<span>' + esc(e) + '</span>'; }).join("") + '</div>' : "") + '</div></div>' +
       bottom + '</a>';
   }
   var CF = {passed: ["lab_pass", "exam_pass", "promoted"], failed: ["failed", "exam_fail", "stopped"], waiting: ["running", "queued"]};
@@ -432,7 +476,7 @@ export const PAGE = `<!doctype html>
         Object.keys(by).map(function(k){ return by[k] + " " + k; }).join(", ") + '</button>';
     }
     return '<section class="stack" aria-labelledby="h-c"><div class="sechead"><h2 id="h-c">Candidates</h2>' +
-      (gnames.length ? '<div class="r">gates ' + esc(gnames.join(" · ")) + '</div>' : "") + '</div>' + filt +
+      (gnames.length ? '<div class="r">tested in 3 eras</div>' : "") + '</div>' + filt +
       shown.map(function(c){ return candCard(c, scale, unit); }).join("") + more + '</section>';
   }
   function clock(iso){
@@ -457,9 +501,11 @@ export const PAGE = `<!doctype html>
       (r.funnel && r.funnel.length ? "" : '<div class="sum">' + esc(r.summary) + '</div>') + '</div>' +
       (r.funnel && r.funnel.length ? '<div class="funnel" role="img" aria-label="' + esc(r.summary) + '">' +
         r.funnel.map(function(f, i){
-          return (i ? '<span class="ar" aria-hidden="true">→</span>' : "") + '<div class="f"><b' +
-            (i && f.count > 0 && i === r.funnel.length - 1 ? ' style="color:var(--accent)"' : "") + '>' +
-            esc(typeof f.count === "number" ? f.count.toLocaleString() : "—") + '</b><span>' + esc(f.label) + '</span></div>';
+          var top = typeof r.funnel[0].count === "number" && r.funnel[0].count > 0 ? r.funnel[0].count : 0;
+          var w = typeof f.count === "number" && top ? Math.max(f.count > 0 ? 3 : 0, Math.round(100 * f.count / top)) : 0;
+          return '<div class="f"><b' + (i && f.count > 0 && i >= r.funnel.length - 3 ? ' style="color:var(--accent)"' : "") + '>' +
+            esc(typeof f.count === "number" ? f.count.toLocaleString() : "—") + '</b><span>' + esc(f.label) + '</span>' +
+            '<i aria-hidden="true"><i style="width:' + w + '%"></i></i></div>';
         }).join("") + '</div>' : "");
     var list = (showAllSteps ? steps : steps.slice(0, SHOWN)).map(function(t){
       return '<a class="step" href="#c/' + encodeURIComponent(t.id) + '"><span class="tm">' + esc(clock(t.at)) + '</span>' +
@@ -494,13 +540,13 @@ export const PAGE = `<!doctype html>
     return '<section class="stack" aria-labelledby="h-l"><div class="sechead"><h2 id="h-l">Lessons</h2>' +
       '<div class="r" style="color:var(--accent);font-weight:600">Exploratory · not proof</div></div>' +
       '<div class="small" style="padding:0 4px">' + (newest ? "Newest " + esc(when(newest)) + " · " + esc(ago(newest)) : "No lessons yet") +
-      " · lab status " + esc(ago(s.updated_at)) + '</div>' + (les.length ? filt : "") +
+      '</div>' + (les.length ? filt : "") +
       '<div class="lessons" aria-label="Lessons, newest first">' + shown.map(function(l){
         var from = (l.candidates || []).map(function(id){ return '<a href="#c/' + encodeURIComponent(id) + '">' + esc(names[id] || id) + '</a>'; });
         if (!from.length && l.from) from = [esc(l.from)];          // search lessons: no candidate, the search's seasons
         return '<div class="lesson"><div class="k k-' + esc(l.kind) + '">' + (K[l.kind] || K.no_effect) + '</div><div class="t">' + esc(l.text) + '</div>' +
           '<div class="when"><span>' + (from.length ? "from " + from.join(", ") : "") + '</span><span>' + (isNew(l) ? '<span class="new">NEW</span> ' : "") +
-          (l.at ? esc(when(l.at)) + " · " + esc(ago(l.at)) : "time not recorded") + '</span></div></div>';
+          (l.at ? esc(when(l.at)) + " · " + esc(ago(l.at)) : "") + '</span></div></div>';
       }).join("") + (les.length && !shown.length ? '<div class="small">None in this group.</div>' : "") + '</div></section>';
   }
   function viewPromoted(s){
@@ -517,13 +563,13 @@ export const PAGE = `<!doctype html>
   }
 
   var GLYPH = {
-    success: '<circle cx="6" cy="6" r="5" fill="#6EDC9A"/>',
-    failed: '<path d="M2 2l8 8M10 2l-8 8" stroke="#F08A8A" stroke-width="2.4" stroke-linecap="round"/>',
-    running: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#E8A64E" stroke-width="2" stroke-dasharray="2.5 2"/>',
-    queued: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#80808A" stroke-width="1.5" stroke-dasharray="1.5 2"/>',
-    cancelled: '<path d="M2 6h8" stroke="#80808A" stroke-width="2.4" stroke-linecap="round"/>',
-    skipped: '<path d="M2 6h8" stroke="#80808A" stroke-width="2.4" stroke-linecap="round"/>',
-    none: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#2C2D33" stroke-width="1.5"/>'
+    success: '<circle cx="6" cy="6" r="5" fill="#8ef0b4"/>',
+    failed: '<path d="M2 2l8 8M10 2l-8 8" stroke="#ffa3a3" stroke-width="2.4" stroke-linecap="round"/>',
+    running: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#ffb547" stroke-width="2" stroke-dasharray="2.5 2"/>',
+    queued: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#7c8597" stroke-width="1.5" stroke-dasharray="1.5 2"/>',
+    cancelled: '<path d="M2 6h8" stroke="#7c8597" stroke-width="2.4" stroke-linecap="round"/>',
+    skipped: '<path d="M2 6h8" stroke="#7c8597" stroke-width="2.4" stroke-linecap="round"/>',
+    none: '<circle cx="6" cy="6" r="4.5" fill="none" stroke="#2e3442" stroke-width="1.5"/>'
   };
   var WORD = {success: "succeeded", failed: "failed", running: "running", queued: "queued", cancelled: "cancelled", skipped: "skipped", none: "no recent run"};
   function shortName(name){ return String(name || "").replace(/\\s*\\((?:[^)]*)\\)\\s*$/, ""); }
@@ -608,12 +654,6 @@ export const PAGE = `<!doctype html>
         '" data-sport="' + esc(x.key) + '">' + esc(x.name) + '</button>';
     }).join("") + '</div>';
   }
-  function viewAttempts(s){
-    var a = s.attempts;
-    if (!a || typeof a.all_sports !== "number") return "";
-    return '<div class="small faint">Correction counts this sport’s ' + n(a.this_sport) + ' attempt' + (a.this_sport === 1 ? "" : "s") +
-      ' · ' + a.all_sports + ' across all sports (reported only).</div>';
-  }
   function viewResearchBlock(r){
     var top = r && r.status, s = sportStatus(top);
     if (!r || (!s && r.error && !r.fetched_at))
@@ -622,7 +662,7 @@ export const PAGE = `<!doctype html>
       '<p>Candidates, gates and lessons show up here once the Research Lab writes research/status.json.</p></section>';
     var uc = underConstruction(top);
     return (r.stale ? '<div class="note">Couldn’t refresh the lab status (' + esc(r.error || "error") + ') — as of ' + esc(ago(r.fetched_at)) + '.</div>' : "") +
-      viewSports(top) + (uc ? viewUnderConstruction(uc) : viewSummary(s) + viewAttempts(s) + viewTabs(s, data.github));
+      viewSports(top) + (uc ? viewUnderConstruction(uc) : viewSummary(s) + viewTabs(s, data.github));
   }
   function viewTabs(s, g){
     var nNew = (s.lessons || []).filter(isNew).length;
@@ -683,7 +723,7 @@ export const PAGE = `<!doctype html>
         var mark = g.passed === true ? '<span style="color:var(--good)">✓</span> ' : g.passed === false ? '<span style="color:var(--bad)">✕</span> ' : '<span class="faint">◌</span> ';
         h += '<div class="gate"><div class="row"><b>' + mark + esc(g.name) + '</b><span class="mono">' +
           (typeof g.effect === "number" ? sgn(g.effect, d) + ' <span class="faint">' + (g.ci ? "[" + sgn(g.ci[0], d) + ", " + sgn(g.ci[1], d) + "]" : "") +
-            (g.games != null ? " · " + esc(g.games) + " g" : "") + '</span>' : '<span class="faint">not run yet</span>') + '</span></div>' +
+            (g.games != null ? " · " + esc(g.games) + " games" : "") + '</span>' : '<span class="faint">not run yet</span>') + '</span></div>' +
           (typeof g.effect === "number" ? '<svg viewBox="0 0 300 18" preserveAspectRatio="none" role="img" aria-label="' + esc(g.name + " " + sgn(g.effect, d)) + '">' + bar(g, scale, 300, 18, false, g.passed) + '</svg>' : "") + '</div>';
       });
       if (c.pooled && typeof c.pooled.effect === "number")
@@ -696,7 +736,7 @@ export const PAGE = `<!doctype html>
     if (c.pooled && typeof c.pooled.adj_p === "number"){
       var bar05 = typeof c.p_bar === "number" ? c.p_bar : 0.05;
       cks.push(check(c.pooled.adj_p <= bar05, (c.pooled.adj_p <= bar05 ? "Holds" : "Doesn’t hold") + " after " + (c.attempts != null ? c.attempts : "all") + " attempts",
-        "Adjusted p = " + c.pooled.adj_p.toPrecision(2) + " · bar " + bar05));
+        "Luck alone would show this " + pct(c.pooled.adj_p, 1) + " of the time, counting every try · must be under " + pct(bar05, 0) + " (p = " + c.pooled.adj_p.toPrecision(2) + ")"));
     }
     var done = gates.filter(function(g){ return typeof g.effect === "number"; });
     if (done.length){
@@ -705,19 +745,19 @@ export const PAGE = `<!doctype html>
     }
     if (typeof c.fade_ratio === "number"){
       var need = typeof c.fade_needed === "number" ? c.fade_needed : 0.5;
-      cks.push(check(c.fade_ratio >= need, c.fade_ratio >= need ? "Not fading" : "Fading", "Last gate is " + pct(c.fade_ratio, 0) + " of the first · needs " + pct(need, 0)));
+      cks.push(check(c.fade_ratio >= need, c.fade_ratio >= need ? "Not fading" : "Fading", "Newest era keeps " + pct(c.fade_ratio, 0) + " of the first era’s edge · needs " + pct(need, 0)));
     }
     if (c.kalshi){
       var k = c.kalshi;
       cks.push(check(null, "Picks at Kalshi price + fee", [k.picks != null ? k.picks + " picks" : "", k.win_rate != null ? "won " + pct(k.win_rate) : "",
-        k.break_even != null ? "needs " + pct(k.break_even) : "", k.roi != null ? sgn(k.roi * 100, 1) + "%" : "", "can’t pass alone"].filter(Boolean).join(" · ")));
+        k.break_even != null ? "break-even " + pct(k.break_even) : "", k.roi != null ? "return " + sgn(k.roi * 100, 1) + "%" : "", "for info, doesn’t decide a pass"].filter(Boolean).join(" · ")));
     }
     if ((c.rule_split || []).length)
       cks.push(check(null, "Rule-change split", c.rule_split.map(function(r){ return r.label + (typeof r.effect === "number" ? " " + sgn(r.effect, d) : ": " + (r.note || "—")); }).join(" · ")));
     if (cks.length) h += '<section class="card checks" aria-label="Checks">' + cks.join("") + '</section>';
     var ex = c.exam || {state: "not_taken"}, en = s.exam_name || "Sealed exam", left = s.counts && s.counts.exam_budget_left, tot = s.counts && s.counts.exam_budget_total;
     var budget = typeof left === "number" ? " " + left + (typeof tot === "number" ? " of " + tot : "") + " exams left." : "";
-    h += '<section class="sealed" aria-label="' + esc(en) + '"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' + esc(en) + '</div>' +
+    h += '<section class="sealed" aria-label="' + esc(en) + '"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa3b5" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' + esc(en) + '</div>' +
       '<p>' + (ex.state === "not_taken" ? "Not taken yet. Runs once; the result is final — no retakes." + budget :
         (ex.state === "passed" ? "Passed" : "Failed") + (typeof ex.effect === "number" ? ": " + sgn(ex.effect, d) + " " + esc(unit) + (ex.ci ? " [" + sgn(ex.ci[0], d) + ", " + sgn(ex.ci[1], d) + "]" : "") : "") +
           (ex.taken_at ? " · " + esc(ago(ex.taken_at)) : "") + ".") + (ex.note ? " " + esc(ex.note) : "") + '</p></section>';
@@ -736,6 +776,7 @@ export const PAGE = `<!doctype html>
     }
     var id = route();
     $("main").innerHTML = id ? viewDetail(id) : viewOverview();
+    var hd = document.querySelector("header"); if (hd) document.documentElement.style.setProperty("--hh", hd.offsetHeight + "px");
     if (!id && labTab === "lessons") markLessonsSeen();
   }
   function tick(){

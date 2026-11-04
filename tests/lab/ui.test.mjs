@@ -77,7 +77,7 @@ test("lab page on a phone", async (t) => {
       assert.equal(await pg.locator(".cand").count(), 4, "four shown before 'Show more'");
       assert.match(await pg.locator("#morecands").innerText(), /Show 2 more · 1 failed, 1 queued/);
       const first = pg.locator(".cand").first();
-      assert.match(await first.innerText(), /\+ QB adjustment[\s\S]*★ Lab pass[\s\S]*\+1\.4 pts \[\+0\.4, \+2\.4\]/);
+      assert.match(await first.innerText(), /\+ QB adjustment[\s\S]*★ Lab pass[\s\S]*\+1\.4 pts · likely \+0\.4 to \+2\.4/);
       assert.equal(await first.locator(".pips").getAttribute("aria-label"), "Gates: passed, passed, passed");
       const running = pg.locator(".cand").nth(1);
       assert.match(await running.innerText(), /Running · gate 2[\s\S]*Started 3 min ago on GitHub · about \d+ min left/);
@@ -92,7 +92,7 @@ test("lab page on a phone", async (t) => {
       assert.equal(await pg.locator("#pane-lessons").isVisible(), true);
       assert.match(await pg.locator(".lesson").first().innerText(), /Starting-QB[\s\S]*30 min ago/);
       assert.match(await pg.locator(".lesson").nth(1).innerText(), /Rest days[\s\S]*1 d ago|Rest days[\s\S]*26 h ago/);
-      assert.match(await pg.locator(".lesson").nth(2).innerText(), /from search · 2006–2016 only[\s\S]*time not recorded/);
+      assert.match(await pg.locator(".lesson").nth(2).innerText(), /from search · 2006–2016 only/);
       assert.match(await pg.locator("#pane-lessons").innerText(), /Newest [\s\S]*30 min ago/);
       await pg.locator('[data-lf="faded"]').click();
       assert.equal(await pg.locator(".lesson").count(), 1);
@@ -141,7 +141,7 @@ test("lab page on a phone", async (t) => {
       await pg.getByRole("tab", {name: "College football"}).click();
       assert.match(await pg.locator(".sumcard .kicker").innerText(), /Research · CFB/i);
       assert.deepEqual(await pg.locator(".nums b").allInnerTexts(), ["2", "0", "0"]);
-      assert.match(await pg.locator("main").innerText(), /2 attempts · 11 across all sports \(reported only\)/);
+      assert.match(await pg.locator("main").innerText(), /counts its 2 tries \(11 across all sports, shown only\)/);
       assert.equal(await pg.locator(".cand").count(), 2);
       assert.match(await pg.locator(".cand").first().innerText(), /Plain Elo/);
       const box = await pg.locator(".sports .chip").first().boundingBox();
@@ -165,8 +165,8 @@ test("lab page on a phone", async (t) => {
       assert.equal(await pg.locator(".gate").count(), 4);
       assert.match(await pg.locator(".scale").innerText(), /−4\s*0\s*\+4/);
       const checks = await pg.locator(".checks").innerText();
-      for (const re of [/Holds after 9 attempts[\s\S]*Adjusted p = 0.030 · bar 0.05/, /Positive in every gate[\s\S]*3 of 3/,
-                        /Not fading[\s\S]*69% of the first · needs 50%/, /412 picks · won 53.4% · needs 51.8% · \+1.9% · can’t pass alone/,
+      for (const re of [/Holds after 9 attempts[\s\S]*3\.0% of the time[\s\S]*under 5% \(p = 0\.030\)/, /Positive in every gate[\s\S]*3 of 3/,
+                        /Not fading[\s\S]*keeps 69% of the first era’s edge · needs 50%/, /412 picks · won 53.4% · break-even 51.8% · return \+1.9% · for info, doesn’t decide a pass/,
                         /Before 2021 \+1.6 · after 2021 \+1.1 · after 2024 kickoff rule: too few games/]) assert.match(checks, re);
       assert.match(await pg.locator(".sealed").innerText(), /Sealed 2025 exam[\s\S]*Not taken yet[\s\S]*3 of 3 exams left/);
       assert.equal(await pg.getByRole("link", {name: "View run on GitHub"}).getAttribute("href"), "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/77");

@@ -36,8 +36,8 @@ export function useFieldPlays(row: GameRow | null) {
       return ((await r.json()) as { game: Feed }).game
     },
     enabled: on,
-    staleTime: row?.state === 'post' ? 30 * 6e4 : 15e3,
-    refetchInterval: row?.state === 'in' ? 20e3 : false,
+    staleTime: row?.state === 'post' ? 30 * 6e4 : 5e3,
+    refetchInterval: row?.state === 'in' ? 6e3 : false,
   })
 }
 
@@ -52,8 +52,8 @@ export function usePriceLine(row: GameRow | null) {
       return ((await r.json()) as { points: PricePoint[] }).points ?? []
     },
     enabled: on,
-    staleTime: row?.state === 'post' ? 30 * 6e4 : 45e3,
-    refetchInterval: row?.state === 'in' ? 60e3 : false,
+    staleTime: row?.state === 'post' ? 30 * 6e4 : 8e3,
+    refetchInterval: row?.state === 'in' ? 10e3 : false,
   })
 }
 

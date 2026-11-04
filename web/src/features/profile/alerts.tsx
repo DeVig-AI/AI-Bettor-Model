@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 
 // Profile → Alerts: turn push alerts on for this device, and pick what pings.
 
-const PICK_SPORTS = ['NFL', 'NBA', 'MLB']
+const PICK_SPORTS = ['NFL', 'CFB', 'NBA', 'CBB', 'MLB']
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const pct = (p: number) => `${Math.round(p * 100)}%`
 const NO_LIVE: LivePrefs = { start: false, half: false, lead: false, plays: false, winner: false, final: false, legs: false }
@@ -118,20 +118,23 @@ export function Alerts({ joined }: { joined: boolean }) {
         </p>
       )}
       <div className={cn('overflow-hidden rounded-[18px] bg-card', busy && 'opacity-80')}>
-        <Row title='New DeVig picks' sub='When a pick locks, about an hour before the start.'>
-          <div className='flex shrink-0 gap-1.5' role='group' aria-label='Sports for pick alerts'>
+        {/* five sports don't fit beside the text on a phone, so the buttons go under it */}
+        <div className='border-b px-4 py-3'>
+          <p className='font-semibold'>New DeVig picks</p>
+          <p className='text-xs leading-relaxed text-muted-foreground'>When a pick locks: NFL and NBA about an hour before the start, college games 6 hours before.</p>
+          <div className='mt-2.5 flex flex-wrap gap-1.5' role='group' aria-label='Sports for pick alerts'>
             {PICK_SPORTS.map((s) => {
               const sel = data.prefs.picks.includes(s)
               return (
                 <button key={s} type='button' aria-pressed={sel} disabled={busy}
                   onClick={() => setPrefs({ picks: sel ? data.prefs.picks.filter((x) => x !== s) : [...data.prefs.picks, s] })}
-                  className={cn('h-8 rounded-full border px-2.5 text-xs font-bold', sel ? 'border-devig bg-devig/15 text-devig' : 'text-muted-foreground')}>
+                  className={cn('h-8 rounded-full border px-3 text-xs font-bold', sel ? 'border-devig bg-devig/15 text-devig' : 'text-muted-foreground')}>
                   {s}
                 </button>
               )
             })}
           </div>
-        </Row>
+        </div>
         <Row title='Big line moves' sub="Your favorite teams' games and ★ tracked games, when Kalshi's chance moves 5+ points within 6 hours before the start.">
           <Switch checked={data.prefs.moves} disabled={busy} onCheckedChange={(v) => setPrefs({ moves: v })} aria-label='Big line move alerts' className='mt-1' />
         </Row>
