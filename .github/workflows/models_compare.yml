@@ -43,6 +43,9 @@ jobs:
       - name: DeVig's CBB model v1, a challenger (tools/cbb_model_live.py -> live/devig/cbb.json; cbb/CBB_MODEL_V1_PREREG.md)
         continue-on-error: true   # the scoreboard runs without it
         run: python3 tools/cbb_model_live.py
+      - name: Narrative model v0, NBA (tools/narrative_nba.py -> live/narrative/; how the experts reason, not proven)
+        continue-on-error: true   # extra: never used for DeVig's own picks
+        run: python3 tools/narrative_nba.py
       - name: Read every model's pick, lock started games, grade finals, write the app's file
         run: python3 tools/models_compare.py
       - name: Champion / challenger review (CHAMPION_CHALLENGER_V1_PREREG.md)
@@ -67,7 +70,8 @@ jobs:
           for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json \
                    live/champions.json live/champions/MODEL_LOCKS.csv live/champions/DECISIONS.csv live/champions_export.json \
                    nba/lineboard_export.json cbb/lineboard_export.json cfb/lineboard_export.json cfb/cfb_v1_tiers.json \
-                   live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json; do
+                   live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json \
+                   live/narrative/nba.json live/narrative/games.json; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0
