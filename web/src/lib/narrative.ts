@@ -4,7 +4,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getJson } from './devig'
 
-export const NARRATIVE_SPORTS = ['NBA', 'NHL', 'NFL', 'CFB', 'CBB']
+export const NARRATIVE_SPORTS = ['NBA', 'NHL', 'NFL', 'CFB', 'CBB', 'MLB', 'WNBA']
 
 export type NarrativePick = {
   id: string; date: string; start: string; game: string; home: string; away: string; home_id?: string; away_id?: string

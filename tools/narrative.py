@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Narrative model: picks made the way the experts reason, not a statistical model. NBA, NHL, NFL, CFB, CBB.
+"""Narrative model: picks made the way the experts reason, not a statistical model. NBA, NHL, NFL, CFB, CBB, MLB, WNBA.
 
 The reasoning came from a year of expert free-pick shows: tired teams (back-to-backs, short weeks), bounce-back spots,
 zigzags, key players ruled out, struggling teams, what the line says compared with results so far, fading a big line
@@ -9,8 +9,9 @@ is 3 goals, in college football 21 points) and are new and untested. All of it i
 never uses it for its own picks.
 
 Each hourly run per sport: reads ESPN's public scoreboard and game summaries (no keys), keeps a small cache of finished
-games, makes picks for today's games that haven't started at the current ESPN line, freezes a pick once its game
-starts, and grades finals at the frozen line. Writes live/narrative/<sport>.json for the app.
+games, reads every game on the board (today's, plus the week ahead for football) and makes a pick where the reasons
+clear the bar, at the current ESPN line; freezes the read and pick once a game starts, and grades finals at the frozen
+line. Daily sports read tomorrow's games on game day, once tonight's results (tired legs, bounce-backs) are in. Writes live/narrative/<sport>.json for the app.
 ESPN's college data is never committed (Constitution E1): CFB and CBB caches live in .cache/narrative/ (Actions cache).
 """
 import datetime as dt
@@ -46,10 +47,19 @@ SPORTS = {
                 home=2.5, blow=21, cap=21, gap=7, move=2, tmove=3, b2b=False, zig=False, rest=True, min_games=3,
                 cache=os.path.join(PRIVATE, "cfb_games.json"), tests=[]),
     "CBB": dict(path="basketball/mens-college-basketball", q="&groups=50&limit=400", start="2026-11-02", kind="spread",
-                key=None, home=3, blow=15, cap=15, gap=6, move=2, tmove=3, b2b=True, zig=False, rest=False, min_games=3,
+                key=None, home=3, blow=15, cap=15, gap=6, move=2, tmove=3, b2b=True, zig=False, rest=False, min_games=1,
                 cache=os.path.join(PRIVATE, "cbb_games.json"), tests=[]),
+    # off-season now: they start reading when their seasons do
+    "MLB": dict(path="baseball/mlb", q="", start="2027-03-25", kind="ml", key=None, home=0.1, blow=5, cap=0.72, gap=1,
+                move=0.04, tmove=0.5, b2b=False, zig=False, rest=False, min_games=5,
+                cache=os.path.join(OUT, "mlb_games.json"), tests=[]),
+    "WNBA": dict(path="basketball/wnba", q="", start="2027-05-14", kind="spread", key="pts", home=2, blow=15, cap=12,
+                 gap=6, move=1.5, tmove=3, b2b=True, zig=True, rest=False, min_games=3,
+                 cache=os.path.join(OUT, "wnba_games.json"), tests=[]),
 }
-UNIT = {"NBA": "points", "NFL": "points", "CFB": "points", "CBB": "points", "NHL": "goals"}
+LOW = ("NHL", "MLB")  # low-scoring: a blowout is a few goals or runs
+UNIT = {"NBA": "points", "NFL": "points", "CFB": "points", "CBB": "points", "NHL": "goals", "MLB": "runs", "WNBA": "points"}
+WEEKLY = ("NFL", "CFB")  # read the whole week ahead; nothing is played in between
 
 
 def get(url, tries=3):
@@ -165,7 +175,7 @@ def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral, read=None)
             if last["ot"]:
                 r += ", after overtime"
                 v -= 0.5
-            if abs(last["pf"] - last["pa"]) >= S["blow"] + (2 if sport == "NHL" else 5):  # NBA: 20
+            if abs(last["pf"] - last["pa"]) >= S["blow"] + (2 if sport in LOW else 5):  # NBA: 20
                 r += " (last night was a blowout, so starters may have rested)"
                 v += 0.75
             add(tm, v, r)
@@ -251,7 +261,7 @@ def model(S, sport, day, H, A, ab, ln, injuries, hist, ppts, neutral, read=None)
         if abs(ex - ln["to"]) >= S["gap"]:
             ts_pace = 1.5 if ex > ln["to"] else -1.5
             ts += ts_pace
-            tw.append(f"Pace: their games average {ex:.1f} {u}, the total is {ln['to']:g}" if u == "goals" else f"Pace: their games average {ex:.0f} points, the total is {ln['to']:g}")
+            tw.append(f"Pace: their games average {ex:.1f} {u}, the total is {ln['to']:g}" if u != "points" else f"Pace: their games average {ex:.0f} points, the total is {ln['to']:g}")
     if abs(ln["to"] - ln["to_o"]) >= S["tmove"]:
         ts += -1 if ln["to"] > ln["to_o"] else 1
         tw.append(f"{'Fade the inflated' if ln['to'] > ln['to_o'] else 'Buy low on the dropping'} total: {ln['to_o']:g} to {ln['to']:g}")
@@ -301,8 +311,11 @@ def run(sport):
             pts = box(get(f"{base}summary?event={e['id']}"), S["key"]) if S["key"] else {}
             # key by ESPN team id (college codes aren't unique); the NBA's old cache keyed by code, both work the same
             games[e["id"]] = dict(date=d.isoformat(), H=str(h["team"]["id"]), A=str(a["team"]["id"]), hs=int(h["score"]),
-                                  as_=int(a["score"]), ot=c["status"].get("period", 4) > (3 if sport == "NHL" else 4), pts=pts)
+                                  as_=int(a["score"]), ot=c["status"].get("period", 4) > {"NHL": 3, "MLB": 9}.get(sport, 4), pts=pts)
         d += dt.timedelta(days=1)
+    ahead = [today + dt.timedelta(days=i) for i in range(1, 8 if sport in WEEKLY else 2)]
+    for d in ahead:
+        slates[d] = get(f"{base}scoreboard?dates={d:%Y%m%d}{S['q']}").get("events", [])
 
     hist, ppts = defaultdict(list), defaultdict(lambda: defaultdict(list))
     for g in sorted(games.values(), key=lambda g: g["date"]):
@@ -315,31 +328,40 @@ def run(sport):
             for n, v in pl.items():
                 ppts[tm][n].append(v)
 
-    for e in slates.get(today, []):
-        c = e["competitions"][0]
-        if c["status"]["type"]["state"] != "pre":
-            continue
-        h, a = teams(c)
-        H, A = str(h["team"]["id"]), str(a["team"]["id"])
-        for k in [k for k in picks if k.startswith(e["id"] + ":")]:
-            del picks[k]  # not started yet: the pick follows the current line, or drops if the rules no longer fire
-        ab = {H: h["team"]["abbreviation"], A: a["team"]["abbreviation"]}
-        rd = dict(id=e["id"], date=today.isoformat(), start=e["date"], game=f"{ab[A]} @ {ab[H]}", home=ab[H], away=ab[A],
-                  home_id=H, away_id=A, note=None)
-        reads[e["id"]] = rd
-        if not all(len(hist[t]) >= max(1, S["min_games"]) for t in (H, A)) and sport != "NBA":
-            rd["note"] = f"Waits until both teams have played {S['min_games']} games"
-            continue
-        s = get(f"{base}summary?event={e['id']}")
-        ln = lines(s)
-        if not ln:
-            rd["note"] = "No line posted yet"
-            continue
-        inj = {str(i["team"]["id"]): {x["athlete"]["displayName"]: x.get("status") for x in i.get("injuries", [])} for i in s.get("injuries", [])}
-        for p in model(S, sport, today, H, A, ab, ln, inj, hist, ppts, bool(c.get("neutralSite")), rd):
-            picks[f"{e['id']}:{p['type']}"] = dict(id=e["id"], date=today.isoformat(), start=e["date"], game=f"{ab[A]} @ {ab[H]}",
-                                                    home=ab[H], away=ab[A], home_id=H, away_id=A, book=ln["book"],
-                                                    result=None, final=None, **p)
+    for day in [today] + ahead:
+        for e in slates.get(day, []):
+            c = e["competitions"][0]
+            pre = c["status"]["type"]["state"] == "pre"
+            if not pre and (day != today or e["id"] in reads):
+                continue  # started: its read and pick are frozen (a game that started before it was read gets one read now)
+            h, a = teams(c)
+            H, A = str(h["team"]["id"]), str(a["team"]["id"])
+            if pre:
+                for k in [k for k in picks if k.startswith(e["id"] + ":")]:
+                    del picks[k]  # not started yet: the pick follows the current line, or drops if the rules no longer fire
+            ab = {H: h["team"]["abbreviation"], A: a["team"]["abbreviation"]}
+            rd = dict(id=e["id"], date=day.isoformat(), start=e["date"], game=f"{ab[A]} @ {ab[H]}", home=ab[H], away=ab[A],
+                      home_id=H, away_id=A, note=None)
+            reads[e["id"]] = rd
+            if day > today and sport not in WEEKLY:
+                rd["note"] = "The read comes on game day, once tonight's results are in"
+                continue
+            if not all(len(hist[t]) >= max(1, S["min_games"]) for t in (H, A)) and sport != "NBA":
+                rd["note"] = ("Waits until both teams have played a game" if S["min_games"] <= 1
+                              else f"Waits until both teams have played {S['min_games']} games")
+                continue
+            s = get(f"{base}summary?event={e['id']}")
+            ln = lines(s)
+            if not ln:
+                rd["note"] = "No line posted yet"
+                continue
+            inj = {str(i["team"]["id"]): {x["athlete"]["displayName"]: x.get("status") for x in i.get("injuries", [])}
+                   for i in s.get("injuries", [])}
+            for p in model(S, sport, day, H, A, ab, ln, inj, hist, ppts, bool(c.get("neutralSite")), rd):
+                if pre:
+                    picks[f"{e['id']}:{p['type']}"] = dict(id=e["id"], date=day.isoformat(), start=e["date"],
+                                                            game=f"{ab[A]} @ {ab[H]}", home=ab[H], away=ab[A], home_id=H,
+                                                            away_id=A, book=ln["book"], result=None, final=None, **p)
     for p in picks.values():
         g = games.get(p["id"])
         if g and p["result"] is None:

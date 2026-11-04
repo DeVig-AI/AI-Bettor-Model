@@ -86,7 +86,8 @@ jobs:
                    nba/lineboard_export.json cbb/lineboard_export.json cfb/lineboard_export.json cfb/cfb_v1_tiers.json \
                    live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json \
                    live/narrative/nba.json live/narrative/games.json live/narrative/nhl.json live/narrative/nhl_games.json \
-                   live/narrative/nfl.json live/narrative/nfl_games.json live/narrative/cfb.json live/narrative/cbb.json; do
+                   live/narrative/nfl.json live/narrative/nfl_games.json live/narrative/cfb.json live/narrative/cbb.json \
+                   live/narrative/mlb.json live/narrative/mlb_games.json live/narrative/wnba.json live/narrative/wnba_games.json; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0
