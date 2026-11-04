@@ -30,7 +30,8 @@ type Factor = { title: string; detail: string; favors: string | null; plain: str
 
 export function factors(row: GameRow, side: string): Factor[] {
   const inp = row.pick?.inputs
-  if (!inp) return []
+  // college picks carry no team stats, only the market's chance at the lock
+  if (!inp?.away || !inp?.home) return []
   const a: SideInputs = inp.away
   const h: SideInputs = inp.home
   const other = side === row.home ? row.away : row.home
@@ -160,7 +161,9 @@ export function PickBody({ row, side, level, record }: { row: GameRow; side: str
             side={side}
             prob={prob}
             level={level}
-            fallback={fs.length ? (
+            fallback={p.note && !fs.length ? (
+              <p className='text-[15px] leading-relaxed'>{p.note}</p>
+            ) : fs.length ? (
               <ul className='flex flex-col gap-3'>
                 {fs.map((f) => (
                   <li key={f.title} className='text-[15px] leading-relaxed'>
@@ -232,7 +235,7 @@ export function PickBody({ row, side, level, record }: { row: GameRow; side: str
 
       {level === 'numbers' && (
         <div className='flex flex-col gap-4 font-condensed tabular-nums'>
-          {p.inputs ? (
+          {p.inputs?.away && p.inputs?.home ? (
             <InputsTable row={row} />
           ) : (
             <div className='font-sans'>

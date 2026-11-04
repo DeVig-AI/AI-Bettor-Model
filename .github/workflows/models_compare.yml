@@ -48,6 +48,11 @@ jobs:
       - name: Champion / challenger review (CHAMPION_CHALLENGER_V1_PREREG.md)
         continue-on-error: true   # a review failure must not stop the scoreboard's own data from being saved
         run: python3 tools/champion_review.py
+      - name: DeVig's college picks (CHAMPION_CHALLENGER_V3_PREREG.md; tools/college_picks.py -> cbb/, cfb/lineboard_export.json)
+        continue-on-error: true   # the scoreboard runs without them
+        run: |
+          python3 tools/college_picks.py cfb-tiers   # once: CFB v1's tiers from 2021-24 (needs the cache); never rewritten
+          python3 tools/college_picks.py
       - name: Re-export the app's NBA games (a challenger on trial is locked up to an hour after DeVig's tracker)
         continue-on-error: true
         run: |
@@ -61,7 +66,8 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           for f in live/models/latest.json live/models/picks.jsonl live/models/results.jsonl live/models_export.json \
                    live/champions.json live/champions/MODEL_LOCKS.csv live/champions/DECISIONS.csv live/champions_export.json \
-                   nba/lineboard_export.json live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json; do
+                   nba/lineboard_export.json cbb/lineboard_export.json cfb/lineboard_export.json cfb/cfb_v1_tiers.json \
+                   live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0

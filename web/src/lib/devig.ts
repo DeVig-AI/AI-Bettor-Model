@@ -60,6 +60,7 @@ type Decision = {
     prob: number | null
     side: string | null
     tier: string | null
+    bar?: number | null // the college boards carry their own pick bar (CHAMPION_CHALLENGER_V3_PREREG.md)
   }
   outcome?: {
     resolved: boolean
@@ -102,7 +103,8 @@ type Lineboard = {
 
 // How sure the model has to be before DeVig makes a pick: its tested top-50% confidence bar, the same cutoffs the
 // classic app uses. Below it the game is a pass. (Checked against the boards: every pick is above, every pass below.)
-export const PICK_BAR: Record<string, number> = { NFL: 0.6387, NBA: 0.6083, MLB: 0.5511 }
+// CBB: DeVig CBB v1's median confidence on its 2024-26 check; CFB's comes with its board (fixed once from 2021-24).
+export const PICK_BAR: Record<string, number> = { NFL: 0.6387, NBA: 0.6083, MLB: 0.5511, CBB: 0.7259 }
 
 // ---------- odds math (same rules as the classic app's devigTwoWay) ----------
 export function impliedProb(american: number | null | undefined) {
@@ -177,7 +179,7 @@ export type GameRow = {
   closeSpread?: number | null
 }
 
-const SPORTS_WITH_PICKS = ['nfl', 'nba', 'mlb'] as const
+const SPORTS_WITH_PICKS = ['nfl', 'nba', 'mlb', 'cbb', 'cfb'] as const
 
 function toPick(d: Decision, home: string): Pick {
   const side = d.decision?.side ?? null
@@ -199,7 +201,7 @@ function toPick(d: Decision, home: string): Pick {
     inputs: d.inputs ?? null,
     lean: side ?? d.lean?.side ?? null,
     leanProb: side != null ? (d.decision?.prob ?? null) : (d.lean?.prob ?? null),
-    bar: PICK_BAR[d.sport] ?? null,
+    bar: d.decision?.bar ?? PICK_BAR[d.sport] ?? null,
     note: d.lean?.note ?? null,
   }
 }
@@ -445,7 +447,8 @@ export function useFinals() {
   return { finals, isLoading: isLoading && boards.isLoading }
 }
 
-// Every pick and pass on the NFL, NBA and MLB boards, each with the model's lean from the slate. One loader for
+// Every pick and pass on the NFL, NBA, MLB, CBB and CFB boards, each with the model's lean from the slate (the college
+// boards keep it on the decision itself). One loader for
 // every reader of the ['lineboards'] query, so the cache always has the same shape.
 const loadBoards = async () => {
   const all = await Promise.allSettled(
@@ -463,7 +466,7 @@ const loadBoards = async () => {
     }
     return r.value.docs
       .filter((d) => d.collection === 'decisions')
-      .map((d) => { const x = d.data as Decision; return { ...x, lean: leans.get(x.game_id) } })
+      .map((d) => { const x = d.data as Decision; return { ...x, lean: leans.get(x.game_id) ?? x.lean } })
   })
 }
 
@@ -593,7 +596,7 @@ export function useRecord() {
       by.set(d.sport, r)
     }
     for (const r of by.values()) r.picks.sort((a, b) => Date.parse(b.kickoff) - Date.parse(a.kickoff))
-    return ['NBA', 'NFL', 'MLB'].map((s) => by.get(s)).filter(Boolean) as SportRecord[]
+    return ['NBA', 'NFL', 'MLB', 'CBB', 'CFB'].map((s) => by.get(s)).filter(Boolean) as SportRecord[]
   }, [boards.data])
   return { records, isLoading: boards.isLoading, error: boards.error }
 }

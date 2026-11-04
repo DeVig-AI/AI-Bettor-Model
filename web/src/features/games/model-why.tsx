@@ -1,4 +1,4 @@
-import { type GameRow, fmtAmerican, fmtPct, impliedProb } from '@/lib/devig'
+import { type GameRow, type SportRecord, fmtAmerican, fmtPct, impliedProb } from '@/lib/devig'
 import { type Level } from '@/lib/experience'
 import { type DevigFile, type LabFile, type LabGame, checkText } from '@/lib/lab'
 import { cn } from '@/lib/utils'
@@ -328,5 +328,37 @@ function PriceLine({ name, fair, odds, level, breakEven }: { name: string; fair:
       split off. That&apos;s the market&apos;s guess, not DeVig&apos;s.
       {level !== 'new' && breakEven != null && ` You need ${fmtPct(breakEven, level === 'numbers' ? 1 : 0)} to break even at that price.`}
     </p>
+  )
+}
+
+// DeVig's locked college pick (CHAMPION_CHALLENGER_V3_PREREG.md), above the model's explanation: the side or the pass,
+// how sure it had to be, the price it locked at, and the season so far. Locked 6 hours before the start.
+const lockAt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+export function CollegeCall({ row, side, level, record }: { row: GameRow; side: string; level: Level; record: SportRecord | null }) {
+  const p = row.pick!
+  const name = (c: string) => (c === row.home ? row.homeName : row.awayName) || c
+  const when = p.lockedAt ? lockAt.format(new Date(p.lockedAt)) : null
+  const rec = record && record.won + record.lost > 0
+    ? `${row.sport} picks so far: ${record.won}–${record.lost}, ${record.units >= 0 ? '+' : '−'}${Math.abs(record.units).toFixed(2)} u at locked prices (before fee).`
+    : `No ${row.sport} picks graded yet.`
+  const picked = !!p.side && p.action !== 'PASS'
+  const tier = p.tier === 'top25' ? 'Most sure' : p.tier === 'top50' ? 'Sure' : null
+  return (
+    <div className={cn('flex flex-col gap-1.5 rounded-2xl p-3.5', picked ? 'bg-devig/10' : 'bg-muted')}>
+      <div className='flex items-baseline justify-between gap-3'>
+        <span className='font-display text-xl font-extrabold'>
+          {picked ? <>Pick: <span className='text-devig'>{name(p.side!)}</span></> : 'DeVig passes'}
+        </span>
+        {tier && <span className='text-xs font-semibold text-muted-foreground uppercase'>{tier}</span>}
+      </div>
+      <p className='text-sm leading-relaxed text-muted-foreground'>
+        {picked
+          ? <>{side === p.side ? '' : `That's the other side of this team. `}Locked{when ? ` ${when}` : ''}, 6 hours before the start, at {fmtPct(p.prob)}
+            {p.lockedOdds != null ? ` and ${fmtAmerican(p.lockedOdds)}` : ''}.</>
+          : <>It leans {p.lean ? name(p.lean) : '—'} at {fmtPct(p.leanProb)}, under the {fmtPct(p.bar)} it needs to pick. Locked{when ? ` ${when}` : ''}.</>}
+        {level !== 'new' && p.bar != null && ` DeVig picks only at ${fmtPct(p.bar, 1)} or more: on past seasons, games above that were picked right far more often.`}
+      </p>
+      <p className='text-xs text-muted-foreground'>{rec} Paper picks, nothing bet. Not proven to beat Kalshi.</p>
+    </div>
   )
 }
