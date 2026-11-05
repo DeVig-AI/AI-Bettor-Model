@@ -120,6 +120,7 @@ export function push(delay = 800) {
         else note("Today's save limit is reached; saved on this device for now.")
         return
       }
+      if (r.ok) absorb((await r.json().catch(() => null))?.data)
       note(r.ok ? 'Saved to your account.' : "Couldn't save to your account; saved on this device.")
     } catch {
       note('Offline: saved on this device, and it syncs next time.')
@@ -127,14 +128,50 @@ export function push(delay = 800) {
   }, delay)
 }
 
-function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs>; bets?: Partial<BetStore> } | null) {
+// the account's parlays and bets after a save (it merges in what other devices saved): added here without another save
+function absorb(d: { parlays?: Tracked['parlays']; bets?: Partial<BetStore> | null } | null | undefined) {
+  if (!d) return
+  const cur = read<Partial<Tracked>>(TRACK_KEY) || {}
+  const m = merge({ tracked: cur, prefs: {} }, { tracked: { parlays: d.parlays || {} } })
+  const next = { ...cur, parlays: m.tracked.parlays }
+  const bets = d.bets ? mergeBets(read<BetStore>(BETS_KEY), d.bets) : null
+  const same = JSON.stringify(next.parlays || {}) === JSON.stringify(cur.parlays || {}) && (!bets || JSON.stringify(bets.bets) === JSON.stringify(read<BetStore>(BETS_KEY)?.bets || {}))
+  if (same) return
+  write(TRACK_KEY, next)
+  if (bets) write(BETS_KEY, bets)
+  window.dispatchEvent(new Event(CHANGED))
+}
+
+// Coming back to the app (a phone keeps it open for days): pull the account copy again, so what another device saved
+// shows up here. At most once a minute.
+let pulledAt = 0
+async function pull() {
+  if (!joinedEmail || document.visibilityState !== 'visible' || Date.now() - pulledAt < 60e3) return
+  pulledAt = Date.now()
+  try {
+    const r = await fetch('/api/me', { credentials: 'same-origin', headers: { accept: 'application/json' } })
+    const d = r.ok ? await r.json().catch(() => null) : null
+    if (d?.joined && d.email === joinedEmail) start(d.email, d.data, true)
+  } catch { /* offline: try again next time */ }
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', pull)
+  window.addEventListener('focus', pull)
+}
+
+function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs>; bets?: Partial<BetStore> } | null, again = false) {
   joinedEmail = email
+  pulledAt = Date.now()
   const local = { tracked: read<Partial<Tracked>>(TRACK_KEY) || {}, prefs: read<Partial<Prefs>>(PREFS_KEY) || {} }
   const m = data ? merge(local, data) : local
+  const bets = mergeBets(read<BetStore>(BETS_KEY), data?.bets)
+  const before = JSON.stringify([local.tracked, local.prefs, read<BetStore>(BETS_KEY)])
   write(TRACK_KEY, m.tracked)
   write(PREFS_KEY, m.prefs)
-  write(BETS_KEY, mergeBets(read<BetStore>(BETS_KEY), data?.bets))
-  window.dispatchEvent(new Event(CHANGED))
+  write(BETS_KEY, bets)
+  const changed = before !== JSON.stringify([m.tracked, m.prefs, bets])
+  if (changed || !again) window.dispatchEvent(new Event(CHANGED))
+  if (again && !changed) return
   note('Saved to your account.')
   push() // store the combined copy (the first sign-in uploads this device's)
 }

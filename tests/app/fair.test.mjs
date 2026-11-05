@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as O from "../../web/src/lib/odds.ts";
-import { handle, cleanBets, userKey } from "../../functions/api/me.js";
+import { handle, cleanBets, userKey, unionById } from "../../functions/api/me.js";
 
 const near = (a, b, tol = 5e-4) => assert.ok(Math.abs(a - b) < tol, `${a} vs ${b}`);
 
@@ -70,4 +70,38 @@ test("bets are saved, returned, and kept when the classic app saves without them
   const d = await (await call("GET")).json();
   assert.equal(d.data.bets.bets.abc123.odds, 135);
   assert.deepEqual(d.data.tracked.g, {x: 1});
+});
+
+test("two devices: a save merges parlays and bets into the account copy instead of replacing it; removals stick", async () => {
+  const email = "two@example.com";
+  const m = new Map([[await userKey(email), JSON.stringify({joined_at: "2026-10-01"})]]);
+  const env = {ACCESS_TEAM_DOMAIN: DOMAIN, USERS: {get: async (k, t) => (m.has(k) ? (t === "json" ? JSON.parse(m.get(k)) : m.get(k)) : null), put: async (k, v) => { m.set(k, v); }}};
+  const fetcher = async () => new Response(JSON.stringify({keys: [jwk]}));
+  const call = async (method, body) => handle(new Request("https://devigai.pages.dev/api/me", {method,
+    headers: {"cf-access-jwt-assertion": await token(email)}, body: body && JSON.stringify(body)}), env, fetcher);
+  const age = async () => { const k = await userKey(email); const r = JSON.parse(m.get(k)); r.saved_at = "2026-01-01T00:00:00Z"; m.set(k, JSON.stringify(r)); };
+  const LEG = {desc: "KC to win", odds: -150, sport: "NFL"};
+  const P = (at) => ({at, stake: 10, odds: 120, legs: [LEG]});
+
+  // the computer saves p1; the phone, opened earlier, saves p2 without having seen p1
+  let r = await call("PUT", {tracked: {g: {}, p: {}, parlays: {p1: P("2026-11-04T10:00:00Z")}}, prefs: {}});
+  assert.equal(r.status, 200);
+  await age();
+  r = await (await call("PUT", {tracked: {g: {}, p: {}, parlays: {p2: P("2026-11-04T11:00:00Z")}}, prefs: {}, bets: {bets: {abc123: BET}, updated: 2}})).json();
+  assert.deepEqual(Object.keys(r.data.parlays).sort(), ["p1", "p2"]);            // the phone gets p1 back
+  await age();
+  // the computer removes p2 (a tombstone), and the phone saves again still holding p2: it stays removed
+  await call("PUT", {tracked: {g: {}, p: {}, parlays: {p1: P("2026-11-04T10:00:00Z"), p2: {removed: 5}}}, prefs: {}});
+  await age();
+  await call("PUT", {tracked: {g: {}, p: {}, parlays: {p2: P("2026-11-04T11:00:00Z")}}, prefs: {}});   // and no bets field
+  const d = (await (await call("GET")).json()).data;
+  assert.deepEqual(d.tracked.parlays.p2, {removed: 5});
+  assert.equal(d.tracked.parlays.p1.legs[0].desc, "KC to win");
+  assert.equal(d.bets.bets.abc123.odds, 135);
+});
+
+test("unionById keeps every id, tombstones win, and the newest are kept past the cap", () => {
+  assert.deepEqual(unionById({a: {x: 1}, b: {removed: 1}}, {b: {x: 2}, c: {x: 3}}), {a: {x: 1}, b: {removed: 1}, c: {x: 3}});
+  assert.deepEqual(Object.keys(unionById({a: {}, b: {}}, {c: {}}, 2)), ["b", "c"]);
+  assert.deepEqual(unionById(null, undefined), {});
 });

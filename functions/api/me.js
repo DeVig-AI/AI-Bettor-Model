@@ -160,6 +160,19 @@ export function clean(body) {
   return out;
 }
 
+// Two devices saving: every parlay or bet either copy has is kept, and one removed on either stays removed (the
+// tombstone wins). The stored copy goes first so the newest are last, which is what the MAX_PARLAYS cut keeps.
+export function unionById(stored, incoming, max = Infinity) {
+  const a = stored && typeof stored === "object" ? stored : {}, b = incoming && typeof incoming === "object" ? incoming : {};
+  const out = {};
+  for (const src of [a, b]) for (const id of Object.keys(src)) if (!out[id] || src[id].removed) out[id] = src[id];
+  const ids = Object.keys(out);
+  if (ids.length <= max) return out;
+  const keep = {};
+  for (const id of ids.slice(-max)) keep[id] = out[id];
+  return keep;
+}
+
 async function digest(text) {
   return new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
 }
@@ -238,11 +251,16 @@ export async function handle(request, env, fetcher = fetch) {
     const {body, error} = await readJson(request);
     if (error) return error;
     const data = clean(body);
-    const bets = cleanBets(body && body.bets) || rec.bets;
-    if (bets) data.bets = bets;
+    // a device only knows the parlays and bets it has seen, so merge them into the stored copy instead of replacing it
+    const parlays = unionById((rec.tracked || {}).parlays, data.tracked.parlays, MAX_PARLAYS);
+    if (Object.keys(parlays).length) data.tracked.parlays = parlays;
+    const sent = cleanBets(body && body.bets), had = rec.bets;
+    if (sent || had) data.bets = {bets: unionById(had && had.bets, sent && sent.bets, MAX_BETS),
+      updated: Math.max(Number(had && had.updated) || 0, Number(sent && sent.updated) || 0)};
     Object.assign(data, {joined_at: rec.joined_at, saved_at: new Date(now).toISOString(), day, writes: writes + 1});
     await env.USERS.put(key, JSON.stringify(data));
-    return json({ok: true, email, saved_at: data.saved_at});
+    // the merged parlays and bets go back, so the device that saved also has the ones saved elsewhere
+    return json({ok: true, email, saved_at: data.saved_at, data: {parlays: data.tracked.parlays || {}, bets: data.bets || null}});
   }
   return json({error: "method not allowed"}, 405);
 }
