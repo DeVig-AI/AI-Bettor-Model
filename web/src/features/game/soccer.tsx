@@ -12,10 +12,12 @@ import { FormDots } from '../research/soccer'
 import { Box, Rung, SoccerMarkets } from './soccer-markets'
 import { PriceAlert } from './price-alert'
 import { SoccerChart } from './soccer-chart'
+import { DevigSoccer } from './soccer-devig'
 
 // A soccer match: the big plate, Kalshi's three outcomes, the goals markets (total goals, both teams to score, winning
 // margin), the rest of Kalshi's markets (players, correct score, halves, team goals, corners: soccer-markets.tsx), what has happened (goals, cards, substitutions, match stats, line-ups) and each team's form in its league.
-// Kalshi's soccer markets settle on 90 minutes plus stoppage time. No model here: numbers to read, not picks.
+// Kalshi's soccer markets settle on 90 minutes plus stoppage time. In the five big leagues, DeVig Soccer v1's chances
+// sit under Kalshi's (soccer-devig.tsx; new, not proven). No picks.
 
 type Side = 'home' | 'away'
 const hex = (c?: string | null) => (c && /^#[0-9a-fA-F]{6}$/.test(c) ? c : null)
@@ -337,6 +339,7 @@ export function SoccerGame({ row }: { row: GameRow }) {
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         <Outcomes row={row} />
         <PriceAlert row={row} />
+        <DevigSoccer row={row} />
         {row.state === 'pre'
           ? <><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
           : <><SoccerChart row={row} /><Match row={row} /><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /></>}

@@ -43,6 +43,12 @@ jobs:
       - name: DeVig's CBB model v1, a challenger (tools/cbb_model_live.py -> live/devig/cbb.json; cbb/CBB_MODEL_V1_PREREG.md)
         continue-on-error: true   # the scoreboard runs without it
         run: python3 tools/cbb_model_live.py
+      - name: DeVig Soccer v1, the SOCCER.ml champion (tools/soccer_model_live.py -> live/devig/soccer.json; soccer/SOCCER_MODEL_V1_PREREG.md)
+        continue-on-error: true   # the scoreboard runs without it
+        run: python3 tools/soccer_model_live.py
+      - name: Lock and grade the SOCCER.ml slot (tools/soccer_track.py; CHAMPION_CHALLENGER_V4_PREREG.md)
+        continue-on-error: true
+        run: python3 tools/soccer_track.py
       - name: Restore the Narrative model's college caches (ESPN college data is never committed, Constitution E1)
         uses: actions/cache/restore@v4
         with:
@@ -85,6 +91,7 @@ jobs:
                    live/champions.json live/champions/MODEL_LOCKS.csv live/champions/DECISIONS.csv live/champions_export.json \
                    nba/lineboard_export.json cbb/lineboard_export.json cfb/lineboard_export.json cfb/cfb_v1_tiers.json \
                    live/lab/nhl.json live/lab/cfb.json live/devig/nhl.json live/devig/cfb.json live/devig/cbb.json \
+                   live/devig/soccer.json live/devig/soccer_locks.json live/devig/soccer_record.json \
                    live/narrative/nba.json live/narrative/games.json live/narrative/nhl.json live/narrative/nhl_games.json \
                    live/narrative/nfl.json live/narrative/nfl_games.json live/narrative/cfb.json live/narrative/cbb.json \
                    live/narrative/mlb.json live/narrative/mlb_games.json live/narrative/wnba.json live/narrative/wnba_games.json; do

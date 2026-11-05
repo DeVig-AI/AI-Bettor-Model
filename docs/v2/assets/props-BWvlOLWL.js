@@ -1,1 +1,0 @@
-import{n as e}from"./props-H7e2jvnk.js";var t=e;export{t as component};
