@@ -1,0 +1,60 @@
+name: Research soccer -- data (ESPN, history once)
+
+# Fills the lab's soccer cache, research/soccer/data/ (seasons 2013-2025 only, named by the year they start; 2026-27
+# is sealed and never stored), fetching only seasons it does not have yet: ESPN's public scoreboards of the Premier
+# League, LaLiga, Serie A, the Bundesliga and Ligue 1 for every day from July 15 to August 15 of the next year, then,
+# from 2019-20 on, each finished game's odds list (Constitution Part F1; no key). A run stops starting new seasons
+# after SOCCER_FETCH_MINUTES; the rest is fetched by the next run. The data itself is never committed (F1: ESPN's data
+# is not republished here): it lives in this repo's private Actions cache. Only MANIFEST.json (each season's
+# fingerprint and counts) is committed; a refetched season must match it, or the lab refuses to run.
+on:
+  schedule:
+    - cron: '17 11 * * 3'    # Wednesdays 7:17am ET: a no-op once every season is cached
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-lab        # never at the same time as the lab or the Inspector General
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SOCCER_FETCH_MINUTES: '150'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Locked files unchanged (the Constitution must be locked before any soccer data is touched)
+        run: python3 tools/frozen_guard.py check
+
+      - name: Restore the soccer data cache (private Actions cache; never committed, Constitution F1)
+        uses: actions/cache/restore@v4
+        with:
+          key: soccer-data-none
+          restore-keys: soccer-data-
+          path: research/soccer/data/*.csv
+
+      - name: Lab cache -- fetch only missing seasons (2013-2025)
+        run: python3 -m research.lab.soccer_data fetch
+
+      - name: Save the soccer data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          key: soccer-data-${{ github.run_id }}
+          path: research/soccer/data/*.csv
+
+      - name: Commit and push (MANIFEST.json only; the data files are git-ignored)
+        if: always()
+        run: research/lab/push.sh "Research soccer data $(date -u +%Y-%m-%dT%H:%M:%SZ)"

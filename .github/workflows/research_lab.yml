@@ -12,6 +12,9 @@ name: Research Lab -- loop (back to back)
 # files under research/<sport>/, data built each run from the pinned public archive (never committed, D1).
 # Then men's college basketball (Part E, v15): moneyline only, search on 2019, 2020, 2022, confirmation on 2023 /
 # 2024 / 2025, files under research/cbb/, data from the private Actions cache filled by "Research CBB -- data".
+# Then soccer, the five big European leagues (Part F, v16): the home team wins in 90 minutes only, search on 2020-21,
+# 2021-22, 2022-23, confirmation on 2023-24 / 2024-25 / 2025-26, files under research/soccer/, data from the private
+# Actions cache filled by "Research soccer -- data".
 # Each sport ends with the Inspector General's review. Deterministic; no AI in the loop.
 on:
   schedule:
@@ -349,10 +352,92 @@ jobs:
         if: always() && steps.start.outcome == 'success'
         run: research/lab/push.sh "Research Lab CBB results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
+  soccer:
+    needs: cbb
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      LAB_SPORT: SOCCER
+      FORCE_SEARCH: ${{ inputs.search }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main          # the sport before may have just pushed
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        run: pip install pandas==2.3.3 numpy==2.5.3 pyyaml==6.0.2
+
+      - name: Soccer data cache complete? (filled by "Research soccer -- data")
+        id: data
+        run: |
+          if python3 -c "import json,sys; m=json.load(open('research/soccer/data/MANIFEST.json')); sys.exit(0 if len(m.get('complete',[]))==13 else 1)" 2>/dev/null; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"; else
+            echo "Soccer data cache not complete yet: run 'Research soccer -- data'."; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Restore the soccer data cache (private Actions cache; never committed, Constitution F1)
+        if: steps.data.outputs.ok == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          key: soccer-data-none
+          restore-keys: soccer-data-
+          path: research/soccer/data/*.csv
+
+      - name: Soccer search round (2020-21, 2021-22, 2022-23 only)
+        if: steps.data.outputs.ok == 'true'
+        run: |
+          python3 tools/frozen_guard.py check
+          python3 -m research.lab.soccer_data check
+          python3 -m research.lab.search round --sport SOCCER --progress $([ "$FORCE_SEARCH" = "true" ] && echo --force)
+          if [ -n "$(git status --porcelain research/soccer/search)" ]; then
+            python3 -m research.lab.inspector review --sport SOCCER
+            research/lab/push.sh "Research Lab soccer search round $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+      - name: Anything new to run?
+        id: pending
+        run: |
+          if [ "${{ steps.data.outputs.ok }}" != "true" ]; then echo "n=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          n=$(python3 -m research.lab.lab pending)
+          echo "Candidates to run: $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Locked files unchanged (Constitution, candidates that ran, ledger)
+        if: steps.pending.outputs.n != '0'
+        run: python3 tools/frozen_guard.py check
+
+      - name: Lab tests (synthetic data)
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m unittest discover -s research/tests -t .
+
+      - name: Mark the candidates running on the /lab page
+        id: start
+        if: steps.pending.outputs.n != '0'
+        run: |
+          python3 -m research.lab.lab start
+          research/lab/push.sh "Research Lab soccer: running ${{ steps.pending.outputs.n }} candidate(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Run them through the three gates
+        if: steps.pending.outputs.n != '0'
+        run: python3 -m research.lab.lab run
+
+      - name: Inspector General review and reports
+        if: always() && steps.start.outcome == 'success'    # also clears "running" if the run step failed
+        run: python3 -m research.lab.inspector review
+
+      - name: Commit and push the results
+        if: always() && steps.start.outcome == 'success'
+        run: research/lab/push.sh "Research Lab soccer results $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+
   next:
-    needs: [lab, cfb, part_d, cbb]
+    needs: [lab, cfb, part_d, cbb, soccer]
     # only after a good run: a failure waits for the hourly safety net instead of looping on the error
-    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && needs.part_d.result != 'failure' && needs.cbb.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
+    if: ${{ !cancelled() && needs.lab.result == 'success' && needs.cfb.result != 'failure' && needs.part_d.result != 'failure' && needs.cbb.result != 'failure' && needs.soccer.result != 'failure' && vars.RESEARCH_LOOP != 'off' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

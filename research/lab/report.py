@@ -19,7 +19,7 @@ from . import metrics as M
 PASSED_LAB = ("lab_pass", "exam_pass", "exam_fail", "promoted", "stopped")
 PASSED_EXAM = ("exam_pass", "promoted", "stopped")
 MINUTES_PER_CANDIDATE = 1.5
-SPORT_NAMES = {"NFL": "NFL", "CFB": "College football", "NBA": "NBA", "NHL": "NHL", "MLB": "MLB", "CBB": "College basketball"}
+SPORT_NAMES = {"NFL": "NFL", "CFB": "College football", "NBA": "NBA", "NHL": "NHL", "MLB": "MLB", "CBB": "College basketball", "SOCCER": "Soccer"}
 
 
 def status_md_path():

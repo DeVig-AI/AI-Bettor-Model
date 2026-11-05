@@ -7,8 +7,9 @@ name: Research Lab -- Inspector General
 #             The research loop hands over here (then_loop) when a sport has a lab pass and an exam left;
 #             this queues the loop again when done (Constitution v8 A8).
 #   paper  -- promoted models only: log picks at Kalshi prices before kickoff and grade finished games
-# sport: NFL (Part B, sealed 2025), CFB (Part C, sealed 2025), NBA / NHL / MLB (Part D, sealed 2021) or CBB (Part E,
-# sealed 2026; for Parts D and E the paper season starts when each sport's Kalshi logger is merged, D7 / E7). Scheduled runs do NFL every 3 hours and CFB once a
+# sport: NFL (Part B, sealed 2025), CFB (Part C, sealed 2025), NBA / NHL / MLB (Part D, sealed 2021) , CBB (Part E,
+# sealed 2026) or SOCCER (Part F, sealed 2026-27); for Parts D, E and F the paper season starts when each sport's
+# Kalshi logger is merged, D7 / E7 / F7. Scheduled runs do NFL every 3 hours and CFB once a
 # day (CFB's live data costs CollegeFootballData calls; CFB_API_KEY is passed only to the CFB exam and paper steps).
 on:
   schedule:
@@ -21,9 +22,9 @@ on:
         options: [review, paper, exam]
         default: review
       sport:
-        description: 'NFL, CFB (college football), NBA, NHL, MLB or CBB (college basketball)'
+        description: 'NFL, CFB (college football), NBA, NHL, MLB, CBB (college basketball) or SOCCER'
         type: choice
-        options: [NFL, CFB, NBA, NHL, MLB, CBB]
+        options: [NFL, CFB, NBA, NHL, MLB, CBB, SOCCER]
         default: NFL
       then_loop:
         description: 'Queue the research loop again when done (the loop sets this when it hands over for an exam)'
@@ -99,6 +100,14 @@ jobs:
           key: cbb-data-none
           restore-keys: cbb-data-
           path: research/cbb/data/*.csv
+
+      - name: Restore the soccer data cache (private Actions cache; never committed, Constitution F1)
+        if: steps.go.outputs.go == 'true' && env.LAB_SPORT == 'SOCCER'
+        uses: actions/cache/restore@v4
+        with:
+          key: soccer-data-none
+          restore-keys: soccer-data-
+          path: research/soccer/data/*.csv
 
       - name: Build the Part D lab cache from the pinned archive (2011-2020 only; never committed, Constitution D1)
         if: steps.go.outputs.go == 'true' && contains(fromJSON('["NBA","NHL","MLB"]'), env.LAB_SPORT)

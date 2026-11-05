@@ -1,14 +1,15 @@
-"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v15: Part B NFL,
-Part C college football, Part D NBA / NHL / MLB, Part E men's college basketball); the Constitution wins if they ever disagree.
+"""Research Lab constants. Every number here comes from research/RESEARCH_LAB_CONSTITUTION.md (v16: Part B NFL,
+Part C college football, Part D NBA / NHL / MLB, Part E men's college basketball, Part F soccer); the Constitution wins
+if they ever disagree.
 
-The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB", "CBB") switches
+The module holds one sport's settings at a time: NFL by default, `use("CFB")` (or "NBA", "NHL", "MLB", "CBB", "SOCCER") switches
 every constant below to that sport's Part (the lab's commands take `--sport`, or the LAB_SPORT environment variable)."""
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RESEARCH = os.path.join(ROOT, "research")
 CONSTITUTION = "research/RESEARCH_LAB_CONSTITUTION.md"
-CONSTITUTION_VERSION = "v15"
+CONSTITUTION_VERSION = "v16"
 SPORT = "NFL"
 REPO = "DeVig-AI/AI-Bettor-Model"
 BLOB = f"https://github.com/{REPO}/blob/main/"
@@ -67,11 +68,12 @@ STOP_MIN_PICKS = 40
 STOP_AFTER_WEEK = 9
 STOP_Z = 1.6449                                # 90% two-sided Wilson interval
 SUSPENDED = None                # D1b (v14): a reason string = this sport's chamber does not run
+DRAW_LOSES = False              # F3 (v16): a drawn game settles the home win market as a loss (soccer)
 
 GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 PBP_URL = "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz"
 
-SPORTS = ("NFL", "CFB", "NBA", "NHL", "MLB", "CBB")
+SPORTS = ("NFL", "CFB", "NBA", "NHL", "MLB", "CBB", "SOCCER")
 _NFL = {k: v for k, v in dict(globals()).items() if k.isupper() and k not in ("ROOT", "RESEARCH", "REPO", "BLOB",
                                                                              "CONSTITUTION", "SPORTS")}
 CFB_DIR = os.path.join(RESEARCH, "cfb")
@@ -208,7 +210,35 @@ _CBB = dict(
     KALSHI_SPORT="NCAAMB",
 )
 
-_PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB, "CBB": _CBB}
+# Part F (v16). Soccer, the five big European leagues: ESPN's public data, one market (the home team wins in 90
+# minutes), one season per search period and gate (F2). A season is named by the year it starts (2019 = 2019-20).
+SOCCER_DIR = os.path.join(RESEARCH, "soccer")
+_SOCCER = dict(
+    SPORT="SOCCER", MARKETS=("moneyline",),
+    DATA_DIR=os.path.join(SOCCER_DIR, "data"), CANDIDATES=os.path.join(SOCCER_DIR, "candidates"),
+    QUEUE=os.path.join(SOCCER_DIR, "queue"), RESULTS=os.path.join(SOCCER_DIR, "results"),
+    LEDGER=os.path.join(SOCCER_DIR, "LEDGER.csv"), EXAMS=os.path.join(SOCCER_DIR, "exam", "EXAMS.csv"),
+    PAPER_DIR=os.path.join(SOCCER_DIR, "paper"), PROMOTED=os.path.join(SOCCER_DIR, "promoted.json"),
+    STATUS_MD=os.path.join(SOCCER_DIR, "STATUS.md"), LESSONS_MD=os.path.join(SOCCER_DIR, "LESSONS.md"),
+    SEARCH_DIR=os.path.join(SOCCER_DIR, "search"),
+    FIRST_SEASON=2013,                       # warm-up 2013-2018: results only, ratings only, never scored or fit on
+    TRAIN=(2019, 2019),
+    SEARCH=(2020, 2022),
+    SEARCH_PERIODS=[(2020, 2020), (2021, 2021), (2022, 2022)],
+    GATES=[("2023-24", 2023, 2023), ("2024-25", 2024, 2024), ("2025-26", 2025, 2025)],
+    POOLED=("Pooled 2023-24 to 2025-26", 2023, 2025),
+    SKIP_SEASONS=(),                         # F2: the COVID seasons (2019's end, 2020) are scored, and said so
+    RULE_SPLITS=[],
+    EXTRA_SPLITS=[],
+    LAB_MAX_SEASON=2025,
+    SEALED_SEASON=2026,                      # 2026-27: in play now, never stored
+    EXAM_MIN_GAMES=1200,                     # F5 (a full season is about 1,750 games)
+    STOP_AFTER_WEEK=25,                      # F5: after about January 31 (week 1 starts in August)
+    KALSHI_SPORT="SOCCER",
+    DRAW_LOSES=True,                         # F3
+)
+
+_PARTS = {"CFB": _CFB, "NBA": _NBA, "NHL": _NHL, "MLB": _MLB, "CBB": _CBB, "SOCCER": _SOCCER}
 
 
 def use(sport):

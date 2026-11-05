@@ -1,9 +1,9 @@
-# DeVig Research Lab -- Constitution v15
+# DeVig Research Lab -- Constitution v16
 
-Version: **v15** · adopted 2026-11-03 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
-Part D (NBA, NHL; MLB suspended, D1b), Part E (men's college basketball, CBB) · replaces v14 (kept unchanged at
-`research/constitution/RESEARCH_LAB_CONSTITUTION_v14.md`; v13 to v1 alongside it; what changed: sections "Changes from
-v1" to "Changes from v14" at the end)
+Version: **v16** · adopted 2026-11-05 · applies to: Part A (all sports), Part B (NFL), Part C (college football),
+Part D (NBA, NHL; MLB suspended, D1b), Part E (men's college basketball, CBB), Part F (soccer) · replaces v15 (kept
+unchanged at `research/constitution/RESEARCH_LAB_CONSTITUTION_v15.md`; v14 to v1 alongside it; what changed: sections
+"Changes from v1" to "Changes from v15" at the end)
 
 This file sets the rules the Research Lab runs by. v1 was written and hash-locked (`FROZEN.sha256`, checked by
 `tools/frozen_guard.py`) **before any lab data was downloaded**; v2 was locked before the 1999–2001 seasons it adds
@@ -62,7 +62,7 @@ result, and it will be reported exactly like a success: every number, plainly.
    cost. Before each run the lab moves the next queued files, in order, into `research/candidates/` and commits that
    move before anything runs; from then on rule 3 applies.
 3b. **Batch size:** at most **18** candidates run in one lab run.
-3c. **The search (every sport with a search split: NFL Part B, college football Part C, NBA / NHL / MLB Part D, CBB Part E).** Besides hand-written
+3c. **The search (every sport with a search split: NFL Part B, college football Part C, NBA / NHL / MLB Part D, CBB Part E, soccer Part F).** Besides hand-written
    candidates, the lab finds candidates itself, per sport, in rounds, back to back (each run of the research loop does
    one round per sport; the menu's `round_every_hours` is 0), deterministically, with no AI. Each sport has its own menu and logs
    (NFL `research/search/`, CFB `research/cfb/search/`, Part D `research/<sport>/search/`):
@@ -532,7 +532,7 @@ as candidates of their own (rest may enter only as a signal, A3.3e, if a later v
   nothing about the exam or promotion changes.
 
 ### D8. Small samples
-As C7: no result is read from one team, one month or any slice smaller than 300 games, and no slice other than those
+As C7: no result is read from one league, one team, one month or any slice smaller than 300 games, and no slice other than those
 named in D2 is reported. Lessons (A10) are exploratory.
 
 ## Part E -- Men's college basketball (CBB), added in v15
@@ -644,10 +644,134 @@ back-filled.
 As C7: no result is read from one conference, one team, one month or any slice smaller than 300 games, and no slice
 other than those named in E2 is reported. Lessons (A10) are exploratory.
 
-## Part F -- reserved
+## Part F -- Soccer, the five big European leagues, added in v16
+
+Part F adds soccer (`research/soccer/`: candidates, search, ledger, exams, results and reports, kept apart exactly as
+each other sport is): the English Premier League, LaLiga, Serie A, the Bundesliga and Ligue 1, pooled as one sport.
+Part A applies unchanged except where this Part says so explicitly (F3 measures the moneyline as Part D3 does, with
+draws settled as F3 says; F7 says when the paper season can start). It was written at the owner's request, as a
+research chamber only: nothing here puts a soccer model in the app (F7).
+
+**What was seen before this Part was written and locked:**
+- For this Part: ESPN's public scoreboard of the five leagues, and for a few sample matches of several seasons
+  2012-13 to 2025-26 the provider list and field layout of the match's odds. From that:
+  - 2012-13 has no odds; 2013-14 to 2015-16 list only a projection site (`bloomberg`), not a sportsbook;
+  - an entry named `Bet 365` (with a space) carries fractional prices set during or after the match, which give the
+    result away; it is dropped (F1);
+  - in 2018-19 the book listed (Caesars) has no draw price, so no three-way close exists that season;
+  - from 2019-20 on, full three-way books are listed (among them Bet365, Caesars, DraftKings, Unibet); an entry named
+    `ESPN BET - Live Odds` is in-play; from 2023-24 entries carry separate open and close blocks;
+  - on Premier League samples no outcome was priced above 92% and the three implied chances summed to 1.00-1.20.
+- Nothing else: no model was run, no price was compared with a result across matches, and no season was scored.
+  The chamber's code and tests were written on synthetic data only.
+- Not used: football-data.co.uk, whose terms rule out automated use.
+
+**Expected result, stated up front:** closing prices in these leagues are among the most heavily bet and efficient in
+sport, and the models this data allows know only scores, schedules and the prices (no injuries, lineups, expected
+goals or transfers). The most likely outcome is that **no soccer candidate passes the sealed exam**, and quite
+possibly none passes the lab.
+
+### F1. Data
+- **Source:** ESPN's public sports data (no key), for the leagues `eng.1`, `esp.1`, `ita.1`, `ger.1` and `fra.1`:
+  - results from each league's scoreboard
+    (`site.api.espn.com/.../soccer/<league>/scoreboard?dates=<day>`), every day from July 15 to August 15 of the next
+    year;
+  - prices from each match's odds list (`sports.core.api.espn.com/.../soccer/leagues/<league>/events/<id>/
+    competitions/<id>/odds`), fetched only for finished matches of seasons 2019 on.
+- **Season** = the year the season starts (2019 = 2019-20), and a match belongs to the season ESPN lists it under.
+- **Fields kept:** the ESPN match id, league, date and kick-off, home and away team (ESPN team id), the 90-minute
+  score, and from each listed provider its three moneylines (home, draw, away). Everything else is dropped: spreads,
+  totals, opening prices, lineups, cards, possession, venues, attendance, and the odds feed's own result flags.
+- **Providers used:** sportsbooks only, and only entries with all three American moneylines. Dropped are projection
+  sites (`bloomberg`, `teamrankings`, `numberfire`, `accuscore`), `Bet 365` with a space (above), any entry named
+  `Opening`, and any entry whose name contains `live`. A book's price is the moneyline ESPN keeps for it. From
+  2023-24 ESPN marks that price as the book's close; before that it is the last price ESPN recorded for the book,
+  which cannot be checked against a separate close. Said plainly: this is the best closing price this source has.
+- **Price check:** a book's three prices are used only when each implied chance is between 0.01 and 0.95, the draw's
+  is at most 0.50, and the three sum to between 1.00 and 1.20. Anything else is treated as a feed error or an in-play
+  price.
+- **The closing price:** for each book that passes, the vig-free home-win chance `q_book = p_home ÷ (p_home + p_draw +
+  p_away)` (the vig removed in proportion over the three outcomes). The match's closing price is the median over
+  those books; a match with no such book has no closing price.
+- **Eligible matches:** league matches of the five leagues with a final score and a closing price. Cups, European
+  competitions, relegation play-offs and friendlies are not fetched.
+- **Line coverage gate:** as C1. If fewer than 70% of a training or gate season's matches have a closing price, the
+  lab refuses to run; only a new version may change the split.
+- **Where the data is kept:** as C1a and E1. The cache (`research/soccer/data/`, seasons **2013-2025 only**; the lab
+  refuses any row from 2026 on) lives only in this repository's private GitHub Actions cache, filled by the workflow
+  "Research soccer -- data" and git-ignored. It is **never committed**: ESPN's data is not republished here. The
+  manifest, fingerprints, refetch and sealed-season rules are E1's, unchanged.
+
+### F2. Season split
+| Use | Seasons | Notes |
+|---|---|---|
+| Warm-up | 2013-2018 (2013-14 to 2018-19) | results only (no usable prices, F1): ratings only, never scored, never fit on |
+| Training | 2019 (2019-20) | the only season coefficients may be fit on; also sets the line-only baseline |
+| Search | 2020, 2021, 2022 | the search (A3.3c) scores configurations here; each season is a search sub-period |
+| Gate 1 | 2023 (2023-24) | confirmation |
+| Gate 2 | 2024 (2024-25) | confirmation |
+| Gate 3 | 2025 (2025-26) | confirmation |
+| Pooled | 2023-2025 | the pooled test of A7 |
+| **Sealed** | **2026 (2026-27)** | the exam (A8); not in the lab; in play while this Part was written |
+
+The COVID seasons are scored, not skipped, and said so here: 2019-20 finished in empty stadiums after a break of
+about three months (France ended it early), and most of 2020-21 had no crowds, so home advantage was smaller than
+usual. Skipping them would leave no search season. Reported, never used to pass: each gate on its own. No per-league
+slice is reported. No soccer candidate had run and no soccer season had been scored against a price when this split
+was chosen.
+
+### F3. Market, draws and how it is measured
+- One market, **`moneyline`**: does the home team win in 90 minutes plus stoppage time. Measured exactly as Part D3:
+  the vig-free closing price `q` (F1), forecast = the model's home-win chance, everything in win-chance points,
+  `r = actual − 100·q`, the A5 effect.
+- **Draws:** a draw settles "the home team wins" as **no**: `actual` = 100 if the home team won, else 0 (draw or away
+  win). No match is dropped for being a draw; dropping draws would select matches by their result.
+- **Pricing** as D3: a pick on the home team costs `q` plus Kalshi's fee and pays $1.00 if it wins; the other side is
+  "the home team does not win" (draw or away win), costing `1 − q` plus its fee.
+- A model's own win chance must be a home-win chance with draws allowed for. A team-rating (Elo) expected score
+  counts a draw as half a win, so it is not a home-win chance: in soccer an Elo-type model must turn its rating into a
+  chance by a fit on the training season (the menu allows only that), never by the Elo formula itself.
+- Why only this market: it is the one a three-way price turns into a yes/no Kalshi-style contract without a model of
+  draws, and every market adds attempts to the correction. Draw, away-win, totals and both-teams-score markets can be
+  added by a later version.
+
+### F4. Multiple testing
+As C4: Holm-Bonferroni over **every soccer attempt** (`research/soccer/LEDGER.csv`) decides. The global attempt count
+across all sports, and each attempt's Holm-adjusted p over that global set, are reported and never used.
+
+### F5. Season, budget and mid-season
+- v16 opens the **2026-27 soccer research season**, ending when the last of the five leagues plays its final
+  league round of 2026-27. Sealed exam season 2026, budget **3 exams** (A8), recorded in `research/soccer/exam/EXAMS.csv`.
+- An exam needs at least **1,200** scored matches in the sealed season (a full season is about 1,750), or it is
+  recorded as an error (still spent).
+- Paper-season mid-season point for the stop rule (A9.4): after week 25 (about January 31; week 1 starts in August).
+
+### F6. Seed ideas (points of the soccer search menu, not separate candidates)
+(a) a plain team rating (Elo) with a fitted win chance, the baseline every rating idea is measured against; (b) ideas
+from public, open soccer rating methods (club Elo ratings, Simple Rating System / least-squares goal margins,
+opponent-adjusted goals-for / against ratings), **each idea a setting of the menu**: K factor, home edge, preseason
+reversion, margin-of-victory multiplier, a goal-margin cap, home edge learned from recent seasons, rating half-life,
+and the carry-over of a rating from one season to the next. A3.5 applies: no derby, "new manager", relegation-battle,
+European-week, title-race or schedule-spot filters. The signal library (A3.3e) starts empty for soccer; its only team
+column is goals scored (the `points` column).
+
+Known weaknesses, stated up front: a promoted team enters at the average rating; rest days count league matches only,
+because cups and European matches are not fetched; and the COVID seasons are scored (F2).
+
+### F7. Paper season and the app
+- As D7: until a logger that reads Kalshi's soccer match markets is merged, a soccer model promoted here is recorded as
+  promoted with an empty paper log, and its paper season starts the day the logger is merged. No pick is back-filled.
+- A promoted soccer model is not shown in the app. The champion/challenger rule (`CHAMPION_CHALLENGER_V3_PREREG.md`)
+  has no soccer slot; showing one needs a new, separately locked version of that rule (V4), which v16 does not make.
+
+### F8. Small samples
+As C7: no result is read from one team, one month or any slice smaller than 300 matches, and no slice other than
+those named in F2 is reported. Lessons (A10) are exploratory.
+
+## Part G -- reserved
 
 Reserved for another sport. Until a later version adds it, Part A applies only to NFL, CFB, NBA, NHL, MLB (suspended
-since v14, D1b) and CBB.
+since v14, D1b), CBB and soccer.
 
 ---
 
@@ -870,3 +994,19 @@ challenge it:
 
 Unchanged: Parts A (except A9.3's file name), B, C and D; every scoring, correction, gate, lab-pass, exam, promotion
 and stop rule; every other sport's budget. No rule is loosened (A1.4).
+
+## Changes from v15 (2026-11-05)
+
+The owner asked for a soccer chamber, as research only:
+1. **Adds Part F, soccer** (the five big European leagues, pooled; A1.3):
+   - data: ESPN's public scoreboards and odds feed, three-way sportsbook prices only, kept only in the private Actions
+     cache (F1);
+   - one market, the home team wins in 90 minutes, with a draw settled as a loss for that side (F3);
+   - split: warm-up 2013-18, training 2019-20, search 2020-21 / 2021-22 / 2022-23, gates 2023-24 / 2024-25 / 2025-26,
+     sealed 2026-27 (F2);
+   - 3 exams, at least 1,200 matches each (F5); not shown in the app without a later champion/challenger version (F7).
+   It was written before any soccer price was compared with a result. What was seen is listed at the top of Part F.
+2. The "reserved" Part moves from F to G.
+
+Unchanged: Parts A to E; every scoring, correction, gate, lab-pass, exam, promotion and stop rule; every other sport's
+budget; the champion/challenger rules V1-V3. No rule is loosened (A1.4).

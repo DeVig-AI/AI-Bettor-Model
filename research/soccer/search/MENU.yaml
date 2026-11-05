@@ -1,0 +1,188 @@
+# Research Lab search menu, SOCCER (Constitution v16 Part F, A3.3c). Every round scores, in this order, up to
+# search.max_new_per_round configurations not scored before: the grid below (all combinations, in order), then
+# the focus combinations, the neighbours of the 30 best per market, learned and random samples (seeded by
+# round), then blends of the best. Adding a value or a family here is how an idea joins the search: free,
+# since search scores are not attempts. No known betting angles (A3.5, F6).
+# SOCCER: one market, the home team wins in 90 minutes (F3). The models rate teams in goals and turn that into a home
+# win chance fit on the training season (2019-20): never Elo's own expected score, which counts a draw as half a win
+# (F3; the code refuses prob: elo). Seed ideas (F6): (a) plain Elo on results, club-Elo style (draw = half a win in
+# the ratings, home edge, offseason reversion); (b) Elo with a goal-difference multiplier, SRS / least-squares goal
+# margins, opponent-adjusted goals for / against.
+families:
+- name: Elo win chance
+  type: elo_ml
+  market: moneyline
+  fixed:
+    mean: 1505
+    playoff_mult: 1.0
+    bye_rest_days: 13
+    hfa_seasons: 3
+    qb: none
+    qb_alpha: 0.1
+    qb_elo_per_value: 3.3
+    qb_new_below_avg: 10
+    nfelo_log_base: 10
+    bye_elo: 0
+    travel_elo_per_1000mi: 0
+    market_resist: 0.0
+    revert_center: none
+    elo_per_point: 100
+  grid:
+    k:
+    - 10
+    - 15
+    - 20
+    - 25
+    - 32
+    hfa_elo:
+    - 30
+    - 50
+    - 70
+    - 90
+    revert:
+    - 0.1
+    - 0.2
+    - 0.3333
+    - 0.5
+    mov:
+    - none
+    - '538'
+    hfa_mode:
+    - fixed
+    - rolling
+    prob:
+    - fit
+    market_blend:
+    - 0.0
+- name: SRS win chance
+  type: srs_ml
+  market: moneyline
+  fixed: {}
+  grid:
+    hfa_pts:
+    - 0.2
+    - 0.3
+    - 0.4
+    carry:
+    - 0.3
+    - 0.5
+    - 0.7
+    prior_w:
+    - 2
+    - 4
+    - 8
+    - 16
+    margin_cap:
+    - null
+    - 3
+- name: Team rating win chance
+  type: rating_ml
+  market: moneyline
+  fixed:
+    metric: points
+    pace: none
+    league_window: 1800
+  grid:
+    halflife:
+    - 5
+    - 10
+    - 20
+    - 30
+    - 40
+    def_weight:
+    - 0.5
+    - 0.75
+    - 1.0
+    season_carry:
+    - 0.3
+    - 0.5
+    - 0.7
+ladders:
+  season_carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  carry:
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  prior_w:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  revert:
+  - 0.05
+  - 0.1
+  - 0.2
+  - 0.3333
+  - 0.5
+  market_blend:
+  - 0.0
+  - 0.25
+  - 0.5
+  - 0.75
+  k:
+  - 6
+  - 10
+  - 15
+  - 20
+  - 25
+  - 32
+  - 40
+  hfa_elo:
+  - 10
+  - 30
+  - 50
+  - 70
+  - 90
+  - 110
+  halflife:
+  - 3
+  - 5
+  - 10
+  - 20
+  - 30
+  - 40
+  - 60
+  hfa_pts:
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+search:
+  widen_below: 200
+  max_widenings_per_round: 3
+  max_share_per_type: 0.5
+  round_every_hours: 0
+  neighbours_of_best: 30
+  blend_pool: 10
+  blend_triples_of: 6
+  equal_blends:
+  - 3
+  - 5
+  - 7
+  - 10
+  fitted_blends:
+  - 5
+  - 8
+  shortlist_per_market: 2
+  shortlist_window_days: 7
+  shortlist_min_t: 2.5
+  max_disagreement_corr: 0.95
+  learned_samples: 200
+  random_samples: 100
+  signal_pairs_of: 6
+  signal_trios_of: 4
+  max_new_per_round: 400

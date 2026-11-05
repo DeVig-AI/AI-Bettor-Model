@@ -22,7 +22,7 @@ Kinds:
             puck drops, as the closing line is. Moneyline feature: home minus away; total feature: home plus away.
 
 Part D team columns (v14 D1a): NBA and NHL team signals may also read the box-score columns in PART_D_COLUMNS
-(built by sdv_data.py); NBA, NHL, MLB and CBB (Part E6) signals may read `points`.
+(built by sdv_data.py); NBA, NHL, MLB, CBB (Part E6) and SOCCER (Part F6, goals) signals may read `points`.
 
 The signals model: forecast = base forecast + features · beta, beta fit once by least squares (small ridge) on the
 training seasons' residuals (actual - base). Everything is computed game by game from games already finished; games
@@ -44,7 +44,8 @@ SCHEDULE_FIELDS = {"rest_diff", "travel_diff", "div_game", "off_bye_diff", "shor
 INJURY_FIELDS = {"qb_out": "d_qb", "reg_out": "d_out", "reg_q": "d_q"}
 PART_D_COLUMNS = {"NBA": {"points", "poss", "fga", "fgm", "fg3a", "fg3m", "fta", "ftm", "oreb", "dreb", "tov", "ast"},
                   "NHL": {"points", "shots", "es_shots", "pp_shots", "pp_goals"},
-                  "CBB": {"points"}}                     # E6: points is CBB's only team column
+                  "CBB": {"points"},                     # E6: points is CBB's only team column
+                  "SOCCER": {"points"}}                  # F6: goals, soccer's only team column
 KINDS = {"team", "schedule", "qb_change", "injury", "goalie"}
 MAX_PER_MODEL = 6
 
