@@ -20,6 +20,7 @@ import { LevelPicker } from '../games/explain-sheet'
 import { count, inTen, sideShort } from './words'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from './why'
 import { SoccerProps } from './soccer'
+import { StreakList, useGameStreaks } from './streaks'
 
 // Player props: DeVig's props model next to Kalshi's live price. The model has lost to Kalshi on past games, and the
 // page says so first. Lines are worded the way Kalshi words them (6+ ast). Thin markets and small samples are flagged.
@@ -199,10 +200,12 @@ function GameProps({ ls, game, open, onOpenChange }: { ls: PropLine[]; game: Gam
     ls.forEach((l) => c.set(l.stat, (c.get(l.stat) ?? 0) + 1))
     return [...c.entries()].sort((a, b) => b[1] - a[1]).map(([x]) => x)
   }, [ls])
-  const tabs = [...(gaps.length ? ['gaps'] : []), ...stats]
+  const streak = useGameStreaks(ls)
+  const tabs = [...(streak.rows.length ? ['streaks'] : []), ...(gaps.length ? ['gaps'] : []), ...stats]
   const cur = stat && tabs.includes(stat) ? stat : tabs[0]
   // a stat = each player's main line (the one closest to 50/50)
   const shown = useMemo(() => {
+    if (cur === 'streaks') return []
     if (cur === 'gaps') return gaps
     const best = new Map<string, Shown>()
     for (const l of priced.filter((x) => x.stat === cur)) {
@@ -252,11 +255,16 @@ function GameProps({ ls, game, open, onOpenChange }: { ls: PropLine[]; game: Gam
           {tabs.map((x) => (
             <button key={x} type='button' aria-pressed={cur === x} onClick={() => setStat(x)}
               className={cn('h-8 shrink-0 rounded-lg border px-3 text-sm text-muted-foreground', cur === x && 'border-foreground bg-foreground font-semibold text-background')}>
-              {x === 'gaps' ? 'Biggest gaps' : statName(x)}
+              {x === 'streaks' ? 'Streaks' : x === 'gaps' ? 'Biggest gaps' : statName(x)}
             </button>
           ))}
         </div>
-        {shown.length ? (
+        {cur === 'streaks' ? (
+          <div className='px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))]'>
+            <p className='mb-3 px-0.5 text-sm text-muted-foreground'>Lines each player hit in every one of their last 10 games, most-traded first. Kalshi&apos;s price is now. Not a pick.</p>
+            <StreakList data={streak} ls={ls} game={game} />
+          </div>
+        ) : shown.length ? (
           <ul className='pb-[env(safe-area-inset-bottom)]'>
             {shown.map((l) => <PropRow key={l.key} l={l} game={game} />)}
           </ul>

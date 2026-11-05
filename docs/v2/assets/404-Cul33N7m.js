@@ -1,1 +1,0 @@
-import{D as e}from"./index-C0gs7JMU.js";var t=e;export{t as component};

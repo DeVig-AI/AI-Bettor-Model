@@ -19,6 +19,7 @@ import { RinkMovers } from './rink'
 import { GapChart } from './gap'
 import { GameWrap } from './wrap'
 import { SoccerGame } from './soccer'
+import { Streaks } from '../props/streaks'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
 // see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
@@ -132,6 +133,7 @@ export function GamePage({ id }: { id: string }) {
     }
     return [...best.values()].sort((a, b) => (b.oi || 0) - (a.oi || 0)).slice(0, 12)
   }, [lines, live, row])
+  const gameLines = useMemo(() => (row ? lines.filter((l) => l.sport === row.sport && l.away === row.away && l.home === row.home) : []), [lines, row])
   const asked = useRef(false)
   useEffect(() => {
     if (asked.current || !props.length) return
@@ -200,6 +202,8 @@ export function GamePage({ id }: { id: string }) {
           <RinkMovers row={row} />
 
         <GameWrap row={row} />
+
+        {row.state !== 'post' && gameLines.length > 0 && <Streaks ls={gameLines} game={row} />}
 
         {(RS_SPORTS as readonly string[]).includes(row.sport) && (
           <section aria-label='Team research' className='grid grid-cols-2 gap-2'>
