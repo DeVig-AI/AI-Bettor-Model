@@ -119,3 +119,35 @@ export function midOf(bid: number | null, ask: number | null, wide = 0.25) {
   const b = bid ?? 0
   return ask - b > wide ? null : (b + ask) / 2
 }
+
+// DeVig Soccer v1 (tools/soccer_model_live.py -> live/devig/soccer.json; soccer/SOCCER_MODEL_V1_PREREG.md), the
+// SOCCER.ml champion in CHAMPION_CHALLENGER_V4_PREREG.md: home / draw / away in 90 minutes for the five big leagues,
+// and its graded record beside Kalshi's (tools/soccer_track.py -> live/devig/soccer_record.json). New, not proven.
+export type DevigSoccerGame = {
+  game_id: string; league: string; kickoff: string; home: string; away: string
+  home_wp: number; draw_p: number; away_wp: number; xg_home: number; xg_away: number
+}
+type Tally = { games: number; log_loss: number; picked_right: number }
+export type DevigSoccerRecord = {
+  generated_at: string
+  devig: Tally | null
+  shared: { devig: Tally | null; kalshi: Tally | null } | null
+  recent: { game_id: string; model: [number, number, number]; kalshi: [number, number, number] | null; result: [number, number] }[]
+}
+const DEVIG_STALE_MS = 12 * 3600e3   // an older file is not shown: its numbers would be old
+
+export function useDevigSoccer() {
+  return useQuery({
+    queryKey: ['devig_soccer'],
+    queryFn: async () => {
+      const [f, rec] = await Promise.all([
+        getJson<{ generated_at: string; games: DevigSoccerGame[] }>('live/devig/soccer.json').catch(() => null),
+        getJson<DevigSoccerRecord>('live/devig/soccer_record.json').catch(() => null),
+      ])
+      const fresh = f && Date.now() - Date.parse(f.generated_at) < DEVIG_STALE_MS
+      return { games: new Map((fresh ? f.games : []).map((g) => [g.game_id, g])), record: rec }
+    },
+    staleTime: 10 * 60e3,
+    refetchInterval: 15 * 60e3,
+  })
+}
