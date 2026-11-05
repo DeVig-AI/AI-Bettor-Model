@@ -4,6 +4,7 @@ import {
   type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
+import { BetBox, betFacts, betLine, hasBet } from './bet-box'
 import { cn } from '@/lib/utils'
 import { useAccount } from '@/lib/profile'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -182,6 +183,7 @@ function ReaderBody({ r }: { r: Reader }) {
   const d = r.data
   return (
     <>
+      {d.kind !== 'event' && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
       <div className='flex gap-2'>
         <button type='button' onClick={r.save} disabled={r.isSaved}
@@ -194,7 +196,8 @@ function ReaderBody({ r }: { r: Reader }) {
   )
 }
 
-const savedLine = (s: Saved) =>
+const savedLine = (s: Saved) => (hasBet(s.bet) ? `${betLine(s.bet)} · ` : '') + savedState(s)
+const savedState = (s: Saved) =>
   s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`
 
 function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick: (s: Saved) => void }) {
@@ -256,7 +259,10 @@ export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
       </ul>
       {read.error && <p role='alert' className='px-1 text-sm text-bad'>{read.error instanceof LinkError ? read.error.message : 'Something went wrong. Try again.'}</p>}
       {read.isPending ? <Skeleton className='h-48 w-full rounded-[18px]' /> : data && (
-        <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
+        <>
+          {data.kind !== 'event' && <BetBox bet={cur?.bet} {...betFacts(data)} owner={owner} />}
+          <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
+        </>
       )}
     </section>
   )

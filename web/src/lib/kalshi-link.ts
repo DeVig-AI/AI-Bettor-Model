@@ -4,7 +4,7 @@
 import { useSyncExternalStore } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import type { Outcome, Snap } from './review'
-import { type SavedSync, MAX_SAVED, mergeSaved, needsUpload } from './saved-merge'
+import { type SavedBet, type SavedSync, MAX_SAVED, mergeSaved, needsUpload } from './saved-merge'
 import { push } from './profile'
 
 export type KLeg = {
@@ -44,7 +44,7 @@ export function legLabel(l: KLeg) {
 }
 
 // snap: the review as it stood when first read (legs still to play); outcome: how it ended (see lib/review.ts)
-export type Saved = { link: string; label: string; savedAt: string; snap?: Snap; outcome?: Outcome }
+export type Saved = { link: string; label: string; savedAt: string; snap?: Snap; outcome?: Outcome; bet?: SavedBet }
 const KEY = 'devig_saved_links'
 export function loadSaved(): Saved[] {
   try {

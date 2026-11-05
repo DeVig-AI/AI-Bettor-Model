@@ -120,6 +120,14 @@ export function cleanBets(b) {
 
 // Saved bets: {items: [{link, label, savedAt, snap?, outcome?}], gone: {link: removed time}}. null when the request has
 // none (classic and older v2 don't send them), so their saves keep what's stored.
+// what you put in and what it pays (dollars), and when you typed it; stake 0 = cleared (kept so the clear syncs)
+export function cleanBet(b) {
+  if (!b || typeof b !== "object") return null;
+  const stake = Number(b.stake), pays = Number(b.pays), at = Number(b.at);
+  if (![stake, pays, at].every(Number.isFinite) || stake < 0 || stake > 1e6 || pays < 0 || pays > 1e8 || at <= 0) return null;
+  return {stake: Math.round(stake * 100) / 100, pays: Math.round(pays * 100) / 100, at: Math.round(at)};
+}
+
 export function cleanSaved(x) {
   if (!x || typeof x !== "object" || !Array.isArray(x.items)) return null;
   const items = [], seen = new Set();
@@ -134,6 +142,8 @@ export function cleanSaved(x) {
       const j = JSON.stringify(s[k]);
       if (j.length <= MAX_SAVED_PART) o[k] = JSON.parse(j);
     }
+    const bet = cleanBet(s.bet);
+    if (bet) o.bet = bet;
     items.push(o);
   }
   const g = x.gone && typeof x.gone === "object" && !Array.isArray(x.gone) ? x.gone : {};
@@ -157,6 +167,8 @@ export function mergeSaved(a, b) {
     const snap = o.snap ?? s.snap, outcome = o.outcome ?? s.outcome;
     if (snap) m.snap = snap;
     if (outcome) m.outcome = outcome;
+    const bet = ((o.bet && o.bet.at) || 0) >= ((s.bet && s.bet.at) || 0) ? o.bet : s.bet;
+    if (bet) m.bet = bet; else delete m.bet;
     by.set(s.link, m);
   }
   const items = [...by.values()].sort((x, y) => at(y) - at(x)).slice(0, MAX_SAVED);

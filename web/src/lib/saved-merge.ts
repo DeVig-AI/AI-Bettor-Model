@@ -2,7 +2,9 @@
 // first; one removed on a device stays removed unless it's saved again after that. Kept free of runtime imports so
 // node tests can run it; functions/api/me.js mergeLinks does the same on the server.
 
-export type SavedItem = { link: string; label: string; savedAt: string; snap?: unknown; outcome?: unknown }
+// bet: what you put in and what it pays if it hits, in dollars, as Kalshi shows them; `at` = when it was typed (the latest wins)
+export type SavedBet = { stake: number; pays: number; at: number }
+export type SavedItem = { link: string; label: string; savedAt: string; snap?: unknown; outcome?: unknown; bet?: SavedBet }
 export type SavedSync = { items: SavedItem[]; gone: Record<string, number> }
 
 export const MAX_SAVED = 30
@@ -23,6 +25,8 @@ export function mergeSaved(a: Partial<SavedSync> | null | undefined, b: Partial<
     const snap = o.snap ?? s.snap, outcome = o.outcome ?? s.outcome
     if (snap) m.snap = snap
     if (outcome) m.outcome = outcome
+    const bet = (o.bet?.at ?? 0) >= (s.bet?.at ?? 0) ? o.bet : s.bet
+    if (bet) m.bet = bet; else delete m.bet
     by.set(s.link, m)
   }
   const items = [...by.values()].sort((x, y) => (Date.parse(y.savedAt) || 0) - (Date.parse(x.savedAt) || 0)).slice(0, MAX_SAVED)

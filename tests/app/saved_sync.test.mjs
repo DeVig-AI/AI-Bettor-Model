@@ -108,3 +108,18 @@ test("needsUpload: an account with no saved bets, or missing one, gets this devi
   assert.equal(needsUpload({ items: [], gone: {} }, { items: [], gone: {} }), false);
   assert.equal(needsUpload({ items: [], gone: { [a.link]: Date.now() } }, { items: [], gone: {} }), true);
 });
+
+test("the bet on a saved bet: the latest typed wins on both devices, cleaned on the server, shown to friends", async () => {
+  const { cleanBet } = await import("../../functions/api/me.js");
+  const a = {items: [item(7, "2026-11-04T10:00:00Z", {bet: {stake: 10, pays: 250, at: 100}})], gone: {}};
+  const b = {items: [item(7, "2026-11-04T11:00:00Z", {bet: {stake: 20, pays: 500, at: 200}})], gone: {}};
+  const none = {items: [item(7, "2026-11-04T09:00:00Z")], gone: {}};
+  for (const m of [mergeSaved(a, b), mergeSaved(b, a), mergeApp(a, b), mergeApp(b, a)]) assert.deepEqual(m.items[0].bet, {stake: 20, pays: 500, at: 200});
+  assert.deepEqual(mergeSaved(none, a).items[0].bet, {stake: 10, pays: 250, at: 100});
+  assert.deepEqual(mergeApp(none, a), mergeSaved(none, a));
+  assert.deepEqual(cleanBet({stake: "10.555", pays: 250, at: 5}), {stake: 10.56, pays: 250, at: 5});
+  for (const bad of [null, {stake: -1, pays: 1, at: 1}, {stake: 1, pays: 1}, {stake: 1e9, pays: 1, at: 1}, {stake: NaN, pays: 1, at: 1}]) assert.equal(cleanBet(bad), null);
+  assert.deepEqual(cleanSaved(a).items[0].bet, {stake: 10, pays: 250, at: 100});
+  assert.deepEqual(shownSaved({saved: a})[0].bet, {stake: 10, pays: 250, at: 100});
+  assert.equal(shownSaved({saved: {items: [item(7, "x", {bet: {stake: 0, pays: 0, at: 300}})]}})[0].bet, undefined); // cleared
+});
