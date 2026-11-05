@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Check, Link2, Minus, X } from 'lucide-react'
+import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { Check, ChevronDown, Link2, Minus, X } from 'lucide-react'
 import {
   type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
@@ -173,6 +174,7 @@ function useBetReader() {
     entry: saved.find((s) => s.link === lastLink) ?? null,
     save: () => { if (data && !isSaved) store({}) },
     remove: removeSaved,
+    close: () => { setLastLink(''); setData(null); read.reset() },
   }
 }
 type Reader = ReturnType<typeof useBetReader>
@@ -203,41 +205,102 @@ function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
       {d.kind !== 'event' && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
       <div className='flex gap-2'>
-        <button type='button' onClick={r.save} disabled={r.isSaved}
-          className='h-10 rounded-full border px-4 text-sm font-semibold disabled:text-muted-foreground'>
-          {r.isSaved ? 'Saved' : 'Save this'}
-        </button>
+        {!r.isSaved && <button type='button' onClick={r.save} className='h-10 rounded-full border px-4 text-sm font-semibold'>Save this</button>}
         <button type='button' onClick={() => r.go(r.lastLink)} className='h-10 rounded-full border px-4 text-sm font-semibold'>Check again</button>
+        {r.isSaved && (
+          <button type='button' onClick={() => { r.remove(r.lastLink); r.close() }}
+            className='ms-auto h-10 rounded-full px-3 text-sm font-semibold text-muted-foreground hover:text-bad'>Remove</button>
+        )}
       </div>
     </>
   )
 }
 
-const savedLine = (s: Saved) => (hasBet(s.bet) ? `${betLine(s.bet)} · ` : '') + savedState(s)
-const savedState = (s: Saved) =>
-  s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`
 
-function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick: (s: Saved) => void }) {
+const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+const legsOf = (d: KRead | undefined): KLeg[] => (!d ? [] : d.kind === 'combo' ? d.legs : d.kind === 'market' ? [d.market] : d.markets)
+const PEEK = 3
+const peek = (link: string) => ({ queryKey: ['kalshi-peek', link], queryFn: () => readLink(link), staleTime: 2 * 60e3, retry: 1 })
+
+// one saved bet, closed: what you bet, how it's going, and its first few legs. Read from Kalshi like the review (kept 2 minutes)
+function SavedCard({ s, open, onToggle, owner }: { s: Saved; open: boolean; onToggle: () => void; owner?: string }) {
+  const q = useQuery(peek(s.link))
+  const d = q.data
+  const legs = legsOf(d)
+  const result = s.outcome ? (s.outcome.won ? 'won' : 'lost') : d ? betFacts(d).result : null
+  // a single bet that has settled keeps its result, so it moves to History
+  useEffect(() => {
+    if (!owner && d?.kind === 'market' && d.market.result && !s.outcome) {
+      storeSaved(getSaved().map((x) => (x.link === s.link ? { ...x, outcome: { at: d.fetched_at, won: d.market.result === 'won', legs: 1, hit: null, letter: null, lost: [] } } : x)))
+    }
+  }, [d?.fetched_at]) // eslint-disable-line react-hooks/exhaustive-deps
+  const won = legs.filter((l) => l.result === 'won').length
+  const letter = s.outcome?.letter ?? s.snap?.letter ?? null
+  const label = owner ? s.label.replace(/^Your parlay/, 'DeVig parlay') : s.label
+  const tone = result === 'won' ? 'text-good' : result === 'lost' ? 'text-bad' : 'text-muted-foreground'
+  const status = result === 'won' ? 'Won' : result === 'lost' ? 'Lost' : legs.length > 1 ? `${won} of ${legs.length} hit` : 'Open'
+  return (
+    <button type='button' onClick={onToggle} aria-expanded={open}
+      className={cn('block w-full rounded-[18px] bg-card p-4 text-start transition-colors duration-150 hover:bg-muted/40', open && 'ring-1 ring-devig/60')}>
+      <span className='flex items-start gap-3'>
+        <span className='min-w-0 flex-1'>
+          <span className={cn('block text-xs font-bold tracking-wide uppercase', tone)}>{status} · {dayFmt.format(new Date(s.savedAt))}</span>
+          <span className='mt-0.5 block truncate font-semibold'>{label}</span>
+          {hasBet(s.bet) && <span className='block font-display text-[22px] leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
+        </span>
+        {letter && (
+          <span className='grid size-11 shrink-0 place-items-center rounded-xl bg-muted font-display text-xl font-black' aria-label={`Grade ${letter}`}>{letter}</span>
+        )}
+      </span>
+      {legs.length > 1 && (
+        <span className='mt-3 flex gap-1' aria-hidden='true'>
+          {legs.map((l, i) => <span key={i} className={cn('h-1.5 flex-1 rounded-full', l.result === 'won' ? 'bg-good' : l.result === 'lost' ? 'bg-bad' : 'bg-muted')} />)}
+        </span>
+      )}
+      {q.isPending ? (
+        <span className='mt-3 flex flex-col gap-2'><Skeleton className='h-4 w-3/4' /><Skeleton className='h-4 w-2/3' /></span>
+      ) : legs.length > 0 && (
+        <span className='mt-3 flex flex-col gap-1.5'>
+          {[...legs].sort((x, y) => rank(x) - rank(y)).slice(0, PEEK).map((l, i) => (
+            <span key={i} className='flex items-center gap-2.5 text-sm'>
+              <Mark r={l.result} />
+              <span className={cn('min-w-0 flex-1 truncate', l.result === 'lost' && 'text-bad')}>{legLabel(l)}</span>
+              <span className='shrink-0 tabular-nums text-muted-foreground'>{l.result ? (l.result === 'won' ? 'Won' : 'Lost') : pct(l.chance)}</span>
+            </span>
+          ))}
+        </span>
+      )}
+      <span className='mt-3 flex items-center justify-between text-sm'>
+        <span className='text-muted-foreground'>{legs.length > PEEK ? `+${legs.length - PEEK} more ${legs.length - PEEK === 1 ? 'leg' : 'legs'}` : ''}</span>
+        <span className='flex items-center gap-1 font-semibold text-devig'>
+          {open ? 'Hide' : 'Open'}<ChevronDown className={cn('size-4 transition-transform duration-150 motion-reduce:transition-none', open && 'rotate-180')} aria-hidden='true' />
+        </span>
+      </span>
+    </button>
+  )
+}
+
+function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; openLink: string | null; onToggle: (s: Saved) => void; owner?: string; body: ReactNode }) {
+  return (
+    <div className='flex flex-col gap-3'>
+      {list.map((s) => (
+        <Fragment key={s.link}>
+          <SavedCard s={s} open={s.link === openLink} onToggle={() => onToggle(s)} owner={owner} />
+          {s.link === openLink && <div className='flex flex-col gap-3'>{body}</div>}
+        </Fragment>
+      ))}
+    </div>
+  )
+}
+
+function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick?: (s: Saved) => void }) {
   if (!list.length) return null
   return (
     <div className='flex flex-col gap-2'>
       <h3 className='px-1 pt-2 font-display text-xl font-extrabold'>{title}</h3>
-      <ul className='overflow-hidden rounded-[18px] bg-card'>
-        {list.map((s) => (
-          <li key={s.link} className={cn('flex items-center border-b last:border-b-0', s.link === r.lastLink && 'bg-muted/40')}>
-            <button type='button' onClick={() => onPick(s)} className='flex min-h-14 min-w-0 flex-1 flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
-              <span className='w-full truncate font-semibold'>{s.label}</span>
-              <span className='text-xs text-muted-foreground'>
-                {savedLine(s)} · tap to review
-              </span>
-            </button>
-            <button type='button' onClick={() => r.remove(s.link)} aria-label={`Remove ${s.label}`}
-              className='grid size-12 shrink-0 place-items-center text-muted-foreground hover:text-foreground'>
-              <X className='size-4' />
-            </button>
-          </li>
-        ))}
-      </ul>
+      <SavedCards list={list} openLink={r.lastLink || null}
+        onToggle={(s) => { if (s.link === r.lastLink) r.close(); else { onPick?.(s); r.go(s.link) } }}
+        body={<>{r.err && <p role='alert' className='px-1 text-sm text-bad'>{r.err}</p>}<ReaderBody r={r} /></>} />
       <SavedWhere />
     </div>
   )
@@ -264,45 +327,39 @@ export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
   return (
     <section aria-label={`${owner}'s saved bets`} className='flex flex-col gap-2'>
       <h2 className='px-1 font-display text-[22px] font-extrabold'>Saved bets</h2>
-      <ul className='overflow-hidden rounded-[18px] bg-card'>
-        {list.map((s) => (
-          <li key={s.link} className={cn('border-b last:border-b-0', s.link === cur?.link && 'bg-muted/40')}>
-            <button type='button' onClick={() => go(s)} className='flex min-h-14 w-full flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
-              <span className='w-full truncate font-semibold'>{s.label.replace(/^Your parlay/, 'DeVig parlay')}</span>
-              <span className='text-xs text-muted-foreground'>{savedLine(s)} · tap to review</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      {read.error && <p role='alert' className='px-1 text-sm text-bad'>{read.error instanceof LinkError ? read.error.message : 'Something went wrong. Try again.'}</p>}
-      {read.isPending ? <Skeleton className='h-48 w-full rounded-[18px]' /> : data && (
-        <>
-          {data.kind !== 'event' && <BetBox bet={cur?.bet} {...betFacts(data)} owner={owner} />}
-          <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
-        </>
-      )}
+      <SavedCards list={list} owner={owner} openLink={cur?.link ?? null}
+        onToggle={(s) => { if (s.link === cur?.link) { setCur(null); setData(null) } else go(s) }}
+        body={<>
+          {read.error && <p role='alert' className='px-1 text-sm text-bad'>{read.error instanceof LinkError ? read.error.message : 'Something went wrong. Try again.'}</p>}
+          {read.isPending ? <Skeleton className='h-48 w-full rounded-[18px]' /> : data && (
+            <>
+              {data.kind !== 'event' && <BetBox bet={cur?.bet} {...betFacts(data)} owner={owner} />}
+              <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
+            </>
+          )}
+        </>} />
     </section>
   )
 }
 
-// a saved bet is done once it's been read after it settled (its outcome is kept)
-const isDone = (s: Saved) => !!s.outcome
+// a saved bet is done once it's been read after it settled (its outcome is kept), or Kalshi's latest read says it's decided
+const isDone = (s: Saved, d: KRead | undefined) => !!s.outcome || (!!d && d.kind !== 'event' && betFacts(d).result != null)
 
-// part: with no paste box, just your saved bets, 'open' ones (Parlay tab) or 'done' ones (History), each reviewed when tapped
+// part: with no paste box, just your saved bets, 'open' ones (Parlay tab) or 'done' ones (History), each opened right under its card
 export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = true, part }: {
   title?: string; blurb?: React.ReactNode; showSaved?: boolean; part?: 'open' | 'done'
 } = {}) {
   const r = useBetReader()
   const [link, setLink] = useState('')
+  const reads = useQueries({ queries: (part ? r.saved : []).map((s) => peek(s.link)) })
   if (part) {
-    const list = r.saved.filter((s) => isDone(s) === (part === 'done'))
+    const list = r.saved.filter((s, i) => isDone(s, reads[i]?.data) === (part === 'done'))
     if (!list.length && !r.data) return null
     const heading = part === 'done' ? 'Finished Kalshi bets' : 'Saved Kalshi bets'
     return (
       <section aria-label={heading} className='flex flex-col gap-3'>
-        <SavedList r={r} list={list} title={heading} onPick={(s) => r.go(s.link)} />
-        {r.err && <p role='alert' className='px-1 text-sm text-bad'>{r.err}</p>}
-        <ReaderBody r={r} />
+        <SavedList r={r} list={list} title={heading} />
+        {r.data && !list.some((s) => s.link === r.lastLink) && <ReaderBody r={r} />}
       </section>
     )
   }
@@ -325,9 +382,9 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = tr
         </form>
         {r.err && <p role='alert' className='mt-2 text-sm text-bad'>{r.err}</p>}
       </div>
-      <ReaderBody r={r} />
+      {!(showSaved && r.saved.some((s) => s.link === r.lastLink)) && <ReaderBody r={r} />}
       {showSaved && (
-        <SavedList r={r} list={r.saved} title='Saved bets' onPick={(s) => { setLink(s.link.startsWith('slip:') ? '' : s.link); r.go(s.link) }} />
+        <SavedList r={r} list={r.saved} title='Saved bets' onPick={(s) => setLink(s.link.startsWith('slip:') ? '' : s.link)} />
       )}
     </section>
   )
@@ -346,7 +403,7 @@ export function SavedParlays() {
   }, [go])
   return (
     <section id='saved-parlays' aria-label='Saved parlays' className='flex scroll-mt-20 flex-col gap-3'>
-      {list.length ? <SavedList r={r} list={list} title={`Saved parlays (${list.length})`} onPick={(s) => r.go(s.link)} /> : (
+      {list.length ? <SavedList r={r} list={list} title={`Saved parlays (${list.length})`} /> : (
         <div className='flex flex-col gap-2'>
           <h3 className='px-1 font-display text-xl font-extrabold'>Saved parlays</h3>
           <p className='rounded-[18px] border border-dashed p-4 text-sm text-muted-foreground'>
@@ -356,7 +413,7 @@ export function SavedParlays() {
         </div>
       )}
       {r.err && <p role='alert' className='px-1 text-sm text-bad'>{r.err}</p>}
-      <ReaderBody r={r} />
+      {!list.some((s) => s.link === r.lastLink) && <ReaderBody r={r} />}
     </section>
   )
 }
