@@ -70,6 +70,7 @@ export function shownSaved(user) {
     const o = {link, label: String(s.label || "").slice(0, 120), savedAt: String(s.savedAt || "")};
     if (s.snap && typeof s.snap === "object") o.snap = s.snap;
     if (s.outcome && typeof s.outcome === "object") o.outcome = s.outcome;
+    if (s.bet && s.bet.stake > 0) o.bet = {stake: s.bet.stake, pays: s.bet.pays, at: s.bet.at};
     out.push(o);
   }
   return out;
