@@ -2,7 +2,7 @@
 // Sharing is off until the person turns it on. Turning it on gives them a random friend code (a share link carries
 // it); anyone with an account who has the code can follow them and see their saved parlays, with stakes, read-only.
 // A new code cuts off everyone who had the old one. Nothing else on the account (email, tracking, logged bets,
-// favorite teams) is ever sent to a friend: only the name tag, the saved parlays and the saved Kalshi bets.
+// favorite teams) is ever sent to a friend: only the name tag, the saved parlays and the saved bets (Kalshi links and parlays built in DeVig).
 //
 // Stored in the same KV namespace as /api/me (USERS):
 //   friends:<hash>   {code, share, following: [code], day, writes}   one per person (<hash> as in user:<hash>)
@@ -55,9 +55,13 @@ export function shownSaved(user) {
   const items = user && user.saved && Array.isArray(user.saved.items) ? user.saved.items : [];
   const out = [];
   for (const s of items) {
-    if (!s || typeof s.link !== "string" || s.link.startsWith("slip:")) continue;
+    if (!s || typeof s.link !== "string") continue;
     let link;
-    try {
+    if (s.link.startsWith("slip:")) {
+      // a parlay built in DeVig: Kalshi tickers and sides only
+      if (s.link.length > 600 || !/^slip:[A-Za-z0-9._-]+~(yes|no)(,[A-Za-z0-9._-]+~(yes|no))*$/.test(s.link)) continue;
+      link = s.link;
+    } else try {
       const u = new URL(/^https?:/i.test(s.link) ? s.link : `https://${s.link}`);
       if (!/(^|\.)kalshi\.com$/i.test(u.hostname)) continue;
       const t = u.searchParams.get("marketTicker") || u.searchParams.get("market_ticker");

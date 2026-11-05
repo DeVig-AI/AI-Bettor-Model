@@ -232,21 +232,23 @@ function SavedWhere() {
   )
 }
 
-// a friend's saved Kalshi bets (Friends page): the same review, read-only
+// a friend's saved bets, Kalshi links and parlays built in DeVig (Friends page): the same review, read-only
 export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
   const read = useReadLink()
   const [cur, setCur] = useState<Saved | null>(null)
   const [data, setData] = useState<KRead | null>(null)
   if (!list.length) return null
-  const go = (s: Saved) => { setCur(s); setData(null); read.mutate(s.link, { onSuccess: setData }) }
+  // a DeVig parlay reads back as "Your parlay": on a friend's page it's theirs
+  const theirs = (d: KRead): KRead => d.kind === 'combo' && d.ticker === 'slip' ? { ...d, combo: { ...d.combo, title: `${owner}'s parlay`, pick: `${owner}'s parlay` } } : d
+  const go = (s: Saved) => { setCur(s); setData(null); read.mutate(s.link, { onSuccess: (d) => setData(theirs(d)) }) }
   return (
-    <section aria-label={`${owner}'s saved Kalshi bets`} className='flex flex-col gap-2'>
-      <h2 className='px-1 font-display text-[22px] font-extrabold'>Saved Kalshi bets</h2>
+    <section aria-label={`${owner}'s saved bets`} className='flex flex-col gap-2'>
+      <h2 className='px-1 font-display text-[22px] font-extrabold'>Saved bets</h2>
       <ul className='overflow-hidden rounded-[18px] bg-card'>
         {list.map((s) => (
           <li key={s.link} className={cn('border-b last:border-b-0', s.link === cur?.link && 'bg-muted/40')}>
             <button type='button' onClick={() => go(s)} className='flex min-h-14 w-full flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
-              <span className='w-full truncate font-semibold'>{s.label}</span>
+              <span className='w-full truncate font-semibold'>{s.label.replace(/^Your parlay/, 'DeVig parlay')}</span>
               <span className='text-xs text-muted-foreground'>{savedLine(s)} · tap to review</span>
             </button>
           </li>
