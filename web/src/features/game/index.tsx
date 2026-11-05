@@ -3,7 +3,7 @@ import { TrackButton } from '@/components/track-button'
 import { PriceAlert } from './price-alert'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { type GameRow, fmtAmerican, fmtPct, useFinals, useGames } from '@/lib/devig'
+import { type GameRow, fmtAmerican, fmtPct, isSoccer, useFinals, useGames } from '@/lib/devig'
 import { useInjuries } from '@/lib/injuries'
 import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
 import { RS_SPORTS } from '@/lib/research'
@@ -18,6 +18,7 @@ import { CourtMovers } from './court'
 import { RinkMovers } from './rink'
 import { GapChart } from './gap'
 import { GameWrap } from './wrap'
+import { SoccerGame } from './soccer'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
 // see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
@@ -145,6 +146,7 @@ export function GamePage({ id }: { id: string }) {
       </div>
     )
   }
+  if (isSoccer(row.sport)) return <SoccerGame row={row} />
   const done = row.state === 'post' && row.awayScore != null && row.homeScore != null
   const spread = row.spread ? `${row.home} ${row.spread.home_point > 0 ? '+' : ''}${row.spread.home_point}` : '—'
   return (

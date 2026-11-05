@@ -1,4 +1,5 @@
-import { type GameRow, fmtAmerican, fmtPct } from '@/lib/devig'
+import { useLayoutEffect, useRef } from 'react'
+import { type GameRow, fmtAmerican, fmtPct, isSoccer } from '@/lib/devig'
 import { cn } from '@/lib/utils'
 import { LogoMark, TeamLogo } from '@/components/team-logo'
 import { useGameClock } from '@/lib/game-clock'
@@ -29,15 +30,13 @@ export function isPick(r: GameRow) {
   return !!r.pick?.side && r.pick.action !== 'PASS'
 }
 
-export function Plate({
-  row,
-  showDay,
-  size = 'md',
-}: {
-  row: GameRow
-  showDay: boolean
-  size?: 'md' | 'lg'
-}) {
+type PlateProps = { row: GameRow; showDay: boolean; size?: 'md' | 'lg' }
+
+export function Plate(props: PlateProps) {
+  return isSoccer(props.row.sport) ? <SoccerPlate {...props} /> : <TwoWayPlate {...props} />
+}
+
+function TwoWayPlate({ row, showDay, size = 'md' }: PlateProps) {
   const away = hex(row.colors?.away) ?? 'var(--side-away)'
   const home = hex(row.colors?.home) ?? 'var(--side-home)'
   const split = row.fairHome == null ? 0.5 : 1 - row.fairHome // away share
@@ -131,6 +130,165 @@ export function Plate({
       </div>
     </div>
   )
+}
+
+// ---------- soccer: three outcomes ----------
+// Home on the left (soccer's order), then a dark draw lane, then away, each as wide as Kalshi's fair chance for it.
+// The draw's chance sits in a dark chip in the top row: in its lane when there's room, slid along the row otherwise,
+// and always at least GAP px clear of the start time and the league tag (placed by measuring them).
+
+const DRAW_LANE = '#161a22'
+const GAP = 10
+const SHORT: Record<string, string> = {
+  EPL: 'EPL', LALIGA: 'LA LIGA', SERIEA: 'SERIE A', BUND: 'BUNDESLIGA', LIGUE1: 'LIGUE 1',
+  UCL: 'UCL', UEL: 'UEL', UECL: 'UECL', MLS: 'MLS', LIGAMX: 'LIGA MX',
+}
+export const leagueTag = (sport: string) => SHORT[sport] ?? sport
+
+function SoccerPlate({ row, showDay, size = 'md' }: PlateProps) {
+  const home = hex(row.colors?.home) ?? 'var(--side-home)'
+  const away = hex(row.colors?.away) ?? 'var(--side-away)'
+  const t = row.three
+  const live = row.state === 'in'
+  const clock = useGameClock(row.id, row.detail, live)
+  const done = row.state === 'post' && row.awayScore != null && row.homeScore != null
+  const drawn = done && row.homeScore === row.awayScore
+  const big = size === 'lg'
+  const c1 = t ? t.home * 100 : 100 / 3
+  const c2 = t ? (t.home + t.draw) * 100 : 200 / 3
+  const background = done
+    ? `linear-gradient(${ANGLE}deg, ${home} 0 50%, ${away} 50% 100%)`
+    : `linear-gradient(${ANGLE}deg, ${home} 0 ${c1}%, ${DRAW_LANE} ${c1}% ${c2}%, ${away} ${c2}% 100%)`
+  const chipText = done ? (drawn ? 'FINAL · DRAW' : null) : t ? `DRAW ${fmtPct(t.draw)}` : null
+  const target = done ? 54 : Math.min(c2, (c1 + c2) / 2 + 9) // percent across the plate; a little right of the lane's middle
+
+  const plate = useRef<HTMLDivElement>(null)
+  const time = useRef<HTMLSpanElement>(null)
+  const tag = useRef<HTMLSpanElement>(null)
+  const chip = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = plate.current
+    if (!el || !chipText) return
+    const place = () => {
+      const c = chip.current, a = time.current, b = tag.current
+      if (!c || !a || !b) return
+      const P = el.getBoundingClientRect()
+      const lo = a.getBoundingClientRect().right - P.left + GAP
+      const hi = b.getBoundingClientRect().left - P.left - GAP
+      const w = c.offsetWidth
+      const want = (P.width * target) / 100 - w / 2
+      c.style.left = `${Math.max(lo, Math.min(hi - w, want))}px`
+      c.style.visibility = hi - lo >= w ? 'visible' : 'hidden' // no room at all (a very narrow screen): the line under the card still says it
+    }
+    place()
+    const ro = new ResizeObserver(place)
+    ro.observe(el)
+    if (time.current) ro.observe(time.current)
+    document.fonts?.ready.then(place).catch(() => {})
+    return () => ro.disconnect()
+  }, [chipText, target, clock])
+
+  const when = statusText(row, showDay, row.detail)
+  const label =
+    `${row.homeName} vs ${row.awayName}, ${when}.` +
+    (done
+      ? ` Final: ${row.home} ${row.homeScore}, ${row.away} ${row.awayScore}.`
+      : t
+        ? ` Fair chance: ${row.home} ${fmtPct(t.home)}, draw ${fmtPct(t.draw)}, ${row.away} ${fmtPct(t.away)}.`
+        : ' No Kalshi price yet.')
+
+  return (
+    <div
+      ref={plate}
+      role='img'
+      aria-label={label}
+      className={cn(
+        'relative overflow-hidden rounded-[18px] text-white',
+        big ? 'h-[248px] rounded-none' : 'h-[132px]',
+        row.state === 'post' && 'opacity-80'
+      )}
+      style={{ background }}
+    >
+      <LogoMark sport={row.sport} code={row.home} id={row.ids?.home} className={big ? '-start-10 top-6 size-56' : '-start-8 top-3 size-36'} />
+      <LogoMark sport={row.sport} code={row.away} id={row.ids?.away} className={big ? '-end-10 top-6 size-56' : '-end-8 top-3 size-36'} />
+      <div aria-hidden='true' className='absolute inset-0 bg-black/25' />
+      {(done ? [50] : [c1, c2]).map((x, i) => (
+        <div
+          key={i}
+          aria-hidden='true'
+          className='absolute -top-4 -bottom-4 w-[2px] bg-black/50'
+          style={{ left: `${x.toFixed(1)}%`, transform: `rotate(${ANGLE - 90}deg)` }}
+        />
+      ))}
+      {chipText && (
+        <div
+          ref={chip}
+          aria-hidden='true'
+          className={cn(
+            'absolute z-[3] rounded-full border-[1.5px] border-white/20 bg-[#0c0f14] px-[11px] pt-[5px] pb-1 font-condensed text-[14px] leading-none font-extrabold tracking-[0.06em] whitespace-nowrap text-[#f2f4f8]',
+            big ? 'top-[18px]' : 'top-[10px]'
+          )}
+          style={{ left: `calc(${target}% - 40px)` }}
+        >
+          {chipText}
+        </div>
+      )}
+
+      <div className={cn('relative flex h-full flex-col justify-between', big ? 'px-5 pt-4 pb-5' : 'px-4 py-3')}>
+        <div className='flex items-center justify-between text-xs font-semibold text-white/90'>
+          <span ref={time} className={cn('flex items-center gap-1.5', live && 'text-[#b5ffd0]')}>
+            {live && <span aria-hidden='true' className='size-1.5 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />}
+            {statusText(row, showDay, clock)}
+          </span>
+          <span ref={tag}>{leagueTag(row.sport)}</span>
+        </div>
+
+        <div className='flex items-end justify-between gap-3'>
+          <Side
+            sport={row.sport}
+            teamId={row.ids?.home}
+            color={home}
+            code={row.home}
+            name={row.homeName}
+            pct={t ? t.home : null}
+            score={live || row.state === 'post' ? row.homeScore : null}
+            won={done && row.homeScore! > row.awayScore!}
+            big={big}
+          />
+          <Side
+            sport={row.sport}
+            teamId={row.ids?.away}
+            color={away}
+            code={row.away}
+            name={row.awayName}
+            pct={t ? t.away : null}
+            score={live || row.state === 'post' ? row.awayScore : null}
+            won={done && row.awayScore! > row.homeScore!}
+            big={big}
+            right
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// The line under a soccer card: the three fair chances (live: Kalshi's now), or the final score
+export function soccerLine(row: GameRow) {
+  const t = row.three
+  if (row.state === 'post' && row.homeScore != null && row.awayScore != null) {
+    const w = row.homeScore > row.awayScore ? row.home : row.awayScore > row.homeScore ? row.away : null
+    return { lead: 'Final', text: `${row.home} ${row.homeScore}–${row.awayScore} ${row.away}${w ? ` · ${w} won` : ' · Draw'}` }
+  }
+  if (!t) return { lead: 'Fair', text: 'no Kalshi price yet' }
+  return {
+    lead: row.state === 'in' ? 'Now' : 'Fair',
+    text: `${row.home} ${fmtPct(t.home)} · Draw ${fmtPct(t.draw)} · ${row.away} ${fmtPct(t.away)}`,
+  }
+}
+export function soccerPrices(row: GameRow) {
+  const m = row.ml3
+  return m ? `${fmtAmerican(m.home)} / ${fmtAmerican(m.draw)} / ${fmtAmerican(m.away)}` : '—'
 }
 
 function Side({

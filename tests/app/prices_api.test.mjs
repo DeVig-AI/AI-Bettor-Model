@@ -15,6 +15,16 @@ test("only game-winner tickers get through, deduped and capped", () => {
   assert.deepEqual(parseTickers(""), []);
 });
 
+test("soccer's other match and player markets get through too; other leagues' and odd shapes do not", () => {
+  const ok = ["KXEPLSPREAD-26NOV08EVECOV-EVE2", "KXEPLTOTAL-26NOV08EVECOV-3", "KXEPLBTTS-26NOV08EVECOV-BTTS",
+              "KXLIGAMXGAME-26NOV08AMECRU-TIE", "KXEPLSCORE-26NOV08EVECOV-EVE2COV1", "KXEPL1HSCORE-26NOV08EVECOV-EVE0COV0",
+              "KXEPL2HTOTAL-26NOV08EVECOV-1", "KXEPLGOAL-26NOV08EVECOV-EVEBETO9-1", "KXEPLFIRSTGOAL-26NOV08EVECOV-EVEBETO9",
+              "KXUCLSOA-26NOV08RMALIV-RMAKMBAP10", "KXEPLCORNERS-26NOV08EVECOV-9"];
+  const bad = ["KXNFLSPREAD-26NOV01ATLTB-TB7", "KXEPLHSCORE-26NOV08EVECOV-EVE0COV0", "KXEPLGOAL-26NOV08EVECOV-EVE-1-1",
+               "KXEPLLEADER-27GOAL-HKANE"];
+  assert.deepEqual(parseTickers([...ok, ...bad].join(",")), ok);
+});
+
 test("returns Kalshi's prices, names what's missing, and shares one request for 30 seconds", async () => {
   let calls = 0, t = 1_000_000;
   const fetcher = async url => {

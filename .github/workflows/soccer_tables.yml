@@ -1,0 +1,34 @@
+name: Soccer tables -- each league's standings and every team's results (display only)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */3 * * *'   # every 3 hours; ESPN's public standings and schedules, no keys, nothing bet
+permissions:
+  contents: write
+concurrency:
+  group: soccer-tables
+  cancel-in-progress: true
+jobs:
+  tables:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build the tables file (tools/soccer_tables.py; keeps the old file if ESPN gives nothing)
+        run: python3 tools/soccer_tables.py
+      - name: Kalshi's season markets, teams matched to the tables (tools/soccer_futures.py; public, no key)
+        run: python3 tools/soccer_futures.py || echo "soccer_futures failed; the tables are still saved"
+      - name: Save it
+        run: |
+          [ -f live/soccer_tables.json ] || [ -f live/soccer_futures.json ] || exit 0
+          git config user.name "sports-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if [ -f live/soccer_tables.json ]; then git add live/soccer_tables.json; fi
+          if [ -f live/soccer_futures.json ]; then git add live/soccer_futures.json; fi
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Soccer tables $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1

@@ -1,21 +1,23 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Search } from 'lucide-react'
-import { RS_SPORTS, rsNum, rsShort, rsSigned, seasonYear, teamColor, useRsIndex } from '@/lib/research'
+import { RS_SPORTS, rsIndexQuery, rsNum, rsShort, rsSigned, seasonYear, teamColor } from '@/lib/research'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { SoccerTables } from './soccer'
 
-// Research home: DeVig's power rankings and a player search, per sport. Numbers to check for yourself, no picks.
+// Research home: DeVig's power rankings and a player search, per sport; for soccer, each league's table. Numbers to check for yourself, no picks.
 
 const updatedFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const KEY = 'devig_rs_sport'
 const saved = () => {
   try {
     const s = localStorage.getItem(KEY)
-    return s && (RS_SPORTS as readonly string[]).includes(s) ? s : 'NBA'
+    return s && (s === 'SOCCER' || (RS_SPORTS as readonly string[]).includes(s)) ? s : 'NBA'
   } catch {
     return 'NBA'
   }
@@ -38,7 +40,8 @@ export function Research() {
   const [sport, setSportRaw] = useState(saved)
   const [tab, setTab] = useState<'rank' | 'players'>('rank')
   const [q, setQ] = useState('')
-  const { data: idx, isLoading, error } = useRsIndex(sport)
+  const soccer = sport === 'SOCCER'
+  const { data: idx, isLoading, error } = useQuery({ ...rsIndexQuery(soccer ? 'NBA' : sport), enabled: !soccer })
   const setSport = (s: string) => {
     setSportRaw(s)
     setQ('')
@@ -72,24 +75,26 @@ export function Research() {
 
         <div className='flex flex-col gap-2'>
           <div className='no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4'>
-            {RS_SPORTS.map((s) => (
+            {[...RS_SPORTS, 'SOCCER'].map((s) => (
               <button key={s} type='button' aria-pressed={sport === s} onClick={() => setSport(s)}
                 className={cn('h-9 shrink-0 rounded-full border px-4 text-sm font-medium text-muted-foreground', sport === s && 'border-foreground bg-foreground text-background')}>
-                {s}
+                {s === 'SOCCER' ? 'Soccer' : s}
               </button>
             ))}
           </div>
-          <div role='tablist' className='grid grid-cols-2 rounded-xl bg-card p-1'>
+          {!soccer && <div role='tablist' className='grid grid-cols-2 rounded-xl bg-card p-1'>
             {([['rank', 'Power rankings'], ['players', 'Players']] as const).map(([k, label]) => (
               <button key={k} type='button' role='tab' aria-selected={tab === k} onClick={() => setTab(k)}
                 className={cn('h-9 rounded-lg text-sm font-semibold text-muted-foreground', tab === k && 'bg-background text-foreground shadow-sm')}>
                 {label}
               </button>
             ))}
-          </div>
+          </div>}
         </div>
 
-        {error ? (
+        {soccer ? (
+          <SoccerTables />
+        ) : error ? (
           <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>
             These stats aren&apos;t available right now. Check your connection and try again.
           </p>

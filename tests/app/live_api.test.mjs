@@ -2,7 +2,7 @@
 // and team stats; NBA plays with shot spots, the run, quarter scores and the box; NHL and MLB plays, periods and box.   node --test tests/app/live_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { nflSpot, nflGame, nbaShot, nbaGame, nhlGame, nhlEnds, mlbGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
+import { nflSpot, nflGame, nbaShot, nbaGame, nhlGame, nhlEnds, mlbGame, soccerGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
 import { scoreboard as espnScoreboard, summary, espnFetcher } from "./espn_nfl_fixture.mjs";
 import { summary as nbaSummary } from "./espn_nba_fixture.mjs";
 import { nhlSummary, mlbSummary, mlbScoreboard } from "./espn_more_fixture.mjs";
@@ -214,4 +214,43 @@ test("cbb reads ESPN's men's Division I scoreboard, with team ids and names, and
   const r = await (await handle(new Request("https://x/api/live?sport=cbb&event=9701&game=1"),
     async url => ({ok: true, status: 200, json: async () => /summary/.test(url) ? nbaSummary() : {events: []}}))).json();
   assert.equal(r.game.plays.length, 7);
+});
+
+test("soccer: goals, cards and substitutions on the right side, match stats and line-ups", () => {
+  const ev = (type, min, team, names, extra = {}) => ({type: {type}, clock: {displayValue: min}, team: {id: team},
+    participants: names.map(n => ({athlete: {displayName: n}})), wallclock: "2026-11-08T15:20:00Z", ...extra});
+  const g = soccerGame({
+    header: {competitions: [{competitors: [{homeAway: "home", team: {id: "1"}}, {homeAway: "away", team: {id: "2"}}]}]},
+    keyEvents: [
+      ev("kickoff", "0'", null, []),
+      ev("goal", "16'", "2", ["Away Striker", "Away Mid"], {scoringPlay: true}),
+      ev("yellow-card", "45'+2'", "1", ["Home Back"]),
+      ev("substitution", "60'", "1", ["Home Sub", "Home Back"]),
+      ev("penalty---scored", "70'", "1", ["Home Nine"], {scoringPlay: true}),
+      ev("own-goal", "80'", "1", ["Away Back"], {scoringPlay: true}),
+      ev("red-card", "88'", "2", ["Away Mid"]),
+    ],
+    boxscore: {teams: [
+      {homeAway: "home", statistics: [{name: "possessionPct", displayValue: "56.4"}, {name: "totalShots", displayValue: "17"}, {name: "junk", displayValue: "1"}]},
+      {homeAway: "away", statistics: [{name: "possessionPct", displayValue: "43.6"}, {name: "totalShots", displayValue: "10"}]},
+    ]},
+    rosters: [{homeAway: "home", formation: "4-3-3", roster: [
+      {starter: true, jersey: "9", formationPlace: "11", athlete: {displayName: "Home Nine"}, position: {abbreviation: "F"}},
+      {starter: true, jersey: "1", formationPlace: "1", athlete: {displayName: "Home Keeper"}, position: {abbreviation: "G"}},
+      {starter: false, jersey: "14", subbedIn: true, athlete: {displayName: "Home Sub"}, position: {abbreviation: "M"}},
+    ]}],
+  });
+  assert.deepEqual(g.events.map(e => [e.min, e.kind, e.side, e.who, e.other]), [
+    ["16'", "goal", "away", "Away Striker", "Away Mid"],
+    ["45'+2'", "yellow", "home", "Home Back", ""],
+    ["60'", "sub", "home", "Home Sub", "Home Back"],                 // ESPN lists the player coming on first
+    ["70'", "pen", "home", "Home Nine", ""],
+    ["80'", "own", "home", "Away Back", ""],
+    ["88'", "red", "away", "Away Mid", ""],
+  ]);
+  assert.deepEqual(g.stats, {home: {possession: 56.4, shots: 17}, away: {possession: 43.6, shots: 10}});
+  assert.equal(g.lineups.home.formation, "4-3-3");
+  assert.deepEqual(g.lineups.home.xi.map(p => p[0]), ["1", "9"]);      // in formation order, keeper first
+  assert.deepEqual(g.lineups.home.subs, [["14", "Home Sub", "M", true]]);
+  assert.deepEqual(soccerGame({}), {events: [], stats: {}, lineups: {}});
 });

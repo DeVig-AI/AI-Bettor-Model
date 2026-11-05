@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { BookOpen, RefreshCw, Search as SearchIcon, Star } from 'lucide-react'
 import { type Level, useExperience } from '@/lib/experience'
-import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
+import { type GameRow, SOCCER, fmtAmerican, fmtPct, isSoccer, useGames } from '@/lib/devig'
 import { isFavorite, usePrefs } from '@/lib/profile'
 import { labFor, useDevigFiles, useLab } from '@/lib/lab'
 import { useTracked } from '@/lib/track'
@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Plate, isPick } from './plate'
+import { Plate, isPick, leagueTag, soccerLine, soccerPrices } from './plate'
 import { PlateTaps } from './plate-taps'
 
 type Day = 'today' | 'tomorrow' | 'week'
@@ -48,7 +48,35 @@ function ago(d: Date | null) {
 }
 
 // ---------- one game: plate + the line under it ----------
+// a soccer game: the card and its three chances (no picks, game page or parlay legs for soccer yet)
+function SoccerItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
+  const line = soccerLine(row)
+  return (
+    <li className='flex flex-col gap-2'>
+      <Link to='/game/$id' params={{ id: row.id }} aria-label={`${row.homeName} vs ${row.awayName}, open the match`}
+        className='block rounded-[18px] transition-opacity duration-150 hover:opacity-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'>
+        <Plate row={row} showDay={showDay} />
+      </Link>
+      <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-sm'>
+        <span className='font-condensed text-muted-foreground tabular-nums'>
+          <span className='font-semibold text-foreground/85'>{line.lead}</span> {line.text}
+        </span>
+        {row.state !== 'post' && (
+          <span className='font-condensed text-muted-foreground tabular-nums' title='Kalshi prices: home / draw / away'>
+            {soccerPrices(row)}
+          </span>
+        )}
+      </div>
+    </li>
+  )
+}
+
 function GameItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
+  if (isSoccer(row.sport)) return <SoccerItem row={row} showDay={showDay} />
+  return <TwoWayItem row={row} showDay={showDay} />
+}
+
+function TwoWayItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
   const p = row.pick
   const picked = isPick(row)
   const passLean = !picked && p?.lean && p.leanProb != null ? p.lean : null // a pass: the side the model leaned to
@@ -221,12 +249,19 @@ export function Games() {
   const [query, setQuery] = useState('')
 
   const dayRows = useMemo(() => rows.filter((r) => inDay(r, day)), [rows, day])
-  const leagues = useMemo(() => Array.from(new Set(dayRows.map((r) => r.sport))).sort(), [dayRows])
+  // one Soccer chip (after All) that opens soccer's leagues in SOCCER's order (the big five, Europe's
+  // cups, the Americas), then US leagues A to Z. league is 'ALL', a US league, 'SOCCER' (every soccer game) or one soccer league.
+  const [leagues, soccerLeagues] = useMemo(() => {
+    const all = Array.from(new Set(dayRows.map((r) => r.sport)))
+    const order = Object.keys(SOCCER)
+    return [all.filter((s) => !isSoccer(s)).sort(), all.filter(isSoccer).sort((a, b) => order.indexOf(a) - order.indexOf(b))]
+  }, [dayRows])
+  const inSoccer = league === 'SOCCER' || isSoccer(league)
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase()
     return dayRows.filter(
       (r) =>
-        (league === 'ALL' || r.sport === league) &&
+        (league === 'ALL' || r.sport === league || (league === 'SOCCER' && isSoccer(r.sport))) &&
         (!picksOnly || isPick(r)) &&
         (!mineOnly || mine(r)) &&
         (!q || `${r.away} ${r.home} ${r.awayName} ${r.homeName}`.toLowerCase().includes(q))
@@ -295,9 +330,12 @@ export function Games() {
           </Alert>
         )}
 
-        <div className='flex flex-col gap-3 lg:flex-row lg:items-center'>
+        <div className='flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center'>
           <div role='group' aria-label='League' className='no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0'>
             <Chip active={league === 'ALL'} onClick={() => setLeague('ALL')}>All</Chip>
+            {soccerLeagues.length > 0 && (
+              <Chip active={inSoccer} aria-expanded={inSoccer} onClick={() => setLeague('SOCCER')}>Soccer</Chip>
+            )}
             {leagues.map((l) => (
               <Chip key={l} active={league === l} onClick={() => setLeague(l)}>{l}</Chip>
             ))}
@@ -325,6 +363,18 @@ export function Games() {
               <Star className={cn('size-3.5', mineOnly && 'fill-current')} aria-hidden='true' /> Mine
             </button>
           </div>
+          {inSoccer && soccerLeagues.length > 0 && (
+            <div role='tablist' aria-label='Soccer league'
+              className='no-scrollbar -mx-4 flex gap-1 overflow-x-auto border-b px-4 lg:order-last lg:mx-0 lg:basis-full lg:px-0'>
+              {['SOCCER', ...soccerLeagues].map((l) => (
+                <button key={l} type='button' role='tab' aria-selected={league === l} onClick={() => setLeague(l)}
+                  className={cn('-mb-px h-10 shrink-0 border-b-2 border-transparent px-3 text-[13px] font-semibold text-muted-foreground transition-colors duration-150',
+                    league === l && 'border-foreground text-foreground')}>
+                  {l === 'SOCCER' ? 'All soccer' : leagueTag(l)}
+                </button>
+              ))}
+            </div>
+          )}
           <div className='flex gap-2 lg:ms-auto'>
             <div role='radiogroup' aria-label='Day' className='flex h-10 shrink-0 rounded-xl border bg-sidebar p-1'>
               {DAYS.map((d) => (

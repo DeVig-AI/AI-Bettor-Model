@@ -2,7 +2,7 @@
 // games, cbb: men's Division I basketball games, both with team names and ESPN ids, which the college boards match on); adding &event=<ESPN id>
 // (any sport) returns that game's box score as {players: {name: {stat: value}}} (NFL, CFB, NBA, WNBA), and &game=1 also returns
 // game: {plays, drive, situation, scoring, team_stats, box} for the game page (NBA: {plays with shot spots, run,
-// linescore, box}; NHL and MLB: {plays, linescore, box}); NFL and CFB plays also carry at (unix seconds), from, to
+// linescore, box}; NHL and MLB: {plays, linescore, box}; soccer: {events, stats, lineups}); NFL and CFB plays also carry at (unix seconds), from, to
 // and fd (field spots) and drive (its index) for the v2 3D field. NFL and CFB scoreboard games in progress carry
 // situation (down, distance, field spot) for the field tracker. Display only, unofficial.
 // The app polls this every ~20 seconds while a game is on, instead of waiting for the GitHub bot's commits
@@ -14,7 +14,10 @@
 
 export const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
 export const SPORTS = {nfl: "football/nfl", nba: "basketball/nba", mlb: "baseball/mlb", nhl: "hockey/nhl", wnba: "basketball/wnba",
-                cfb: "football/college-football", cbb: "basketball/mens-college-basketball"};
+                cfb: "football/college-football", cbb: "basketball/mens-college-basketball",
+                // soccer: the app's league codes from tools/soccer_lines.py
+                epl: "soccer/eng.1", laliga: "soccer/esp.1", seriea: "soccer/ita.1", bund: "soccer/ger.1", ligue1: "soccer/fra.1",
+                ucl: "soccer/uefa.champions", uel: "soccer/uefa.europa", uecl: "soccer/uefa.europa.conf", mls: "soccer/usa.1", ligamx: "soccer/mex.1"};
 const QUERY = {cfb: "?groups=80&limit=500",        // every FBS game, not just ESPN's featured ones
                cbb: "?groups=50&limit=500"};       // every men's Division I game
 // ESPN codes -> the app's team codes (same table as kalshi_games_v1.ALIASES, ESPN side)
@@ -25,7 +28,9 @@ const ALIASES = {
 };
 const SCORE_TTL = 5, BOX_TTL = 6, SCHED_TTL = 1800;          // seconds
 // each sport's game page parser (the app's kinds: football, hoops, hockey, baseball)
-export const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball"};
+export const KIND = {nfl: "football", cfb: "football", nba: "hoops", wnba: "hoops", cbb: "hoops", nhl: "hockey", mlb: "baseball",
+  epl: "soccer", laliga: "soccer", seriea: "soccer", bund: "soccer", ligue1: "soccer", ucl: "soccer", uel: "soccer", uecl: "soccer",
+  mls: "soccer", ligamx: "soccer"};
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -523,7 +528,7 @@ export async function handle(request, fetcher = fetch) {
       if (!/^\d{1,12}$/.test(event)) return json({error: "bad event"}, 400);
       const kind = KIND[sport], d = await cachedJson(`${ESPN}${SPORTS[sport]}/summary?event=${event}`, BOX_TTL, fetcher);
       const body = {sport, event, at: new Date().toISOString(), players: kind === "hoops" ? nbaBox(d) : kind === "football" ? nflBox(d) : {}};
-      if (q.get("game") === "1") body.game = GAME[kind](d, teamCode(sport));
+      if (q.get("game") === "1" && GAME[kind]) body.game = GAME[kind](d, teamCode(sport));
       if (q.get("wrap") === "1") body.wrap = slimSummary(d);
       return json(body, 200, 4);
     }
@@ -570,4 +575,52 @@ export async function onRequest(context) {
   return handle(context.request);
 }
 
-export const GAME = {football: (d, c) => nflGame(d, c), hoops: (d, c) => nbaGame(d, c), hockey: (d, c) => nhlGame(d, c), baseball: (d, c) => mlbGame(d, c)};
+export const GAME = {football: (d, c) => nflGame(d, c), hoops: (d, c) => nbaGame(d, c), hockey: (d, c) => nhlGame(d, c), baseball: (d, c) => mlbGame(d, c),
+                     soccer: d => soccerGame(d)};
+
+// Soccer summary -> the game page's match file: the key events (goals, cards, substitutions; ESPN's minute, side and
+// wallclock), each side's match stats, and the line-ups once ESPN has them (about an hour before kickoff).
+//   events: [{min, kind: goal|own|pen|yellow|red|sub, side: home|away, who, other (assist, or the player off), at}]
+//   stats: {home: {...}, away: {...}}  lineups: {home: {formation, xi: [[shirt, name, pos]], subs: [[shirt, name, pos, on]]}}
+const SOCCER_STATS = {possessionPct: "possession", totalShots: "shots", shotsOnTarget: "on_target", wonCorners: "corners",
+  foulsCommitted: "fouls", yellowCards: "yellow", redCards: "red", offsides: "offsides", saves: "saves",
+  accuratePasses: "passes_ok", totalPasses: "passes"};
+export function soccerGame(d) {
+  const comp = (((d.header || {}).competitions) || [])[0] || {};
+  const side = {};
+  for (const c of comp.competitors || []) side[String((c.team || {}).id)] = c.homeAway;
+  const events = [];
+  for (const k of d.keyEvents || []) {
+    const t = String(((k.type || {}).type) || "").toLowerCase();
+    const who = (k.participants || []).map(p => ((p.athlete || {}).displayName) || "");
+    let kind = null;
+    if (t.includes("own-goal")) kind = "own";
+    else if (k.scoringPlay && t.includes("penalty")) kind = "pen";
+    else if (k.scoringPlay || t === "goal" || t.startsWith("goal-")) kind = "goal";
+    else if (t.includes("red-card") || t.includes("yellow-red")) kind = "red";
+    else if (t.includes("yellow-card")) kind = "yellow";
+    else if (t === "substitution") kind = "sub";
+    if (!kind || k.shootout) continue;
+    const s = side[String((k.team || {}).id)];
+    if (!s) continue;
+    events.push({min: ((k.clock || {}).displayValue) || "", kind, side: s, who: who[0] || "", other: who[1] || "",
+                 at: k.wallclock || null});
+  }
+  const stats = {};
+  for (const t of (d.boxscore || {}).teams || []) {
+    if (!t.homeAway) continue;
+    const o = {};
+    for (const x of t.statistics || []) if (SOCCER_STATS[x.name]) o[SOCCER_STATS[x.name]] = num(x.displayValue);
+    stats[t.homeAway] = o;
+  }
+  const lineups = {};
+  for (const r of d.rosters || []) {
+    const ro = r.roster || [];
+    if (!r.homeAway || !ro.length) continue;
+    const row = p => [String(p.jersey || ""), ((p.athlete || {}).displayName) || "", ((p.position || {}).abbreviation) || ""];
+    lineups[r.homeAway] = {formation: r.formation || null,
+      xi: ro.filter(p => p.starter).sort((a, b) => num(a.formationPlace) - num(b.formationPlace)).map(row),
+      subs: ro.filter(p => !p.starter).map(p => [...row(p), !!p.subbedIn])};
+  }
+  return {events, stats, lineups};
+}

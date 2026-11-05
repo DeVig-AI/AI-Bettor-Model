@@ -2,6 +2,8 @@
 // ESPN's combiner so a list of games stays light. The board uses NBA/NFL-style codes; ESPN's image paths use its own
 // for a few teams, and a code ESPN doesn't know returns a blank placeholder, so the odd ones are mapped here.
 const LEAGUE: Record<string, string> = { NFL: 'nfl', NBA: 'nba', MLB: 'mlb', NHL: 'nhl', WNBA: 'wnba', CFB: 'ncaa', CBB: 'ncaa' }
+// soccer leagues (lib/devig.ts SOCCER): ESPN keeps every club's logo under its team id
+for (const s of ['EPL', 'LALIGA', 'SERIEA', 'BUND', 'LIGUE1', 'UCL', 'UEL', 'UECL', 'MLS', 'LIGAMX']) LEAGUE[s] = 'soccer'
 const ESPN_CODE: Record<string, Record<string, string>> = {
   NBA: { GSW: 'gs', NOP: 'no', NYK: 'ny', SAS: 'sa', UTA: 'utah', WAS: 'wsh' },
   NFL: { WAS: 'wsh', LA: 'lar' },
@@ -17,13 +19,14 @@ export function teamLogo(sport: string, code: string, id?: string | null, px = 1
   const lg = LEAGUE[sport]
   if (!lg || !code) return null
   if (lg === 'ncaa') return id ? sized(`/i/teamlogos/ncaa/500/${id}.png`, px) : null
+  if (lg === 'soccer') return id && /^\d+$/.test(id) ? sized(`/i/teamlogos/soccer/500/${id}.png`, px) : null
   return sized(`/i/teamlogos/${lg}/500/${espnCode(sport, code)}.png`, px)
 }
 
 // pid: ESPN's athlete id (the NBA props model learns from ESPN box scores, so its explanations carry it)
 export function headshot(sport: string, pid?: string | null, px = 200): string | null {
   const lg = LEAGUE[sport]
-  if (!lg || lg === 'ncaa' || !pid || !/^\d+$/.test(pid)) return null
+  if (!lg || lg === 'ncaa' || lg === 'soccer' || !pid || !/^\d+$/.test(pid)) return null
   // ESPN's headshots are 600x436 (wider than tall): keep that shape, or the face gets squeezed into a square.
   // The circle crops the sides.
   return sized(`/i/headshots/${lg}/players/full/${pid}.png`, px, Math.round((px * 600) / 436))
