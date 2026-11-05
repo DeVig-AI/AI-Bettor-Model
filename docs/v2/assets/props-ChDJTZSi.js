@@ -1,1 +1,0 @@
-import{n as e}from"./props-qcaF7v20.js";var t=e;export{t as component};
