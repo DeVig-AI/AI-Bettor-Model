@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-05T03:33:41+00:00",
+ "updated": "2026-11-05T12:31:29+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -31,8 +31,8 @@
    "home_id": "12",
    "away_id": "14",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "MIA 117, LAC 116",
    "type": "side",
    "pick": "MIA",
    "line": -6.5,
@@ -56,8 +56,8 @@
    "home_id": "7",
    "away_id": "28",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "TOR 109, DEN 128",
    "type": "side",
    "pick": "DEN",
    "line": -4.5,
@@ -78,8 +78,8 @@
    "home_id": "21",
    "away_id": "22",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "POR 132, PHX 119",
    "type": "side",
    "pick": "PHX",
    "line": 2.5,
@@ -101,8 +101,8 @@
    "home_id": "10",
    "away_id": "16",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "MIN 117, HOU 107",
    "type": "total",
    "pick": "OVER",
    "line": 218.5,
@@ -123,8 +123,8 @@
    "home_id": "10",
    "away_id": "16",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "MIN 117, HOU 107",
    "type": "side",
    "pick": "HOU",
    "line": -7.5,
@@ -183,6 +183,105 @@
  ],
  "reads": [
   {
+   "id": "401909294",
+   "date": "2026-11-06",
+   "start": "2026-11-07T03:00Z",
+   "game": "POR @ LAL",
+   "home": "LAL",
+   "away": "POR",
+   "home_id": "13",
+   "away_id": "22",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909295",
+   "date": "2026-11-06",
+   "start": "2026-11-07T03:00Z",
+   "game": "SA @ SAC",
+   "home": "SAC",
+   "away": "SA",
+   "home_id": "23",
+   "away_id": "24",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909290",
+   "date": "2026-11-06",
+   "start": "2026-11-07T01:00Z",
+   "game": "UTAH @ DAL",
+   "home": "DAL",
+   "away": "UTAH",
+   "home_id": "6",
+   "away_id": "26",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909291",
+   "date": "2026-11-06",
+   "start": "2026-11-07T01:00Z",
+   "game": "OKC @ MEM",
+   "home": "MEM",
+   "away": "OKC",
+   "home_id": "29",
+   "away_id": "25",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909292",
+   "date": "2026-11-06",
+   "start": "2026-11-07T01:00Z",
+   "game": "TOR @ MIL",
+   "home": "MIL",
+   "away": "TOR",
+   "home_id": "15",
+   "away_id": "28",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909293",
+   "date": "2026-11-06",
+   "start": "2026-11-07T01:00Z",
+   "game": "MIN @ NO",
+   "home": "NO",
+   "away": "MIN",
+   "home_id": "3",
+   "away_id": "16",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909289",
+   "date": "2026-11-06",
+   "start": "2026-11-07T00:30Z",
+   "game": "PHI @ CLE",
+   "home": "CLE",
+   "away": "PHI",
+   "home_id": "5",
+   "away_id": "20",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909287",
+   "date": "2026-11-06",
+   "start": "2026-11-07T00:00Z",
+   "game": "WSH @ ATL",
+   "home": "ATL",
+   "away": "WSH",
+   "home_id": "1",
+   "away_id": "27",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909288",
+   "date": "2026-11-06",
+   "start": "2026-11-07T00:00Z",
+   "game": "BOS @ CHA",
+   "home": "CHA",
+   "away": "BOS",
+   "home_id": "30",
+   "away_id": "2",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
    "id": "401909937",
    "date": "2026-11-05",
    "start": "2026-11-06T03:00Z",
@@ -191,7 +290,28 @@
    "away": "MIA",
    "home_id": "9",
    "away_id": "14",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "GS",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "MIA: Second night of a back-to-back, both on the road, after overtime"
+    ],
+    "why_opp": [
+     "MIA: Fade the line move: MIA went from +4.5 to +7.5"
+    ]
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 235.5,
+    "score": 1.5,
+    "why_for": [
+     "MIA on tired legs (back-to-back)",
+     "Buy low on the dropping total: 238.5 to 235.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401909936",
@@ -202,7 +322,27 @@
    "away": "ORL",
    "home_id": "21",
    "away_id": "19",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "ORL",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Paolo Banchero (24 points a game) is out",
+     "PHX: Second night of a back-to-back",
+     "PHX: Struggling team (one win or fewer)"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 223.5,
+    "score": 0.5,
+    "why_for": [
+     "PHX on tired legs (back-to-back)"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401909935",
