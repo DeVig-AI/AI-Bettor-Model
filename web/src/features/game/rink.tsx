@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { type GameRow } from '@/lib/devig'
 import { biggestMoves, moveOf, periodLabel, useFieldPlays, usePriceLine, type Move, type PricePoint } from '@/lib/field'
@@ -121,15 +121,19 @@ function RinkCard({ row, plays, goals, byId }: { row: GameRow; plays: RinkPlay[]
   }, [shown, n, reduce, runK])
   const replay = () => { setPick(null); setShown(0); setRunK((r) => r + 1) }
 
-  const plane = useRef<HTMLDivElement>(null)
+  // px per foot on the ice as drawn. The rink is rebuilt for each goal (it restarts the camera move), so measure
+  // whichever one is on the page; one that's gone reads 0 and is ignored
   const [k, setK] = useState(1.75)
-  useEffect(() => {
-    const el = plane.current
+  const ro = useRef<ResizeObserver | null>(null)
+  const plane = useCallback((el: HTMLDivElement | null) => {
+    ro.current?.disconnect()
     if (!el) return
-    const ro = new ResizeObserver(() => setK(el.clientWidth / RINK.w || 1.75))
-    ro.observe(el)
-    return () => ro.disconnect()
+    const measure = () => { if (el.clientWidth > 0) setK(el.clientWidth / RINK.w) }
+    measure()
+    ro.current = new ResizeObserver(measure)
+    ro.current.observe(el)
   }, [])
+  useEffect(() => () => ro.current?.disconnect(), [])
 
   const colors = row.colors ?? { away: '#5b6472', home: '#5b6472' }
   const colorOf = (team: string | null) => (team === row.away ? colors.away : colors.home)
@@ -250,22 +254,50 @@ function Upright({ k, at, z = 0, children }: { k: number; at: Pt; z?: number; ch
   )
 }
 
-// the net, seen from the side: red posts and crossbar, white mesh to the back; it bulges when the puck goes in
+// the net, built in 3D on the ice so it turns with the rink: red posts and crossbar, a white mesh on both sides, the
+// back and the roof, and its shadow. Drawn a bit over twice life size so it reads on a phone. The mesh bulges back
+// when the puck goes in.
+const NET = { w: 6, h: 4, d: 3.4, top: 1.5, grow: 2.2 } // feet: mouth width, height, depth at the ice and at the roof
+const MESH: CSSProperties = {
+  position: 'absolute', left: 0, top: 0, transformOrigin: '0 0', backfaceVisibility: 'visible',
+  backgroundColor: 'rgba(255,255,255,.16)',
+  backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,.85) 0 .7px, transparent .7px 3px), ' +
+    'repeating-linear-gradient(-45deg, rgba(255,255,255,.85) 0 .7px, transparent .7px 3px)',
+}
+const PIPE: CSSProperties = { position: 'absolute', left: 0, top: 0, transformOrigin: '0 0', background: RED, borderRadius: 1 }
 function Net({ k, left, bulge }: { k: number; left: boolean; bulge: string | null }) {
-  const w = Math.max(14, 5 * k * 2.2), h = Math.max(12, 4 * k * 2.2)
+  const n = k * NET.grow
+  const W = NET.w * n, H = NET.h * n, D = NET.d * n, T = NET.top * n, P = Math.max(1.5, n * 0.3)
+  const back = Math.hypot(D - T, H), tilt = (Math.atan2(-H, -(D - T)) * 180) / Math.PI
+  const side = (y: number): CSSProperties => ({ ...MESH, top: y, width: D, height: H, transform: 'rotateX(90deg)',
+    clipPath: `polygon(0 0, 100% 0, ${(T / D) * 100}% 100%, 0 100%)` })
+  // a post or the crossbar as two crossed strips, so it has width from any side
+  const post = (y: number) => (
+    <>
+      <div style={{ ...PIPE, left: -P / 2, top: y, width: P, height: H, transform: 'rotateX(90deg)' }} />
+      <div style={{ ...PIPE, top: y - P / 2, width: H, height: P, transform: 'rotateY(-90deg)' }} />
+    </>
+  )
   return (
-    <Upright k={k} at={{ x: left ? RINK.goal - 1.4 : RINK.w - RINK.goal + 1.4, y: 42.5 }}>
-      <svg viewBox='0 0 10 8' width={w} height={h} className='block overflow-visible' style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,.5))' }}>
-        <g transform={left ? undefined : 'translate(10 0) scale(-1 1)'}>
-          <g key={bulge ?? 'still'} style={bulge ? { transformBox: 'fill-box', transformOrigin: '100% 100%', animation: `rk-net .7s ${HIT}s ease-out` } : undefined}>
-            <path d='M8.6 .8 Q2.6 .6 1.2 4.6 L1.6 8 H8.6' fill='rgba(255,255,255,.55)' stroke='#fff' strokeWidth='.25' />
-            <path d='M2 6 H8.6 M2.6 4 H8.6 M4.4 2 H8.6 M3.4 1.6 V8 M5.2 1 V8 M7 .9 V8' stroke='#fff' strokeOpacity='.8' strokeWidth='.15' fill='none' />
-          </g>
-          <path d='M8.6 8 V.8 Q4.6 .6 3 1.6' stroke={RED} strokeWidth='.6' fill='none' strokeLinecap='round' />
-          <path d='M1.2 8 H8.6' stroke={RED} strokeWidth='.5' strokeLinecap='round' />
-        </g>
-      </svg>
-    </Upright>
+    <div aria-hidden='true' className='pointer-events-none absolute size-0'
+      style={{ left: (left ? RINK.goal : RINK.w - RINK.goal) * k, top: 42.5 * k - W / 2, transformStyle: 'preserve-3d', transform: left ? 'scaleX(-1)' : undefined }}>
+      <div className='absolute' style={{ left: -P, top: -P, width: D + 3 * P, height: W + 2 * P, borderRadius: '30% 50% 50% 30%',
+        background: 'radial-gradient(closest-side, rgba(0,0,0,.4), rgba(0,0,0,0))', transform: 'translateZ(.1px)' }} />
+      <div key={bulge ?? 'still'} className='absolute left-0 top-0' style={{ width: D, height: W, transformStyle: 'preserve-3d', transformOrigin: '0 50%',
+        animation: bulge ? `rk-net .7s ${HIT}s ease-out` : undefined }}>
+        <div style={side(0)} />
+        <div style={side(W)} />
+        <div style={{ ...MESH, left: D, width: back, height: W, transform: `rotateY(${tilt}deg)` }} />
+        <div style={{ ...MESH, width: T, height: W, transform: `translateZ(${H}px)` }} />
+        {/* the base pipe round the back, on the ice */}
+        <div className='absolute left-0 top-0' style={{ width: D, height: W, transform: 'translateZ(.2px)', borderRadius: '0 45% 45% 0',
+          border: `${Math.max(1, P * 0.7)}px solid rgba(255,255,255,.95)`, borderLeft: 'none' }} />
+      </div>
+      {post(0)}
+      {post(W)}
+      <div style={{ ...PIPE, left: -P / 2, width: P, height: W, transform: `translateZ(${H}px)` }} />
+      <div style={{ ...PIPE, width: P, height: W, transform: `translateZ(${H - P / 2}px) rotateY(-90deg)` }} />
+    </div>
   )
 }
 

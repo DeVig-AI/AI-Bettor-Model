@@ -197,8 +197,8 @@
 }
 @keyframes rk-net {
   0%, 100% { transform: none; }
-  30% { transform: scaleX(1.18) skewY(-3deg); }
-  60% { transform: scaleX(.96); }
+  30% { transform: scale3d(1.35, 1.06, 1.06); }
+  60% { transform: scale3d(.95, 1, 1); }
 }
 @keyframes ct-trace {
   0% { stroke-dashoffset: 1; opacity: 1; }
