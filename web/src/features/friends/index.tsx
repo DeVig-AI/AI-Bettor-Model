@@ -125,7 +125,7 @@ function FriendRow({ f, graded }: { f: Friend; graded: Mine[] }) {
     : settled.length
       ? `${r.hit}–${r.missed} · ${signed(r.net)}${r.roi != null ? ` · ${pct(r.roi)} return` : ''}`
       : f.parlays.length ? 'Nothing settled yet'
-        : f.saved?.length ? `${f.saved.length} saved Kalshi ${f.saved.length === 1 ? 'bet' : 'bets'}` : 'No saved parlays yet'
+        : f.saved?.length ? `${f.saved.length} saved ${f.saved.length === 1 ? 'bet' : 'bets'}` : 'Nothing shared yet'
   return (
     <li className='border-b last:border-b-0'>
       <Link to='/friends/$code' params={{ code: f.code }} className='flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-muted/50'>
@@ -250,10 +250,16 @@ export function FriendPage({ code }: { code: string }) {
               </p>
             ) : (
               <>
-                {(f.parlays.length > 0 || !f.saved?.length) && (
+                {f.parlays.length > 0 && (
                   <YourParlays list={f.parlays} owner={f.name} action={(p) => (p.status === 'upcoming' ? <TailButton p={p} /> : null)} />
                 )}
                 <FriendSaved list={f.saved ?? []} owner={f.name} />
+                {!f.parlays.length && !f.saved?.length && (
+                  <p className='rounded-[18px] border border-dashed p-6 text-center text-sm leading-relaxed text-muted-foreground'>
+                    Nothing from {f.name} yet. Bets they save show here once they open DeVig signed in on Profile. If theirs
+                    say &ldquo;Saved on this device only&rdquo;, they aren&apos;t signed in on that phone.
+                  </p>
+                )}
               </>
             )}
           </>

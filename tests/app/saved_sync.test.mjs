@@ -42,11 +42,11 @@ test("cleanSaved: keeps the shape, drops junk and oversized parts; none sent mea
   assert.equal(cleanSaved({items: Array.from({length: 40}, (_, i) => item(i, "2026-11-01T00:00:00Z"))}).items.length, 30);
 });
 
-test("friends see Kalshi bets with the link tidied, never DeVig slips or other sites", () => {
-  const user = {saved: {items: [item(3, "2026-11-01T12:00:00Z", {snap: {letter: "C"}}), {link: "slip:KX~yes", label: "Your parlay", savedAt: "x"},
+test("friends see Kalshi bets with the link tidied and DeVig slips, never other sites", () => {
+  const user = {saved: {items: [item(3, "2026-11-01T12:00:00Z", {snap: {letter: "C"}}), {link: "slip:KX-A~yes,KX-B~no", label: "Your parlay", savedAt: "x"}, {link: "slip:<script>~yes", label: "bad", savedAt: "x"},
     {link: "https://evil.example/markets/x", label: "x", savedAt: "x"}, {link: "kalshi.com/markets/kxnbagame/g/kxnbagame-26oct31poruta?utm=1", label: "Game", savedAt: "y"}]}};
   const s = shownSaved(user);
-  assert.deepEqual(s.map((x) => x.link), ["https://kalshi.com/markets/kxmve/x/KXMVE-3?marketTicker=KXMVE-3-A",
+  assert.deepEqual(s.map((x) => x.link), ["https://kalshi.com/markets/kxmve/x/KXMVE-3?marketTicker=KXMVE-3-A", "slip:KX-A~yes,KX-B~no",
     "https://kalshi.com/markets/kxnbagame/g/kxnbagame-26oct31poruta"]);
   assert.deepEqual(s[0].snap, {letter: "C"});
   assert.deepEqual(shownSaved({}), []);

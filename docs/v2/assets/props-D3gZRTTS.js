@@ -1,0 +1,1 @@
+import{n as e}from"./props-80Em3mse.js";var t=e;export{t as component};
