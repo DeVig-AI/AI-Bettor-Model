@@ -1,5 +1,7 @@
 import { useCallback, useSyncExternalStore } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { applySaved, savedSync } from './kalshi-link'
+import { type SavedSync } from './saved-merge'
 
 // Name tag and favorite teams. Same two localStorage keys as the classic app (same site, so both apps share them),
 // and the same account copy through /api/me (docs/account.js does this for classic; this file does it for v2).
@@ -112,7 +114,7 @@ export function push(delay = 800) {
     try {
       const r = await fetch('/api/me', {
         method: 'PUT', credentials: 'same-origin', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {}, bets: read(BETS_KEY) || { bets: {} } }),
+        body: JSON.stringify({ tracked: read(TRACK_KEY) || {}, prefs: read(PREFS_KEY) || {}, bets: read(BETS_KEY) || { bets: {} }, saved: savedSync() }),
       })
       if (r.status === 429) {
         const e = await r.json().catch(() => ({}))
@@ -129,8 +131,9 @@ export function push(delay = 800) {
 }
 
 // the account's parlays and bets after a save (it merges in what other devices saved): added here without another save
-function absorb(d: { parlays?: Tracked['parlays']; bets?: Partial<BetStore> | null } | null | undefined) {
+function absorb(d: { parlays?: Tracked['parlays']; bets?: Partial<BetStore> | null; saved?: Partial<SavedSync> | null } | null | undefined) {
   if (!d) return
+  applySaved(d.saved) // saved bets (Kalshi links and slips): their own store and watchers
   const cur = read<Partial<Tracked>>(TRACK_KEY) || {}
   const m = merge({ tracked: cur, prefs: {} }, { tracked: { parlays: d.parlays || {} } })
   const next = { ...cur, parlays: m.tracked.parlays }
@@ -159,7 +162,7 @@ if (typeof document !== 'undefined') {
   window.addEventListener('focus', pull)
 }
 
-function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs>; bets?: Partial<BetStore> } | null, again = false) {
+function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partial<Prefs>; bets?: Partial<BetStore>; saved?: Partial<SavedSync> | null } | null, again = false) {
   joinedEmail = email
   pulledAt = Date.now()
   const local = { tracked: read<Partial<Tracked>>(TRACK_KEY) || {}, prefs: read<Partial<Prefs>>(PREFS_KEY) || {} }
@@ -169,7 +172,8 @@ function start(email: string, data: { tracked?: Partial<Tracked>; prefs?: Partia
   write(TRACK_KEY, m.tracked)
   write(PREFS_KEY, m.prefs)
   write(BETS_KEY, bets)
-  const changed = before !== JSON.stringify([m.tracked, m.prefs, bets])
+  const savedChanged = applySaved(data?.saved)
+  const changed = before !== JSON.stringify([m.tracked, m.prefs, bets]) || savedChanged
   if (changed || !again) window.dispatchEvent(new Event(CHANGED))
   if (again && !changed) return
   note('Saved to your account.')

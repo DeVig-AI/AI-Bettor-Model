@@ -1,4 +1,4 @@
-// DeVig accounts: GET/POST/PUT /api/me saves one person's tracking, name tag and favorite teams.
+// DeVig accounts: GET/POST/PUT /api/me saves one person's tracking, saved parlays and bets, name tag and favorite teams.
 // Runs as a Cloudflare Pages Function next to the site (devigai.pages.dev). Who the person is comes from
 // Cloudflare Access (the email one-time-code login); the Access token is verified here before anything is read
 // or written, so a request without a valid login gets 401 and the app falls back to saving on the device.
@@ -13,11 +13,14 @@
 //                       and issuer; with it, only logins for this exact app.
 //   INVITE_CODE         secret; the code friends type once to open an account (several allowed, comma-separated)
 
-const MAX_BODY = 250000;           // bytes; a season of tracking, tracked parlays and 500 logged bets stays under this
+const MAX_BODY = 400000;           // bytes; a season of tracking, tracked parlays, 500 logged bets and 30 saved bets stays under this
 const MAX_PARLAYS = 60;            // tracked parlays kept (removed ones are kept as a small tombstone so devices agree)
 const LEG_STR = ["desc", "book", "game", "when", "kind", "mk", "side", "player", "stat", "sport", "away", "home", "kickoff", "gkey", "ticker"];
 const LEG_NUM = ["odds", "point", "line"];
 const MAX_BETS = 500;              // logged bets (My bets on the Fair price page), removed ones kept as a tombstone
+const MAX_SAVED = 30;              // saved bets: Kalshi links and DeVig slips (web/src/lib/kalshi-link.ts) ...
+const MAX_GONE = 100;              // ... and the removed ones, by link, so devices agree
+const MAX_SAVED_PART = 6000;       // bytes per saved bet's snapshot or outcome (a 15-leg review is about 2,000)
 const MAX_TRACKED = 2000;          // per kind (games, picks)
 const MAX_TEAMS = 60;              // per sport
 const SAVE_GAP_MS = 2000;          // at most one save every 2 seconds per person
@@ -113,6 +116,52 @@ export function cleanBets(b) {
       book: str(x.book, 24), stake: x.stake != null && isFinite(stake) && stake >= 0 ? stake : null};
   }
   return out;
+}
+
+// Saved bets: {items: [{link, label, savedAt, snap?, outcome?}], gone: {link: removed time}}. null when the request has
+// none (classic and older v2 don't send them), so their saves keep what's stored.
+export function cleanSaved(x) {
+  if (!x || typeof x !== "object" || !Array.isArray(x.items)) return null;
+  const items = [], seen = new Set();
+  for (const s of x.items.slice(0, MAX_SAVED)) {
+    if (!s || typeof s !== "object" || typeof s.link !== "string") continue;
+    const link = s.link.trim();
+    if (!link || link.length > 600 || seen.has(link)) continue;
+    seen.add(link);
+    const o = {link, label: String(s.label || "").slice(0, 120), savedAt: String(s.savedAt || "").slice(0, 30)};
+    for (const k of ["snap", "outcome"]) {
+      if (!s[k] || typeof s[k] !== "object" || Array.isArray(s[k])) continue;
+      const j = JSON.stringify(s[k]);
+      if (j.length <= MAX_SAVED_PART) o[k] = JSON.parse(j);
+    }
+    items.push(o);
+  }
+  const g = x.gone && typeof x.gone === "object" && !Array.isArray(x.gone) ? x.gone : {};
+  const gone = {};
+  for (const k of Object.keys(g).slice(-MAX_GONE)) if (k.length <= 600) gone[k] = Number(g[k]) || 1;
+  return {items, gone};
+}
+
+// Same rules as web/src/lib/saved-merge.ts: every saved bet either copy has, newest first; one removed stays removed
+// unless it was saved again after that; the same bet on both keeps the earlier save, its snapshot and its outcome.
+export function mergeSaved(a, b) {
+  const gone = {...((a && a.gone) || {})};
+  for (const [k, v] of Object.entries((b && b.gone) || {})) gone[k] = Math.max(gone[k] || 0, Number(v) || 0);
+  const at = s => Date.parse(s.savedAt) || 0;
+  const by = new Map();
+  for (const s of [...((a && a.items) || []), ...((b && b.items) || [])]) {
+    if (!s || typeof s.link !== "string" || (gone[s.link] || 0) >= at(s)) continue;
+    const o = by.get(s.link);
+    if (!o) { by.set(s.link, s); continue; }
+    const m = {...(at(o) <= at(s) ? o : s)};
+    const snap = o.snap ?? s.snap, outcome = o.outcome ?? s.outcome;
+    if (snap) m.snap = snap;
+    if (outcome) m.outcome = outcome;
+    by.set(s.link, m);
+  }
+  const items = [...by.values()].sort((x, y) => at(y) - at(x)).slice(0, MAX_SAVED);
+  const keys = Object.keys(gone).sort((x, y) => gone[x] - gone[y]).slice(-MAX_GONE);
+  return {items, gone: Object.fromEntries(keys.map(k => [k, gone[k]]))};
 }
 
 // Keep only the shapes the app writes: tracked {g:{key:time}, p:{key:time}, parlays:{id:{at, stake, odds, legs}|{removed}},
@@ -224,7 +273,7 @@ export async function handle(request, env, fetcher = fetch) {
   const rec = await env.USERS.get(key, "json");
   const joined = !!(rec && rec.joined_at);
   if (request.method === "GET") {
-    return json({email, joined, data: joined ? {tracked: rec.tracked, prefs: rec.prefs, bets: rec.bets || null} : null});
+    return json({email, joined, data: joined ? {tracked: rec.tracked, prefs: rec.prefs, bets: rec.bets || null, saved: rec.saved || null} : null});
   }
   if (request.method === "POST") {                      // open the account with the invite code
     if (joined) return json({ok: true, email, joined});
@@ -257,10 +306,12 @@ export async function handle(request, env, fetcher = fetch) {
     const sent = cleanBets(body && body.bets), had = rec.bets;
     if (sent || had) data.bets = {bets: unionById(had && had.bets, sent && sent.bets, MAX_BETS),
       updated: Math.max(Number(had && had.updated) || 0, Number(sent && sent.updated) || 0)};
+    const sentSaved = cleanSaved(body && body.saved);
+    if (sentSaved || rec.saved) data.saved = mergeSaved(rec.saved, sentSaved);
     Object.assign(data, {joined_at: rec.joined_at, saved_at: new Date(now).toISOString(), day, writes: writes + 1});
     await env.USERS.put(key, JSON.stringify(data));
     // the merged parlays and bets go back, so the device that saved also has the ones saved elsewhere
-    return json({ok: true, email, saved_at: data.saved_at, data: {parlays: data.tracked.parlays || {}, bets: data.bets || null}});
+    return json({ok: true, email, saved_at: data.saved_at, data: {parlays: data.tracked.parlays || {}, bets: data.bets || null, saved: data.saved || null}});
   }
   return json({error: "method not allowed"}, 405);
 }

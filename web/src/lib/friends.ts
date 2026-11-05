@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type TrackedParlay } from './track'
+import { type Saved } from './kalshi-link'
 
 // Friends (functions/api/friends.js): follow someone by their friend code and see their saved parlays, read-only.
 // Sharing your own is off until you turn it on.
 
-export type Friend = { code: string; name: string; share: boolean; parlays: TrackedParlay[]; gone?: boolean; following?: boolean }
+export type Friend = { code: string; name: string; share: boolean; parlays: TrackedParlay[]; saved?: Saved[]; gone?: boolean; following?: boolean }
 export type FriendsData = { me: { code: string | null; share: boolean }; friends: Friend[] }
 
 async function call<T>(method: 'GET' | 'POST', body?: unknown, qs = ''): Promise<T> {
