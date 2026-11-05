@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Check, Link2, Minus, X } from 'lucide-react'
 import {
-  type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, storeSaved, useReadLink, useSaved,
+  type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
 import { cn } from '@/lib/utils'
+import { useAccount } from '@/lib/profile'
 import { Skeleton } from '@/components/ui/skeleton'
 
 // Check a Kalshi bet from its Share link (one bet, a game, or a combo leg by leg), and keep links on this device.
@@ -170,7 +171,7 @@ function useBetReader() {
     go, data, lastLink, saved, isSaved, store, err, pending: read.isPending,
     entry: saved.find((s) => s.link === lastLink) ?? null,
     save: () => { if (data && !isSaved) store({}) },
-    remove: (l: string) => storeSaved(getSaved().filter((s) => s.link !== l)),
+    remove: removeSaved,
   }
 }
 type Reader = ReturnType<typeof useBetReader>
@@ -193,6 +194,9 @@ function ReaderBody({ r }: { r: Reader }) {
   )
 }
 
+const savedLine = (s: Saved) =>
+  s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`
+
 function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick: (s: Saved) => void }) {
   if (!list.length) return null
   return (
@@ -204,7 +208,7 @@ function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title
             <button type='button' onClick={() => onPick(s)} className='flex min-h-14 min-w-0 flex-1 flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
               <span className='w-full truncate font-semibold'>{s.label}</span>
               <span className='text-xs text-muted-foreground'>
-                {s.outcome ? `${s.outcome.won ? 'Won' : 'Lost'}${s.outcome.letter ? ` · grade ${s.outcome.letter}` : ''}` : s.snap ? `Grade ${s.snap.letter}` : `Saved ${timeFmt.format(new Date(s.savedAt))}`} · tap to review
+                {savedLine(s)} · tap to review
               </span>
             </button>
             <button type='button' onClick={() => r.remove(s.link)} aria-label={`Remove ${s.label}`}
@@ -214,8 +218,45 @@ function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title
           </li>
         ))}
       </ul>
-      <p className='px-1 text-xs text-muted-foreground'>Saved on this device only.</p>
+      <SavedWhere />
     </div>
+  )
+}
+
+function SavedWhere() {
+  const { data: acct } = useAccount()
+  return (
+    <p className='px-1 text-xs text-muted-foreground'>
+      {acct?.state === 'joined' ? 'Saved to your account, so they show on every device you sign in on.' : 'Saved on this device only. Sign in on Profile to keep them on every device.'}
+    </p>
+  )
+}
+
+// a friend's saved Kalshi bets (Friends page): the same review, read-only
+export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
+  const read = useReadLink()
+  const [cur, setCur] = useState<Saved | null>(null)
+  const [data, setData] = useState<KRead | null>(null)
+  if (!list.length) return null
+  const go = (s: Saved) => { setCur(s); setData(null); read.mutate(s.link, { onSuccess: setData }) }
+  return (
+    <section aria-label={`${owner}'s saved Kalshi bets`} className='flex flex-col gap-2'>
+      <h2 className='px-1 font-display text-[22px] font-extrabold'>Saved Kalshi bets</h2>
+      <ul className='overflow-hidden rounded-[18px] bg-card'>
+        {list.map((s) => (
+          <li key={s.link} className={cn('border-b last:border-b-0', s.link === cur?.link && 'bg-muted/40')}>
+            <button type='button' onClick={() => go(s)} className='flex min-h-14 w-full flex-col items-start px-4 py-2 text-start hover:bg-muted/50'>
+              <span className='w-full truncate font-semibold'>{s.label}</span>
+              <span className='text-xs text-muted-foreground'>{savedLine(s)} · tap to review</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      {read.error && <p role='alert' className='px-1 text-sm text-bad'>{read.error instanceof LinkError ? read.error.message : 'Something went wrong. Try again.'}</p>}
+      {read.isPending ? <Skeleton className='h-48 w-full rounded-[18px]' /> : data && (
+        <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
+      )}
+    </section>
   )
 }
 

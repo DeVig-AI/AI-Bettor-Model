@@ -2,7 +2,7 @@
 // Sharing is off until the person turns it on. Turning it on gives them a random friend code (a share link carries
 // it); anyone with an account who has the code can follow them and see their saved parlays, with stakes, read-only.
 // A new code cuts off everyone who had the old one. Nothing else on the account (email, tracking, logged bets,
-// favorite teams) is ever sent to a friend: only the name tag and the saved parlays.
+// favorite teams) is ever sent to a friend: only the name tag, the saved parlays and the saved Kalshi bets.
 //
 // Stored in the same KV namespace as /api/me (USERS):
 //   friends:<hash>   {code, share, following: [code], day, writes}   one per person (<hash> as in user:<hash>)
@@ -48,6 +48,29 @@ export function shownParlays(user) {
     .sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 
+// what a friend sees of the Kalshi combos and bets someone saved (Saved bets): the label, when, the grade and how it
+// ended, and the link cut to what finds the market (no referral or tracking bits). DeVig slips are left out: each is
+// also a saved parlay above.
+export function shownSaved(user) {
+  const items = user && user.saved && Array.isArray(user.saved.items) ? user.saved.items : [];
+  const out = [];
+  for (const s of items) {
+    if (!s || typeof s.link !== "string" || s.link.startsWith("slip:")) continue;
+    let link;
+    try {
+      const u = new URL(/^https?:/i.test(s.link) ? s.link : `https://${s.link}`);
+      if (!/(^|\.)kalshi\.com$/i.test(u.hostname)) continue;
+      const t = u.searchParams.get("marketTicker") || u.searchParams.get("market_ticker");
+      link = `https://kalshi.com${u.pathname}${t ? `?marketTicker=${encodeURIComponent(t)}` : ""}`;
+    } catch (e) { continue; }
+    const o = {link, label: String(s.label || "").slice(0, 120), savedAt: String(s.savedAt || "")};
+    if (s.snap && typeof s.snap === "object") o.snap = s.snap;
+    if (s.outcome && typeof s.outcome === "object") o.outcome = s.outcome;
+    out.push(o);
+  }
+  return out;
+}
+
 async function misses(h, bump) {
   const url = "https://devig-friend-misses.invalid/" + h;
   const cache = typeof caches !== "undefined" && caches.default;
@@ -69,8 +92,8 @@ async function friendView(env, code) {
   if (!fr || fr.code !== code) return null;              // an old code that was replaced
   const user = await env.USERS.get(`user:${h}`, "json");
   const name = String((user && user.prefs && user.prefs.name) || "").slice(0, 24) || "A friend";
-  if (!fr.share || !user) return {code, name, share: false, parlays: []};
-  return {code, name, share: true, parlays: shownParlays(user)};
+  if (!fr.share || !user) return {code, name, share: false, parlays: [], saved: []};
+  return {code, name, share: true, parlays: shownParlays(user), saved: shownSaved(user)};
 }
 
 export async function handle(request, env, fetcher = fetch) {

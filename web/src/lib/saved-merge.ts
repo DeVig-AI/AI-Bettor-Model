@@ -1,0 +1,31 @@
+// Saved bets (Kalshi links and DeVig slips, lib/kalshi-link.ts) on two devices: every one either has is kept, newest
+// first; one removed on a device stays removed unless it's saved again after that. Kept free of runtime imports so
+// node tests can run it; functions/api/me.js mergeLinks does the same on the server.
+
+export type SavedItem = { link: string; label: string; savedAt: string; snap?: unknown; outcome?: unknown }
+export type SavedSync = { items: SavedItem[]; gone: Record<string, number> }
+
+export const MAX_SAVED = 30
+const MAX_GONE = 100
+
+export function mergeSaved(a: Partial<SavedSync> | null | undefined, b: Partial<SavedSync> | null | undefined): SavedSync {
+  const gone: Record<string, number> = { ...(a?.gone || {}) }
+  for (const [k, v] of Object.entries(b?.gone || {})) gone[k] = Math.max(gone[k] || 0, Number(v) || 0)
+  const by = new Map<string, SavedItem>()
+  for (const s of [...(a?.items || []), ...(b?.items || [])]) {
+    if (!s || typeof s.link !== 'string') continue
+    if ((gone[s.link] || 0) >= (Date.parse(s.savedAt) || 0)) continue // removed after it was saved
+    const o = by.get(s.link)
+    if (!o) { by.set(s.link, s); continue }
+    // the same bet on both: the earlier save, its first-read snapshot and whichever copy knows how it ended
+    const first = (Date.parse(o.savedAt) || 0) <= (Date.parse(s.savedAt) || 0) ? o : s
+    const m: SavedItem = { ...first }
+    const snap = o.snap ?? s.snap, outcome = o.outcome ?? s.outcome
+    if (snap) m.snap = snap
+    if (outcome) m.outcome = outcome
+    by.set(s.link, m)
+  }
+  const items = [...by.values()].sort((x, y) => (Date.parse(y.savedAt) || 0) - (Date.parse(x.savedAt) || 0)).slice(0, MAX_SAVED)
+  const keys = Object.keys(gone).sort((x, y) => gone[x] - gone[y]).slice(-MAX_GONE)
+  return { items, gone: Object.fromEntries(keys.map((k) => [k, gone[k]])) }
+}

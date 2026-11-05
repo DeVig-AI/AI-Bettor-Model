@@ -9,6 +9,7 @@ import { type GameRow, useGames } from '@/lib/devig'
 import { useProps } from '@/lib/props'
 import { mlLeg, propLeg } from '@/features/parlay/legs'
 import { type Graded, OpenCard, YourParlays, useGradedParlays } from '@/features/history/parlays'
+import { FriendSaved } from '@/features/check-bet/link-reader'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
@@ -123,7 +124,8 @@ function FriendRow({ f, graded }: { f: Friend; graded: Mine[] }) {
     ? f.gone ? 'Changed their code; ask them for the new one' : 'Sharing is off right now'
     : settled.length
       ? `${r.hit}–${r.missed} · ${signed(r.net)}${r.roi != null ? ` · ${pct(r.roi)} return` : ''}`
-      : f.parlays.length ? 'Nothing settled yet' : 'No saved parlays yet'
+      : f.parlays.length ? 'Nothing settled yet'
+        : f.saved?.length ? `${f.saved.length} saved Kalshi ${f.saved.length === 1 ? 'bet' : 'bets'}` : 'No saved parlays yet'
   return (
     <li className='border-b last:border-b-0'>
       <Link to='/friends/$code' params={{ code: f.code }} className='flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-muted/50'>
@@ -247,7 +249,12 @@ export function FriendPage({ code }: { code: string }) {
                 {f.name} has sharing off right now. Their parlays show here once it&apos;s back on.
               </p>
             ) : (
-              <YourParlays list={f.parlays} owner={f.name} action={(p) => (p.status === 'upcoming' ? <TailButton p={p} /> : null)} />
+              <>
+                {(f.parlays.length > 0 || !f.saved?.length) && (
+                  <YourParlays list={f.parlays} owner={f.name} action={(p) => (p.status === 'upcoming' ? <TailButton p={p} /> : null)} />
+                )}
+                <FriendSaved list={f.saved ?? []} owner={f.name} />
+              </>
             )}
           </>
         )}

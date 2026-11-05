@@ -1,8 +1,11 @@
 // The Kalshi link reader: paste a link from Kalshi's Share button (one bet, a game, or a combo) and /api/kalshi
-// (functions/api/kalshi.js) returns its prices now and, for a combo, every leg. Saved links live in this browser.
+// (functions/api/kalshi.js) returns its prices now and, for a combo, every leg. Saved links live in this browser
+// and, when signed in, on the account (lib/profile.ts), so every device and friends who follow you see them.
 import { useSyncExternalStore } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import type { Outcome, Snap } from './review'
+import { type SavedSync, MAX_SAVED, mergeSaved } from './saved-merge'
+import { push } from './profile'
 
 export type KLeg = {
   ticker: string | null; event: string | null; title: string | null; pick: string; side: 'yes' | 'no'
@@ -46,17 +49,44 @@ const KEY = 'devig_saved_links'
 export function loadSaved(): Saved[] {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) || '[]')
-    return Array.isArray(v) ? v.filter((x) => x && typeof x.link === 'string').slice(0, 30) : []
+    return Array.isArray(v) ? v.filter((x) => x && typeof x.link === 'string').slice(0, MAX_SAVED) : []
   } catch {
     return []
   }
 }
 let mine: Saved[] | null = null // this visit's copy (private mode can't write localStorage)
 const watchers = new Set<() => void>()
-export function storeSaved(list: Saved[]) {
-  mine = list.slice(0, 30)
+export function storeSaved(list: Saved[], save = true) {
+  mine = list.slice(0, MAX_SAVED)
   try { localStorage.setItem(KEY, JSON.stringify(mine)) } catch { /* private mode: kept for this visit only */ }
   watchers.forEach((w) => w())
+  if (save) push() // to the account, when signed in (lib/profile.ts)
+}
+
+// removed ones are remembered (link -> when), so the account copy and other devices drop them too
+const GONE_KEY = 'devig_saved_gone'
+function loadGone(): Record<string, number> {
+  try {
+    const v = JSON.parse(localStorage.getItem(GONE_KEY) || '{}')
+    return v && typeof v === 'object' && !Array.isArray(v) ? v : {}
+  } catch {
+    return {}
+  }
+}
+export function removeSaved(link: string) {
+  try { localStorage.setItem(GONE_KEY, JSON.stringify({ ...loadGone(), [link]: Date.now() })) } catch { /* private mode */ }
+  storeSaved(getSaved().filter((s) => s.link !== link))
+}
+// what goes to the account, and taking in what came back (true when anything here changed)
+export const savedSync = (): SavedSync => ({ items: getSaved(), gone: loadGone() })
+export function applySaved(remote: Partial<SavedSync> | null | undefined): boolean {
+  if (!remote) return false
+  const cur = savedSync()
+  const m = mergeSaved(cur, remote)
+  if (JSON.stringify(m) === JSON.stringify(cur)) return false
+  try { localStorage.setItem(GONE_KEY, JSON.stringify(m.gone)) } catch { /* private mode */ }
+  storeSaved(m.items as Saved[], false)
+  return true
 }
 export const getSaved = () => (mine ??= loadSaved())
 // the saved list, shared by every reader on the page (History's, Parlay's) so a save in one shows in the others
