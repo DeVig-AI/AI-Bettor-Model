@@ -279,18 +279,34 @@ export function RecordTiles({ settled }: { settled: Graded[] }) {
   )
 }
 
-export function YourParlays({ list, owner, action }: { list: TrackedParlay[]; owner?: string; action?: (p: Graded) => ReactNode }) {
+// part: 'open' = live and coming up (Parlay tab), 'done' = settled with your record (History); left out = all (a friend's page)
+export function YourParlays({ list, owner, action, part }: { list: TrackedParlay[]; owner?: string; action?: (p: Graded) => ReactNode; part?: 'open' | 'done' }) {
   const foot: Foot = { own: !owner, action }
   const graded = useGradedParlays(list)
-  const settled = graded.filter((p) => p.status === 'hit' || p.status === 'missed')
-  const live = graded.filter((p) => p.status === 'live')
-  const upcoming = graded.filter((p) => p.status === 'upcoming')
+  const settled = part === 'open' ? [] : graded.filter((p) => p.status === 'hit' || p.status === 'missed')
+  const live = part === 'done' ? [] : graded.filter((p) => p.status === 'live')
+  const upcoming = part === 'done' ? [] : graded.filter((p) => p.status === 'upcoming')
+
+  if (part === 'open' && !live.length && !upcoming.length) {
+    return (
+      <p className='rounded-[18px] border border-dashed p-4 text-sm text-muted-foreground'>
+        {list.length ? 'Nothing live right now. ' : ''}Tap Save this parlay on your slip: each leg is followed here live, then it moves to History once its games end.
+      </p>
+    )
+  }
+  if (part === 'done' && !settled.length) {
+    return (
+      <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>
+        No finished parlays yet. Parlays you save on the Parlay tab show there while they&apos;re live, then land here, graded, once their games end.
+      </p>
+    )
+  }
 
   if (!list.length) {
     if (owner) return <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>{owner} hasn&apos;t saved a parlay yet.</p>
     return (
       <p className='rounded-[18px] border border-dashed p-6 text-center text-sm text-muted-foreground'>
-        No saved parlays yet. Build a slip on Parlay and tap Save to History: each leg is followed here and graded when its game ends.
+        No saved parlays yet. Build a slip on Parlay and tap Save this parlay.
       </p>
     )
   }
@@ -301,7 +317,7 @@ export function YourParlays({ list, owner, action }: { list: TrackedParlay[]; ow
       {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
       {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} foot={foot} />)}</Group>}
       <p className='px-1 text-xs text-muted-foreground'>
-        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'} Tap a settled parlay for every leg.
+        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'}{part === 'open' ? '' : ' Tap a settled parlay for every leg.'}
       </p>
     </div>
   )
