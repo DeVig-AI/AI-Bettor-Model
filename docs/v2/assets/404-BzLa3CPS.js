@@ -1,1 +1,0 @@
-import{D as e}from"./index-CBkeWPjs.js";var t=e;export{t as component};

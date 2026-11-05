@@ -27,8 +27,9 @@ import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
 import { kalshiTeam, mlLeg } from './legs'
-import { type TrackedLeg, saveParlay } from '@/lib/track'
+import { type TrackedLeg, saveParlay, trackedParlays, useTracked } from '@/lib/track'
 import { LinkReader } from '../check-bet/link-reader'
+import { YourParlays } from '../history/parlays'
 import { BookLinkReader, ScreenshotReader } from '../check-bet/scan'
 
 const oneIn = (p: number) => (p > 0 ? Math.round(1 / p).toLocaleString() : '—')
@@ -227,11 +228,11 @@ function SlipCard() {
   const weakestGap = weakest ? weakest.devig! - weakest.fair! : 0
   if (savedAs) {
     return (
-      <section id='your-parlay' aria-label='Saved to History' className='flex scroll-mt-20 flex-col gap-3 rounded-[18px] border border-good/30 bg-good/10 p-4'>
+      <section id='your-parlay' aria-label='Saved' className='flex scroll-mt-20 flex-col gap-3 rounded-[18px] border border-good/30 bg-good/10 p-4'>
         <div className='flex items-center gap-2.5'>
           <span className='grid size-8 shrink-0 place-items-center rounded-full bg-good text-background'><Check className='size-[18px]' strokeWidth={3} aria-hidden='true' /></span>
           <span className='flex flex-col'>
-            <span className='font-display text-xl font-extrabold'>Saved to History</span>
+            <span className='font-display text-xl font-extrabold'>Saved</span>
             <span className='text-[13px] text-muted-foreground'>
               {savedAs.n} {savedAs.n === 1 ? 'leg' : 'legs'}{savedAs.stake > 0 ? ` · ${money(savedAs.stake)} to win ${money(savedAs.win)}` : ''}
             </span>
@@ -242,7 +243,8 @@ function SlipCard() {
           You&apos;ll see each leg turn green or red as games finish, and a grade at the end.
         </p>
         <div className='grid grid-cols-2 gap-2'>
-          <Link to='/history' className='grid h-11 place-items-center rounded-full bg-good text-sm font-bold text-background'>Open in History</Link>
+          <button type='button' onClick={() => document.getElementById('live-parlays')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className='h-11 rounded-full bg-good text-sm font-bold text-background'>See it live</button>
           <button type='button' onClick={() => setSavedAs(null)} className='h-11 rounded-full border text-sm font-semibold'>Start a new slip</button>
         </div>
       </section>
@@ -353,10 +355,10 @@ function SlipCard() {
       <div className='flex flex-col gap-1.5'>
         <button type='button' onClick={saveSlip}
           className='h-12 rounded-full bg-devig text-sm font-bold text-devig-ink'>
-          Save to History
+          Save this parlay
         </button>
         <p className='px-1 text-xs text-muted-foreground'>
-          Saves all {legs.length} {legs.length === 1 ? 'leg' : 'legs'}{s > 0 ? ` and your ${money(s)} stake` : ''}, on this device and your account. History follows each leg live and grades it when its game ends.
+          Saves all {legs.length} {legs.length === 1 ? 'leg' : 'legs'}{s > 0 ? ` and your ${money(s)} stake` : ''}, on this device and your account. Live parlays follows each leg below; once its games end it moves to History, graded.
         </p>
       </div>
 
@@ -601,6 +603,22 @@ function CheckBet() {
   )
 }
 
+// ---------- your saved parlays that are still going: live and coming up. Once their games end they move to History ----------
+function LiveParlays() {
+  const { tracked } = useTracked()
+  const list = useMemo(() => trackedParlays(tracked), [tracked])
+  return (
+    <section id='live-parlays' aria-label='Live parlays' className='flex scroll-mt-20 flex-col gap-3'>
+      <div className='flex items-end justify-between gap-3'>
+        <h2 className='font-display text-[22px] font-extrabold'>Live parlays</h2>
+        <Link to='/history' className='text-sm font-semibold text-devig'>Finished ›</Link>
+      </div>
+      <YourParlays list={list} part='open' />
+      <LinkReader part='open' />
+    </section>
+  )
+}
+
 export function Parlay() {
   return (
     <>
@@ -613,6 +631,7 @@ export function Parlay() {
       </Header>
       <Main className='flex flex-col gap-8'>
         <SlipCard />
+        <LiveParlays />
         <CheckBet />
         <LongShot />
         <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>

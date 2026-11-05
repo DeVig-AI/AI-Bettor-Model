@@ -183,6 +183,23 @@ function ReaderBody({ r }: { r: Reader }) {
   const d = r.data
   return (
     <>
+      {d.kind === 'market' && <KeepResult r={r} d={d} />}
+      <ReaderInner r={r} d={d} />
+    </>
+  )
+}
+
+function KeepResult({ r, d }: { r: Reader; d: Extract<KRead, { kind: 'market' }> }) {
+  const res = d.market.result
+  useEffect(() => {
+    if (res && r.entry && !r.entry.outcome) r.store({ outcome: { at: d.fetched_at, won: res === 'won', legs: 1, hit: null, letter: null, lost: [] } })
+  }, [res, r.entry?.link]) // eslint-disable-line react-hooks/exhaustive-deps
+  return null
+}
+
+function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
+  return (
+    <>
       {d.kind !== 'event' && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
       <div className='flex gap-2'>
@@ -268,9 +285,27 @@ export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
   )
 }
 
-export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = true }: { title?: string; blurb?: React.ReactNode; showSaved?: boolean } = {}) {
+// a saved bet is done once it's been read after it settled (its outcome is kept)
+const isDone = (s: Saved) => !!s.outcome
+
+// part: with no paste box, just your saved bets, 'open' ones (Parlay tab) or 'done' ones (History), each reviewed when tapped
+export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = true, part }: {
+  title?: string; blurb?: React.ReactNode; showSaved?: boolean; part?: 'open' | 'done'
+} = {}) {
   const r = useBetReader()
   const [link, setLink] = useState('')
+  if (part) {
+    const list = r.saved.filter((s) => isDone(s) === (part === 'done'))
+    if (!list.length && !r.data) return null
+    const heading = part === 'done' ? 'Finished Kalshi bets' : 'Saved Kalshi bets'
+    return (
+      <section aria-label={heading} className='flex flex-col gap-3'>
+        <SavedList r={r} list={list} title={heading} onPick={(s) => r.go(s.link)} />
+        {r.err && <p role='alert' className='px-1 text-sm text-bad'>{r.err}</p>}
+        <ReaderBody r={r} />
+      </section>
+    )
+  }
   return (
     <section aria-label={title} className='flex flex-col gap-3'>
       <div className='rounded-[18px] bg-card p-4'>

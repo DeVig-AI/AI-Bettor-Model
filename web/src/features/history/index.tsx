@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import { type GameRow, useFinals } from '@/lib/devig'
 import { trackedParlays, useTracked } from '@/lib/track'
-import { YourParlays } from './parlays'
+import { YourParlays, useGradedParlays } from './parlays'
 import { LinkReader } from '../check-bet/link-reader'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -105,20 +105,22 @@ function RecentFinals() {
 export function History() {
   const { tracked } = useTracked()
   const list = useMemo(() => trackedParlays(tracked), [tracked])
+  const graded = useGradedParlays(list)
+  const done = graded.filter((p) => p.status === 'hit' || p.status === 'missed').length
   const [pickView, setView] = useState<'parlays' | 'games' | null>(null)
-  const view = pickView ?? (list.length ? 'parlays' : 'games')
+  const view = pickView ?? (done ? 'parlays' : 'games')
   return (
     <>
       <Header>
         <div className='me-auto min-w-0'>
           <h1 className='font-display text-[26px] leading-none font-black'>History</h1>
-          <p className='mt-0.5 truncate text-xs text-muted-foreground'>Your parlays, and the games that just finished</p>
+          <p className='mt-0.5 truncate text-xs text-muted-foreground'>Finished parlays, and the games that just ended</p>
         </div>
         <ThemeSwitch />
       </Header>
       <Main className='flex flex-col gap-6'>
         <div role='radiogroup' aria-label='Show' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
-          {([['parlays', `Your parlays${list.length ? ` (${list.length})` : ''}`], ['games', 'Games']] as const).map(([k, t]) => (
+          {([['parlays', `Your parlays${done ? ` (${done})` : ''}`], ['games', 'Games']] as const).map(([k, t]) => (
             <button key={k} type='button' role='radio' aria-checked={view === k} onClick={() => setView(k)}
               className={cn('h-10 rounded-lg text-sm font-semibold transition-colors duration-150', view === k ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
               {t}
@@ -127,8 +129,8 @@ export function History() {
         </div>
         {view === 'parlays' ? (
           <>
-            <YourParlays list={list} />
-            <LinkReader title='Check a Kalshi bet' />
+            <YourParlays list={list} part='done' />
+            <LinkReader part='done' />
           </>
         ) : (
           <RecentFinals />

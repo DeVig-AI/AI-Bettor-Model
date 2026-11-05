@@ -1,0 +1,1 @@
+import{t as e}from"./research-CNkmBsv3.js";var t=e;export{t as component};
