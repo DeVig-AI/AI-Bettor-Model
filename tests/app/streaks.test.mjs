@@ -59,3 +59,14 @@ test("the note reads the measured interval and refuses small samples", () => {
   assert.match(streakNote("NHL", { ...s, rungs: 15 })[0], /^Too few past NHL streaks to measure \(15 lines\)/);
   assert.match(streakNote("NFL", undefined)[0], /aren't measured yet/);
 });
+
+test("soccer: 5 matches, every logged match counts as played, and goal-or-assist sums both", () => {
+  const SL = { date: 0, g: 1, a: 2, league: 3 };
+  const SH = [["goal", "Goals", ["g"]], ["soa", "Goal or assist", ["g", "a"]]];
+  const rows = Array.from({ length: 10 }, (_, i) => [`2026-10-${20 - i}`, i % 2, (i + 1) % 2, "EPL"]);
+  assert.equal(streaks("SOCCER", [line("goal", 0.5)], P(rows), SL, SH).length, 0);
+  const out = streaks("SOCCER", [line("soa", 0.5)], P(rows), SL, SH);
+  assert.equal(out.length, 1);
+  assert.deepEqual(out[0].last, Array(5).fill(1));
+  assert.equal(streaks("SOCCER", [line("soa", 0.5)], P(rows.slice(0, 4)), SL, SH).length, 0);
+});

@@ -26,6 +26,9 @@ jobs:
         run: python3 tools/stats_nfl.py
       - name: WNBA (ESPN box scores via sportsdataverse)
         run: python3 tools/stats_wnba.py
+      - name: Soccer players (ESPN match summaries; only new matches each run, the matches read are kept in the file)
+        continue-on-error: true          # a new source's failure never holds back the other sports' files
+        run: python3 tools/stats_soccer.py
       # College football: ESPN, this season only (the 2025 season is sealed for the research lab). Finished games' box
       # scores never change, so they stay in the private Actions cache and each run fetches only new ones.
       - name: Restore the college football box scores

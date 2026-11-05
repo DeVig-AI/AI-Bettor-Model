@@ -1,1 +1,0 @@
-import{O as e}from"./index-CpFL_qim.js";var t=e;export{t as component};

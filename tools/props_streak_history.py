@@ -2,12 +2,12 @@
 """
 props_streak_history.py -- did past player-prop streaks hit more often than Kalshi's price said?
 
-For every settled Kalshi prop rung the history bots saved ({nba,nhl}/props_history/kalshi/*.csv: the price shortly
+For every settled Kalshi prop rung the history bots saved ({nba,nhl}/props_history/kalshi/*.csv, nfl/props_history/kalshi_props_history_v1.csv: the price shortly
 before the game and how it settled), look up the player's games before that day in the stats bot's logs
 (stats/<sport>/team_*.json, this season and last) and count how many games in a row, from the latest back, the
 player reached that line. A rung is "on a streak" when that run is at least MIN_RUN games (10). For each player,
 stat and game only the hardest such rung counts (the one the app shows). Then: how often those rungs hit, against
-Kalshi's middle price and the price to buy, with a 95% interval for the difference from resampling games.
+Kalshi's middle price and the price to buy, with a 95% interval for the difference from resampling games (all of a game's lines together).
 
 Writes stats/props_streaks.json for the app's Streaks section. Descriptive only, like props_ladder_history.py: it is
 not a pre-registered test and the app never calls it an edge. Rerun daily by .github/workflows/props_ladder.yml.
@@ -25,10 +25,10 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "stats", "props_streaks.json")
-SPORTS = ["nba", "nhl"]
+SPORTS = ["nba", "nhl", "nfl"]
 MIN_RUN = 10
 MAX_SPREAD = 0.06
-PLAYED = {"nba": "min", "nhl": "toi"}       # a game only counts if the player was on the floor / ice
+PLAYED = {"nba": "min", "nhl": "toi"}       # a game only counts if the player was on the floor / ice (NFL logs: played only)
 SEED, DRAWS = 7, 2000
 
 
@@ -38,8 +38,10 @@ def norm(name):
 
 
 def season_label(sport, y):
-    """'2025-26'. The NBA history labels a season by the year it ends, the NHL one by the year it starts."""
+    """'2025-26'. The NBA history labels a season by the year it ends, the NHL one by the year it starts; NFL is '2026'."""
     y = int(y)
+    if sport == "nfl":
+        return str(y)
     start = y - 1 if sport == "nba" else y
     return f"{start}-{(start + 1) % 100:02d}"
 
@@ -62,7 +64,8 @@ def logs(sport):
     for f in glob.glob(os.path.join(ROOT, "stats", sport, "team_*.json")):
         for p in load(f).get("players") or []:
             for g in p.get("log") or []:
-                played = g[L[PLAYED[sport]]] if PLAYED[sport] in L else 1
+                pc = PLAYED.get(sport)
+                played = g[L[pc]] if pc in L else 1
                 if played:
                     out[norm(p["name"])][g[L["date"]]] = g
     return {k: sorted(v.items()) for k, v in out.items()}, L, hit
@@ -88,10 +91,15 @@ def run_length(games, L, cols, need):
     return n
 
 
+def history_files(sport):
+    h = os.path.join(ROOT, sport, "props_history")
+    return sorted(glob.glob(os.path.join(h, "kalshi", "*.csv"))) + sorted(glob.glob(os.path.join(h, "kalshi_props_history_v1.csv")))
+
+
 def rungs(sport):
     lg, L, hit = logs(sport)
     best, seasons = {}, collections.Counter()
-    for f in sorted(glob.glob(os.path.join(ROOT, sport, "props_history", "kalshi", "*.csv"))):
+    for f in history_files(sport):
         with open(f, newline="") as fh:
             for r in csv.DictReader(fh):
                 if r.get("result") not in ("yes", "no") or r.get("stat") not in hit:
@@ -108,7 +116,10 @@ def rungs(sport):
                     continue
                 key = (r["event_ticker"], norm(r["player"]), r["stat"])
                 if key not in best or line > best[key]["line"]:
-                    best[key] = {"ev": r["event_ticker"], "line": line, "mid": (a + b) / 2, "ask": a,
+                    # Kalshi opens one event per stat, so the resampling unit is the game (date and teams)
+                    game = "|".join([r["game_date"], r.get("away_team") or "", r.get("home_team") or ""]) \
+                        if r.get("away_team") else r["event_ticker"]
+                    best[key] = {"ev": game, "line": line, "mid": (a + b) / 2, "ask": a,
                                  "yes": r["result"] == "yes", "season": season_label(sport, r["season"])}
     for x in best.values():
         seasons[x["season"]] += 1

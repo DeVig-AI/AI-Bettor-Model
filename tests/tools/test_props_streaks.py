@@ -82,6 +82,29 @@ class Streaks(unittest.TestCase):
     def test_season_labels(self):
         self.assertEqual(S.season_label("nba", "2026"), "2025-26")
         self.assertEqual(S.season_label("nhl", "2026"), "2026-27")
+        self.assertEqual(S.season_label("nfl", "2026"), "2026")
+
+    def test_nfl_single_file_and_one_game_across_stat_events(self):
+        root = tempfile.mkdtemp()
+        os.makedirs(os.path.join(root, "stats", "nfl"))
+        os.makedirs(os.path.join(root, "nfl", "props_history"))
+        cols = ["date", "rec", "rec_yds", "type", "season"]
+        log = [[f"2026-09-{d:02d}", 6, 70, "R", 2026] for d in range(1, 11)]
+        for name, d in [("index.json", {"log_cols": cols, "hit_stats": [["receptions", "Rec", ["rec"]],
+                                                                        ["receiving_yards", "Yds", ["rec_yds"]]]}),
+                        ("team_KC.json", {"players": [{"name": "Rashee Rice", "log": log[::-1]}]})]:
+            with open(os.path.join(root, "stats", "nfl", name), "w") as f:
+                json.dump(d, f)
+        with open(os.path.join(root, "nfl", "props_history", "kalshi_props_history_v1.csv"), "w", newline="") as f:
+            w = csv.DictWriter(f, FIELDS + ["away_team", "home_team"])
+            w.writeheader()
+            for stat, ev, ln in [("receptions", "REC1", 4.5), ("receiving_yards", "YDS1", 59.5)]:
+                w.writerow({"stat": stat, "event_ticker": ev, "game_date": "2026-09-20", "season": "2026", "player": "Rashee Rice",
+                            "line": ln, "yes_bid": 0.8, "yes_ask": 0.82, "result": "yes", "away_team": "KC", "home_team": "LV"})
+        with mock.patch.object(S, "ROOT", root):
+            rows, seasons = S.rungs("nfl")
+        self.assertEqual((len(rows), seasons), (2, ["2026"]))
+        self.assertEqual(S.summary(rows)["games"], 1)   # two Kalshi events, one game
 
 
 if __name__ == "__main__":

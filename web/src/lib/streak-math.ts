@@ -3,6 +3,8 @@
 // as tools/props_streak_history.py measures them. Counts and Kalshi's price, nothing else: a streak is not a pick.
 
 export const STREAK = 10
+// soccer: a player rarely reaches even a goal or an assist 10 matches running (7 at most on 2026-11-05), so 5
+export const streakLen = (sport: string) => (sport === 'SOCCER' ? 5 : STREAK)
 const MAX_SPREAD = 0.06
 // a game only counts when the player was on the floor / ice (the NFL logs list games played only)
 const PLAYED: Record<string, string> = { NBA: 'min', NHL: 'toi' }
@@ -23,8 +25,8 @@ const value = (g: (string | number | null)[], L: Record<string, number>, cols: s
   return v
 }
 
-// The player's last 10 played games for one stat, oldest first; null when fewer than 10 or a value is missing
-function lastTen(p: StreakPlayer, sport: string, L: Record<string, number>, cols: string[]) {
+// The player's last n played games for one stat, oldest first; null when fewer than n or a value is missing
+function lastN(p: StreakPlayer, sport: string, L: Record<string, number>, cols: string[], n: number) {
   const pc = PLAYED[sport]
   const out: number[] = []
   for (const g of p.log) {
@@ -32,7 +34,7 @@ function lastTen(p: StreakPlayer, sport: string, L: Record<string, number>, cols
     const v = value(g, L, cols)
     if (v == null) return null
     out.push(v)
-    if (out.length === STREAK) return out.reverse()
+    if (out.length === n) return out.reverse()
   }
   return null
 }
@@ -44,13 +46,14 @@ export function streaks<T extends StreakLine>(
   const who = new Map(players.map((p) => [normName(p.name), p]))
   const best = new Map<string, Streak<T>>()
   const tens = new Map<string, number[] | null>()
+  const n = streakLen(sport)
   for (const l of lines) {
     const c = cols.get(l.stat)
     const p = who.get(normName(l.player))
     const b = l.bid, a = l.ask
     if (!c || !p || b == null || a == null || !(b > 0 && b <= a && a < 1 && a - b <= MAX_SPREAD)) continue
     const tk = `${normName(l.player)}|${l.stat}`
-    if (!tens.has(tk)) tens.set(tk, lastTen(p, sport, L, c))
+    if (!tens.has(tk)) tens.set(tk, lastN(p, sport, L, c, n))
     const last = tens.get(tk)
     const need = l.line + 0.5 // Kalshi's "N+" lines are stored as N - 0.5
     if (!last || last.some((v) => v < need)) continue
