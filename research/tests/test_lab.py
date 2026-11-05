@@ -4,6 +4,7 @@
 """
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -723,7 +724,12 @@ class PaperGrading(unittest.TestCase):
 
 
 class Visibility(unittest.TestCase):
-    """The owner's decision: the public app and the Ask AI chat never show, link or read research/."""
+    """The owner's decision: the public app and the Ask AI chat never show, link or read research/ (the Lab).
+    The app's own Research pages (team and player stats at /research/, /research/team/..., /research/player/...) are
+    app routes, not the Lab, and are taken out before the check; a repo path such as main/research/... still fails.
+    Since #120 (2026-11-01) the owner shows the Lab's live models in the app, labelled new and not proven, read only from
+    the published live/lab/ and live/devig/ files; so the name "Research Lab" may appear, but nothing may read the
+    research/ folder, its status.json or /api/lab, or link the Lab's own pages."""
 
     def test_public_app_and_chat_never_touch_research(self):
         files = [os.path.join(ROOT, "functions", "api", f) for f in ("ask.js", "live.js", "me.js", "winline.js")]
@@ -733,8 +739,8 @@ class Visibility(unittest.TestCase):
             if not os.path.exists(f):
                 continue
             with open(f, encoding="utf-8", errors="replace") as fh:
-                text = fh.read()
-            for bad in ("research/", "status.json", "/api/lab", 'href="/lab', "Research Lab", "Gauntlet-"):
+                text = re.sub(r"(?:/_authenticated)?/research/(?:(?:team|player)/(?=\$)|(?=`))", "", fh.read())
+            for bad in ("research/", "status.json", "/api/lab", 'href="/lab', "Gauntlet-"):
                 self.assertNotIn(bad, text, f"{os.path.relpath(f, ROOT)} mentions {bad!r}")
 
 
@@ -837,7 +843,10 @@ class Signals(unittest.TestCase):
                     self.SG.validate(dict(f))
                 lib_shapes = {SR.signal_shape(x) for x in self.SG.load_library() if x["kind"] == "team"}
                 new = SR.widen_formulas()
-                self.assertEqual(len(new), 8)
+                left = [f for f in cat if SR.signal_shape(f) not in lib_shapes
+                        and f["id"] not in {x["id"] for x in self.SG.load_library()}]
+                # 8, or fewer once the library has used up the catalogue (CFB's 16 formulas are nearly all taken)
+                self.assertEqual(len(new), min(8, len({SR.signal_shape(f) for f in left})))
                 self.assertEqual([f["id"] for f in new], [f["id"] for f in SR.widen_formulas()])   # deterministic
                 for f in new:
                     self.assertNotIn(SR.signal_shape(f), lib_shapes)
