@@ -29,3 +29,11 @@ export function mergeSaved(a: Partial<SavedSync> | null | undefined, b: Partial<
   const keys = Object.keys(gone).sort((x, y) => gone[x] - gone[y]).slice(-MAX_GONE)
   return { items, gone: Object.fromEntries(keys.map((k) => [k, gone[k]])) }
 }
+
+// whether the account's copy is missing something this device has (an account from before saved bets synced has none)
+export function needsUpload(local: Partial<SavedSync> | null | undefined, remote: Partial<SavedSync> | null | undefined): boolean {
+  const m = mergeSaved(local, remote)
+  const r = mergeSaved(remote, null)
+  const have = new Set(r.items.map((s) => s.link))
+  return m.items.some((s) => !have.has(s.link)) || Object.keys(m.gone).some((k) => !(k in r.gone))
+}

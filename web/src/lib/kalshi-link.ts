@@ -4,7 +4,7 @@
 import { useSyncExternalStore } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import type { Outcome, Snap } from './review'
-import { type SavedSync, MAX_SAVED, mergeSaved } from './saved-merge'
+import { type SavedSync, MAX_SAVED, mergeSaved, needsUpload } from './saved-merge'
 import { push } from './profile'
 
 export type KLeg = {
@@ -79,11 +79,13 @@ export function removeSaved(link: string) {
 }
 // what goes to the account, and taking in what came back (true when anything here changed)
 export const savedSync = (): SavedSync => ({ items: getSaved(), gone: loadGone() })
+// true when the account should be sent this device's copy: something changed here, or the account lacks a bet saved here
 export function applySaved(remote: Partial<SavedSync> | null | undefined): boolean {
-  if (!remote) return false
   const cur = savedSync()
+  if (!remote) return cur.items.length > 0 || Object.keys(cur.gone).length > 0
+  const behind = needsUpload(cur, remote)
   const m = mergeSaved(cur, remote)
-  if (JSON.stringify(m) === JSON.stringify(cur)) return false
+  if (JSON.stringify(m) === JSON.stringify(cur)) return behind
   try { localStorage.setItem(GONE_KEY, JSON.stringify(m.gone)) } catch { /* private mode */ }
   storeSaved(m.items as Saved[], false)
   return true

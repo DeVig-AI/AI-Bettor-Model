@@ -1,1 +1,0 @@
-import{D as e}from"./index-Beiwi9ba.js";var t=e;export{t as component};
