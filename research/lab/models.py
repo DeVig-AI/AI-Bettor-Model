@@ -557,7 +557,8 @@ def _as_moneyline(out, data, prob=None):
     line = data["games"].set_index("game_id").ml_line
     m["line"] = line.reindex(m.game_id).values
     margin = m.actual
-    m["actual"] = np.where(margin > 0, 100.0, np.where(margin < 0, 0.0, np.nan))   # no ties in NHL / MLB finals
+    # no ties in NHL / MLB finals; in soccer (F3) a draw settles "the home team wins" as a loss, so it counts as 0
+    m["actual"] = np.where(margin > 0, 100.0, np.where((margin <= 0) if C.DRAW_LOSES else (margin < 0), 0.0, np.nan))
     fit = {}
     if prob is None:
         tr = ((m.season >= C.TRAIN[0]) & (m.season <= C.TRAIN[1]) & m.actual.notna()).values
@@ -570,6 +571,8 @@ def _as_moneyline(out, data, prob=None):
 
 
 def run_elo_ml(p, data):
+    if C.DRAW_LOSES and p.get("prob", "elo") == "elo":
+        raise ValueError("Elo's expected score counts a draw as half a win, not a home win chance (F3): use prob: fit")
     out, _ = run_elo(p, data)
     if p.get("prob", "elo") == "elo":                  # Elo's own expected score: 1 / (1 + 10^(-diff / 400))
         diff = out.forecast.values.astype(float) * p["elo_per_point"]

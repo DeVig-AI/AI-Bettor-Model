@@ -324,8 +324,8 @@ def paper():
     if not prom:
         print("paper season: no promoted model; nothing to do")
         return
-    if C.SPORT in ("NBA", "NHL", "MLB", "CBB"):       # D7 / E7: starts the day this sport's Kalshi logger is merged
-        print(f"paper season: no {C.SPORT} Kalshi logger yet (Constitution D7 / E7); {len(prom)} promoted model(s) wait, "
+    if C.SPORT in ("NBA", "NHL", "MLB", "CBB", "SOCCER"):   # D7 / E7 / F7: starts the day its Kalshi logger is merged
+        print(f"paper season: no {C.SPORT} Kalshi logger yet (Constitution D7 / E7 / F7); {len(prom)} promoted model(s) wait, "
               "nothing is back-filled")
         return
     sys.path.insert(0, C.ROOT)
@@ -447,7 +447,7 @@ def stop_rule(log, games):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["review", "exam-register", "exam-run", "paper"])
-    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D), CBB (Part E)")
+    ap.add_argument("--sport", default=os.environ.get("LAB_SPORT", "NFL"), help="NFL (Part B), CFB (Part C), NBA, NHL or MLB (Part D), CBB (Part E), SOCCER (Part F)")
     a = ap.parse_args(argv)
     C.use(a.sport)
     if a.cmd != "review":                            # D1b: a suspended chamber spends no exam and logs no paper picks
