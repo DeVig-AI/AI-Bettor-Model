@@ -3,13 +3,14 @@ import type { KRead } from '@/lib/kalshi-link'
 import { type PricePoint, pulse, useLegLines } from '@/lib/pulse'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useWidth } from '@/lib/use-width'
 import { ParlayAlert } from './parlay-alert'
 
 // The parlay pulse: the chance a saved parlay hits, minute by minute, from each leg's Kalshi price multiplied together.
 // Settled legs count as 1 (won) or 0 (lost) from the minute they settled, and each one is marked on the line.
 
 type Combo = Extract<KRead, { kind: 'combo' }>
-const W = 326, H = 150, PAD_T = 22, PAD_B = 22, PAD_R = 34
+const PAD_T = 22, PAD_B = 22, PAD_R = 34
 const hourFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric' })
 const dayHourFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric' })
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
@@ -78,6 +79,9 @@ export function PulseCard({ d, savedAt, label = null }: { d: Combo; savedAt: str
 function Chart({ line, marks, live, tone }: { line: PricePoint[]; marks: { t: number; label: string; won: boolean }[]; live: boolean; tone: 'bad' | 'good' | 'devig' }) {
   const gid = useId().replace(/:/g, '')
   const [hover, setHover] = useState<number | null>(null)
+  // drawn at the card's real width so the text doesn't grow on a computer
+  const [box, width] = useWidth<HTMLDivElement>(326)
+  const W = Math.max(260, width), H = Math.round(Math.min(220, Math.max(150, W * 0.24)))
   const t0 = line[0][0], t1 = line[line.length - 1][0]
   const high = Math.max(...line.map((x) => x[1]))
   const top = TOPS.find((v) => v >= high * 1.12) ?? 1
@@ -115,9 +119,12 @@ function Chart({ line, marks, live, tone }: { line: PricePoint[]; marks: { t: nu
   const summary = `From ${pct(line[0][1])} at ${timeFmt.format(t0 * 1000)} to ${pct(end[1])}${live ? ' now' : ''}. ${marks.map((m) => `${m.label} at ${timeFmt.format(m.t * 1000)}`).join('. ')}`
 
   return (
+    <div ref={box} className='mt-3'>
     <svg
       viewBox={`0 0 ${W} ${H}`}
-      className='mt-3 block w-full touch-pan-y select-none'
+      width={W}
+      height={H}
+      className='block h-auto w-full touch-pan-y select-none'
       role='img'
       aria-label={summary}
       onPointerMove={onMove}
@@ -167,5 +174,6 @@ function Chart({ line, marks, live, tone }: { line: PricePoint[]; marks: { t: nu
         </g>
       )}
     </svg>
+    </div>
   )
 }

@@ -4,6 +4,7 @@ import { LIVE_PLAYS, periodLabel, playLabel, useFieldPlays, usePriceLine } from 
 import { type Pt, KIND_LABEL, forSide, gapRead, since, valueAt, yRange } from '@/lib/gap-math'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useWidth } from '@/lib/use-width'
 import { isPick } from '../games/plate'
 import { rinkLabel, type RinkPlay } from '@/lib/rink-math'
 
@@ -12,7 +13,7 @@ import { rinkLabel, type RinkPlay } from '@/lib/rink-math'
 // split, the market and ESPN's model disagree about the same game. NHL: ESPN has no win chance for hockey, so it's
 // Kalshi's price alone with the goals marked. Display only.
 
-const W = 340, H = 190, PAD_T = 14, PAD_B = 40, PAD_R = 58
+const PAD_T = 14, PAD_B = 40, PAD_R = 58
 const ESPN = '#60a5fa'
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
 const n = (v: number) => Math.round(v * 100)
@@ -117,6 +118,9 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
 }) {
   const gid = useId().replace(/:/g, '')
   const [hover, setHover] = useState<number | null>(null)
+  // drawn at the card's real width: a phone gets 340 x 190, a computer a wider, somewhat taller chart with the same text sizes
+  const [box, width] = useWidth<HTMLDivElement>(340)
+  const W = Math.max(280, width), H = Math.round(Math.min(280, Math.max(190, W * 0.26)))
   const [lo, hi] = useMemo(() => yRange([...e.map((p) => p[1]), ...k.map((p) => p[1]), ...(devig != null ? [devig] : [])]), [e, k, devig])
   const span = Math.max(60, end - start)
   const x = (t: number) => ((t - start) / span) * (W - PAD_R)
@@ -129,10 +133,10 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
 
   // end labels, pushed apart if the lines finish close together
   let ye = eNow != null ? y(eNow) : null, yk = kNow != null ? y(kNow) : null
-  if (ye != null && yk != null && Math.abs(ye - yk) < 15) {
+  if (ye != null && yk != null && Math.abs(ye - yk) < 16) {
     const mid = (ye + yk) / 2, up = ye < yk || (ye === yk && (eNow ?? 0) >= (kNow ?? 0))
-    ye = mid + (up ? -7.5 : 7.5)
-    yk = mid + (up ? 7.5 : -7.5)
+    ye = mid + (up ? -8 : 8)
+    yk = mid + (up ? 8 : -8)
   }
 
   const ht = hover == null ? null : start + (hover / (W - PAD_R)) * span
@@ -155,7 +159,8 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
   const summary = `${code}: ${e.length ? `ESPN ${eNow != null ? n(eNow) + '%' : 'no data'}, ` : ''}Kalshi ${kNow != null ? n(kNow) + '¢' : 'no data'}${devig != null ? `, DeVig pregame ${n(devig)}%` : ''}. ${keys.length} ${keys.some((m) => m.kind === 'RUN') ? 'runs' : keys.some((m) => m.kind === 'G') ? 'goals' : 'scores and turnovers'} marked.`
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className='mt-3 block w-full touch-pan-y select-none px-4' role='img' aria-label={summary}
+    <div className='mt-3 px-4'><div ref={box}>
+    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} className='block w-full h-auto touch-pan-y select-none' role='img' aria-label={summary}
       onPointerMove={onMove} onPointerDown={onMove} onPointerLeave={() => setHover(null)}>
       <defs>
         <linearGradient id={gid} x1='0' x2='0' y1='0' y2='1'>
@@ -166,19 +171,21 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
       {grid.map((v) => (
         <g key={v}>
           <line x1='0' x2={W - PAD_R} y1={y(v)} y2={y(v)} stroke='currentColor' strokeOpacity={v === 0.5 ? 0.22 : 0.08} strokeDasharray={v === 0.5 ? undefined : '2 4'} />
-          <text x={W - PAD_R + 6} y={y(v) + 3.5} className='fill-muted-foreground text-[10px] tabular-nums'>{n(v)}</text>
+          {![ye, yk].some((l) => l != null && Math.abs(l - y(v)) < 13) && (
+            <text x={W - PAD_R + 6} y={y(v) + 3.5} className='fill-muted-foreground text-[10px] tabular-nums md:text-xs'>{n(v)}</text>
+          )}
         </g>
       ))}
       {quarters.map((p) => (
         <g key={p.q}>
           <line x1={p.mx} x2={p.mx} y1={PAD_T} y2={H - PAD_B} stroke='currentColor' strokeOpacity='0.1' />
-          <text x={p.mx + 3} y={H - PAD_B + 30} className='fill-muted-foreground text-[10px] font-semibold'>{periodLabel(p.q, sport)}</text>
+          <text x={p.mx + 3} y={H - PAD_B + 30} className='fill-muted-foreground text-[10px] font-semibold md:text-xs'>{periodLabel(p.q, sport)}</text>
         </g>
       ))}
       {devig != null && devig >= lo && devig <= hi && (
         <g>
           <line x1='0' x2={W - PAD_R} y1={y(devig)} y2={y(devig)} stroke='var(--devig)' strokeWidth='1.5' strokeDasharray='5 4' />
-          <text x='2' y={y(devig) - 4} className='fill-devig text-[10px] font-semibold'>DeVig pregame {n(devig)}</text>
+          <text x='2' y={y(devig) - 4} className='fill-devig text-[10px] font-semibold md:text-xs'>DeVig pregame {n(devig)}</text>
         </g>
       )}
       {e.length > 0 && <path d={`${step(e)}V${H - PAD_B}H${x(e[0][0]).toFixed(1)}Z`} fill={`url(#${gid})`} />}
@@ -199,14 +206,14 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
       {eNow != null && ye != null && (
         <g>
           <circle cx={x(end)} cy={y(eNow)} r='3.5' fill={ESPN} stroke='var(--card)' strokeWidth='1.5' />
-          <text x={W - PAD_R + 6} y={ye + 4} className='text-[11px] font-bold tabular-nums' fill={ESPN}>{n(eNow)} ESPN</text>
+          <text x={W - PAD_R + 6} y={ye + 4} className='text-[11px] font-bold tabular-nums md:text-[13px]' fill={ESPN}>{n(eNow)} ESPN</text>
         </g>
       )}
       {kNow != null && yk != null && (
         <g>
           {live && <circle cx={x(end)} cy={y(kNow)} r='7' fill='var(--foreground)' fillOpacity='0.18' className='motion-safe:animate-pulse' />}
           <circle cx={x(end)} cy={y(kNow)} r='3.5' fill='var(--foreground)' stroke='var(--card)' strokeWidth='1.5' />
-          <text x={W - PAD_R + 6} y={yk + 4} className='fill-foreground text-[11px] font-bold tabular-nums'>{n(kNow)} Kalshi</text>
+          <text x={W - PAD_R + 6} y={yk + 4} className='fill-foreground text-[11px] font-bold tabular-nums md:text-[13px]'>{n(kNow)} Kalshi</text>
         </g>
       )}
       {hover != null && ht != null && (
@@ -223,5 +230,6 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
         </g>
       )}
     </svg>
+    </div></div>
   )
 }
