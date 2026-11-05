@@ -1,1 +1,0 @@
-import{n as e}from"./team-BTdlapCf.js";import{n as t}from"./index-Cgp80lWw.js";import{t as n}from"./jsx-runtime-DyZJNswf.js";var r=n();function i(){let{sport:n,code:i}=t.useParams();return(0,r.jsx)(e,{sport:n.toUpperCase(),code:i.toUpperCase()},`${n}${i}`)}export{i as component};

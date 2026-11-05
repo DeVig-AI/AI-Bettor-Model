@@ -178,6 +178,66 @@ export type GameRow = {
   // for a game that's started: Kalshi's chance for the home team just before the start, and the spread when DeVig saved it
   closeHome?: number | null
   closeSpread?: number | null
+  // soccer: Kalshi's three outcomes (90 minutes plus stoppage). fair = each one's mid price, scaled to add up to 1;
+  // ml = the price to buy each one. fairHome stays null, so the two-way views leave these games alone.
+  three?: Three | null
+  ml3?: Three | null
+  tickers3?: { home: string; draw: string; away: string } | null
+  soccer?: SoccerMore | null
+}
+export type Three = { home: number; draw: number; away: number }
+// soccer's other Kalshi match markets, mid prices from the board file (the game page asks Kalshi for fresh ones):
+// spreads = "<side> wins by more than <line>", totals = "over <line> goals", btts = both teams score
+export type SoccerMore = {
+  spreads: [side: 'home' | 'away', line: number, mid: number, ask: number | null, ticker: string][]
+  totals: [line: number, mid: number, ask: number | null, ticker: string][]
+  btts: [mid: number, ask: number | null, ticker: string] | null
+  more?: SoccerExtra | null
+}
+// the rest of Kalshi's markets on one soccer match (tools/soccer_lines.py "more"); every price ends mid, ask, ticker.
+// corners / team_corners are "n or more"; players: goal and ast are "n or more", firstgoal the game's first goal,
+// soa a goal or an assist
+export type Px = [mid: number, ask: number | null, ticker: string]
+export type Half = { win: { home: Px; draw: Px; away: Px } | null; totals: [line: number, ...p: Px][]; spreads: [side: 'home' | 'away', line: number, ...p: Px][]; btts: Px | null }
+export type PlayerKind = 'goal' | 'firstgoal' | 'ast' | 'soa'
+export type SoccerExtra = {
+  corners: [n: number, ...p: Px][]
+  team_corners: [side: 'home' | 'away', n: number, ...p: Px][]
+  team_totals: [side: 'home' | 'away', line: number, ...p: Px][]
+  first: [who: 'home' | 'away' | 'none', ...p: Px][]
+  scores: [home: number, away: number, ...p: Px][]
+  scores_1h: [home: number, away: number, ...p: Px][]
+  halves: Partial<Record<'1' | '2', Half>>
+  players: [side: 'home' | 'away', name: string, kind: PlayerKind, n: number, ...p: Px][]
+}
+
+// ---------- soccer (tools/soccer_lines.py writes live/soccer_lines.json about every 30 minutes) ----------
+// the board's league code -> its name; the code is also the row's sport and /api/live's sport (lowercase)
+export const SOCCER: Record<string, string> = {
+  EPL: 'Premier League', LALIGA: 'La Liga', SERIEA: 'Serie A', BUND: 'Bundesliga', LIGUE1: 'Ligue 1',
+  UCL: 'Champions League', UEL: 'Europa League', UECL: 'Conference League', MLS: 'MLS', LIGAMX: 'Liga MX',
+}
+export const isSoccer = (sport: string) => sport in SOCCER
+type SoccerLine = {
+  sport: string
+  espn_id: string
+  kickoff: string
+  state: 'pre' | 'in' | 'post'
+  detail: string
+  home: string
+  away: string
+  names?: { home: string; away: string }
+  ids?: { home: string; away: string } | null
+  colors?: { home: string; away: string } | null
+  home_score: number | null
+  away_score: number | null
+  fair?: Three | null
+  ml?: { home: number | null; draw: number | null; away: number | null } | null
+  tickers?: { home: string; draw: string; away: string } | null
+  spreads?: SoccerMore['spreads']
+  totals?: SoccerMore['totals']
+  btts?: SoccerMore['btts']
+  more?: SoccerExtra | null
 }
 
 const SPORTS_WITH_PICKS = ['nfl', 'nba', 'mlb', 'cbb', 'cfb'] as const
@@ -244,6 +304,62 @@ export function freshMoneyline(m: { bid: number | null; ask: number | null } | u
   return { home: Math.round(americanOf(m.ask) * 10) / 10, away: Math.round(americanOf(1 - m.bid) * 10) / 10 }
 }
 
+// the three soccer markets right now: fair = mids scaled to add up to 1, ml = the price to buy each (the ask)
+export function freshThree(prices: Fresh['prices'] | undefined, t: SoccerLine['tickers']): { fair: Three; ml: Three } | null {
+  if (!prices || !t) return null
+  const q = [prices[t.home], prices[t.draw], prices[t.away]]
+  if (q.some((m) => !m || m.bid == null || m.ask == null || m.ask <= 0)) return null
+  const mids = q.map((m) => (m!.bid! + m!.ask!) / 2)
+  const sum = mids[0] + mids[1] + mids[2]
+  if (!(sum > 0)) return null
+  const ml = q.map((m) => Math.round(americanOf(Math.min(m!.ask!, 0.99)) * 10) / 10)
+  return {
+    fair: { home: mids[0] / sum, draw: mids[1] / sum, away: mids[2] / sum },
+    ml: { home: ml[0], draw: ml[1], away: ml[2] },
+  }
+}
+
+function soccerRows(games: SoccerLine[], fresh?: Fresh): GameRow[] {
+  return games.map((g) => {
+    const key = `${g.sport}|${g.espn_id}`
+    const fs = fresh?.scores[key]
+    const now = freshThree(fresh?.prices, g.tickers)
+    const three = now?.fair ?? g.fair ?? null
+    const m = g.ml
+    const ml3 = now?.ml ?? (m && m.home != null && m.draw != null && m.away != null ? { home: m.home, draw: m.draw, away: m.away } : null)
+    return {
+      id: key,
+      trackKey: String(g.espn_id),
+      sport: g.sport,
+      away: g.away,
+      home: g.home,
+      awayName: g.names?.away ?? g.away,
+      homeName: g.names?.home ?? g.home,
+      kickoff: g.kickoff,
+      state: fs?.state ?? g.state ?? stateByClock(g.kickoff),
+      detail: fs?.detail ?? g.detail ?? '',
+      awayScore: fs?.away_score ?? g.away_score,
+      homeScore: fs?.home_score ?? g.home_score,
+      ml: ml3 ? { home: ml3.home, away: ml3.away } : null,
+      fairHome: null,
+      spread: null,
+      total: null,
+      colors: g.colors ?? null,
+      ids: g.ids ?? null,
+      ticker: null,
+      pick: null,
+      edge: null,
+      three,
+      ml3,
+      tickers3: g.tickers ?? null,
+      soccer: g.spreads?.length || g.totals?.length || g.btts || g.more ? { spreads: g.spreads ?? [], totals: g.totals ?? [], btts: g.btts ?? null, more: g.more ?? null } : null,
+    }
+  })
+}
+
+// a soccer game as a game line, so the fresh-score timers treat it like any other game
+const soccerAsLine = (g: SoccerLine): GameLine => ({ ...g, ml: null, colors: g.colors ?? undefined })
+
 // games that aren't over: started up to 6 hours ago, or starting within 36 hours
 function nearNow(games: GameLine[], now = Date.now()) {
   return games.filter((g) => {
@@ -258,8 +374,12 @@ const anyOn = (games: GameLine[], scores?: Record<string, LiveScore>, now = Date
 export const SCORE_EVERY = 5e3 // ESPN through /api/live (cached 5s on the server), only while a game is on
 const PRICE_EVERY = 2 * 60e3 // Kalshi through /api/prices
 
-async function loadPrices(games: GameLine[]): Promise<Fresh['prices']> {
-  const tickers = [...new Set(nearNow(games).map((g) => g.home_ticker).filter((t): t is string => !!t))]
+async function loadPrices(games: GameLine[], soccer: SoccerLine[] = []): Promise<Fresh['prices']> {
+  const near = new Set(nearNow(soccer.map(soccerAsLine)).map((g) => `${g.sport}|${g.espn_id}`))
+  const tickers = [...new Set([
+    ...nearNow(games).map((g) => g.home_ticker),
+    ...soccer.filter((g) => near.has(`${g.sport}|${g.espn_id}`)).flatMap((g) => (g.tickers ? [g.tickers.home, g.tickers.draw, g.tickers.away] : [])),
+  ].filter((t): t is string => !!t))]
   const chunks: string[][] = []
   for (let i = 0; i < tickers.length; i += 40) chunks.push(tickers.slice(i, i + 40))
   const res = await Promise.allSettled(
@@ -277,7 +397,7 @@ async function loadPrices(games: GameLine[]): Promise<Fresh['prices']> {
 
 async function loadScores(games: GameLine[]): Promise<Fresh['scores']> {
   const sports = [...new Set(nearNow(games).map((g) => g.sport.toLowerCase()))].filter((s) =>
-    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb', 'cbb'].includes(s)
+    ['nfl', 'nba', 'mlb', 'nhl', 'wnba', 'cfb', 'cbb'].includes(s) || isSoccer(s.toUpperCase())
   )
   const res = await Promise.allSettled(
     sports.map(async (s) => {
@@ -516,19 +636,31 @@ export function useGames() {
     queryFn: loadBoards,
     refetchInterval: 10 * 60e3,
   })
+  const soccer = useQuery({
+    queryKey: ['soccer_lines'],
+    queryFn: () => getJson<{ generated_at: string; games: SoccerLine[] }>('live/soccer_lines.json'),
+    refetchInterval: 10 * 60e3,
+    retry: 1,
+  })
+  const soccerGames = soccer.data?.games ?? []
+  // every game the fresh-score timers watch: the game-lines file's and soccer's
+  const watched = useMemo(
+    () => [...(gameLines.data?.games ?? []), ...(soccer.data?.games ?? []).map(soccerAsLine)],
+    [gameLines.data, soccer.data]
+  )
   const prices = useQuery({
     queryKey: ['fresh_prices'],
-    queryFn: () => loadPrices(gameLines.data?.games ?? []),
-    enabled: !!gameLines.data,
+    queryFn: () => loadPrices(gameLines.data?.games ?? [], soccerGames),
+    enabled: !!gameLines.data || !!soccer.data,
     refetchInterval: PRICE_EVERY,
     retry: 1,
   })
   // scores every 5 seconds while any game is on; every 2 minutes otherwise (to notice a kickoff)
   const scores = useQuery({
     queryKey: ['fresh_scores'],
-    queryFn: () => loadScores(gameLines.data?.games ?? []),
-    enabled: !!gameLines.data,
-    refetchInterval: (q) => (anyOn(gameLines.data?.games ?? [], q.state.data) ? SCORE_EVERY : PRICE_EVERY),
+    queryFn: () => loadScores(watched),
+    enabled: !!gameLines.data || !!soccer.data,
+    refetchInterval: (q) => (anyOn(watched, q.state.data) ? SCORE_EVERY : PRICE_EVERY),
     retry: 1,
   })
   const fresh = useMemo(
@@ -546,17 +678,15 @@ export function useGames() {
   // rebuilt only when a file actually changes: a new array on every render makes the table reset itself in a loop
   const rows = useMemo(
     () =>
-      gameLines.data || live.data
-        ? buildRows(
-            gameLines.data?.games ?? [],
-            live.data?.games ?? [],
-            boards.data ?? [],
-            fresh.data
-          )
+      gameLines.data || live.data || soccer.data
+        ? [
+            ...buildRows(gameLines.data?.games ?? [], live.data?.games ?? [], boards.data ?? [], fresh.data),
+            ...soccerRows(soccer.data?.games ?? [], fresh.data),
+          ].sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))
         : [],
-    [gameLines.data, live.data, boards.data, fresh.data]
+    [gameLines.data, live.data, boards.data, soccer.data, fresh.data]
   )
-  const stamps = [gameLines.data?.generated_at, live.data?.generated_at]
+  const stamps = [gameLines.data?.generated_at, live.data?.generated_at, soccer.data?.generated_at]
     .filter(Boolean)
     .map((s) => Date.parse(s as string))
   if (fresh.data) stamps.push(fresh.data.at)
@@ -570,9 +700,10 @@ export function useGames() {
       gameLines.refetch()
       live.refetch()
       boards.refetch()
+      soccer.refetch()
       fresh.refetch()
     },
-    isFetching: gameLines.isFetching || live.isFetching || boards.isFetching || fresh.isFetching,
+    isFetching: gameLines.isFetching || live.isFetching || boards.isFetching || soccer.isFetching || fresh.isFetching,
   }
 }
 

@@ -1,1 +1,0 @@
-import{O as e}from"./index-Cgp80lWw.js";var t=e;export{t as component};

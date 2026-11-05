@@ -19,6 +19,7 @@ import { useExperience } from '@/lib/experience'
 import { LevelPicker } from '../games/explain-sheet'
 import { count, inTen, sideShort } from './words'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from './why'
+import { SoccerProps } from './soccer'
 
 // Player props: DeVig's props model next to Kalshi's live price. The model has lost to Kalshi on past games, and the
 // page says so first. Lines are worded the way Kalshi words them (6+ ast). Thin markets and small samples are flagged.
@@ -320,7 +321,8 @@ export function Props() {
   const lv = level ?? 'sometimes'
 
   const upcoming = useMemo(() => lines.filter((l) => Date.parse(l.kickoff) > Date.now()), [lines])
-  const sports = useMemo(() => Array.from(new Set(upcoming.map((l) => l.sport))).sort(), [upcoming])
+  // Soccer last: its player markets come from the board's soccer lines, not the props file
+  const sports = useMemo(() => [...Array.from(new Set(upcoming.map((l) => l.sport))).sort(), 'Soccer'], [upcoming])
   const sp = sport && sports.includes(sport) ? sport : sports[0]
   // games in start-time order, earliest first
   const byGame = useMemo(() => {
@@ -346,16 +348,18 @@ export function Props() {
         </div>
         <Intro level={lv} />
 
-        <div className='flex gap-2'>
+        <div className='no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4'>
           {sports.map((x) => (
             <button key={x} type='button' aria-pressed={sp === x} onClick={() => setSport(x)}
-              className={cn('h-9 rounded-full border px-4 text-sm font-medium text-muted-foreground', sp === x && 'border-foreground bg-foreground text-background')}>
+              className={cn('h-9 shrink-0 rounded-full border px-4 text-sm font-medium text-muted-foreground', sp === x && 'border-foreground bg-foreground text-background')}>
               {x}
             </button>
           ))}
         </div>
 
-        {isLoading ? (
+        {sp === 'Soccer' ? (
+          <SoccerProps rows={rows} />
+        ) : isLoading ? (
           <Skeleton className='h-64 w-full rounded-[18px]' />
         ) : byGame.length === 0 ? (
           <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>
@@ -366,7 +370,7 @@ export function Props() {
             {byGame.map((ls) => <GameCard key={ls[0].gameKey} ls={ls} game={gameFor(ls[0])} newb={lv === 'new'} />)}
           </ul>
         )}
-        {lv === 'numbers' && (
+        {lv === 'numbers' && sp !== 'Soccer' && (
           <p className='max-w-prose text-xs leading-relaxed text-muted-foreground'>
             Each bar splits at Kalshi&apos;s midpoint: the team color is Over, gray is Under. Amber slash: DeVig&apos;s props model;
             the big numbers are its chances (Kalshi&apos;s when DeVig has none). Prices next to Over and Under are what you&apos;d

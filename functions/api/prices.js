@@ -9,7 +9,11 @@ import { market } from "./props.js";
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const TTL = 30, MAX_TICKERS = 40;
 // game-winner series: KX + league + GAME, then the event, then the team, e.g. KXNFLGAME-26NOV01ATLTB-TB
-const TICKER = /^KX(?:NFL|NBA|WNBA|NHL|MLB|NCAAF|NCAAMB)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
+const TICKER = /^KX(?:NFL|NBA|WNBA|NHL|MLB|NCAAF|NCAAMB|EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL|UEL|UECL|MLS|LIGAMX)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
+// soccer's other match markets (the game page): winning margin (KXEPLSPREAD-..-ARS2), total goals (KXEPLTOTAL-..-3),
+// both teams to score (KXEPLBTTS-..-BTTS), corners, team goals, first to score, each half, correct score
+// (KXEPLSCORE-..-EVE2COV1) and the player markets (KXEPLGOAL-..-NEWFSCHAR5-1, KXEPLFIRSTGOAL-..-NEWFSCHAR5)
+const SOCCER_MORE = /^KX(?:EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL|UEL|UECL|MLS|LIGAMX)(?:SPREAD|TOTAL|BTTS|CORNERS|TCORNERS|TEAMTOTAL|FTTS|[12]H|[12]HTOTAL|[12]HSPREAD|[12]HBTTS|(?:1H)?SCORE|GOAL|FIRSTGOAL|AST|SOA)-[A-Z0-9]{6,30}-[A-Z0-9]{1,16}(?:-\d{1,2})?$/;
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -21,7 +25,7 @@ export function parseTickers(raw) {
   const out = [];
   for (const t of String(raw || "").split(",")) {
     const s = t.trim().toUpperCase();
-    if (s && TICKER.test(s) && !out.includes(s)) out.push(s);
+    if (s && (TICKER.test(s) || SOCCER_MORE.test(s)) && !out.includes(s)) out.push(s);
   }
   return out.slice(0, MAX_TICKERS);
 }

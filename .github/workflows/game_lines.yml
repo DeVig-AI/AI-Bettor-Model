@@ -21,6 +21,8 @@ jobs:
         run: python3 tools/game_lines.py
       - name: Polymarket's prices for the same games (public, no key)
         run: python3 tools/poly_lines.py || echo "poly_lines failed; the Kalshi file is still saved"
+      - name: Soccer's win, draw and win prices with ESPN's schedule (tools/soccer_lines.py; public, no key)
+        run: python3 tools/soccer_lines.py || echo "soccer_lines failed; the other files are still saved"
       - name: Save it
         run: |
           [ -f live/game_lines.json ] || exit 0
@@ -29,6 +31,7 @@ jobs:
           git add live/game_lines.json
           if [ -f live/poly_lines.json ]; then git add live/poly_lines.json; fi
           if [ -f live/cfb_history.json ]; then git add live/cfb_history.json; fi
+          if [ -f live/soccer_lines.json ]; then git add live/soccer_lines.json; fi
           git diff --cached --quiet && exit 0
           git commit -q -m "Game lines $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done

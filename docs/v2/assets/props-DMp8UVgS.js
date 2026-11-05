@@ -1,1 +1,0 @@
-import{n as e}from"./props-BOW_kT2G.js";var t=e;export{t as component};
