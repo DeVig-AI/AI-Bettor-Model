@@ -97,3 +97,14 @@ test("API: the phone's saved bets reach the laptop, the laptop's removal reaches
   await call(friends, A, "POST", {op: "share", on: false});
   assert.deepEqual((await call(friends, B, "GET")).body.friends[0].saved, []);
 });
+
+test("needsUpload: an account with no saved bets, or missing one, gets this device's copy", async () => {
+  const { needsUpload } = await import("../../web/src/lib/saved-merge.ts");
+  const a = { link: "https://kalshi.com/m/A", label: "A", savedAt: "2026-11-04T10:00:00Z" };
+  const b = { link: "https://kalshi.com/m/B", label: "B", savedAt: "2026-11-04T11:00:00Z" };
+  assert.equal(needsUpload({ items: [a], gone: {} }, null), true);
+  assert.equal(needsUpload({ items: [a], gone: {} }, { items: [a, b], gone: {} }), false);
+  assert.equal(needsUpload({ items: [a, b], gone: {} }, { items: [b], gone: {} }), true);
+  assert.equal(needsUpload({ items: [], gone: {} }, { items: [], gone: {} }), false);
+  assert.equal(needsUpload({ items: [], gone: { [a.link]: Date.now() } }, { items: [], gone: {} }), true);
+});
