@@ -44,6 +44,7 @@ function useLegSource() {
   const { lines } = useProps()
   return (leg: Leg): LegSrc | null => {
     if (leg.kind === 'ml') {
+      if (leg.outcome === 'draw') return null       // no team to open a sheet for
       const row = rows.find((r) => r.id === leg.gameId)
       return row ? { kind: 'ml', row, side: leg.sideIsHome ? 'home' : 'away' } : null
     }
@@ -66,7 +67,9 @@ function LegPlate({ leg, right, src, onOpen }: { leg: Leg; right?: React.ReactNo
       sub={`${leg.sport} · ${leg.game}`}
       colors={c}
       sideIsHome={leg.sideIsHome ?? false}
-      logo={leg.kind === 'ml' ? (
+      logo={leg.outcome === 'draw' ? (
+        <span aria-hidden='true' className='grid size-11 place-items-center rounded-full bg-muted font-condensed text-[11px] font-bold text-muted-foreground'>DRAW</span>
+      ) : leg.kind === 'ml' ? (
         <TeamLogo sport={leg.sport} code={leg.short} id={row ? (leg.sideIsHome ? row.ids?.home : row.ids?.away) : null}
           color={c ? (leg.sideIsHome ? c.home : c.away) : null} px={96} className='size-11 text-sm' />
       ) : src?.kind === 'prop' ? <PropLegPhoto src={src} /> : null}
@@ -144,8 +147,8 @@ function trackedLeg(l: Leg, rows: GameRow[]): TrackedLeg {
   const when = l.kickoff ? new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(l.kickoff)) : ''
   const base = { desc: l.label, odds: Math.round(l.odds), game: l.game, when, sport: l.sport, away, home, kickoff: l.kickoff, gkey: row?.trackKey }
   if (l.kind === 'ml') {
-    const side = l.sideIsHome ? 'home' : 'away'
-    const ticker = l.ticker ?? (row ? kalshiTeam(row.ticker, side) : null)
+    const side = l.outcome ?? (l.sideIsHome ? 'home' : 'away')
+    const ticker = l.ticker ?? (row && side !== 'draw' ? kalshiTeam(row.ticker, side) : null)
     return { ...base, kind: 'ml', mk: 'ml', side, ...(ticker ? { ticker } : {}) }
   }
   return {

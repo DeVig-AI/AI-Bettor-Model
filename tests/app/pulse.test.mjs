@@ -48,7 +48,7 @@ test("winline: thin minutes (2¢ bid, 98¢ ask) aren't prices; prop and spread t
   assert.deepEqual(pts, [[2, 0.61], [3, 0.61]]);
   const seen = [];
   const fetcher = async (u) => { seen.push(u); return new Response(JSON.stringify({ candlesticks: [] })); };
-  for (const t of ["KXNBAAST-26OCT31PHICHA-CHADSCHRODERPG-6", "KXNFLSPREAD-26NOV01BALBUF-BUF7", "KXNFLGAME-26NOV01BALBUF-BUF"]) {
+  for (const t of ["KXNBAAST-26OCT31PHICHA-CHADSCHRODERPG-6", "KXNFLSPREAD-26NOV01BALBUF-BUF7", "KXNFLGAME-26NOV01BALBUF-BUF", "KXEPLGAME-26NOV06EVECOV-TIE"]) {
     const r = await handle(new Request(`https://x/api/winline?ticker=${t}`), fetcher);
     assert.equal(r.status, 200, t);
   }

@@ -11,6 +11,7 @@ const hex = (c?: string | null) => {
 // A team to win, as a parlay leg: Kalshi's price for that side (fee included), the market's fair chance, and DeVig's
 // chance when its model picked a side for this game (its chance for the other side is 1 minus that).
 export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
+  if (r.tickers3) return soccerLeg(r, side)
   const odds = side === 'home' ? r.ml?.home : r.ml?.away
   if (odds == null || !isFinite(odds) || odds === 0) return null
   const code = side === 'home' ? r.home : r.away
@@ -35,6 +36,35 @@ export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
     colors: away && home ? { away, home } : null,
     sideIsHome: side === 'home',
     ticker: kalshiTeam(r.ticker, side),
+  }
+}
+
+// One of a soccer match's three outcomes as a leg: a team to win in 90 minutes (plus stoppage), or the draw. Each is
+// its own Kalshi market, bought as Yes; a draw loses both team legs. No DeVig model for soccer.
+export function soccerLeg(r: GameRow, o: 'home' | 'draw' | 'away'): Leg | null {
+  const odds = r.ml3?.[o]
+  const ticker = r.tickers3?.[o]
+  if (odds == null || !isFinite(odds) || odds === 0 || !ticker) return null
+  const code = o === 'home' ? r.home : o === 'away' ? r.away : null
+  const away = hex(r.colors?.away)
+  const home = hex(r.colors?.home)
+  return {
+    id: `${r.id}|${o}`,
+    kind: 'ml',
+    label: code ? `${code} to win` : `${r.home}–${r.away} draw`,
+    short: code ?? 'Draw',
+    game: `${r.away} at ${r.home}`,
+    gameId: r.id,
+    sport: r.sport,
+    kickoff: r.kickoff,
+    odds: Math.round(odds),
+    fair: r.three?.[o] ?? null,
+    devig: null,
+    devigNote: null,
+    colors: code && away && home ? { away, home } : null,
+    sideIsHome: code ? o === 'home' : null,
+    outcome: o,
+    ticker,
   }
 }
 

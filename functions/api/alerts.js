@@ -8,7 +8,7 @@
 //
 // What can ping:
 //   - New DeVig pick: a pick locks in a sport the person follows (NFL, college football, NBA, college basketball, MLB)
-//   - Price target: "tell me when KC is +105 or better" on one game, before it starts (Kalshi's price now)
+//   - Price target: "tell me when KC is +105 or better" on one game, before it starts (Kalshi's price now); soccer: a team or the draw
 //   - Big line move: a game with a favorite team or a ★ tracked game moves 5+ points on Kalshi within 6 hours, before
 //     the start
 //   - Lab model passed: a Research Lab model passes its confirmation check, or the sealed exam
@@ -42,6 +42,8 @@ const SAVE_GAP_MS = 1000, SAVES_PER_DAY = 200, SENDS_PER_DAY = 80, PER_RUN = 5;
 const LIVE_SPORTS = ["NFL", "CFB", "NBA", "WNBA", "CBB", "NHL"], MAX_LIVE_GAMES = 12, LIVE_TTL = 15, RUN_GAP_KEYED_S = 25;
 const MOVE = 0.05, MOVE_HOURS = 6, RUN_GAP_S = 90, SENT_DAYS = 10;
 const GAME_TICKER = /^KX(?:NFL|NBA|WNBA|NHL|MLB|NCAAF|NCAAB|NCAAMB)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
+// soccer: each of the three outcomes is its own market (home, TIE, away), so a soccer target names that market
+const SOCCER_TICKER = /^KX(?:EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL|UEL|UECL|MLS|LIGAMX)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
 const LEG_TICKER = /^[A-Z0-9][A-Z0-9._-]{2,99}$/;
 const memRuns = {at: 0};
 
@@ -89,12 +91,14 @@ export function isQuiet(prefs, now) {
   return q.from < q.to ? h >= q.from && h < q.to : h >= q.from || h < q.to;
 }
 
-// a price target: one team on one game at American odds (Kalshi's price as the app shows it), before the start
+// a price target: one team on one game at American odds (Kalshi's price as the app shows it), before the start.
+// Soccer: one of the three outcomes (home, draw, away), its ticker being that outcome's own market
 export function cleanTarget(t) {
   if (!t || typeof t !== "object") return null;
   const odds = Number(t.odds), ticker = str(t.ticker, 80).toUpperCase();
-  if (!GAME_TICKER.test(ticker) || !isFinite(odds) || (odds > -100 && odds < 100) || Math.abs(odds) > 100000) return null;
-  if (t.side !== "home" && t.side !== "away" || !isFinite(Date.parse(t.kickoff))) return null;
+  const soccer = SOCCER_TICKER.test(ticker);
+  if (!(soccer || GAME_TICKER.test(ticker)) || !isFinite(odds) || (odds > -100 && odds < 100) || Math.abs(odds) > 100000) return null;
+  if (!(t.side === "home" || t.side === "away" || (soccer && t.side === "draw")) || !isFinite(Date.parse(t.kickoff))) return null;
   return {id: /^[a-z0-9]{4,24}$/.test(t.id) ? t.id : Math.random().toString(36).slice(2, 12),
     sport: str(t.sport, 8).toUpperCase(), gid: str(t.gid, 40), away: str(t.away, 12), home: str(t.home, 12),
     kickoff: str(t.kickoff, 30), ticker, side: t.side, odds: Math.round(odds)};
@@ -161,6 +165,15 @@ export function moneyline(m) {
   const q = m && priced(m, "yes");
   if (!q || q.bid == null || q.ask == null) return null;
   return {home: Math.round(americanOf(q.ask)), away: Math.round(americanOf(1 - q.bid))};
+}
+// what a target's side costs now, as American odds: a soccer outcome is bought as Yes on its own market
+export function targetOdds(t, m) {
+  if (SOCCER_TICKER.test(t.ticker)) {
+    const q = m && priced(m, "yes");
+    return q && q.ask != null && q.ask > 0 && q.ask < 1 ? Math.round(americanOf(q.ask)) : null;
+  }
+  const ml = moneyline(m);
+  return ml ? ml[t.side] : null;
 }
 export function fairHome(m) {
   const q = m && priced(m, "yes");
@@ -237,11 +250,9 @@ export function targetAlerts(rec, mkts, now) {
   const out = [], done = [];
   for (const t of rec.targets) {
     if (Date.parse(t.kickoff) <= now) { done.push(t.id); continue; }
-    const ml = moneyline(mkts[t.ticker]);
-    if (!ml) continue;
-    const odds = ml[t.side];
-    if (odds < t.odds) continue;
-    const team = t.side === "home" ? t.home : t.away;
+    const odds = targetOdds(t, mkts[t.ticker]);
+    if (odds == null || odds < t.odds) continue;
+    const team = t.side === "draw" ? "The draw" : t.side === "home" ? t.home : t.away;
     done.push(t.id);
     out.push({key: `target:${t.id}`, tag: `target:${t.gid}`, title: `${team} is ${fmtOdds(odds)} on Kalshi`,
       body: `You asked for ${fmtOdds(t.odds)} or better. ${t.away} @ ${t.home}, ${when(t.kickoff, rec.prefs.tz)}.`,

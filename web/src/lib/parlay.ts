@@ -19,6 +19,8 @@ export type Leg = {
   devigNote: string | null // what DeVig's number is ("NBA Model C", "props model: has lost to Kalshi on past games")
   colors: { away: string; home: string } | null
   sideIsHome: boolean | null
+  // soccer: which of Kalshi's three outcomes (a team in 90 minutes, or the draw); sideIsHome is null for the draw
+  outcome?: 'home' | 'draw' | 'away'
   ticker?: string | null
   // a prop's player, stat and line, so a saved parlay can grade it from the box score (classic does)
   player?: string
@@ -63,7 +65,9 @@ export function useSlip() {
   )
   const toggle = useCallback((leg: Leg) => {
     const cur = read()
-    write(cur.some((l) => l.id === leg.id) ? cur.filter((l) => l.id !== leg.id) : [...cur, leg])
+    // a soccer match has one result: picking the draw drops a win leg from the same match, and so on
+    write(cur.some((l) => l.id === leg.id) ? cur.filter((l) => l.id !== leg.id)
+      : [...cur.filter((l) => !(leg.outcome && l.outcome && l.gameId === leg.gameId)), leg])
   }, [])
   const remove = useCallback((id: string) => write(read().filter((l) => l.id !== id)), [])
   const replace = useCallback((next: Leg[]) => write(next), [])

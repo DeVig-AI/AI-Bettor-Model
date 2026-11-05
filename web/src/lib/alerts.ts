@@ -12,7 +12,7 @@ export type AlertPrefs = {
 }
 export type PriceTarget = {
   id: string; sport: string; gid: string; away: string; home: string; kickoff: string
-  ticker: string; side: 'home' | 'away'; odds: number
+  ticker: string; side: 'home' | 'away' | 'draw'; odds: number // soccer: a team or the draw, ticker = that outcome's market
 }
 export type ParlayAlert = {
   id: string; label: string; legs: { ticker: string; side: 'yes' | 'no'; label: string }[]

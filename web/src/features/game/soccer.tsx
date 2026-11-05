@@ -1,13 +1,17 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowLeftRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeftRight, Check, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { TrackButton } from '@/components/track-button'
 import { TeamLogo } from '@/components/team-logo'
 import { type GameRow, SOCCER, fmtAmerican, fmtPct } from '@/lib/devig'
 import { type Lineup, type MatchEvent, type MatchStats, type Tables, resultOf, tableRow, useMatch, useSoccerMore, useSoccerTables } from '@/lib/soccer'
+import { useSlip } from '@/lib/parlay'
 import { cn } from '@/lib/utils'
+import { soccerLeg } from '../parlay/legs'
 import { Plate } from '../games/plate'
 import { FormDots } from '../research/soccer'
 import { Box, Rung, SoccerMarkets } from './soccer-markets'
+import { PriceAlert } from './price-alert'
+import { SoccerChart } from './soccer-chart'
 
 // A soccer match: the big plate, Kalshi's three outcomes, the goals markets (total goals, both teams to score, winning
 // margin), the rest of Kalshi's markets (players, correct score, halves, team goals, corners: soccer-markets.tsx), what has happened (goals, cards, substitutions, match stats, line-ups) and each team's form in its league.
@@ -24,7 +28,11 @@ const close = (a?: string | null, b?: string | null) => {
 const ordinal = (n: number) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`
 const dayFmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' })
 
+const OUTCOMES = ['home', 'draw', 'away'] as const
+type Outcome = (typeof OUTCOMES)[number]
+
 function Outcomes({ row }: { row: GameRow }) {
+  const { toggle, has } = useSlip()
   const h = row.homeScore ?? 0
   const a = row.awayScore ?? 0
   if (row.state === 'post' && row.homeScore != null && row.awayScore != null) {
@@ -39,15 +47,34 @@ function Outcomes({ row }: { row: GameRow }) {
   const t = row.three
   const ml = row.ml3
   const top = t ? (['home', 'draw', 'away'] as const).reduce((x, k) => (t[k] > t[x] ? k : x), 'home' as 'home' | 'draw' | 'away') : null
+  const canAdd = row.state === 'pre' && Date.parse(row.kickoff) > Date.now()
+  const label = (o: Outcome) => (o === 'draw' ? 'Draw' : `${o === 'home' ? row.home : row.away} win`)
   return (
     <>
       <div className='grid grid-cols-3 gap-2'>
-        <Box label={`${row.home} win`} value={fmtPct(t?.home)} sub={fmtAmerican(ml?.home)} strong={top === 'home'} />
-        <Box label='Draw' value={fmtPct(t?.draw)} sub={fmtAmerican(ml?.draw)} strong={top === 'draw'} />
-        <Box label={`${row.away} win`} value={fmtPct(t?.away)} sub={fmtAmerican(ml?.away)} strong={top === 'away'} />
+        {OUTCOMES.map((o) => {
+          const leg = canAdd ? soccerLeg(row, o) : null
+          if (!leg) return <Box key={o} label={label(o)} value={fmtPct(t?.[o])} sub={fmtAmerican(ml?.[o])} strong={top === o} />
+          const on = has(leg.id)
+          return (
+            <button key={o} type='button' aria-pressed={on} onClick={() => toggle(leg)}
+              aria-label={`${o === 'draw' ? 'Draw' : `${o === 'home' ? row.homeName : row.awayName} to win`}, ${fmtPct(t?.[o])}, ${fmtAmerican(ml?.[o])}. ${on ? 'In your parlay; tap to remove' : 'Add to parlay'}`}
+              className={cn('flex min-w-0 flex-col rounded-2xl px-3 py-2.5 text-start ring-inset transition-[background-color,box-shadow] duration-150',
+                top === o ? 'bg-accent' : 'bg-card', on && 'ring-2 ring-devig')}>
+              <span className='truncate text-xs text-muted-foreground'>{label(o)}</span>
+              <span className='font-condensed text-[17px] font-bold tabular-nums'>{fmtPct(t?.[o])}</span>
+              <span className='flex items-center justify-between gap-1 text-[11px] text-muted-foreground tabular-nums'>
+                {fmtAmerican(ml?.[o])}
+                <span aria-hidden='true' className={cn('inline-flex items-center gap-0.5 font-semibold', on ? 'text-devig' : '')}>
+                  {on ? <Check className='size-3' /> : <Plus className='size-3' />}{on ? 'Parlay' : 'Add'}
+                </span>
+              </span>
+            </button>
+          )
+        })}
       </div>
       <p className='-mt-2 px-1 text-xs leading-relaxed text-muted-foreground'>
-        Kalshi with the fee taken out: each outcome&apos;s mid price, scaled to add up to 100%. Under it, the price to buy it. 90 minutes plus stoppage time; extra time doesn&apos;t count.
+        Kalshi with the fee taken out: each outcome&apos;s mid price, scaled to add up to 100%. Under it, the price to buy it. 90 minutes plus stoppage time; extra time doesn&apos;t count.{canAdd ? ' Tap one to add it to your parlay.' : ''}
       </p>
     </>
   )
@@ -309,9 +336,10 @@ export function SoccerGame({ row }: { row: GameRow }) {
       <Plate row={row} showDay size='lg' />
       <main className='flex flex-col gap-5 px-4 py-5 md:px-6'>
         <Outcomes row={row} />
+        <PriceAlert row={row} />
         {row.state === 'pre'
           ? <><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
-          : <><Match row={row} /><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /></>}
+          : <><SoccerChart row={row} /><Match row={row} /><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /></>}
         <Form row={row} />
       </main>
     </>

@@ -7,6 +7,7 @@ import { useAccount } from '@/lib/profile'
 import { cn } from '@/lib/utils'
 
 // Game page → "Alert me at a price": a ping when Kalshi's price for one team reaches the odds picked, before the start.
+// Soccer: a team or the draw, each its own Kalshi market (the ticker saved is that outcome's).
 
 // American odds step by 5, and skip the gap between -100 and +100 (both are even money)
 export function stepOdds(o: number, d: number) {
@@ -15,6 +16,8 @@ export function stepOdds(o: number, d: number) {
   return v
 }
 
+type Side = 'home' | 'away' | 'draw'
+
 export function PriceAlert({ row }: { row: GameRow }) {
   const { data: acct } = useAccount()
   const { data } = useAlerts()
@@ -22,19 +25,24 @@ export function PriceAlert({ row }: { row: GameRow }) {
   const set = useSetTarget()
   const remove = useRemoveTarget()
   const [open, setOpen] = useState(false)
-  const [side, setSide] = useState<'away' | 'home'>(row.pick?.side === row.home ? 'home' : 'away')
-  const now = row.ml?.[side] ?? null
+  const three = row.tickers3 ?? null
+  const [side, setSide] = useState<Side>(three ? 'home' : row.pick?.side === row.home ? 'home' : 'away')
+  const now = (three ? row.ml3?.[side] : side === 'draw' ? null : row.ml?.[side]) ?? null
   const [odds, setOdds] = useState<number | null>(null)
-  if (row.state !== 'pre' || !row.ticker || Date.parse(row.kickoff) <= Date.now()) return null
+  const ticker = three ? three[side] : row.ticker
+  if (row.state !== 'pre' || !ticker || Date.parse(row.kickoff) <= Date.now()) return null
 
   const gid = row.id.split('|')[1] ?? row.id
-  const mine = (data?.targets ?? []).filter((t) => t.ticker === row.ticker)
+  const sides: Side[] = three ? ['home', 'draw', 'away'] : ['away', 'home']
+  const own = new Set(three ? [three.home, three.draw, three.away] : [row.ticker])
+  const mine = (data?.targets ?? []).filter((t) => own.has(t.ticker))
+  const name = (s: Side) => (s === 'draw' ? 'Draw' : s === 'home' ? row.homeName : row.awayName)
   const ready = acct?.state === 'joined' && data?.ready && here.data
   const want = odds ?? (now != null ? stepOdds(Math.round(now), 10) : 100)
-  const team = side === 'home' ? row.homeName : row.awayName
+  const team = side === 'draw' ? 'the draw' : name(side)
 
   const save = () => set.mutate(
-    { sport: row.sport, gid, away: row.away, home: row.home, kickoff: row.kickoff, ticker: row.ticker!, side, odds: want },
+    { sport: row.sport, gid, away: row.away, home: row.home, kickoff: row.kickoff, ticker, side, odds: want },
     { onSuccess: () => { setOpen(false); setOdds(null) } },
   )
 
@@ -44,7 +52,7 @@ export function PriceAlert({ row }: { row: GameRow }) {
         <div key={t.id} className='flex items-center gap-3 border-b px-4 py-2.5'>
           <Bell className='size-4 shrink-0 text-devig' aria-hidden='true' />
           <p className='min-w-0 flex-1 text-sm'>
-            Alert at <b className='tabular-nums'>{t.side === 'home' ? row.homeName : row.awayName} {fmtOdds(t.odds)}</b> or better
+            Alert at <b className='tabular-nums'>{name(t.side)} {fmtOdds(t.odds)}</b> or better
           </p>
           <button type='button' onClick={() => remove.mutate(t.id)} disabled={remove.isPending} aria-label='Remove this price alert'
             className='grid size-9 shrink-0 place-items-center rounded-full border text-muted-foreground'>
@@ -67,11 +75,11 @@ export function PriceAlert({ row }: { row: GameRow }) {
         </div>
       ) : (
         <div className='flex flex-col gap-3 p-4'>
-          <div className='grid grid-cols-2 gap-2' role='radiogroup' aria-label='Team'>
-            {(['away', 'home'] as const).map((s) => (
+          <div className={cn('grid gap-2', three ? 'grid-cols-3' : 'grid-cols-2')} role='radiogroup' aria-label={three ? 'Outcome' : 'Team'}>
+            {sides.map((s) => (
               <button key={s} type='button' role='radio' aria-checked={side === s} onClick={() => { setSide(s); setOdds(null) }}
                 className={cn('h-11 truncate rounded-xl border px-3 text-sm font-bold', side === s ? 'border-devig bg-devig/15 text-devig' : 'text-muted-foreground')}>
-                {s === 'home' ? row.homeName : row.awayName}
+                {three && s !== 'draw' ? (s === 'home' ? row.home : row.away) : name(s)}
               </button>
             ))}
           </div>
