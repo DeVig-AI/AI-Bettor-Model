@@ -1,0 +1,1 @@
+import{n as e}from"./friends-BNATldfG.js";var t=e;export{t as component};

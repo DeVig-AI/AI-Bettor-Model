@@ -13,9 +13,10 @@ import { Box, Rung, SoccerMarkets } from './soccer-markets'
 import { PriceAlert } from './price-alert'
 import { SoccerChart } from './soccer-chart'
 import { DevigSoccer } from './soccer-devig'
+import { SoccerStreaks } from '../props/streaks'
 
 // A soccer match: the big plate, Kalshi's three outcomes, the goals markets (total goals, both teams to score, winning
-// margin), the rest of Kalshi's markets (players, correct score, halves, team goals, corners: soccer-markets.tsx), what has happened (goals, cards, substitutions, match stats, line-ups) and each team's form in its league.
+// margin), players on a 10-match streak at one of Kalshi's lines (../props/streaks.tsx), the rest of Kalshi's markets (players, correct score, halves, team goals, corners: soccer-markets.tsx), what has happened (goals, cards, substitutions, match stats, line-ups) and each team's form in its league.
 // Kalshi's soccer markets settle on 90 minutes plus stoppage time. In the five big leagues, DeVig Soccer v1's chances
 // sit under Kalshi's (soccer-devig.tsx; new, not proven). No picks.
 
@@ -341,8 +342,8 @@ export function SoccerGame({ row }: { row: GameRow }) {
         <PriceAlert row={row} />
         <DevigSoccer row={row} />
         {row.state === 'pre'
-          ? <><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
-          : <><SoccerChart row={row} /><Match row={row} /><Goals row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /></>}
+          ? <><Goals row={row} /><SoccerStreaks row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
+          : <><SoccerChart row={row} /><Match row={row} /><Goals row={row} />{row.state === 'in' && <SoccerStreaks row={row} />}<SoccerMarkets row={row} m={row.soccer?.more} /></>}
         <Form row={row} />
       </main>
     </>
