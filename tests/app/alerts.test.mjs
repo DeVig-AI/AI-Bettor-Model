@@ -160,6 +160,19 @@ test("price targets: fire at the number or better, then go; expire at the start"
   assert.equal(cleanTarget(T).odds, 105);
 });
 
+test("price targets, soccer: each outcome is its own market, bought as Yes; the draw is a side", () => {
+  const TIE = "KXEPLGAME-26NOV06EVECOV-TIE";
+  const S = {...T, id: "s1", sport: "EPL", away: "COV", home: "EVE", ticker: TIE, side: "draw", odds: 250};
+  assert.equal(cleanTarget(S).side, "draw");
+  assert.equal(cleanTarget({...T, side: "draw"}), null);                       // no draw in the NFL
+  assert.equal(cleanTarget({...S, ticker: "KXEPLSPREAD-26NOV06EVECOV-EVE1"}), null);
+  let r = targetAlerts(rec({targets: [S]}), {[TIE]: mk(TIE, 0.27, 0.3)}, NOW);   // ask 0.30 -> +233: not yet
+  assert.equal(r.out.length, 0);
+  r = targetAlerts(rec({targets: [S]}), {[TIE]: mk(TIE, 0.25, 0.27)}, NOW);      // ask 0.27 -> +270
+  assert.equal(r.out[0].title, "The draw is +270 on Kalshi");
+  assert.deepEqual(r.done, ["s1"]);
+});
+
 test("followed games: favorite teams, and ★ tracked by ESPN id or by the pick's game id", () => {
   const g2 = {...GAMES[0], espn_id: "402", away: "NYJ", home: "MIA", home_ticker: "KXNFLGAME-26NOV01NYJMIA-MIA"};
   assert.deepEqual(followed({prefs: {teams: {NFL: ["BUF"]}}}, [GAMES[0], g2], []).map(g => g.espn_id), ["401"]);

@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { Check, Clock, Circle, X } from 'lucide-react'
-import { type GameRow, fmtAmerican, useFinals, useGames } from '@/lib/devig'
+import { type GameRow, fmtAmerican, isSoccer, useFinals, useGames } from '@/lib/devig'
 import { decimal } from '@/lib/parlay'
 import { readLink } from '@/lib/kalshi-link'
 import { type TrackedLeg, type TrackedParlay, removeParlay } from '@/lib/track'
@@ -51,9 +51,14 @@ function gradeLeg(l: TrackedLeg, g: GameRow | null, kalshi: 'won' | 'lost' | nul
       ? { st: 'pending', note: `Final · ${score} · waiting on Kalshi's grade`, chip: label }
       : { st: 'live', note: `${score} · ${g.detail || 'live'}`, chip: label }
   }
+  if (g.state !== 'post') return { st: 'live', note: `${score} · ${g.detail || 'live'}`, chip: label }
+  // soccer is three-way: the draw is its own leg, and a draw loses both teams' legs (no push)
+  if (l.side === 'draw') {
+    return { st: h === a ? 'won' : 'lost', note: `Final · ${score}`, chip: h === a ? `Drew ${h}–${a}` : `No draw, ${h > a ? g.home : g.away} won` }
+  }
   const team = l.side === 'home' ? g.home : g.away
   const x = l.side === 'home' ? h - a : a - h
-  if (g.state !== 'post') return { st: 'live', note: `${score} · ${g.detail || 'live'}`, chip: label }
+  if (x === 0 && isSoccer(g.sport)) return { st: 'lost', note: `Final · ${score}`, chip: `${team} drew ${h}–${a}` }
   const mine = l.side === 'home' ? h : a, theirs = l.side === 'home' ? a : h
   return {
     st: x > 0 ? 'won' : x < 0 ? 'lost' : 'push',

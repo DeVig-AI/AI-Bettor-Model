@@ -1,6 +1,6 @@
 // DeVig price graph for any sport: GET /api/winline?ticker=KXNBAGAME-26OCT20BOSDET-DET&start=<unix seconds>
 // returns Kalshi's 1-minute price history for that market (a team to win, or any sports market a parlay leg can be:
-// a spread, a total, a player prop) as [[unix, chance]] (bid/ask midpoint, at
+// a spread, a total, a player prop; soccer's three outcomes) as [[unix, chance]] (bid/ask midpoint, at
 // most 150 points; &fine=1: 360, every minute of a game), plus the latest bid and ask. Display only. Answers are kept for a minute so viewers share them.
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const TTL = 10, MAX_POINTS = 150, FINE_POINTS = 360, WIDE = 0.25;
@@ -42,7 +42,7 @@ export async function handle(request, fetcher = fetch) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
   const q = new URL(request.url).searchParams;
   const ticker = String(q.get("ticker") || "");
-  const m = /^(KX(?:NFL|NBA|MLB|NHL|WNBA|NCAAF|NCAAB|NCAAMB)[A-Z0-9]{0,20})-[A-Z0-9]{6,30}-[A-Z0-9.][A-Z0-9.-]{0,40}$/.exec(ticker);
+  const m = /^(KX(?:NFL|NBA|MLB|NHL|WNBA|NCAAF|NCAAB|NCAAMB|EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL|UEL|UECL|MLS|LIGAMX)[A-Z0-9]{0,20})-[A-Z0-9]{6,30}-[A-Z0-9.][A-Z0-9.-]{0,40}$/.exec(ticker);
   if (!m) return json({error: "bad ticker"}, 400);
   const now = Math.floor(Date.now() / 1000);
   let start = parseInt(q.get("start"), 10);
