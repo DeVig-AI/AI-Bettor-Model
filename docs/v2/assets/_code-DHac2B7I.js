@@ -1,1 +1,0 @@
-import{n as e}from"./team-B8aUQsqF.js";import{n as t}from"./index-35c-F7av.js";import{t as n}from"./jsx-runtime-DyZJNswf.js";var r=n();function i(){let{sport:n,code:i}=t.useParams();return(0,r.jsx)(e,{sport:n.toUpperCase(),code:i.toUpperCase()},`${n}${i}`)}export{i as component};
