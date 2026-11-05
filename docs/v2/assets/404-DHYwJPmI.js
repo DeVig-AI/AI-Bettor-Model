@@ -1,0 +1,1 @@
+import{a as e}from"./index-35c-F7av.js";var t=e;export{t as component};
