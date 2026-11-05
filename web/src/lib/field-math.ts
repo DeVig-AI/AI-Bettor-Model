@@ -192,6 +192,8 @@ export function callText(c: Call): string {
 
 // a period's short name: "Q3" (NFL, CFB, NBA) or "2H" (men's college basketball plays two halves), then "OT", "2OT"
 export function periodLabel(q: number, sport: string): string {
+  // hockey: P1-P3, then OT (a regular-season shootout is ESPN's period 5)
+  if (sport === 'NHL') return q <= 3 ? `P${q}` : q === 4 ? 'OT' : 'SO'
   const reg = sport === 'CBB' ? 2 : 4
   if (q > reg) return q === reg + 1 ? 'OT' : `${q - reg}OT`
   return reg === 2 ? `${q}H` : `Q${q}`

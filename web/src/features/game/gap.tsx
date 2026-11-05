@@ -5,10 +5,12 @@ import { type Pt, KIND_LABEL, forSide, gapRead, since, valueAt, yRange } from '@
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { isPick } from '../games/plate'
+import { rinkLabel, type RinkPlay } from '@/lib/rink-math'
 
 // The gap chart on an NFL, college football, NBA or college basketball game page: Kalshi's price for a team next to ESPN's own win chance,
 // play by play, with the scores and turnovers (basketball: runs of 8+) marked and DeVig's pregame read as a dashed line. When the two lines
-// split, the market and ESPN's model disagree about the same game. Display only.
+// split, the market and ESPN's model disagree about the same game. NHL: ESPN has no win chance for hockey, so it's
+// Kalshi's price alone with the goals marked. Display only.
 
 const W = 340, H = 190, PAD_T = 14, PAD_B = 40, PAD_R = 58
 const ESPN = '#60a5fa'
@@ -42,7 +44,10 @@ export function GapChart({ row }: { row: GameRow }) {
   const keys = (plays.data?.keys ?? []).filter((x) => x.at >= start && x.at <= end)
   const lastKey = last(plays.data?.keys)
   const eNow = last(espn)?.[1] ?? null, kNow = last(kalshi)?.[1] ?? null
-  const read = gapRead(kNow, eNow)
+  const espnOn = wp.length >= 2
+  const read = espnOn ? gapRead(kNow, eNow) : { gap: null, text: kNow == null ? "Kalshi's price isn't in yet" : `Kalshi has ${code} at ${n(kNow)}¢` }
+  const keyText = (x: NonNullable<typeof lastKey>) => x.kind === 'G' ? rinkLabel({ id: '', team: null, q: x.q, clock: x.clock, text: x.text, type: 'Goal', scoring: true, away_score: x.away_score, home_score: x.home_score, strength: (x as { strength?: RinkPlay['strength'] }).strength } as RinkPlay)
+    : x.kind === 'RUN' ? `a ${x.text}` : playLabel({ id: '', team: null, q: x.q, clock: x.clock, text: x.text, type: x.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })
   const chance = (s: 'home' | 'away') => {
     const v = last(kal)?.[1] ?? last(wp)?.[1]
     return v == null ? null : s === 'home' ? v : 1 - v
@@ -71,8 +76,12 @@ export function GapChart({ row }: { row: GameRow }) {
       <div className='px-4 pt-3'>
         <p className={cn('font-display text-[26px] leading-tight font-black', read.gap != null && Math.abs(read.gap) >= 3 ? 'text-devig' : '')}>{read.text}</p>
         <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
-          {lastKey && eNow != null
-            ? <>After {lastKey.kind === 'RUN' ? `a ${lastKey.text}` : playLabel({ id: '', team: null, q: lastKey.q, clock: lastKey.clock, text: lastKey.text, type: lastKey.kind === 'FUM' ? 'Fumble Recovery (Opponent)' : '', yards: null, down: '', scoring: false })} ({lastKey.q ? `${periodLabel(lastKey.q, row.sport)} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
+          {!espnOn
+            ? lastKey && kNow != null
+              ? <>Latest goal: {keyText(lastKey)} ({lastKey.q ? `${periodLabel(lastKey.q, row.sport)} ` : ''}{lastKey.clock}{lastKey.away_score != null && lastKey.home_score != null ? `, ${row.away} ${lastKey.away_score}–${lastKey.home_score} ${row.home}` : ''}). Kalshi&apos;s price for {code} to win, minute by minute.</>
+              : <>Kalshi&apos;s price for {code} to win, minute by minute, with the goals marked.</>
+            : lastKey && eNow != null
+            ? <>After {keyText(lastKey)} ({lastKey.q ? `${periodLabel(lastKey.q, row.sport)} ` : ''}{lastKey.clock}), ESPN gives {code} {n(eNow)}%{kNow != null && <>. Kalshi&apos;s price is {n(kNow)}¢</>}.</>
             : <>ESPN&apos;s win chance and Kalshi&apos;s price for {code} to win, play by play.</>}
         </p>
       </div>
@@ -92,11 +101,11 @@ export function GapChart({ row }: { row: GameRow }) {
 
       <div className='flex flex-wrap items-center gap-x-4 gap-y-1 px-4 text-xs text-muted-foreground'>
         <span className='flex items-center gap-1.5'><i aria-hidden='true' className='h-0.5 w-4 rounded-full bg-foreground' />Kalshi price</span>
-        <span className='flex items-center gap-1.5'><i aria-hidden='true' className='h-0.5 w-4 rounded-full' style={{ background: ESPN }} />ESPN win chance</span>
+        {espnOn && <span className='flex items-center gap-1.5'><i aria-hidden='true' className='h-0.5 w-4 rounded-full' style={{ background: ESPN }} />ESPN win chance</span>}
         {devig != null && <span className='flex items-center gap-1.5'><i aria-hidden='true' className='h-0 w-4 border-t-2 border-dashed border-devig' />DeVig pregame</span>}
       </div>
       <p className='px-4 pt-2 pb-4 text-xs leading-relaxed text-muted-foreground'>
-        Display only. DeVig hasn&apos;t tested how often gaps like this close, so it isn&apos;t a pick.{devig != null && " The dashed line is DeVig's pregame read; it doesn't know the score."}
+        {espnOn ? <>Display only. DeVig hasn&apos;t tested how often gaps like this close, so it isn&apos;t a pick.</> : <>ESPN doesn&apos;t publish a win chance for hockey, so this is Kalshi&apos;s price alone. Display only.</>}{devig != null && " The dashed line is DeVig's pregame read; it doesn't know the score."}
       </p>
     </section>
   )
@@ -143,7 +152,7 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
     return { ...m, mx, ok }
   })
   const quarters = periods.filter(([, t]) => t >= start && t <= end).map(([q, t]) => ({ q, mx: x(t) })).filter((p) => p.mx > 10)
-  const summary = `${code}: ESPN ${eNow != null ? n(eNow) + '%' : 'no data'}, Kalshi ${kNow != null ? n(kNow) + '¢' : 'no data'}${devig != null ? `, DeVig pregame ${n(devig)}%` : ''}. ${keys.length} ${keys.some((m) => m.kind === 'RUN') ? 'runs' : 'scores and turnovers'} marked.`
+  const summary = `${code}: ${e.length ? `ESPN ${eNow != null ? n(eNow) + '%' : 'no data'}, ` : ''}Kalshi ${kNow != null ? n(kNow) + '¢' : 'no data'}${devig != null ? `, DeVig pregame ${n(devig)}%` : ''}. ${keys.length} ${keys.some((m) => m.kind === 'RUN') ? 'runs' : keys.some((m) => m.kind === 'G') ? 'goals' : 'scores and turnovers'} marked.`
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className='mt-3 block w-full touch-pan-y select-none px-4' role='img' aria-label={summary}
@@ -182,7 +191,7 @@ function Chart({ e, k, start, end, devig, keys, periods, live, code, sport }: {
             <g transform={`translate(${Math.min(Math.max(m.mx, 11), W - PAD_R - 11)},${H - PAD_B + 13})`}>
               <rect x='-11' y='-7' width='22' height='14' rx='7' className={m.kind === 'INT' || m.kind === 'FUM' ? 'fill-bad/20' : 'fill-muted'} />
               <text y='3.5' textAnchor='middle' className={cn('text-[8.5px] font-bold', m.kind === 'INT' || m.kind === 'FUM' ? 'fill-bad' : 'fill-foreground')}>{KIND_LABEL[m.kind] ?? m.kind}</text>
-              <title>{`Q${m.q} ${m.clock}: ${m.text}`}</title>
+              <title>{`${m.q ? periodLabel(m.q, sport) + ' ' : ''}${m.clock}: ${m.text}`}</title>
             </g>
           )}
         </g>
