@@ -1,12 +1,13 @@
 # Research Lab -- lessons, NHL (EXPLORATORY)
 
-_Generated 2026-11-05T20:16:30Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-11-05T20:22:10Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2014–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
 
-## Helped (1)
+## Helped (2)
 
+- Blend of 3: s-82cfaa9d + s-8592ab8e + s-fafdfaae vs the line-only baseline: helped in every gate (+0.71 / +0.10 / +0.39 pts in 2017 / 2018 / 2019).
 - Signal off-pp (total) on top of a base model: helped in all three search periods on 1 of 1 base model; on average +0.00 / +0.01 / +0.00 pts in 2014 / 2015 / 2016.
 
 ## Faded (4)
