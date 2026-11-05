@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-05T19:55:10Z",
+ "updated_at": "2026-11-05T20:16:46Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3394,7 +3394,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-05T19:59:30Z",
+   "updated_at": "2026-11-05T20:21:14Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5314,7 +5314,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-05T20:00:08Z",
+   "updated_at": "2026-11-05T20:21:53Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6007,7 +6007,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-05T19:54:55Z",
+   "updated_at": "2026-11-05T20:16:30Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6031,7 +6031,7 @@
    },
    "counts": {
     "tried": 0,
-    "running": 0,
+    "running": 1,
     "lab_pass": 0,
     "exam_pass": 0,
     "exam_budget_left": 3,
@@ -6044,11 +6044,11 @@
      "market": "moneyline",
      "family": "Blend · search, sent by the owner",
      "reason": "The owner's pick (2026-11-01): the NHL search's best moneyline model by t after 127k configurations (round 152: +0.47 win-chance pts a game on 2014–2016, t = 2.54; search periods -0.02 / +0.33 / +1.10). It did not make the automatic shortlist (one search period below zero); sent by hand (A3.1) so the app's NHL model is checked on 2017–2019, which the search never saw, before it is shown.",
-     "state": "queued",
+     "state": "running",
      "fail_reason": "",
-     "gate_now": null,
-     "started_at": null,
-     "eta_at": null,
+     "gate_now": 1,
+     "started_at": "2026-11-05T20:16:30Z",
+     "eta_at": "2026-11-05T20:18:00Z",
      "gates": [
       {
        "name": "2017",
@@ -6086,7 +6086,7 @@
       "taken_at": null,
       "note": ""
      },
-     "verdict": "Registered; runs in the next nightly lab run.",
+     "verdict": "Running through the three gates now.",
      "graded_at": null,
      "run_number": null,
      "run_url": null,
@@ -6226,6 +6226,23 @@
    ],
    "promoted": [],
    "runs": [
+    {
+     "kind": "lab",
+     "name": "Research Lab #2847",
+     "started_at": "2026-11-05T20:16:30Z",
+     "finished_at": null,
+     "duration_s": null,
+     "run_number": 2847,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/42089068574",
+     "summary": "1 tested → running through the gates",
+     "funnel": [
+      {
+       "label": "tested",
+       "count": 1
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 437",
@@ -6486,40 +6503,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 428",
-     "started_at": "2026-11-03T04:41:47Z",
-     "finished_at": "2026-11-03T04:41:47Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41573636155",
-     "summary": "325 models scored → 2 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 325
-      },
-      {
-       "label": "consistent",
-       "count": 2
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-05T20:00:23Z",
+   "updated_at": "2026-11-05T20:22:06Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6922,7 +6910,7 @@
    ]
   },
   "CBB": {
-   "updated_at": "2026-11-05T20:00:23Z",
+   "updated_at": "2026-11-05T20:22:06Z",
    "scope": "CBB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7133,7 +7121,7 @@
    ]
   },
   "SOCCER": {
-   "updated_at": "2026-11-05T20:00:23Z",
+   "updated_at": "2026-11-05T20:22:06Z",
    "scope": "SOCCER",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
