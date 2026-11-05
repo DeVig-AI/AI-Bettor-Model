@@ -410,13 +410,64 @@ const playOf = (p, teamOf) => ({id: String(p.id || p.sequenceNumber || ""), team
   half: (p.period || {}).type || "", clock: (p.clock || {}).displayValue || "", text: String(p.text), type: (p.type || {}).text || "",
   scoring: !!p.scoringPlay, pts: p.scoringPlay ? (num(p.scoreValue) || 0) : 0, away_score: num(p.awayScore), home_score: num(p.homeScore)});
 
-// NHL: goals, penalties, shots and period ends (faceoffs, hits and stoppages left out), newest first.
-const NHL_KEEP = /goal|penalty|shot|period|shootout|challenge/i, NHL_DROP = /blocked|missed/i;
+// NHL: goals, penalties, shots on goal and period starts/ends (faceoffs, hits, stoppages, blocked and missed shots
+// left out), newest first. Each play carries when it happened (`at`, unix seconds, matched to Kalshi's price) and,
+// for a shot or goal, where it was taken: `spot` {x, y} in feet from centre ice, x toward the net the shooter attacks
+// (0-100, the goal line at 89), y across (-42.5 to 42.5, the shooter's left positive). ESPN's x and y flip each period
+// as the teams change ends; each team's end per period comes from where most of its shots were taken, and a period
+// with too few shots takes the other periods' (the ends swap every period, overtime too). Blocked and missed shots
+// don't count: ESPN puts some of them where they were blocked or went wide. `keys` (the goals) and
+// `periods` feed the gap chart; ESPN has no win chance for hockey, so `wp` is empty.
+const NHL_KEEP = /goal|penalty|shot|period|shootout|challenge/i, NHL_DROP = /blocked|missed/i, NHL_KEPT = 200;
+const isPenalty = p => !!(p.type && (p.type.penaltyMinutes != null || /penalty/i.test(p.type.text || "")));
+export function nhlEnds(raw) {
+  // {teamId: {period: +1 | -1}}: +1 when the team shoots at positive x that period
+  const tally = {};
+  raw.forEach(p => {
+    const c = p.coordinate, tid = String((p.team || {}).id || ""), q = num((p.period || {}).number);
+    if (!c || !tid || !q || !p.shootingPlay || NHL_DROP.test((p.type || {}).text || "") || !isFinite(Number(c.x)) || Number(c.x) === 0) return;
+    const t = (tally[tid] = tally[tid] || {});
+    t[q] = (t[q] || 0) + (Number(c.x) > 0 ? 1 : -1);
+  });
+  const out = {};
+  for (const [tid, t] of Object.entries(tally)) {
+    const known = Object.entries(t).filter(([, v]) => Math.abs(v) >= 2).map(([q, v]) => [Number(q), Math.sign(v)]);
+    const base = known.length ? known.reduce((a, [q, s]) => a + (q % 2 ? s : -s), 0) : 0;   // the sign in odd periods
+    out[tid] = q => (t[q] != null && Math.abs(t[q]) >= 2 ? Math.sign(t[q]) : base ? (q % 2 ? Math.sign(base) : -Math.sign(base)) : 0);
+  }
+  return out;
+}
 export function nhlGame(d, code = x => String(x || "").toUpperCase()) {
   const h = header(d, code);
-  const plays = (d.plays || []).filter(p => p && p.text && NHL_KEEP.test(((p.type || {}).text || "") + " " + p.text) &&
-    !NHL_DROP.test((p.type || {}).text || "")).map(p => playOf(p, h.teamOf));
-  return {away: h.away, home: h.home, plays: plays.slice(-NBA_PLAYS_KEPT).reverse(), linescore: h.linescore, box: groupBox(d, h.teamOf, 8)};
+  const raw = (d.plays || []).filter(p => p && p.text);
+  const ends = nhlEnds(raw);
+  const all = raw.filter(p => (NHL_KEEP.test(((p.type || {}).text || "") + " " + p.text) || isPenalty(p)) &&
+    !NHL_DROP.test((p.type || {}).text || "")).map(p => {
+    const play = playOf(p, h.teamOf);
+    const at = Date.parse(p.wallclock || "");
+    if (isFinite(at)) play.at = Math.round(at / 1000);
+    if (isPenalty(p)) { play.penalty = true; const m = num(p.type.penaltyMinutes); if (m) play.pim = m; }
+    const st = ((p.strength || {}).abbreviation || "");
+    if (p.scoringPlay && /power/i.test(st)) play.strength = "PP";
+    else if (p.scoringPlay && /short/i.test(st)) play.strength = "SH";
+    if (p.scoringPlay && /empty net/i.test(p.text)) play.strength = "EN";
+    const c = p.coordinate, side = ends[String((p.team || {}).id || "")];
+    const sgn = side && play.q ? side(play.q) : 0;
+    if (p.shootingPlay && c && sgn && isFinite(Number(c.x)) && isFinite(Number(c.y))) {
+      const x = Number(c.x) * sgn, y = Number(c.y) * sgn;
+      if (x >= -100 && x <= 100 && Math.abs(y) <= 42.5) play.spot = {x, y};
+    }
+    return play;
+  });
+  const periods = [], keys = [];
+  all.forEach(p => {
+    if (p.at == null || !p.q) return;
+    const e = periods.find(x => x[0] === p.q);
+    if (!e) periods.push([p.q, p.at]); else if (p.at < e[1]) e[1] = p.at;
+    if (p.scoring) keys.push({at: p.at, kind: "G", q: p.q, clock: p.clock, text: p.text, away_score: p.away_score, home_score: p.home_score, ...(p.strength ? {strength: p.strength} : {})});
+  });
+  return {away: h.away, home: h.home, plays: all.slice(-NHL_KEPT).reverse(), linescore: h.linescore, box: groupBox(d, h.teamOf, 8),
+    wp: [], keys, periods: periods.sort((a, b) => a[0] - b[0])};
 }
 
 // MLB: at-bat results and scoring plays (each pitch left out), newest first.

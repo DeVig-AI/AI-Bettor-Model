@@ -189,6 +189,17 @@
   60% { transform: translateY(0); }
   80% { transform: translateY(-2px); }
 }
+@keyframes rk-light {
+  0% { background: #5a1717; box-shadow: none; }
+  6%, 22%, 38%, 54%, 70% { background: #ff3030; box-shadow: 0 0 10px 4px rgba(255, 48, 48, .85), 0 0 26px 10px rgba(255, 48, 48, .35); }
+  14%, 30%, 46%, 62% { background: #b02020; box-shadow: 0 0 6px 2px rgba(255, 48, 48, .5); }
+  100% { background: #5a1717; box-shadow: none; }
+}
+@keyframes rk-net {
+  0%, 100% { transform: none; }
+  30% { transform: scaleX(1.18) skewY(-3deg); }
+  60% { transform: scaleX(.96); }
+}
 @keyframes ct-trace {
   0% { stroke-dashoffset: 1; opacity: 1; }
   35% { stroke-dashoffset: 0; opacity: 1; }

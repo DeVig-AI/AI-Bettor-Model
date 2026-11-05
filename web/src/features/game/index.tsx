@@ -15,6 +15,7 @@ import { type Side, TeamSheet } from '../games/team-sheet'
 import { PropRow, type Shown, withLive } from '../props'
 import { FieldMovers } from './field'
 import { CourtMovers } from './court'
+import { RinkMovers } from './rink'
 import { GapChart } from './gap'
 import { GameWrap } from './wrap'
 
@@ -194,6 +195,7 @@ export function GamePage({ id }: { id: string }) {
           <GapChart row={row} />
           <FieldMovers row={row} />
           <CourtMovers row={row} />
+          <RinkMovers row={row} />
 
         <GameWrap row={row} />
 

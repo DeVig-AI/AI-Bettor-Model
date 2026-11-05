@@ -2,7 +2,7 @@
 // and team stats; NBA plays with shot spots, the run, quarter scores and the box; NHL and MLB plays, periods and box.   node --test tests/app/live_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { nflSpot, nflGame, nbaShot, nbaGame, nhlGame, mlbGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
+import { nflSpot, nflGame, nbaShot, nbaGame, nhlGame, nhlEnds, mlbGame, scoreboard, handle, teamCode } from "../../functions/api/live.js";
 import { scoreboard as espnScoreboard, summary, espnFetcher } from "./espn_nfl_fixture.mjs";
 import { summary as nbaSummary } from "./espn_nba_fixture.mjs";
 import { nhlSummary, mlbSummary, mlbScoreboard } from "./espn_more_fixture.mjs";
@@ -88,6 +88,40 @@ test("NHL: goals, penalties and shots kept (faceoffs, hits, blocked shots left o
   assert.equal(d.plays[0].scoring, true); assert.equal(d.plays[0].home_score, 3);
   assert.deepEqual(d.linescore, {away: [0, 1], home: [1, 2]});
   assert.deepEqual(d.box.map(b => b.group), ["Forwards", "Goalies"]);
+});
+
+test("NHL rink: each team's end per period from its shots, spots turned toward the net attacked, goal keys, strength", () => {
+  const sh = (id, tid, q, x, y, extra = {}) => Object.assign({id, team: {id: tid}, type: {text: "Shot"}, text: `Shot ${id}`, period: {number: q},
+    clock: {displayValue: "10:00"}, shootingPlay: true, coordinate: {x, y}, scoringPlay: false, awayScore: 0, homeScore: 0,
+    wallclock: `2026-11-03T23:${String(10 + q * 5 + Number(id.slice(1)) % 5).padStart(2, "0")}:00Z`}, extra);
+  const raw = [
+    sh("s1", "1", 1, 60, 10), sh("s2", "1", 1, 70, -5), sh("s3", "1", 1, -80, 0, {type: {text: "Missed Shot"}}), sh("s4", "1", 1, -75, 0, {type: {text: "Blocked Shot"}}),
+    sh("s5", "2", 1, -65, 4), sh("s6", "2", 1, -58, -12),
+    sh("s7", "1", 2, -66, 8), sh("s8", "1", 2, -71, 2),
+    // period 3: one shot each, too few to tell, so it follows the alternation
+    sh("s9", "1", 3, 50, 1, {type: {text: "Goal"}, text: "Clayton Keller Goal (4) Wrist Shot, assists: Mikhail Sergachev (13)", scoringPlay: true,
+      awayScore: 1, homeScore: 0, strength: {abbreviation: "power-play"}}),
+    sh("s10", "2", 3, -40, 3, {type: {text: "Goal"}, text: "Auston Matthews Goal (9) Empty Net", scoringPlay: true, awayScore: 1, homeScore: 1}),
+    {id: "p1", team: {id: "2"}, type: {text: "Hooking", penaltyMinutes: 2}, text: "Liam O'Brien Hooking against Troy Stecher", period: {number: 2},
+      clock: {displayValue: "4:00"}, wallclock: "2026-11-03T23:30:30Z", awayScore: 0, homeScore: 0},
+  ];
+  const ends = nhlEnds(raw);
+  assert.deepEqual([1, 2, 3, 4].map(ends["1"]), [1, -1, 1, -1]);
+  assert.deepEqual([1, 2, 3].map(ends["2"]), [-1, 1, -1]);
+  const summary = {header: {competitions: [{competitors: [
+    {homeAway: "home", team: {id: "2", abbreviation: "TOR"}, linescores: []}, {homeAway: "away", team: {id: "1", abbreviation: "UTA"}, linescores: []}]}]},
+    plays: raw};
+  const d = nhlGame(summary, teamCode("nhl"));
+  const by = Object.fromEntries(d.plays.map(p => [p.id, p]));
+  assert.equal(by.s3, undefined); assert.equal(by.s4, undefined);           // missed and blocked shots left out
+  assert.deepEqual(by.s7.spot, {x: 66, y: -8});                              // period 2, other end: turned around
+  assert.deepEqual(by.s9.spot, {x: 50, y: 1});
+  assert.deepEqual(by.s10.spot, {x: 40, y: -3});
+  assert.equal(by.s9.strength, "PP"); assert.equal(by.s10.strength, "EN");
+  assert.deepEqual([by.p1.penalty, by.p1.pim, by.p1.spot], [true, 2, undefined]);
+  assert.deepEqual(d.wp, []);
+  assert.deepEqual(d.keys.map(k => [k.kind, k.q, k.away_score, k.home_score, k.strength]), [["G", 3, 1, 0, "PP"], ["G", 3, 1, 1, "EN"]]);
+  assert.deepEqual(d.periods.map(p => p[0]), [1, 2, 3]);
 });
 
 test("MLB: at-bat results and scoring plays (pitches left out), innings, box and the scoreboard's situation", () => {

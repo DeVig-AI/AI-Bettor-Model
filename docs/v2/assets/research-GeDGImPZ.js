@@ -1,0 +1,1 @@
+import{t as e}from"./research-B6-uxL_a.js";var t=e;export{t as component};

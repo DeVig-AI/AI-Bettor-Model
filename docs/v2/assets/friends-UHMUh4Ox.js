@@ -1,0 +1,1 @@
+import{n as e}from"./friends-S5DXLTrx.js";var t=e;export{t as component};
