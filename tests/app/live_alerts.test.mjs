@@ -172,3 +172,35 @@ test("checker: a tracked game's touchdown pings once; quiet hours hold it", asyn
   assert.deepEqual(sent, []);                                                         // 8 PM UTC is inside quiet hours
   assert.ok(FRESH_S >= 5 * 60 && PER_GAME >= 5);
 });
+
+// 2026-11-06: 7 games starting at 7 were 7 alerts
+test("checker: games starting around the same time are one alert, by sport; each start marked sent; one game alone keeps its own", async () => {
+  const {keys} = await vapidKeys();
+  const h = "u2";
+  const dev = [{endpoint: "https://fcm.googleapis.com/a", p256dh: "x", auth: "y"}];
+  const g = (sport, id, away, home, kickoff, state = "pre") => ({sport, espn_id: id, away, home, date: "2026-11-08", kickoff, state});
+  // own ESPN ids: the live feed is cached in memory across tests
+  const games = [g("NFL", "441", "KC", "DEN", "2026-11-08T19:50:00Z", "in"), g("NFL", "442", "BUF", "MIA", "2026-11-08T19:50:00Z"),
+    g("NHL", "541", "CBJ", "BUF", "2026-11-08T20:00:00Z"), g("NBA", "641", "BOS", "CHA", "2026-11-08T23:00:00Z")];
+  const fetcher = async url => {
+    url = String(url);
+    if (url.includes("live/game_lines.json")) return new Response(JSON.stringify({games}));
+    if (url.includes("/summary?event=441")) return new Response(JSON.stringify({...summary(), drives: {previous: [{team: {id: "1"}, plays: [espnPlay("a", "Kickoff", "Kickoff", 0, 0, 300)]}]}}));
+    return new Response("{}", {status: 404});
+  };
+  const sent = [];
+  const sender = async (d, msg) => { sent.push([msg.title, msg.body]); return 201; };
+  const mkEnv = tracked => ({VAPID_PRIVATE_KEY: keys.privateKey, USERS: kv({"alerts:index": {users: [h]},
+    [`alerts:${h}`]: {devices: dev, prefs: cleanPrefs({tz: "America/New_York", live: {start: true}}), targets: [], parlays: [],
+      since: "2026-11-01T00:00:00Z", labSeen: [], sent: {}}, [`user:${h}`]: {tracked: {g: tracked}}})});
+  const env = mkEnv({441: 1, 442: 1, 541: 1, 641: 1});
+  await run(env, {fetcher, now: NOW, sender});
+  assert.deepEqual(sent, [["3 games starting at 2:50 PM", "NFL: KC @ DEN, BUF @ MIA · NHL: CBJ @ BUF"]]);
+  const after = JSON.parse(env.USERS.m.get(`alerts:${h}`)).sent;
+  assert.ok(after["ls:nfl:441:start"] && after["ls:nfl:442:start"] && after["ls:nhl:541:start"] && !after["ls:nba:641:start"]);
+  sent.length = 0;
+  await run(env, {fetcher, now: NOW + 60e3, sender});
+  assert.deepEqual(sent, []);                                                         // nothing twice
+  await run(mkEnv({441: 1}), {fetcher, now: NOW, sender});
+  assert.deepEqual(sent.map(m => m[0]), ["KC @ DEN is starting"]);
+});

@@ -232,6 +232,29 @@ export function groupPicks(alerts) {
     body: ms.map(m => m.short).join(" · ").slice(0, 300), url: "/v2/", also: ms});
 }
 
+// Games starting around the same time come as one alert ("7 games starting at 7:00 PM", each game under its sport).
+// When the first followed game in a slot starts, every followed game due to start within START_SLOT_MIN of it is in
+// the alert, and each one's start is marked sent, so none comes on its own later. One game alone keeps its alert.
+const START_SLOT_MIN = 15;
+const startKey = g => `ls:${g.sport.toLowerCase()}:${g.espn_id}:start`;
+function startsTogether(live, user, rec, games, decisions, now) {
+  const starts = live.filter(m => m.key && m.key.endsWith(":start") && m.game);
+  if (!starts.length) return live;
+  const k0 = Math.min(...starts.map(m => Date.parse(m.game.kickoff)));
+  const near = g => LIVE_SPORTS.includes(g.sport) && g.espn_id && Math.abs(Date.parse(g.kickoff) - k0) <= START_SLOT_MIN * 60e3;
+  const slot = [...new Map([...starts.map(m => m.game), ...mine(user, rec, games.filter(near), decisions)]
+    .filter(g => near(g) && now - Date.parse(g.kickoff) < 40 * 60e3 && !rec.sent[startKey(g)]).map(g => [startKey(g), g])).values()]
+    .sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
+  if (slot.length < 2) return live;
+  const by = new Map();
+  for (const g of slot) by.set(g.sport, [...(by.get(g.sport) || []), `${g.away} @ ${g.home}`]);
+  const at = (() => { try { return new Intl.DateTimeFormat("en-US", {timeZone: rec.prefs.tz, hour: "numeric", minute: "2-digit"}).format(new Date(k0)); } catch (e) { return ""; } })();
+  const grouped = {key: null, tag: `starts:${k0}`, live: true, title: `${slot.length} games starting${at ? ` at ${at}` : ""}`,
+    body: [...by].map(([sp, gs]) => `${(SPORT_NAME[sp] || sp).replace(/^./, c => c.toUpperCase())}: ${gs.join(", ")}`).join(" · ").slice(0, 300), url: "/v2/",
+    also: slot.map(g => ({key: startKey(g)}))};
+  return [grouped, ...live.filter(m => !starts.includes(m))];
+}
+
 // every Lab model that has passed something: [{key, sport, name, state}]
 export function labPasses(status) {
   const out = [];
@@ -430,7 +453,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
   let indexChanged = false;
   for (const {h, rec} of people) {
     const targets = targetAlerts(rec, mkts, now), parlays = parlayAlerts(rec, mkts, now);
-    const live = [];
+    let live = [];
     for (const g of liveOf[h]) {
       const evs = events[`${g.sport}:${g.espn_id}`];
       if (!evs) continue;
@@ -439,9 +462,10 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
       for (const m of compose(evs, rec.prefs.live, {sport: g.sport.toLowerCase(), url: gameUrl(g.sport, g.espn_id)})) {
         if (rec.sent[m.key] || (!m.final && used >= PER_GAME)) continue;
         if (!m.final) used++;
-        live.push({...m, tag: m.key, live: true});
+        live.push({...m, tag: m.key, live: true, game: g});
       }
     }
+    if (rec.prefs.live.start) live = startsTogether(live, users[h], rec, games, decisions, now);
     const legs = rec.prefs.live.legs ? trackedLegs(users[h], mkts, priced, now, rec.sent, m => settledLately(m, now))
       .filter(m => !parlays.out.some(x => x.key && x.key.split(":").slice(2).join(":") === m.key.split(":").slice(2).join(":"))) : [];
     let due = [...live, ...legs, ...targets.out, ...parlays.out,

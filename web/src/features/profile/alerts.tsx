@@ -15,7 +15,7 @@ const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'nu
 const pct = (p: number) => `${Math.round(p * 100)}%`
 const NO_LIVE: LivePrefs = { start: false, half: false, lead: false, plays: false, winner: false, final: false, legs: false }
 const LIVE_ROWS: { k: keyof LivePrefs; title: string; sub: string }[] = [
-  { k: 'start', title: 'Game starting', sub: 'At kickoff or tip-off.' },
+  { k: 'start', title: 'Game starting', sub: 'At kickoff or tip-off. Games starting together come as one alert.' },
   { k: 'half', title: 'Halftime score', sub: 'The score at the break.' },
   { k: 'lead', title: 'Lead changes', sub: 'When the other team goes ahead. Basketball and hockey only ping late in the game.' },
   { k: 'plays', title: 'Big plays', sub: 'Touchdowns, field goals, interceptions, fumbles, safeties, and 10–0 basketball runs.' },
