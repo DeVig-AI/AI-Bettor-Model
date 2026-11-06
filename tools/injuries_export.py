@@ -140,6 +140,38 @@ def write(sport, meta, rows, source):
     OUT[sport].parent.mkdir(parents=True, exist_ok=True)
     OUT[sport].write_text(json.dumps({"generated_at": now, "source": source, "docs": docs}, indent=1, sort_keys=True) + "\n")
     print(f"{sport}: {len(docs) - 1} players written to {OUT[sport].relative_to(ROOT)}")
+    archive(sport, [d["data"] for d in docs[1:]], now)
+
+
+# ================================================================ archive
+# Every status change, kept so a future pre-registered test can ask whether injuries help a sport's model (the live
+# file above only ever shows the latest). One line per change: a player newly listed, a new status, reason or game,
+# or a player no longer listed ("Cleared"). Nothing reads this for a pick.
+ARCHIVE = ROOT / "stats" / "injuries_archive"
+ARCHIVE_KEYS = ("status", "reason", "away", "home", "tip", "tip_sort", "kickoff", "game")
+
+
+def archive(sport, rows, now):
+    d = ARCHIVE / sport.lower()
+    d.mkdir(parents=True, exist_ok=True)
+    last_f = d / "last.json"
+    last = json.loads(last_f.read_text()) if last_f.exists() else {}
+    cur, lines = {}, []
+    for r in rows:
+        k = slug(sport, r["team"], r["player"])
+        state = {x: r[x] for x in ARCHIVE_KEYS if r.get(x) not in (None, "")}
+        cur[k] = {"team": r["team"], "player": r["player"], **state}
+        if last.get(k) != cur[k]:
+            lines.append({"seen_at": now, **cur[k], "impact": (r.get("impact") or {}).get("level")})
+    for k, v in last.items():
+        if k not in cur:
+            lines.append({"seen_at": now, "team": v["team"], "player": v["player"], "status": "Cleared"})
+    if lines:
+        with open(d / f"{now[:7]}.jsonl", "a") as f:
+            for x in lines:
+                f.write(json.dumps(x, sort_keys=True) + "\n")
+    last_f.write_text(json.dumps(cur, indent=0, sort_keys=True) + "\n")
+    print(f"{sport}: {len(lines)} status changes archived")
 
 
 # ================================================================ NBA
