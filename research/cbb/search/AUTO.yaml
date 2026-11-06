@@ -1,0 +1,39 @@
+# Research Lab search (CBB) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c; formula signals since v12).
+# Written by research/lab/search.py from search-season scores only; append-only, never edit.
+generations:
+- generation: 1
+  at: '2026-11-06T14:22:30Z'
+  round: 20
+  ladders:
+    carry:
+    - 0.35
+    - 0.45
+    - 0.55
+    halflife:
+    - 8
+    - 12
+    - 18
+    hfa_elo:
+    - 62
+    - 88
+    - 112
+    k:
+    - 28
+    - 36
+    - 45
+    market_blend:
+    - 0.125
+    - 0.375
+    - 0.625
+    prior_w:
+    - 3
+    - 6
+    - 12
+    revert:
+    - 0.15
+    - 0.225
+    - 0.2916
+    season_carry:
+    - 0.35
+    - 0.45
+    - 0.55
