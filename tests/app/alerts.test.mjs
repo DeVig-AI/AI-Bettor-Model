@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { b64uDecode, b64uEncode, encrypt, endpointOk, keysOk, send, vapid } from "../../functions/lib/webpush.js";
 import {
   cleanParlay, cleanPrefs, cleanTarget, followed, handle, labAlerts, labPasses, moneyline, moveAlerts, parlayAlerts,
-  pickAlerts, run, targetAlerts,
+  groupPicks, pickAlerts, run, targetAlerts,
 } from "../../functions/api/alerts.js";
 
 const te = new TextEncoder(), td = new TextDecoder();
@@ -120,6 +120,21 @@ test("picks: new locks in a followed sport, before the start, once", () => {
   assert.equal(pickAlerts(rec(), [DEC({decision: {action: "PASS", side: null}})], GAMES, NOW).length, 0);       // a pass
   assert.equal(pickAlerts(rec({since: "2026-11-01T15:45:00Z"}), [DEC()], GAMES, NOW).length, 0);                 // before alerts were on
   assert.equal(pickAlerts(rec(), [DEC({kickoff_time: "2026-11-01T15:00:00Z"})], GAMES, NOW).length, 0);         // started
+});
+
+test("picks: several in one sport become one alert for that sport, with a line per game", () => {
+  const decs = [DEC(), DEC({game_id: "nfl_2", away_team: "DET", home_team: "GB", decision: {action: "ML", side: "GB", prob: 0.61}}),
+    DEC({game_id: "nfl_3", away_team: "MIA", home_team: "NYJ", decision: {action: "ML", side: "MIA", prob: 0.55}}),
+    DEC({game_id: "nba_1", sport: "NBA", away_team: "BOS", home_team: "NYK", decision: {action: "ML", side: "BOS", prob: 0.6}})];
+  const other = {key: "move:NFL:401", title: "Line move", body: "", url: "/v2/"};
+  const out = groupPicks([...pickAlerts(rec(), decs, GAMES, NOW), other]);
+  assert.equal(out.length, 3);                                                     // NFL digest, the lone NBA pick, the move
+  assert.equal(out[0].title, "3 new DeVig NFL picks");
+  assert.equal(out[0].body, "KC over BUF 58% (Kalshi 48%)\nGB over DET 61% (Kalshi 52%)\nMIA over NYJ 55% (Kalshi 48%)");
+  assert.deepEqual(out[0].also.map(m => m.key), ["pick:NFL:nfl_2026_09_KC_BUF", "pick:NFL:nfl_2", "pick:NFL:nfl_3"]);
+  assert.equal(out[0].key, null);
+  assert.equal(out[1].title, "DeVig pick: BOS to beat NYK");                       // one pick stays as it was
+  assert.equal(out[2], other);
 });
 
 test("picks: college football and basketball picks ping too, when followed", () => {

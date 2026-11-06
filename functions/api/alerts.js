@@ -215,9 +215,28 @@ export function pickAlerts(rec, decisions, games, now) {
     out.push({key, tag: key, title: `DeVig pick: ${side} to beat ${other}`,
       body: `DeVig gives ${side} ${pct(d.decision.prob)}${fair != null ? `, Kalshi ${pct(fair)}` : ""}. ` +
         `${d.away_team} @ ${d.home_team}, ${when(d.kickoff_time, rec.prefs.tz)}.`,
-      url: g ? gameUrl(g.sport, g.espn_id) : "/v2/"});
+      url: g ? gameUrl(g.sport, g.espn_id) : "/v2/",
+      line: `${side} over ${other} ${pct(d.decision.prob)}${fair != null ? ` (Kalshi ${pct(fair)})` : ""}`});
   }
   return out;
+}
+
+// many picks in one sport → one alert for that sport, with a line per game; one pick stays as it was.
+// Each pick keeps its own key (in `also`), so nothing is sent twice and a pick that didn't fit waits as before.
+const SPORT_NAME = {NFL: "NFL", CFB: "college football", NBA: "NBA", CBB: "college basketball", MLB: "MLB"};
+export function groupPicks(due) {
+  const by = new Map(), rest = [];
+  for (const m of due) {
+    const sp = m.key && m.key.startsWith("pick:") ? m.key.split(":")[1] : null;
+    if (!sp) { rest.push(m); continue; }
+    if (!by.has(sp)) by.set(sp, []);
+    by.get(sp).push(m);
+  }
+  const grouped = [...by.entries()].map(([sp, ms]) => ms.length === 1 ? ms[0] : {
+    key: null, tag: `picks:${sp}`, url: "/v2/", also: ms,
+    title: `${ms.length} new DeVig ${SPORT_NAME[sp] || sp} picks`,
+    body: ms.map(m => m.line || m.title.replace(/^DeVig pick: /, "")).join("\n").slice(0, 400)});
+  return [...grouped, ...rest];
 }
 
 // every Lab model that has passed something: [{key, sport, name, state}]
@@ -438,14 +457,15 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
     const memoHit = [];
     if (memo) due = (await Promise.all(due.map(async m => (m.key && await memo.match(memoReq(h, m.key)).catch(() => null) ? (memoHit.push(m), null) : m))))
       .filter(Boolean);
-    if (isQuiet(rec.prefs, now)) due = [];     // quiet hours: what's still due after goes then; live moments pass
+    if (isQuiet(rec.prefs, now)) due = [];
+    due = groupPicks(due);                     // one alert per sport for new picks, not one per game     // quiet hours: what's still due after goes then; live moments pass
     const sends = rec.sendDay === day ? rec.sends : 0;
     const room = Math.max(0, Math.min(PER_RUN, SENDS_PER_DAY - sends));
     // more than fits: the rest wait for the next run (picks and moves stay due), except into one summary when many
     if (due.length > room && room > 0) {
       const extra = due.slice(room - 1);
       due = [...due.slice(0, room - 1), {key: null, tag: "devig:more", title: `${extra.length} more DeVig alerts`,
-        body: extra.map(m => m.title).join(" · ").slice(0, 300), url: "/v2/", also: extra}];
+        body: extra.map(m => m.title).join(" · ").slice(0, 300), url: "/v2/", also: extra.flatMap(m => m.also || [m])}];
     } else due = due.slice(0, room);
     const sentKeys = memoHit.map(m => [m.key, m.value ?? null]), dead = new Set();
     let count = 0;
@@ -456,7 +476,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
         let st = 0;
         try {
           st = await sender(d, {title: m.title, body: m.body, url: m.url, tag: m.tag}, keys,
-            {fetcher, now, urgency: m.live || (m.key && m.key.startsWith("pick:")) ? "high" : "normal", ...(m.live ? {ttl: 600} : {})});
+            {fetcher, now, urgency: m.live || (m.key && m.key.startsWith("pick:")) || (m.tag && m.tag.startsWith("picks:")) ? "high" : "normal", ...(m.live ? {ttl: 600} : {})});
         } catch (e) { st = 0; }
         if (st === 404 || st === 410) dead.add(d.endpoint);
         else if (st >= 200 && st < 300) ok = true;
