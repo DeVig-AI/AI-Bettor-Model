@@ -1,10 +1,10 @@
 # Research Lab search (SOCCER) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-11-06T07:00:43Z by research/lab/search.py. Scores are on the search seasons 2020–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-11-06T07:57:45Z by research/lab/search.py. Scores are on the search seasons 2020–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-1963 configurations scored so far.
+2257 configurations scored so far.
 
-## Moneyline -- top 25 of 1963
+## Moneyline -- top 25 of 2257
 
 | # | id | model | effect | t | 2020 | 2021 | 2022 |
 |---|---|---|---|---|---|---|---|
@@ -28,19 +28,21 @@ _Generated 2026-11-06T07:00:43Z by research/lab/search.py. Scores are on the sea
 | 18 | `s-883922d3` | Elo · K10 · home edge by season · 538 margin · revert 0.05 · market blend 0.25 · win chance fit on training | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
 | 19 | `s-314cfd19` | Elo · K10 · home edge by season · 538 margin · revert 0.05 · market blend 0.25 · win chance fit on training | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
 | 20 | `s-78467d9b` | Blend of 2: s-314cfd19 + s-883922d3 | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
-| 21 | `s-79a6ef64` | Elo · K32 · fixed home edge · 538 margin · revert 0.10 · win chance fit on training | +0.04 | 0.05 | +1.54 | -0.38 | -1.06 |
-| 22 | `s-6f1da4b7` | Elo · K20 · home edge by season · revert 0.10 · win chance fit on training | +0.03 | 0.04 | +1.15 | +0.23 | -1.31 |
-| 23 | `s-cafff26d` | Elo · K20 · home edge by season · revert 0.10 · win chance fit on training | +0.03 | 0.04 | +1.15 | +0.23 | -1.31 |
-| 24 | `s-865f2dd1` | Elo · K20 · home edge by season · revert 0.10 · win chance fit on training | +0.03 | 0.04 | +1.15 | +0.23 | -1.31 |
-| 25 | `s-79750054` | Blend of 2: s-6f1da4b7 + s-865f2dd1 | +0.03 | 0.04 | +1.15 | +0.23 | -1.31 |
+| 21 | `s-60ede8f7` | Elo · K10 · home edge by season · 538 margin · revert 0.05 · market blend 0.25 · win chance fit on training | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
+| 22 | `s-87a7b4fb` | Blend of 2: s-314cfd19 + s-60ede8f7 | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
+| 23 | `s-c9b95eb8` | Blend of 2: s-60ede8f7 + s-883922d3 | +0.05 | 0.06 | +1.07 | +1.45 | -2.43 |
+| 24 | `s-79a6ef64` | Elo · K32 · fixed home edge · 538 margin · revert 0.10 · win chance fit on training | +0.04 | 0.05 | +1.54 | -0.38 | -1.06 |
+| 25 | `s-6f1da4b7` | Elo · K20 · home edge by season · revert 0.10 · win chance fit on training | +0.03 | 0.04 | +1.15 | +0.23 | -1.31 |
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `k`: best 6 (median t -0.70), worst 20 (-inf) over 1224 configurations
-- moneyline · elo_ml · `market_blend`: best 0.0 (median t -0.57), worst 0.25 (-inf) over 1224 configurations
-- moneyline · elo_ml · `revert`: best 0.05 (median t -0.69), worst 0.5 (-1.10) over 1224 configurations
+- moneyline · elo_ml · `hfa_elo`: best 110 (median t -1.07), worst 30 (-inf) over 1493 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -1.11), worst rolling (-inf) over 1493 configurations
+- moneyline · elo_ml · `k`: best 6 (median t -0.92), worst 10 (-inf) over 1493 configurations
+- moneyline · elo_ml · `market_blend`: best 0.0 (median t -0.59), worst 0.25 (-inf) over 1493 configurations
+- moneyline · elo_ml · `revert`: best 0.3333 (median t -0.97), worst 0.1 (-inf) over 1493 configurations
 - moneyline · rating_ml · `def_weight`: best 1.0 (median t -1.03), worst 0.5 (-1.36) over 147 configurations
 - moneyline · rating_ml · `halflife`: best 3 (median t -1.04), worst 10 (-1.37) over 147 configurations
 - moneyline · rating_ml · `season_carry`: best 0.6 (median t -1.01), worst 0.2 (-1.82) over 147 configurations
-- moneyline · srs_ml · `margin_cap`: best 3 (median t -1.06), worst None (-1.55) over 396 configurations
-- moneyline · srs_ml · `prior_w`: best 2 (median t -1.19), worst 8 (-1.55) over 396 configurations
+- moneyline · srs_ml · `margin_cap`: best 3 (median t -1.06), worst None (-1.55) over 411 configurations
+- moneyline · srs_ml · `prior_w`: best 2 (median t -1.19), worst 8 (-1.55) over 411 configurations
