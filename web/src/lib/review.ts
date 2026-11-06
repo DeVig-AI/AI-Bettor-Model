@@ -16,6 +16,11 @@ type Stat = { label: string; get: (s: Record<string, string>) => number | null; 
 // Kalshi series -> league. Longest prefixes first (KXNCAAMB, KXNCAAF before anything shorter; KXWNBA isn't KXNBA).
 const LEAGUES: [string, string][] = [['KXNCAAMB', 'CBB'], ['KXNCAAF', 'CFB'], ['KXWNBA', 'WNBA'], ['KXNFL', 'NFL'], ['KXNBA', 'NBA'], ['KXNHL', 'NHL'], ['KXMLB', 'MLB']]
 const add = (...v: (number | null)[]) => (v.every((x) => x == null) ? null : v.reduce<number>((a, b) => a + (b ?? 0), 0))
+// every part must be in the box score, or the sum would undercount
+const sumOf = (s: Record<string, string>, keys: string[]) => {
+  const v = keys.map((k) => num(s[k]))
+  return v.some((x) => x == null) ? null : v.reduce<number>((a, b) => a + b!, 0)
+}
 const STATS: Record<string, Record<string, Stat>> = {
   football: {
     PASSYDS: { label: 'passing yards', get: (s) => num(s['passing.passingYards']), log: ['pass_yds'] },
@@ -26,6 +31,7 @@ const STATS: Record<string, Record<string, Stat>> = {
     RSHATT: { label: 'carries', get: (s) => num(s['rushing.rushingAttempts']), log: ['car'] },
     RECYDS: { label: 'receiving yards', get: (s) => num(s['receiving.receivingYards']), log: ['rec_yds'] },
     REC: { label: 'catches', get: (s) => num(s['receiving.receptions']), log: ['rec'] },
+    RRYDS: { label: 'rushing + receiving yards', get: (s) => add(num(s['rushing.rushingYards']), num(s['receiving.receivingYards'])), log: ['rush_yds', 'rec_yds'] },
     TD: { label: 'touchdowns', get: (s) => add(num(s['rushing.rushingTouchdowns']), num(s['receiving.receivingTouchdowns'])) ?? 0, log: ['rush_td', 'rec_td'] },
   },
   basketball: {
@@ -35,6 +41,11 @@ const STATS: Record<string, Record<string, Stat>> = {
     '3PT': { label: 'threes', get: (s) => first(s['threePointFieldGoalsMade-threePointFieldGoalsAttempted']), log: ['fg3m'] },
     STL: { label: 'steals', get: (s) => num(s.steals), log: ['stl'] },
     BLK: { label: 'blocks', get: (s) => num(s.blocks), log: ['blk'] },
+    // Kalshi's combined lines: points + rebounds + assists, and the three pairs
+    PRA: { label: 'points + rebounds + assists', get: (s) => sumOf(s, ['points', 'rebounds', 'assists']), log: ['pts', 'reb', 'ast'] },
+    PR: { label: 'points + rebounds', get: (s) => sumOf(s, ['points', 'rebounds']), log: ['pts', 'reb'] },
+    PA: { label: 'points + assists', get: (s) => sumOf(s, ['points', 'assists']), log: ['pts', 'ast'] },
+    RA: { label: 'rebounds + assists', get: (s) => sumOf(s, ['rebounds', 'assists']), log: ['reb', 'ast'] },
   },
   hockey: {
     GOAL: { label: 'goals', get: (s) => num(s.goals), log: ['g'] },
