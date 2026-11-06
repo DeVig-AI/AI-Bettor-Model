@@ -1,11 +1,11 @@
 # Research Lab -- status (NBA)
 
-_Generated 2026-11-05T19:46:56Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-06T01:58:02Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 2 registered, 2 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 2 · across all sports: 25 (reported only, Constitution C4)
+- Ledger attempts (all count in the Holm correction): 2 · across all sports: 29 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2021 exams left: 3 of 3
 
 Gates: 2017 / 2018 / 2019 (confirmation; the search uses 2014, 2015, 2016). Search leaderboard: `research/nba/search/LEADERBOARD.md`.
@@ -22,10 +22,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 438** 2026-11-06T01:57:59Z: 300 models scored → 219 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 437** 2026-11-05T19:46:54Z: 300 models scored → 205 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 436** 2026-11-05T12:33:40Z: 299 models scored → 213 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 435** 2026-11-05T03:37:53Z: 300 models scored → 205 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 434** 2026-11-04T23:15:24Z: 299 models scored → 202 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 433** 2026-11-04T17:33:09Z: 298 models scored → 214 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/nba/results/<id>.json` (every number), `research/nba/LEDGER.csv` (every attempt), `research/nba/LESSONS.md` (exploratory).
