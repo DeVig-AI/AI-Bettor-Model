@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-06T02:36:15Z",
+ "updated_at": "2026-11-06T02:40:54Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3496,7 +3496,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-06T02:39:00Z",
+   "updated_at": "2026-11-06T02:45:03Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5486,7 +5486,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-06T02:39:24Z",
+   "updated_at": "2026-11-06T02:45:37Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6179,7 +6179,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-06T02:39:34Z",
+   "updated_at": "2026-11-06T02:40:42Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6206,7 +6206,7 @@
     "running": 0,
     "lab_pass": 1,
     "exam_pass": 0,
-    "exam_budget_left": 3,
+    "exam_budget_left": 2,
     "exam_budget_total": 3
    },
    "candidates": [
@@ -6279,7 +6279,7 @@
       "effect": null,
       "ci": null,
       "taken_at": null,
-      "note": ""
+      "note": "Registered; the sealed season is being scored."
      },
      "verdict": "Passes the lab: pooled +0.40 pts, Holm-adjusted p = 0.022 over 1 attempts; positive in all three gates; last gate 55% of the first. Eligible for the sealed exam.",
      "graded_at": "2026-11-05T20:22:09Z",
@@ -6429,6 +6429,27 @@
    ],
    "promoted": [],
    "runs": [
+    {
+     "kind": "exam",
+     "name": "Sealed exam 1",
+     "started_at": "2026-11-06T02:40:42Z",
+     "finished_at": null,
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/42151773596",
+     "summary": "1 sat the exam → being scored",
+     "funnel": [
+      {
+       "label": "sat the exam",
+       "count": 1
+      },
+      {
+       "label": "passed",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
     {
      "kind": "search",
      "name": "Search round 438",
@@ -6697,40 +6718,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 430",
-     "started_at": "2026-11-03T20:59:01Z",
-     "finished_at": "2026-11-03T20:59:01Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/41706316026",
-     "summary": "300 models scored → 3 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 300
-      },
-      {
-       "label": "consistent",
-       "count": 3
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-06T02:39:45Z",
+   "updated_at": "2026-11-06T02:45:48Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7133,7 +7125,7 @@
    ]
   },
   "CBB": {
-   "updated_at": "2026-11-06T02:39:45Z",
+   "updated_at": "2026-11-06T02:45:48Z",
    "scope": "CBB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7402,7 +7394,7 @@
    ]
   },
   "SOCCER": {
-   "updated_at": "2026-11-06T02:36:15Z",
+   "updated_at": "2026-11-06T02:45:48Z",
    "scope": "SOCCER",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
