@@ -181,7 +181,7 @@ export function mine(user, rec, games, decisions = []) {
 
 // a saved (★ tracked) parlay's legs as they win or lose, for the "parlay legs" pref. A leg pings only while its game
 // is recent, so switching this on doesn't ping last week's legs. Same key as a parlay alert's legs (leg:id:ticker:side).
-export function trackedLegs(user, mkts, priced, now, sent) {
+export function trackedLegs(user, mkts, priced, now, sent, lately = () => true) {
   const out = [], seen = new Set(Object.keys(sent || {}).filter(k => k.startsWith("leg:")).map(k => k.split(":").slice(2).join(":")));
   const ps = Object.entries(((user && user.tracked) || {}).parlays || {}).filter(([, x]) => x && !x.removed && Array.isArray(x.legs));
   for (const [id, p] of ps) {
@@ -191,7 +191,7 @@ export function trackedLegs(user, mkts, priced, now, sent) {
       const k = Date.parse(l.kickoff || "");
       if (!isFinite(k) || now - k > 12 * 3600e3 || k > now || seen.has(`${tk}:${side}`)) continue;
       const q = mkts[tk] ? priced(mkts[tk], side) : null;
-      if (!q || (q.result !== "won" && q.result !== "lost")) continue;
+      if (!q || (q.result !== "won" && q.result !== "lost") || !lately(mkts[tk])) continue;
       seen.add(`${tk}:${side}`);
       out.push({key: `leg:${id}:${tk}:${side}`, tag: `parlay:${id}`, title: `Parlay leg ${q.result === "won" ? "hit" : "missed"}: ${String(l.desc || l.player || tk).slice(0, 60)}`,
         body: `${legs.length}-leg parlay${p.stake ? `, $${p.stake}` : ""}.`, url: "/v2/#/history"});
