@@ -1,10 +1,10 @@
 # Research Lab search (CFB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-11-06T15:29:00Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-11-06T16:55:58Z by research/lab/search.py. Scores are on the search seasons 2018–2021 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-232621 configurations scored so far.
+233020 configurations scored so far.
 
-## Spread -- top 25 of 219233
+## Spread -- top 25 of 219632
 
 | # | id | model | effect | t | 2018 | 2019 | 2021 |
 |---|---|---|---|---|---|---|---|
@@ -66,23 +66,23 @@ _Generated 2026-11-06T15:29:00Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- spread · elo · `k`: best 95 (median t +0.18), worst 15 (-1.15) over 97206 configurations
-- spread · elo · `market_blend`: best 0.03907 (median t -0.48), worst 1.0 (-1.07) over 97206 configurations
-- spread · elo · `mov`: best 538 (median t -0.34), worst none (-inf) over 97206 configurations
-- spread · elo · `mov_cap`: best 47 (median t -0.49), worst 36 (-0.93) over 97206 configurations
+- spread · elo · `k`: best 95 (median t +0.18), worst 15 (-1.15) over 97396 configurations
+- spread · elo · `market_blend`: best 0.03907 (median t -0.48), worst 1.0 (-1.07) over 97396 configurations
+- spread · elo · `mov`: best 538 (median t -0.34), worst none (-inf) over 97396 configurations
+- spread · elo · `mov_cap`: best 47 (median t -0.50), worst 36 (-0.93) over 97396 configurations
 - spread · ppa · `carry`: best 0.85 (median t -0.42), worst 0.6 (-0.83) over 1104 configurations
 - spread · ppa · `garbage_time`: best exclude (median t -0.40), worst include (-0.82) over 1104 configurations
 - spread · ppa · `prior_w`: best 2 (median t -0.22), worst 0.5312 (-0.83) over 1104 configurations
 - spread · signals · `base`: best {'params': {'carry': 0.5, 'hfa_pts': 2.0, 'margin_cap': None, 'prior_w': 0.75}, 'type': 'srs'} (median t +1.16), worst {'params': {'carry': 0.6, 'hfa_pts': 2.5, 'margin_cap': None, 'prior_w': 3}, 'type': 'srs'} (+0.13) over 10672 configurations
 - spread · signals · `signals`: best [{'carry': 0.4, 'den': 'plays', 'formula': True, 'halflife': 6, 'id': 'f-def-comp_plays-per-plays', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'comp_plays': 1}, 'reason': 'Automatic formula signal (Constitution v12 A3.3c): share of plays that are comp plays (comp_plays / plays), allowed by the team. Generated mechanically from the allowed team columns, with no hand-written football reason: it competes only on search-season scores and, if shortlisted, confirmation.', 'side': 'defense'}] (median t +1.52), worst [{'carry': 0.4, 'den': 'plays', 'halflife': 6.0, 'id': 'def-points-per-play~c0.2~c0.4', 'kind': 'team', 'markets': ['spread', 'total'], 'num': {'points': 1}, 'reason': "Automatic variant of def-points-per-play~c0.2 (half-life 6, carry 0.4): Automatic variant of def-points-per-play (half-life 6, carry 0.2): Points allowed per opponent play: a tempo-free read of a defense, which points allowed per game blurs with how many snaps its own offense's tempo hands the opponent.", 'side': 'defense', 'variant_of': 'def-points-per-play~c0.2'}] (-inf) over 10672 configurations
-- spread · srs · `carry`: best 0.775 (median t +0.62), worst 0.2 (+0.21) over 106035 configurations
-- spread · srs · `hfa_pts`: best 1.375 (median t +0.66), worst 3.5 (+0.04) over 106035 configurations
-- spread · srs · `margin_cap`: best 50 (median t +0.68), worst 21 (-0.16) over 106035 configurations
-- spread · srs · `prior_w`: best 0.2812 (median t +0.66), worst 3 (+0.13) over 106035 configurations
-- spread · team_rating · `def_weight`: best 1.0 (median t +0.20), worst 0.5 (-0.15) over 3440 configurations
-- spread · team_rating · `halflife`: best 2 (median t +0.33), worst 6 (-0.33) over 3440 configurations
-- spread · team_rating · `metric`: best points (median t +0.36), worst epa (-0.34) over 3440 configurations
-- spread · team_rating · `season_carry`: best 0.85 (median t +0.13), worst 0.2 (-0.28) over 3440 configurations
+- spread · srs · `carry`: best 0.775 (median t +0.63), worst 0.2 (+0.21) over 106243 configurations
+- spread · srs · `hfa_pts`: best 1.375 (median t +0.66), worst 3.5 (+0.04) over 106243 configurations
+- spread · srs · `margin_cap`: best 50 (median t +0.68), worst 21 (-0.16) over 106243 configurations
+- spread · srs · `prior_w`: best 0.2812 (median t +0.66), worst 3 (+0.13) over 106243 configurations
+- spread · team_rating · `def_weight`: best 1.0 (median t +0.20), worst 0.5 (-0.16) over 3441 configurations
+- spread · team_rating · `halflife`: best 2 (median t +0.33), worst 6 (-0.33) over 3441 configurations
+- spread · team_rating · `metric`: best points (median t +0.36), worst epa (-0.34) over 3441 configurations
+- spread · team_rating · `season_carry`: best 0.85 (median t +0.13), worst 0.2 (-0.28) over 3441 configurations
 - total · pace_eff · `efficiency`: best epa (median t +0.76), worst points (+0.36) over 2200 configurations
 - total · pace_eff · `halflife`: best 31 (median t +0.78), worst 2 (-0.43) over 2200 configurations
 - total · pace_eff · `pace`: best True (median t +0.82), worst False (-0.30) over 2200 configurations
