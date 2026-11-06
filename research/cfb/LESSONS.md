@@ -1,6 +1,6 @@
 # Research Lab -- lessons, College football (EXPLORATORY)
 
-_Generated 2026-11-06T01:41:03Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-11-06T01:45:53Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2018–2021 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -88,8 +88,9 @@ _Generated 2026-11-06T01:41:03Z by research/lab/report.py after each run. **Expl
 - Signal off-ppa~h3~c0.6 (total) on top of a base model: helped in 2018, then faded (helped in all three on 0 of 6); on average +0.09 / +0.07 / -0.15 pts in 2018 / 2019 / 2021.
 - Signal off-ppa~h3~h2 (total) on top of a base model: helped in 2018, then faded (helped in all three on 1 of 6); on average +0.04 / +0.09 / -0.07 pts in 2018 / 2019 / 2021.
 
-## No effect (116)
+## No effect (117)
 
+- Blend of 2: s-308a9755 + s-02c519e2 vs the line-only baseline: no consistent effect (-1.14 / +0.35 / +0.68 pts in 2022 / 2023 / 2024).
 - Signal def-comp-ppa (spread) on top of a base model: no consistent effect (helped in all three on 0 of 6); on average -0.22 / -0.28 / -0.18 pts in 2018 / 2019 / 2021.
 - Signal def-comp-ppa (total) on top of a base model: no consistent effect (helped in all three on 0 of 6); on average -0.13 / -0.03 / -0.04 pts in 2018 / 2019 / 2021.
 - Signal def-finishing (spread) on top of a base model: no consistent effect (helped in all three on 0 of 6); on average -0.02 / -0.09 / -0.07 pts in 2018 / 2019 / 2021.
