@@ -121,7 +121,7 @@ export function Alerts({ joined }: { joined: boolean }) {
         {/* five sports don't fit beside the text on a phone, so the buttons go under it */}
         <div className='border-b px-4 py-3'>
           <p className='font-semibold'>New DeVig picks</p>
-          <p className='text-xs leading-relaxed text-muted-foreground'>When a pick locks: NFL and NBA about an hour before the start, college games 6 hours before.</p>
+          <p className='text-xs leading-relaxed text-muted-foreground'>One alert per sport when its picks lock, with every game in it: NFL and NBA about an hour before the start, college games 6 hours before.</p>
           <div className='mt-2.5 flex flex-wrap gap-1.5' role='group' aria-label='Sports for pick alerts'>
             {PICK_SPORTS.map((s) => {
               const sel = data.prefs.picks.includes(s)

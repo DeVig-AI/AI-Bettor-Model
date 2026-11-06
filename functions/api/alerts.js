@@ -7,7 +7,8 @@
 //                               price bots after each refresh (GitHub Actions); it looks at everyone's alerts and sends what's due
 //
 // What can ping:
-//   - New DeVig pick: a pick locks in a sport the person follows (NFL, college football, NBA, college basketball, MLB)
+//   - New DeVig picks: picks lock in a sport the person follows (NFL, college football, NBA, college basketball, MLB);
+//     every new pick in one sport comes as one alert
 //   - Price target: "tell me when KC is +105 or better" on one game, before it starts (Kalshi's price now); soccer: a team or the draw
 //   - Big line move: a game with a favorite team or a ★ tracked game moves 5+ points on Kalshi within 6 hours, before
 //     the start
@@ -212,12 +213,23 @@ export function pickAlerts(rec, decisions, games, now) {
     const fair = h != null && a != null ? (side === d.home_team ? h : a) / (h + a) : null;
     const g = games.find(x => x.sport === d.sport && x.away === d.away_team && x.home === d.home_team &&
       Math.abs(Date.parse(x.kickoff) - kick) < 18 * 3600e3);
-    out.push({key, tag: key, title: `DeVig pick: ${side} to beat ${other}`,
+    out.push({key, tag: key, sport: d.sport, short: `${side} over ${other} ${pct(d.decision.prob)}`, title: `DeVig pick: ${side} to beat ${other}`,
       body: `DeVig gives ${side} ${pct(d.decision.prob)}${fair != null ? `, Kalshi ${pct(fair)}` : ""}. ` +
         `${d.away_team} @ ${d.home_team}, ${when(d.kickoff_time, rec.prefs.tz)}.`,
       url: g ? gameUrl(g.sport, g.espn_id) : "/v2/"});
   }
   return out;
+}
+
+// New picks in one sport go out as one alert ("DeVig NBA picks: 8 games"), not one per game; each game's key is still
+// marked sent (also), so none comes again. A sport with a single new pick keeps the one-game alert.
+const SPORT_NAME = {NFL: "NFL", CFB: "college football", NBA: "NBA", CBB: "college basketball", MLB: "MLB"};
+export function groupPicks(alerts) {
+  const by = new Map();
+  for (const m of alerts) by.set(m.sport, [...(by.get(m.sport) || []), m]);
+  return [...by.values()].map(ms => ms.length === 1 ? ms[0] : {key: null, tag: `pick:${ms[0].sport}`, urgent: true,
+    title: `DeVig ${SPORT_NAME[ms[0].sport] || ms[0].sport} picks: ${ms.length} games`,
+    body: ms.map(m => m.short).join(" · ").slice(0, 300), url: "/v2/", also: ms});
 }
 
 // every Lab model that has passed something: [{key, sport, name, state}]
@@ -355,6 +367,8 @@ function normal(r) {
 // The edge cache remembers each alert sent, beside the KV record. KV reads can lag a write by a minute, and a failed
 // write loses the "sent" marks, so a leg that stays won would otherwise go out on every run.
 const memoReq = (h, key) => new Request(`${SITE}/__alerts_sent/${h}/${encodeURIComponent(key)}`);
+const unsent = async (ms, h, memo) => !memo ? ms :
+  (await Promise.all(ms.map(async m => (await memo.match(memoReq(h, m.key)).catch(() => null) ? null : m)))).filter(Boolean);
 
 export async function run(env, {fetcher = fetch, now = Date.now(), sender = send, memo = null} = {}) {
   const idx = (await env.USERS.get(INDEX, "json")) || {users: []};
@@ -432,7 +446,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
       .filter(m => !parlays.out.some(x => x.key && x.key.split(":").slice(2).join(":") === m.key.split(":").slice(2).join(":"))) : [];
     let due = [...live, ...legs, ...targets.out, ...parlays.out,
       ...(rec.prefs.lab ? labAlerts(rec, status) : []),
-      ...pickAlerts(rec, decisions, games, now),
+      ...(await unsent(pickAlerts(rec, decisions, games, now), h, memo).then(groupPicks)),
       ...(rec.prefs.moves ? moveAlerts(rec, follows[h], mkts, then, now) : [])];
     // already sent, as the edge cache remembers it: not again, and the mark goes back into KV
     const memoHit = [];
@@ -445,7 +459,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
     if (due.length > room && room > 0) {
       const extra = due.slice(room - 1);
       due = [...due.slice(0, room - 1), {key: null, tag: "devig:more", title: `${extra.length} more DeVig alerts`,
-        body: extra.map(m => m.title).join(" · ").slice(0, 300), url: "/v2/", also: extra}];
+        body: extra.map(m => m.title).join(" · ").slice(0, 300), url: "/v2/", also: extra.flatMap(m => m.also || [m])}];
     } else due = due.slice(0, room);
     const sentKeys = memoHit.map(m => [m.key, m.value ?? null]), dead = new Set();
     let count = 0;
@@ -456,7 +470,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
         let st = 0;
         try {
           st = await sender(d, {title: m.title, body: m.body, url: m.url, tag: m.tag}, keys,
-            {fetcher, now, urgency: m.live || (m.key && m.key.startsWith("pick:")) ? "high" : "normal", ...(m.live ? {ttl: 600} : {})});
+            {fetcher, now, urgency: m.live || m.urgent || (m.key && m.key.startsWith("pick:")) ? "high" : "normal", ...(m.live ? {ttl: 600} : {})});
         } catch (e) { st = 0; }
         if (st === 404 || st === 410) dead.add(d.endpoint);
         else if (st >= 200 && st < 300) ok = true;
