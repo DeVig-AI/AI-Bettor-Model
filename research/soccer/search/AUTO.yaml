@@ -1,0 +1,44 @@
+# Research Lab search (SOCCER) -- automatic widenings of MENU.yaml and SIGNALS.yaml (Constitution v10 A3.3c; formula signals since v12).
+# Written by research/lab/search.py from search-season scores only; append-only, never edit.
+generations:
+- generation: 1
+  at: '2026-11-06T13:30:08Z'
+  round: 12
+  ladders:
+    carry:
+    - 0.55
+    - 0.65
+    - 0.75
+    halflife:
+    - 1
+    - 4
+    - 35
+    - 50
+    hfa_elo:
+    - 20
+    - 40
+    - 60
+    hfa_pts:
+    - 0.15
+    - 0.25
+    - 0.35
+    k:
+    - 12
+    - 18
+    - 22
+    market_blend:
+    - 0.125
+    - 0.625
+    - 1.0
+    prior_w:
+    - 3
+    - 6
+    revert:
+    - 0.0
+    - 0.075
+    - 0.15
+    season_carry:
+    - 0.55
+    - 0.65
+    - 0.75
+    - 0.9
