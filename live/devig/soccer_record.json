@@ -1,11 +1,132 @@
 {
- "generated_at": "2026-11-06T17:34:07Z",
+ "generated_at": "2026-11-06T23:16:57Z",
  "slot": "SOCCER.ml",
  "champion": "devigsoccer",
  "model": "soccer-v1",
  "rule": "CHAMPION_CHALLENGER_V4_PREREG.md",
  "note": "Locked at the last hourly run before kickoff; 90-minute result; log loss of the chance given to what happened (lower is better). New, not proven: nothing is bet.",
- "devig": null,
- "shared": null,
- "recent": []
+ "devig": {
+  "games": 5,
+  "log_loss": 1.0088,
+  "picked_right": 0.6
+ },
+ "shared": {
+  "devig": {
+   "games": 5,
+   "log_loss": 1.0088,
+   "picked_right": 0.6
+  },
+  "kalshi": {
+   "games": 5,
+   "log_loss": 0.87,
+   "picked_right": 0.8
+  }
+ },
+ "recent": [
+  {
+   "game_id": "401882809",
+   "league": "LALIGA",
+   "kickoff": "2026-11-06T20:00Z",
+   "home_name": "Sevilla",
+   "away_name": "Alav\u00e9s",
+   "result": [
+    0,
+    0
+   ],
+   "model": [
+    0.4605,
+    0.2627,
+    0.2768
+   ],
+   "kalshi": [
+    0.5075,
+    0.2965,
+    0.196
+   ]
+  },
+  {
+   "game_id": "401879242",
+   "league": "EPL",
+   "kickoff": "2026-11-06T20:00Z",
+   "home_name": "Everton",
+   "away_name": "Coventry City",
+   "result": [
+    3,
+    1
+   ],
+   "model": [
+    0.4918,
+    0.2853,
+    0.2229
+   ],
+   "kalshi": [
+    0.5821,
+    0.2338,
+    0.1841
+   ]
+  },
+  {
+   "game_id": "401876405",
+   "league": "LIGUE1",
+   "kickoff": "2026-11-06T19:45Z",
+   "home_name": "Toulouse",
+   "away_name": "Strasbourg",
+   "result": [
+    3,
+    1
+   ],
+   "model": [
+    0.4149,
+    0.2506,
+    0.3345
+   ],
+   "kalshi": [
+    0.4472,
+    0.2563,
+    0.2965
+   ]
+  },
+  {
+   "game_id": "401874815",
+   "league": "SERIEA",
+   "kickoff": "2026-11-06T19:45Z",
+   "home_name": "Venezia",
+   "away_name": "Udinese",
+   "result": [
+    2,
+    1
+   ],
+   "model": [
+    0.3067,
+    0.2685,
+    0.4247
+   ],
+   "kalshi": [
+    0.4129,
+    0.2836,
+    0.3035
+   ]
+  },
+  {
+   "game_id": "401884739",
+   "league": "BUND",
+   "kickoff": "2026-11-06T19:30Z",
+   "home_name": "Hamburg SV",
+   "away_name": "Borussia M\u00f6nchengladbach",
+   "result": [
+    3,
+    1
+   ],
+   "model": [
+    0.3921,
+    0.2574,
+    0.3505
+   ],
+   "kalshi": [
+    0.405,
+    0.275,
+    0.32
+   ]
+  }
+ ]
 }

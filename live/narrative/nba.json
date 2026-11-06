@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-06T17:34:10+00:00",
+ "updated": "2026-11-06T23:17:00+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -44,6 +44,28 @@
    "why_opp": []
   },
   {
+   "id": "401909288",
+   "date": "2026-11-06",
+   "start": "2026-11-07T00:00Z",
+   "game": "BOS @ CHA",
+   "home": "CHA",
+   "away": "BOS",
+   "home_id": "30",
+   "away_id": "2",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 207.5,
+   "score": 2.5,
+   "why_for": [
+    "Pace: their games average 215 points, the total is 207.5",
+    "Buy low on the dropping total: 210.5 to 207.5"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401909287",
    "date": "2026-11-06",
    "start": "2026-11-07T00:00Z",
@@ -57,13 +79,18 @@
    "final": null,
    "type": "side",
    "pick": "WSH",
-   "line": 7.5,
-   "score": 2.5,
+   "line": 8.5,
+   "score": 2.0,
    "why_for": [
     "Bounce-back spot after losing by 15",
-    "Zigzag: lost to this same team in the last three days"
+    "Zigzag: lost to this same team in the last three days",
+    "Anthony Davis (23 points a game) is out",
+    "Fade the line move: WSH went from +6.5 to +8.5",
+    "ATL: Jalen Johnson (18 points a game) is out"
    ],
-   "why_opp": []
+   "why_opp": [
+    "ATL: Line tell: the line rates ATL 4.5 points better than results so far"
+   ]
   },
   {
    "id": "401909937",
@@ -387,20 +414,24 @@
    "note": null,
    "side": {
     "lean": "SA",
-    "score": 2.0,
+    "score": 1.0,
     "capped": true,
     "why_for": [
-     "Line tell: the line rates SA 7.9 points better than results so far",
+     "Line tell: the line rates SA 8.9 points better than results so far",
      "Never lay 12 or more",
      "SAC: Struggling team (one win or fewer)"
     ],
-    "why_opp": []
+    "why_opp": [
+     "SAC: Fade the line move: SAC went from +15.5 to +17.5"
+    ]
    },
    "total": {
-    "lean": null,
-    "line": 229.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 231.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 228.5 to 231.5"
+    ],
     "why_opp": []
    }
   },
@@ -426,7 +457,7 @@
    },
    "total": {
     "lean": null,
-    "line": 224.5,
+    "line": 225.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -470,19 +501,20 @@
    "away_id": "28",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "TOR",
+    "score": 1.0,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 19",
      "Kawhi Leonard (20 points a game) is out",
+     "Fade the line move: TOR went from -7.5 to -4.5",
      "MIL: Struggling team (one win or fewer)"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 231.5,
+    "line": 229.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -535,12 +567,10 @@
     "why_opp": []
    },
    "total": {
-    "lean": "OVER",
-    "line": 230.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 233.5 to 230.5"
-    ],
+    "lean": null,
+    "line": 231.5,
+    "score": 0.0,
+    "why_for": [],
     "why_opp": []
    }
   },
@@ -556,19 +586,26 @@
    "note": null,
    "side": {
     "lean": "WSH",
-    "score": 2.5,
+    "score": 2.0,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 15",
-     "Zigzag: lost to this same team in the last three days"
+     "Zigzag: lost to this same team in the last three days",
+     "Anthony Davis (23 points a game) is out",
+     "Fade the line move: WSH went from +6.5 to +8.5",
+     "ATL: Jalen Johnson (18 points a game) is out"
     ],
-    "why_opp": []
+    "why_opp": [
+     "ATL: Line tell: the line rates ATL 4.5 points better than results so far"
+    ]
    },
    "total": {
-    "lean": null,
-    "line": 228.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 227.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 230.5 to 227.5"
+    ],
     "why_opp": []
    }
   },
@@ -581,7 +618,28 @@
    "away": "BOS",
    "home_id": "30",
    "away_id": "2",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "BOS",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates BOS 4.4 points better than results so far"
+    ],
+    "why_opp": [
+     "CHA: Fade the line move: CHA went from +8.5 to +10.5"
+    ]
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 207.5,
+    "score": 2.5,
+    "why_for": [
+     "Pace: their games average 215 points, the total is 207.5",
+     "Buy low on the dropping total: 210.5 to 207.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401909937",
