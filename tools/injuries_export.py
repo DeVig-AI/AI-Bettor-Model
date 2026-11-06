@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-injuries_export.py -- the app's Injuries tab (nba/injuries_export.json, nfl/injuries_export.json), refreshed by a bot
+injuries_export.py -- the app's Injuries tab (nba/, nfl/, nhl/ and stats/soccer/injuries_export.json), refreshed by a bot
 (injuries.yml) instead of by hand, with a "game changer" scale on every player: how much his team loses if he sits.
 INFORMATION ONLY: no pick, tier or lock reads these files.
 
@@ -19,12 +19,20 @@ Game changer scale (four levels; the reason is shown next to it):
        (50%+ of snaps) is a Game changer, any other regular is Some, everyone else Minor. Big is not used for the NFL:
        the study found no single non-QB position worth more than a regular's half point. Skill players' share of
        their team's targets and carries is shown as context.
+  NHL  ESPN's injury feed; this season's skater stats (stats/nhl) for the player's share of his team's points and his
+       ice time. This is a role measure, not a measured effect on the result: Big >= 12% of the team's points (about
+       a top-two scorer), Some >= 6% or 18+ minutes a night, else Minor. A goalie is Some (DeVig has no goalie stats, so
+       starter or backup isn't told apart). Day-to-day and out players are listed; injured reserve only for regulars.
+  EPL  the Premier League's own Fantasy Premier League data (status, chance of playing, news) for the next round's
+       matches. Role measure again: a regular starts 60%+ of his team's matches; Big = a regular in 25%+ of the
+       team's goals (goals + assists), Some = any other regular, else Minor. Players gone on loan or transfer are left
+       out. No other soccer league, and no college sport, has a free injury feed: those sports aren't listed.
 The scale is how much is lost IF he misses the game; his status (Out / Questionable / ...) is separate.
 
 A status that changed since the previous run gets a note ("Downgraded from Questionable"). If a source can't be
 read, that sport's previous file is left unchanged.
 
-Usage:  python3 tools/injuries_export.py [--sport NBA|NFL] [--now ISO]
+Usage:  python3 tools/injuries_export.py [--sport NBA|NFL|NHL|EPL] [--now ISO]
 """
 import argparse
 import io
@@ -45,7 +53,8 @@ import injury_report_nfl_v2 as NFLI  # noqa: E402  (its ESPN fetch, snap shares 
 from export_lineboard_nba import CODE as NBA_CODE  # noqa: E402
 
 ET = ZoneInfo("America/New_York")
-OUT = {"NBA": ROOT / "nba" / "injuries_export.json", "NFL": ROOT / "nfl" / "injuries_export.json"}
+OUT = {"NBA": ROOT / "nba" / "injuries_export.json", "NFL": ROOT / "nfl" / "injuries_export.json",
+       "NHL": ROOT / "nhl" / "injuries_export.json", "EPL": ROOT / "stats" / "soccer" / "injuries_export.json"}  # app data, not the Lab's
 STATS = ROOT / "stats"
 NBA_REPORT = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{date}_{time}.pdf"
 
@@ -53,7 +62,7 @@ LEVELS = {"gamechanger": ("Game changer", 4), "big": ("Big", 3), "some": ("Some"
 NBA_CUTS = ((0.15, "gamechanger"), (0.11, "big"), (0.07, "some"))
 NFL_QB_POINTS, NFL_REGULAR_POINTS, NFL_REGULAR_SHARE = 3.8, 0.5, 0.50     # research/injuries/results_v1.md
 NFL_STARTER_SHARE = 0.60                                                   # the page's "starter" (60%+ of snaps)
-STATUS_RANK = {"Out": 0, "Doubtful": 1, "Questionable": 2, "Probable": 3, "Available": 4}
+STATUS_RANK = {"Out": 0, "Doubtful": 1, "Questionable": 2, "Day-To-Day": 2, "Probable": 3, "Available": 4}
 NFL_DESIGNATIONS = {"Out", "Doubtful", "Questionable"}
 
 
@@ -316,6 +325,179 @@ def run_nba(now):
           f"NBA official injury report ({url.rsplit('/', 1)[-1]}); game changer scale from stats/nba (tools/injuries_export.py)")
 
 
+# ================================================================ NHL
+
+ESPN = "https://site.api.espn.com/apis/site/v2/sports/"
+NHL_ALIAS = {"UTAH": "UTA"}                                    # ESPN code -> the stats files' code
+NHL_CUTS = ((0.12, "big"), (0.06, "some"))
+NHL_REGULAR_TOI = 18.0
+
+
+def fetch_json(url):
+    return json.loads(fetch(url))
+
+
+def upcoming(path, now, days=2):
+    """{team code: game} for each team's next game in the next `days` days (ESPN scoreboard), not yet finished."""
+    out = {}
+    for d in range(days + 1):
+        day = (now.astimezone(ET) + timedelta(days=d)).strftime("%Y%m%d")
+        for e in fetch_json(f"{ESPN}{path}/scoreboard?dates={day}").get("events") or []:
+            c = e["competitions"][0]
+            if c["status"]["type"]["state"] == "post":
+                continue
+            side = {x["homeAway"]: NHL_ALIAS.get(x["team"]["abbreviation"], x["team"]["abbreviation"]) for x in c["competitors"]}
+            g = {"away": side["away"], "home": side["home"], "kickoff": datetime.fromisoformat(e["date"].replace("Z", "+00:00"))}
+            for t in side.values():
+                out.setdefault(t, g)
+    return out
+
+
+def nhl_player(stats, name):
+    """(share of the team's points this season, ice time a game) or None."""
+    if not stats:
+        return None
+    ps = stats.get("players", [])
+    total = sum((p.get("this") or {}).get("p_tot") or 0 for p in ps)
+    for p in ps:
+        if norm(p["name"]) == norm(name):
+            th = p.get("this") or {}
+            if not th.get("gp"):
+                return None
+            return ((th.get("p_tot") or 0) / total if total else 0.0), th.get("toi") or 0.0, th.get("p_tot") or 0, th["gp"]
+    return None
+
+
+def nhl_impact(pos, line, code):
+    if pos == "G":
+        return impact("some", "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)")
+    if line is None:
+        return impact("minor", "No games for him in this season's stats")
+    share, toi, pts, gp = line
+    level = next((lv for cut, lv in NHL_CUTS if share >= cut), "some" if toi >= NHL_REGULAR_TOI else "minor")
+    return impact(level, f"{toi:.0f} min a game · {pts} point{'' if pts == 1 else 's'} in {gp} games = {share:.0%} of {code}'s points")
+
+
+def nhl_reason(inj, pos):
+    m = re.search(r"\(([^)]+)\)", inj.get("shortComment") or "")
+    return " · ".join(x for x in (pos, m.group(1).capitalize() if m else "") if x)
+
+
+def run_nhl(now):
+    games = upcoming("hockey/nhl", now)
+    if not games:
+        print("NHL: no games in the next two days; keeping the previous file.")
+        return
+    feed = fetch_json(f"{ESPN}hockey/nhl/injuries")
+    prev = previous("NHL")
+    rows, cache = [], {}
+    for t in feed.get("injuries") or []:
+        for inj in t.get("injuries") or []:
+            ath = inj.get("athlete") or {}
+            code = NHL_ALIAS.get((ath.get("team") or {}).get("abbreviation"), (ath.get("team") or {}).get("abbreviation"))
+            g = games.get(code)
+            status = (inj.get("status") or "").strip()
+            if not g or not status or status.lower() == "active":
+                continue
+            if code not in cache:
+                cache[code] = team_stats("NHL", code)
+            name = ath.get("displayName") or ""
+            pos = ((ath.get("position") or {}).get("abbreviation") or "").upper()
+            line = nhl_player(cache[code], name)
+            imp = nhl_impact(pos, line, code)
+            regular = pos == "G" or imp["level"] != "minor"
+            if "reserve" in status.lower() and not regular:
+                continue                                       # long-term lists only for regulars, as for the NFL
+            kick = g["kickoff"].astimezone(ET)
+            row = {"sport": "NHL", "away": g["away"], "home": g["home"], "team": code, "player": name, "status": status,
+                   "reason": nhl_reason(inj, pos), "tip": kick.strftime("%a %-I:%M %p"), "tip_sort": kick.strftime("%m%d-%H%M"),
+                   "starter": regular, "impact": imp}
+            note = change_note(row, prev)
+            if note:
+                row["note"] = note
+            rows.append(row)
+    if not rows:
+        print("NHL: ESPN listed nobody for the next games' teams; keeping the previous file.")
+        return
+    now_et = now.astimezone(ET)
+    write("NHL", {"sport": "NHL", "as_of": now_et.strftime("%a %b %-d · %-I:%M %p ET"), "date": now_et.strftime("%Y-%m-%d")},
+          rows, "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)")
+
+
+# ================================================================ EPL (Fantasy Premier League)
+
+FPL = "https://fantasy.premierleague.com/api/"
+FPL_TO_ESPN = {"MCI": "MNC", "MUN": "MAN"}                    # FPL's short name -> ESPN's, the board's codes
+FPL_REGULAR, FPL_BIG_SHARE = 0.60, 0.25
+
+
+def epl_status(p):
+    s, ch = p.get("status"), p.get("chance_of_playing_next_round")
+    if s == "i":
+        return "Out"
+    if s == "s":
+        return "Suspended"
+    if s == "d":
+        return "Doubtful" if ch is not None and ch <= 25 else f"{ch}% to play" if ch is not None else "Doubtful"
+    return None                                                # a (available), u (left the club), n (loan rules)
+
+
+def run_epl(now):
+    boot = fetch_json(FPL + "bootstrap-static/")
+    fx = fetch_json(FPL + "fixtures/?future=1")
+    code = {t["id"]: FPL_TO_ESPN.get(t["short_name"], t["short_name"]) for t in boot["teams"]}
+    nxt = next((e["id"] for e in boot.get("events") or [] if e.get("is_next")), None)
+    games = {}
+    for f in sorted(fx, key=lambda f: f.get("kickoff_time") or "9999"):
+        if not f.get("kickoff_time") or f.get("finished") or (nxt and f.get("event") not in (nxt, nxt - 1)):
+            continue
+        g = {"away": code[f["team_a"]], "home": code[f["team_h"]],
+             "kickoff": datetime.fromisoformat(f["kickoff_time"].replace("Z", "+00:00"))}
+        if g["kickoff"] < now - timedelta(hours=3):
+            continue
+        for t in (f["team_a"], f["team_h"]):
+            games.setdefault(t, g)
+    if not games:
+        print("EPL: no upcoming matches; keeping the previous file.")
+        return
+    played = {}
+    for f in fetch_json(FPL + "fixtures/"):
+        if f.get("finished"):
+            for t, gl in ((f["team_h"], f["team_h_score"]), (f["team_a"], f["team_a_score"])):
+                n, goals = played.get(t, (0, 0))
+                played[t] = (n + 1, goals + (gl or 0))
+    prev = previous("EPL")
+    rows = []
+    for p in boot["elements"]:
+        status = epl_status(p)
+        g = games.get(p["team"])
+        if not status or not g:
+            continue
+        n, goals = played.get(p["team"], (0, 0))
+        tc = code[p["team"]]
+        starts, gi = p.get("starts") or 0, (p.get("goals_scored") or 0) + (p.get("assists") or 0)
+        regular = n > 0 and starts / n >= FPL_REGULAR
+        share = gi / goals if goals else 0.0
+        why = f"Started {starts} of {tc}'s {n} league matches" + (f" · a goal or assist on {gi} of their {goals} goals ({share:.0%})" if gi else "")
+        level = "big" if regular and share >= FPL_BIG_SHARE else "some" if regular else "minor"
+        kick = g["kickoff"].astimezone(ET)
+        full = f"{p.get('first_name', '')} {p.get('second_name', '')}".strip()
+        name = p.get("known_name") or (full if len(full.split()) <= 3 else p.get("web_name")) or full
+        row = {"sport": "EPL", "away": g["away"], "home": g["home"], "team": tc, "player": name, "status": status,
+               "reason": (p.get("news") or "").strip(), "tip": kick.strftime("%a %-I:%M %p"), "tip_sort": kick.strftime("%m%d-%H%M"),
+               "starter": regular, "impact": impact(level, why)}
+        note = change_note(row, prev)
+        if note:
+            row["note"] = note
+        rows.append(row)
+    if not rows:
+        print("EPL: nobody flagged for the next matches; keeping the previous file.")
+        return
+    now_et = now.astimezone(ET)
+    write("EPL", {"sport": "EPL", "as_of": now_et.strftime("%a %b %-d · %-I:%M %p ET"), "date": now_et.strftime("%Y-%m-%d")},
+          rows, "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)")
+
+
 # ================================================================ NFL
 
 def nfl_week_games(now):
@@ -425,12 +607,12 @@ def run_nfl(now):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--sport", choices=["NBA", "NFL"])
+    ap.add_argument("--sport", choices=list(OUT))
     ap.add_argument("--now")
     a = ap.parse_args()
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
     failed = False
-    for sport, fn in (("NBA", run_nba), ("NFL", run_nfl)):
+    for sport, fn in (("NBA", run_nba), ("NFL", run_nfl), ("NHL", run_nhl), ("EPL", run_epl)):
         if a.sport and a.sport != sport:
             continue
         try:

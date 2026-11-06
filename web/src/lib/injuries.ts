@@ -1,4 +1,5 @@
-// Injury reports (the injuries bot's exports, from each league's official report): who's out or questionable in a
+// Injury reports (the injuries bot's exports: NBA's official report, ESPN's NFL and NHL feeds, the Premier League's
+// Fantasy data): who's out or questionable in a
 // game, and how much it matters (the player's share of his team's points, as the bot computes it).
 import { useQuery } from '@tanstack/react-query'
 
@@ -21,7 +22,7 @@ export function useInjuries() {
     queryKey: ['injuries'],
     queryFn: async () => {
       const all = await Promise.allSettled(
-        ['nba', 'nfl'].map((s) =>
+        ['nba', 'nfl', 'nhl', 'stats/soccer'].map((s) =>
           fetch(`${RAW}${s}/injuries_export.json?t=${Math.floor(Date.now() / 60000)}`).then((r) => (r.ok ? r.json() : { docs: [] }))
         )
       )

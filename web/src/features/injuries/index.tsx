@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { useGames } from '@/lib/devig'
+import { SOCCER, useGames } from '@/lib/devig'
 import { type Injury, useInjuries } from '@/lib/injuries'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -8,10 +8,10 @@ import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 
-// Injuries: each league's official report, game by game, starters and the biggest impact first. Information only:
+// Injuries: each league's report (NBA official, ESPN for the NFL and NHL, Fantasy Premier League for the EPL), game by game, starters and the biggest impact first. Information only:
 // DeVig's NBA and MLB models don't read it (NFL Model 2.0 counts who's out), and Kalshi's price may already include it.
 
-const rank = (x: Injury) => (x.starter ? 0 : 10) + (/out/i.test(x.status) ? 0 : /doubt/i.test(x.status) ? 1 : 2) - (x.impact?.bars ?? 0) * 0.1
+const rank = (x: Injury) => (x.starter ? 0 : 10) + (/out|suspend|reserve/i.test(x.status) ? 0 : /doubt/i.test(x.status) ? 1 : 2) - (x.impact?.bars ?? 0) * 0.1
 
 export function Injuries() {
   const q = useInjuries()
@@ -24,7 +24,7 @@ export function Injuries() {
 
   const games = useMemo(() => {
     const g = new Map<string, Injury[]>()
-    for (const x of list.filter((i) => i.sport === sp && (all || i.starter || /out|doubt/i.test(i.status)))) {
+    for (const x of list.filter((i) => i.sport === sp && (all || i.starter || /out|doubt|suspend|reserve/i.test(i.status)))) {
       const k = `${x.away}@${x.home}`
       g.set(k, [...(g.get(k) ?? []), x])
     }
@@ -39,19 +39,19 @@ export function Injuries() {
       <Header>
         <div className='me-auto min-w-0'>
           <h1 className='font-display text-[26px] leading-none font-black'>Injuries</h1>
-          <p className='mt-0.5 truncate text-xs text-muted-foreground'>From each league&apos;s official report</p>
+          <p className='mt-0.5 truncate text-xs text-muted-foreground'>NBA, NFL, NHL and Premier League</p>
         </div>
         <ThemeSwitch />
       </Header>
       <Main className='flex flex-col gap-5'>
         <p className='rounded-2xl bg-card px-4 py-3 text-sm leading-relaxed'>
-          Information only. DeVig&apos;s NBA and MLB models don&apos;t read injuries (NFL Model 2.0 counts who&apos;s out), and Kalshi&apos;s price may already include them.
+          Information only. DeVig&apos;s NBA, NHL and soccer game models don&apos;t read injuries (NFL Model 2.0 counts who&apos;s out), and Kalshi&apos;s price may already include them. College sports and other soccer leagues have no free injury feed, so they aren&apos;t listed.
         </p>
         <div className='flex flex-wrap items-center gap-2'>
           {sports.map((s) => (
             <button key={s} type='button' aria-pressed={sp === s} onClick={() => setSport(s)}
               className={cn('h-9 rounded-full border px-4 text-sm font-medium text-muted-foreground', sp === s && 'border-foreground bg-foreground text-background')}>
-              {s}
+              {SOCCER[s] ?? s}
             </button>
           ))}
           <button type='button' aria-pressed={all} onClick={() => setAll(!all)}
@@ -63,7 +63,7 @@ export function Injuries() {
         {q.isLoading ? (
           <Skeleton className='h-64 w-full rounded-[18px]' />
         ) : games.length === 0 ? (
-          <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>No injuries on the {sp ?? ''} report right now.</p>
+          <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>No injuries on the {sp ? SOCCER[sp] ?? sp : ''} report right now.</p>
         ) : (
           <div className='grid gap-4 lg:grid-cols-2'>
             {games.map(({ k, xs, row }) => {
@@ -91,7 +91,7 @@ export function Injuries() {
                           {(x.impact?.why || x.reason) && <span className='block text-xs text-muted-foreground'>{x.impact?.why || x.reason}</span>}
                         </span>
                         <span className='shrink-0 text-end'>
-                          <span className={cn('block text-sm font-bold', /out/i.test(x.status) ? 'text-bad' : 'text-[#F5C77A]')}>{x.status}</span>
+                          <span className={cn('block text-sm font-bold', /out|suspend|reserve/i.test(x.status) ? 'text-bad' : 'text-[#F5C77A]')}>{x.status}</span>
                           {x.impact?.label && <span className='text-xs text-muted-foreground'>{x.impact.label} impact</span>}
                         </span>
                       </li>

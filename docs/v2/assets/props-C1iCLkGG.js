@@ -1,0 +1,1 @@
+import{n as e}from"./props-CDEAadMd.js";var t=e;export{t as component};

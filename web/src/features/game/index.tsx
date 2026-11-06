@@ -231,13 +231,13 @@ export function GamePage({ id }: { id: string }) {
                     {x.impact?.why && <span className='block text-xs text-muted-foreground'>{x.impact.why}</span>}
                   </span>
                   <span className='shrink-0 text-end'>
-                    <span className={cn('block text-sm font-bold', /out/i.test(x.status) ? 'text-bad' : 'text-[#F5C77A]')}>{x.status}</span>
+                    <span className={cn('block text-sm font-bold', /out|suspend|reserve/i.test(x.status) ? 'text-bad' : 'text-[#F5C77A]')}>{x.status}</span>
                     {x.impact?.label && <span className='text-xs text-muted-foreground'>{x.impact.label} impact</span>}
                   </span>
                 </li>
               ))}
             </ul>
-            <p className='mt-1.5 px-1 text-xs text-muted-foreground'>{row.sport === 'NFL' ? "DeVig's NFL Model 2.0 counts who's out" : `DeVig's ${row.sport} model doesn't read injuries`}; Kalshi&apos;s price may already include them.</p>
+            <p className='mt-1.5 px-1 text-xs text-muted-foreground'>{row.sport === 'NFL' ? "DeVig's NFL Model 2.0 counts who's out" : `DeVig's ${isSoccer(row.sport) ? 'soccer' : row.sport} model doesn't read injuries`}; Kalshi&apos;s price may already include them.</p>
           </section>
         )}
 
