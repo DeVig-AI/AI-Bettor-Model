@@ -309,3 +309,32 @@ test("checker: sends what's due once, drops a fired target, forgets a gone devic
   await run(env, {fetcher, now: NOW + 600e3, sender});
   assert.deepEqual(sent, []);                                                            // nothing twice
 });
+
+// 2026-11-06: a won leg stays won, so a lost or late "sent" mark sent it on every run
+test("parlay legs: once even when KV loses the sent mark; never hours after they settled; once across both checks", async () => {
+  const {keys} = await vapidKeys();
+  const h = "def456", quiet = cleanPrefs({tz: "America/New_York", picks: [], moves: false, lab: false});
+  const start = rec({prefs: quiet, parlays: [{...P, at: null}]});
+  const store = kv({"alerts:index": {users: [h]}, [`alerts:${h}`]: start});
+  const env = {VAPID_PRIVATE_KEY: keys.privateKey, USERS: {...store, async put(k, v) { if (k.startsWith("alerts:d")) throw new Error("KV put() limit exceeded for the day."); return store.put(k, v); }}};
+  let settled = new Date(NOW - 60e3).toISOString();
+  const fetcher = async url => String(url).includes("/markets?tickers=")
+    ? new Response(JSON.stringify({markets: [mk(L1, 0, 0, {status: "finalized", result: "yes", settlement_ts: settled}), mk(L2, 0.6, 0.62)]}))
+    : new Response("{}", {status: 404});
+  const memo = (() => { const m = new Map(); return {async match(r) { return m.get(r.url) || null; }, async put(r, v) { m.set(r.url, v); }}; })();
+  const sent = [];
+  const sender = async (dev, msg) => { sent.push(msg.title); return 201; };
+  const r1 = await run(env, {fetcher, now: NOW, sender, memo});
+  assert.deepEqual(sent, ["2-leg parlay: leg won"]);
+  assert.match(r1.errors[0], /limit exceeded/);                                           // said, so the timer logs it
+  for (let i = 1; i <= 5; i++) await run(env, {fetcher, now: NOW + i * 30e3, sender, memo});
+  assert.equal(sent.length, 1);                                                            // the edge cache remembered it
+  // without the edge cache, a leg Kalshi settled more than 3 hours ago isn't news any more
+  settled = new Date(NOW - 4 * 3600e3).toISOString();
+  sent.length = 0;
+  await run(env, {fetcher, now: NOW, sender});
+  assert.deepEqual(sent, []);
+  // a leg the saved-parlay check already sent under its own id isn't sent again by the parlay alert
+  const legOnly = rec({parlays: [{...P, at: null}], sent: {[`leg:abc:${L1}:yes`]: [NOW, null]}});
+  assert.equal(parlayAlerts(legOnly, {[L1]: mk(L1, 0, 0, {status: "finalized", result: "yes"}), [L2]: mk(L2, 0.6, 0.62)}, NOW).out.length, 0);
+});

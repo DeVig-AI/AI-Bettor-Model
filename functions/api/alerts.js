@@ -41,6 +41,9 @@ const MAX_DEVICES = 6, MAX_TARGETS = 20, MAX_PARLAYS = 10, MAX_LEGS = 12;
 const SAVE_GAP_MS = 1000, SAVES_PER_DAY = 200, SENDS_PER_DAY = 80, PER_RUN = 5;
 const LIVE_SPORTS = ["NFL", "CFB", "NBA", "WNBA", "CBB", "NHL"], MAX_LIVE_GAMES = 12, LIVE_TTL = 15, RUN_GAP_KEYED_S = 25;
 const MOVE = 0.05, MOVE_HOURS = 6, RUN_GAP_S = 90, SENT_DAYS = 10;
+// a settled leg is news for LEG_FRESH_H after Kalshi settles it; past that it's never sent, so a lost "sent" mark
+// can't make it ping again and again. MEMO_S: how long the edge cache also remembers what was sent (see run)
+const LEG_FRESH_H = 3, MEMO_S = 2 * 86400, RUN_HOLD_S = 60;
 const GAME_TICKER = /^KX(?:NFL|NBA|WNBA|NHL|MLB|NCAAF|NCAAB|NCAAMB)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
 // soccer: each of the three outcomes is its own market (home, TIE, away), so a soccer target names that market
 const SOCCER_TICKER = /^KX(?:EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL|UEL|UECL|MLS|LIGAMX)GAME-[A-Z0-9]{6,30}-[A-Z0-9]{1,8}$/;
@@ -296,8 +299,10 @@ export function moveAlerts(rec, games, mkts, then, now) {
 
 // a saved parlay: each leg that settled, its chance reaching the number picked, and the end.
 // `update` = {id: parlay | null}: the parlay's new state (null = done, stop watching)
-export function parlayAlerts(rec, mkts) {
+export function parlayAlerts(rec, mkts, now = Date.now()) {
   const out = [], update = {};
+  // a leg the saved-parlay check (trackedLegs) already sent under its own parlay id isn't sent again here
+  const legSent = new Set(Object.keys(rec.sent).filter(k => k.startsWith("leg:")).map(k => k.split(":").slice(2).join(":")));
   for (const p of rec.parlays) {
     const legs = p.legs.map(l => ({...l, q: mkts[l.ticker] ? priced(mkts[l.ticker], l.side) : null}));
     if (legs.some(l => !l.q)) continue;
@@ -308,7 +313,7 @@ export function parlayAlerts(rec, mkts) {
       for (const l of legs) {
         if (!l.q.result) continue;
         const key = `leg:${p.id}:${l.ticker}:${l.side}`;
-        if (rec.sent[key]) continue;
+        if (rec.sent[key] || legSent.has(`${l.ticker}:${l.side}`) || !settledLately(mkts[l.ticker], now)) continue;
         const what = l.label || l.q.pick;
         const rest = lost.length ? "The parlay is done." : won === legs.length ? "Every leg hit." :
           `${won} of ${legs.length} in${chance != null ? `, about ${pct(chance)} to hit now` : ""}.`;
@@ -330,6 +335,12 @@ export function parlayAlerts(rec, mkts) {
   return {out, update};
 }
 
+// when Kalshi settled a market; a market without a time (older feeds, tests) counts as just settled
+export function settledLately(m, now) {
+  const t = Date.parse((m && (m.settlement_ts || m.close_time)) || "");
+  return !isFinite(t) || now - t <= LEG_FRESH_H * 3600e3;
+}
+
 // ---------- the checker ----------
 async function loadRec(env, hash) {
   const r = await env.USERS.get(`alerts:${hash}`, "json");
@@ -341,7 +352,11 @@ function normal(r) {
     sends: r.sends || 0, sendDay: r.sendDay || "", savedAt: r.savedAt || 0};
 }
 
-export async function run(env, {fetcher = fetch, now = Date.now(), sender = send} = {}) {
+// The edge cache remembers each alert sent, beside the KV record. KV reads can lag a write by a minute, and a failed
+// write loses the "sent" marks, so a leg that stays won would otherwise go out on every run.
+const memoReq = (h, key) => new Request(`${SITE}/__alerts_sent/${h}/${encodeURIComponent(key)}`);
+
+export async function run(env, {fetcher = fetch, now = Date.now(), sender = send, memo = null} = {}) {
   const idx = (await env.USERS.get(INDEX, "json")) || {users: []};
   const people = [];
   for (const h of idx.users || []) {
@@ -400,7 +415,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
   const day = new Date(now).toISOString().slice(0, 10);
   let indexChanged = false;
   for (const {h, rec} of people) {
-    const targets = targetAlerts(rec, mkts, now), parlays = parlayAlerts(rec, mkts);
+    const targets = targetAlerts(rec, mkts, now), parlays = parlayAlerts(rec, mkts, now);
     const live = [];
     for (const g of liveOf[h]) {
       const evs = events[`${g.sport}:${g.espn_id}`];
@@ -413,12 +428,16 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
         live.push({...m, tag: m.key, live: true});
       }
     }
-    const legs = rec.prefs.live.legs ? trackedLegs(users[h], mkts, priced, now, rec.sent)
+    const legs = rec.prefs.live.legs ? trackedLegs(users[h], mkts, priced, now, rec.sent, m => settledLately(m, now))
       .filter(m => !parlays.out.some(x => x.key && x.key.split(":").slice(2).join(":") === m.key.split(":").slice(2).join(":"))) : [];
     let due = [...live, ...legs, ...targets.out, ...parlays.out,
       ...(rec.prefs.lab ? labAlerts(rec, status) : []),
       ...pickAlerts(rec, decisions, games, now),
       ...(rec.prefs.moves ? moveAlerts(rec, follows[h], mkts, then, now) : [])];
+    // already sent, as the edge cache remembers it: not again, and the mark goes back into KV
+    const memoHit = [];
+    if (memo) due = (await Promise.all(due.map(async m => (m.key && await memo.match(memoReq(h, m.key)).catch(() => null) ? (memoHit.push(m), null) : m))))
+      .filter(Boolean);
     if (isQuiet(rec.prefs, now)) due = [];     // quiet hours: what's still due after goes then; live moments pass
     const sends = rec.sendDay === day ? rec.sends : 0;
     const room = Math.max(0, Math.min(PER_RUN, SENDS_PER_DAY - sends));
@@ -428,7 +447,7 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
       due = [...due.slice(0, room - 1), {key: null, tag: "devig:more", title: `${extra.length} more DeVig alerts`,
         body: extra.map(m => m.title).join(" · ").slice(0, 300), url: "/v2/", also: extra}];
     } else due = due.slice(0, room);
-    const sentKeys = [], dead = new Set();
+    const sentKeys = memoHit.map(m => [m.key, m.value ?? null]), dead = new Set();
     let count = 0;
     for (const m of due) {
       let ok = false;
@@ -442,12 +461,16 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
         if (st === 404 || st === 410) dead.add(d.endpoint);
         else if (st >= 200 && st < 300) ok = true;
       }
-      if (ok) for (const x of m.also || [m]) if (x.key) sentKeys.push([x.key, x.value ?? null]);
+      if (ok) for (const x of m.also || [m]) if (x.key) {
+        sentKeys.push([x.key, x.value ?? null]);
+        if (memo) await memo.put(memoReq(h, x.key), new Response("1", {headers: {"cache-control": `max-age=${MEMO_S}`}})).catch(() => {});
+      }
       if (ok) { report.sent++; count++; }
     }
     report.gone += dead.size;
     const removed = new Set(targets.done);
     if (!sentKeys.length && !dead.size && !removed.size && !Object.keys(parlays.update).length) continue;
+    try {
     // write onto a fresh copy so a setting saved during this run isn't lost
     const fresh = (await loadRec(env, h)) || rec;
     for (const [k, v] of sentKeys) fresh.sent[k] = [now, v];
@@ -467,8 +490,12 @@ export async function run(env, {fetcher = fetch, now = Date.now(), sender = send
     fresh.sendDay = day;
     if (!fresh.devices.length) { idx.users = idx.users.filter(x => x !== h); indexChanged = true; }
     await env.USERS.put(`alerts:${h}`, JSON.stringify(fresh));
+    } catch (e) {
+      // the sends happened; the edge cache still holds them. Said in the report so the timer logs it
+      report.errors = [...(report.errors || []), `save ${h.slice(0, 6)}: ${String((e && e.message) || e).slice(0, 120)}`];
+    }
   }
-  if (indexChanged) await env.USERS.put(INDEX, JSON.stringify(idx));
+  if (indexChanged) await env.USERS.put(INDEX, JSON.stringify(idx)).catch(e => { report.errors = [...(report.errors || []), `index: ${e}`]; });
   return report;
 }
 
@@ -492,10 +519,18 @@ export async function handle(request, env, {fetcher = fetch, now = Date.now(), s
     const lock = new Request(`${SITE}/__alerts_run_lock`), gap = env.ALERTS_RUN_KEY ? RUN_GAP_KEYED_S : RUN_GAP_S;
     if (!env.ALERTS_RUN_KEY || c) {
       if (c ? await c.match(lock) : now - memRuns.at < gap * 1000) return json({ok: true, skipped: "ran recently"});
-      if (c) await c.put(lock, new Response("1", {headers: {"cache-control": `max-age=${gap}`}}));
+      // held while the run is on (a slow run isn't overlapped by the next tick), then for what's left of the gap
+      if (c) await c.put(lock, new Response("1", {headers: {"cache-control": `max-age=${RUN_HOLD_S}`}}));
       memRuns.at = now;
     }
-    return json({ok: true, ...(await run(env, {fetcher, now, sender}))});
+    const t0 = Date.now();
+    let report;
+    try { report = await run(env, {fetcher, now, sender, memo: c}); }
+    finally {
+      const left = Math.ceil(gap - (Date.now() - t0) / 1000);
+      if (c) await (left > 0 ? c.put(lock, new Response("1", {headers: {"cache-control": `max-age=${left}`}})) : c.delete(lock)).catch(() => {});
+    }
+    return json({ok: !report.errors, ...report}, report.errors ? 500 : 200);
   }
 
   const email = await accessUser(request, env, fetcher);
