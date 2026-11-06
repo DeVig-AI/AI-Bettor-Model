@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 6 \u00b7 9:45 AM ET report",
+    "as_of": "Nov 6 \u00b7 3:45 PM ET report",
     "date": "2026-11-06",
     "not_submitted": {
      "BKN@ATL": [
@@ -15,7 +15,6 @@
       "IND"
      ],
      "HOU@PHX": [
-      "HOU",
       "PHX"
      ],
      "NYK@CLE": [
@@ -35,32 +34,10 @@
       "OKC"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-06_09_45AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-06_03_45PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "CHA",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "27 min \u00b7 13.0 pts a game = 11% of BOS's points"
-    },
-    "player": "Payton Pritchard",
-    "reason": "Right Eye Abrasion",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Questionable",
-    "team": "BOS",
-    "tip": "7:00 PM",
-    "tip_sort": "11061900"
-   },
-   "doc_id": "nba-bos-payton-pritchard"
   },
   {
    "collection": "injuries",
@@ -73,11 +50,12 @@
      "level": "some",
      "why": "29 min \u00b7 8.9 pts a game = 9% of CHA's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Moussa Diabate",
     "reason": "Right Quadriceps Tendinopathy",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "CHA",
     "tip": "7:00 PM",
     "tip_sort": "11061900"
@@ -117,11 +95,12 @@
      "level": "big",
      "why": "30 min \u00b7 10.2 pts a game = 10% of CHA's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Dennis Schroder",
     "reason": "Left Soreness",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "CHA",
     "tip": "7:00 PM",
     "tip_sort": "11061900"
@@ -623,11 +602,12 @@
      "level": "some",
      "why": "22 min \u00b7 12.0 pts a game = 10% of MIN's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Terrence Shannon Jr",
     "reason": "Left Hip Contusion",
     "sport": "NBA",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "MIN",
     "tip": "8:00 PM",
     "tip_sort": "11062000"
@@ -655,28 +635,6 @@
     "tip_sort": "11062000"
    },
    "doc_id": "nba-nop-yves-missi"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "NOP",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "33 min \u00b7 14.9 pts a game = 12% of NOP's points"
-    },
-    "player": "Trey Murphy III",
-    "reason": "Bilateral Patella Tendinopathy",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Probable",
-    "team": "NOP",
-    "tip": "8:00 PM",
-    "tip_sort": "11062000"
-   },
-   "doc_id": "nba-nop-trey-murphy"
   },
   {
    "collection": "injuries",
@@ -860,6 +818,28 @@
     "away": "TOR",
     "home": "MIL",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "6 min \u00b7 1.0 pts a game = 1% of TOR's points"
+    },
+    "player": "Kyle Anderson",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "TOR",
+    "tip": "8:00 PM",
+    "tip_sort": "11062000"
+   },
+   "doc_id": "nba-tor-kyle-anderson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TOR",
+    "home": "MIL",
+    "impact": {
      "bars": 4,
      "label": "Game changer",
      "level": "gamechanger",
@@ -919,6 +899,50 @@
     "tip_sort": "11062000"
    },
    "doc_id": "nba-tor-kawhi-leonard"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TOR",
+    "home": "MIL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "20 min \u00b7 5.2 pts a game = 4% of TOR's points"
+    },
+    "player": "Jakob Poeltl",
+    "reason": "Left Shoulder Bursitis",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Probable",
+    "team": "TOR",
+    "tip": "8:00 PM",
+    "tip_sort": "11062000"
+   },
+   "doc_id": "nba-tor-jakob-poeltl"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TOR",
+    "home": "MIL",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "32 min \u00b7 17.4 pts a game = 15% of TOR's points"
+    },
+    "player": "Immanuel Quickley",
+    "reason": "Right Hamstring Tightness/Soreness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "TOR",
+    "tip": "8:00 PM",
+    "tip_sort": "11062000"
+   },
+   "doc_id": "nba-tor-immanuel-quickley"
   },
   {
    "collection": "injuries",
@@ -1051,6 +1075,28 @@
     "tip_sort": "11062000"
    },
    "doc_id": "nba-dal-sergio-de-larrea"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UTA",
+    "home": "DAL",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "30 min \u00b7 22.7 pts a game = 20% of DAL's points"
+    },
+    "player": "Kyrie Irving",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Probable",
+    "team": "DAL",
+    "tip": "8:00 PM",
+    "tip_sort": "11062000"
+   },
+   "doc_id": "nba-dal-kyrie-irving"
   },
   {
    "collection": "injuries",
@@ -1271,8 +1317,52 @@
     "tip_sort": "11062200"
    },
    "doc_id": "nba-sac-ben-simmons"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "HOU",
+    "home": "PHX",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "23 min \u00b7 5.8 pts a game = 5% of HOU's points (last season)"
+    },
+    "player": "Steven Adams",
+    "reason": "Right Soleus Strain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "HOU",
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "11072100"
+   },
+   "doc_id": "nba-hou-steven-adams"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "HOU",
+    "home": "PHX",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "14 min \u00b7 3.2 pts a game = 3% of HOU's points"
+    },
+    "player": "Clint Capela",
+    "reason": "Right Ankle Sprain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "HOU",
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "11072100"
+   },
+   "doc_id": "nba-hou-clint-capela"
   }
  ],
- "generated_at": "2026-11-06T14:57:44Z",
- "source": "NBA official injury report (Injury-Report_2026-11-06_09_45AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-06T20:50:23Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-06_03_45PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
