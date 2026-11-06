@@ -1,0 +1,1 @@
+import{n as e}from"./props-D_D6eNtm.js";var t=e;export{t as component};

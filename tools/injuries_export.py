@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-injuries_export.py -- the app's Injuries tab (nba/, nfl/, nhl/ and stats/soccer/injuries_export.json), refreshed by a bot
+injuries_export.py -- the app's Injuries tab (nba/, nfl/, nhl/, stats/soccer/, stats/cfb/ and stats/cbb/ injuries_export.json,
+stats/soccer/injuries_leagues_export.json), refreshed by a bot
 (injuries.yml) instead of by hand, with a "game changer" scale on every player: how much his team loses if he sits.
 INFORMATION ONLY: no pick, tier or lock reads these files.
 
@@ -26,16 +27,25 @@ Game changer scale (four levels; the reason is shown next to it):
   EPL  the Premier League's own Fantasy Premier League data (status, chance of playing, news) for the next round's
        matches. Role measure again: a regular starts 60%+ of his team's matches; Big = a regular in 25%+ of the
        team's goals (goals + assists), Some = any other regular, else Minor. Players gone on loan or transfer are left
-       out. No other soccer league, and no college sport, has a free injury feed: those sports aren't listed.
+       out.
+  Other soccer leagues (La Liga, Serie A, Bundesliga, Ligue 1, the UEFA cups, MLS, Liga MX): FotMob's match pages
+       (each club's unavailable players, injury or suspension, expected return) for the board's matches in the next
+       three days (live/soccer_lines.json). Role measure from stats/soccer (ESPN box scores): a regular played in 6+ of
+       the club's last 10 matches; Big = a regular in 25%+ of its goals, Some = any other regular, else Minor.
+  CFB, CBB  Covers.com's injury pages for the board's games in the next three days (live/game_lines.json). A
+       Questionable or Probable not updated in 21 days is dropped; Out is kept. CFB role measure from stats/cfb (this
+       season): the team's main passer is Big; 25%+ of the team's rushing and receiving yards Big, 10%+ Some; 6%+ of
+       its tackles Some; else Minor. CBB has no player stats in DeVig yet, so no scale (status and reason only).
 The scale is how much is lost IF he misses the game; his status (Out / Questionable / ...) is separate.
 
 A status that changed since the previous run gets a note ("Downgraded from Questionable"). If a source can't be
 read, that sport's previous file is left unchanged.
 
-Usage:  python3 tools/injuries_export.py [--sport NBA|NFL|NHL|EPL] [--now ISO]
+Usage:  python3 tools/injuries_export.py [--sport NBA|NFL|NHL|EPL|SOCCER|CFB|CBB] [--now ISO]
 """
 import argparse
 import io
+from html import unescape as html_unescape
 import json
 import re
 import sys
@@ -54,7 +64,9 @@ from export_lineboard_nba import CODE as NBA_CODE  # noqa: E402
 
 ET = ZoneInfo("America/New_York")
 OUT = {"NBA": ROOT / "nba" / "injuries_export.json", "NFL": ROOT / "nfl" / "injuries_export.json",
-       "NHL": ROOT / "nhl" / "injuries_export.json", "EPL": ROOT / "stats" / "soccer" / "injuries_export.json"}  # app data, not the Lab's
+       "NHL": ROOT / "nhl" / "injuries_export.json", "EPL": ROOT / "stats" / "soccer" / "injuries_export.json",   # app data, not the Lab's
+       "SOCCER": ROOT / "stats" / "soccer" / "injuries_leagues_export.json",
+       "CFB": ROOT / "stats" / "cfb" / "injuries_export.json", "CBB": ROOT / "stats" / "cbb" / "injuries_export.json"}
 STATS = ROOT / "stats"
 NBA_REPORT = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{date}_{time}.pdf"
 
@@ -125,6 +137,7 @@ def write(sport, meta, rows, source):
         seen.add(i)
         docs.append({"collection": "injuries", "doc_id": i, "data": r})
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    OUT[sport].parent.mkdir(parents=True, exist_ok=True)
     OUT[sport].write_text(json.dumps({"generated_at": now, "source": source, "docs": docs}, indent=1, sort_keys=True) + "\n")
     print(f"{sport}: {len(docs) - 1} players written to {OUT[sport].relative_to(ROOT)}")
 
@@ -498,6 +511,256 @@ def run_epl(now):
           rows, "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)")
 
 
+# ================================================================ other soccer leagues (FotMob)
+
+FOTMOB = "https://www.fotmob.com/api/data/"
+BROWSER_UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"}
+SOCCER_LINES = ROOT / "live" / "soccer_lines.json"
+SOCCER_RECENT, SOCCER_REGULAR, SOCCER_BIG_SHARE = 10, 6, 0.25
+SOCCER_LEAGUES = ("LALIGA", "SERIEA", "BUND", "LIGUE1", "UCL", "UEL", "UECL", "MLS", "LIGAMX")   # the EPL has its own
+
+
+def fetch_ua(url):
+    req = urllib.request.Request(url, headers=BROWSER_UA)
+    with urllib.request.urlopen(req, timeout=30, context=NFLI.CTX) as r:
+        return r.read()
+
+
+def board_games(path, sports, now, days):
+    """The board's games (live/*.json, committed by the lines bots) in `sports` that start in the next `days` days."""
+    out = []
+    for g in json.loads(path.read_text()).get("games") or []:
+        if g.get("sport") not in sports or g.get("state", "pre") != "pre" or not g.get("kickoff"):
+            continue
+        k = datetime.fromisoformat(g["kickoff"].replace("Z", "+00:00"))
+        if now - timedelta(hours=3) <= k <= now + timedelta(days=days):
+            out.append({**g, "kick": k})
+    return out
+
+
+def soccer_role(stats, name):
+    """(appearances in the club's last 10 matches, goals + assists in them, the club's goals in them), or None. From
+    stats/soccer (ESPN box scores): a club's matches are the dates its players logged, its goals their goals."""
+    if not stats:
+        return None
+    ps = stats.get("players") or []
+    dates = sorted({r[0] for p in ps for r in p.get("log") or []}, reverse=True)[:SOCCER_RECENT]
+    if len(dates) < SOCCER_RECENT // 2:
+        return None
+    keep = set(dates)
+    team_goals = sum(r[1] for p in ps for r in p.get("log") or [] if r[0] in keep)
+    want = norm(name)
+    hit = [p for p in ps if norm(p["name"]) == want]
+    if not hit:                                              # FotMob "Vini Jr." vs ESPN "Vinícius Júnior": last name
+        last = want.split()[-1] if want else ""
+        hit = [p for p in ps if last and norm(p["name"]).split()[-1:] == [last]]
+    if len(hit) != 1:
+        return None
+    log = [r for r in hit[0].get("log") or [] if r[0] in keep]
+    return len(log), sum(r[1] + r[2] for r in log), team_goals, len(dates)
+
+
+def soccer_impact(role, code):
+    if role is None:
+        return impact("minor", "Not in DeVig's box scores for this club's recent matches")
+    apps, gi, goals, n = role
+    regular = apps >= SOCCER_REGULAR
+    share = gi / goals if goals else 0.0
+    why = f"Played in {apps} of {code}'s last {n} matches" + (f" · a goal or assist on {gi} of their {goals} goals ({share:.0%})" if gi else "")
+    return impact("big" if regular and share >= SOCCER_BIG_SHARE else "some" if regular else "minor", why)
+
+
+def fotmob_status(u):
+    kind, back = (u.get("type") or "").lower(), (u.get("expectedReturn") or "").strip()
+    if kind == "suspension":
+        return "Suspended", "Suspended"
+    if back.lower() in ("doubtful", "back in training"):
+        return "Doubtful", "Injury · " + back.capitalize()
+    return "Out", "Injury" + (f" · expected return: {back[0].lower() + back[1:]}" if back else "")
+
+
+def run_leagues(now):
+    from soccer_lines import same_team                      # the board's own club-name matching
+    games = board_games(SOCCER_LINES, set(SOCCER_LEAGUES), now, 3)
+    if not games:
+        print("Soccer leagues: no upcoming matches on the board; keeping the previous file.")
+        return
+    fm = []
+    for day in sorted({(g["kick"] + timedelta(days=d)).strftime("%Y%m%d") for g in games for d in (-1, 0)}):
+        for lg in json.loads(fetch_ua(f"{FOTMOB}matches?date={day}")).get("leagues") or []:
+            fm += lg.get("matches") or []
+    prev = previous("SOCCER")
+    rows, misses = [], []
+    for g in games:
+        names = g.get("names") or {}
+        # same kickoff (to 20 minutes) and at least one club's name: "Hamburg" / "Hamburger SV", "Cologne" / "1. FC Köln"
+        hit = next((m for m in fm if (m.get("status") or {}).get("utcTime")
+                    and abs(datetime.fromisoformat(m["status"]["utcTime"].replace("Z", "+00:00")) - g["kick"]) <= timedelta(minutes=20)
+                    and (same_team((m.get("home") or {}).get("name"), [names.get("home"), g["home"]])
+                         or same_team((m.get("away") or {}).get("name"), [names.get("away"), g["away"]]))), None)
+        if not hit:
+            misses.append(f"{g['sport']} {g['away']}@{g['home']}")
+            continue
+        lu = ((json.loads(fetch_ua(f"{FOTMOB}matchDetails?matchId={hit['id']}")).get("content") or {}).get("lineup")) or {}
+        kick = g["kick"].astimezone(ET)
+        for side, key in (("home", "homeTeam"), ("away", "awayTeam")):
+            code = g[side]
+            stats = team_stats("SOCCER", (g.get("ids") or {}).get(side, ""))
+            for p in (lu.get(key) or {}).get("unavailable") or []:
+                status, reason = fotmob_status(p.get("unavailability") or {})
+                imp = soccer_impact(soccer_role(stats, p.get("name") or ""), code)
+                row = {"sport": g["sport"], "away": g["away"], "home": g["home"], "team": code, "player": p.get("name") or "",
+                       "status": status, "reason": reason, "tip": kick.strftime("%a %-I:%M %p"),
+                       "tip_sort": kick.strftime("%m%d-%H%M"), "starter": imp["level"] != "minor", "impact": imp}
+                note = change_note(row, prev)
+                if note:
+                    row["note"] = note
+                rows.append(row)
+    if misses:
+        print(f"Soccer leagues: {len(misses)} board matches not found on FotMob: {', '.join(misses[:8])}")
+    if not rows:
+        print("Soccer leagues: FotMob listed nobody for the board's matches; keeping the previous file.")
+        return
+    now_et = now.astimezone(ET)
+    write("SOCCER", {"sport": "SOCCER", "as_of": now_et.strftime("%a %b %-d · %-I:%M %p ET"), "date": now_et.strftime("%Y-%m-%d")},
+          rows, "FotMob match pages (unavailable players); role scale from stats/soccer (tools/injuries_export.py)")
+
+
+# ================================================================ college (Covers.com)
+
+COVERS = {"CFB": "https://www.covers.com/sport/football/ncaaf/injuries",
+          "CBB": "https://www.covers.com/sport/basketball/ncaab/injuries"}
+GAME_LINES = ROOT / "live" / "game_lines.json"
+COLLEGE_STALE_DAYS = 21                    # a Questionable / Probable not updated in 3 weeks is dropped; Out is kept
+CFB_BIG_SHARE, CFB_SOME_SHARE, CFB_TACKLE_SHARE = 0.25, 0.10, 0.06
+COVERS_TEAM = re.compile(r'imgLink"[^>]*>\s*(.*?)<br>\s*<span>(.*?)</span>', re.S)
+COVERS_ROW = re.compile(r"<(?:span|a)\b([^>]*)class='player-link'[^>]*>(.*?)</(?:span|a)>\s*</td>\s*<td>(.*?)</td>\s*"
+                        r"<td><b>(.*?)</b><br>\((.*?)\)", re.S)
+
+
+def text(s):
+    return " ".join(html_unescape(re.sub(r"<[^>]+>", " ", s)).split())
+
+
+def covers_teams(page):
+    """[(location, nickname, [(name, link slug or None, pos, status text, date text)])] from a Covers injuries page."""
+    out = []
+    for b in page.split("covers-CoversSeasonInjuries-teamNameColumn")[1:]:
+        m = COVERS_TEAM.search(b)
+        if not m:
+            continue
+        rows = []
+        for attrs, name, pos, status, date in COVERS_ROW.findall(b):
+            link = re.search(r"/players/\d+/([a-z0-9-]+)", attrs)
+            rows.append((text(name), link.group(1) if link else None, text(pos), text(status), text(date)))
+        out.append((text(m.group(1)), text(m.group(2)), rows))
+    return out
+
+
+def covers_date(s, now):
+    """'Sun, Oct 18' -> that date, in the year that puts it on or before now."""
+    try:
+        d = datetime.strptime(f"{s.split(', ', 1)[-1]} {now.year}", "%b %d %Y").replace(tzinfo=ET)
+    except ValueError:
+        return None
+    return d.replace(year=d.year - 1) if d > now + timedelta(days=1) else d
+
+
+def initials_match(short, full):
+    """Covers' 'S. Maiava-Alaimalo' against a full name: same last name(s), same first initial."""
+    s, f = norm(short).split(), norm(full).split()
+    if len(s) < 2 or not f:
+        return False
+    rest = s[1:]
+    return f[0][:1] == s[0][:1] and f[-len(rest):] == rest
+
+
+def cfb_impact(stats, short, pos, code):
+    """(full name or None, impact) from stats/cfb's per-game numbers this season: a role measure, not a measured effect."""
+    ps = (stats or {}).get("players") or []
+    hit = [p for p in ps if initials_match(short, p["name"])]
+    if len(hit) != 1:
+        return None, impact("minor", "Not in this season's box scores" if not hit else "Two players on the roster match this name")
+    p = hit[0]
+    tot = lambda q, k: ((q.get("this") or {}).get(k) or 0) * ((q.get("this") or {}).get("gp") or 0)   # noqa: E731
+    att = {q["id"]: tot(q, "att") for q in ps}
+    if pos == "QB" or p.get("grp") == "QB":
+        if att.get(p["id"]) and att[p["id"]] == max(att.values()):
+            share = att[p["id"]] / (sum(att.values()) or 1)
+            return p["name"], impact("big", f"{code}'s main passer: {share:.0%} of its pass attempts this season")
+    yds = {q["id"]: tot(q, "rush_yds") + tot(q, "rec_yds") for q in ps}
+    team_yds = sum(v for v in yds.values() if v > 0)
+    share = yds[p["id"]] / team_yds if team_yds and yds[p["id"]] > 0 else 0.0
+    if share >= CFB_SOME_SHARE:
+        lv = "big" if share >= CFB_BIG_SHARE else "some"
+        return p["name"], impact(lv, f"{share:.0%} of {code}'s rushing and receiving yards this season")
+    tk = {q["id"]: tot(q, "tkl") for q in ps}
+    tshare = tk[p["id"]] / (sum(tk.values()) or 1)
+    if tshare >= CFB_TACKLE_SHARE:
+        return p["name"], impact("some", f"{tshare:.0%} of {code}'s tackles this season")
+    gp = (p.get("this") or {}).get("gp") or 0
+    return p["name"], impact("minor", f"{gp} game{'' if gp == 1 else 's'} this season, a small share of the team's yards and tackles")
+
+
+def run_college(sport, now):
+    games = board_games(GAME_LINES, {sport}, now, 3)
+    if not games:
+        print(f"{sport}: no games on the board in the next three days; keeping the previous file.")
+        return
+    by_name = {}
+    for g in games:
+        for side in ("away", "home"):
+            by_name.setdefault(norm((g.get("names") or {}).get(side, "")), (g[side], g))
+    full_names = {}
+    if sport == "CFB":
+        idx = json.loads((STATS / "cfb" / "index.json").read_text())
+        full_names = {norm(t["name"]): t["code"] for t in idx.get("teams") or []}
+    teams = covers_teams(fetch_ua(COVERS[sport]).decode("utf-8", "replace"))
+    if len(teams) < 50:
+        raise ValueError(f"Covers page had {len(teams)} teams; its layout may have changed")
+    prev = previous(sport)
+    rows, cache = [], {}
+    for loc, nick, injuries in teams:
+        scode = full_names.get(norm(f"{loc} {nick}"))         # stats/cfb's code (ESPN's: AF), the board may differ (AFA)
+        hit = by_name.get(norm(loc))
+        if not hit and scode:
+            hit = next(((scode, g) for g in games if scode in (g["away"], g["home"])), None)
+        if not hit:
+            continue                                         # no game on the board in the next three days
+        code, g = hit
+        kick = g["kick"].astimezone(ET)
+        for short, link, pos, st, date in injuries:
+            status, _, why = st.partition(" - ")
+            status = "Injured Reserve" if status.strip() == "IR" else status.strip()
+            when = covers_date(date, now)
+            if not status or (when and not re.search(r"out|reserve", status, re.I)
+                              and when < now - timedelta(days=COLLEGE_STALE_DAYS)):
+                continue
+            name, imp = short, None
+            if sport == "CFB":
+                k = scode or code
+                if k not in cache:
+                    cache[k] = team_stats("CFB", k)
+                full, imp = cfb_impact(cache[k], short, pos, code)
+                name = full or short
+            elif link:
+                name = link.replace("-", " ").title().replace("Jr", "Jr.").replace("Iii", "III").replace("Ii", "II")
+            reason = " · ".join(x for x in (pos, why.strip(), f"reported {when:%b %-d}" if when else "") if x)
+            row = {"sport": sport, "away": g["away"], "home": g["home"], "team": code, "player": name, "status": status,
+                   "reason": reason, "tip": kick.strftime("%a %-I:%M %p"), "tip_sort": kick.strftime("%m%d-%H%M"),
+                   "starter": bool(imp and imp["level"] != "minor"), "impact": imp}
+            note = change_note(row, prev)
+            if note:
+                row["note"] = note
+            rows.append(row)
+    if not rows:
+        print(f"{sport}: Covers listed nobody for the board's next games; keeping the previous file.")
+        return
+    now_et = now.astimezone(ET)
+    write(sport, {"sport": sport, "as_of": now_et.strftime("%a %b %-d · %-I:%M %p ET"), "date": now_et.strftime("%Y-%m-%d")},
+          rows, "Covers.com injury report" + ("; role scale from stats/cfb" if sport == "CFB" else "") + " (tools/injuries_export.py)")
+
+
 # ================================================================ NFL
 
 def nfl_week_games(now):
@@ -612,7 +875,8 @@ def main():
     a = ap.parse_args()
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
     failed = False
-    for sport, fn in (("NBA", run_nba), ("NFL", run_nfl), ("NHL", run_nhl), ("EPL", run_epl)):
+    for sport, fn in (("NBA", run_nba), ("NFL", run_nfl), ("NHL", run_nhl), ("EPL", run_epl), ("SOCCER", run_leagues),
+                      ("CFB", lambda n: run_college("CFB", n)), ("CBB", lambda n: run_college("CBB", n))):
         if a.sport and a.sport != sport:
             continue
         try:

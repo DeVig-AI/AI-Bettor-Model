@@ -1,0 +1,1 @@
+import{O as e}from"./index-flSzpaL4.js";var t=e;export{t as component};
