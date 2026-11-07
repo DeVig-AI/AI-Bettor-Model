@@ -16,9 +16,19 @@ export const soccerPropGames = (rows: GameRow[]) =>
 export function SoccerProps({ rows }: { rows: GameRow[] }) {
   const games = soccerPropGames(rows)
   if (!games.length) {
+    const next = rows.filter((r) => isSoccer(r.sport) && r.state === 'pre').sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))[0]
     return (
       <p className='rounded-[18px] border border-dashed p-8 text-center text-muted-foreground'>
-        No soccer player markets open right now. Kalshi opens goalscorer and assist markets a day or two before kickoff.
+        No soccer player markets open right now. Kalshi opens goalscorer and assist markets about an hour before kickoff.
+        {next && (
+          <>
+            {' '}Next match:{' '}
+            <Link to='/game/$id' params={{ id: next.id }} className='font-medium text-foreground underline underline-offset-2'>
+              {next.homeName} vs {next.awayName}
+            </Link>
+            , {leagueTag(next.sport)}, {whenFmt.format(new Date(next.kickoff))}.
+          </>
+        )}
       </p>
     )
   }

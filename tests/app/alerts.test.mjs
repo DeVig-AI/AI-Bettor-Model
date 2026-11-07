@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { b64uDecode, b64uEncode, encrypt, endpointOk, keysOk, send, vapid } from "../../functions/lib/webpush.js";
 import {
   cleanParlay, cleanPrefs, cleanTarget, followed, handle, labAlerts, labPasses, moneyline, moveAlerts, parlayAlerts,
-  pickAlerts, run, targetAlerts,
+  groupPicks, pickAlerts, run, targetAlerts,
 } from "../../functions/api/alerts.js";
 
 const te = new TextEncoder(), td = new TextDecoder();
@@ -337,4 +337,30 @@ test("parlay legs: once even when KV loses the sent mark; never hours after they
   // a leg the saved-parlay check already sent under its own id isn't sent again by the parlay alert
   const legOnly = rec({parlays: [{...P, at: null}], sent: {[`leg:abc:${L1}:yes`]: [NOW, null]}});
   assert.equal(parlayAlerts(legOnly, {[L1]: mk(L1, 0, 0, {status: "finalized", result: "yes"}), [L2]: mk(L2, 0.6, 0.62)}, NOW).out.length, 0);
+});
+
+// 2026-11-06: one alert per pregame pick was too many
+test("picks: every new pick in a sport is one alert; each game is still marked sent; one pick stays as it was", async () => {
+  const nba = (away, home, side, prob) => DEC({game_id: `nba_${away}_${home}`, sport: "NBA", away_team: away, home_team: home,
+    kickoff_time: "2026-11-01T23:30:00Z", decision: {action: "ML", side, prob, tier: "B"}});
+  const picks = pickAlerts(rec(), [nba("BOS", "CHA", "BOS", 0.62), nba("WAS", "ATL", "ATL", 0.71), nba("PHI", "CLE", "CLE", 0.55), DEC()], GAMES, NOW);
+  const g = groupPicks(picks);
+  assert.deepEqual(g.map(m => m.title), ["DeVig NBA picks: 3 games", "DeVig pick: KC to beat BUF"]);
+  assert.equal(g[0].body, "BOS over CHA 62% · ATL over WAS 71% · CLE over PHI 55%");
+  assert.deepEqual(g[0].also.map(m => m.key), ["pick:NBA:nba_BOS_CHA", "pick:NBA:nba_WAS_ATL", "pick:NBA:nba_PHI_CLE"]);
+
+  const {keys} = await vapidKeys();
+  const h = "pick77";
+  const env = {VAPID_PRIVATE_KEY: keys.privateKey, USERS: kv({"alerts:index": {users: [h]},
+    [`alerts:${h}`]: rec({prefs: cleanPrefs({tz: "America/New_York", picks: ["NBA"], moves: false, lab: false})})})};
+  const decs = [nba("BOS", "CHA", "BOS", 0.62), nba("WAS", "ATL", "ATL", 0.71)];
+  const fetcher = async url => String(url).includes("nba/lineboard_export.json")
+    ? new Response(JSON.stringify({docs: decs.map(data => ({collection: "decisions", data}))})) : new Response("{}", {status: 404});
+  const sent = [];
+  const sender = async (dev, msg) => { sent.push(msg.title); return 201; };
+  await run(env, {fetcher, now: NOW, sender});
+  await run(env, {fetcher, now: NOW + 60e3, sender});
+  assert.deepEqual(sent, ["DeVig NBA picks: 2 games"]);
+  const after = JSON.parse(env.USERS.m.get(`alerts:${h}`));
+  assert.ok(after.sent["pick:NBA:nba_BOS_CHA"] && after.sent["pick:NBA:nba_WAS_ATL"]);
 });

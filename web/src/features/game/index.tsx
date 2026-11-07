@@ -4,10 +4,9 @@ import { PriceAlert } from './price-alert'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, isSoccer, useFinals, useGames } from '@/lib/devig'
-import { useInjuries } from '@/lib/injuries'
+import { GameInjuries } from './injuries'
 import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
 import { RS_SPORTS } from '@/lib/research'
-import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
@@ -109,17 +108,12 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: (s: Side) => void }) {
 export function GamePage({ id }: { id: string }) {
   const { rows, isLoading } = useGames()
   const { finals } = useFinals()
-  const injuries = useInjuries()
   const { lines } = useProps()
   const [live, setLive] = useState<Record<string, LivePrice>>({})
   const [sheet, setSheet] = useState<{ open: boolean; side: Side }>({ open: false, side: 'home' })
   const why = (side: Side) => setSheet({ open: true, side })
   const row = rows.find((r) => r.id === id) ?? finals.find((r) => r.id === id)
 
-  const hurt = useMemo(
-    () => (row ? (injuries.data ?? []).filter((x) => x.sport === row.sport && x.away === row.away && x.home === row.home) : []),
-    [injuries.data, row]
-  )
   // this game's props: each player's main line (closest to 50/50), the most traded first
   const props = useMemo(() => {
     if (!row) return []
@@ -220,26 +214,7 @@ export function GamePage({ id }: { id: string }) {
           </section>
         )}
 
-        {hurt.length > 0 && (
-          <section aria-label='Injuries'>
-            <h2 className='mb-2 px-1 font-display text-[22px] font-extrabold'>Injuries</h2>
-            <ul className='flex flex-col gap-1.5'>
-              {hurt.map((x) => (
-                <li key={x.team + x.player} className='flex items-start justify-between gap-3 rounded-2xl bg-card px-4 py-2.5'>
-                  <span className='min-w-0'>
-                    <span className='font-semibold'>{x.player}</span> <span className='text-sm text-muted-foreground'>{x.team}</span>
-                    {x.impact?.why && <span className='block text-xs text-muted-foreground'>{x.impact.why}</span>}
-                  </span>
-                  <span className='shrink-0 text-end'>
-                    <span className={cn('block text-sm font-bold', /out/i.test(x.status) ? 'text-bad' : 'text-[#F5C77A]')}>{x.status}</span>
-                    {x.impact?.label && <span className='text-xs text-muted-foreground'>{x.impact.label} impact</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className='mt-1.5 px-1 text-xs text-muted-foreground'>{row.sport === 'NFL' ? "DeVig's NFL Model 2.0 counts who's out" : `DeVig's ${row.sport} model doesn't read injuries`}; Kalshi&apos;s price may already include them.</p>
-          </section>
-        )}
+        <GameInjuries row={row} />
 
         {props.length > 0 && (
           <section aria-label='Player props'>

@@ -15,7 +15,7 @@ const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'nu
 const pct = (p: number) => `${Math.round(p * 100)}%`
 const NO_LIVE: LivePrefs = { start: false, half: false, lead: false, plays: false, winner: false, final: false, legs: false }
 const LIVE_ROWS: { k: keyof LivePrefs; title: string; sub: string }[] = [
-  { k: 'start', title: 'Game starting', sub: 'At kickoff or tip-off.' },
+  { k: 'start', title: 'Game starting', sub: 'At kickoff or tip-off. Games starting together come as one alert.' },
   { k: 'half', title: 'Halftime score', sub: 'The score at the break.' },
   { k: 'lead', title: 'Lead changes', sub: 'When the other team goes ahead. Basketball and hockey only ping late in the game.' },
   { k: 'plays', title: 'Big plays', sub: 'Touchdowns, field goals, interceptions, fumbles, safeties, and 10–0 basketball runs.' },
@@ -121,7 +121,7 @@ export function Alerts({ joined }: { joined: boolean }) {
         {/* five sports don't fit beside the text on a phone, so the buttons go under it */}
         <div className='border-b px-4 py-3'>
           <p className='font-semibold'>New DeVig picks</p>
-          <p className='text-xs leading-relaxed text-muted-foreground'>When a pick locks: NFL and NBA about an hour before the start, college games 6 hours before.</p>
+          <p className='text-xs leading-relaxed text-muted-foreground'>One alert per sport when its picks lock, with every game in it: NFL and NBA about an hour before the start, college games 6 hours before.</p>
           <div className='mt-2.5 flex flex-wrap gap-1.5' role='group' aria-label='Sports for pick alerts'>
             {PICK_SPORTS.map((s) => {
               const sel = data.prefs.picks.includes(s)

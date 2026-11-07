@@ -14,6 +14,7 @@ import { PriceAlert } from './price-alert'
 import { SoccerChart } from './soccer-chart'
 import { DevigSoccer } from './soccer-devig'
 import { SoccerStreaks } from '../props/streaks'
+import { GameInjuries } from './injuries'
 
 // A soccer match: the big plate, Kalshi's three outcomes, the goals markets (total goals, both teams to score, winning
 // margin), players on a 10-match streak at one of Kalshi's lines (../props/streaks.tsx), the rest of Kalshi's markets (players, correct score, halves, team goals, corners: soccer-markets.tsx), what has happened (goals, cards, substitutions, match stats, line-ups) and each team's form in its league.
@@ -342,7 +343,7 @@ export function SoccerGame({ row }: { row: GameRow }) {
         <PriceAlert row={row} />
         <DevigSoccer row={row} />
         {row.state === 'pre'
-          ? <><Goals row={row} /><SoccerStreaks row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
+          ? <><Goals row={row} /><GameInjuries row={row} /><SoccerStreaks row={row} /><SoccerMarkets row={row} m={row.soccer?.more} /><Match row={row} /></>
           : <><SoccerChart row={row} /><Match row={row} /><Goals row={row} />{row.state === 'in' && <SoccerStreaks row={row} />}<SoccerMarkets row={row} m={row.soccer?.more} /></>}
         <Form row={row} />
       </main>
