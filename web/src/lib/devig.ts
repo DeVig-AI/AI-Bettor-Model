@@ -88,6 +88,12 @@ export type SideInputs = {
   winpct_last10: number | null
   rest_days: number | null
   back_to_back: boolean | null
+  // NBA Model C + injuries only: share of the team's minutes (last 10 games) listed out/doubtful, and questionable,
+  // on the official injury report at lock
+  minutes_out_pct?: number | null
+  minutes_q_pct?: number | null
+  top_player_out?: boolean
+  injury_report?: boolean
 }
 export type ModelInputs = {
   model_version: string

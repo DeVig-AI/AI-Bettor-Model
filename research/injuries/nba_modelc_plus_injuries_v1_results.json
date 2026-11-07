@@ -1,0 +1,85 @@
+{
+ "prereg": "research/injuries/NBA_MODELC_PLUS_INJURIES_V1_PREREG.md",
+ "verdict": "better",
+ "pooled": {
+  "games": 3693,
+  "model_c": {
+   "log_loss": 0.6267,
+   "brier": 0.2185,
+   "accuracy": 0.6439
+  },
+  "c_plus_injuries": {
+   "log_loss": 0.6188,
+   "brier": 0.2149,
+   "accuracy": 0.6575
+  },
+  "ll_diff": -0.00792,
+  "ll_diff_95": [
+   -0.01175,
+   -0.00406
+  ]
+ },
+ "seasons_lower": "3 of 3",
+ "by_season": {
+  "2024": {
+   "games": 1231,
+   "model_c": {
+    "log_loss": 0.64,
+    "brier": 0.2245,
+    "accuracy": 0.632
+   },
+   "c_plus_injuries": {
+    "log_loss": 0.6331,
+    "brier": 0.2215,
+    "accuracy": 0.6458
+   }
+  },
+  "2025": {
+   "games": 1231,
+   "model_c": {
+    "log_loss": 0.6244,
+    "brier": 0.2173,
+    "accuracy": 0.6564
+   },
+   "c_plus_injuries": {
+    "log_loss": 0.618,
+    "brier": 0.2145,
+    "accuracy": 0.6539
+   }
+  },
+  "2026": {
+   "games": 1231,
+   "model_c": {
+    "log_loss": 0.6158,
+    "brier": 0.2137,
+    "accuracy": 0.6434
+   },
+   "c_plus_injuries": {
+    "log_loss": 0.6052,
+    "brier": 0.2088,
+    "accuracy": 0.6726
+   }
+  }
+ },
+ "coefficients_last_fit": {
+  "home_trail10_ppg": 0.3895,
+  "home_trail10_papg": -0.3912,
+  "away_trail10_ppg": -0.3409,
+  "away_trail10_papg": 0.3316,
+  "home_rest_days": -0.0172,
+  "away_rest_days": -0.0066,
+  "home_b2b": -0.1697,
+  "away_b2b": 0.1076,
+  "d_out": -0.2522,
+  "d_q": -0.0506,
+  "d_top": -0.0126
+ },
+ "coverage": {
+  "games_all_seasons": 4935,
+  "games_with_report": 4829,
+  "players_listed_not_probable": 41635,
+  "matched_to_box": 27653,
+  "match_rate": 0.664,
+  "test_games_with_injury_diff": 3545
+ }
+}

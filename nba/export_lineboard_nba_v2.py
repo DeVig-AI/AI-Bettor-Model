@@ -36,6 +36,10 @@ SLOT = "NBA.ml"
 NAMES = {"devig": "DeVig Model C", "blotny": "Blotny NBA (MIT, outside model)", "market": "Kalshi's price"}
 
 ML_TOP25, ML_TOP50 = 0.6830, 0.6083
+# Model C + injuries (nba_live_tracker_lock_v2.py, the app's pick since CHAMPION_CHALLENGER_V5): its own cutoffs, from
+# its walk-forward test games (research/injuries/nba_modelc_plus_injuries_v1_build.py)
+V2 = "NBA_MODEL_C_INJ_V1_LIVE"
+V2_TIERS = json.loads((SCRIPT_DIR / "nba_v2_tiers.json").read_text())
 RECENT_DAYS = 5
 
 # full team names in the tracker -> the codes the app uses (TEAM_COLORS.NBA in tools/devig_source.html)
@@ -107,6 +111,8 @@ def main():
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     grades = {r["pick_id"]: r for r in conn.execute("SELECT * FROM grades")}
+    has_inj = conn.execute("SELECT 1 FROM sqlite_master WHERE name='injury_inputs'").fetchone()
+    injuries = {r["event_id"]: r for r in conn.execute("SELECT * FROM injury_inputs")} if has_inj else {}
     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     window_start = (datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)).isoformat()
 
@@ -117,10 +123,14 @@ def main():
         gid = str(r["event_id"])
         home, away = code(r["home_team"]), code(r["away_team"])
         p_home = r["model_prob_home"]
+        v2 = r["model_version"] == V2
+        own_cuts = V2_TIERS if v2 else None           # DeVig's own model's cutoffs (Model C's are the defaults)
         shown, cuts, label, beside = app_model(r["kickoff_time"], slot)
         theirs = locks.get((gid, zulu(r["lock_timestamp_utc"])), {})
         if shown != "devig" and theirs.get(shown) is None:
             shown, cuts, label, beside = "devig", None, None, None     # no lock from that model for this game
+        if shown == "devig":
+            cuts = own_cuts
         compare = None
         if shown != "devig":
             mine = p_home
@@ -132,7 +142,7 @@ def main():
             if b_p is not None:
                 b_side = home if b_p >= 0.5 else away
                 b_wp = max(b_p, 1 - b_p)
-                b_t = tier(b_wp) if beside == "devig" else None
+                b_t = tier(b_wp, own_cuts) if beside == "devig" else None
                 compare = {"model": beside, "name": NAMES.get(beside, beside), "side": b_side, "prob": b_wp,
                            "tier": b_t, "action": "ML" if b_t else "PASS"}
         side = home if p_home >= 0.5 else away
@@ -146,7 +156,11 @@ def main():
         model = {"available": True, "status": "locked", "winner_prob": wp, "winner_side": side,
                  "source_snapshot_time": r["lock_timestamp_utc"],
                  "note": (f"Locked pregame by the tracker ({r['model_version']}): points scored/allowed over the last 10 "
-                          f"games, rest days and back-to-backs. Odds from {book}.")}
+                          f"games, rest days and back-to-backs"
+                          + (", plus the official injury report (minutes of players listed out, doubtful or questionable)"
+                             if v2 else "") + f". Odds from {book}.")}
+        if v2 and shown == "devig":
+            model["tiers"] = own_cuts
         if shown != "devig":
             cut_note = (f" Its confidence cutoffs ({cuts['top25']:.3f} / {cuts['top50']:.3f}) come from its entry games."
                         if cuts else "")
@@ -174,6 +188,8 @@ def main():
                         decision={"action": "ML" if t else "PASS", "prob": wp, "side": side if t else None, "tier": t},
                         market_snapshot={"moneyline_home": num(mh), "moneyline_away": num(ma)},
                         outcome=outcome, spread_read=None, teaser_signal=None)
+        if own_cuts and shown == "devig":
+            decision["decision"]["bar"] = own_cuts["top50"]       # the app's pick bar for this model (PICK_BAR is Model C's)
         if shown != "devig":
             decision.update(model_key=shown, model_label=label, compare=compare)
         else:
@@ -181,11 +197,18 @@ def main():
             def dec(x, nd):                           # num() rounds to whole numbers; inputs keep their decimals
                 return None if x is None else round(float(x), nd)
 
+            inj = injuries.get(gid)
+
             def side_in(prefix):
                 b2b = r[f"{prefix}_b2b"]
-                return {"ppg_last10": dec(r[f"{prefix}_trail10_ppg"], 1), "papg_last10": dec(r[f"{prefix}_trail10_papg"], 1),
-                        "winpct_last10": dec(r[f"{prefix}_trail10_winpct"], 3), "rest_days": dec(r[f"{prefix}_rest_days"], 1),
-                        "back_to_back": None if b2b is None else bool(b2b)}
+                d = {"ppg_last10": dec(r[f"{prefix}_trail10_ppg"], 1), "papg_last10": dec(r[f"{prefix}_trail10_papg"], 1),
+                     "winpct_last10": dec(r[f"{prefix}_trail10_winpct"], 3), "rest_days": dec(r[f"{prefix}_rest_days"], 1),
+                     "back_to_back": None if b2b is None else bool(b2b)}
+                if inj is not None:                   # the locked shares are x5 (a lineup); the app shows % of minutes
+                    d.update(minutes_out_pct=dec(inj[f"{prefix}_out"] / 5, 3), minutes_q_pct=dec(inj[f"{prefix}_q"] / 5, 3),
+                             top_player_out=bool(inj[f"{prefix}_top_out"]),
+                             injury_report=inj["report_url"] is not None)
+                return d
             decision["inputs"] = {"model_version": r["model_version"], "home": side_in("home"), "away": side_in("away"),
                                   "market_prob_home_at_lock": dec(r["market_prob_home_devigged"], 4), "market_book": book}
         for coll, data in (("slate", slate), ("decisions", decision)):

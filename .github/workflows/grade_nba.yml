@@ -24,7 +24,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install certifi pandas numpy scikit-learn
+        run: pip install certifi pandas numpy scikit-learn pdfplumber
 
       - name: Put the season files where the scripts expect them
         run: ln -sfn "$GITHUB_WORKSPACE/nba" "$GITHUB_WORKSPACE/data"
@@ -62,10 +62,24 @@ jobs:
             exit $rc
           fi
 
-      - name: Lock picks
+      # Model C + injuries (CHAMPION_CHALLENGER_V5_PREREG.md) reads each team's last 10 box scores from ESPN; finished
+      # games never change, so they are kept between runs
+      - name: Restore ESPN box scores
+        if: steps.odds.outputs.have_games == 'true'
+        uses: actions/cache@v4
+        with:
+          path: nba/espn_raw_nba/summary
+          key: nba-summary-${{ github.run_id }}
+          restore-keys: nba-summary-
+
+      - name: Check the live injury-report reader against the tested one
+        if: steps.odds.outputs.have_games == 'true'
+        run: python3 -m unittest -v tests/tools/test_nba_injury_parsers.py
+
+      - name: Lock picks (Model C + injuries, game-day games only)
         if: steps.odds.outputs.have_games == 'true'
         working-directory: nba
-        run: python3 nba_live_tracker_lock.py --odds live/NBA_ODDS_LIVE.csv
+        run: python3 nba_live_tracker_lock_v2.py --odds live/NBA_ODDS_LIVE.csv
 
       - name: Export the app's NBA games (locked picks and results)
         if: always()
