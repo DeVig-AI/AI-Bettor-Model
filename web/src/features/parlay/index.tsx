@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Check, X } from 'lucide-react'
+import { ArrowUpRight, Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { type Leg, decimal, legRead, slipMath, useSlip } from '@/lib/parlay'
 import { SaferSwap } from './safer'
@@ -26,7 +26,7 @@ import { LegBar } from '@/components/leg-bar'
 import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
-import { kalshiTeam, mlLeg } from './legs'
+import { kalshiBuy, kalshiTeam, mlLeg } from './legs'
 import { type TrackedLeg, saveParlay, trackedParlays, useTracked } from '@/lib/track'
 import { LinkReader } from '../check-bet/link-reader'
 import { YourParlays } from '../history/parlays'
@@ -365,6 +365,8 @@ function SlipCard() {
         </p>
       </div>
 
+      <OnKalshi legs={legs} />
+
       <label className='flex items-center gap-3 px-1 text-sm text-muted-foreground'>
         Stake $
         <Input inputMode='decimal' value={stake} onChange={(e) => setStake(e.target.value)} className='h-10 w-24 rounded-xl' />
@@ -374,6 +376,38 @@ function SlipCard() {
         Uses each leg&apos;s own Kalshi price with its fee. A combo bought as one ticket on Kalshi is priced by Kalshi and may differ.
       </p>
     </section>
+  )
+}
+
+// Each leg's Kalshi buy link, Yes or No already picked: tap, put the money in, submit on Kalshi
+function OnKalshi({ legs }: { legs: Leg[] }) {
+  const now = Date.now()
+  const links = legs.map((l) => ({ l, b: Date.parse(l.kickoff) > now ? kalshiBuy(l) : null }))
+  if (!links.some((x) => x.b)) return null
+  return (
+    <div className='flex flex-col gap-2 rounded-[18px] bg-card p-4'>
+      <h3 className='font-display text-lg font-extrabold'>Bet it on Kalshi</h3>
+      <p className='text-sm leading-relaxed text-muted-foreground'>
+        Each button opens that leg on Kalshi with {links.length > 1 ? 'its side' : 'the side'} already picked. You put in the money and submit there.
+        {links.length > 1 && <> Kalshi can&apos;t take a whole parlay from a link, so to bet them as one ticket, add each leg to a combo on Kalshi.</>}
+      </p>
+      <ul className='flex flex-col'>
+        {links.map(({ l, b }) => (
+          <li key={l.id} className='flex min-h-12 items-center gap-3 border-t py-1.5 first:border-t-0'>
+            <span className='min-w-0 flex-1'>
+              <span className='block truncate text-sm font-semibold'>{l.label}</span>
+              <span className='block truncate text-xs text-muted-foreground'>{b ? `Buy ${b.side === 'yes' ? 'Yes' : 'No'} · ${l.game}` : 'Game started or no Kalshi market'}</span>
+            </span>
+            {b && (
+              <a href={b.url} target='_blank' rel='noopener noreferrer' aria-label={`Open ${l.label} on Kalshi`}
+                className='flex h-9 shrink-0 items-center gap-1 rounded-full bg-devig px-3.5 text-sm font-bold text-devig-ink'>
+                Kalshi <ArrowUpRight className='size-4' aria-hidden='true' />
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
