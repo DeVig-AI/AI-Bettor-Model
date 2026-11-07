@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 7 \u00b7 2:02 AM ET \u00b7 Week 9",
+    "as_of": "Sat Nov 7 \u00b7 8:55 AM ET \u00b7 Week 9",
     "date": "2026-11-07",
     "sport": "NFL"
    },
@@ -3447,30 +3447,6 @@
     "confirmed": true,
     "home": "WAS",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Treylon Burks",
-    "reason": "WR \u00b7 Foot",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "WAS",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-was-treylon-burks"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LA",
-    "confirmed": true,
-    "home": "WAS",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -3487,6 +3463,30 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-was-dyami-brown"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LA",
+    "confirmed": true,
+    "home": "WAS",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Treylon Burks",
+    "reason": "WR \u00b7 Foot",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "WAS",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nfl-was-treylon-burks"
   },
   {
    "collection": "injuries",
@@ -3581,6 +3581,6 @@
    "doc_id": "nfl-was-laremy-tunsil"
   }
  ],
- "generated_at": "2026-11-07T07:02:23Z",
+ "generated_at": "2026-11-07T13:55:43Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
