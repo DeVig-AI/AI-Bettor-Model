@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-07T10:26:59+00:00",
+ "updated": "2026-11-07T16:54:31+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -22,6 +22,30 @@
  ],
  "picks": [
   {
+   "id": "401909944",
+   "date": "2026-11-07",
+   "start": "2026-11-08T03:00Z",
+   "game": "SA @ POR",
+   "home": "POR",
+   "away": "SA",
+   "home_id": "22",
+   "away_id": "24",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "SA",
+   "line": -5.5,
+   "score": 2.5,
+   "why_for": [
+    "Second night of a back-to-back, both on the road",
+    "Line tell: the line rates SA 8.0 points better than results so far",
+    "POR: Second night of a back-to-back",
+    "POR: Ja Morant (16 points a game) is out"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401909940",
    "date": "2026-11-07",
    "start": "2026-11-08T01:00Z",
@@ -30,7 +54,7 @@
    "away": "NY",
    "home_id": "5",
    "away_id": "18",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -44,30 +68,6 @@
    "why_opp": []
   },
   {
-   "id": "401909941",
-   "date": "2026-11-07",
-   "start": "2026-11-08T01:00Z",
-   "game": "WSH @ OKC",
-   "home": "OKC",
-   "away": "WSH",
-   "home_id": "25",
-   "away_id": "27",
-   "book": "Draft Kings",
-   "result": null,
-   "final": null,
-   "type": "side",
-   "pick": "OKC",
-   "line": -11.5,
-   "score": 4.25,
-   "why_for": [
-    "Second night of a back-to-back (last night was a blowout, so starters may have rested)",
-    "Line tell: the line rates OKC 6.3 points better than results so far",
-    "WSH: Second night of a back-to-back, both on the road",
-    "WSH: Anthony Davis (23 points a game) is out"
-   ],
-   "why_opp": []
-  },
-  {
    "id": "401909939",
    "date": "2026-11-07",
    "start": "2026-11-08T00:30Z",
@@ -76,12 +76,12 @@
    "away": "BKN",
    "home_id": "1",
    "away_id": "17",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
    "pick": "BKN",
-   "line": 6.5,
+   "line": 7.5,
    "score": 3.0,
    "why_for": [
     "ATL: Second night of a back-to-back",
@@ -98,7 +98,7 @@
    "away": "DEN",
    "home_id": "11",
    "away_id": "7",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -475,21 +475,19 @@
    "note": null,
    "side": {
     "lean": "SA",
-    "score": 1.5,
+    "score": 2.5,
     "capped": false,
     "why_for": [
      "Second night of a back-to-back, both on the road",
-     "Line tell: the line rates SA 9.0 points better than results so far",
+     "Line tell: the line rates SA 8.0 points better than results so far",
      "POR: Second night of a back-to-back",
      "POR: Ja Morant (16 points a game) is out"
     ],
-    "why_opp": [
-     "POR: Fade the line move: POR went from +4.5 to +6.5"
-    ]
+    "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 227.5,
+    "line": 226.5,
     "score": 1.5,
     "why_for": [
      "Both teams on a back-to-back: tired defenses mean points"
@@ -516,10 +514,10 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 221.5,
+    "line": 223.5,
     "score": 1.5,
     "why_for": [
-     "Pace: their games average 230 points, the total is 221.5"
+     "Pace: their games average 230 points, the total is 223.5"
     ],
     "why_opp": []
    }
@@ -535,17 +533,18 @@
    "away_id": "19",
    "note": null,
    "side": {
-    "lean": "GS",
-    "score": 1.5,
+    "lean": null,
+    "score": 0.0,
     "capped": false,
     "why_for": [
-     "ORL: Paolo Banchero (24 points a game) is out"
+     "Paolo Banchero (24 points a game) is out",
+     "Line tell: the line rates ORL 4.1 points better than results so far"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 221.5,
+    "line": 222.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -573,10 +572,11 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 224.5,
-    "score": 0.5,
+    "line": 222.5,
+    "score": 1.5,
     "why_for": [
-     "CLE on tired legs (back-to-back)"
+     "CLE on tired legs (back-to-back)",
+     "Buy low on the dropping total: 225.5 to 222.5"
     ],
     "why_opp": []
    }
@@ -593,19 +593,20 @@
    "note": null,
    "side": {
     "lean": "OKC",
-    "score": 4.25,
-    "capped": false,
+    "score": 1.25,
+    "capped": true,
     "why_for": [
      "Second night of a back-to-back (last night was a blowout, so starters may have rested)",
-     "Line tell: the line rates OKC 6.3 points better than results so far",
-     "WSH: Second night of a back-to-back, both on the road",
-     "WSH: Anthony Davis (23 points a game) is out"
+     "Jalen Williams (14 points a game) is out",
+     "Line tell: the line rates OKC 7.3 points better than results so far",
+     "Never lay 12 or more",
+     "WSH: Second night of a back-to-back, both on the road"
     ],
     "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 220.5,
+    "line": 222.5,
     "score": 1.5,
     "why_for": [
      "Both teams on a back-to-back: tired defenses mean points"
@@ -634,13 +635,15 @@
     "why_opp": []
    },
    "total": {
-    "lean": "OVER",
-    "line": 226.5,
+    "lean": "UNDER",
+    "line": 227.5,
     "score": 0.5,
     "why_for": [
-     "ATL on tired legs (back-to-back)"
+     "Fade the inflated total: 224.5 to 227.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "ATL on tired legs (back-to-back)"
+    ]
    }
   },
   {
@@ -665,7 +668,7 @@
    },
    "total": {
     "lean": null,
-    "line": 229.5,
+    "line": 228.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []

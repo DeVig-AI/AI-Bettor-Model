@@ -1,28 +1,70 @@
 {
- "generated_at": "2026-11-07T10:26:58Z",
+ "generated_at": "2026-11-07T16:54:29Z",
  "slot": "SOCCER.ml",
  "champion": "devigsoccer",
  "model": "soccer-v1",
  "rule": "CHAMPION_CHALLENGER_V4_PREREG.md",
  "note": "Locked at the last hourly run before kickoff; 90-minute result; log loss of the chance given to what happened (lower is better). New, not proven: nothing is bet.",
  "devig": {
-  "games": 5,
-  "log_loss": 1.0088,
-  "picked_right": 0.6
+  "games": 7,
+  "log_loss": 1.0197,
+  "picked_right": 0.5714
  },
  "shared": {
   "devig": {
-   "games": 5,
-   "log_loss": 1.0088,
-   "picked_right": 0.6
+   "games": 7,
+   "log_loss": 1.0197,
+   "picked_right": 0.5714
   },
   "kalshi": {
-   "games": 5,
-   "log_loss": 0.87,
-   "picked_right": 0.8
+   "games": 7,
+   "log_loss": 0.9347,
+   "picked_right": 0.5714
   }
  },
  "recent": [
+  {
+   "game_id": "401882812",
+   "league": "LALIGA",
+   "kickoff": "2026-11-07T13:00Z",
+   "home_name": "M\u00e1laga",
+   "away_name": "Racing Santander",
+   "result": [
+    1,
+    2
+   ],
+   "model": [
+    0.429,
+    0.2651,
+    0.3059
+   ],
+   "kalshi": [
+    0.4,
+    0.275,
+    0.325
+   ]
+  },
+  {
+   "game_id": "401878758",
+   "league": "EPL",
+   "kickoff": "2026-11-07T12:30Z",
+   "home_name": "Leeds United",
+   "away_name": "Tottenham Hotspur",
+   "result": [
+    1,
+    0
+   ],
+   "model": [
+    0.4028,
+    0.2831,
+    0.3141
+   ],
+   "kalshi": [
+    0.3433,
+    0.2836,
+    0.3731
+   ]
+  },
   {
    "game_id": "401882809",
    "league": "LALIGA",
