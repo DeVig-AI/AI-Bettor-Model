@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { shareImage } from '@/lib/share-image'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { Share2 } from 'lucide-react'
+import { Check, Plus, Share2 } from 'lucide-react'
+import { useSlip } from '@/lib/parlay'
+import { propLeg } from '../parlay/legs'
 import { type GameRow, isSoccer } from '@/lib/devig'
 import { type LivePrice, type PropLine, fetchLiveProps, overTxt } from '@/lib/props'
 import { type RsIndex, type RsTeam, gameCode, logIdx, rsIndexQuery, statsCode, teamColor, useRsTeam } from '@/lib/research'
@@ -34,7 +36,7 @@ function useStreakSummary() {
   })
 }
 
-export type StreakRow = Streak<PropLine> & { k: number }
+export type StreakRow = Streak<PropLine> & { k: number; lv?: LivePrice | null }
 
 // Kalshi's live price, asked once for the streaks found; the price they were found at until it answers
 function useLiveRows(found: Streak<PropLine>[]) {
@@ -54,7 +56,7 @@ function useLiveRows(found: Streak<PropLine>[]) {
   const rows: StreakRow[] = useMemo(() => found.map((s) => {
     const lv = s.l.ticker ? live[s.l.ticker] : undefined
     const k = lv && lv.bid != null && lv.ask != null && lv.bid > 0 && lv.ask < 1 && lv.bid <= lv.ask ? (lv.bid + lv.ask) / 2 : s.mid
-    return { ...s, k }
+    return { ...s, k, lv: lv ?? null }
   }), [found, live])
   return { rows, at }
 }
@@ -149,6 +151,10 @@ function Row({ s, game, unit }: { s: StreakRow; game?: GameRow | null; unit: str
   const color = side && game?.colors ? game.colors[side] : null
   const label = lineTxt(s)
   const name = 'block truncate text-[15px] leading-tight font-bold'
+  const { toggle, has } = useSlip()
+  // the over on the streak line, before the game starts; soccer props don't go in parlays
+  const leg = !isSoccer(s.l.sport) && Date.parse(s.l.kickoff) > Date.now() ? propLeg(s.l, 'over', s.lv ?? { bid: s.l.bid, ask: s.l.ask, title: null }) : null
+  const on = leg ? has(leg.id) : false
   return (
     <li className='grid grid-cols-[28px_1fr_auto] items-center gap-2.5 border-t px-3.5 py-3 first:border-t-0'>
       <TeamLogo sport={s.l.sport} code={s.team} id={side ? game?.ids?.[side] : null} color={color} px={64} className='size-7 text-[9px]' />
@@ -167,6 +173,14 @@ function Row({ s, game, unit }: { s: StreakRow; game?: GameRow | null; unit: str
       <span className='text-end'>
         <span className='block font-display text-[26px] leading-none font-extrabold tabular-nums'>{s.last.length}/{s.last.length}</span>
         <span className='mt-1 inline-block text-[13px] text-muted-foreground'>Kalshi <strong className='text-foreground tabular-nums'>{Math.round(s.k * 100)}%</strong></span>
+        {leg && (
+          <button type='button' aria-pressed={on} onClick={() => toggle(leg)}
+            aria-label={on ? `Take ${s.l.player} ${label} out of the parlay` : `Add ${s.l.player} ${label} to the parlay`}
+            className={`mt-1.5 ml-auto flex min-h-8 items-center gap-1 rounded-full border px-2.5 text-[12px] font-bold transition-colors ${on ? 'border-devig bg-devig/15 text-devig' : 'text-muted-foreground hover:text-foreground'}`}>
+            {on ? <Check className='size-3.5' aria-hidden='true' /> : <Plus className='size-3.5' aria-hidden='true' />}
+            {on ? 'In parlay' : 'Parlay'}
+          </button>
+        )}
       </span>
     </li>
   )

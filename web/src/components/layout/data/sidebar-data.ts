@@ -8,7 +8,7 @@ export const sidebarData: SidebarData = {
       title: '',
       items: [
         { title: 'Games', url: '/', icon: CalendarDays },
-        { title: 'Props', url: '/props', icon: UserRound },
+        { title: 'Props', url: '/props', icon: UserRound, only: 'sidebar' },
         { title: 'Parlay', url: '/parlay', icon: Layers },
         { title: 'Record', url: '/track-record', icon: Trophy, only: 'tabs' },
         { title: 'Track record', url: '/track-record', icon: Trophy, only: 'sidebar' },
@@ -28,4 +28,4 @@ export const sidebarData: SidebarData = {
 }
 
 // the pages the More tab lists
-export const morePages = ['/fair', '/ask', '/research', '/history', '/injuries', '/models', '/about', '/friends', '/profile']
+export const morePages = ['/props', '/fair', '/ask', '/research', '/history', '/injuries', '/models', '/about', '/friends', '/profile']

@@ -9,7 +9,7 @@ app = project.targets.find { |t| t.name == 'App' } or abort('no App target')
 
 app_group = project.main_group['App'] or abort('no App group')
 shared = nil
-%w[DeVigLiveAttributes.swift DeVigLivePlugin.swift DeVigViewController.swift].each do |f|
+%w[DeVigLiveAttributes.swift DeVigLivePlugin.swift DeVigKalshiPlugin.swift DeVigViewController.swift].each do |f|
   ref = app_group.files.find { |x| x.path == f } || app_group.new_reference(f)
   app.source_build_phase.add_file_reference(ref, true)
   shared = ref if f == 'DeVigLiveAttributes.swift'

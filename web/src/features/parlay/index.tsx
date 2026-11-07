@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Check, X } from 'lucide-react'
+import { ArrowUpRight, Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
 import { type Leg, decimal, legRead, slipMath, useSlip } from '@/lib/parlay'
 import { SaferSwap } from './safer'
@@ -26,7 +26,8 @@ import { LegBar } from '@/components/leg-bar'
 import { type Side, TeamSheet } from '../games/team-sheet'
 import { type Shown, withLive } from '../props'
 import { type PropSide, PropSheet, usePropPlayer, usePropWhy } from '../props/why'
-import { kalshiTeam, mlLeg } from './legs'
+import { kalshiBuy, kalshiTeam, mlLeg } from './legs'
+import { buildCombo, comboLeg, useKalshiKey } from '@/lib/kalshi-key'
 import { type TrackedLeg, saveParlay, trackedParlays, useTracked } from '@/lib/track'
 import { LinkReader } from '../check-bet/link-reader'
 import { YourParlays } from '../history/parlays'
@@ -365,6 +366,8 @@ function SlipCard() {
         </p>
       </div>
 
+      <OnKalshi legs={legs} />
+
       <label className='flex items-center gap-3 px-1 text-sm text-muted-foreground'>
         Stake $
         <Input inputMode='decimal' value={stake} onChange={(e) => setStake(e.target.value)} className='h-10 w-24 rounded-xl' />
@@ -374,6 +377,63 @@ function SlipCard() {
         Uses each leg&apos;s own Kalshi price with its fee. A combo bought as one ticket on Kalshi is priced by Kalshi and may differ.
       </p>
     </section>
+  )
+}
+
+// Each leg's Kalshi buy link, Yes or No already picked: tap, put the money in, submit on Kalshi
+function OnKalshi({ legs }: { legs: Leg[] }) {
+  const now = Date.now()
+  const key = useKalshiKey()
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const links = legs.map((l) => ({ l, b: Date.parse(l.kickoff) > now ? kalshiBuy(l) : null }))
+  if (!links.some((x) => x.b)) return null
+  // the whole parlay as one combo: needs the Kalshi key set up in Profile (iPhone app), every leg pre-game with a market
+  const combo = key.ready && legs.length >= 2 && links.every((x) => x.b && comboLeg(x.l))
+  const send = async () => {
+    setBusy(true)
+    setErr('')
+    try { window.open(await buildCombo(legs), '_blank') } catch (e) { setErr(e instanceof Error ? e.message : String(e)) }
+    setBusy(false)
+  }
+  return (
+    <div className='flex flex-col gap-2 rounded-[18px] bg-card p-4'>
+      <h3 className='font-display text-lg font-extrabold'>Bet it on Kalshi</h3>
+      {combo && (
+        <>
+          <button type='button' disabled={busy} onClick={send}
+            className='mt-1 flex h-12 items-center justify-center gap-1.5 rounded-full bg-devig text-sm font-bold text-devig-ink disabled:opacity-60'>
+            {busy ? 'Building the combo…' : <>Open all {legs.length} legs as one Kalshi combo <ArrowUpRight className='size-4' aria-hidden='true' /></>}
+          </button>
+          {err && <p role='alert' className='text-sm font-semibold text-bad'>{err}</p>}
+          <p className='text-sm leading-relaxed text-muted-foreground'>Face ID unlocks your key, Kalshi builds the combo, and it opens ready to buy. Kalshi sets the combo&apos;s price. Or open the legs one at a time:</p>
+        </>
+      )}
+      {!combo && (
+      <p className='text-sm leading-relaxed text-muted-foreground'>
+        Each button opens that leg on Kalshi with {links.length > 1 ? 'its side' : 'the side'} already picked. You put in the money and submit there.
+        {links.length > 1 && (key.available
+          ? <> To send all of them as one combo, set up your Kalshi key in <Link to='/profile' className='font-semibold text-foreground underline underline-offset-4'>Profile</Link>.</>
+          : <> To bet them as one ticket, add each leg to a combo on Kalshi.</>)}
+      </p>
+      )}
+      <ul className='flex flex-col'>
+        {links.map(({ l, b }) => (
+          <li key={l.id} className='flex min-h-12 items-center gap-3 border-t py-1.5 first:border-t-0'>
+            <span className='min-w-0 flex-1'>
+              <span className='block truncate text-sm font-semibold'>{l.label}</span>
+              <span className='block truncate text-xs text-muted-foreground'>{b ? `Buy ${b.side === 'yes' ? 'Yes' : 'No'} · ${l.game}` : 'Game started or no Kalshi market'}</span>
+            </span>
+            {b && (
+              <a href={b.url} target='_blank' rel='noopener noreferrer' aria-label={`Open ${l.label} on Kalshi`}
+                className='flex h-9 shrink-0 items-center gap-1 rounded-full bg-devig px-3.5 text-sm font-bold text-devig-ink'>
+                Kalshi <ArrowUpRight className='size-4' aria-hidden='true' />
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
