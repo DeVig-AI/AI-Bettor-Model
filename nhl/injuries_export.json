@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 7 \u00b7 1:41 PM ET",
+    "as_of": "Sat Nov 7 \u00b7 5:40 PM ET",
     "date": "2026-11-07",
     "sport": "NHL"
    },
@@ -324,7 +324,29 @@
    "collection": "injuries",
    "data": {
     "away": "FLA",
-    "home": "WSH",
+    "home": "BOS",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "13 min a game \u00b7 7 points in 15 games = 5% of FLA's points"
+    },
+    "player": "Sandis Vilmanis",
+    "reason": "LW \u00b7 Undisclosed",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "FLA",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nhl-fla-sandis-vilmanis"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "FLA",
+    "home": "BOS",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -337,8 +359,8 @@
     "starter": false,
     "status": "Out",
     "team": "FLA",
-    "tip": "Sat 12:30 PM",
-    "tip_sort": "1107-1230"
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
    },
    "doc_id": "nhl-fla-anton-lundell"
   },
@@ -502,6 +524,28 @@
     "away": "NYR",
     "home": "SEA",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "15 min a game \u00b7 0 points in 17 games = 0% of NYR's points"
+    },
+    "player": "Alberts Smits",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "NYR",
+    "tip": "Sat 5:00 PM",
+    "tip_sort": "1107-1700"
+   },
+   "doc_id": "nhl-nyr-alberts-smits"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYR",
+    "home": "SEA",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -649,6 +693,28 @@
     "tip_sort": "1107-2000"
    },
    "doc_id": "nhl-sj-kyle-keyser"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYR",
+    "home": "SEA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+    },
+    "player": "Nikke Kokko",
+    "reason": "G",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "SEA",
+    "tip": "Sat 5:00 PM",
+    "tip_sort": "1107-1700"
+   },
+   "doc_id": "nhl-sea-nikke-kokko"
   },
   {
    "collection": "injuries",
@@ -829,28 +895,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "FLA",
-    "home": "WSH",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "19 min a game \u00b7 3 points in 9 games = 2% of WSH's points"
-    },
-    "player": "Vincent Desharnais",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "WSH",
-    "tip": "Sat 12:30 PM",
-    "tip_sort": "1107-1230"
-   },
-   "doc_id": "nhl-wsh-vincent-desharnais"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "TB",
     "home": "WPG",
     "impact": {
@@ -915,6 +959,6 @@
    "doc_id": "nhl-wpg-josh-morrissey"
   }
  ],
- "generated_at": "2026-11-07T18:41:43Z",
+ "generated_at": "2026-11-07T22:40:31Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
