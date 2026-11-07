@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useQueries } from '@tanstack/react-query'
+import { type KRead, type Saved, readLink, useSaved } from '@/lib/kalshi-link'
 import { type GameRow, useFinals, useGames } from '@/lib/devig'
 import { trackedParlays, useTracked } from '@/lib/track'
 import { type Graded, useGradedParlays } from '@/features/history/parlays'
 
 // iPhone lock-screen cards (Live Activities), in the DeVig iPhone app only. ONLY what you track gets a card: a game you
-// starred (★) and a parlay you saved. Nothing else on the board ever shows. Untracking ends the card right away.
+// starred (★), a parlay you saved, and a Kalshi bet you saved from its link. Nothing else on the board ever shows. Untracking ends the card right away.
 // A game gets its card from an hour before the start until it's final; a parlay from an hour before its first leg until
 // it hits or misses. The app sends the full list on every change and the native side starts, updates and ends cards
 // to match (at most 5). There's no push, so cards only change while DeVig is open.
@@ -97,12 +99,57 @@ function parlayItem(p: Graded, now: number): Item | null {
   }
 }
 
+// a Kalshi bet saved from its Share link (History or Parlay): on the lock screen from when it's saved until it's decided.
+// Kalshi gives no start time, only when its markets close, so an open saved bet shows the whole time it's open.
+const KALSHI_DAYS = 4 // older open saves don't come back
+function kalshiItem(s: Saved, d: KRead | undefined): Item | null {
+  if (s.outcome || !d || d.kind === 'event') return null
+  const legs = d.kind === 'combo' ? d.legs : [d.market]
+  const won = legs.filter((l) => l.result === 'won').length
+  const lost = legs.filter((l) => l.result === 'lost').length
+  const decided = lost > 0 || (legs.length > 0 && won === legs.length) || (d.kind === 'combo' && d.combo.result != null)
+  const money = (v: number) => `$${v >= 100 ? Math.round(v).toLocaleString('en-US') : Number.isInteger(v) ? v : v.toFixed(2)}`
+  const chance = d.kind === 'combo' ? (d.ticker === 'slip' ? d.multiplied : d.combo.chance ?? d.multiplied) : d.market.chance
+  const odds = chance == null || chance <= 0 ? '' : chance < 0.01 ? `about 1 in ${Math.round(1 / chance).toLocaleString('en-US')}` : `${Math.round(chance * 100)}%`
+  const what = d.kind === 'combo' ? `${legs.length}-leg ${d.ticker === 'slip' ? 'parlay' : 'Kalshi combo'}` : s.label
+  const bet = s.bet && s.bet.stake > 0 ? ` · ${money(s.bet.stake)} → ${money(s.bet.pays)}` : ''
+  return {
+    id: `kalshi:${s.link}`,
+    kind: 'parlay',
+    sport: 'Kalshi',
+    title: `${what}${bet}`,
+    awayColor: '',
+    homeColor: '',
+    state: {
+      away: '', home: '', awayScore: null, homeScore: null,
+      phase: decided ? 'post' : won > 0 ? 'in' : 'pre',
+      detail: decided ? (lost ? 'Missed' : 'Hit') : d.kind === 'combo' ? `${won} of ${legs.length} hit` : 'Open',
+      note: decided ? '' : odds ? `Kalshi's chance now: ${odds}` : '',
+      legs: legs.map((l) => (l.result ?? 'pending')),
+    },
+  }
+}
+
+function useKalshiItems(): Item[] {
+  const saved = useSaved()
+  const open = useMemo(() => {
+    const since = Date.now() - KALSHI_DAYS * 86400e3
+    return saved.filter((s) => !s.outcome && Date.parse(s.savedAt) >= since).slice(0, 5)
+  }, [saved])
+  // the same read History's card uses (shared cache), refreshed every 2 minutes while DeVig is open
+  const reads = useQueries({ queries: open.map((s) => ({ queryKey: ['kalshi-peek', s.link], queryFn: () => readLink(s.link), staleTime: 2 * 60e3, refetchInterval: 2 * 60e3, retry: 1 })) })
+  const data = reads.map((r) => r.data)
+  return useMemo(() => open.map((s, n) => kalshiItem(s, data[n])).filter((x): x is Item => !!x),
+    [open, ...data]) // eslint-disable-line react-hooks/exhaustive-deps
+}
+
 // everything that should be on the lock screen right now, live first (the native side keeps the first 5)
 export function useLockItems(): Item[] {
   const { tracked } = useTracked()
   const { rows } = useGames()
   const { finals } = useFinals()
   const parlays = useGradedParlays(useMemo(() => trackedParlays(tracked), [tracked]))
+  const kalshi = useKalshiItems()
   return useMemo(() => {
     const now = Date.now()
     const keys = tracked.g ?? {}
@@ -114,10 +161,10 @@ export function useLockItems(): Item[] {
       const it = gameItem(g, now)
       if (it) games.push(it)
     }
-    const items = [...games, ...parlays.map((p) => parlayItem(p, now)).filter((x): x is Item => !!x)]
+    const items = [...games, ...parlays.map((p) => parlayItem(p, now)).filter((x): x is Item => !!x), ...kalshi]
     const rank = { in: 0, pre: 1, post: 2 }
     return items.sort((a, b) => rank[a.state.phase] - rank[b.state.phase])
-  }, [tracked, rows, finals, parlays])
+  }, [tracked, rows, finals, parlays, kalshi])
 }
 
 // true inside the DeVig iPhone app (not Safari, not the Home Screen web app)
