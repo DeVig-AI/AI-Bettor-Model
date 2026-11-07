@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 */3 * * *'   # grade every 3 hours
     - cron: '0 15 * * *'    # lock picks once a day, 11am ET
+    - cron: '0 16 * * *'    # backup lock runs (CHAMPION_CHALLENGER_V6_PREREG.md): noon and 1pm ET, only when no lock
+    - cron: '0 17 * * *'    #   run has happened yet that day (GitHub sometimes skips a scheduled run)
   workflow_dispatch: {}      # manual run does both
 
 permissions:
@@ -36,11 +38,24 @@ jobs:
       - name: Decide whether this run locks picks
         id: mode
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "0 15 * * *" ]; then
+          # the day's first lock run locks (V6); a manual run always does. nba/NBA_LOCK_RUNS.txt lists the Eastern dates
+          # a lock run finished on.
+          today=$(TZ=America/New_York date +%F)
+          done_today=false
+          if [ -f nba/NBA_LOCK_RUNS.txt ] && grep -qx "$today" nba/NBA_LOCK_RUNS.txt; then done_today=true; fi
+          case "${{ github.event.schedule }}" in
+            '0 15 * * *'|'0 16 * * *'|'0 17 * * *') sched_lock=true ;;
+            *) sched_lock=false ;;
+          esac
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "lock=true" >> "$GITHUB_OUTPUT"
+          elif [ "$sched_lock" = true ] && [ "$done_today" = false ]; then
             echo "lock=true" >> "$GITHUB_OUTPUT"
           else
+            [ "$sched_lock" = true ] && echo "Today's ($today) lock run already happened: this backup run only grades."
             echo "lock=false" >> "$GITHUB_OUTPUT"
           fi
+          echo "today=$today" >> "$GITHUB_OUTPUT"
 
       - name: Fetch live odds (Kalshi public prices, free, no key)
         id: odds
@@ -77,9 +92,17 @@ jobs:
         run: python3 -m unittest -v tests/tools/test_nba_injury_parsers.py
 
       - name: Lock picks (Model C + injuries, game-day games only)
+        id: lock
         if: steps.odds.outputs.have_games == 'true'
         working-directory: nba
         run: python3 nba_live_tracker_lock_v2.py --odds live/NBA_ODDS_LIVE.csv
+
+      - name: Note that today's lock run happened (the backup runs then stand down)
+        if: steps.mode.outputs.lock == 'true' && steps.odds.outcome == 'success' && (steps.odds.outputs.have_games != 'true' || steps.lock.outcome == 'success')
+        run: |
+          f=nba/NBA_LOCK_RUNS.txt
+          touch "$f"
+          grep -qx "${{ steps.mode.outputs.today }}" "$f" || echo "${{ steps.mode.outputs.today }}" >> "$f"
 
       - name: Export the app's NBA games (locked picks and results)
         if: always()
@@ -92,6 +115,7 @@ jobs:
           git config user.name "sports-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           git add nba/NBA_PROSPECTIVE_TRACKER_V1.sqlite3
+          if [ -f nba/NBA_LOCK_RUNS.txt ]; then git add nba/NBA_LOCK_RUNS.txt; fi
           if [ -f nba/lineboard_export.json ]; then git add nba/lineboard_export.json; fi
           git diff --cached --quiet || git commit -m "NBA automated run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           # another bot may have pushed since checkout: rebase onto it and retry. A conflict aborts the rebase and fails the
