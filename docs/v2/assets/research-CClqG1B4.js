@@ -1,0 +1,1 @@
+import{t as e}from"./research-eCG4eoun.js";var t=e;export{t as component};

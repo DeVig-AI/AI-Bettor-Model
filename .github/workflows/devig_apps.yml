@@ -114,6 +114,7 @@ jobs:
           sed -i '' 's/customClass="CAPBridgeViewController" customModule="Capacitor"/customClass="DeVigViewController" customModule="App" customModuleProvider="target"/' "$SB"
           grep -q DeVigViewController "$SB"
           /usr/libexec/PlistBuddy -c 'Add :NSSupportsLiveActivities bool true' ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c 'Add :NSFaceIDUsageDescription string "Face ID unlocks your Kalshi key, kept only on this iPhone, to build a parlay as a Kalshi combo."' ios/App/App/Info.plist
           # iOS closes an app that opens the camera or saves a picture without saying why (Check a bet's screenshot
           # picker offers Take Photo; the share sheet offers Save Image)
           P=ios/App/App/Info.plist

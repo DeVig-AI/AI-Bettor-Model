@@ -16,6 +16,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { TeamChip } from '@/features/research'
 import { Alerts } from './alerts'
 import { LockScreen } from './lock-screen'
+import { KalshiKey } from './kalshi-key'
 import { inIPhoneApp } from '@/lib/lock-screen'
 
 // Profile: the name tag, favorite teams, and the free account that keeps them on every device.
@@ -269,6 +270,7 @@ export function Profile() {
           </p>
         )}
         {inIPhoneApp() ? <LockScreen /> : <Alerts joined={acct?.state === 'joined'} />}
+        <KalshiKey />
         <Tracking locked={locked} />
         <NameTag prefs={prefs} update={update} locked={locked} />
         <Favorites prefs={prefs} update={update} locked={locked} />
