@@ -27,6 +27,8 @@ const MARKETS = new Set(["moneyline", "spread", "total", "prop", "other"]);
 export const BOOKS = {draftkings: "DraftKings", fanduel: "FanDuel", betmgm: "BetMGM", caesars: "Caesars", espnbet: "ESPN BET",
   fanatics: "Fanatics", "hardrock": "Hard Rock Bet", bet365: "bet365", betrivers: "BetRivers", fliff: "Fliff", prizepicks: "PrizePicks", underdogfantasy: "Underdog"};
 const BOOK_HOST = new RegExp("(^|\\.)(" + Object.keys(BOOKS).join("|") + ")\\.(com|bet|app)$");
+// books' short share links (they redirect to the book's own site, which is checked again after the redirect)
+const SHORT = {"fndl.co": "fanduel"};
 const MAX_IMAGE = 3_000_000;
 
 // which book a share link is from, or null when it isn't a sportsbook link we read
@@ -35,10 +37,15 @@ export function bookOf(link) {
   try { u = new URL(String(link || "").trim()); } catch (e) { return null; }
   if (u.protocol !== "https:" || u.username || u.password || (u.port && u.port !== "443")) return null;
   const h = u.hostname.toLowerCase();
+  if (SHORT[h]) return {name: BOOKS[SHORT[h]], url: u.href};
   if (!BOOK_HOST.test(h)) return null;
   const key = Object.keys(BOOKS).find(k => h.includes(k));
   return key ? {name: BOOKS[key], url: u.href} : null;
 }
+
+// a book's own logo or banner, which its pages show as the preview when the link is wrong, expired or private:
+// not a picture of a bet (DraftKings' bad post pages show /static/DraftKings_Sportsbook_blk.png)
+export const brandImage = (src) => /\/static\/|logo|socialsharemeta|opengraph|_blk\.|default|placeholder|favicon/i.test(String(src));
 
 // the page's preview picture (og:image / twitter:image), as an absolute https URL
 export function previewImage(html, base) {
@@ -70,7 +77,7 @@ async function imageFromLink(link, fetcher) {
     html = (await r.text()).slice(0, 2_000_000);
   } catch (e) { return {error: `couldn't reach ${book.name}`, code: "link", status: 502}; }
   const src = previewImage(html, book.url);
-  if (!src) return {error: `${book.name}'s page has no picture of the bet; send a screenshot instead`, code: "noimage", status: 422};
+  if (!src || brandImage(src)) return {error: `${book.name}'s page has no picture of the bet; send a screenshot instead`, code: "noimage", status: 422};
   try {
     const r = await fetcher(src, {headers: {"user-agent": UA, accept: "image/*"}});
     const type = (r.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();

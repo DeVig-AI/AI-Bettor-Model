@@ -1,13 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { normName } from '@/lib/headshots'
-import { PACE_WORD, type Pace, pace, usualOf } from '@/lib/pace-math'
+import { PACE_WORD, type Pace, minutesOf, pace, usualOf } from '@/lib/pace-math'
 import { rsIndexQuery, useRsTeam } from '@/lib/research'
 import type { LegGame, LegInfo } from '@/lib/review'
 import { cn } from '@/lib/utils'
 import { type Raw, boxPlayers, playedShare, sideMap } from '@/lib/wrap'
 
-// A player prop mid-game: what they have against the line, with a mark where they usually are by this point of the
-// game (their last 15 games, scaled to the time played). Live from ESPN's box score. Display only.
+// A player prop mid-game: what they have against the line, with a mark where they usually are by this point (their
+// last 15 games, scaled to the minutes they've played against the minutes they usually play; the game clock when
+// there are no minutes, as in football). The bar ends at the line. Live from ESPN's box score. Display only.
+
+// box-score minutes and the game log's minutes column, by sport (football has neither)
+const MINS: Record<string, [box: string, log: string]> = { NBA: ['minutes', 'min'], WNBA: ['minutes', 'min'], CBB: ['minutes', 'min'], NHL: ['timeOnIce', 'toi'] }
 
 const dayOf = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date(iso))
 const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v >= 10 ? String(Math.round(v)) : v.toFixed(1))
@@ -34,19 +38,31 @@ export function usePropPace(i: LegInfo, game: LegGame | null, sum: Raw | null): 
   const cols = idx.data?.log_cols ?? []
   const at = Object.fromEntries(cols.map((c, n) => [c, n]))
   const me = [...(ta.data?.players ?? []), ...(th.data?.players ?? [])].find((x) => normName(x.name) === who || String(x.id) === p!.id)
-  const avg = me?.log ? usualOf(me.log, at, i.stat!.log, dayOf(game!.kickoff)) : null
-  return pace(v, Math.floor(i.strike!) + 1, i.leg.side, avg, played)
+  const day = dayOf(game!.kickoff)
+  const avg = me?.log ? usualOf(me.log, at, i.stat!.log, day) : null
+  const mk = MINS[sport]
+  let mins: { now: number | null; usual: number | null } | null = null
+  if (mk && at[mk[1]] != null && me?.log) {
+    // usual minutes: games they played in (a DNP's 0 would drag it down), last 15 before tonight
+    const ms = me.log.filter((g) => String(g[at.date]) < day).map((g) => minutesOf(g[at[mk[1]]])).filter((x): x is number => x != null && x > 0).slice(0, 15)
+    mins = { now: minutesOf(p!.s[mk[0]]), usual: ms.length >= 3 ? ms.reduce((a, b) => a + b, 0) / ms.length : null }
+  }
+  return pace(v, Math.floor(i.strike!) + 1, i.leg.side, avg, played, mins)
 }
 
 export function PaceBar({ p, label, side }: { p: Pace; label: string; side: 'yes' | 'no' }) {
-  const x = (v: number) => `${Math.min(100, (v / p.max) * 100)}%`
+  const x = (v: number) => `${Math.min(100, Math.max(0, (v / p.max) * 100))}%` // the line is the full bar
   const [fill, chip] = TONE[p.status]
   const done = p.status === 'hit' || p.status === 'missed'
-  const usualText = p.usual == null ? null : done ? `usually ${fmt(p.usual)} a game` : `usually ${fmt(p.usual)} by now`
+  const usualText = p.usual == null ? null : done ? `usually ${fmt(p.usual)} a game`
+    : p.mins ? `usually ${fmt(p.usual)} in ${Math.round(p.mins.now)} min` : `usually ${fmt(p.usual)} by now`
+  // the usual mark only fits on the bar when it's short of the line
+  const tick = p.usual != null && p.usual < p.target
+  const minsText = p.mins && !done ? `${Math.round(p.mins.now)} of usual ${Math.round(p.mins.usual)} min played` : null
   const needText = side === 'no'
     ? done ? null : `needs to stay under ${p.target}`
     : p.need != null ? `needs ${fmt(p.need)} more` : null
-  const summary = `${PACE_WORD[p.status]}: ${fmt(p.v)} ${label}, line ${p.target}${usualText ? `, ${usualText}` : ''}${needText ? `, ${needText}` : ''}`
+  const summary = `${PACE_WORD[p.status]}: ${fmt(p.v)} ${label}, line ${p.target}${usualText ? `, ${usualText}` : ''}${minsText ? `, ${minsText}` : ''}${needText ? `, ${needText}` : ''}`
   return (
     <div role='img' aria-label={summary} className='flex flex-col gap-1.5 rounded-[14px] bg-card px-3 py-2.5'>
       <div className='flex items-baseline justify-between gap-3'>
@@ -62,20 +78,19 @@ export function PaceBar({ p, label, side }: { p: Pace; label: string; side: 'yes
       <div className='relative h-5' aria-hidden='true'>
         <div className='absolute inset-x-0 top-1.5 h-2 rounded-full bg-muted' />
         <div className={cn('absolute top-1.5 left-0 h-2 rounded-full transition-[width] duration-500', fill)} style={{ width: x(p.v) }} />
-        {p.usual != null && (
-          <div className='absolute top-0 h-5 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45' style={{ left: x(p.usual) }} />
+        {tick && (
+          <div className='absolute top-0 h-5 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45' style={{ left: x(p.usual!) }} />
         )}
-        <div className='absolute top-0 h-5 w-[3px] -translate-x-1/2 rounded-full bg-foreground' style={{ left: x(p.target) }} />
       </div>
       <p className='flex flex-wrap justify-between gap-x-3 text-xs text-muted-foreground'>
         <span>
-          <span className='mr-1 inline-block h-2.5 w-[3px] translate-y-px rounded-full bg-foreground' aria-hidden='true' />line {p.target}
           {usualText && (
             <>
-              <span className='mr-1 ml-3 inline-block h-2.5 w-0.5 translate-y-px rounded-full bg-foreground/45' aria-hidden='true' />
+              {tick && <span className='mr-1 inline-block h-2.5 w-0.5 translate-y-px rounded-full bg-foreground/45' aria-hidden='true' />}
               {usualText}
             </>
           )}
+          {minsText && <span className='ml-3'>{minsText}</span>}
         </span>
         {needText && <span className='font-semibold text-foreground'>{needText}</span>}
       </p>

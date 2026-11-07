@@ -2,7 +2,7 @@
 // and only well-formed legs come back.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { handle, parseAnswer, clean, bookOf, previewImage } from "../../functions/api/scan.js";
+import { handle, parseAnswer, clean, bookOf, previewImage, brandImage } from "../../functions/api/scan.js";
 import { userKey } from "../../functions/api/me.js";
 
 const DOMAIN = "t.cloudflareaccess.com";
@@ -186,4 +186,12 @@ test("Gemini out: the owner's computer reads it, with the key; when it's off, th
   r = await handle(await off.req({image: IMG}), off.env, off.fetcher);
   assert.equal(r.status, 502);
   assert.match((await r.json()).why, /local:offline/);
+});
+
+test("share links: FanDuel's short links count; a book's logo isn't a picture of a bet", () => {
+  assert.equal(bookOf("https://fndl.co/abc123").name, "FanDuel");
+  assert.equal(bookOf("https://fndl.co.evil.com/abc"), null);
+  assert.equal(brandImage("https://sportsbook.draftkings.com/static/DraftKings_Sportsbook_blk.png"), true);
+  assert.equal(brandImage("https://cdn.hardrocksportsbook.com/images/socialShareMeta.png"), true);
+  assert.equal(brandImage("https://dk-share.s3.amazonaws.com/bets/8f2c1a.png"), false);
 });

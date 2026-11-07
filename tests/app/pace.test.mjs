@@ -2,7 +2,7 @@
 // node --test tests/app/pace.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clockSecs, pace, usualOf } from "../../web/src/lib/pace-math.ts";
+import { clockSecs, minutesOf, pace, usualOf } from "../../web/src/lib/pace-math.ts";
 
 test("usual: the last 15 games before tonight, summed columns, needs 3 games", () => {
   const at = { date: 0, rush_yds: 1, rec_yds: 2 };
@@ -32,4 +32,27 @@ test("clock: ESPN's summary only has displayClock (9:31 left is 571 seconds, not
   assert.equal(clockSecs({ clock: 571, displayClock: "9:31" }), 571);
   assert.equal(clockSecs({ displayClock: "38.2" }), 38.2);
   assert.equal(clockSecs({}), null);
+});
+
+test("minutes: pace goes by minutes played against their usual minutes, not the clock", () => {
+  // halftime by the clock, but they've played 12 of their usual 36 minutes: a third of their game
+  const p = pace(7, 20, "yes", 24, 0.5, { now: 12, usual: 36 });
+  assert.deepEqual([p.usual, p.status, p.mins], [8, "on", { now: 12, usual: 36 }]);
+  assert.equal(pace(7, 20, "yes", 24, 0.5).status, "behind"); // the clock alone calls it behind
+  assert.equal(pace(8, 20, "yes", 24, 0.5, { now: null, usual: 36 }).mins, null); // no minutes yet: the clock
+  assert.equal(pace(30, 20, "yes", 24, 0.9, { now: 50, usual: 36 }).usual, 24); // overtime caps at a full game
+  assert.equal(pace(22, 10, "yes", 14, null, { now: 34, usual: 30 }).mins, null); // finals ignore minutes
+});
+
+test("bar: the line is the full bar", () => {
+  assert.equal(pace(22, 10, "yes", 14, null).max, 10);
+  assert.equal(pace(0, 0, "yes", null, 0.5).max, 1);
+});
+
+test("minutesOf: numbers, numeric strings, and mm:ss", () => {
+  assert.equal(minutesOf(28), 28);
+  assert.equal(minutesOf("28"), 28);
+  assert.equal(minutesOf("17:30"), 17.5);
+  assert.equal(minutesOf("--"), null);
+  assert.equal(minutesOf(undefined), null);
 });

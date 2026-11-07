@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Check, Copy, Share2 } from 'lucide-react'
 import { type ShareLeg, type ShareText } from '@/lib/share-math'
+import { shareImage } from '@/lib/share-image'
 import { cn } from '@/lib/utils'
 
 // A finished parlay as an image to post: how many legs hit, Kalshi's odds at kickoff, DeVig's grade, every leg with
 // its result, and whether DeVig's weakest leg was the one that sank it. Drawn on a canvas (always in the dark theme)
-// so it shares as a real image file from a phone.
+// so it shares as a real image file from a phone (the iPhone app opens iOS's share sheet itself).
 
 const W = 1080
 const C = { bg: '#0a0b0f', card: '#12151c', fg: '#f2f4f8', muted: '#9aa3b5', good: '#8ef0b4', bad: '#ffa3a3', devig: '#ffb547', line: '#262b36' }
@@ -169,18 +170,7 @@ export function ShareCard({ t, legs, letter, won }: { t: ShareText; legs: ShareL
     return () => { gone = true; if (url) URL.revokeObjectURL(url) }
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const share = async () => {
-    if (!img) return
-    const file = new File([img.blob], 'devig-parlay.png', { type: 'image/png' })
-    if (navigator.canShare?.({ files: [file] })) {
-      try { await navigator.share({ files: [file], text: t.text }) } catch { /* closed the sheet */ }
-      return
-    }
-    const a = document.createElement('a')
-    a.href = img.url
-    a.download = file.name
-    a.click()
-  }
+  const share = () => { if (img) shareImage(img.blob, 'devig-parlay.png', t.text) }
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(`${t.text} devigai.pages.dev`)

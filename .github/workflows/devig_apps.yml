@@ -114,6 +114,12 @@ jobs:
           sed -i '' 's/customClass="CAPBridgeViewController" customModule="Capacitor"/customClass="DeVigViewController" customModule="App" customModuleProvider="target"/' "$SB"
           grep -q DeVigViewController "$SB"
           /usr/libexec/PlistBuddy -c 'Add :NSSupportsLiveActivities bool true' ios/App/App/Info.plist
+          # iOS closes an app that opens the camera or saves a picture without saying why (Check a bet's screenshot
+          # picker offers Take Photo; the share sheet offers Save Image)
+          P=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c 'Add :NSCameraUsageDescription string "Take a photo of a bet slip for DeVig to read."' $P
+          /usr/libexec/PlistBuddy -c 'Add :NSPhotoLibraryUsageDescription string "Pick a screenshot of a bet slip for DeVig to read."' $P
+          /usr/libexec/PlistBuddy -c 'Add :NSPhotoLibraryAddUsageDescription string "Save DeVig share cards to your photos."' $P
       - name: App icons
         continue-on-error: true
         run: npx @capacitor/assets generate --ios $ICON_ARGS

@@ -1,1 +1,0 @@
-import{t as e}from"./research--4iiKMET.js";var t=e;export{t as component};
