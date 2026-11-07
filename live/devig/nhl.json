@@ -19,33 +19,33 @@
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 1467,
+    "n": 1468,
     "said": 0.55,
     "won": 0.532
    },
    {
     "hi": 0.7,
     "lo": 0.6,
-    "n": 1018,
+    "n": 1019,
     "said": 0.644,
     "won": 0.628
    },
    {
     "hi": 1,
     "lo": 0.7,
-    "n": 330,
+    "n": 331,
     "said": 0.742,
     "won": 0.767
    }
   ],
-  "games": 4197,
+  "games": 4200,
   "home_rate_log_loss": 0.6894,
-  "log_loss": 0.6672,
+  "log_loss": 0.6671,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
- "data_through": "2026-11-05",
- "finals_used": 5853,
+ "data_through": "2026-11-06",
+ "finals_used": 5856,
  "games": [
   {
    "away": "FLA",
@@ -159,12 +159,12 @@
    "game_id": "2026020272",
    "home": "DAL",
    "home_name": "Dallas Stars",
-   "home_wp": 0.6958,
+   "home_wp": 0.7321,
    "kickoff": "2026-11-08T01:00:00Z",
    "parts": {
-    "b2b": 0,
-    "elo": 1.0913,
-    "sh": 0.3081
+    "b2b": -1,
+    "elo": 1.1054,
+    "sh": 0.3217
    }
   },
   {
@@ -174,12 +174,12 @@
    "game_id": "2026020273",
    "home": "MIN",
    "home_name": "Minnesota Wild",
-   "home_wp": 0.5234,
+   "home_wp": 0.4863,
    "kickoff": "2026-11-08T01:00:00Z",
    "parts": {
-    "b2b": 0,
-    "elo": 0.2138,
-    "sh": -0.1169
+    "b2b": 1,
+    "elo": 0.2279,
+    "sh": -0.1051
    }
   },
   {
@@ -249,12 +249,12 @@
    "game_id": "2026020278",
    "home": "BUF",
    "home_name": "Buffalo Sabres",
-   "home_wp": 0.5307,
+   "home_wp": 0.5395,
    "kickoff": "2026-11-08T20:30:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.203,
-    "sh": -0.0491
+    "elo": 0.2269,
+    "sh": -0.0084
    }
   },
   {
@@ -294,12 +294,12 @@
    "game_id": "2026020281",
    "home": "CGY",
    "home_name": "Calgary Flames",
-   "home_wp": 0.5372,
+   "home_wp": 0.5294,
    "kickoff": "2026-11-09T00:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.1618,
-    "sh": 0.0456
+    "elo": 0.1348,
+    "sh": 0.0161
    }
   },
   {
@@ -309,12 +309,12 @@
    "game_id": "2026020282",
    "home": "ANA",
    "home_name": "Anaheim Ducks",
-   "home_wp": 0.5286,
+   "home_wp": 0.5379,
    "kickoff": "2026-11-09T01:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.1499,
-    "sh": -0.0064
+    "elo": 0.1768,
+    "sh": 0.0346
    }
   },
   {
@@ -346,9 +346,24 @@
     "elo": -0.2876,
     "sh": -0.3463
    }
+  },
+  {
+   "away": "NYI",
+   "away_name": "New York Islanders",
+   "date": "2026-11-09",
+   "game_id": "2026020285",
+   "home": "SJS",
+   "home_name": "San Jose Sharks",
+   "home_wp": 0.466,
+   "kickoff": "2026-11-10T03:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.1464,
+    "sh": -0.1566
+   }
   }
  ],
- "generated_at": "2026-11-07T02:54:44Z",
+ "generated_at": "2026-11-07T10:26:52Z",
  "model": {
   "elo": {
    "carry": 0.85,
