@@ -1,28 +1,301 @@
 {
- "generated_at": "2026-11-07T16:54:29Z",
+ "generated_at": "2026-11-07T20:58:28Z",
  "slot": "SOCCER.ml",
  "champion": "devigsoccer",
  "model": "soccer-v1",
  "rule": "CHAMPION_CHALLENGER_V4_PREREG.md",
  "note": "Locked at the last hourly run before kickoff; 90-minute result; log loss of the chance given to what happened (lower is better). New, not proven: nothing is bet.",
  "devig": {
-  "games": 7,
-  "log_loss": 1.0197,
-  "picked_right": 0.5714
+  "games": 20,
+  "log_loss": 0.9532,
+  "picked_right": 0.55
  },
  "shared": {
   "devig": {
-   "games": 7,
-   "log_loss": 1.0197,
-   "picked_right": 0.5714
+   "games": 20,
+   "log_loss": 0.9532,
+   "picked_right": 0.55
   },
   "kalshi": {
-   "games": 7,
-   "log_loss": 0.9347,
-   "picked_right": 0.5714
+   "games": 20,
+   "log_loss": 0.9118,
+   "picked_right": 0.5
   }
  },
  "recent": [
+  {
+   "game_id": "401884743",
+   "league": "BUND",
+   "kickoff": "2026-11-07T17:30Z",
+   "home_name": "VfB Stuttgart",
+   "away_name": "Werder Bremen",
+   "result": [
+    1,
+    0
+   ],
+   "model": [
+    0.6221,
+    0.1951,
+    0.1828
+   ],
+   "kalshi": [
+    0.515,
+    0.23,
+    0.255
+   ]
+  },
+  {
+   "game_id": "401882811",
+   "league": "LALIGA",
+   "kickoff": "2026-11-07T17:30Z",
+   "home_name": "Osasuna",
+   "away_name": "Athletic Club",
+   "result": [
+    1,
+    1
+   ],
+   "model": [
+    0.3414,
+    0.2869,
+    0.3718
+   ],
+   "kalshi": [
+    0.2537,
+    0.2736,
+    0.4726
+   ]
+  },
+  {
+   "game_id": "401878757",
+   "league": "EPL",
+   "kickoff": "2026-11-07T17:30Z",
+   "home_name": "Nottingham Forest",
+   "away_name": "Manchester City",
+   "result": [
+    3,
+    1
+   ],
+   "model": [
+    0.1901,
+    0.2548,
+    0.5552
+   ],
+   "kalshi": [
+    0.1931,
+    0.2277,
+    0.5792
+   ]
+  },
+  {
+   "game_id": "401874974",
+   "league": "SERIEA",
+   "kickoff": "2026-11-07T17:00Z",
+   "home_name": "Parma",
+   "away_name": "Bologna",
+   "result": [
+    1,
+    2
+   ],
+   "model": [
+    0.2533,
+    0.2788,
+    0.4679
+   ],
+   "kalshi": [
+    0.1658,
+    0.2663,
+    0.5678
+   ]
+  },
+  {
+   "game_id": "401882813",
+   "league": "LALIGA",
+   "kickoff": "2026-11-07T15:15Z",
+   "home_name": "Espanyol",
+   "away_name": "Deportivo",
+   "result": [
+    0,
+    0
+   ],
+   "model": [
+    0.4713,
+    0.2751,
+    0.2536
+   ],
+   "kalshi": [
+    0.3869,
+    0.2965,
+    0.3166
+   ]
+  },
+  {
+   "game_id": "401879241",
+   "league": "EPL",
+   "kickoff": "2026-11-07T15:00Z",
+   "home_name": "Fulham",
+   "away_name": "Newcastle United",
+   "result": [
+    1,
+    1
+   ],
+   "model": [
+    0.3847,
+    0.2732,
+    0.3421
+   ],
+   "kalshi": [
+    0.4726,
+    0.2637,
+    0.2637
+   ]
+  },
+  {
+   "game_id": "401878760",
+   "league": "EPL",
+   "kickoff": "2026-11-07T15:00Z",
+   "home_name": "Arsenal",
+   "away_name": "Hull City",
+   "result": [
+    1,
+    0
+   ],
+   "model": [
+    0.7121,
+    0.1971,
+    0.0909
+   ],
+   "kalshi": [
+    0.8507,
+    0.1045,
+    0.0448
+   ]
+  },
+  {
+   "game_id": "401884745",
+   "league": "BUND",
+   "kickoff": "2026-11-07T14:30Z",
+   "home_name": "Borussia Dortmund",
+   "away_name": "SV Elversberg",
+   "result": [
+    2,
+    1
+   ],
+   "model": [
+    0.7363,
+    0.1595,
+    0.1042
+   ],
+   "kalshi": [
+    0.7387,
+    0.1558,
+    0.1055
+   ]
+  },
+  {
+   "game_id": "401884744",
+   "league": "BUND",
+   "kickoff": "2026-11-07T14:30Z",
+   "home_name": "RB Leipzig",
+   "away_name": "FC Augsburg",
+   "result": [
+    5,
+    2
+   ],
+   "model": [
+    0.6416,
+    0.198,
+    0.1604
+   ],
+   "kalshi": [
+    0.6784,
+    0.1759,
+    0.1457
+   ]
+  },
+  {
+   "game_id": "401884740",
+   "league": "BUND",
+   "kickoff": "2026-11-07T14:30Z",
+   "home_name": "Mainz",
+   "away_name": "Bayern Munich",
+   "result": [
+    1,
+    2
+   ],
+   "model": [
+    0.142,
+    0.1691,
+    0.6889
+   ],
+   "kalshi": [
+    0.0955,
+    0.1357,
+    0.7688
+   ]
+  },
+  {
+   "game_id": "401884737",
+   "league": "BUND",
+   "kickoff": "2026-11-07T14:30Z",
+   "home_name": "SC Paderborn 07",
+   "away_name": "Eintracht Frankfurt",
+   "result": [
+    2,
+    2
+   ],
+   "model": [
+    0.3268,
+    0.2443,
+    0.4289
+   ],
+   "kalshi": [
+    0.315,
+    0.255,
+    0.43
+   ]
+  },
+  {
+   "game_id": "401874811",
+   "league": "SERIEA",
+   "kickoff": "2026-11-07T14:00Z",
+   "home_name": "Torino",
+   "away_name": "Lecce",
+   "result": [
+    1,
+    1
+   ],
+   "model": [
+    0.5106,
+    0.2656,
+    0.2238
+   ],
+   "kalshi": [
+    0.5323,
+    0.2637,
+    0.204
+   ]
+  },
+  {
+   "game_id": "401874791",
+   "league": "SERIEA",
+   "kickoff": "2026-11-07T14:00Z",
+   "home_name": "Cagliari",
+   "away_name": "Frosinone",
+   "result": [
+    1,
+    0
+   ],
+   "model": [
+    0.3687,
+    0.264,
+    0.3672
+   ],
+   "kalshi": [
+    0.3134,
+    0.2537,
+    0.4328
+   ]
+  },
   {
    "game_id": "401882812",
    "league": "LALIGA",
