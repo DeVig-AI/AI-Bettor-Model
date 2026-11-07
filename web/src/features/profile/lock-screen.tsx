@@ -4,7 +4,7 @@ import { type Item, lockScreenOn, useLockItems } from '@/lib/lock-screen'
 import { cn } from '@/lib/utils'
 
 // Profile → Lock screen, in the DeVig iPhone app only (it takes the place of Alerts there, since the app can't get
-// web push). Shows whether iOS allows the cards and exactly what's on them now: ★ tracked games and saved parlays only.
+// web push). Shows whether iOS allows the cards and exactly what's on them now: ★ tracked games, saved parlays and saved Kalshi bets only.
 
 const MAX = 5
 
@@ -45,8 +45,8 @@ export function LockScreen() {
               <>
                 <p className='font-semibold'>{on ? 'Lock-screen cards are on' : 'Checking…'}</p>
                 <p className='text-muted-foreground'>
-                  Only games you <Star className='inline size-3.5 align-[-2px]' aria-label='track' /> track and parlays you save, from an hour before
-                  the start until the final.
+                  Only games you <Star className='inline size-3.5 align-[-2px]' aria-label='track' /> track, parlays you save, and Kalshi bets you save from
+                  their link, from an hour before the start until the final.
                 </p>
               </>
             )}
