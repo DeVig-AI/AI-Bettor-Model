@@ -17,8 +17,10 @@ sys.path.insert(0, str(ROOT / "nba"))
 sys.path.insert(0, str(ROOT / "tools"))
 
 URL = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2025-01-15_05PM.pdf"
-# research parser on PDFKit's text of this report: fingerprint, (team, player, status) rows
+# research parser on PDFKit's text of this report: fingerprint, (team, player, status) rows. The 5 PM report also
+# lists the next day's first game (IND@DET, 01/16); the research parser read both days together, so the check does too.
 EXPECTED = ("c89cc92d5721fcec", 161)
+DATES = {"01/15/2025", "01/16/2025"}
 
 
 class LiveReaderMatchesTestedReader(unittest.TestCase):
@@ -37,7 +39,7 @@ class LiveReaderMatchesTestedReader(unittest.TestCase):
         for teams in by_day.values():
             for code, d in teams.items():
                 merged.setdefault(code, {}).update(d)
-        self.assertEqual(set(by_day), {"01/15/2025"})
+        self.assertEqual(set(by_day), DATES)
         self.assertEqual(V.fingerprint(merged), EXPECTED)
 
 
