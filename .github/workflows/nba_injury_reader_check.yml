@@ -1,0 +1,27 @@
+name: NBA injury reader check
+
+# The live NBA pick (nba/nba_live_tracker_lock_v2.py) must read the official injury report the same way the test did
+# (CHAMPION_CHALLENGER_V5_PREREG.md, item 4). grade_nba.yml runs this before every lock; this runs it on changes too.
+on:
+  pull_request:
+    paths:
+      - 'nba/**'
+      - 'tools/injuries_export.py'
+      - 'research/injuries/**'
+      - 'tests/tools/test_nba_injury_parsers.py'
+      - '.github/workflows/nba_injury_reader_check.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install certifi pandas numpy scikit-learn pdfplumber
+      - run: python3 -m unittest -v tests/tools/test_nba_injury_parsers.py

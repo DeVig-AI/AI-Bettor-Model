@@ -72,6 +72,18 @@ export function factors(row: GameRow, side: string): Factor[] {
       plain: '',
     })
   }
+  if (a.minutes_out_pct != null && h.minutes_out_pct != null) {
+    const pct = (x: number) => `${Math.round(x * 100)}%`
+    const outTxt = (code: string, s: SideInputs) =>
+      `${code} ${pct(s.minutes_out_pct ?? 0)}${s.top_player_out ? ' (incl. its top player)' : ''}`
+    const gap = a.minutes_out_pct - h.minutes_out_pct
+    out.push({
+      title: 'Injury report',
+      detail: a.injury_report === false ? 'No report was out at lock' : `Minutes out: ${outTxt(row.away, a)}, ${outTxt(row.home, h)}`,
+      favors: Math.abs(gap) < 0.03 ? null : gap > 0 ? row.home : row.away,
+      plain: '',
+    })
+  }
   // plain-English versions, written from the picked side's point of view
   for (const f of out) {
     if (f.title === 'Last 10 games' && mine.winpct_last10 != null && theirs.winpct_last10 != null) {
@@ -89,6 +101,14 @@ export function factors(row: GameRow, side: string): Factor[] {
       if (mine.back_to_back && !theirs.back_to_back) f.plain = `One thing against ${nameOf(side)}: it played last night, so it's on tired legs.`
       else if (theirs.back_to_back && !mine.back_to_back) f.plain = `${nameOf(other)} played last night, which helps ${nameOf(side)}.`
       else f.plain = 'Neither team has a rest advantage.'
+    }
+    if (f.title === 'Injury report' && mine.minutes_out_pct != null && theirs.minutes_out_pct != null) {
+      const m = Math.round(mine.minutes_out_pct * 100)
+      const t = Math.round(theirs.minutes_out_pct * 100)
+      if (mine.injury_report === false) f.plain = 'The injury report wasn\'t out yet when this locked, so injuries counted for nothing.'
+      else if (f.favors === null) f.plain = 'Injuries are about even: neither team is missing much more of its usual minutes.'
+      else if (f.favors === side) f.plain = `${nameOf(other)} is missing players who play about ${t}% of its minutes${theirs.top_player_out ? ', including its top player' : ''}; ${nameOf(side)} about ${m}%.`
+      else f.plain = `One thing against ${nameOf(side)}: it's missing players who play about ${m}% of its minutes${mine.top_player_out ? ', including its top player' : ''}; ${nameOf(other)} about ${t}%.`
     }
   }
   return out
@@ -344,6 +364,20 @@ function InputsTable({ row }: { row: GameRow }) {
           <td className='text-end'>{inp.away.back_to_back ? 'Yes' : 'No'}</td>
           <td className='text-end'>{inp.home.back_to_back ? 'Yes' : 'No'}</td>
         </tr>
+        {inp.away.minutes_out_pct != null && inp.home.minutes_out_pct != null ? (
+          <>
+            <tr className='border-t'>
+              <td className='py-1.5'>Minutes out (injury report)</td>
+              <td className='text-end'>{Math.round(inp.away.minutes_out_pct * 100)}%</td>
+              <td className='text-end'>{Math.round(inp.home.minutes_out_pct * 100)}%</td>
+            </tr>
+            <tr className='border-t'>
+              <td className='py-1.5'>Minutes questionable</td>
+              <td className='text-end'>{Math.round((inp.away.minutes_q_pct ?? 0) * 100)}%</td>
+              <td className='text-end'>{Math.round((inp.home.minutes_q_pct ?? 0) * 100)}%</td>
+            </tr>
+          </>
+        ) : null}
       </tbody>
     </table>
   )
@@ -431,7 +465,9 @@ export function plainNote(sport: string, note: string) {
   const starters = note.match(/Probable starters (.+?)\./)?.[1]
   switch (sport) {
     case 'NBA':
-      return 'DeVig looks at how many points each team has scored and given up over its last 10 games, and who is rested or on a back-to-back. It locks its pick before the game. Prices come from Kalshi.'
+      return /injury report/.test(note)
+        ? 'DeVig looks at how many points each team has scored and given up over its last 10 games, who is rested or on a back-to-back, and how much of each team\'s usual minutes the official injury report lists as out. It locks its pick on game day, before tip-off. Prices come from Kalshi.'
+        : 'DeVig looks at how many points each team has scored and given up over its last 10 games, and who is rested or on a back-to-back. It locks its pick before the game. Prices come from Kalshi.'
     case 'MLB':
       return `DeVig looks at each team’s recent games and who is pitching${starters ? ` (${starters})` : ''}. It locks its pick before the game. Prices come from Kalshi.`
     case 'NFL':
