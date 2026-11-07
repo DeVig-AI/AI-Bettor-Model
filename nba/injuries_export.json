@@ -3,12 +3,9 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 7 \u00b7 8:45 AM ET report",
+    "as_of": "Nov 7 \u00b7 1:30 PM ET report",
     "date": "2026-11-07",
     "not_submitted": {
-     "BKN@ATL": [
-      "ATL"
-     ],
      "BKN@DAL": [
       "BKN",
       "DAL"
@@ -26,11 +23,7 @@
       "SAC"
      ],
      "NOP@LAC": [
-      "NOP",
       "LAC"
-     ],
-     "NYK@CLE": [
-      "CLE"
      ],
      "PHI@CHI": [
       "PHI",
@@ -49,7 +42,7 @@
       "OKC"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-07_08_45AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-07_01_30PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -217,6 +210,28 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "21 min \u00b7 5.6 pts a game = 5% of BKN's points"
+    },
+    "player": "Noah Clowney",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "BKN",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-bkn-noah-clowney"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "22 min \u00b7 7.8 pts a game = 7% of BKN's points"
     },
     "player": "Egor Demin",
@@ -229,6 +244,138 @@
     "tip_sort": "11071930"
    },
    "doc_id": "nba-bkn-egor-demin"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in his team's rotation stats"
+    },
+    "player": "Keshon Gilbert",
+    "reason": "Left Left Knee Inflammation/Non - Surgical Procedure",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-keshon-gilbert"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in his team's rotation stats"
+    },
+    "player": "Mouhamed Gueye",
+    "reason": "Left Foot Fracture",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-mouhamed-gueye"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "33 min \u00b7 18.3 pts a game = 15% of ATL's points"
+    },
+    "player": "Jalen Johnson",
+    "reason": "Left Ankle Sprain",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Probable",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-jalen-johnson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "15 min \u00b7 6.3 pts a game = 5% of ATL's points"
+    },
+    "player": "Jock Landale",
+    "reason": "Left Hip Strain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-jock-landale"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "11 min \u00b7 3.6 pts a game = 3% of ATL's points"
+    },
+    "player": "Asa Newell",
+    "reason": "Left Left Great Toe Hyperextension",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-asa-newell"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "ATL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in his team's rotation stats"
+    },
+    "player": "Henri Veesaar",
+    "reason": "Right ACL Tear",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "ATL",
+    "tip": "7:30 PM",
+    "tip_sort": "11071930"
+   },
+   "doc_id": "nba-atl-henri-veesaar"
   },
   {
    "collection": "injuries",
@@ -251,6 +398,94 @@
     "tip_sort": "11072000"
    },
    "doc_id": "nba-nyk-josh-hart"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYK",
+    "home": "CLE",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "25 min \u00b7 13.2 pts a game = 11% of CLE's points"
+    },
+    "player": "Jarrett Allen",
+    "reason": "Right Knee Contusion",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "CLE",
+    "tip": "8:00 PM",
+    "tip_sort": "11072000"
+   },
+   "doc_id": "nba-cle-jarrett-allen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYK",
+    "home": "CLE",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "23 min \u00b7 7.7 pts a game = 6% of CLE's points"
+    },
+    "player": "Sam Merrill",
+    "reason": "Right Elbow Injury Management",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "CLE",
+    "tip": "8:00 PM",
+    "tip_sort": "11072000"
+   },
+   "doc_id": "nba-cle-sam-merrill"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYK",
+    "home": "CLE",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "16 min \u00b7 5.8 pts a game = 5% of CLE's points (last season)"
+    },
+    "player": "Nae'Qwan Tomlin",
+    "reason": "Low Back Stress Reaction",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "CLE",
+    "tip": "8:00 PM",
+    "tip_sort": "11072000"
+   },
+   "doc_id": "nba-cle-naeqwan-tomlin"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYK",
+    "home": "CLE",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "21 min \u00b7 7.8 pts a game = 7% of CLE's points"
+    },
+    "player": "Jaylon Tyson",
+    "reason": "Right Ankle Sprain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "CLE",
+    "tip": "8:00 PM",
+    "tip_sort": "11072000"
+   },
+   "doc_id": "nba-cle-jaylon-tyson"
   },
   {
    "collection": "injuries",
@@ -603,8 +838,30 @@
     "tip_sort": "11072100"
    },
    "doc_id": "nba-phx-mark-williams"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NOP",
+    "home": "LAC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "20 min \u00b7 5.7 pts a game = 5% of NOP's points (last season)"
+    },
+    "player": "Yves Missi",
+    "reason": "Left Knee Contusion/Bone Bruise",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "NOP",
+    "tip": "Sun 9:00 PM",
+    "tip_sort": "11082100"
+   },
+   "doc_id": "nba-nop-yves-missi"
   }
  ],
- "generated_at": "2026-11-07T13:55:41Z",
- "source": "NBA official injury report (Injury-Report_2026-11-07_08_45AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-07T18:41:40Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-07_01_30PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

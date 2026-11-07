@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 7 \u00b7 8:55 AM ET \u00b7 Week 9",
+    "as_of": "Sat Nov 7 \u00b7 1:41 PM ET \u00b7 Week 9",
     "date": "2026-11-07",
     "sport": "NFL"
    },
@@ -338,6 +338,54 @@
     "confirmed": false,
     "home": "MIN",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "No snaps this season"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Joshua Palmer",
+    "reason": "WR \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BUF",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1109-2015"
+   },
+   "doc_id": "nfl-buf-joshua-palmer"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BUF",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (55% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "DJ Moore",
+    "reason": "WR \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "BUF",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1109-2015"
+   },
+   "doc_id": "nfl-buf-dj-moore"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BUF",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -389,30 +437,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (55% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Saturday",
-    "player": "DJ Moore",
-    "reason": "WR \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "BUF",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1109-2015"
-   },
-   "doc_id": "nfl-buf-dj-moore"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BUF",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (99% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Saturday",
@@ -450,30 +474,6 @@
     "tip_sort": "1109-2015"
    },
    "doc_id": "nfl-buf-alec-anderson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BUF",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "No snaps this season"
-    },
-    "note": "Practice-week status; the official game status comes out Saturday",
-    "player": "Joshua Palmer",
-    "reason": "WR \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "BUF",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1109-2015"
-   },
-   "doc_id": "nfl-buf-joshua-palmer"
   },
   {
    "collection": "injuries",
@@ -902,29 +902,6 @@
     "confirmed": true,
     "home": "NO",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (62% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Maliek Collins",
-    "reason": "DT \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Out",
-    "team": "CLE",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-cle-maliek-collins"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CLE",
-    "confirmed": true,
-    "home": "NO",
-    "impact": {
      "bars": 4,
      "label": "Game changer",
      "level": "gamechanger",
@@ -940,6 +917,29 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-cle-deshaun-watson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CLE",
+    "confirmed": true,
+    "home": "NO",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (62% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Maliek Collins",
+    "reason": "DT \u00b7 Elbow",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Out",
+    "team": "CLE",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nfl-cle-maliek-collins"
   },
   {
    "collection": "injuries",
@@ -1724,11 +1724,12 @@
      "level": "some",
      "why": "Regular (83% of snaps): about 0.5 points each in DeVig's injury study"
     },
+    "note": "Downgraded from questionable",
     "player": "A.J. Haulcy",
     "reason": "S \u00b7 Ankle",
     "sport": "NFL",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "IND",
     "tip": "Sun 1:00 PM",
     "tip_sort": "1108-1300"
@@ -2091,6 +2092,29 @@
     "confirmed": true,
     "home": "WAS",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (84% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Jaylen Watson",
+    "reason": "CB \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "LA",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nfl-la-jaylen-watson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LA",
+    "confirmed": true,
+    "home": "WAS",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2106,29 +2130,6 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-la-jordan-whittington"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LA",
-    "confirmed": true,
-    "home": "WAS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (62% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Myles Garrett",
-    "reason": "DE \u00b7 Knee",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "LA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-la-myles-garrett"
   },
   {
    "collection": "injuries",
@@ -2222,29 +2223,6 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nfl-la-trent-mcduffie"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LA",
-    "confirmed": true,
-    "home": "WAS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (84% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Jaylen Watson",
-    "reason": "CB \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Out",
-    "team": "LA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nfl-la-jaylen-watson"
   },
   {
    "collection": "injuries",
@@ -2368,6 +2346,30 @@
     "confirmed": false,
     "home": "MIN",
     "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (86% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Kyler Murray",
+    "reason": "QB \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "MIN",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1109-2015"
+   },
+   "doc_id": "nfl-min-kyler-murray"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BUF",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2456,30 +2458,6 @@
     "tip_sort": "1109-2015"
    },
    "doc_id": "nfl-min-jay-ward"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BUF",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (86% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Saturday",
-    "player": "Kyler Murray",
-    "reason": "QB \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1109-2015"
-   },
-   "doc_id": "nfl-min-kyler-murray"
   },
   {
    "collection": "injuries",
@@ -3070,6 +3048,29 @@
     "confirmed": true,
     "home": "SF",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "No snaps this season"
+    },
+    "player": "Brandon Aiyuk",
+    "reason": "WR \u00b7 Personal",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "SF",
+    "tip": "Sun 4:05 PM",
+    "tip_sort": "1108-1605"
+   },
+   "doc_id": "nfl-sf-brandon-aiyuk"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LV",
+    "confirmed": true,
+    "home": "SF",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -3134,29 +3135,6 @@
     "tip_sort": "1108-1605"
    },
    "doc_id": "nfl-sf-deebo-samuel"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LV",
-    "confirmed": true,
-    "home": "SF",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "No snaps this season"
-    },
-    "player": "Brandon Aiyuk",
-    "reason": "WR \u00b7 Personal",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "SF",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1108-1605"
-   },
-   "doc_id": "nfl-sf-brandon-aiyuk"
   },
   {
    "collection": "injuries",
@@ -3581,6 +3559,6 @@
    "doc_id": "nfl-was-laremy-tunsil"
   }
  ],
- "generated_at": "2026-11-07T13:55:43Z",
+ "generated_at": "2026-11-07T18:41:42Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
