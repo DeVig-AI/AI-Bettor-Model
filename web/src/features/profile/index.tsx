@@ -15,6 +15,8 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { TeamChip } from '@/features/research'
 import { Alerts } from './alerts'
+import { LockScreen } from './lock-screen'
+import { inIPhoneApp } from '@/lib/lock-screen'
 
 // Profile: the name tag, favorite teams, and the free account that keeps them on every device.
 // Same rules as the classic app: without an account (where accounts exist), name and teams are locked.
@@ -266,7 +268,7 @@ export function Profile() {
             Tracking, name tag and favorite teams open once you have an account.
           </p>
         )}
-        <Alerts joined={acct?.state === 'joined'} />
+        {inIPhoneApp() ? <LockScreen /> : <Alerts joined={acct?.state === 'joined'} />}
         <Tracking locked={locked} />
         <NameTag prefs={prefs} update={update} locked={locked} />
         <Favorites prefs={prefs} update={update} locked={locked} />

@@ -19,7 +19,7 @@ type State = {
   note: string
   legs: string[]
 }
-type Item = { id: string; kind: 'game' | 'parlay'; sport: string; title: string; awayColor: string; homeColor: string; state: State }
+export type Item = { id: string; kind: 'game' | 'parlay'; sport: string; title: string; awayColor: string; homeColor: string; state: State }
 
 type Bridge = { getPlatform?: () => string; nativePromise?: (plugin: string, method: string, opts: object) => Promise<unknown> }
 const bridge = (): Bridge | null => {
@@ -97,14 +97,13 @@ function parlayItem(p: Graded, now: number): Item | null {
   }
 }
 
-function Sync() {
+// everything that should be on the lock screen right now, live first (the native side keeps the first 5)
+export function useLockItems(): Item[] {
   const { tracked } = useTracked()
   const { rows } = useGames()
   const { finals } = useFinals()
   const parlays = useGradedParlays(useMemo(() => trackedParlays(tracked), [tracked]))
-  const sent = useRef('')
-
-  const payload = useMemo(() => {
+  return useMemo(() => {
     const now = Date.now()
     const keys = tracked.g ?? {}
     const seen = new Set<string>()
@@ -116,10 +115,27 @@ function Sync() {
       if (it) games.push(it)
     }
     const items = [...games, ...parlays.map((p) => parlayItem(p, now)).filter((x): x is Item => !!x)]
-    // live first, then the soonest to start; finals last (the native side keeps at most 5)
     const rank = { in: 0, pre: 1, post: 2 }
     return items.sort((a, b) => rank[a.state.phase] - rank[b.state.phase])
   }, [tracked, rows, finals, parlays])
+}
+
+// true inside the DeVig iPhone app (not Safari, not the Home Screen web app)
+export const inIPhoneApp = () => bridge() !== null
+
+// whether iOS lets DeVig show lock-screen cards (off in Settings → DeVig → Live Activities, or iOS before 16.2)
+export async function lockScreenOn(): Promise<boolean> {
+  const b = bridge()
+  if (!b) return false
+  try {
+    const r = (await b.nativePromise!('DeVigLive', 'available', {})) as { value?: boolean }
+    return !!r?.value
+  } catch { return false }
+}
+
+function Sync() {
+  const payload = useLockItems()
+  const sent = useRef('')
 
   useEffect(() => {
     const b = bridge()
