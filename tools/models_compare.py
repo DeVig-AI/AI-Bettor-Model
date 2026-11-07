@@ -114,7 +114,7 @@ MODELS = [
     {"key": "devig2", "name": "DeVig 2.0", "sports": ["NFL"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/nfl/model2/NFL_MODEL_2_0_LIVE_PREREG.md",
      "license": "this project",
-     "note": "NFL Model 1.0 plus who is out (injury reports and rosters). Paper test only: the app's picks stay on Model 1.0."},
+     "note": "NFL Model 1.0 plus who is out (injury reports and rosters). The app's NFL pick since 2026-11-07 (owner's decision); not proven."},
     {"key": "nfelo", "name": "nfelo", "sports": ["NFL"], "author": "Robby Greer (@greerreNFL)",
      "url": "https://github.com/greerreNFL/nfelo", "license": "none stated: only its published picks are read, no code copied",
      "note": "Its weekly picks as published in output_data/prediction_tracker.csv."},

@@ -6,6 +6,8 @@ from "since" on, the pick is Model 2.0's last forecast before kickoff (nfl/model
 Model 1.0's locked pick kept beside it (model_1_0 on both docs, outcome.model_1_0_correct) so the two can be
 compared; games without a Model 2.0 forecast, and every game before "since", use Model 1.0 exactly as v7 did.
 Same cutoffs (0.7194 / 0.6387). Everything else is v7, unchanged.
+2026-11-06: "spells" (a list of {"since", "until"}) lets Model 2.0 be the app's pick in more than one period; each
+game uses Model 2.0 if its kickoff falls in any spell. Without "spells", "since"/"until" is the one spell, as before.
 
 v2 (2026-09-29): adds an information-only `injury_report` to each slate doc, read from
 injury_report.json (key players on the ESPN injury report). Picks are unchanged.
@@ -325,7 +327,7 @@ def load_model2():
         return None, {}
     # Model 2.0 forecasts are needed while it is the app's model, and for the games it picked in an earlier spell
     # ("until" set when the app went back to Model 1.0): those keep the picks the app actually showed
-    if (str(cfg.get("nfl_game_model")) != "2.0" and not cfg.get("until")) or not MODEL2_LOG.exists():
+    if (str(cfg.get("nfl_game_model")) != "2.0" and not cfg.get("until") and not cfg.get("spells")) or not MODEL2_LOG.exists():
         return cfg, {}
     out = {}
     for line in MODEL2_LOG.read_text().splitlines():
@@ -337,6 +339,19 @@ def load_model2():
         if r["game_id"] not in out or str(r["at"]) >= str(out[r["game_id"]]["at"]):
             out[r["game_id"]] = r
     return cfg, out
+
+
+def model2_spells(cfg):
+    """[(since, until)] kickoff periods in which the app's pick is Model 2.0's (until open = still running)."""
+    def ts(x):
+        return datetime.fromisoformat(str(x or "2999-01-01T00:00:00Z").replace("Z", "+00:00"))
+    cfg = cfg or {}
+    spells = cfg.get("spells")
+    if spells is None:
+        if str(cfg.get("nfl_game_model")) != "2.0" and not cfg.get("until"):
+            return []
+        spells = [{"since": cfg.get("since"), "until": cfg.get("until")}]
+    return [(ts(sp.get("since")), ts(sp.get("until"))) for sp in spells]
 
 
 def num(x):
@@ -399,8 +414,7 @@ def main():
     kl = load_ladder()
     wx_tot = load_wx_totals()
     m2_cfg, m2 = load_model2()
-    m2_since = datetime.fromisoformat(str((m2_cfg or {}).get("since", "2999-01-01T00:00:00Z")).replace("Z", "+00:00"))
-    m2_until = datetime.fromisoformat(str((m2_cfg or {}).get("until") or "2999-01-01T00:00:00Z").replace("Z", "+00:00"))
+    m2_spells = model2_spells(m2_cfg)
     docs = []
     for gid, r in sorted(latest.items(), key=lambda kv: kv[1]["kickoff_time"]):
         kickoff = datetime.fromisoformat(str(r["kickoff_time"]).replace("Z", "+00:00"))
@@ -413,7 +427,7 @@ def main():
         wp = max(p_home, 1 - p_home)
         tier = "top25" if wp >= CONF_TOP25 else ("top50" if wp >= CONF_TOP50 else None)
         v1 = {"side": side, "prob": wp, "tier": tier, "action": "ML" if tier else "PASS", "locked_at": r["lock_timestamp_utc"]}
-        f2 = m2.get(gid) if m2_since <= kickoff < m2_until else None
+        f2 = m2.get(gid) if any(a <= kickoff < b for a, b in m2_spells) else None
         if f2 is not None:                       # the app's pick is Model 2.0's last forecast before kickoff
             p2 = float(f2["home_wp"])
             side = home if p2 >= 0.5 else away
