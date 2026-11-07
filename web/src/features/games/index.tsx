@@ -16,6 +16,7 @@ import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Plate, isPick, leagueTag, soccerLine, soccerPrices } from './plate'
 import { PlateTaps } from './plate-taps'
+import { GamePropsStrip } from './game-props'
 
 type Day = 'today' | 'tomorrow' | 'week'
 const DAYS: { id: Day; label: string }[] = [
@@ -149,6 +150,7 @@ function TwoWayItem({ row, showDay }: { row: GameRow; showDay: boolean }) {
           </Link>
         </span>
       </div>
+      {row.state !== 'post' && <GamePropsStrip row={row} />}
     </li>
   )
 }

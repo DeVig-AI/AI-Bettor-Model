@@ -185,7 +185,7 @@ function Intro({ level }: { level: string }) {
 
 // One game's props in a drawer: pick a stat (or the biggest DeVig-vs-Kalshi gaps), Kalshi's live prices fetched
 // for what's on screen
-function GameProps({ ls, game, open, onOpenChange }: { ls: PropLine[]; game: GameRow | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+export function GameProps({ ls, game, open, onOpenChange }: { ls: PropLine[]; game: GameRow | null; open: boolean; onOpenChange: (v: boolean) => void }) {
   const g = ls[0]
   const [stat, setStat] = useState<string | null>(null)
   const [live, setLive] = useState<Record<string, LivePrice>>({})
