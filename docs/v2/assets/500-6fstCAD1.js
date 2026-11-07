@@ -1,1 +1,0 @@
-import{O as e}from"./index-6NzCLlMl.js";var t=e;export{t as component};

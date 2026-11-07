@@ -102,6 +102,18 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           npx cap add ios
+      - name: Lock-screen cards (Live Activities for tracked games and parlays)
+        run: |
+          cp native/ios/App/*.swift ios/App/App/
+          mkdir -p ios/App/DeVigLive && cp native/ios/DeVigLive/* ios/App/DeVigLive/
+          gem list -i xcodeproj >/dev/null || sudo gem install xcodeproj --no-document
+          ruby native/add_live_activity.rb
+          # Capacitor's screen becomes DeVig's, which registers the lock-screen plugin
+          SB=ios/App/App/Base.lproj/Main.storyboard
+          grep -q 'customClass="CAPBridgeViewController" customModule="Capacitor"' "$SB"
+          sed -i '' 's/customClass="CAPBridgeViewController" customModule="Capacitor"/customClass="DeVigViewController" customModule="App" customModuleProvider="target"/' "$SB"
+          grep -q DeVigViewController "$SB"
+          /usr/libexec/PlistBuddy -c 'Add :NSSupportsLiveActivities bool true' ios/App/App/Info.plist
       - name: App icons
         continue-on-error: true
         run: npx @capacitor/assets generate --ios $ICON_ARGS
@@ -113,6 +125,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | tail -25
           APP=build/Build/Products/Release-iphoneos/App.app
           test -d "$APP"
+          test -d "$APP/PlugIns/DeVigLive.appex"   # the lock-screen cards
           mkdir -p out/Payload && cp -R "$APP" out/Payload/
           (cd out && zip -qr DeVig-iphone.ipa Payload && rm -rf Payload)
       - uses: actions/upload-artifact@v4

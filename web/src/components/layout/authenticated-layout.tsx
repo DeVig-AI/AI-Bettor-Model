@@ -7,6 +7,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SkipToMain } from '@/components/skip-to-main'
 import { MobileTabBar } from './mobile-tab-bar'
+import { LockScreenSync } from '@/lib/lock-screen'
 
 type AuthenticatedLayoutProps = {
   children?: React.ReactNode
@@ -39,6 +40,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
             </div>
           </SidebarInset>
           <MobileTabBar />
+          <LockScreenSync />
         </SidebarProvider>
       </LayoutProvider>
     </SearchProvider>
