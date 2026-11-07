@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { shareImage } from '@/lib/share-image'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Share2 } from 'lucide-react'
@@ -386,20 +387,7 @@ function ShareStreaks({ rows, game, sport, at, ls, names, unit, n }: { rows: Str
     drawCard(card).then((cv) => cv.toBlob((b) => { if (!gone) setBlob(b) }, 'image/png')).catch(() => undefined)
     return () => { gone = true }
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
-  const share = async () => {
-    if (!blob) return
-    const file = new File([blob], `devig-streaks-${gameCode(sport, g.away)}-${gameCode(sport, g.home)}.png`.toLowerCase(), { type: 'image/png' })
-    if (navigator.canShare?.({ files: [file] })) {
-      try { await navigator.share({ files: [file] }) } catch { /* closed the sheet */ }
-      return
-    }
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = file.name
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 5000)
-  }
+  const share = () => { if (blob) shareImage(blob, `devig-streaks-${gameCode(sport, g.away)}-${gameCode(sport, g.home)}.png`.toLowerCase()) }
   return (
     <button type='button' onClick={share} disabled={!blob}
       className='mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-full border text-[15px] font-semibold hover:bg-muted/50 disabled:opacity-50'>

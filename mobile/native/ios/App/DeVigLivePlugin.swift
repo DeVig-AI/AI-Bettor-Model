@@ -1,3 +1,4 @@
+// share: opens iOS's share sheet with an image the site drew (see share() below).
 // The bridge the DeVig site calls (window.Capacitor.nativePromise('DeVigLive', 'sync', {items})) with every tracked game
 // and parlay that should be on the lock screen right now. It starts cards for new ones, updates the rest, ends finished
 // ones (they stay visible 30 minutes) and ends any card no longer in the list. No push: a card only changes while
@@ -5,6 +6,7 @@
 import ActivityKit
 import Capacitor
 import Foundation
+import UIKit
 
 @objc(DeVigLivePlugin)
 public class DeVigLivePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -13,7 +15,31 @@ public class DeVigLivePlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "available", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sync", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "share", returnType: CAPPluginReturnPromise),
     ]
+
+    // share an image the site drew (a parlay or streak card): the web view can't download a file or reliably open
+    // the share sheet with one, so the app opens iOS's own share sheet (Messages, Save Image, Instagram...)
+    @objc func share(_ call: CAPPluginCall) {
+        let b64 = (call.getString("image") ?? "").replacingOccurrences(of: "^data:image/[a-z]+;base64,", with: "", options: .regularExpression)
+        guard let data = Data(base64Encoded: b64), let image = UIImage(data: data) else {
+            call.reject("image must be a base64 PNG or JPEG")
+            return
+        }
+        var items: [Any] = [image]
+        if let text = call.getString("text"), !text.isEmpty { items.append(text) }
+        DispatchQueue.main.async {
+            guard let vc = self.bridge?.viewController else { call.reject("no screen to share from"); return }
+            let sheet = UIActivityViewController(activityItems: items, applicationActivities: nil)
+            if let pop = sheet.popoverPresentationController { // iPad: anchor it mid-screen
+                pop.sourceView = vc.view
+                pop.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.midY, width: 1, height: 1)
+                pop.permittedArrowDirections = []
+            }
+            sheet.completionWithItemsHandler = { _, done, _, _ in call.resolve(["shared": done]) }
+            vc.present(sheet, animated: true)
+        }
+    }
 
     @objc func available(_ call: CAPPluginCall) {
         if #available(iOS 16.2, *) {

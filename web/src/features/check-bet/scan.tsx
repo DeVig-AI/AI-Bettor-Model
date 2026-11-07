@@ -41,7 +41,7 @@ async function scan(file: File): Promise<Scan> {
 }
 
 // a sportsbook's Share link: the server opens the page and reads its picture of the slip
-export const isBookLink = (s: string) => /^(https:\/\/)?([a-z0-9-]+\.)*(draftkings|fanduel|betmgm|caesars|espnbet|fanatics|hardrock|bet365|betrivers|fliff|prizepicks|underdogfantasy)\.(com|bet|app)(\/|$)/i.test(s.trim())
+export const isBookLink = (s: string) => /^(https:\/\/)?(([a-z0-9-]+\.)*(draftkings|fanduel|betmgm|caesars|espnbet|fanatics|hardrock|bet365|betrivers|fliff|prizepicks|underdogfantasy)\.(com|bet|app)|fndl\.co)(\/|$)/i.test(s.trim())
 async function scanLink(link: string): Promise<Scan> {
   const l = link.trim()
   if (!isBookLink(l)) throw new ScanError("That isn't a sportsbook share link. Paste the link from your book's Share button.")
