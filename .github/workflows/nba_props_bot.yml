@@ -33,9 +33,12 @@ jobs:
       - name: v3 shadow -- lock v3's chances next to v2 (no picks; NBA_PROPS_MODEL_V3_SHADOW)
         continue-on-error: true
         run: python3 nba/nba_props_model_v3_shadow.py
-      - name: Explain v2's expected numbers for the app (read-only; nba/props_why.json)
+      - name: The app's NBA props model -- v3 (owner's decision 2026-11-06; NBA_PROPS_MODEL_V3_LIVE, not proven)
         continue-on-error: true
-        run: python3 nba/nba_props_explain_v2.py
+        run: python3 nba/nba_props_model_v3_live.py
+      - name: Explain v3's expected numbers for the app (read-only; nba/props_why.json)
+        continue-on-error: true
+        run: python3 nba/nba_props_explain_v3.py
       - name: Save the exports and the paper log
         if: always()
         run: |
@@ -46,6 +49,7 @@ jobs:
           [ -f nba/props_why.json ] && git add nba/props_why.json
           [ -f nba/NBA_PROPS_MODEL_V2_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V2_LOG.sqlite3
           [ -f nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V3_SHADOW_LOG.sqlite3
+          [ -f nba/NBA_PROPS_MODEL_V3_LOG.sqlite3 ] && git add nba/NBA_PROPS_MODEL_V3_LOG.sqlite3
           git diff --cached --quiet || git commit -m "NBA props prices + model $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 7)); done
           exit 1

@@ -87,7 +87,10 @@ NFL_MODEL2 = ROOT / "nfl" / "model2" / "upcoming.json"
 NBA_TRACKER = ROOT / "nba" / "NBA_PROSPECTIVE_TRACKER_V1.sqlite3"
 MLB_TRACKER = ROOT / "mlb" / "MLB_PROSPECTIVE_TRACKER_V1.sqlite3"
 NFL_PROPS = ROOT / "nfl" / "PROPS_MODEL_V1_LOG.sqlite3"
-NBA_PROPS = ROOT / "nba" / "NBA_PROPS_MODEL_V2_LOG.sqlite3"   # the live NBA props model since 2026-10-22 (v1 stopped then)
+NBA_PROPS_V2 = ROOT / "nba" / "NBA_PROPS_MODEL_V2_LOG.sqlite3"   # the app's NBA props model 2026-10-22 .. 2026-11-06
+# v3 is the app's NBA props model from 2026-11-07 (owner's decision); its record starts in its own log, not mixed with v2's
+NBA_PROPS = ROOT / "nba" / "NBA_PROPS_MODEL_V3_LOG.sqlite3"
+NBA_PROPS = NBA_PROPS if NBA_PROPS.exists() else NBA_PROPS_V2
 NFL_DECIDER = "OLD_LAB28_43_HYBRID"                          # the decider the app shows (export_lineboard_nfl_v8.py)
 NFL_GAMES_URL = "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"  # as the grader
 NFELO_URL = "https://raw.githubusercontent.com/greerreNFL/nfelo/main/output_data/prediction_tracker.csv"
@@ -114,7 +117,7 @@ MODELS = [
     {"key": "devig2", "name": "DeVig 2.0", "sports": ["NFL"], "author": "DeVig.AI (this project)",
      "url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/nfl/model2/NFL_MODEL_2_0_LIVE_PREREG.md",
      "license": "this project",
-     "note": "NFL Model 1.0 plus who is out (injury reports and rosters). Paper test only: the app's picks stay on Model 1.0."},
+     "note": "NFL Model 1.0 plus who is out (injury reports and rosters). The app's NFL pick since 2026-11-07 (owner's decision); not proven."},
     {"key": "nfelo", "name": "nfelo", "sports": ["NFL"], "author": "Robby Greer (@greerreNFL)",
      "url": "https://github.com/greerreNFL/nfelo", "license": "none stated: only its published picks are read, no code copied",
      "note": "Its weekly picks as published in output_data/prediction_tracker.csv."},

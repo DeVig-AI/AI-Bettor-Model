@@ -1,7 +1,11 @@
 {
- "nfl_game_model": "1.0",
- "since": "2026-10-22T23:00:00Z",
- "until": "2026-11-04T17:00:00Z",
- "review_after": "2026-11-04",
- "why": "Owner's rule (2026-10-22): Model 2.0 was the app's NFL pick from week 7, switching back if Model 1.0 did better after two weeks. Review 2026-11-04 on the 28 games both forecast (weeks 7-8): log loss Model 1.0 0.6087, Model 2.0 0.6190 (Kalshi 0.5960); both 20-8 picking favourites. Model 1.0 did better, so the app is back on Model 1.0 for games from 2026-11-04 17:00 UTC. Games from 'since' to 'until' keep the Model 2.0 picks the app showed. Model 2.0 keeps being paper-tracked on the Models page; its season-end decision rule (NFL_MODEL_2_0_LIVE_PREREG.md) is unchanged."
+ "nfl_game_model": "2.0",
+ "spells": [
+  {"since": "2026-10-22T23:00:00Z", "until": "2026-11-04T17:00:00Z"},
+  {"since": "2026-11-07T03:00:00Z", "until": null}
+ ],
+ "since": "2026-11-07T03:00:00Z",
+ "until": null,
+ "review_after": null,
+ "why": "Owner's decision (2026-11-06): every sport's newer model replaces the old one as the app's pick, since none is proven either way. Model 2.0 is the app's NFL pick again for games from 2026-11-07 03:00 UTC, with no review or switch-back rule. History: Model 2.0 was the app's pick from week 7; the 2026-11-04 review of the 28 games both forecast (weeks 7-8) had log loss Model 1.0 0.6087, Model 2.0 0.6190 (Kalshi 0.5960), both 20-8 picking favourites, so the app went back to Model 1.0 from 2026-11-04 17:00 UTC. Games in each spell keep the picks the app showed. Model 1.0 keeps locking beside it; Model 2.0's season-end decision rule (NFL_MODEL_2_0_LIVE_PREREG.md) is unchanged. Not proven."
 }
