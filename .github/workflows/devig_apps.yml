@@ -128,12 +128,15 @@ jobs:
           npx cap sync ios
           xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
             -destination 'generic/platform=iOS' -derivedDataPath build \
+            MARKETING_VERSION=1.${{ github.run_number }} CURRENT_PROJECT_VERSION=${{ github.run_number }} \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | tail -25
           APP=build/Build/Products/Release-iphoneos/App.app
           test -d "$APP"
           test -d "$APP/PlugIns/DeVigLive.appex"   # the lock-screen cards
           mkdir -p out/Payload && cp -R "$APP" out/Payload/
           (cd out && zip -qr DeVig-iphone.ipa Payload && rm -rf Payload)
+          # the AltStore update feed (each build is stamped 1.<run> so AltStore sees it as new)
+          python3 native/altstore_source.py "$APP" out/DeVig-iphone.ipa ${{ github.run_number }} out/altstore.json
       - uses: actions/upload-artifact@v4
         with:
           name: devig-ios
@@ -164,6 +167,6 @@ jobs:
 
             **Android:** download `DeVig-android.apk` on the phone and open it. Allow installs from your browser or Files app when asked.
 
-            **iPhone:** sideload `DeVig-iphone.ipa` with AltStore or Sideloadly using your Apple ID. With a free Apple ID the app must be refreshed every 7 days (AltStore can do it automatically).
+            **iPhone:** sideload `DeVig-iphone.ipa` with AltStore or Sideloadly using your Apple ID. With a free Apple ID the app must be refreshed every 7 days (AltStore can do it automatically). For one-tap updates, add this source in AltStore (Sources, then +): https://github.com/DeVig-AI/AI-Bettor-Model/releases/latest/download/altstore.json
 
             None of the apps are signed with paid certificates. Paper test data only; nothing is bet.
