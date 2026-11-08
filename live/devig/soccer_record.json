@@ -1,28 +1,49 @@
 {
- "generated_at": "2026-11-08T07:29:27Z",
+ "generated_at": "2026-11-08T15:22:23Z",
  "slot": "SOCCER.ml",
  "champion": "devigsoccer",
  "model": "soccer-v1",
  "rule": "CHAMPION_CHALLENGER_V4_PREREG.md",
  "note": "Locked at the last hourly run before kickoff; 90-minute result; log loss of the chance given to what happened (lower is better). New, not proven: nothing is bet.",
  "devig": {
-  "games": 24,
-  "log_loss": 0.8723,
-  "picked_right": 0.625
+  "games": 25,
+  "log_loss": 0.8903,
+  "picked_right": 0.6
  },
  "shared": {
   "devig": {
-   "games": 24,
-   "log_loss": 0.8723,
-   "picked_right": 0.625
+   "games": 25,
+   "log_loss": 0.8903,
+   "picked_right": 0.6
   },
   "kalshi": {
-   "games": 24,
-   "log_loss": 0.8143,
-   "picked_right": 0.5833
+   "games": 25,
+   "log_loss": 0.835,
+   "picked_right": 0.56
   }
  },
  "recent": [
+  {
+   "game_id": "401874810",
+   "league": "SERIEA",
+   "kickoff": "2026-11-08T11:30Z",
+   "home_name": "Napoli",
+   "away_name": "Lazio",
+   "result": [
+    1,
+    1
+   ],
+   "model": [
+    0.4536,
+    0.2671,
+    0.2793
+   ],
+   "kalshi": [
+    0.403,
+    0.2637,
+    0.3333
+   ]
+  },
   {
    "game_id": "401876407",
    "league": "LIGUE1",
@@ -420,27 +441,6 @@
     0.3433,
     0.2836,
     0.3731
-   ]
-  },
-  {
-   "game_id": "401882809",
-   "league": "LALIGA",
-   "kickoff": "2026-11-06T20:00Z",
-   "home_name": "Sevilla",
-   "away_name": "Alav\u00e9s",
-   "result": [
-    0,
-    0
-   ],
-   "model": [
-    0.4605,
-    0.2627,
-    0.2768
-   ],
-   "kalshi": [
-    0.5075,
-    0.2965,
-    0.196
    ]
   }
  ]
