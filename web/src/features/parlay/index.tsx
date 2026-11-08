@@ -381,15 +381,26 @@ function SlipCard() {
 }
 
 // Each leg's Kalshi buy link, Yes or No already picked: tap, put the money in, submit on Kalshi
-function OnKalshi({ legs }: { legs: Leg[] }) {
+function OnKalshi({ legs: saved }: { legs: Leg[] }) {
   const now = Date.now()
   const key = useKalshiKey()
+  const { rows } = useGames()
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  // a team leg saved before legs carried their Kalshi market gets it again from today's board
+  const legs = saved.map((l) => {
+    if (l.ticker || l.kind !== 'ml' || l.outcome) return l
+    const r = rows.find((x) => x.id === l.gameId)
+    return r ? { ...l, ticker: kalshiTeam(r.ticker, l.sideIsHome ? 'home' : 'away') ?? undefined } : l
+  })
   const links = legs.map((l) => ({ l, b: Date.parse(l.kickoff) > now ? kalshiBuy(l) : null }))
   if (!links.some((x) => x.b)) return null
   // the whole parlay as one combo: needs the Kalshi key set up in Profile (iPhone app), every leg pre-game with a market
-  const combo = key.ready && legs.length >= 2 && links.every((x) => x.b && comboLeg(x.l))
+  const blocked = links.filter((x) => !x.b || !comboLeg(x.l)).map((x) => x.l.short || x.l.label)
+  const combo = key.ready && legs.length >= 2 && !blocked.length
+  // with the key ready, say why there's no combo button instead of leaving it out
+  const whyNot = !key.ready || combo ? '' : legs.length < 2 ? 'Add a second leg to send the parlay as one Kalshi combo.'
+    : `${blocked.join(', ')} ${blocked.length > 1 ? 'have' : 'has'} no Kalshi market open now (or the game started). Take ${blocked.length > 1 ? 'them' : 'it'} off to send the rest as one combo.`
   const send = async () => {
     setBusy(true)
     setErr('')
@@ -409,10 +420,11 @@ function OnKalshi({ legs }: { legs: Leg[] }) {
           <p className='text-sm leading-relaxed text-muted-foreground'>Face ID unlocks your key, Kalshi builds the combo, and it opens ready to buy. Kalshi sets the combo&apos;s price. Or open the legs one at a time:</p>
         </>
       )}
+      {whyNot && <p className='text-sm font-semibold leading-relaxed'>{whyNot}</p>}
       {!combo && (
       <p className='text-sm leading-relaxed text-muted-foreground'>
         Each button opens that leg on Kalshi with {links.length > 1 ? 'its side' : 'the side'} already picked. You put in the money and submit there.
-        {links.length > 1 && (key.available
+        {links.length > 1 && !key.ready && (key.available
           ? <> To send all of them as one combo, set up your Kalshi key in <Link to='/profile' className='font-semibold text-foreground underline underline-offset-4'>Profile</Link>.</>
           : <> To bet them as one ticket, add each leg to a combo on Kalshi.</>)}
       </p>

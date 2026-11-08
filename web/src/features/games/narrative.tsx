@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
-import { type GameRow } from '@/lib/devig'
+import { ChevronDown, Minus, Plus } from 'lucide-react'
+import { type GameRow, fmtAmerican } from '@/lib/devig'
 import { type Level } from '@/lib/experience'
 import { espnCode } from '@/lib/logos'
 import { betLabel, narrativeFor, readFor, tally, useNarrative, type NarrativeLean } from '@/lib/narrative'
+import { useSlip } from '@/lib/parlay'
 import { cn } from '@/lib/utils'
+import { mlLeg } from '../parlay/legs'
 
 // The Narrative button at the bottom of a game's sheet: picks from a model that reads games the way the experts do
 // (tired legs, bounce-back spots, key players out, what the line says), with its reasons. Not proven, and never
@@ -33,6 +35,11 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
   const tw = f.tests.reduce((a, t) => a + t.w, 0)
   const tl = f.tests.reduce((a, t) => a + t.l, 0)
   const label = (p: (typeof picks)[number]) => betLabel(p, p.type === 'side' ? f.kind : 'spread')
+  // the team the experts' read is on (its pick, else its lean), for the parlay button
+  const sidePick = picks.find((p) => p.type === 'side')
+  const team = sidePick?.pick ?? read?.side?.lean ?? null
+  const from = sidePick ?? read
+  const side = !team || !from ? null : team === from.home ? 'home' : team === from.away ? 'away' : null
   return (
     <div className='overflow-hidden rounded-2xl border'>
       <button type='button' aria-expanded={open} onClick={() => setOpen(!open)}
@@ -96,11 +103,40 @@ export function NarrativeButton({ row, level }: { row: GameRow; level: Level }) 
               </div>
             )
           })}
+          {side && row.state === 'pre' && (
+            <NarrativeParlay row={row} side={side} picked={!!sidePick}
+              spread={f.kind === 'spread' && sidePick ? label(sidePick) : null} />
+          )}
           <p className='text-xs text-muted-foreground tabular-nums'>
             {rec.w + rec.l + rec.p ? `${row.sport} live record ${rec.w}–${rec.l}${rec.p ? `–${rec.p}` : ''}. ` : 'No live picks graded yet. '}
             {f.tested ? `Before going live it went ${tw}–${tl} on nights it had never seen.` : `New in ${row.sport}: not tested on past games yet.`}
           </p>
         </div>
+      )}
+    </div>
+  )
+}
+
+// adds the experts' team to the parlay. The parlay takes teams to win, so on a spread pick it says that's a
+// different, longer bet than the pick itself.
+function NarrativeParlay({ row, side, picked, spread }: { row: GameRow; side: 'home' | 'away'; picked: boolean; spread: string | null }) {
+  const { toggle, has } = useSlip()
+  const leg = mlLeg(row, side)
+  if (!leg) return null
+  const on = has(leg.id)
+  const code = leg.short
+  return (
+    <div className='flex flex-col gap-1.5'>
+      <button type='button' aria-pressed={on} onClick={() => toggle(leg)}
+        className={cn('flex h-11 w-full items-center justify-center gap-2 rounded-full border text-sm font-bold transition-colors duration-150',
+          on ? 'bg-background' : 'border-devig/60 text-devig hover:bg-devig/10')}>
+        {on ? <Minus className='size-4' aria-hidden='true' /> : <Plus className='size-4' aria-hidden='true' />}
+        {on ? `Remove ${code} from parlay` : `Add the experts' ${picked ? 'pick' : 'lean'}: ${code} to win ${fmtAmerican(leg.odds)}`}
+      </button>
+      {spread && !on && (
+        <p className='text-xs leading-relaxed text-muted-foreground'>
+          The pick is {spread}. The parlay takes {code} to win the game outright, which is a different and longer bet.
+        </p>
       )}
     </div>
   )

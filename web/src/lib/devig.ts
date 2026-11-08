@@ -1,4 +1,4 @@
-// DeVig data layer for v2. Reads the same public export files the classic app reads (docs/repo-data.js), which the
+// DeVig data layer for v2. Reads the public export files, which the
 // GitHub Actions bots commit to the repo, and joins them into one row per game for the Games board.
 import { useMemo } from 'react'
 import { parse as parseClock } from './game-clock'
