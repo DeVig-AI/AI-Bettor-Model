@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 7 \u00b7 5:40 PM ET",
+    "as_of": "Sat Nov 7 \u00b7 9:21 PM ET",
     "date": "2026-11-07",
     "sport": "NHL"
    },
@@ -265,11 +265,12 @@
      "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
+    "note": "Downgraded from day-to-day",
     "player": "John Gibson",
-    "reason": "G \u00b7 Lower body",
+    "reason": "G",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "DET",
     "tip": "Sat 9:00 PM",
     "tip_sort": "1107-2100"
@@ -329,28 +330,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "13 min a game \u00b7 7 points in 15 games = 5% of FLA's points"
-    },
-    "player": "Sandis Vilmanis",
-    "reason": "LW \u00b7 Undisclosed",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "FLA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nhl-fla-sandis-vilmanis"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "BOS",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "18 min a game \u00b7 6 points in 16 games = 4% of FLA's points"
     },
     "player": "Anton Lundell",
@@ -367,6 +346,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "FLA",
+    "home": "BOS",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "13 min a game \u00b7 7 points in 15 games = 5% of FLA's points"
+    },
+    "player": "Sandis Vilmanis",
+    "reason": "LW \u00b7 Undisclosed",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "FLA",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1108-1300"
+   },
+   "doc_id": "nhl-fla-sandis-vilmanis"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "TB",
     "home": "MIN",
     "impact": {
@@ -375,11 +376,12 @@
      "level": "minor",
      "why": "14 min a game \u00b7 8 points in 18 games = 5% of MIN's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Michael McCarron",
-    "reason": "C \u00b7 Undisclosed",
+    "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "MIN",
     "tip": "Sat 8:00 PM",
     "tip_sort": "1107-2000"
@@ -522,7 +524,7 @@
    "collection": "injuries",
    "data": {
     "away": "NYR",
-    "home": "SEA",
+    "home": "EDM",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -535,8 +537,8 @@
     "starter": false,
     "status": "Out",
     "team": "NYR",
-    "tip": "Sat 5:00 PM",
-    "tip_sort": "1107-1700"
+    "tip": "Mon 8:00 PM",
+    "tip_sort": "1109-2000"
    },
    "doc_id": "nhl-nyr-alberts-smits"
   },
@@ -544,7 +546,7 @@
    "collection": "injuries",
    "data": {
     "away": "NYR",
-    "home": "SEA",
+    "home": "EDM",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -557,8 +559,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "NYR",
-    "tip": "Sat 5:00 PM",
-    "tip_sort": "1107-1700"
+    "tip": "Mon 8:00 PM",
+    "tip_sort": "1109-2000"
    },
    "doc_id": "nhl-nyr-sean-durzi"
   },
@@ -566,7 +568,7 @@
    "collection": "injuries",
    "data": {
     "away": "NYR",
-    "home": "SEA",
+    "home": "EDM",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -579,8 +581,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "NYR",
-    "tip": "Sat 5:00 PM",
-    "tip_sort": "1107-1700"
+    "tip": "Mon 8:00 PM",
+    "tip_sort": "1109-2000"
    },
    "doc_id": "nhl-nyr-igor-shesterkin"
   },
@@ -697,24 +699,24 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "NYR",
-    "home": "SEA",
+    "away": "MTL",
+    "home": "TOR",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+     "why": "20 min a game \u00b7 12 points in 17 games = 7% of TOR's points"
     },
-    "player": "Nikke Kokko",
-    "reason": "G",
+    "player": "Morgan Rielly",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Injured Reserve",
-    "team": "SEA",
-    "tip": "Sat 5:00 PM",
-    "tip_sort": "1107-1700"
+    "status": "Day-To-Day",
+    "team": "TOR",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1107-1900"
    },
-   "doc_id": "nhl-sea-nikke-kokko"
+   "doc_id": "nhl-tor-morgan-rielly"
   },
   {
    "collection": "injuries",
@@ -771,11 +773,12 @@
      "level": "some",
      "why": "19 min a game \u00b7 4 points in 17 games = 2% of UTA's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Nate Schmidt",
-    "reason": "D",
+    "reason": "D \u00b7 Upper body",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "UTA",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1107-1900"
@@ -904,10 +907,10 @@
      "why": "18 min a game \u00b7 0 points in 6 games = 0% of WPG's points"
     },
     "player": "Elias Salomonsson",
-    "reason": "D \u00b7 Personal",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Injured Reserve",
     "team": "WPG",
     "tip": "Sun 6:00 PM",
     "tip_sort": "1108-1800"
@@ -959,6 +962,6 @@
    "doc_id": "nhl-wpg-josh-morrissey"
   }
  ],
- "generated_at": "2026-11-07T22:40:31Z",
+ "generated_at": "2026-11-08T02:21:43Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
