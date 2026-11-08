@@ -22,6 +22,9 @@ const head = (k: string) => HEAD[k] ?? k.replace(/[a-z]+/g, (w, i) => (i ? '' : 
 // team totals worth a line under each table
 const TEAM = [['totalRebounds', 'Reb'], ['fouls', 'Fouls'], ['turnovers', 'TO'], ['fieldGoalPct', 'FG%'], ['threePointFieldGoalPct', '3P%'], ['largestLead', 'Lead']]
 
+// Kalshi sometimes names only the surname
+const hits = (name: string, want: string) => { const n = normName(name); return n === want || n.endsWith(` ${want}`) }
+
 type Raw = any // eslint-disable-line @typescript-eslint/no-explicit-any
 type Group = { name: string; keys: string[]; rows: { id: string; name: string; stats: string[] }[] }
 
@@ -62,7 +65,7 @@ export function BoxScore({ row, focus }: { row: GameRow; focus?: string }) {
   // open on the focused player's team
   const focusSide = useMemo(() => {
     if (!teams || !want) return null
-    for (const s of ['away', 'home'] as const) if (teams.g[s].some((g) => g.rows.some((r) => normName(r.name) === want))) return s
+    for (const s of ['away', 'home'] as const) if (teams.g[s].some((g) => g.rows.some((r) => hits(r.name, want)))) return s
     return null
   }, [teams, want])
   const shown = side ?? focusSide ?? 'away'
@@ -102,7 +105,7 @@ export function BoxScore({ row, focus }: { row: GameRow; focus?: string }) {
               </thead>
               <tbody>
                 {g.rows.map((r) => {
-                  const me = !!want && normName(r.name) === want
+                  const me = !!want && hits(r.name, want)
                   return (
                     <tr key={r.id} ref={me ? hit : undefined} className={cn('border-t', me && 'bg-devig/15')}>
                       <th scope='row' className={cn('sticky left-0 max-w-[9.5rem] truncate px-4 py-2 text-left font-semibold', me ? 'bg-[color-mix(in_oklab,var(--devig)_15%,var(--card))]' : 'bg-card')}>{r.name}</th>
