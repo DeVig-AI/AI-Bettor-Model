@@ -1,12 +1,11 @@
 # DeVig apps
 
-**Web app (free, no Claude):** https://devigai.pages.dev/
-It is DeVig.AI reading the repo's export files directly (`docs/repo-data.js`). On a phone, open it and use
-Share → Add to Home Screen.
+**Web app:** https://devigai.pages.dev/ (the root opens DeVig at `/v2/`, built from `web/` into `docs/v2`).
+On a phone, open it and use Share → Add to Home Screen.
 
-**Updating the app:** change `docs/` (or rebuild it from a new copy of DeVig with
-`python3 tools/build_free_app.py tools/devig_source.html`) and push to `main`. GitHub Pages redeploys in about a
-minute, and the web, Mac and Windows apps all show the new version on their next open.
+**Updating the app:** change `web/`, run `npm run build` in `web/` (it writes `docs/v2`) and push to `main`.
+Cloudflare Pages redeploys in about a minute, and the web, Mac, Windows and phone apps all show the new version on
+their next open.
 
 **Downloads (Mac, Windows, Android, iPhone):** Actions → "DeVig apps -- build Mac, Windows, Android and iPhone
 downloads" → Run workflow. It builds `DeVig-mac.dmg`, `DeVig-Setup-windows.exe`, `DeVig-android.apk` and

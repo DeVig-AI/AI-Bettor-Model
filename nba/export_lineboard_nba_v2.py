@@ -9,7 +9,7 @@ trial, are exactly v1. Everything else is v1, unchanged.
 
 export_lineboard_nba.py -- turns the NBA tracker database into the app's game documents (nba/lineboard_export.json),
 the same shape as mlb/export_lineboard_mlb_v2.py writes for MLB, so locked NBA picks show up in the free app
-(docs/repo-data.js reads this file). Reads only: never touches NBA_PROSPECTIVE_TRACKER_V1.sqlite3's contents.
+(the app reads this file). Reads only: never touches NBA_PROSPECTIVE_TRACKER_V1.sqlite3's contents.
 
 Per game with a locked pick:
   - a `slate` doc     (game card: Kalshi moneyline + the model's read)
@@ -42,7 +42,7 @@ V2 = "NBA_MODEL_C_INJ_V1_LIVE"
 V2_TIERS = json.loads((SCRIPT_DIR / "nba_v2_tiers.json").read_text())
 RECENT_DAYS = 5
 
-# full team names in the tracker -> the codes the app uses (TEAM_COLORS.NBA in tools/devig_source.html)
+# full team names in the tracker -> the codes the app uses (the app's NBA team codes)
 CODE = {
     "Atlanta Hawks": "ATL", "Boston Celtics": "BOS", "Brooklyn Nets": "BKN", "Charlotte Hornets": "CHA",
     "Chicago Bulls": "CHI", "Cleveland Cavaliers": "CLE", "Dallas Mavericks": "DAL", "Denver Nuggets": "DEN",
