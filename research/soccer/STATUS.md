@@ -1,6 +1,6 @@
 # Research Lab -- status (Soccer)
 
-_Generated 2026-11-08T22:46:36Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-08T22:51:47Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -18,7 +18,7 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
-- **Search round 67 (SOCCER, running)** 2026-11-08T22:36:36Z: 368 of 400 models scored on 2020–2022
+- **Search round 67** 2026-11-08T22:51:46Z: 463 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 66** 2026-11-08T21:35:15Z: 209 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 65** 2026-11-08T20:32:09Z: 211 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 64** 2026-11-08T19:33:47Z: 227 models scored → 0 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
