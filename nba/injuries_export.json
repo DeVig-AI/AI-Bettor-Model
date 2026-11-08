@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 8 \u00b7 5:00 AM ET report",
+    "as_of": "Nov 8 \u00b7 12:00 PM ET report",
     "date": "2026-11-08",
     "not_submitted": {
      "BKN@DAL": [
@@ -42,7 +42,7 @@
       "DET"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-08_05_00AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-08_12_00PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -207,6 +207,28 @@
     "away": "PHI",
     "home": "CHI",
     "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "29 min \u00b7 19.2 pts a game = 17% of CHI's points"
+    },
+    "player": "Norman Powell",
+    "reason": "Right Shoulder Inflammation/Soreness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CHI",
+    "tip": "3:30 PM",
+    "tip_sort": "11081530"
+   },
+   "doc_id": "nba-chi-norman-powell"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "home": "CHI",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -310,6 +332,28 @@
     "tip_sort": "11081800"
    },
    "doc_id": "nba-det-isaiah-joe"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UTA",
+    "home": "MIN",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "32 min \u00b7 21.3 pts a game = 20% of UTA's points"
+    },
+    "player": "Keyonte George",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "UTA",
+    "tip": "7:00 PM",
+    "tip_sort": "11081900"
+   },
+   "doc_id": "nba-uta-keyonte-george"
   },
   {
    "collection": "injuries",
@@ -708,6 +752,6 @@
    "doc_id": "nba-lac-yanic-konan-niederhauser"
   }
  ],
- "generated_at": "2026-11-08T10:10:41Z",
- "source": "NBA official injury report (Injury-Report_2026-11-08_05_00AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-08T17:00:38Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-08_12_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
