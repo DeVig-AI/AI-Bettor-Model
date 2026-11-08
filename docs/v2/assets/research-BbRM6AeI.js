@@ -1,0 +1,1 @@
+import{t as e}from"./research-l4_Uv425.js";var t=e;export{t as component};

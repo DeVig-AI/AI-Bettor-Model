@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { Link } from '@tanstack/react-router'
 import { AlertTriangle, Check, Lightbulb, X } from 'lucide-react'
 import type { KRead, Saved } from '@/lib/kalshi-link'
 import {
@@ -202,7 +203,7 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
           const gap = dv && ref != null ? dv.p - ref : 0
           return (
             <li key={i.key} className='flex flex-col gap-1.5'>
-              <KalshiLegBar i={i} game={game ?? null} right={
+              <LegLink id={game?.row?.id} player={i.player}><KalshiLegBar i={i} game={game ?? null} right={
                 l.result ? (
                   <span className={cn('flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-bold', l.result === 'won' ? 'bg-white text-[#0f7a3d]' : 'bg-black/45 text-white')}>
                     {l.result === 'won' ? <Check className='size-3.5' aria-hidden='true' /> : <X className='size-3.5' aria-hidden='true' />}
@@ -216,7 +217,7 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
                     )}
                   </span>
                 )
-              } />
+              } /></LegLink>
               <div className='flex flex-col gap-1 px-1 text-sm'>
                 <LegNow i={i} game={game ?? null} sum={sum ?? null} out={out} lost={l.result === 'lost'} />
                 <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
@@ -275,5 +276,15 @@ function KalshiLegBar({ i, game, right }: { i: LegInfo; game: LegGame | null; ri
       right={right}
       className={i.leg.result === 'lost' ? 'opacity-75' : undefined}
     />
+  )
+}
+
+// tapping a leg opens its game page (box score, with a prop's player highlighted); legs on games DeVig doesn't list stay put
+function LegLink({ id, player, children }: { id: string | undefined; player: string | null; children: React.ReactNode }) {
+  if (!id) return <>{children}</>
+  return (
+    <Link to='/game/$id' params={{ id }} search={(player ? { player } : {}) as never} aria-label='Open this game' className='block rounded-[18px] active:opacity-80'>
+      {children}
+    </Link>
   )
 }
