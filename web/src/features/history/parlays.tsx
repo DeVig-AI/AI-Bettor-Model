@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
-import { Check, Clock, Circle, X } from 'lucide-react'
+import { Check, ChevronRight, Clock, Circle, X } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { type GameRow, fmtAmerican, isSoccer, useFinals, useGames } from '@/lib/devig'
 import { decimal } from '@/lib/parlay'
 import { readLink } from '@/lib/kalshi-link'
@@ -144,18 +145,35 @@ function RemoveButton({ id }: { id: string }) {
 }
 
 function LegList({ p }: { p: Graded }) {
+  const { rows } = useGames()
+  const { finals } = useFinals()
   return (
     <ul className='border-t'>
       {p.legs.map((l, i) => {
         const s = p.states[i]
-        return (
-          <li key={i} className='flex min-h-11 items-center gap-3 px-4 py-2.5'>
+        // tap a leg to open its game: the box score, with a prop's player highlighted
+        const g = findGame(l, rows) ?? findGame(l, finals)
+        const body = (
+          <>
             <LegIcon st={s.st} />
             <span className='flex min-w-0 flex-1 flex-col'>
               <span className='truncate font-semibold'>{l.desc}</span>
               <span className='truncate text-xs text-muted-foreground'>{s.note || l.game}</span>
             </span>
             <span className='font-condensed text-[15px] font-bold tabular-nums'>{fmtAmerican(l.odds)}</span>
+            {g && <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />}
+          </>
+        )
+        return (
+          <li key={i}>
+            {g ? (
+              <Link to='/game/$id' params={{ id: g.id }} search={(l.player ? { player: l.player } : {}) as never}
+                aria-label={`${l.desc}: open the game`} className='flex min-h-11 items-center gap-3 px-4 py-2.5 active:bg-muted/50'>
+                {body}
+              </Link>
+            ) : (
+              <div className='flex min-h-11 items-center gap-3 px-4 py-2.5'>{body}</div>
+            )}
           </li>
         )
       })}

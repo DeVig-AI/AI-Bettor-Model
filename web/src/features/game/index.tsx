@@ -17,6 +17,7 @@ import { CourtMovers } from './court'
 import { RinkMovers } from './rink'
 import { GapChart } from './gap'
 import { GameWrap } from './wrap'
+import { BoxScore } from './box-score'
 import { SoccerGame } from './soccer'
 import { Streaks } from '../props/streaks'
 
@@ -106,6 +107,7 @@ function Read({ row, onWhy }: { row: GameRow; onWhy: (s: Side) => void }) {
 }
 
 export function GamePage({ id }: { id: string }) {
+  const focus = useMemo(() => new URLSearchParams(window.location.search).get('player') ?? undefined, [])
   const { rows, isLoading } = useGames()
   const { finals } = useFinals()
   const { lines } = useProps()
@@ -194,6 +196,8 @@ export function GamePage({ id }: { id: string }) {
           <FieldMovers row={row} />
           <CourtMovers row={row} />
           <RinkMovers row={row} />
+
+        <BoxScore row={row} focus={focus} />
 
         <GameWrap row={row} />
 

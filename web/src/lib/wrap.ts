@@ -85,7 +85,7 @@ export function boxPlayers(sum: Raw, sides: Record<string, Side>): Box[] {
   return [...byId.values()]
 }
 
-function teamStats(sum: Raw, sides: Record<string, Side>): Record<Side, Record<string, string>> {
+export function teamStats(sum: Raw, sides: Record<string, Side>): Record<Side, Record<string, string>> {
   const out: Record<Side, Record<string, string>> = { away: {}, home: {} }
   for (const t of sum.boxscore?.teams ?? []) {
     const side: Side | undefined = t.homeAway ?? sides[String(t.team?.id)]
