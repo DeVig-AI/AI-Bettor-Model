@@ -101,7 +101,8 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
   }, [decided, infos, games, weakestKey, anyStarted, g.hit, snap?.hit, d.fetched_at])
 
   const learn = decided ? takeaways(take, snap?.hit ?? g.hit, snap?.letter ?? g.letter) : []
-  const outs = all.map((s) => s.outcome).filter((o): o is Outcome => !!o)
+  // every OTHER combo you checked here that's over; this one counts only once it's decided
+  const outs = all.filter((s) => s !== entry || decided).map((s) => s.outcome).filter((o): o is Outcome => !!o)
   const past = lessons(outs)
 
   return (
@@ -125,10 +126,11 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
       )}
       {decided && share && <ShareCard t={share.t} legs={share.legs} letter={snap?.letter ?? g.letter} won={won} />}
       {outs.length >= 2 && (
-        <section aria-label='What your saved parlays say' className='rounded-[18px] bg-card p-4'>
-          <h3 className='font-display text-lg font-extrabold'>What your {outs.length} finished parlays say</h3>
+        <section aria-label='Your past checked combos' className='rounded-[18px] bg-card p-4'>
+          <h3 className='font-display text-lg font-extrabold'>What your {outs.length} finished combos say</h3>
+          <p className='mt-1 text-sm text-muted-foreground'>{decided ? 'Includes this one.' : 'Not this one: it’s still going. These are earlier combos you checked here.'}</p>
           <ul className='mt-2 flex list-disc flex-col gap-2 ps-5 text-sm leading-relaxed'>{past.map((t, n) => <li key={n}>{t}</li>)}</ul>
-          <p className='mt-2 text-xs text-muted-foreground'>From the combos you&apos;ve checked here, saved on this device.</p>
+          <p className='mt-2 text-xs text-muted-foreground'>Each combo counts once its result is in. Saved on this device.</p>
         </section>
       )}
     </div>
