@@ -17,7 +17,12 @@ export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
   const code = side === 'home' ? r.home : r.away
   const fair = r.fairHome == null ? null : side === 'home' ? r.fairHome : 1 - r.fairHome
   const p = r.pick
-  const devig = p?.side && p.prob != null && p.action !== 'PASS' ? (p.side === code ? p.prob : 1 - p.prob) : null
+  // the model's chance for this team: its pick, or on a pass the side it leaned to (a pass means the lean didn't clear
+  // the bar to bet, not that the model has no number)
+  const passed = !(p?.side && p.prob != null && p.action !== 'PASS')
+  const team = passed ? p?.lean : p?.side
+  const chance = passed ? p?.leanProb : p?.prob
+  const devig = team && chance != null ? (team === code ? chance : 1 - chance) : null
   const away = hex(r.colors?.away)
   const home = hex(r.colors?.home)
   return {
@@ -32,7 +37,8 @@ export function mlLeg(r: GameRow, side: 'away' | 'home'): Leg | null {
     odds: Math.round(odds),
     fair,
     devig,
-    devigNote: devig == null ? null : `${r.sport} model, locked pregame`,
+    devigLean: devig != null && passed,
+    devigNote: devig == null ? null : passed ? `${r.sport} model's lean (it passed on betting this game)` : `${r.sport} model, locked pregame`,
     colors: away && home ? { away, home } : null,
     sideIsHome: side === 'home',
     ticker: kalshiTeam(r.ticker, side),
