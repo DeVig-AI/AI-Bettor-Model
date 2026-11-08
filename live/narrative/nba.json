@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-08T15:22:26+00:00",
+ "updated": "2026-11-08T19:48:26+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -55,15 +55,40 @@
    "book": "DraftKings",
    "result": null,
    "final": null,
-   "type": "side",
-   "pick": "LAL",
-   "line": 4.5,
+   "type": "total",
+   "pick": "OVER",
+   "line": 217.5,
    "score": 2.5,
    "why_for": [
-    "Fade the line move: LAL went from +2.5 to +4.5",
-    "DET: Jalen Duren (13 points a game) is out"
+    "Pace: their games average 225 points, the total is 217.5",
+    "Buy low on the dropping total: 223.5 to 217.5"
    ],
    "why_opp": []
+  },
+  {
+   "id": "401909945",
+   "date": "2026-11-08",
+   "start": "2026-11-08T20:30Z",
+   "game": "PHI @ CHI",
+   "home": "CHI",
+   "away": "PHI",
+   "home_id": "4",
+   "away_id": "20",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "PHI",
+   "line": -9.5,
+   "score": 2.0,
+   "why_for": [
+    "Bounce-back spot after losing by 24",
+    "CHI: Norman Powell (19 points a game) is out",
+    "CHI: Struggling team (one win or fewer)"
+   ],
+   "why_opp": [
+    "CHI: Bounce-back spot after losing by 30"
+   ]
   },
   {
    "id": "401909944",
@@ -595,7 +620,7 @@
    },
    "total": {
     "lean": null,
-    "line": 238.5,
+    "line": 237.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -624,7 +649,7 @@
    },
    "total": {
     "lean": null,
-    "line": 221.5,
+    "line": 222.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -685,7 +710,7 @@
    },
    "total": {
     "lean": null,
-    "line": 223.5,
+    "line": 222.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -703,19 +728,23 @@
    "note": null,
    "side": {
     "lean": "LAL",
-    "score": 2.5,
+    "score": 1.0,
     "capped": false,
     "why_for": [
-     "Fade the line move: LAL went from +2.5 to +4.5",
+     "Luka Doncic (40 points a game) is out",
+     "Fade the line move: LAL went from +2.5 to +6.5",
      "DET: Jalen Duren (13 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 221.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 217.5,
+    "score": 2.5,
+    "why_for": [
+     "Pace: their games average 225 points, the total is 217.5",
+     "Buy low on the dropping total: 223.5 to 217.5"
+    ],
     "why_opp": []
    }
   },
@@ -731,10 +760,11 @@
    "note": null,
    "side": {
     "lean": "PHI",
-    "score": 0.5,
+    "score": 2.0,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 24",
+     "CHI: Norman Powell (19 points a game) is out",
      "CHI: Struggling team (one win or fewer)"
     ],
     "why_opp": [

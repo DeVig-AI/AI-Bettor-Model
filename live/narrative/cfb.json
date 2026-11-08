@@ -4,10 +4,54 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-08T15:22:45+00:00",
+ "updated": "2026-11-08T19:48:51+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401864537",
+   "date": "2026-11-14",
+   "start": "2026-11-15T04:00Z",
+   "game": "NDSU @ HAW",
+   "home": "HAW",
+   "away": "NDSU",
+   "home_id": "62",
+   "away_id": "2449",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "NDSU",
+   "line": -7.5,
+   "score": 2.0,
+   "why_for": [
+    "Coming off a bye week, rested and with extra time to prepare",
+    "Fade the line move: NDSU went from -9.5 to -7.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401856863",
+   "date": "2026-11-14",
+   "start": "2026-11-15T02:30Z",
+   "game": "TTU @ OKST",
+   "home": "OKST",
+   "away": "TTU",
+   "home_id": "197",
+   "away_id": "2641",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "UNDER",
+   "line": 73.5,
+   "score": 2.5,
+   "why_for": [
+    "Pace: their games average 66 points, the total is 73.5",
+    "Fade the inflated total: 61.5 to 73.5"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401858296",
    "date": "2026-11-14",
@@ -66,10 +110,10 @@
    "final": null,
    "type": "side",
    "pick": "WMU",
-   "line": -13.5,
+   "line": -14.0,
    "score": 2.0,
    "why_for": [
-    "Line tell: the line rates WMU 5.9 points better than results so far",
+    "Line tell: the line rates WMU 6.4 points better than results so far",
     "AKR: Struggling team (one win or fewer)"
    ],
    "why_opp": []
@@ -305,7 +349,24 @@
    "away": "NDSU",
    "home_id": "62",
    "away_id": "2449",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "NDSU",
+    "score": 2.0,
+    "capped": false,
+    "why_for": [
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Fade the line move: NDSU went from -9.5 to -7.5"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 40.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401860917",
@@ -316,7 +377,28 @@
    "away": "CSU",
    "home_id": "265",
    "away_id": "36",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "CSU",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 26",
+     "WSU: Struggling team (one win or fewer)"
+    ],
+    "why_opp": [
+     "WSU: Coming off a bye week, rested and with extra time to prepare"
+    ]
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 65.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 62.5 to 65.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401864540",
@@ -327,7 +409,23 @@
    "away": "WYO",
    "home_id": "2638",
    "away_id": "2751",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "WYO",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "UTEP: Struggling team (one win or fewer)"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 41.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401860915",
@@ -338,7 +436,53 @@
    "away": "USU",
    "home_id": "21",
    "away_id": "328",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "SDSU",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Coming off a bye week, rested and with extra time to prepare"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 44.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856863",
+   "date": "2026-11-14",
+   "start": "2026-11-15T02:30Z",
+   "game": "TTU @ OKST",
+   "home": "OKST",
+   "away": "TTU",
+   "home_id": "197",
+   "away_id": "2641",
+   "note": null,
+   "side": {
+    "lean": "TTU",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Fade the line move: TTU went from -15.5 to +3"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 73.5,
+    "score": 2.5,
+    "why_for": [
+     "Pace: their games average 66 points, the total is 73.5",
+     "Fade the inflated total: 61.5 to 73.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401862827",
@@ -349,7 +493,25 @@
    "away": "UNT",
    "home_id": "2636",
    "away_id": "249",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "UTSA",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 31"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 77.5,
+    "score": 1.5,
+    "why_for": [
+     "Pace: their games average 69 points, the total is 77.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401856882",
@@ -385,7 +547,21 @@
    "away": "UNLV",
    "home_id": "167",
    "away_id": "2439",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 47.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858519",
@@ -396,7 +572,80 @@
    "away": "PUR",
    "home_id": "2294",
    "away_id": "2509",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 45.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856885",
+   "date": "2026-11-14",
+   "start": "2026-11-15T00:30Z",
+   "game": "TEX @ LSU",
+   "home": "LSU",
+   "away": "TEX",
+   "home_id": "99",
+   "away_id": "251",
+   "note": null,
+   "side": {
+    "lean": "TEX",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Fade the line move: TEX went from -3 to +4"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 46.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 54.5 to 46.5"
+    ],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401858299",
+   "date": "2026-11-14",
+   "start": "2026-11-15T00:30Z",
+   "game": "STAN @ VT",
+   "home": "VT",
+   "away": "STAN",
+   "home_id": "259",
+   "away_id": "24",
+   "note": null,
+   "side": {
+    "lean": "STAN",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Bounce-back spot after losing by 28"
+    ],
+    "why_opp": [
+     "VT: Bounce-back spot after losing by 23"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 59.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858524",
@@ -432,7 +681,21 @@
    "away": "SJSU",
    "home_id": "2005",
    "away_id": "23",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 47.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401871100",
@@ -443,7 +706,77 @@
    "away": "TROY",
    "home_id": "6",
    "away_id": "2653",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "TROY",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 24"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 56.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401858298",
+   "date": "2026-11-14",
+   "start": "2026-11-15T00:00Z",
+   "game": "LOU @ UNC",
+   "home": "UNC",
+   "away": "LOU",
+   "home_id": "153",
+   "away_id": "97",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 60.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856884",
+   "date": "2026-11-14",
+   "start": "2026-11-14T23:15Z",
+   "game": "FLA @ UK",
+   "home": "UK",
+   "away": "FLA",
+   "home_id": "96",
+   "away_id": "57",
+   "note": null,
+   "side": {
+    "lean": "UK",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 28"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 52.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 55.5 to 52.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401860914",
@@ -454,7 +787,28 @@
    "away": "ORST",
    "home_id": "68",
    "away_id": "204",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "ORST",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 21",
+     "Fade the line move: ORST went from +4.5 to +10"
+    ],
+    "why_opp": [
+     "BOIS: Line tell: the line rates BOIS 6.2 points better than results so far"
+    ]
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 65.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 62.5 to 65.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401869928",
@@ -465,7 +819,23 @@
    "away": "APP",
    "home_id": "276",
    "away_id": "2026",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "MRSH",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 36"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 53.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401871099",
@@ -476,7 +846,50 @@
    "away": "USM",
    "home_id": "2348",
    "away_id": "2572",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "LT",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates LT 5.9 points better than results so far"
+    ],
+    "why_opp": [
+     "USM: Bounce-back spot after losing by 31"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 54.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856861",
+   "date": "2026-11-14",
+   "start": "2026-11-14T22:00Z",
+   "game": "KU @ WVU",
+   "home": "WVU",
+   "away": "KU",
+   "home_id": "277",
+   "away_id": "2305",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 64.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858521",
@@ -487,7 +900,52 @@
    "away": "WASH",
    "home_id": "127",
    "away_id": "264",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 45.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856887",
+   "date": "2026-11-14",
+   "start": "2026-11-14T21:15Z",
+   "game": "MISS @ OU",
+   "home": "OU",
+   "away": "MISS",
+   "home_id": "201",
+   "away_id": "145",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 35"
+    ],
+    "why_opp": [
+     "OU: Fade the line move: OU went from -4 to +2.5"
+    ]
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 50.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 53.5 to 50.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401860916",
@@ -498,7 +956,21 @@
    "away": "FRES",
    "home_id": "326",
    "away_id": "278",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 58.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858518",
@@ -554,7 +1026,7 @@
    },
    "total": {
     "lean": null,
-    "line": 52.5,
+    "line": 53.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -581,10 +1053,10 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 41.5,
+    "line": 40.5,
     "score": 1.0,
     "why_for": [
-     "Buy low on the dropping total: 53.5 to 41.5"
+     "Buy low on the dropping total: 53.5 to 40.5"
     ],
     "why_opp": []
    }
@@ -598,7 +1070,27 @@
    "away": "CAL",
    "home_id": "258",
    "away_id": "25",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Bounce-back spot after losing by 21"
+    ],
+    "why_opp": [
+     "UVA: Coming off a bye week, rested and with extra time to prepare",
+     "UVA: Bounce-back spot after losing by 44"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 47.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401862826",
@@ -609,7 +1101,23 @@
    "away": "FAU",
    "home_id": "202",
    "away_id": "2226",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 70.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 66.5 to 70.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401864536",
@@ -620,7 +1128,24 @@
    "away": "NEV",
    "home_id": "2459",
    "away_id": "2440",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "NEV",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 28",
+     "NIU: Struggling team (one win or fewer)"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 46.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401869952",
@@ -631,7 +1156,23 @@
    "away": "GASO",
    "home_id": "2247",
    "away_id": "290",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "GASO",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates GASO 8.7 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 55.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401870752",
@@ -642,7 +1183,21 @@
    "away": "JXST",
    "home_id": "98",
    "away_id": "55",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 52.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401871061",
@@ -653,7 +1208,73 @@
    "away": "MTSU",
    "home_id": "2335",
    "away_id": "2393",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "LIB",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates LIB 6.1 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 53.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856883",
+   "date": "2026-11-14",
+   "start": "2026-11-14T20:30Z",
+   "game": "MIZ @ UGA",
+   "home": "UGA",
+   "away": "MIZ",
+   "home_id": "61",
+   "away_id": "142",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 47.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856857",
+   "date": "2026-11-14",
+   "start": "2026-11-14T20:30Z",
+   "game": "ASU @ UCF",
+   "home": "UCF",
+   "away": "ASU",
+   "home_id": "2116",
+   "away_id": "9",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 51.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401870796",
@@ -664,7 +1285,21 @@
    "away": "NMSU",
    "home_id": "2623",
    "away_id": "166",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401871060",
@@ -675,7 +1310,52 @@
    "away": "FIU",
    "home_id": "48",
    "away_id": "2229",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 54.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 50.5 to 54.5"
+    ],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856888",
+   "date": "2026-11-14",
+   "start": "2026-11-14T20:00Z",
+   "game": "TENN @ TA&M",
+   "home": "TA&M",
+   "away": "TENN",
+   "home_id": "245",
+   "away_id": "2633",
+   "note": null,
+   "side": {
+    "lean": "TA&M",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Fade the line move: TA&M went from -9.5 to +3"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 41.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 55.5 to 41.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401862828",
@@ -686,7 +1366,27 @@
    "away": "TULN",
    "home_id": "242",
    "away_id": "2655",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "TULN",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 50",
+     "Fade the line move: TULN went from -1.5 to +1.5",
+     "RICE: Struggling team (one win or fewer)"
+    ],
+    "why_opp": [
+     "RICE: Bounce-back spot after losing by 29"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 48.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401870769",
@@ -697,7 +1397,53 @@
    "away": "KENN",
    "home_id": "2534",
    "away_id": "338",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "KENN",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates KENN 6.9 points better than results so far",
+     "SHSU: Struggling team (one win or fewer)"
+    ],
+    "why_opp": [
+     "SHSU: Bounce-back spot after losing by 33"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 46.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401856862",
+   "date": "2026-11-14",
+   "start": "2026-11-14T19:00Z",
+   "game": "KSU @ TCU",
+   "home": "TCU",
+   "away": "KSU",
+   "home_id": "2628",
+   "away_id": "2306",
+   "note": null,
+   "side": {
+    "lean": "KSU",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 38"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 46.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401862825",
@@ -708,7 +1454,24 @@
    "away": "ECU",
    "home_id": "2429",
    "away_id": "151",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "ECU",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Fade the line move: ECU went from -13.5 to -11.5",
+     "CLT: Struggling team (one win or fewer)"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 45.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401862829",
@@ -719,7 +1482,21 @@
    "away": "UAB",
    "home_id": "218",
    "away_id": "5",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401869937",
@@ -730,7 +1507,21 @@
    "away": "ARST",
    "home_id": "324",
    "away_id": "2032",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856889",
@@ -768,7 +1559,25 @@
    "away": "GT",
    "home_id": "228",
    "away_id": "59",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "CLEM",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates CLEM 5.8 points better than results so far"
+    ],
+    "why_opp": [
+     "GT: Bounce-back spot after losing by 27"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 49.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858525",
@@ -779,7 +1588,25 @@
    "away": "NEB",
    "home_id": "164",
    "away_id": "158",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "NEB",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates NEB 5.8 points better than results so far"
+    ],
+    "why_opp": [
+     "RUTG: Bounce-back spot after losing by 21"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 53.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858296",
@@ -870,7 +1697,23 @@
    "away": "AUB",
    "home_id": "344",
    "away_id": "2",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "AUB",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates AUB 6.2 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858300",
@@ -881,7 +1724,23 @@
    "away": "SYR",
    "home_id": "152",
    "away_id": "183",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "NCSU",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 38"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 56.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858520",
@@ -934,14 +1793,14 @@
    }
   },
   {
-   "id": "401856883",
+   "id": "401856859",
    "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "MIZ @ UGA",
-   "home": "UGA",
-   "away": "MIZ",
-   "home_id": "61",
-   "away_id": "142",
+   "start": "2026-11-14T17:00Z",
+   "game": "CIN @ ISU",
+   "home": "ISU",
+   "away": "CIN",
+   "home_id": "66",
+   "away_id": "2132",
    "note": null,
    "side": {
     "lean": null,
@@ -952,7 +1811,7 @@
    },
    "total": {
     "lean": null,
-    "line": 47.5,
+    "line": 60.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -984,62 +1843,6 @@
    }
   },
   {
-   "id": "401856884",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "FLA @ UK",
-   "home": "UK",
-   "away": "FLA",
-   "home_id": "96",
-   "away_id": "57",
-   "note": null,
-   "side": {
-    "lean": "UK",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 28"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 53.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856885",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "TEX @ LSU",
-   "home": "LSU",
-   "away": "TEX",
-   "home_id": "99",
-   "away_id": "251",
-   "note": null,
-   "side": {
-    "lean": "TEX",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: TEX went from -3 to +4.5"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 45.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 54.5 to 45.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
    "id": "401856858",
    "date": "2026-11-14",
    "start": "2026-11-14T05:00Z",
@@ -1067,175 +1870,6 @@
    }
   },
   {
-   "id": "401856887",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "MISS @ OU",
-   "home": "OU",
-   "away": "MISS",
-   "home_id": "201",
-   "away_id": "145",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 35"
-    ],
-    "why_opp": [
-     "OU: Fade the line move: OU went from -4 to +2.5"
-    ]
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 50.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 53.5 to 50.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856888",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "TENN @ TA&M",
-   "home": "TA&M",
-   "away": "TENN",
-   "home_id": "245",
-   "away_id": "2633",
-   "note": null,
-   "side": {
-    "lean": "TA&M",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: TA&M went from -9.5 to +3"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 43.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 55.5 to 43.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856863",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "TTU @ OKST",
-   "home": "OKST",
-   "away": "TTU",
-   "home_id": "197",
-   "away_id": "2641",
-   "note": null,
-   "side": {
-    "lean": "TTU",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: TTU went from -15.5 to +2.5"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "UNDER",
-    "line": 70.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 61.5 to 70.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856857",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "ASU @ UCF",
-   "home": "UCF",
-   "away": "ASU",
-   "home_id": "2116",
-   "away_id": "9",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401856859",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "CIN @ ISU",
-   "home": "ISU",
-   "away": "CIN",
-   "home_id": "66",
-   "away_id": "2132",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401856861",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "KU @ WVU",
-   "home": "WVU",
-   "away": "KU",
-   "home_id": "277",
-   "away_id": "2305",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401856862",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "KSU @ TCU",
-   "home": "TCU",
-   "away": "KSU",
-   "home_id": "2628",
-   "away_id": "2306",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401858298",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "LOU @ UNC",
-   "home": "UNC",
-   "away": "LOU",
-   "home_id": "153",
-   "away_id": "97",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 59.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401858299",
-   "date": "2026-11-14",
-   "start": "2026-11-14T05:00Z",
-   "game": "STAN @ VT",
-   "home": "VT",
-   "away": "STAN",
-   "home_id": "259",
-   "away_id": "24",
-   "note": "No line posted yet"
-  },
-  {
    "id": "401856860",
    "date": "2026-11-13",
    "start": "2026-11-14T03:15Z",
@@ -1254,7 +1888,7 @@
    },
    "total": {
     "lean": null,
-    "line": 48.5,
+    "line": 49.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1275,13 +1909,13 @@
     "score": 1.0,
     "capped": false,
     "why_for": [
-     "Fade the line move: UCLA went from -12.5 to -10"
+     "Fade the line move: UCLA went from -12.5 to -8.5"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 46.5,
+    "line": 45.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1364,7 +1998,7 @@
    },
    "total": {
     "lean": null,
-    "line": 49.5,
+    "line": 48.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1489,7 +2123,7 @@
     "score": 2.0,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates WMU 5.9 points better than results so far",
+     "Line tell: the line rates WMU 6.4 points better than results so far",
      "AKR: Struggling team (one win or fewer)"
     ],
     "why_opp": []
