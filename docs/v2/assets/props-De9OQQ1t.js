@@ -1,1 +1,0 @@
-import{r as e}from"./props-CLi4JY7e.js";var t=e;export{t as component};
