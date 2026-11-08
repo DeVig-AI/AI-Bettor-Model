@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-07T21:11:56.542997Z",
+ "generated_at": "2026-11-08T03:06:57.756517Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -12,7 +12,7 @@
     "return_date": "2026-11-08",
     "share_basis": "this season",
     "snap_share": 0.81,
-    "status": "Injured Reserve"
+    "status": "Questionable"
    },
    {
     "espn_updated": "2026-11-07T02:30Z",
@@ -41,7 +41,7 @@
     "injury": "Ankle",
     "name": "Cameron Williams",
     "pos": "OL",
-    "return_date": "2026-11-08",
+    "return_date": "2026-11-15",
     "share_basis": "last season",
     "snap_share": 0.8,
     "status": "Injured Reserve"
@@ -111,9 +111,9 @@
   ],
   "BUF": [
    {
-    "espn_updated": "2026-11-05T22:13Z",
-    "injury": "Ribs",
-    "name": "Dion Dawkins",
+    "espn_updated": "2026-11-08T02:09Z",
+    "injury": "Ankle",
+    "name": "Alec Anderson",
     "pos": "OT",
     "return_date": "2026-11-09",
     "share_basis": "this season",
@@ -121,9 +121,9 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-11-05T22:12Z",
-    "injury": "Ankle",
-    "name": "Alec Anderson",
+    "espn_updated": "2026-11-08T02:01Z",
+    "injury": "Ribs",
+    "name": "Dion Dawkins",
     "pos": "OT",
     "return_date": "2026-11-09",
     "share_basis": "this season",
@@ -294,14 +294,14 @@
   ],
   "DET": [
    {
-    "espn_updated": "2026-11-07T01:58Z",
+    "espn_updated": "2026-11-07T22:18Z",
     "injury": "Neck",
     "name": "Jack Campbell",
     "pos": "LB",
-    "return_date": "2026-11-15",
+    "return_date": "2026-12-06",
     "share_basis": "this season",
     "snap_share": 0.97,
-    "status": "Out"
+    "status": "Injured Reserve"
    },
    {
     "espn_updated": "2026-11-07T02:12Z",
@@ -585,16 +585,6 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-11-06T21:08Z",
-    "injury": "Calf",
-    "name": "Mack Hollins",
-    "pos": "WR",
-    "return_date": "2026-11-08",
-    "share_basis": "this season",
-    "snap_share": 0.65,
-    "status": "Injured Reserve"
-   },
-   {
     "espn_updated": "2026-11-04T21:56Z",
     "injury": "Foot",
     "name": "Morgan Moses",
@@ -613,6 +603,16 @@
     "share_basis": "this season",
     "snap_share": 0.66,
     "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-07T21:23Z",
+    "injury": "Calf",
+    "name": "Mack Hollins",
+    "pos": "WR",
+    "return_date": "2026-11-08",
+    "share_basis": "this season",
+    "snap_share": 0.65,
+    "status": "Questionable"
    }
   ],
   "NO": [
@@ -624,7 +624,7 @@
     "return_date": "2026-11-08",
     "share_basis": "this season",
     "snap_share": 0.79,
-    "status": "Injured Reserve"
+    "status": "Questionable"
    },
    {
     "espn_updated": "2026-11-04T22:03Z",
@@ -792,16 +792,6 @@
    }
   ],
   "WAS": [
-   {
-    "espn_updated": "2026-10-29T01:29Z",
-    "injury": "Triceps",
-    "name": "Laremy Tunsil",
-    "pos": "OT",
-    "return_date": "2026-12-20",
-    "share_basis": "last season",
-    "snap_share": 0.89,
-    "status": "Injured Reserve"
-   },
    {
     "espn_updated": "2026-11-04T19:13Z",
     "injury": "Foot",
