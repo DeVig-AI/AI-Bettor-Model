@@ -1,0 +1,1 @@
+import{r as e}from"./props-DMCx4kBc.js";var t=e;export{t as component};

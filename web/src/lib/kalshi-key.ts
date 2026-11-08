@@ -1,5 +1,5 @@
 // Your Kalshi key for building a parlay as one Kalshi combo, iPhone app only. The key itself never reaches this page:
-// the app makes it, keeps the secret half in the iPhone Keychain behind Face ID, and signs only "build this combo"
+// the app makes it (or reads the one Kalshi made straight off the clipboard, natively), keeps the secret half in the iPhone Keychain behind Face ID, and signs only "build this combo"
 // (mobile/native/ios/App/DeVigKalshiPlugin.swift). This page sees just the public half and the Key ID, neither secret.
 import { useCallback, useEffect, useState } from 'react'
 import type { Leg } from './parlay'
@@ -13,8 +13,9 @@ const call = <T,>(method: string, opts: object = {}) => bridge()!.nativePromise!
 const why = (e: unknown) => (e instanceof Error ? e.message : typeof e === 'object' && e && 'message' in e ? String((e as { message: unknown }).message) : String(e))
 
 // available: this app version has it (older installs don't); ready: key made and its Key ID saved
-export type KeyState = { available: boolean; publicKey: string; keyId: string; ready: boolean }
-const NONE: KeyState = { available: false, publicKey: '', keyId: '', ready: false }
+// source: 'kalshi' = the key Kalshi made, pasted in; 'made' = made on this iPhone
+export type KeyState = { available: boolean; publicKey: string; keyId: string; ready: boolean; source: 'made' | 'kalshi' }
+const NONE: KeyState = { available: false, publicKey: '', keyId: '', ready: false, source: 'made' }
 
 let state: KeyState | null = null
 const watchers = new Set<(s: KeyState) => void>()
@@ -25,8 +26,8 @@ function set(s: KeyState) {
 async function refresh() {
   if (!bridge()) return set(NONE)
   try {
-    const r = await call<{ hasKey: boolean; publicKey: string; keyId: string }>('status')
-    set({ available: true, publicKey: r.hasKey ? r.publicKey : '', keyId: r.keyId, ready: r.hasKey && !!r.keyId })
+    const r = await call<{ hasKey: boolean; publicKey: string; keyId: string; source?: string }>('status')
+    set({ available: true, publicKey: r.hasKey ? r.publicKey : '', keyId: r.keyId, ready: r.hasKey && !!r.keyId, source: r.source === 'kalshi' ? 'kalshi' : 'made' })
   } catch {
     set(NONE) // the installed app is older than this
   }
@@ -40,9 +41,14 @@ export function useKalshiKey() {
     return () => { watchers.delete(setS) }
   }, [])
   const makeKey = useCallback(async () => { await call('makeKey'); await refresh() }, [])
+  // the app reads the clipboard itself and wipes it; the key never passes through this page
+  const importKey = useCallback(async () => {
+    try { await call('importKey') } catch (e) { throw new Error(why(e)) }
+    await refresh()
+  }, [])
   const saveKeyId = useCallback(async (keyId: string) => { await call('setKeyId', { keyId }); await refresh() }, [])
   const remove = useCallback(async () => { await call('remove'); await refresh() }, [])
-  return { ...s, makeKey, saveKeyId, remove }
+  return { ...s, makeKey, importKey, saveKeyId, remove }
 }
 
 // a leg as Kalshi's combo builder takes it: a prop's over is Yes, its under No; a team to win is Yes on its market
