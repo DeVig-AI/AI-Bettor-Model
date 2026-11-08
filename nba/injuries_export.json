@@ -3,12 +3,9 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 8 \u00b7 12:00 PM ET report",
+    "as_of": "Nov 8 \u00b7 4:00 PM ET report",
     "date": "2026-11-08",
     "not_submitted": {
-     "BKN@DAL": [
-      "BKN"
-     ],
      "CLE@CHA": [
       "CLE",
       "CHA"
@@ -42,7 +39,7 @@
       "DET"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-08_12_00PM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-08_04_00PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -97,28 +94,6 @@
     "away": "PHI",
     "home": "CHI",
     "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "32 min \u00b7 17.9 pts a game = 16% of PHI's points"
-    },
-    "player": "Joel Embiid",
-    "reason": "Right Foot Plantar Fascia Injury Management",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Probable",
-    "team": "PHI",
-    "tip": "3:30 PM",
-    "tip_sort": "11081530"
-   },
-   "doc_id": "nba-phi-joel-embiid"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "CHI",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -134,50 +109,6 @@
     "tip_sort": "11081530"
    },
    "doc_id": "nba-phi-ariel-hukporti"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min \u00b7 2.0 pts a game = 2% of CHI's points"
-    },
-    "player": "Tobe Awaka",
-    "reason": "Left MCL Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CHI",
-    "tip": "3:30 PM",
-    "tip_sort": "11081530"
-   },
-   "doc_id": "nba-chi-tobe-awaka"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Nic Claxton",
-    "reason": "Left Hamstring Strain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CHI",
-    "tip": "3:30 PM",
-    "tip_sort": "11081530"
-   },
-   "doc_id": "nba-chi-nic-claxton"
   },
   {
    "collection": "injuries",
@@ -212,38 +143,17 @@
      "level": "big",
      "why": "29 min \u00b7 19.2 pts a game = 17% of CHI's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Norman Powell",
     "reason": "Right Shoulder Inflammation/Soreness",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "CHI",
     "tip": "3:30 PM",
     "tip_sort": "11081530"
    },
    "doc_id": "nba-chi-norman-powell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "CHI",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "22 min \u00b7 11.0 pts a game = 10% of CHI's points"
-    },
-    "player": "Jalen Smith",
-    "reason": "Left Finger Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Probable",
-    "team": "CHI",
-    "tip": "3:30 PM",
-    "tip_sort": "11081530"
-   },
-   "doc_id": "nba-chi-jalen-smith"
   },
   {
    "collection": "injuries",
@@ -278,11 +188,12 @@
      "level": "gamechanger",
      "why": "36 min \u00b7 40.1 pts a game = 33% of LAL's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Luka Doncic",
     "reason": "Low Back Tightness",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Out",
     "team": "LAL",
     "tip": "6:00 PM",
     "tip_sort": "11081800"
@@ -430,28 +341,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "16 min \u00b7 5.8 pts a game = 5% of MIN's points"
-    },
-    "player": "Joan Beringer",
-    "reason": "Nasal Fracture/Face Mask",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "7:00 PM",
-    "tip_sort": "11081900"
-   },
-   "doc_id": "nba-min-joan-beringer"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "UTA",
-    "home": "MIN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Not in his team's rotation stats"
     },
     "player": "Donte DiVincenzo",
@@ -486,6 +375,50 @@
     "tip_sort": "11081900"
    },
    "doc_id": "nba-min-anthony-edwards"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "DAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "23 min \u00b7 12.9 pts a game = 12% of BKN's points"
+    },
+    "player": "Mikel Brown Jr.",
+    "reason": "Back, Injury Management",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "BKN",
+    "tip": "7:30 PM",
+    "tip_sort": "11081930"
+   },
+   "doc_id": "nba-bkn-mikel-brown"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BKN",
+    "home": "DAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "22 min \u00b7 7.8 pts a game = 7% of BKN's points"
+    },
+    "player": "Egor Demin",
+    "reason": "Right Bone Bruise",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "BKN",
+    "tip": "7:30 PM",
+    "tip_sort": "11081930"
+   },
+   "doc_id": "nba-bkn-egor-demin"
   },
   {
    "collection": "injuries",
@@ -556,24 +489,46 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "MIA",
-    "home": "SAC",
+    "away": "BOS",
+    "home": "MIL",
     "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "35 min \u00b7 14.0 pts a game = 13% of SAC's points (last season)"
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "19 min \u00b7 5.8 pts a game = 5% of BOS's points"
     },
-    "player": "Keegan Murray",
-    "reason": "Left Ankle Capsulitis",
+    "player": "Mitchell Robinson",
+    "reason": "Illness",
     "sport": "NBA",
-    "starter": true,
+    "starter": false,
     "status": "Questionable",
-    "team": "SAC",
-    "tip": "9:00 PM",
-    "tip_sort": "11082100"
+    "team": "BOS",
+    "tip": "8:00 PM",
+    "tip_sort": "11082000"
    },
-   "doc_id": "nba-sac-keegan-murray"
+   "doc_id": "nba-bos-mitchell-robinson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BOS",
+    "home": "MIL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "21 min \u00b7 8.1 pts a game = 7% of MIL's points (last season)"
+    },
+    "player": "Gary Trent Jr.",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MIL",
+    "tip": "8:00 PM",
+    "tip_sort": "11082000"
+   },
+   "doc_id": "nba-mil-gary-trent"
   },
   {
    "collection": "injuries",
@@ -752,6 +707,6 @@
    "doc_id": "nba-lac-yanic-konan-niederhauser"
   }
  ],
- "generated_at": "2026-11-08T17:00:38Z",
- "source": "NBA official injury report (Injury-Report_2026-11-08_12_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-08T21:06:00Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-08_04_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

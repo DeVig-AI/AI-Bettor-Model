@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 8 \u00b7 12:00 PM ET",
+    "as_of": "Sun Nov 8 \u00b7 4:05 PM ET",
     "date": "2026-11-08",
     "sport": "NHL"
    },
@@ -30,28 +30,6 @@
     "tip_sort": "1108-1300"
    },
    "doc_id": "nhl-bos-james-hagens"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "BOS",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min a game \u00b7 7 points in 12 games = 4% of BOS's points"
-    },
-    "player": "Matthew Poitras",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "BOS",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nhl-bos-matthew-poitras"
   },
   {
    "collection": "injuries",
@@ -103,6 +81,29 @@
     "away": "PHI",
     "home": "CGY",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "9 min a game \u00b7 0 points in 6 games = 0% of CGY's points"
+    },
+    "note": "Downgraded from day-to-day",
+    "player": "Brennan Othmann",
+    "reason": "LW",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "CGY",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "1108-1900"
+   },
+   "doc_id": "nhl-cgy-brennan-othmann"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "home": "CGY",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -118,29 +119,6 @@
     "tip_sort": "1108-1900"
    },
    "doc_id": "nhl-cgy-kevin-bahl"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "CGY",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "9 min a game \u00b7 0 points in 6 games = 0% of CGY's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Brennan Othmann",
-    "reason": "LW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "CGY",
-    "tip": "Sun 7:00 PM",
-    "tip_sort": "1108-1900"
-   },
-   "doc_id": "nhl-cgy-brennan-othmann"
   },
   {
    "collection": "injuries",
@@ -185,50 +163,6 @@
     "tip_sort": "1110-1900"
    },
    "doc_id": "nhl-col-josh-manson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "CBJ",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min a game \u00b7 6 points in 15 games = 6% of CBJ's points"
-    },
-    "player": "Sean Monahan",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "CBJ",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1110-1930"
-   },
-   "doc_id": "nhl-cbj-sean-monahan"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "CBJ",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min a game \u00b7 2 points in 10 games = 2% of CBJ's points"
-    },
-    "player": "Dmitri Voronkov",
-    "reason": "LW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "CBJ",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1110-1930"
-   },
-   "doc_id": "nhl-cbj-dmitri-voronkov"
   },
   {
    "collection": "injuries",
@@ -306,7 +240,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 11 points in 8 games = 6% of EDM's points"
+     "why": "18 min a game \u00b7 11 points in 9 games = 6% of EDM's points"
     },
     "player": "Ryan Nugent-Hopkins",
     "reason": "C",
@@ -350,30 +284,7 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "18 min a game \u00b7 6 points in 16 games = 4% of FLA's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Anton Lundell",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "FLA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nhl-fla-anton-lundell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "BOS",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "13 min a game \u00b7 7 points in 15 games = 5% of FLA's points"
+     "why": "12 min a game \u00b7 7 points in 16 games = 5% of FLA's points"
     },
     "player": "Sandis Vilmanis",
     "reason": "LW \u00b7 Undisclosed",
@@ -462,7 +373,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "14 min a game \u00b7 10 points in 16 games = 7% of MTL's points"
+     "why": "14 min a game \u00b7 10 points in 16 games = 6% of MTL's points"
     },
     "note": "Upgraded from out",
     "player": "Josh Anderson",
@@ -529,7 +440,7 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "17 min a game \u00b7 5 points in 14 games = 4% of NSH's points"
+     "why": "17 min a game \u00b7 5 points in 14 games = 3% of NSH's points"
     },
     "player": "Jonathan Marchessault",
     "reason": "RW",
@@ -596,7 +507,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 5 points in 14 games = 4% of NYR's points"
+     "why": "20 min a game \u00b7 5 points in 14 games = 3% of NYR's points"
     },
     "player": "Sean Durzi",
     "reason": "D \u00b7 Undisclosed",
@@ -657,28 +568,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "WSH",
-    "home": "OTT",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
-    },
-    "player": "Linus Ullmark",
-    "reason": "G \u00b7 Lower body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "OTT",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-ott-linus-ullmark"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "PIT",
     "home": "ANA",
     "impact": {
@@ -707,7 +596,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 3 points in 9 games = 3% of SJ's points"
+     "why": "20 min a game \u00b7 3 points in 9 games = 2% of SJ's points"
     },
     "player": "Alexander Wennberg",
     "reason": "C",
@@ -751,7 +640,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 12 points in 17 games = 7% of TOR's points"
+     "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
     },
     "player": "Morgan Rielly",
     "reason": "D",
@@ -964,6 +853,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-08T17:00:40Z",
+ "generated_at": "2026-11-08T21:06:01Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
