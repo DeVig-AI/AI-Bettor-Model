@@ -205,10 +205,17 @@ function SameGameNote({ pairs, changed, raw }: { pairs: Pair[]; changed: boolean
 
 // ---------- the slip, explained ----------
 function SlipCard() {
-  const { legs, remove, replace } = useSlip()
+  const { legs: saved, remove, replace } = useSlip()
   const sheet = useLegSheet()
   const [stake, setStake] = useState('10')
   const { rows } = useGames()
+  // a team leg added before the model's number reached the board picks it up now
+  const legs = useMemo(() => saved.map((l) => {
+    if (l.kind !== 'ml' || l.outcome || l.devig != null) return l
+    const r = rows.find((x) => x.id === l.gameId)
+    const f = r ? mlLeg(r, l.sideIsHome ? 'home' : 'away') : null
+    return f?.devig != null ? { ...l, devig: f.devig, devigNote: f.devigNote, devigLean: f.devigLean } : l
+  }), [saved, rows])
   const [savedAs, setSavedAs] = useState<{ n: number; stake: number; win: number; first: string } | null>(null)
   const saveSlip = () => {
     const st = parseFloat(stake)
@@ -230,6 +237,7 @@ function SlipCard() {
     .filter((l) => l.devig != null && l.fair != null)
     .sort((a, b) => (a.devig! - a.fair!) - (b.devig! - b.fair!))[0]
   const weakestGap = weakest ? weakest.devig! - weakest.fair! : 0
+  const leans = legs.filter((l) => l.devigLean).length
   if (savedAs) {
     return (
       <section id='your-parlay' aria-label='Saved' className='flex scroll-mt-20 flex-col gap-3 rounded-[18px] border border-good/30 bg-good/10 p-4'>
@@ -303,18 +311,21 @@ function SlipCard() {
       </div>
 
       <div className='rounded-2xl bg-card p-4'>
-        <p className={cn('font-display text-xl font-extrabold', value ? 'text-good' : 'text-devig')}>
+        <p className={cn('font-display text-xl font-extrabold', value && !leans ? 'text-good' : 'text-devig')}>
           {m.devig == null
             ? 'DeVig has no model for these legs'
             : value
-              ? weakest && weakestGap < -0.03
-                ? 'DeVig likes it, with a catch'
-                : 'DeVig likes this ticket'
+              ? leans
+                ? 'DeVig leans this way, but passed'
+                : weakest && weakestGap < -0.03
+                  ? 'DeVig likes it, with a catch'
+                  : 'DeVig likes this ticket'
               : 'DeVig says skip it'}
         </p>
         <p className='mt-1.5 text-sm leading-relaxed text-muted-foreground'>
           {m.market != null && `If Kalshi is right, it hits about 1 time in ${oneIn(m.market)}. `}
           {m.devig != null && `If DeVig is right, 1 in ${oneIn(m.devig)}. `}
+          {value && leans ? `On ${leans > 1 ? `${leans} games` : 'a game'} here the model leaned but wasn't sure enough to pick. ` : ''}
           One missed leg loses the whole ticket.
           {m.devigLegs > 0 && m.devigLegs < legs.length && ` DeVig has its own number for ${m.devigLegs} of ${legs.length} legs; the rest use Kalshi's price.`}
           {weakest && weakestGap < -0.03 && ` The weakest leg is ${weakest.label}: DeVig gives it ${fmtPct(weakest.devig)} vs Kalshi's ${fmtPct(weakest.fair)}.`}

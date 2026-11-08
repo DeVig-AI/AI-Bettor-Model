@@ -16,6 +16,7 @@ export type Leg = {
   odds: number // American, Kalshi price with its fee
   fair: number | null // the market's fair chance (fee gap removed)
   devig: number | null // DeVig's chance for this leg, if it has a model
+  devigLean?: boolean // DeVig's number is a lean on a game the model passed on, not a pick
   devigNote: string | null // what DeVig's number is ("NBA Model C", "props model: has lost to Kalshi on past games")
   colors: { away: string; home: string } | null
   sideIsHome: boolean | null

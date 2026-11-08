@@ -59,15 +59,21 @@ export function comboLeg(l: Leg) {
   return { market_ticker: t, event_ticker: parts.slice(0, 2).join('-'), side: l.kind === 'prop' && l.id.endsWith('|under') ? 'no' : 'yes' }
 }
 
-// Face ID, then Kalshi builds the combo; returns the link that opens it on Kalshi with Yes picked, ready to buy
+// the link Kalshi's own Share button gives a combo: /markets/<series>/<name>/<EVENT>?marketTicker=<MARKET>
+export function comboUrl(market: string, event: string | undefined, legs: Leg[]) {
+  const ev = event || market.split('-').slice(0, 2).join('-')
+  const series = ev.split('-')[0].toLowerCase()
+  const name = legs.map((l) => l.short || l.label).join(' ').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'combo'
+  return `https://kalshi.com/markets/${series}/${name}/${ev}?${new URLSearchParams({ marketTicker: market })}`
+}
+
+// Face ID, then Kalshi builds the combo; returns the link that opens it on Kalshi
 export async function buildCombo(legs: Leg[]): Promise<string> {
   const picked = legs.map(comboLeg)
   if (picked.some((x) => !x)) throw new Error('Every leg needs a Kalshi market')
   try {
-    const r = await call<{ market_ticker: string }>('buildCombo', { legs: picked })
-    const t = r.market_ticker
-    const q = new URLSearchParams({ marketTicker: t, op_market_ticker: t, op_order_side: 'yes', op_side: 'BUY', op_order_type: 'dollars' })
-    return `https://kalshi.com/combos?${q}`
+    const r = await call<{ market_ticker: string; event_ticker?: string }>('buildCombo', { legs: picked })
+    return comboUrl(r.market_ticker, r.event_ticker, legs)
   } catch (e) {
     throw new Error(why(e))
   }
