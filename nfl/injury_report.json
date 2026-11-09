@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-08T21:27:20.524722Z",
+ "generated_at": "2026-11-09T03:29:10.037764Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -134,6 +134,16 @@
   ],
   "CHI": [
    {
+    "espn_updated": "2026-11-09T00:11Z",
+    "injury": "Toe",
+    "name": "Malik Muhammad II",
+    "pos": "CB",
+    "return_date": "2026-11-22",
+    "share_basis": "this season",
+    "snap_share": 0.75,
+    "status": "Out"
+   },
+   {
     "espn_updated": "2026-11-05T03:40Z",
     "injury": "Knee",
     "name": "Braxton Jones",
@@ -144,18 +154,8 @@
     "status": "Injured Reserve"
    },
    {
-    "espn_updated": "2026-11-08T12:28Z",
-    "injury": "Toe",
-    "name": "Malik Muhammad II",
-    "pos": "CB",
-    "return_date": "2026-11-08",
-    "share_basis": "this season",
-    "snap_share": 0.75,
-    "status": "Questionable"
-   },
-   {
-    "espn_updated": "2026-11-08T12:31Z",
-    "injury": "Thumb",
+    "espn_updated": "2026-11-09T00:07Z",
+    "injury": "Hand",
     "name": "Tyrique Stevenson Sr.",
     "pos": "CB",
     "return_date": "2026-11-08",
@@ -188,16 +188,6 @@
    }
   ],
   "DAL": [
-   {
-    "espn_updated": "2026-11-05T03:45Z",
-    "injury": "Hamstring",
-    "name": "Jalen Thompson",
-    "pos": "S",
-    "return_date": "2026-11-15",
-    "share_basis": "this season",
-    "snap_share": 0.81,
-    "status": "Injured Reserve"
-   },
    {
     "espn_updated": "2026-11-08T16:35Z",
     "injury": "Hamstring",
@@ -261,7 +251,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-11-08T19:52Z",
+    "espn_updated": "2026-11-08T18:52Z",
     "injury": "Concussion",
     "name": "Jaylen Waddle",
     "pos": "WR",
@@ -353,6 +343,16 @@
     "share_basis": "last season",
     "snap_share": 0.78,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-11-09T01:24Z",
+    "injury": "Finger",
+    "name": "Josh Jacobs",
+    "pos": "RB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.61,
+    "status": "Questionable"
    }
   ],
   "HOU": [
@@ -422,6 +422,16 @@
    }
   ],
   "KC": [
+   {
+    "espn_updated": "2026-11-09T01:33Z",
+    "injury": "Elbow",
+    "name": "Patrick Mahomes",
+    "pos": "QB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 1.0,
+    "status": "Questionable"
+   },
    {
     "espn_updated": "2026-11-08T16:44Z",
     "injury": "Shoulder",
@@ -493,18 +503,28 @@
     "share_basis": "this season",
     "snap_share": 0.99,
     "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-08T22:36Z",
+    "injury": "Knee",
+    "name": "Puka Nacua",
+    "pos": "WR",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.86,
+    "status": "Questionable"
    }
   ],
   "LAC": [
    {
-    "espn_updated": "2026-11-01T00:11Z",
-    "injury": "Hamstring",
-    "name": "Derwin James Jr.",
-    "pos": "S",
-    "return_date": "2026-11-29",
+    "espn_updated": "2026-11-09T01:14Z",
+    "injury": "Finger",
+    "name": "Justin Herbert",
+    "pos": "QB",
+    "return_date": "2026-11-16",
     "share_basis": "this season",
-    "snap_share": 0.94,
-    "status": "Injured Reserve"
+    "snap_share": 1.0,
+    "status": "Questionable"
    },
    {
     "espn_updated": "2026-11-08T19:43Z",
@@ -573,9 +593,50 @@
     "share_basis": "this season",
     "snap_share": 0.7,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-11-08T23:29Z",
+    "injury": "Knee",
+    "name": "Carlton Davis III",
+    "pos": "CB",
+    "return_date": "2026-11-08",
+    "share_basis": "this season",
+    "snap_share": 0.96,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-09T00:30Z",
+    "injury": "Knee",
+    "name": "Will Campbell",
+    "pos": "OT",
+    "return_date": "2026-11-08",
+    "share_basis": "this season",
+    "snap_share": 0.92,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-09T00:19Z",
+    "injury": "Knee",
+    "name": "Rhamondre Stevenson",
+    "pos": "RB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.65,
+    "status": "Questionable"
    }
   ],
-  "NO": [],
+  "NO": [
+   {
+    "espn_updated": "2026-11-08T21:18Z",
+    "injury": "Biceps",
+    "name": "Erik McCoy",
+    "pos": "C",
+    "return_date": "2026-11-08",
+    "share_basis": "this season",
+    "snap_share": 1.0,
+    "status": "Questionable"
+   }
+  ],
   "NYG": [],
   "NYJ": [
    {
@@ -655,6 +716,16 @@
     "status": "Out"
    },
    {
+    "espn_updated": "2026-11-09T01:02Z",
+    "injury": "Oblique",
+    "name": "Drew Lock",
+    "pos": "QB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.95,
+    "status": "Questionable"
+   },
+   {
     "espn_updated": "2026-11-08T20:03Z",
     "injury": "Knee",
     "name": "Quenton Nelson",
@@ -685,16 +756,37 @@
     "status": "Out"
    }
   ],
-  "SF": [],
+  "SF": [
+   {
+    "espn_updated": "2026-11-09T01:11Z",
+    "injury": "Back",
+    "name": "Renardo Green",
+    "pos": "CB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.98,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-09T01:16Z",
+    "injury": "Foot",
+    "name": "Deommodore Lenoir",
+    "pos": "CB",
+    "return_date": "2026-11-15",
+    "share_basis": "this season",
+    "snap_share": 0.96,
+    "status": "Questionable"
+   }
+  ],
   "TB": [
    {
-    "espn_updated": "2026-11-08T11:16Z",
-    "injury": "Foot",
-    "name": "Emeka Egbuka",
-    "pos": "WR",
+    "espn_updated": "2026-11-09T02:43Z",
+    "injury": "Ankle",
+    "name": "Antoine Winfield Jr.",
+    "pos": "S",
     "return_date": "2026-11-08",
     "share_basis": "this season",
-    "snap_share": 0.86,
+    "snap_share": 0.97,
     "status": "Questionable"
    }
   ],
