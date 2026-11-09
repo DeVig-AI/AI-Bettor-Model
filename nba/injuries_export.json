@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 9 \u00b7 2:45 AM ET report",
+    "as_of": "Nov 9 \u00b7 1:30 PM ET report",
     "date": "2026-11-09",
     "not_submitted": {
      "BOS@PHI": [
@@ -16,9 +16,6 @@
      "LAC@PHX": [
       "LAC",
       "PHX"
-     ],
-     "LAL@ATL": [
-      "LAL"
      ],
      "MIA@UTA": [
       "MIA",
@@ -43,7 +40,7 @@
       "DET"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-09_02_45AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-09_01_30PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -147,11 +144,12 @@
      "level": "some",
      "why": "29 min \u00b7 8.9 pts a game = 9% of CHA's points"
     },
+    "note": "Downgraded from questionable",
     "player": "Moussa Diabate",
     "reason": "Right Quadriceps Tendinopathy",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Doubtful",
     "team": "CHA",
     "tip": "7:00 PM",
     "tip_sort": "11091900"
@@ -252,13 +250,57 @@
     "away": "LAL",
     "home": "ATL",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "26 min \u00b7 7.6 pts a game = 6% of LAL's points"
+    },
+    "player": "Quentin Grimes",
+    "reason": "Right Finger Sprain",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "LAL",
+    "tip": "7:00 PM",
+    "tip_sort": "11091900"
+   },
+   "doc_id": "nba-lal-quentin-grimes"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAL",
+    "home": "ATL",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "36 min \u00b7 23.5 pts a game = 19% of LAL's points"
+    },
+    "player": "Austin Reaves",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "LAL",
+    "tip": "7:00 PM",
+    "tip_sort": "11091900"
+   },
+   "doc_id": "nba-lal-austin-reaves"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAL",
+    "home": "ATL",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "Not in his team's rotation stats"
     },
     "player": "Keshon Gilbert",
-    "reason": "Inflammation/Non - Surgical Procedure",
+    "reason": "Left Knee Inflammation/Non - Surgical Procedure",
     "sport": "NBA",
     "starter": false,
     "status": "Out",
@@ -604,6 +646,28 @@
     "away": "MEM",
     "home": "TOR",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "22 min \u00b7 10.7 pts a game = 9% of TOR's points"
+    },
+    "player": "Collin Murray-Boyles",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "TOR",
+    "tip": "7:30 PM",
+    "tip_sort": "11091930"
+   },
+   "doc_id": "nba-tor-collin-murray-boyles"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MEM",
+    "home": "TOR",
+    "impact": {
      "bars": 3,
      "label": "Big",
      "level": "big",
@@ -909,6 +973,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "DEN",
+    "home": "HOU",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "7 min \u00b7 2.8 pts a game = 2% of HOU's points"
+    },
+    "player": "Oscar Tshiebwe",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "HOU",
+    "tip": "8:30 PM",
+    "tip_sort": "11092030"
+   },
+   "doc_id": "nba-hou-oscar-tshiebwe"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "SAS",
     "home": "PHX",
     "impact": {
@@ -1050,7 +1136,7 @@
      "why": "Not in his team's rotation stats"
     },
     "player": "Moses Moody",
-    "reason": "Left Patellar Tendon",
+    "reason": "Left Patellar Tendon Repair/Surgery",
     "sport": "NBA",
     "starter": false,
     "status": "Out",
@@ -1127,6 +1213,6 @@
    "doc_id": "nba-gsw-gui-santos"
   }
  ],
- "generated_at": "2026-11-09T07:53:06Z",
- "source": "NBA official injury report (Injury-Report_2026-11-09_02_45AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-09T18:41:57Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-09_01_30PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 9 \u00b7 2:53 AM ET",
+    "as_of": "Mon Nov 9 \u00b7 1:41 PM ET",
     "date": "2026-11-09",
     "sport": "NHL"
    },
@@ -64,11 +64,12 @@
      "level": "minor",
      "why": "9 min a game \u00b7 0 points in 6 games = 0% of CGY's points"
     },
+    "note": "Upgraded from out",
     "player": "Brennan Othmann",
     "reason": "LW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "CGY",
     "tip": "Wed 7:30 PM",
     "tip_sort": "1111-1930"
@@ -197,38 +198,17 @@
      "level": "minor",
      "why": "14 min a game \u00b7 4 points in 13 games = 2% of EDM's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Colton Dach",
-    "reason": "C",
+    "reason": "C \u00b7 Illness",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "EDM",
     "tip": "Mon 8:00 PM",
     "tip_sort": "1109-2000"
    },
    "doc_id": "nhl-edm-colton-dach"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYR",
-    "home": "EDM",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 11 points in 9 games = 6% of EDM's points"
-    },
-    "player": "Ryan Nugent-Hopkins",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "EDM",
-    "tip": "Mon 8:00 PM",
-    "tip_sort": "1109-2000"
-   },
-   "doc_id": "nhl-edm-ryan-nugent-hopkins"
   },
   {
    "collection": "injuries",
@@ -287,7 +267,7 @@
     },
     "note": "Upgraded from out",
     "player": "Michael McCarron",
-    "reason": "C",
+    "reason": "C \u00b7 Upper body",
     "sport": "NHL",
     "starter": false,
     "status": "Day-To-Day",
@@ -485,12 +465,12 @@
      "level": "minor",
      "why": "15 min a game \u00b7 0 points in 17 games = 0% of NYR's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Alberts Smits",
-    "reason": "D",
+    "reason": "D \u00b7 Upper body",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "NYR",
     "tip": "Mon 8:00 PM",
     "tip_sort": "1109-2000"
@@ -544,29 +524,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "WSH",
-    "home": "OTT",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "17 min a game \u00b7 4 points in 14 games = 3% of OTT's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Ridly Greig",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "OTT",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-ott-ridly-greig"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "PIT",
     "home": "SJ",
     "impact": {
@@ -575,11 +532,12 @@
      "level": "minor",
      "why": "14 min a game \u00b7 6 points in 15 games = 4% of PIT's points"
     },
+    "note": "Upgraded from out",
     "player": "Ville Koivunen",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "PIT",
     "tip": "Wed 10:00 PM",
     "tip_sort": "1111-2200"
@@ -680,16 +638,40 @@
     "away": "COL",
     "home": "TOR",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
+    },
+    "note": "Upgraded from out",
+    "player": "Morgan Rielly",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "TOR",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1110-1900"
+   },
+   "doc_id": "nhl-tor-morgan-rielly"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "COL",
+    "home": "TOR",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "15 min a game \u00b7 6 points in 18 games = 3% of TOR's points"
     },
+    "note": "Upgraded from out",
     "player": "Colton Sissons",
     "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TOR",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1110-1900"
@@ -707,38 +689,17 @@
      "level": "some",
      "why": "17 min a game \u00b7 18 points in 18 games = 10% of TOR's points"
     },
+    "note": "Upgraded from out",
     "player": "Jack Roslovic",
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TOR",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1110-1900"
    },
    "doc_id": "nhl-tor-jack-roslovic"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "COL",
-    "home": "TOR",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
-    },
-    "player": "Morgan Rielly",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Out",
-    "team": "TOR",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-tor-morgan-rielly"
   },
   {
    "collection": "injuries",
@@ -837,19 +798,18 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 3 points in 16 games = 2% of VAN's points"
+     "why": "20 min a game \u00b7 2 points in 7 games = 1% of VAN's points"
     },
-    "note": "Upgraded from out",
-    "player": "Tom Willander",
-    "reason": "D",
+    "player": "Filip Chytil",
+    "reason": "C \u00b7 Shoulder",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Injured Reserve",
     "team": "VAN",
     "tip": "Mon 9:30 PM",
     "tip_sort": "1109-2130"
    },
-   "doc_id": "nhl-van-tom-willander"
+   "doc_id": "nhl-van-filip-chytil"
   },
   {
    "collection": "injuries",
@@ -860,18 +820,19 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 2 points in 7 games = 1% of VAN's points"
+     "why": "20 min a game \u00b7 3 points in 16 games = 2% of VAN's points"
     },
-    "player": "Filip Chytil",
-    "reason": "C \u00b7 Upper body",
+    "note": "Downgraded from day-to-day",
+    "player": "Tom Willander",
+    "reason": "D \u00b7 Lower body",
     "sport": "NHL",
     "starter": true,
-    "status": "Injured Reserve",
+    "status": "Out",
     "team": "VAN",
     "tip": "Mon 9:30 PM",
     "tip_sort": "1109-2130"
    },
-   "doc_id": "nhl-van-filip-chytil"
+   "doc_id": "nhl-van-tom-willander"
   },
   {
    "collection": "injuries",
@@ -984,6 +945,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-09T07:53:07Z",
+ "generated_at": "2026-11-09T18:41:58Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
