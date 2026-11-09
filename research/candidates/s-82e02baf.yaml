@@ -1,0 +1,99 @@
+# Research Lab candidate s-82e02baf -- written by the search; registered before it runs (A3). Never edit after it has run.
+id: s-82e02baf
+name: 'Blend of 3: s-3ee4ad88 + s-6f3f2250 + s-0b3ca873'
+market: spread
+family: Blend · search
+parent: null
+reason: 'Found by search round 898: on 2006–2016 it beat the line by +1.27 pts a game (t = 3.73), positive in all three search
+  periods. Now confirmed on 2017–2024, which the search never saw.'
+source: automatic search (NFL, Constitution v16 A3.3c)
+search:
+  round: 898
+  t: 3.727
+  effect: 1.2686
+  periods:
+  - 2.0122
+  - 0.8727
+  - 0.8052
+  games: 2937
+  sent_at: '2026-11-09T12:16:55Z'
+model:
+  type: blend
+  params:
+    components:
+    - market: spread
+      model:
+        params:
+          bye_elo: 40
+          bye_rest_days: 13
+          elo_per_point: 25
+          hfa_elo: 65
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 15
+          market_blend: 0.0
+          market_resist: 1.5039
+          mean: 1505
+          mov: '538'
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          qb: '538'
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.4
+          revert_center: none
+          travel_elo_per_1000mi: 0
+        type: elo
+    - market: spread
+      model:
+        params:
+          bye_elo: 12
+          bye_rest_days: 13
+          elo_per_point: 25
+          hfa_elo: 65
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 15
+          market_blend: 0.0
+          market_resist: 1.5039
+          mean: 1505
+          mov: '538'
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          qb: '538'
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.3333
+          revert_center: none
+          travel_elo_per_1000mi: 2
+        type: elo
+    - market: spread
+      model:
+        params:
+          bye_elo: 25
+          bye_rest_days: 13
+          elo_per_point: 25
+          hfa_elo: 65
+          hfa_mode: fixed
+          hfa_seasons: 3
+          k: 25
+          market_blend: 0.75
+          market_resist: 0.0
+          mean: 1505
+          mov: nfelo
+          nfelo_log_base: 10
+          playoff_mult: 1.0
+          qb: '538'
+          qb_alpha: 0.1
+          qb_elo_per_value: 3.3
+          qb_new_below_avg: 10
+          revert: 0.25
+          revert_center: none
+          travel_elo_per_1000mi: 2
+        type: elo
+    weights:
+    - 0.3333
+    - 0.3333
+    - 0.3333

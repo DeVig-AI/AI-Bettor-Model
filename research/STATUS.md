@@ -1,10 +1,10 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-11-09T10:55:36Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-09T12:17:24Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 24 registered, 24 tried, 0 running
+- Candidates: 26 registered, 24 tried, 0 running
 - Ledger attempts (all count in the Holm correction): 24 · across all sports: 29 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
@@ -28,7 +28,9 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `elo-travel` + Travel distance | spread | failed · gate_2 | +0.06 | -0.74 | +0.82 | +0.06 [-0.71, +0.83] | 1.000 | 50.6% / -2.2% (2412) |
 | `s-0501d21a` Blend of 3: s-f3fafc67 + s-1bba7fb4 + s-aaee4789 | spread | failed · gate_2 | +0.84 | -0.05 | -1.06 | +0.01 [-0.51, +0.54] | 1.000 | 49.2% / -5.0% (2150) |
 | `s-0680b479` Signals (SRS · carry 0.7 · prior 4) + def-comp-epa, inj-qb-out, inj-regulars-out | spread | failed · gate_3 | +0.82 | +0.03 | -0.48 | +0.19 [-0.34, +0.71] | 1.000 | 50.0% / -3.4% (2150) |
+| `s-4ab4a086` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + div-game, off-pass-epa | spread | queued | — | — | — | — | — | — |
 | `s-72bd1682` Blend of 2: s-b4ff1842 + s-1314e7a1 | spread | failed · gate_2 | +0.71 | -0.10 | -0.35 | +0.13 [-0.41, +0.68] | 1.000 | 50.0% / -3.4% (2150) |
+| `s-82e02baf` Blend of 3: s-3ee4ad88 + s-6f3f2250 + s-0b3ca873 | spread | queued | — | — | — | — | — | — |
 | `s-b07a5742` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + bye-diff, qb-change, travel-diff | spread | failed · gate_3 | +0.83 | +0.18 | -0.75 | +0.17 [-0.34, +0.71] | 1.000 | 49.3% / -4.7% (2150) |
 | `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | failed · gate_3 | +0.55 | +0.73 | -1.30 | +0.14 [-0.48, +0.76] | 1.000 | 49.7% / -4.0% (2150) |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | failed · gate_3 | +0.62 | +0.00 | -0.83 | +0.01 [-0.63, +0.64] | 1.000 | 49.7% / -4.0% (2150) |
@@ -55,7 +57,9 @@ Verdicts (Inspector General):
 - `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 24 attempts.
 - `s-0501d21a`: Fails the lab: not positive in gate 2 (2020–22: -0.05 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 24 attempts.
 - `s-0680b479`: Fails the lab: not positive in gate 3 (2023–24: -0.48 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 24 attempts.
+- `s-4ab4a086`: Registered; runs in the next nightly lab run.
 - `s-72bd1682`: Fails the lab: not positive in gate 2 (2020–22: -0.10 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 24 attempts.
+- `s-82e02baf`: Registered; runs in the next nightly lab run.
 - `s-b07a5742`: Fails the lab: not positive in gate 3 (2023–24: -0.75 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 24 attempts.
 - `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 24 attempts.
 - `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 24 attempts.
@@ -66,10 +70,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 898** 2026-11-09T12:16:55Z: 1,998 models scored → 526 consistent → 22 strong (t ≥ 2.5) → 2 sent to confirmation
 - **Search round 897** 2026-11-09T10:55:13Z: 2,000 models scored → 516 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 896** 2026-11-09T09:47:11Z: 1,999 models scored → 514 consistent → 17 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 895** 2026-11-09T08:43:49Z: 1,999 models scored → 511 consistent → 18 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 894** 2026-11-09T04:46:29Z: 2,000 models scored → 507 consistent → 17 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 893** 2026-11-09T03:38:46Z: 2,000 models scored → 515 consistent → 18 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).
