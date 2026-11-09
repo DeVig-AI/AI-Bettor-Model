@@ -3,77 +3,11 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 8 \u00b7 4:05 PM ET",
+    "as_of": "Sun Nov 8 \u00b7 7:48 PM ET",
     "date": "2026-11-08",
     "sport": "NHL"
    },
    "doc_id": "nhl-meta"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "FLA",
-    "home": "BOS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "13 min a game \u00b7 12 points in 17 games = 7% of BOS's points"
-    },
-    "player": "James Hagens",
-    "reason": "C \u00b7 Back",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "BOS",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
-   },
-   "doc_id": "nhl-bos-james-hagens"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "VGK",
-    "home": "BUF",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "13 min a game \u00b7 3 points in 11 games = 2% of BUF's points"
-    },
-    "player": "Konsta Helenius",
-    "reason": "C \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "BUF",
-    "tip": "Sun 3:30 PM",
-    "tip_sort": "1108-1530"
-   },
-   "doc_id": "nhl-buf-konsta-helenius"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "VGK",
-    "home": "BUF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
-    },
-    "player": "Alex Lyon",
-    "reason": "G \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "BUF",
-    "tip": "Sun 3:30 PM",
-    "tip_sort": "1108-1530"
-   },
-   "doc_id": "nhl-buf-alex-lyon"
   },
   {
    "collection": "injuries",
@@ -279,7 +213,7 @@
    "collection": "injuries",
    "data": {
     "away": "FLA",
-    "home": "BOS",
+    "home": "CBJ",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -292,8 +226,8 @@
     "starter": false,
     "status": "Out",
     "team": "FLA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1108-1300"
+    "tip": "Tue 7:30 PM",
+    "tip_sort": "1110-1930"
    },
    "doc_id": "nhl-fla-sandis-vilmanis"
   },
@@ -456,6 +390,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "NJ",
+    "home": "TOR",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "14 min a game \u00b7 10 points in 17 games = 7% of NJ's points"
+    },
+    "player": "Anthony Mantha",
+    "reason": "RW",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "NJ",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "1108-1900"
+   },
+   "doc_id": "nhl-nj-anthony-mantha"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "NYI",
     "home": "SJ",
     "impact": {
@@ -571,6 +527,28 @@
     "away": "PIT",
     "home": "ANA",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "14 min a game \u00b7 6 points in 15 games = 4% of PIT's points"
+    },
+    "player": "Ville Koivunen",
+    "reason": "RW",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "PIT",
+    "tip": "Sun 8:00 PM",
+    "tip_sort": "1108-2000"
+   },
+   "doc_id": "nhl-pit-ville-koivunen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PIT",
+    "home": "ANA",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -640,13 +618,36 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "17 min a game \u00b7 18 points in 18 games = 10% of TOR's points"
+    },
+    "player": "Jack Roslovic",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "TOR",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "1108-1900"
+   },
+   "doc_id": "nhl-tor-jack-roslovic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NJ",
+    "home": "TOR",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Morgan Rielly",
     "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "TOR",
     "tip": "Sun 7:00 PM",
     "tip_sort": "1108-1900"
@@ -767,28 +768,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "VGK",
-    "home": "BUF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 0 points in 6 games = 0% of VGK's points"
-    },
-    "player": "Parker Wotherspoon",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "VGK",
-    "tip": "Sun 3:30 PM",
-    "tip_sort": "1108-1530"
-   },
-   "doc_id": "nhl-vgk-parker-wotherspoon"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "WSH",
     "home": "OTT",
     "impact": {
@@ -853,6 +832,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-08T21:06:01Z",
+ "generated_at": "2026-11-09T00:48:26Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
