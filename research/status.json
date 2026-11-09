@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-09T19:09:36Z",
+ "updated_at": "2026-11-09T19:23:43Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3700,7 +3700,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-09T19:15:21Z",
+   "updated_at": "2026-11-09T19:23:11Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5391,6 +5391,35 @@
    "runs": [
     {
      "kind": "search",
+     "name": "Search round 723",
+     "started_at": "2026-11-09T19:23:06Z",
+     "finished_at": "2026-11-09T19:23:06Z",
+     "duration_s": null,
+     "run_number": null,
+     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/42679768443",
+     "summary": "400 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
+     "funnel": [
+      {
+       "label": "models scored",
+       "count": 400
+      },
+      {
+       "label": "consistent",
+       "count": 10
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
+      }
+     ],
+     "steps": []
+    },
+    {
+     "kind": "search",
      "name": "Search round 722",
      "started_at": "2026-11-09T18:17:48Z",
      "finished_at": "2026-11-09T18:17:48Z",
@@ -5649,40 +5678,11 @@
       }
      ],
      "steps": []
-    },
-    {
-     "kind": "search",
-     "name": "Search round 713",
-     "started_at": "2026-11-09T04:58:47Z",
-     "finished_at": "2026-11-09T04:58:47Z",
-     "duration_s": null,
-     "run_number": null,
-     "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/42563113674",
-     "summary": "400 models scored → 7 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
-     "funnel": [
-      {
-       "label": "models scored",
-       "count": 400
-      },
-      {
-       "label": "consistent",
-       "count": 7
-      },
-      {
-       "label": "strong (t ≥ 2.5)",
-       "count": 0
-      },
-      {
-       "label": "sent to confirmation",
-       "count": 0
-      }
-     ],
-     "steps": []
     }
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-09T19:16:05Z",
+   "updated_at": "2026-11-09T19:26:57Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6375,7 +6375,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-09T19:16:21Z",
+   "updated_at": "2026-11-09T19:27:10Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6921,7 +6921,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-09T19:16:36Z",
+   "updated_at": "2026-11-09T19:27:23Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7324,7 +7324,7 @@
    ]
   },
   "CBB": {
-   "updated_at": "2026-11-09T19:16:36Z",
+   "updated_at": "2026-11-09T19:27:23Z",
    "scope": "CBB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7651,7 +7651,7 @@
    ]
   },
   "SOCCER": {
-   "updated_at": "2026-11-09T19:16:37Z",
+   "updated_at": "2026-11-09T19:27:24Z",
    "scope": "SOCCER",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
