@@ -12,14 +12,14 @@
    {
     "hi": 0.5,
     "lo": 0.4,
-    "n": 970,
+    "n": 972,
     "said": 0.457,
     "won": 0.469
    },
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 1474,
+    "n": 1476,
     "said": 0.55,
     "won": 0.533
    },
@@ -38,60 +38,15 @@
     "won": 0.769
    }
   ],
-  "games": 4214,
-  "home_rate_log_loss": 0.6894,
-  "log_loss": 0.6668,
+  "games": 4218,
+  "home_rate_log_loss": 0.6893,
+  "log_loss": 0.6667,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
  "data_through": "2026-11-08",
- "finals_used": 5870,
+ "finals_used": 5874,
  "games": [
-  {
-   "away": "NJD",
-   "away_name": "New Jersey Devils",
-   "date": "2026-11-08",
-   "game_id": "2026020279",
-   "home": "TOR",
-   "home_name": "Toronto Maple Leafs",
-   "home_wp": 0.4086,
-   "kickoff": "2026-11-09T00:00:00Z",
-   "parts": {
-    "b2b": 0,
-    "elo": 0.0105,
-    "sh": -0.7737
-   }
-  },
-  {
-   "away": "PHI",
-   "away_name": "Philadelphia Flyers",
-   "date": "2026-11-08",
-   "game_id": "2026020281",
-   "home": "CGY",
-   "home_name": "Calgary Flames",
-   "home_wp": 0.5294,
-   "kickoff": "2026-11-09T00:00:00Z",
-   "parts": {
-    "b2b": 0,
-    "elo": 0.1348,
-    "sh": 0.0161
-   }
-  },
-  {
-   "away": "PIT",
-   "away_name": "Pittsburgh Penguins",
-   "date": "2026-11-08",
-   "game_id": "2026020282",
-   "home": "ANA",
-   "home_name": "Anaheim Ducks",
-   "home_wp": 0.5792,
-   "kickoff": "2026-11-09T01:00:00Z",
-   "parts": {
-    "b2b": -1,
-    "elo": 0.1421,
-    "sh": 0.0818
-   }
-  },
   {
    "away": "NYR",
    "away_name": "New York Rangers",
@@ -114,12 +69,12 @@
    "game_id": "2026020284",
    "home": "VAN",
    "home_name": "Vancouver Canucks",
-   "home_wp": 0.4185,
+   "home_wp": 0.4543,
    "kickoff": "2026-11-10T02:30:00Z",
    "parts": {
-    "b2b": 0,
-    "elo": -0.2982,
-    "sh": -0.3546
+    "b2b": -1,
+    "elo": -0.2834,
+    "sh": -0.4043
    }
   },
   {
@@ -144,12 +99,12 @@
    "game_id": "2026020286",
    "home": "TOR",
    "home_name": "Toronto Maple Leafs",
-   "home_wp": 0.3751,
+   "home_wp": 0.3681,
    "kickoff": "2026-11-11T00:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": -0.4332,
-    "sh": -0.5506
+    "elo": -0.4697,
+    "sh": -0.5675
    }
   },
   {
@@ -189,12 +144,12 @@
    "game_id": "2026020291",
    "home": "WPG",
    "home_name": "Winnipeg Jets",
-   "home_wp": 0.431,
+   "home_wp": 0.4314,
    "kickoff": "2026-11-11T00:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.0283,
-    "sh": -0.6185
+    "elo": 0.0095,
+    "sh": -0.5947
    }
   },
   {
@@ -241,9 +196,99 @@
     "elo": 0.1764,
     "sh": 0.2028
    }
+  },
+  {
+   "away": "TBL",
+   "away_name": "Tampa Bay Lightning",
+   "date": "2026-11-11",
+   "game_id": "2026020293",
+   "home": "BUF",
+   "home_name": "Buffalo Sabres",
+   "home_wp": 0.4814,
+   "kickoff": "2026-11-12T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.0374,
+    "sh": -0.2418
+   }
+  },
+  {
+   "away": "NYR",
+   "away_name": "New York Rangers",
+   "date": "2026-11-11",
+   "game_id": "2026020294",
+   "home": "CGY",
+   "home_name": "Calgary Flames",
+   "home_wp": 0.4868,
+   "kickoff": "2026-11-12T00:30:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.0168,
+    "sh": -0.1408
+   }
+  },
+  {
+   "away": "PHI",
+   "away_name": "Philadelphia Flyers",
+   "date": "2026-11-11",
+   "game_id": "2026020295",
+   "home": "EDM",
+   "home_name": "Edmonton Oilers",
+   "home_wp": 0.6395,
+   "kickoff": "2026-11-12T02:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.7141,
+    "sh": 0.2417
+   }
+  },
+  {
+   "away": "UTA",
+   "away_name": "Utah Mammoth",
+   "date": "2026-11-11",
+   "game_id": "2026020296",
+   "home": "VGK",
+   "home_name": "Vegas Golden Knights",
+   "home_wp": 0.5671,
+   "kickoff": "2026-11-12T02:30:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.5158,
+    "sh": -0.1154
+   }
+  },
+  {
+   "away": "NSH",
+   "away_name": "Nashville Predators",
+   "date": "2026-11-11",
+   "game_id": "2026020297",
+   "home": "ANA",
+   "home_name": "Anaheim Ducks",
+   "home_wp": 0.5654,
+   "kickoff": "2026-11-12T03:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.2291,
+    "sh": 0.1882
+   }
+  },
+  {
+   "away": "PIT",
+   "away_name": "Pittsburgh Penguins",
+   "date": "2026-11-11",
+   "game_id": "2026020298",
+   "home": "SJS",
+   "home_name": "San Jose Sharks",
+   "home_wp": 0.4487,
+   "kickoff": "2026-11-12T03:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.2196,
+    "sh": -0.208
+   }
   }
  ],
- "generated_at": "2026-11-08T23:48:30Z",
+ "generated_at": "2026-11-09T06:51:00Z",
  "model": {
   "elo": {
    "carry": 0.85,
