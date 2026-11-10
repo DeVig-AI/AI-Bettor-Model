@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 10 \u00b7 4:30 AM ET report",
+    "as_of": "Nov 10 \u00b7 12:30 PM ET report",
     "date": "2026-11-10",
     "not_submitted": {
      "BKN@NOP": [
@@ -50,7 +50,7 @@
       "IND"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_04_30AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_12_30PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -86,10 +86,32 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "17 min \u00b7 8.6 pts a game = 8% of MIL's points"
+    },
+    "player": "Kel'el Ware",
+    "reason": "Left Ankle Sprain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MIL",
+    "tip": "7:30 PM",
+    "tip_sort": "11101930"
+   },
+   "doc_id": "nba-mil-kelel-ware"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MIL",
+    "home": "NYK",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "32 min \u00b7 8.6 pts a game = 8% of NYK's points"
     },
     "player": "Josh Hart",
-    "reason": "Right Ankle Soreness",
+    "reason": "Illness",
     "sport": "NBA",
     "starter": true,
     "status": "Questionable",
@@ -406,6 +428,28 @@
     "tip_sort": "11102200"
    },
    "doc_id": "nba-orl-paolo-banchero"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ORL",
+    "home": "SAC",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "30 min \u00b7 15.1 pts a game = 14% of ORL's points"
+    },
+    "player": "Tristan da Silva",
+    "reason": "Left Calf Strain",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ORL",
+    "tip": "10:00 PM",
+    "tip_sort": "11102200"
+   },
+   "doc_id": "nba-orl-tristan-da-silva"
   },
   {
    "collection": "injuries",
@@ -760,6 +804,6 @@
    "doc_id": "nba-por-shaedon-sharpe"
   }
  ],
- "generated_at": "2026-11-10T09:39:50Z",
- "source": "NBA official injury report (Injury-Report_2026-11-10_04_30AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-10T17:42:43Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-10_12_30PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

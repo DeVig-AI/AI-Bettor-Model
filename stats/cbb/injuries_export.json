@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 10 \u00b7 4:39 AM ET",
+    "as_of": "Tue Nov 10 \u00b7 12:42 PM ET",
     "date": "2026-11-10",
     "sport": "CBB"
    },
@@ -151,11 +151,12 @@
     "away": "DSU",
     "home": "GTWN",
     "impact": null,
+    "note": "Downgraded from questionable",
     "player": "Vyctorius Miller",
     "reason": "G \u00b7 Hand \u00b7 reported Nov 5",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "GTWN",
     "tip": "Tue 6:30 PM",
     "tip_sort": "1110-1830"
@@ -297,6 +298,23 @@
     "tip_sort": "1112-1830"
    },
    "doc_id": "cbb-iu-prince-alexander-moody"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "VT",
+    "home": "IOWA",
+    "impact": null,
+    "player": "Andrew Mckeever",
+    "reason": "C \u00b7 Undisclosed \u00b7 reported Nov 9",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "IOWA",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1110-1900"
+   },
+   "doc_id": "cbb-iowa-andrew-mckeever"
   },
   {
    "collection": "injuries",
@@ -811,6 +829,23 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "OKST",
+    "home": "TA&M",
+    "impact": null,
+    "player": "Cade Phillips",
+    "reason": "F \u00b7 Undisclosed \u00b7 reported Nov 9",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "TA&M",
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1112-2000"
+   },
+   "doc_id": "cbb-tam-cade-phillips"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "ILL",
     "home": "TTU",
     "impact": null,
@@ -1047,6 +1082,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-10T09:39:53Z",
+ "generated_at": "2026-11-10T17:42:47Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }

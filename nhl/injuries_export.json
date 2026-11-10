@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 10 \u00b7 4:39 AM ET",
+    "as_of": "Tue Nov 10 \u00b7 12:42 PM ET",
     "date": "2026-11-10",
     "sport": "NHL"
    },
@@ -286,11 +286,12 @@
      "level": "minor",
      "why": "14 min a game \u00b7 4 points in 13 games = 2% of EDM's points"
     },
+    "note": "Upgraded from out",
     "player": "Colton Dach",
-    "reason": "C \u00b7 Illness",
+    "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "EDM",
     "tip": "Wed 9:00 PM",
     "tip_sort": "1111-2100"
@@ -414,35 +415,13 @@
     "away": "MIN",
     "home": "MTL",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "20 min a game \u00b7 5 points in 10 games = 3% of MIN's points"
-    },
-    "player": "Jared Spurgeon",
-    "reason": "D \u00b7 Lower body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "MIN",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-min-jared-spurgeon"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "MTL",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "15 min a game \u00b7 6 points in 17 games = 4% of MTL's points"
     },
     "player": "Jake Evans",
-    "reason": "C",
+    "reason": "C \u00b7 Hand",
     "sport": "NHL",
     "starter": false,
     "status": "Day-To-Day",
@@ -451,29 +430,6 @@
     "tip_sort": "1110-1900"
    },
    "doc_id": "nhl-mtl-jake-evans"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "MTL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "14 min a game \u00b7 10 points in 16 games = 6% of MTL's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Josh Anderson",
-    "reason": "RW",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "MTL",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-mtl-josh-anderson"
   },
   {
    "collection": "injuries",
@@ -654,6 +610,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "WSH",
+    "home": "OTT",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+    },
+    "player": "Linus Ullmark",
+    "reason": "G",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "OTT",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1110-1900"
+   },
+   "doc_id": "nhl-ott-linus-ullmark"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "PIT",
     "home": "SJ",
     "impact": {
@@ -755,7 +733,7 @@
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Injured Reserve",
     "team": "TB",
     "tip": "Wed 7:00 PM",
     "tip_sort": "1111-1900"
@@ -773,12 +751,12 @@
      "level": "some",
      "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Morgan Rielly",
-    "reason": "D",
+    "reason": "D \u00b7 Lower body",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "TOR",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1110-1900"
@@ -796,40 +774,17 @@
      "level": "minor",
      "why": "15 min a game \u00b7 6 points in 19 games = 3% of TOR's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Colton Sissons",
     "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "TOR",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1110-1900"
    },
    "doc_id": "nhl-tor-colton-sissons"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "COL",
-    "home": "TOR",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "17 min a game \u00b7 18 points in 18 games = 10% of TOR's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Jack Roslovic",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "TOR",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-tor-jack-roslovic"
   },
   {
    "collection": "injuries",
@@ -973,28 +928,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 3 points in 4 games = 2% of WPG's points"
-    },
-    "player": "Josh Morrissey",
-    "reason": "D \u00b7 Wrist",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "WPG",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-wpg-josh-morrissey"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NJ",
-    "home": "WPG",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "18 min a game \u00b7 0 points in 6 games = 0% of WPG's points"
     },
     "player": "Elias Salomonsson",
@@ -1009,6 +942,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-10T09:39:52Z",
+ "generated_at": "2026-11-10T17:42:45Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
