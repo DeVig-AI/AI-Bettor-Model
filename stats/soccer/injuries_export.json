@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 10 \u00b7 12:42 PM ET",
+    "as_of": "Tue Nov 10 \u00b7 6:12 PM ET",
     "date": "2026-11-10",
     "sport": "EPL"
    },
@@ -895,6 +895,28 @@
     "away": "BHA",
     "home": "HUL",
     "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "Started 8 of HUL's 10 league matches \u00b7 a goal or assist on 6 of their 11 goals (55%)"
+    },
+    "player": "Mohamed Belloumi",
+    "reason": "Hamstring injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "HUL",
+    "tip": "Sun 9:00 AM",
+    "tip_sort": "1122-0900"
+   },
+   "doc_id": "epl-hul-mohamed-belloumi"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BHA",
+    "home": "HUL",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -1726,6 +1748,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-10T17:42:46Z",
+ "generated_at": "2026-11-10T23:12:09Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }

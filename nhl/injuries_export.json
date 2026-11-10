@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 10 \u00b7 12:42 PM ET",
+    "as_of": "Tue Nov 10 \u00b7 6:12 PM ET",
     "date": "2026-11-10",
     "sport": "NHL"
    },
@@ -37,6 +37,28 @@
     "away": "TB",
     "home": "BUF",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+    },
+    "player": "Alex Lyon",
+    "reason": "G \u00b7 Shoulder",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "BUF",
+    "tip": "Wed 7:00 PM",
+    "tip_sort": "1111-1900"
+   },
+   "doc_id": "nhl-buf-alex-lyon"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TB",
+    "home": "BUF",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -52,51 +74,6 @@
     "tip_sort": "1111-1900"
    },
    "doc_id": "nhl-buf-konsta-helenius"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TB",
-    "home": "BUF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
-    },
-    "player": "Alex Lyon",
-    "reason": "G \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "BUF",
-    "tip": "Wed 7:00 PM",
-    "tip_sort": "1111-1900"
-   },
-   "doc_id": "nhl-buf-alex-lyon"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYR",
-    "home": "CGY",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "9 min a game \u00b7 0 points in 6 games = 0% of CGY's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Brennan Othmann",
-    "reason": "LW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "CGY",
-    "tip": "Wed 7:30 PM",
-    "tip_sort": "1111-1930"
-   },
-   "doc_id": "nhl-cgy-brennan-othmann"
   },
   {
    "collection": "injuries",
@@ -239,29 +216,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
-    },
-    "note": "Upgraded from out",
-    "player": "John Gibson",
-    "reason": "G",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "DET",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1110-2000"
-   },
-   "doc_id": "nhl-det-john-gibson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DET",
-    "home": "STL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "22 min a game \u00b7 6 points in 10 games = 5% of DET's points"
     },
     "player": "Dylan Larkin",
@@ -274,29 +228,6 @@
     "tip_sort": "1110-2000"
    },
    "doc_id": "nhl-det-dylan-larkin"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "EDM",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min a game \u00b7 4 points in 13 games = 2% of EDM's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Colton Dach",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "EDM",
-    "tip": "Wed 9:00 PM",
-    "tip_sort": "1111-2100"
-   },
-   "doc_id": "nhl-edm-colton-dach"
   },
   {
    "collection": "injuries",
@@ -353,39 +284,17 @@
      "level": "minor",
      "why": "No games for him in this season's stats"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Erik Gustafsson",
     "reason": "D",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "PHI",
     "tip": "Wed 9:00 PM",
     "tip_sort": "1111-2100"
    },
    "doc_id": "nhl-phi-erik-gustafsson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "MTL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min a game \u00b7 8 points in 18 games = 5% of MIN's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Michael McCarron",
-    "reason": "C \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "MIN",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-min-michael-mccarron"
   },
   {
    "collection": "injuries",
@@ -540,28 +449,6 @@
     "tip_sort": "1112-2200"
    },
    "doc_id": "nhl-nyi-ryan-pulock"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYR",
-    "home": "CGY",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "15 min a game \u00b7 0 points in 17 games = 0% of NYR's points"
-    },
-    "player": "Alberts Smits",
-    "reason": "D \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "NYR",
-    "tip": "Wed 7:30 PM",
-    "tip_sort": "1111-1930"
-   },
-   "doc_id": "nhl-nyr-alberts-smits"
   },
   {
    "collection": "injuries",
@@ -839,6 +726,28 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "17 min a game \u00b7 12 points in 18 games = 7% of UTA's points"
+    },
+    "player": "Dylan Guenther",
+    "reason": "RW",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "UTA",
+    "tip": "Wed 9:30 PM",
+    "tip_sort": "1111-2130"
+   },
+   "doc_id": "nhl-uta-dylan-guenther"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UTA",
+    "home": "VGK",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "19 min a game \u00b7 4 points in 17 games = 2% of UTA's points"
     },
     "note": "Downgraded from day-to-day",
@@ -874,6 +783,28 @@
     "tip_sort": "1111-2130"
    },
    "doc_id": "nhl-uta-john-marino"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UTA",
+    "home": "VGK",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "20 min a game \u00b7 6 points in 19 games = 4% of VGK's points"
+    },
+    "player": "Noah Hanifin",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "VGK",
+    "tip": "Wed 9:30 PM",
+    "tip_sort": "1111-2130"
+   },
+   "doc_id": "nhl-vgk-noah-hanifin"
   },
   {
    "collection": "injuries",
@@ -942,6 +873,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-10T17:42:45Z",
+ "generated_at": "2026-11-10T23:12:08Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
