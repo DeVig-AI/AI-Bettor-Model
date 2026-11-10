@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 9 \u00b7 1:41 PM ET",
+    "as_of": "Mon Nov 9 \u00b7 8:59 PM ET",
     "date": "2026-11-09",
     "sport": "NHL"
    },
@@ -123,28 +123,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
-    "home": "TOR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "15 min a game \u00b7 4 points in 13 games = 2% of COL's points"
-    },
-    "player": "Josh Manson",
-    "reason": "D \u00b7 Ankle",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "COL",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1110-1900"
-   },
-   "doc_id": "nhl-col-josh-manson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "DET",
     "home": "STL",
     "impact": {
@@ -257,6 +235,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "PHI",
+    "home": "VAN",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "No games for him in this season's stats"
+    },
+    "player": "Erik Gustafsson",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "PHI",
+    "tip": "Mon 9:30 PM",
+    "tip_sort": "1109-2130"
+   },
+   "doc_id": "nhl-phi-erik-gustafsson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "MIN",
     "home": "MTL",
     "impact": {
@@ -320,6 +320,28 @@
     "tip_sort": "1110-1900"
    },
    "doc_id": "nhl-min-jared-spurgeon"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MIN",
+    "home": "MTL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "15 min a game \u00b7 6 points in 17 games = 4% of MTL's points"
+    },
+    "player": "Jake Evans",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "MTL",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1110-1900"
+   },
+   "doc_id": "nhl-mtl-jake-evans"
   },
   {
    "collection": "injuries",
@@ -419,7 +441,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "14 min a game \u00b7 10 points in 17 games = 7% of NJ's points"
+     "why": "14 min a game \u00b7 10 points in 17 games = 6% of NJ's points"
     },
     "player": "Anthony Mantha",
     "reason": "RW",
@@ -575,28 +597,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 3 points in 9 games = 2% of SJ's points"
-    },
-    "player": "Alexander Wennberg",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "SJ",
-    "tip": "Mon 10:00 PM",
-    "tip_sort": "1109-2200"
-   },
-   "doc_id": "nhl-sj-alexander-wennberg"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYI",
-    "home": "SJ",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Kyle Keyser",
@@ -619,7 +619,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 16 points in 16 games = 10% of TB's points"
+     "why": "19 min a game \u00b7 16 points in 17 games = 10% of TB's points"
     },
     "player": "Brayden Point",
     "reason": "C",
@@ -664,7 +664,7 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "15 min a game \u00b7 6 points in 18 games = 3% of TOR's points"
+     "why": "15 min a game \u00b7 6 points in 19 games = 3% of TOR's points"
     },
     "note": "Upgraded from out",
     "player": "Colton Sissons",
@@ -756,11 +756,12 @@
      "level": "some",
      "why": "19 min a game \u00b7 4 points in 17 games = 2% of UTA's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Nate Schmidt",
-    "reason": "D",
+    "reason": "D \u00b7 Upper body",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "UTA",
     "tip": "Wed 9:30 PM",
     "tip_sort": "1111-2130"
@@ -945,6 +946,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-09T18:41:58Z",
+ "generated_at": "2026-11-10T01:59:53Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
