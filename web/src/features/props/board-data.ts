@@ -4,7 +4,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { type LivePrice, type PropLine, fetchLiveProps } from '@/lib/props'
-import { logIdx, rsIndexQuery, rsTeamQuery, statsCode } from '@/lib/research'
+import { type RsTeam, logIdx, rsIndexQuery, rsTeamQuery, statsCode } from '@/lib/research'
+import type { LogPlayer } from '@/lib/prop-context'
 import { type StreakPlayer, normName, recentGames } from '@/lib/streak-math'
 
 export type Shown = PropLine & { mid: number; spread: number; live: boolean }
@@ -42,7 +43,17 @@ export function useLivePrices(tickers: string[]) {
   return { live, at }
 }
 
-export type Logs = { last: (player: string, stat: string) => number[] | null; team: (player: string) => string | null }
+export type Logs = {
+  last: (player: string, stat: string) => number[] | null
+  team: (player: string) => string | null
+  // for the drawer's "tonight vs usual": the log column positions, this season, the columns behind a stat, a player's
+  // whole log and his team's roster files, and the team files themselves (games, ranks)
+  L: Record<string, number>; season: number | null
+  cols: (stat: string) => string[] | null
+  player: (name: string) => LogPlayer | null
+  roster: (code: string) => LogPlayer[]
+  file: (code: string) => RsTeam | null
+}
 
 // The last 10 played games of every player on these teams, per stat (oldest first)
 export function usePlayerLogs(sport: string, teams: string[]): Logs | null {
@@ -56,9 +67,12 @@ export function usePlayerLogs(sport: string, teams: string[]): Logs | null {
     if (!ok || !idx.data) return null
     const L = logIdx(idx.data)
     const cols = new Map((idx.data.hit_stats ?? []).map(([k, , c]) => [k, c]))
-    const who = new Map<string, StreakPlayer>()
+    const who = new Map<string, StreakPlayer & { pos?: string }>()
+    const rosters = new Map<string, LogPlayer[]>()
     files.forEach((t, i) => t?.players?.forEach((p) => {
-      if (p.log?.length) who.set(normName(p.name), { id: p.id, name: p.name, team: teams[i], log: p.log })
+      if (!p.log?.length) return
+      who.set(normName(p.name), { id: p.id, name: p.name, team: teams[i], log: p.log, pos: p.pos })
+      rosters.set(teams[i], [...(rosters.get(teams[i]) ?? []), { name: p.name, pos: p.pos, log: p.log }])
     }))
     const memo = new Map<string, number[] | null>()
     return {
@@ -71,6 +85,11 @@ export function usePlayerLogs(sport: string, teams: string[]): Logs | null {
         return memo.get(k)!
       },
       team: (player) => who.get(normName(player))?.team ?? null,
+      L, season: idx.data.season_year ?? null,
+      cols: (stat) => cols.get(stat) ?? null,
+      player: (name) => who.get(normName(name)) ?? null,
+      roster: (code) => rosters.get(code) ?? [],
+      file: (code) => files[teams.indexOf(code)] ?? null,
     }
   }, [ok, idx.data, files, teams, sport])
 }

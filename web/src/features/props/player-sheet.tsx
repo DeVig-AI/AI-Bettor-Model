@@ -18,6 +18,7 @@ import { type PropWhy, usePropPlayer, usePropWhy } from './why'
 import { useStreakSummary } from './streaks'
 import { LAST, type Shown, groupLines, projOf, hits, needOf, tenOfTen, thinLine, useLivePrices, usePlayerLogs } from './board-data'
 import { money, payout, plainStat } from './words'
+import { PriceMove, Tonight } from './tonight'
 
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const pct = (p: number) => `${Math.round(p * 100)}%`
@@ -136,6 +137,9 @@ function Body({ g, l, typical, onPick, game, open, onOpenChange }: {
               </p>
             </section>
           )}
+
+          <Tonight l={l} game={game} team={team} opp={opp} logs={logs} w={w} />
+          <PriceMove l={l} />
 
           <Costs l={l} />
         </div>

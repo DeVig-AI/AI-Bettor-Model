@@ -179,3 +179,18 @@ export function propSide(l: Pick<PropLine, 'bid' | 'ask'>, side: 'over' | 'under
   const cost = price + kalshiFee(price)
   return { price, cost, fair: side === 'over' ? mid : 1 - mid, spread: l.ask - l.bid }
 }
+
+// One line's Kalshi price over the last few days (hourly middle of buy and sell), from /api/props?history=
+export function usePriceHistory(ticker: string | null) {
+  return useQuery({
+    queryKey: ['prop_history', ticker],
+    enabled: !!ticker,
+    staleTime: 5 * 60e3,
+    retry: false,
+    queryFn: async () => {
+      const r = await fetch(`/api/props?history=${encodeURIComponent(ticker!)}`, { headers: { accept: 'application/json' } })
+      if (!r.ok) return [] as [number, number][]
+      return ((await r.json()).points ?? []) as [number, number][]
+    },
+  })
+}
