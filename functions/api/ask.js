@@ -17,7 +17,7 @@
 // Needs, in the Pages project settings (see ACCOUNTS.md): the USERS KV binding and Access variables (as for /api/me)
 // and either a Workers AI binding named AI or a GEMINI_API_KEY secret (or both).
 import { accessUser, userKey } from "./me.js";
-import { LINGO, LOCAL_GUIDE, TOOLS, WHY_GUIDE, runTool, splitAppMessage, termsIn } from "../lib/devig-tools.js";
+import { LINGO, LOCAL_GUIDE, TOOLS, WHY_GUIDE, playerNamed, runTool, splitAppMessage, termsIn } from "../lib/devig-tools.js";
 
 // Workers AI models to try in order (names change over time; a missing one is skipped)
 const CF_MODELS = ["@cf/meta/llama-3.1-8b-instruct-fast", "@cf/meta/llama-3.1-8b-instruct-fp8", "@cf/meta/llama-3.1-8b-instruct",
@@ -71,6 +71,7 @@ export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET
   const messages = [{role: "system", content: `${LOCAL_GUIDE}\n${WHY_GUIDE}\n${today}${said}`}, ...convo];
   const end = Date.now() + budget;
   const cache = new Map();                          // each stats file is fetched once per question
+  const question = convo[convo.length - 1].content;  // the tools read numbers from it ("200 passing yards") if the AI leaves them out
   for (let round = 0; round <= LOCAL_ROUNDS; round++) {
     const left = end - Date.now();
     if (left < 2000) return null;
@@ -86,14 +87,20 @@ export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET
     } catch (e) { return null; }
     const m = d && d.message;
     if (!m) return null;
-    const calls = Array.isArray(m.tool_calls) ? m.tool_calls : [];
+    let calls = Array.isArray(m.tool_calls) ? m.tool_calls : [];
+    // the small model sometimes answers "I don't have his stats" without looking: when the question names a real
+    // player and nothing was looked up yet, look him up for it and let it answer again
+    if (!calls.length && round === 0) {
+      const who = await playerNamed(question, fetcher, cache);
+      if (who) calls = [{function: {name: "player_props", arguments: {player: who}}}];
+    }
     if (!calls.length) return typeof m.content === "string" && m.content.trim() ? m.content.trim() : null;
-    messages.push({role: "assistant", content: m.content || "", tool_calls: calls});
+    messages.push({role: "assistant", content: calls === m.tool_calls ? m.content || "" : "", tool_calls: calls});
     for (const c of calls.slice(0, 3)) {
       const f = c.function || {};
       let args = f.arguments;
       if (typeof args === "string") { try { args = JSON.parse(args); } catch (e) { args = {}; } }
-      const out = await runTool(f.name, args, {app, env, fetcher, cache});
+      const out = await runTool(f.name, args, {app, env, fetcher, cache, question});
       messages.push({role: "tool", tool_name: f.name, content: JSON.stringify(out).slice(0, 6000)});
     }
   }
@@ -105,6 +112,8 @@ export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET
 export async function askGemini(messages, app, model, env, fetcher = fetch) {
   messages = messages.slice();
   const cache = new Map();
+  const last = [...messages].reverse().find(m => m.role === "user");
+  const question = last ? (splitAppMessage(last.content)?.question ?? String(last.content || "")) : "";
   let tools = true;
   for (let round = 0; round <= CLOUD_ROUNDS; round++) {
     let d;
@@ -130,7 +139,7 @@ export async function askGemini(messages, app, model, env, fetcher = fetch) {
       const f = c.function || {};
       let args = f.arguments;
       if (typeof args === "string") { try { args = JSON.parse(args); } catch (e) { args = {}; } }
-      const out = await runTool(f.name, args, {app, env, fetcher, cache});
+      const out = await runTool(f.name, args, {app, env, fetcher, cache, question});
       messages.push({role: "tool", tool_call_id: c.id, name: f.name, content: JSON.stringify(out).slice(0, 6000)});
     }
   }

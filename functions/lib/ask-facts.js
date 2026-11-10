@@ -237,3 +237,47 @@ export function compareFacts(a, b, line) {
   return out;
 }
 const wins = rec => { const [w, l] = String(rec || "0-0").split("-").map(Number); return w / Math.max(1, w + l); };
+
+// A player with no Kalshi lines up yet (his next game isn't priced): his game log from the stats files anyway, for the
+// stats that fit his position, and how often he reached any number the user asked about ("200 passing yards").
+// row = his index.players row [id, name, team, pos, ...]; checks = [{stat, need}] parsed from the question.
+const POS_STATS = {
+  QB: ["passing_yards", "passing_tds", "rushing_yards", "rushing_attempts"],
+  RB: ["rushing_yards", "rushing_attempts", "receptions", "rush_rec_yards"],
+  WR: ["receptions", "receiving_yards"], TE: ["receptions", "receiving_yards"],
+};
+const SPORT_STATS = {NBA: ["points", "rebounds", "assists", "threes"], NHL: ["goals", "assists", "points", "shots"]};
+export async function logOnlyFacts(sport, row, checks, ctx) {
+  const idx = await getJson(`stats/${sport.toLowerCase()}/index.json`, ctx);
+  const team = await getJson(teamFile(sport, row[2]), ctx);
+  const p = team && (team.players || []).find(x => normName(x.name) === normName(row[1]));
+  if (!idx || !p) return null;
+  const hs = new Map((idx.hit_stats || []).map(([k, label, c]) => [k, {label, c}]));
+  const want = [...new Set([...checks.map(c => c.stat), ...(SPORT_STATS[sport] || POS_STATS[row[3]] || [])])].filter(k => hs.has(k));
+  const out = {player: p.name, team: row[2], position: row[3], stats: {}, checks: []};
+  for (const k of want.slice(0, 6)) {
+    const {label, c} = hs.get(k);
+    const log = playedLog(p, idx, c, sport);
+    if (!log.length) continue;
+    const season = log.filter(e => e.season === log[0].season), last10 = log.slice(0, 10);
+    const avg = l => r1(l.reduce((a, e) => a + e.v, 0) / l.length);
+    out.stats[label] = {last_games_oldest_first: last10.map(e => e.v).reverse(), avg_last10: avg(last10),
+      avg_this_season: season.length ? avg(season) : null, games_this_season: season.length};
+    for (const ck of checks.filter(x => x.stat === k)) {
+      const h10 = last10.filter(e => e.v >= ck.need).length, hs_ = season.filter(e => e.v >= ck.need).length;
+      out.checks.push({asked: `${ck.need}+ ${label.toLowerCase()}`, hit_last10: `${h10} of ${last10.length}`,
+        hit_this_season: `${hs_} of ${season.length}`,
+        says: `${p.name} had ${ck.need}+ ${label.toLowerCase()} in ${h10} of his last ${last10.length} games and ${hs_} of ${season.length} this season ` +
+          `(average ${avg(last10)} over his last ${last10.length}, ${avg(last10) >= ck.need ? "at or above" : "below"} ${ck.need}).`});
+    }
+  }
+  if (checks.length > 1 && out.checks.length === checks.length) {
+    // both at once, game by game
+    const logs = checks.map(ck => new Map(playedLog(p, idx, hs.get(ck.stat).c, sport).map(e => [e.date, e.v])));
+    const dates = playedLog(p, idx, hs.get(checks[0].stat).c, sport).slice(0, 10).map(e => e.date);
+    const both = dates.filter(d => checks.every((ck, i) => (logs[i].get(d) ?? -1) >= ck.need)).length;
+    out.all_together = `All of those in the same game: ${both} of his last ${dates.length}.`;
+  }
+  out.facts = ["Kalshi hasn't posted prop lines for his next game yet, so there's no price or DeVig props-model chance; these are only his past games, not a pick."];
+  return out;
+}

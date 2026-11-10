@@ -117,3 +117,35 @@ test("MCP: initialize, list the public tools, call one", async () => {
   assert.equal(await answer({jsonrpc: "2.0", method: "notifications/initialized"}), null);
   assert.ok(TOOLS.length >= 6);
 });
+
+test("a player with no lines up still gets his game log, and the numbers in the question are counted", async () => {
+  const { parseNumbers } = await import("../../functions/lib/devig-tools.js");
+  assert.deepEqual(parseNumbers("Does Josh Allen go for 200 passing yards and 5 run attempts"),
+    [{stat: "passing_yards", need: 200}, {stat: "rushing_attempts", need: 5}]);
+  const cols = ["date", "opp", "ha", "pass_yds", "car", "season"];
+  const IDX = {season_year: 2027, log_cols: cols,
+    hit_stats: [["passing_yards", "Passing yards", ["pass_yds"]], ["rushing_attempts", "Rush attempts", ["car"]]],
+    players: [["a", "Josh Hines-Allen", "JAX", "DE", 9, 0, 0, 0, 2027], ["b", "Josh Allen", "BUF", "QB", 3, 250, 40, 0, 2027]]};
+  const BUF = {code: "BUF", players: [{name: "Josh Allen", log: [
+    ["2026-11-08", "MIA", "H", 262, 7, 2027], ["2026-11-01", "KC", "A", 190, 9, 2027], ["2026-10-25", "NE", "H", 230, 4, 2027]]}]};
+  const fetcher = async url => {
+    const u = String(url);
+    if (u.endsWith("stats/nfl/index.json")) return new Response(JSON.stringify(IDX));
+    if (u.endsWith("stats/nfl/team_BUF.json")) return new Response(JSON.stringify(BUF));
+    return new Response("{}", {status: 404});
+  };
+  const r = await runTool("player_props", {player: "Josh Allen"}, {fetcher, question: "Josh Allen 200 passing yards and 5 run attempts?"});
+  assert.equal(r.team, "BUF");                                  // the exact name beats Josh Hines-Allen
+  assert.deepEqual(r.stats["Passing yards"].last_games_oldest_first, [230, 190, 262]);
+  assert.deepEqual(r.checks.map(c => c.hit_last10), ["2 of 3", "2 of 3"]);
+  assert.equal(r.all_together, "All of those in the same game: 1 of his last 3.");
+  assert.match(r.facts[0], /hasn't posted prop lines/);
+});
+
+test("a full player name in the question is found, even with 's", async () => {
+  const { playerNamed } = await import("../../functions/lib/devig-tools.js");
+  const IDX = {players: [["a", "Josh Hines-Allen", "JAX", "DE"], ["b", "Josh Allen", "BUF", "QB"], ["c", "Allen", "X", "K"]]};
+  const fetcher = async url => String(url).endsWith("stats/nfl/index.json") ? new Response(JSON.stringify(IDX)) : new Response("{}", {status: 404});
+  assert.equal(await playerNamed("Josh Allen’s stats", fetcher), "josh allen");
+  assert.equal(await playerNamed("who wins tonight", fetcher), null);
+});
