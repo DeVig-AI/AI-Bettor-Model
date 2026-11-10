@@ -1,0 +1,1 @@
+import{n as e}from"./friends-DWWrUIvp.js";var t=e;export{t as component};

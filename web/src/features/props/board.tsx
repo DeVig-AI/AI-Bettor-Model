@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { TeamLogo, PlayerPhoto } from '@/components/team-logo'
 import { usePropPlayer, usePropWhy } from './why'
 import { useStreakSummary } from './streaks'
-import { LAST, type Group, type Logs, groupLines, hits, needOf, tenOfTen, thinLine, useLivePrices, usePlayerLogs } from './board-data'
+import { LAST, type Group, type Logs, groupLines, hits, needOf, projOf, tenOfTen, thinLine, useLivePrices, usePlayerLogs } from './board-data'
 import { PlayerSheet } from './player-sheet'
 import { plainStat } from './words'
 
@@ -122,7 +122,7 @@ export function PropsBoard({ ls, gameFor, pickGame = true, strip = true }: {
         {rows.length === 0 ? (
           <p className='p-8 text-center text-muted-foreground'>No {statName(st ?? '').toLowerCase()} props with prices right now.</p>
         ) : shownGames.map((g) => {
-          const gr = rows.filter((r) => r.main.gameKey === g.gameKey).sort((a, b) => (b.main.expected ?? -1) - (a.main.expected ?? -1))
+          const gr = rows.filter((r) => r.main.gameKey === g.gameKey).sort((a, b) => (projOf(b) ?? -1) - (projOf(a) ?? -1))
           if (!gr.length) return null
           const row = gameFor(g)
           return (
@@ -204,7 +204,7 @@ function TenCard({ t, game, onOpen }: { t: Ten; game: GameRow | null; onOpen: (k
         </span>
       </span>
       <span className='grid grid-cols-3 gap-1 font-condensed tabular-nums'>
-        <Trio k='Proj' v={l.expected != null ? l.expected.toFixed(1) : '—'} devig />
+        <Trio k='Proj' v={projOf(t.g) != null ? projOf(t.g)!.toFixed(1) : '—'} devig />
         <Trio k='Kalshi' v={pct(l.mid)} />
         <Trio k='DeVig' v={l.modelOver != null ? pct(l.modelOver) : '—'} devig />
       </span>
@@ -233,8 +233,9 @@ function Row({ g, logs, game, onOpen }: { g: Group; logs: Logs | null; game: Gam
   const h = hits(last, l.line)
   const any10 = g.lines.some((x) => tenOfTen(last, x.line))
   const need = needOf(l.line)
-  const x = l.expected
-  const up = x != null && x > l.line
+  // the typical night, and over/under follows DeVig's own chance so the two columns never disagree
+  const x = projOf(g)
+  const up = l.modelOver != null ? l.modelOver > 0.5 : x != null && x > l.line
   const c = yesCost(l)
   const gap = l.modelOver == null ? null : Math.round((l.modelOver - l.mid) * 100)
   return (
@@ -275,7 +276,7 @@ function Footer({ sport, at }: { sport: string; at: Date | null }) {
   const t = useProps().tests.find((x) => x.sport === sport)
   return (
     <p className='max-w-prose px-1 text-xs leading-relaxed text-muted-foreground'>
-      <b className='text-foreground'>Proj</b> is what DeVig&apos;s props model expects him to get. <b className='text-foreground'>Kalshi</b> is the
+      <b className='text-foreground'>Proj</b> is a typical night for him by DeVig&apos;s model: half his nights above, half below. <b className='text-foreground'>Kalshi</b> is the
       chance bettors are paying for (the middle of the buy and sell price), with what Yes costs in odds, fee included.{' '}
       <b className='text-devig'>DeVig</b> is the model&apos;s chance, and how far it is from Kalshi.{' '}
       {t && t.graded > 0

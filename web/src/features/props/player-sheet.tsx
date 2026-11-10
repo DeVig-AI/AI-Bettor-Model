@@ -16,7 +16,7 @@ import { TrackButton } from '@/components/track-button'
 import { propLeg } from '../parlay/legs'
 import { type PropWhy, usePropPlayer, usePropWhy } from './why'
 import { useStreakSummary } from './streaks'
-import { LAST, type Shown, groupLines, hits, needOf, tenOfTen, thinLine, useLivePrices, usePlayerLogs } from './board-data'
+import { LAST, type Shown, groupLines, projOf, hits, needOf, tenOfTen, thinLine, useLivePrices, usePlayerLogs } from './board-data'
 import { money, payout, plainStat } from './words'
 
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
@@ -35,11 +35,11 @@ export function PlayerSheet({ ls, line, game, open, onOpenChange }: {
   const [pick, setPick] = useState(line)
   if (!g) return null
   const l = g.lines.find((x) => x.line === pick) ?? g.lines.find((x) => x.line === line) ?? g.main
-  return <Body g={g.lines} l={l} onPick={setPick} game={game} open={open} onOpenChange={onOpenChange} />
+  return <Body g={g.lines} l={l} typical={projOf(g)} onPick={setPick} game={game} open={open} onOpenChange={onOpenChange} />
 }
 
-function Body({ g, l, onPick, game, open, onOpenChange }: {
-  g: Shown[]; l: Shown; onPick: (line: number) => void; game: GameRow | null; open: boolean; onOpenChange: (v: boolean) => void
+function Body({ g, l, typical, onPick, game, open, onOpenChange }: {
+  g: Shown[]; l: Shown; typical: number | null; onPick: (line: number) => void; game: GameRow | null; open: boolean; onOpenChange: (v: boolean) => void
 }) {
   const w = usePropWhy(l)
   const { pid, team: t0, color, unit } = usePropPlayer(l, w, game)
@@ -56,7 +56,8 @@ function Body({ g, l, onPick, game, open, onOpenChange }: {
   const past = pastHit(hist, l.sport, 'over', l.stat, l.mid)
   const sum = useStreakSummary().data?.sports?.[l.sport]
   const m = l.modelOver
-  const x = w?.expected ?? l.expected
+  const avg = w?.expected ?? l.expected
+  const x = typical ?? avg
   const bg = color ?? 'var(--side-home)'
   const nm = lastName(l.player)
   const sub = [team && opp ? `${fullName(game, team)} vs ${fullName(game, opp)}` : `${l.away} at ${l.home}`, whenFmt.format(new Date(l.kickoff))]
@@ -120,7 +121,7 @@ function Body({ g, l, onPick, game, open, onOpenChange }: {
 
           <Chances l={l} h10={h10} n={last?.length ?? 0} m={m} past={past} />
 
-          {x != null && <Projection l={l} w={w} x={x} m={m} last={last} game={game} team={team} />}
+          {x != null && <Projection l={l} w={w} x={x} avg={avg} m={m} last={last} game={game} team={team} />}
 
           {last && last.length > 0 && (
             <section className='flex flex-col gap-2'>
@@ -190,12 +191,14 @@ function Chances({ l, h10, n, m, past }: { l: Shown; h10: number | null; n: numb
 // DeVig's projection, from the model's own split of tonight's number: his recent games first, then what's different
 // about tonight. Each change is measured against an average night, so "teammates out" can be a minus when fewer
 // teammates than usual are out.
-function Projection({ l, w, x, m, last, game, team }: {
-  l: Shown; w: PropWhy | null; x: number; m: number | null; last: number[] | null; game: GameRow | null; team: string | null
+function Projection({ l, w, x, avg, m, last, game, team }: {
+  l: Shown; w: PropWhy | null; x: number; avg: number | null; m: number | null; last: number[] | null; game: GameRow | null; team: string | null
 }) {
   const need = needOf(l.line)
   const word = plainStat(l.stat)
   const gap = x - need
+  // the average sits well away from the typical night (lopsided stats like yards): say both, plainly
+  const skew = avg != null && Math.abs(avg - x) >= Math.max(1, 0.08 * Math.abs(x))
   const at = (s: string) => w?.steps.find(([k]) => k === s)?.[1] ?? null
   const form = at('form'), op = at('opponent'), rest = at('rest'), out = at('out')
   const steps: [string, string, number][] = []
@@ -219,7 +222,7 @@ function Projection({ l, w, x, m, last, game, team }: {
     <section className='flex flex-col gap-3 rounded-2xl border border-devig/25 bg-devig/10 p-4'>
       <div className='flex flex-wrap items-end justify-between gap-x-3 gap-y-2'>
         <div>
-          <div className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>DeVig projects</div>
+          <div className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>DeVig&apos;s typical night</div>
           <div className='font-display text-[40px] leading-none font-black text-devig tabular-nums'>
             {x.toFixed(1)} <span className='font-sans text-base font-semibold whitespace-nowrap text-foreground'>{word}</span>
           </div>
@@ -228,6 +231,12 @@ function Projection({ l, w, x, m, last, game, team }: {
           {Math.abs(gap) < 0.5 ? `right at the ${need}+ line` : `${Math.abs(gap).toFixed(1)} ${gap >= 0 ? 'above' : 'below'} the ${need}+ line`}
         </span>
       </div>
+      {skew && (
+        <p className='text-sm leading-relaxed'>
+          He averages <b>{avg!.toFixed(1)}</b>, but a few big games pull that up. A typical night for him is about{' '}
+          <b>{Math.round(x)}</b>, so DeVig gives {need}+ {m != null ? `a ${pct(m)} chance` : 'about even odds'}.
+        </p>
+      )}
       {w && form != null ? (
         <>
           <p className='text-sm leading-relaxed text-muted-foreground'>
@@ -239,7 +248,7 @@ function Projection({ l, w, x, m, last, game, team }: {
             {steps.map(([t, d, v]) => (
               <Step key={t} t={t} d={d} v={signed(v)} tone={Math.abs(v) < 0.05 ? undefined : v > 0 ? 'text-good' : 'text-bad'} />
             ))}
-            <Step total t="Tonight's projection" v={x.toFixed(1)}
+            <Step total t={skew ? "Tonight's average" : "Tonight's projection"} v={(avg ?? x).toFixed(1)}
               d={big && Math.abs(big[2]) >= 0.3 ? `Biggest change for tonight: ${big[0].toLowerCase()} (${signed(big[2])}).` : 'Tonight looks like a normal game for him.'} />
           </ol>
         </>
@@ -250,7 +259,7 @@ function Projection({ l, w, x, m, last, game, team }: {
       )}
       {m != null && lo != null && (
         <p className='text-sm leading-relaxed'>
-          <b>Why it isn&apos;t a lock:</b> a projection is his middle game, not his floor. His last {last!.length} ranged from {lo} to {hi}, and{' '}
+          <b>Why it isn&apos;t a lock:</b> a typical night is his middle game, not his floor. His last {last!.length} ranged from {lo} to {hi}, and{' '}
           {under} of them {under === 1 ? 'was' : 'were'} under {need}. That&apos;s why DeVig gives {need}+ a {pct(m)} chance, not 100%.
         </p>
       )}

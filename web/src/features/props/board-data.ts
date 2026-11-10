@@ -75,20 +75,36 @@ export function usePlayerLogs(sport: string, teams: string[]): Logs | null {
   }, [ok, idx.data, files, teams, sport])
 }
 
+// DeVig's typical night: the number where its model's chance of "N or more" crosses 50%, read off the player's
+// ladder of lines. The model's average (expected) can sit well above it when a few huge games pull it up, and then
+// "projects 87, over 70" would contradict the model's own 48% for 70+. Null when the ladder never crosses 50%.
+export function typicalOf(ls: { line: number; modelOver: number | null }[]): number | null {
+  const pts = ls.filter((l) => l.modelOver != null).map((l) => [needOf(l.line), l.modelOver!] as const).sort((a, b) => a[0] - b[0])
+  for (let i = 1; i < pts.length; i++) {
+    const [na, pa] = pts[i - 1], [nb, pb] = pts[i]
+    if (pa >= 0.5 && pb < 0.5) return pa === pb ? na : na + ((pa - 0.5) / (pa - pb)) * (nb - na)
+  }
+  return null
+}
+
+// What the board shows as DeVig's number: the typical night, else the model's average
+export const projOf = (g: Group) => g.typical ?? g.main.expected
+
 // One player's lines for one stat in one game, easiest first; the main line is the one closest to 50/50
-export type Group = { key: string; player: string; stat: string; lines: Shown[]; main: Shown }
+export type Group = { key: string; player: string; stat: string; lines: Shown[]; main: Shown; typical: number | null }
 export function groupLines(ls: PropLine[], live: Record<string, LivePrice>): Group[] {
   const m = new Map<string, Shown[]>()
+  const all = new Map<string, PropLine[]>()
   for (const l of ls) {
-    const s = withLive(l, live)
-    if (!s) continue
     const k = `${l.sport}|${l.gameKey}|${l.player}|${l.stat}`
-    m.set(k, [...(m.get(k) ?? []), s])
+    all.set(k, [...(all.get(k) ?? []), l])
+    const s = withLive(l, live)
+    if (s) m.set(k, [...(m.get(k) ?? []), s])
   }
   return [...m.entries()].map(([key, lines]) => {
     lines.sort((a, b) => a.line - b.line)
     const main = lines.reduce((a, b) => (Math.abs(b.mid - 0.5) < Math.abs(a.mid - 0.5) ? b : a))
-    return { key, player: main.player, stat: main.stat, lines, main }
+    return { key, player: main.player, stat: main.stat, lines, main, typical: typicalOf(all.get(key) ?? lines) }
   })
 }
 
