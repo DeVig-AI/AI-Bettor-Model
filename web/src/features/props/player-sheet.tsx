@@ -148,7 +148,7 @@ function Body({ g, l, typical, onPick, game, open, onOpenChange }: {
   )
 }
 
-function Bar({ label, sub, p, value, tone }: { label: string; sub: string; p: number | null; value: string; tone: string }) {
+export function Bar({ label, sub, p, value, tone }: { label: string; sub: string; p: number | null; value: string; tone: string }) {
   return (
     <div className='grid grid-cols-[6.5rem_1fr_3rem] items-center gap-3'>
       <div className='leading-tight'>

@@ -167,7 +167,7 @@ export function Tonight({ l, game, team, opp, logs, w }: {
 }
 
 // How Kalshi's price for this line moved over the last few days (hourly), ending at the price now
-export function PriceMove({ l }: { l: Shown }) {
+export function PriceMove({ l }: { l: Pick<Shown, 'ticker' | 'mid'> }) {
   const q = usePriceHistory(l.ticker ?? null)
   const pts = q.data ?? []
   if (pts.length < 3) return null
@@ -182,7 +182,7 @@ export function PriceMove({ l }: { l: Shown }) {
       <h3 className='flex items-baseline justify-between text-xs font-semibold tracking-wide text-muted-foreground uppercase'>
         Kalshi&apos;s price
         <span className={cn('font-sans text-sm font-semibold tracking-normal normal-case', Math.abs(move) < 2 ? 'text-foreground' : move > 0 ? 'text-good' : 'text-bad')}>
-          {Math.abs(move) < 1 ? 'About the same' : `${move > 0 ? 'Up' : 'Down'} ${Math.abs(move)} points`}
+          {Math.abs(move) < 1 ? 'About the same' : `${move > 0 ? 'Up' : 'Down'} ${Math.abs(move)} point${Math.abs(move) === 1 ? '' : 's'}`}
         </span>
       </h3>
       <svg viewBox={`0 0 ${W} ${H}`} width='100%' role='img' aria-label={`Kalshi's price went from ${pct(first[1])} to ${pct(l.mid)}`}>

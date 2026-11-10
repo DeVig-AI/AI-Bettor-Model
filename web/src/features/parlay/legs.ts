@@ -119,10 +119,11 @@ export function propLeg(l: PropLine, side: 'over' | 'under', live?: LivePrice | 
 // out); you put the money in and submit on Kalshi. Kalshi fills in the page name itself. A prop's over is Yes, its
 // under is No; a team to win is Yes on that team's market. One market per link: Kalshi has no link for a whole combo.
 export function kalshiBuy(leg: Leg): { url: string; side: 'yes' | 'no' } | null {
-  const t = leg.ticker
+  return kalshiLink(leg.ticker, leg.kind === 'prop' && leg.id.endsWith('|under') ? 'no' : 'yes')
+}
+export function kalshiLink(t: string | null | undefined, side: 'yes' | 'no'): { url: string; side: 'yes' | 'no' } | null {
   const parts = t ? t.split('-') : []
   if (!t || parts.length < 3) return null
-  const side = leg.kind === 'prop' && leg.id.endsWith('|under') ? 'no' : 'yes'
   const q = new URLSearchParams({ marketTicker: t, orderSide: side, op_market_ticker: t, op_order_side: side, op_side: 'BUY', op_order_type: 'dollars' })
   return { url: `https://kalshi.com/markets/${parts[0].toLowerCase()}/x/${parts.slice(0, 2).join('-').toLowerCase()}?${q}`, side }
 }

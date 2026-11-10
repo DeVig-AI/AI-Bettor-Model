@@ -11,6 +11,7 @@ import { mlLeg } from '../parlay/legs'
 import { LevelPicker, PassBody, PickBody } from './explain-sheet'
 import { CollegeCall, NoModelBody } from './model-why'
 import { NarrativeButton } from './narrative'
+import { TeamProps } from './team-props'
 import { isPick } from './plate'
 
 // What opens when someone taps a team's half of a plate (Games, a game's page, or a leg in the parlay): the team's
@@ -150,6 +151,8 @@ export function TeamSheet({
             <NoModelBody row={row} side={side} level={lv} labGame={labGame} labFile={lab?.[row.sport]}
               devigGame={dvGame} devigFile={devigFiles?.[row.sport]} />
           )}
+
+          <TeamProps row={row} side={side} />
 
           {leg && (
             <button
