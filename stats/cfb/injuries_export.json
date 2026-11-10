@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 9 \u00b7 8:59 PM ET",
-    "date": "2026-11-09",
+    "as_of": "Tue Nov 10 \u00b7 4:39 AM ET",
+    "date": "2026-11-10",
     "sport": "CFB"
    },
    "doc_id": "cfb-meta"
@@ -386,6 +386,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "UL",
+    "home": "ULM",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "4 games this season, a small share of the team's yards and tackles"
+    },
+    "player": "Darrell Smith",
+    "reason": "RB \u00b7 Undisclosed \u00b7 reported Oct 7",
+    "sport": "CFB",
+    "starter": false,
+    "status": "Out",
+    "team": "UL",
+    "tip": "Thu 9:00 PM",
+    "tip_sort": "1112-2100"
+   },
+   "doc_id": "cfb-ul-darrell-smith"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "OHIO",
     "home": "M-OH",
     "impact": {
@@ -514,28 +536,6 @@
     "tip_sort": "1110-2000"
    },
    "doc_id": "cfb-m-oh-t-gotkowski"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OHIO",
-    "home": "M-OH",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "17% of OHIO's rushing and receiving yards this season"
-    },
-    "player": "Riley Neer",
-    "reason": "WR \u00b7 Undisclosed \u00b7 reported Oct 20",
-    "sport": "CFB",
-    "starter": true,
-    "status": "Questionable",
-    "team": "OHIO",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1110-2000"
-   },
-   "doc_id": "cfb-ohio-riley-neer"
   },
   {
    "collection": "injuries",
@@ -736,6 +736,6 @@
    "doc_id": "cfb-tol-trenton-jones"
   }
  ],
- "generated_at": "2026-11-10T01:59:54Z",
+ "generated_at": "2026-11-10T09:39:53Z",
  "source": "Covers.com injury report; role scale from stats/cfb (tools/injuries_export.py)"
 }
