@@ -1,7 +1,7 @@
 import { BarChart3, Calculator, History, MessageCircle, Search, CalendarDays, Cross, Ellipsis, Info, Layers, Trophy, UserRound, CircleUserRound, Users } from 'lucide-react'
 import { type SidebarData } from '../types'
 
-// Phones get five tabs (the last is More, which lists the rest) and a Friends button in the top bar; the computer's
+// Phones get five tabs (the last is More, which lists the rest) with Profile in the top bar and Friends floating at the bottom right; the computer's
 // sidebar lists every page.
 export const sidebarData: SidebarData = {
   navGroups: [
@@ -30,4 +30,4 @@ export const sidebarData: SidebarData = {
 }
 
 // the pages the More tab lists
-export const morePages = ['/props', '/fair', '/research', '/history', '/injuries', '/models', '/about', '/friends', '/profile']
+export const morePages = ['/props', '/fair', '/research', '/history', '/injuries', '/models', '/about', '/friends']

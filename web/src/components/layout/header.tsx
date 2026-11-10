@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { ChevronLeft, Users } from 'lucide-react'
+import { ChevronLeft, CircleUserRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
@@ -10,7 +10,7 @@ type HeaderProps = React.HTMLAttributes<HTMLElement> & {
 }
 
 // Sticky top bar. On phones it carries the DeVig mark (navigation lives in the bottom tab bar);
-// from md up the sidebar toggle takes that place. A page opened from the More tab shows a back button to More there instead. Friends floats at its right end on phones (on a computer it's in the sidebar).
+// from md up the sidebar toggle takes that place. A page opened from the More tab shows a back button to More there instead. Profile sits at its right end on phones (on a computer it's in the sidebar).
 export function Header({ className, children, ...props }: HeaderProps) {
   const fromMore = useLocation({ select: (l) => morePages.includes(l.pathname.replace(/\/$/, '')) })
   return (
@@ -34,25 +34,25 @@ export function Header({ className, children, ...props }: HeaderProps) {
         <SidebarTrigger variant='ghost' className='max-md:hidden' />
         <Separator orientation='vertical' className='h-6 max-md:hidden' />
         {children}
-        <FriendsButton />
+        <ProfileButton />
       </div>
     </header>
   )
 }
 
-function FriendsButton() {
-  const here = useLocation({ select: (l) => l.pathname.startsWith('/friends') })
+function ProfileButton() {
+  const here = useLocation({ select: (l) => l.pathname.startsWith('/profile') })
   return (
     <Link
-      to='/friends'
-      aria-label='Friends'
+      to='/profile'
+      aria-label='Profile'
       aria-current={here ? 'page' : undefined}
       className={cn(
         'grid size-10 shrink-0 place-items-center rounded-full border bg-card text-muted-foreground shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-colors duration-150 hover:text-foreground md:hidden',
         here && 'border-devig text-devig'
       )}
     >
-      <Users className='size-5' aria-hidden='true' />
+      <CircleUserRound className='size-5' aria-hidden='true' />
     </Link>
   )
 }

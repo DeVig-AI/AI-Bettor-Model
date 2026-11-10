@@ -1,1 +1,0 @@
-import{n as e}from"./props-CxWF26lE.js";var t=e;export{t as component};

@@ -6,7 +6,7 @@ import { SearchProvider } from '@/context/search-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SkipToMain } from '@/components/skip-to-main'
-import { MobileTabBar } from './mobile-tab-bar'
+import { FriendsFab, MobileTabBar } from './mobile-tab-bar'
 import { LockScreenSync } from '@/lib/lock-screen'
 
 type AuthenticatedLayoutProps = {
@@ -37,6 +37,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
           >
             <div className='pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0'>
               {children ?? <Outlet />}
+              <FriendsFab />
             </div>
           </SidebarInset>
           <MobileTabBar />
