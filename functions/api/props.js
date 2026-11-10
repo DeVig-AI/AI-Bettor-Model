@@ -1,4 +1,4 @@
-// DeVig live props prices: GET /api/props?tickers=KXNBAAST-26OCT31PHICHA-CHADSCHRODERPG-6,KXNBAPTS-...
+// DeVig live props prices (and one line's price history: ?history=TICKER, below): GET /api/props?tickers=KXNBAAST-26OCT31PHICHA-CHADSCHRODERPG-6,KXNBAPTS-...
 // returns Kalshi's current buy and sell prices for up to 40 player-prop markets, with Kalshi's own wording
 // ("Dennis Schröder: 6+ assists"), so the app compares DeVig's model to the price people actually see instead of the
 // props bot's snapshot (which is refreshed only every few hours). Public market data: no Kalshi account or key.
@@ -45,8 +45,45 @@ export function market(m) {
   };
 }
 
+// Price history for one line: GET /api/props?history=TICKER -> hourly middle of Kalshi's buy and sell price over the
+// last 5 days, from Kalshi's public candlesticks. Hours with no real market (an empty side, or more than 15¢ between buy
+// and sell) are left out, so the line only shows prices someone could actually trade at.
+const HIST_TTL = 300, HIST_DAYS = 5;
+export function historyPoints(candles) {
+  const out = [];
+  for (const c of candles || []) {
+    const bid = parseFloat(c.yes_bid?.close_dollars), ask = parseFloat(c.yes_ask?.close_dollars);
+    if (!(bid > 0 && ask < 1 && ask >= bid && ask - bid <= 0.15)) continue;
+    out.push([c.end_period_ts, Math.round(((bid + ask) / 2) * 1000) / 1000]);
+  }
+  return out;
+}
+
+async function history(ticker, fetcher, now) {
+  const hit = mem.get("h:" + ticker);
+  if (hit && now() - hit.at < HIST_TTL * 1000) return json(hit.data, 200, 120);
+  const end = Math.floor(now() / 1000), start = end - HIST_DAYS * 86400;
+  const series = ticker.split("-")[0];
+  try {
+    const url = `${KALSHI}/series/${series}/markets/${ticker}/candlesticks?start_ts=${start}&end_ts=${end}&period_interval=60`;
+    const r = await fetcher(url, {headers: {accept: "application/json"}, cf: {cacheTtl: HIST_TTL, cacheEverything: true}});
+    if (!r.ok) return json({error: "history unavailable"}, 502);
+    const data = {ticker, points: historyPoints((await r.json()).candlesticks)};
+    mem.set("h:" + ticker, {at: now(), data});
+    if (mem.size > 200) mem.delete(mem.keys().next().value);
+    return json(data, 200, 120);
+  } catch (e) {
+    return json({error: "history unavailable"}, 502);
+  }
+}
+
 export async function handle(request, fetcher = fetch, now = Date.now) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
+  const h = new URL(request.url).searchParams.get("history");
+  if (h != null) {
+    const [t] = parseTickers(h);
+    return t ? history(t, fetcher, now) : json({error: "no valid ticker"}, 400);
+  }
   const tickers = parseTickers(new URL(request.url).searchParams.get("tickers"));
   if (!tickers.length) return json({error: "no valid tickers"}, 400);
   const key = tickers.slice().sort().join(",");

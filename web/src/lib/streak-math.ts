@@ -25,8 +25,8 @@ const value = (g: (string | number | null)[], L: Record<string, number>, cols: s
   return v
 }
 
-// The player's last n played games for one stat, oldest first; null when fewer than n or a value is missing
-function lastN(p: StreakPlayer, sport: string, L: Record<string, number>, cols: string[], n: number) {
+// The player's last n played games for one stat (fewer when he hasn't played n), oldest first; null when a value is missing
+export function recentGames(p: StreakPlayer, sport: string, L: Record<string, number>, cols: string[], n: number) {
   const pc = PLAYED[sport]
   const out: number[] = []
   for (const g of p.log) {
@@ -34,9 +34,14 @@ function lastN(p: StreakPlayer, sport: string, L: Record<string, number>, cols: 
     const v = value(g, L, cols)
     if (v == null) return null
     out.push(v)
-    if (out.length === n) return out.reverse()
+    if (out.length === n) break
   }
-  return null
+  return out.reverse()
+}
+// exactly n games, or null
+const lastN = (p: StreakPlayer, sport: string, L: Record<string, number>, cols: string[], n: number) => {
+  const r = recentGames(p, sport, L, cols, n)
+  return r && r.length === n ? r : null
 }
 
 export function streaks<T extends StreakLine>(

@@ -16,7 +16,7 @@ import { propLeg } from '../parlay/legs'
 import { useExperience } from '@/lib/experience'
 import { LevelPicker } from '../games/explain-sheet'
 import { cents, gapWords, inTen, money, needs, payout, plainStat, sideShort } from './words'
-import type { Shown } from '.'
+import type { Shown } from './board-data'
 import { Ladder } from './ladder'
 
 type Step = 'typical' | 'role' | 'form' | 'opponent' | 'rest' | 'out'

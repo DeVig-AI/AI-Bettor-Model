@@ -3,7 +3,7 @@
 //   node --test tests/app/props_api.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { handle, parseTickers, market } from "../../functions/api/props.js";
+import { handle, parseTickers, market, historyPoints } from "../../functions/api/props.js";
 
 const SCH = "KXNBAAST-26OCT31PHICHA-CHADSCHRODERPG-6";
 const WIG = "KXNBAPTS-26OCT31ATLNOP-ATLAWIGGINS2-10";
@@ -49,4 +49,18 @@ test("bad input and Kalshi outages give clear errors", async () => {
   assert.equal((await handle(new Request(`https://x/api/props?tickers=${SCH}`, {method: "POST"}))).status, 405);
   const down = async () => new Response("", {status: 503});
   assert.equal((await handle(new Request(`https://x/api/props?tickers=${WIG}`), down, () => 1)).status, 502);
+});
+
+test("history keeps only hours with a real market and asks Kalshi's candlesticks for that series", async () => {
+  const c = (bid, ask, ts) => ({end_period_ts: ts, yes_bid: {close_dollars: String(bid)}, yes_ask: {close_dollars: String(ask)}});
+  assert.deepEqual(historyPoints([c(0, 0.99, 1), c(0.45, 0.55, 2), c(0.2, 0.5, 3), c(0.46, 0.48, 4), c(0.5, 1, 5)]),
+    [[2, 0.5], [4, 0.47]]);
+  let asked = "";
+  const fetcher = async url => { asked = url; return new Response(JSON.stringify({candlesticks: [c(0.4, 0.42, 9)]})); };
+  const T = "KXNFLRECYDS-26NOV12WASNYG-NYGMNABERS1-70";
+  const r = await handle(new Request(`https://x/api/props?history=${T}`), fetcher, () => 1_800_000_000_000);
+  assert.equal(r.status, 200);
+  assert.deepEqual(await r.json(), {ticker: T, points: [[9, 0.41]]});
+  assert.match(asked, /\/series\/KXNFLRECYDS\/markets\/KXNFLRECYDS-26NOV12WASNYG-NYGMNABERS1-70\/candlesticks\?/);
+  assert.equal((await handle(new Request("https://x/api/props?history=nope"), fetcher)).status, 400);
 });

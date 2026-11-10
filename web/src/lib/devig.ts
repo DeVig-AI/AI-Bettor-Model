@@ -570,6 +570,8 @@ const NFL_NAMES: Record<string, string> = {
   TB: 'Tampa Bay Buccaneers', TEN: 'Tennessee Titans', WAS: 'Washington Commanders', WSH: 'Washington Commanders',
 }
 const TEAM_NAMES: Record<string, Record<string, string>> = { NFL: NFL_NAMES }
+// 'WAS' → 'Commanders', for sentences (null when the code isn't an NFL team)
+export const nflNick = (code: string) => NFL_NAMES[code]?.split(' ').pop() ?? null
 
 // Every finished game the app knows: the live files' finals, then graded board picks they've already dropped
 // (NFL for the last 8 days, other sports for the last 3), newest first.

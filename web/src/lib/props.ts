@@ -14,10 +14,16 @@ const STATS: Record<string, [string, string]> = {
   turnovers: ['Turnovers', 'TO'], touchdowns: ['Touchdowns', 'TD'], pass_yds: ['Passing yards', 'pass yds'],
   rush_yds: ['Rushing yards', 'rush yds'], rec_yds: ['Receiving yards', 'rec yds'], receptions: ['Receptions', 'rec'],
   shots: ['Shots on goal', 'SOG'], saves: ['Saves', 'saves'],
+  receiving_yards: ['Receiving yards', 'rec yds'], rushing_yards: ['Rushing yards', 'rush yds'], passing_yards: ['Passing yards', 'pass yds'],
+  passing_attempts: ['Pass attempts', 'pass att'], passing_completions: ['Completions', 'comp'], passing_tds: ['Passing TDs', 'pass TD'],
+  rushing_attempts: ['Rush attempts', 'rush att'], rush_rec_yards: ['Rush + rec yards', 'rush+rec yds'], fantasy_points: ['Fantasy points', 'fantasy pts'],
+  longest_reception: ['Longest catch', 'long rec'], interceptions: ['Interceptions', 'INT'],
 }
 export function statName(s: string, short = false) {
   const x = STATS[s]
-  return x ? x[short ? 1 : 0] : s.replace(/_/g, ' ')
+  if (x) return x[short ? 1 : 0]
+  const t = s.replace(/_/g, ' ')
+  return short ? t : t.charAt(0).toUpperCase() + t.slice(1)
 }
 const half = (line: number) => Math.abs(line - Math.floor(line) - 0.5) < 1e-9
 export function overTxt(stat: string, line: number) {
@@ -172,4 +178,19 @@ export function propSide(l: Pick<PropLine, 'bid' | 'ask'>, side: 'over' | 'under
   const price = side === 'over' ? l.ask : Math.round((1 - l.bid) * 10000) / 10000
   const cost = price + kalshiFee(price)
   return { price, cost, fair: side === 'over' ? mid : 1 - mid, spread: l.ask - l.bid }
+}
+
+// One line's Kalshi price over the last few days (hourly middle of buy and sell), from /api/props?history=
+export function usePriceHistory(ticker: string | null) {
+  return useQuery({
+    queryKey: ['prop_history', ticker],
+    enabled: !!ticker,
+    staleTime: 5 * 60e3,
+    retry: false,
+    queryFn: async () => {
+      const r = await fetch(`/api/props?history=${encodeURIComponent(ticker!)}`, { headers: { accept: 'application/json' } })
+      if (!r.ok) return [] as [number, number][]
+      return ((await r.json()).points ?? []) as [number, number][]
+    },
+  })
 }

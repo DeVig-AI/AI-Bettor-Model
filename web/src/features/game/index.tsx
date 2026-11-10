@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { TrackButton } from '@/components/track-button'
 import { PriceAlert } from './price-alert'
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, isSoccer, useFinals, useGames } from '@/lib/devig'
 import { GameInjuries } from './injuries'
-import { type LivePrice, fetchLiveProps, useProps } from '@/lib/props'
+import { useProps } from '@/lib/props'
 import { RS_SPORTS } from '@/lib/research'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Plate, isPick, pickName } from '../games/plate'
 import { PlateTaps } from '../games/plate-taps'
 import { type Side, TeamSheet } from '../games/team-sheet'
-import { PropRow, type Shown, withLive } from '../props'
+import { PropsBoard } from '../props/board'
 import { FieldMovers } from './field'
 import { CourtMovers } from './court'
 import { RinkMovers } from './rink'
@@ -111,31 +111,11 @@ export function GamePage({ id }: { id: string }) {
   const { rows, isLoading } = useGames()
   const { finals } = useFinals()
   const { lines } = useProps()
-  const [live, setLive] = useState<Record<string, LivePrice>>({})
   const [sheet, setSheet] = useState<{ open: boolean; side: Side }>({ open: false, side: 'home' })
   const why = (side: Side) => setSheet({ open: true, side })
   const row = rows.find((r) => r.id === id) ?? finals.find((r) => r.id === id)
 
-  // this game's props: each player's main line (closest to 50/50), the most traded first
-  const props = useMemo(() => {
-    if (!row) return []
-    const mine = lines.filter((l) => l.sport === row.sport && l.away === row.away && l.home === row.home)
-    const priced = mine.map((l) => withLive(l, live)).filter(Boolean) as Shown[]
-    const best = new Map<string, Shown>()
-    for (const l of priced) {
-      const k = `${l.player}|${l.stat}`
-      const cur = best.get(k)
-      if (!cur || Math.abs(l.mid - 0.5) < Math.abs(cur.mid - 0.5)) best.set(k, l)
-    }
-    return [...best.values()].sort((a, b) => (b.oi || 0) - (a.oi || 0)).slice(0, 12)
-  }, [lines, live, row])
   const gameLines = useMemo(() => (row ? lines.filter((l) => l.sport === row.sport && l.away === row.away && l.home === row.home) : []), [lines, row])
-  const asked = useRef(false)
-  useEffect(() => {
-    if (asked.current || !props.length) return
-    asked.current = true
-    fetchLiveProps(props.map((l) => l.ticker).filter(Boolean) as string[]).then((m) => Object.keys(m).length && setLive(m))
-  }, [props])
 
   if (!row) {
     return (
@@ -220,13 +200,10 @@ export function GamePage({ id }: { id: string }) {
 
         <GameInjuries row={row} />
 
-        {props.length > 0 && (
+        {row.state !== 'post' && gameLines.length > 0 && (
           <section aria-label='Player props'>
             <h2 className='mb-2 px-1 font-display text-[22px] font-extrabold'>Player props</h2>
-            <p className='mb-2 px-1 text-xs text-muted-foreground'>On past games Kalshi&apos;s price was more right than DeVig&apos;s props model.</p>
-            <ul className='overflow-hidden rounded-[18px] bg-card'>
-              {props.map((l) => <PropRow key={l.key} l={l} game={row} />)}
-            </ul>
+            <PropsBoard ls={gameLines} gameFor={() => row} pickGame={false} strip={false} />
           </section>
         )}
       </main>
