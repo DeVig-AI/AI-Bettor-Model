@@ -2,11 +2,11 @@ name: NBA picks and grading
 
 on:
   schedule:
-    - cron: '0 */3 * * *'   # grade every 3 hours
-    - cron: '0 15 * * *'    # lock picks once a day, 11am ET
-    - cron: '0 16 * * *'    # backup lock runs (CHAMPION_CHALLENGER_V6_PREREG.md): noon and 1pm ET, only when no lock
-    - cron: '0 17 * * *'    #   run has happened yet that day (GitHub sometimes skips a scheduled run)
-  workflow_dispatch: {}      # manual run does both
+    - cron: '0 */3 * * *'         # grade every 3 hours (in the lock window it also locks if nothing has yet)
+    - cron: '0 15 * * *'          # the day's lock run
+    - cron: '23,53 15-23 * * *'   # backups every 30 minutes, off the hour (CHAMPION_CHALLENGER_V7_PREREG.md): they stop
+                                  # at once when the day is already locked or it's outside 10am-7pm ET
+  workflow_dispatch: {}            # manual run does both
 
 permissions:
   contents: write
@@ -16,7 +16,37 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # V7: the Eastern-day lock state, read from the latest main (not the commit this run started on)
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.g.outputs.run }}
+      lock: ${{ steps.g.outputs.lock }}
+      today: ${{ steps.g.outputs.today }}
+    steps:
+      - name: Is today's NBA slate locked yet?
+        id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          today=$(TZ=America/New_York date +%F)
+          hour=$((10#$(TZ=America/New_York date +%H)))
+          done_today=false
+          if gh api "repos/${{ github.repository }}/contents/nba/NBA_LOCK_RUNS.txt?ref=${{ github.event.repository.default_branch }}" \
+               -H "Accept: application/vnd.github.raw" 2>/dev/null | grep -qx "$today"; then done_today=true; fi
+          in_window=false
+          if [ "$hour" -ge 10 ] && [ "$hour" -lt 19 ]; then in_window=true; fi
+          lock=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then lock=true
+          elif [ "$done_today" = false ] && [ "$in_window" = true ]; then lock=true; fi
+          run=true
+          if [ "${{ github.event.schedule }}" = "23,53 15-23 * * *" ] && [ "$lock" = false ]; then run=false; fi
+          echo "today=$today (ET hour $hour) locked already: $done_today, in lock window: $in_window -> lock=$lock run=$run"
+          { echo "lock=$lock"; echo "run=$run"; echo "today=$today"; } >> "$GITHUB_OUTPUT"
+
   nba:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,24 +68,9 @@ jobs:
       - name: Decide whether this run locks picks
         id: mode
         run: |
-          # the day's first lock run locks (V6); a manual run always does. nba/NBA_LOCK_RUNS.txt lists the Eastern dates
-          # a lock run finished on.
-          today=$(TZ=America/New_York date +%F)
-          done_today=false
-          if [ -f nba/NBA_LOCK_RUNS.txt ] && grep -qx "$today" nba/NBA_LOCK_RUNS.txt; then done_today=true; fi
-          case "${{ github.event.schedule }}" in
-            '0 15 * * *'|'0 16 * * *'|'0 17 * * *') sched_lock=true ;;
-            *) sched_lock=false ;;
-          esac
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "lock=true" >> "$GITHUB_OUTPUT"
-          elif [ "$sched_lock" = true ] && [ "$done_today" = false ]; then
-            echo "lock=true" >> "$GITHUB_OUTPUT"
-          else
-            [ "$sched_lock" = true ] && echo "Today's ($today) lock run already happened: this backup run only grades."
-            echo "lock=false" >> "$GITHUB_OUTPUT"
-          fi
-          echo "today=$today" >> "$GITHUB_OUTPUT"
+          # V7: decided in the gate job from the Eastern clock and nba/NBA_LOCK_RUNS.txt on main
+          echo "lock=${{ needs.gate.outputs.lock }}" >> "$GITHUB_OUTPUT"
+          echo "today=${{ needs.gate.outputs.today }}" >> "$GITHUB_OUTPUT"
 
       - name: Fetch live odds (Kalshi public prices, free, no key)
         id: odds
