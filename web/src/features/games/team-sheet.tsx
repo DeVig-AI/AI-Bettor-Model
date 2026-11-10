@@ -83,7 +83,7 @@ export function TeamSheet({
         <MatchupHeader row={row} small={small} onGamePage={onGamePage} onClose={() => onOpenChange(false)} />
 
         <div onScroll={(e) => setSmall(e.currentTarget.scrollTop > 56)}
-          className='flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-5 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]'>
+          className='flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain [&>*]:shrink-0 px-5 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]'>
           <GameInfo row={row}
             chances={{ away: sideChance(row, 'away', labGame?.home_wp, dvGame?.home_wp), home: sideChance(row, 'home', labGame?.home_wp, dvGame?.home_wp) }}
             homeMargin={(dvGame ?? labGame)?.home_line != null ? -(dvGame ?? labGame)!.home_line! : null} />
