@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-10T17:57:43+00:00",
+ "updated": "2026-11-10T23:30:59+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -35,12 +35,12 @@
    "final": null,
    "type": "side",
    "pick": "MIA",
-   "line": -8.5,
-   "score": 5.0,
+   "line": -9.5,
+   "score": 5.5,
    "why_for": [
-    "Line tell: the line rates MIA 7.8 points better than results so far",
-    "Fade the line move: MIA went from -10.5 to -8.5",
+    "Line tell: the line rates MIA 8.8 points better than results so far",
     "UTAH: Keyonte George (21 points a game) is out",
+    "UTAH: Lauri Markkanen (18 points a game) is out",
     "UTAH: Jaren Jackson Jr. (16 points a game) is out",
     "UTAH: Struggling team (one win or fewer)"
    ],
@@ -733,7 +733,7 @@
    },
    "total": {
     "lean": null,
-    "line": 224.5,
+    "line": 226.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -755,14 +755,14 @@
     "capped": true,
     "why_for": [
      "Paolo Banchero (24 points a game) is out",
-     "Line tell: the line rates ORL 7.0 points better than results so far",
+     "Line tell: the line rates ORL 6.0 points better than results so far",
      "SAC: Struggling team (one win or fewer)"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 223.5,
+    "line": 222.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -810,12 +810,12 @@
    "note": null,
    "side": {
     "lean": "MIA",
-    "score": 5.0,
+    "score": 5.5,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates MIA 7.8 points better than results so far",
-     "Fade the line move: MIA went from -10.5 to -8.5",
+     "Line tell: the line rates MIA 8.8 points better than results so far",
      "UTAH: Keyonte George (21 points a game) is out",
+     "UTAH: Lauri Markkanen (18 points a game) is out",
      "UTAH: Jaren Jackson Jr. (16 points a game) is out",
      "UTAH: Struggling team (one win or fewer)"
     ],
@@ -849,10 +849,12 @@
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 216.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 217.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 214.5 to 217.5"
+    ],
     "why_opp": []
    }
   },
@@ -867,14 +869,18 @@
    "away_id": "15",
    "note": null,
    "side": {
-    "lean": "MIL",
-    "score": 0.5,
-    "capped": false,
+    "lean": "NY",
+    "score": 2.5,
+    "capped": true,
     "why_for": [
-     "Bounce-back spot after losing by 20",
-     "Struggling team (one win or fewer)"
+     "Line tell: the line rates NY 4.6 points better than results so far",
+     "Never lay 12 or more",
+     "MIL: Tyler Herro (21 points a game) is out",
+     "MIL: Struggling team (one win or fewer)"
     ],
-    "why_opp": []
+    "why_opp": [
+     "MIL: Bounce-back spot after losing by 20"
+    ]
    },
    "total": {
     "lean": null,
