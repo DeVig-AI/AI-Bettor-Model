@@ -1413,16 +1413,16 @@
   "2026_10_CAR_NO": {
    "away": "CAR",
    "home": "NO",
-   "home_wp": 0.617,
+   "home_wp": 0.6337,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": -1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6174,
     "home_field": 0.5484,
-    "who_is_out": 0.617
+    "who_is_out": 0.6337
    },
    "teams": {
     "away": {
@@ -1507,16 +1507,16 @@
   "2026_10_JAX_TEN": {
    "away": "JAX",
    "home": "TEN",
-   "home_wp": 0.1791,
+   "home_wp": 0.1688,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.1793,
     "home_field": 0.5484,
-    "who_is_out": 0.1791
+    "who_is_out": 0.1688
    },
    "teams": {
     "away": {
@@ -1789,16 +1789,16 @@
   "2026_10_NE_DET": {
    "away": "NE",
    "home": "DET",
-   "home_wp": 0.6804,
+   "home_wp": 0.6647,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6808,
     "home_field": 0.5484,
-    "who_is_out": 0.6804
+    "who_is_out": 0.6647
    },
    "teams": {
     "away": {
@@ -2022,7 +2022,7 @@
    }
   }
  },
- "generated_at": "2026-11-10T07:43:41Z",
+ "generated_at": "2026-11-10T17:16:43Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
  "max_gap_vs_upcoming": 0.0,
  "model": "NFL_MODEL_2_0",
