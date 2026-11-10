@@ -46,7 +46,7 @@ export function MatchupHeader({ row, small, onGamePage, onClose }: { row: GameRo
     </div>
   )
   return (
-    <div className='relative shrink-0 overflow-hidden rounded-t-3xl text-white'
+    <div className='relative shrink-0 overflow-hidden rounded-t-3xl text-white shadow-[0_6px_16px_-8px_rgb(0_0_0/0.5)]'
       style={{ background: `linear-gradient(110deg, ${colorOf(row, 'away')} 0 50%, ${colorOf(row, 'home')} 50% 100%)` }}>
       <span aria-hidden='true' className='absolute inset-0 bg-linear-to-b from-transparent from-30% to-black/35' />
       {!small && <span aria-hidden='true' className='absolute top-2.5 left-1/2 h-1.5 w-10 -translate-x-1/2 rounded-full bg-white/45' />}
@@ -60,11 +60,16 @@ export function MatchupHeader({ row, small, onGamePage, onClose }: { row: GameRo
       <div className={cn('relative grid grid-cols-[1fr_auto_1fr] items-center gap-1.5', small ? 'py-3 ps-4 pe-14' : 'px-4 pt-14 pb-4')}>
         {team('away', away)}
         <div className='flex flex-col items-center gap-0.5 text-center'>
-          <SheetTitle className={cn('font-condensed font-extrabold text-white/75', small ? 'sr-only' : 'text-[15px]')}>
-            <span className='sr-only'>{shortName(row, 'away', away)} </span>{isSoccer(row.sport) ? 'vs' : 'at'}<span className='sr-only'> {shortName(row, 'home', home)}</span>
-          </SheetTitle>
+          {/* the one-line bar is a copy over the full header, so only the full one names the dialog */}
+          {!small && (
+            <SheetTitle className='font-condensed text-[15px] font-extrabold text-white/75'>
+              <span className='sr-only'>{shortName(row, 'away', away)} </span>{isSoccer(row.sport) ? 'vs' : 'at'}<span className='sr-only'> {shortName(row, 'home', home)}</span>
+            </SheetTitle>
+          )}
           {score && <span className={cn('font-display font-black tabular-nums', small ? 'text-lg' : 'text-2xl')}>{score}</span>}
-          <SheetDescription className={cn('font-condensed font-bold text-white', small ? 'text-xs' : 'text-[15px]')}>{when}</SheetDescription>
+          {small
+            ? <span className='font-condensed text-xs font-bold text-white'>{when}</span>
+            : <SheetDescription className='font-condensed text-[15px] font-bold text-white'>{when}</SheetDescription>}
           {!small && <span className='text-xs text-white/80'>{row.sport}</span>}
         </div>
         {team('home', home)}

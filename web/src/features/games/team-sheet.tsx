@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { useMatchRoute } from '@tanstack/react-router'
 import { type GameRow, fmtAmerican, fmtPct, useRecord } from '@/lib/devig'
@@ -52,8 +52,9 @@ export function TeamSheet({
   const devigFiles = useDevigFiles().data
   const { toggle, has } = useSlip()
   const matchRoute = useMatchRoute()
-  // the matchup shrinks to one line once the drawer scrolls; a new game starts it full size
+  // the full matchup scrolls away with the drawer; once it's under the top, a one-line bar slides in over it
   const [small, setSmall] = useState(false)
+  const headRef = useRef<HTMLDivElement>(null)
   useEffect(() => setSmall(false), [row?.id, open])
   if (!row) return null
   // the game's own page (live field, plays that moved the price, injuries); no link when the sheet is already on it
@@ -78,12 +79,20 @@ export function TeamSheet({
           e.preventDefault()
           ;(e.currentTarget as HTMLElement | null)?.querySelector<HTMLElement>('[role=tab][aria-selected=true]')?.focus({ preventScroll: true })
         }}
-        className='max-h-[90svh] gap-0 overflow-hidden rounded-t-3xl border-t p-0 md:mx-auto md:max-w-xl [&>button:last-child]:top-3.5 [&>button:last-child]:grid [&>button:last-child]:size-9 [&>button:last-child]:place-items-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-black/30 [&>button:last-child]:text-white [&>button:last-child]:opacity-100'
+        className='max-h-[90svh] gap-0 overflow-hidden rounded-t-3xl border-t p-0 md:mx-auto md:max-w-xl [&>button:last-child]:top-3.5 [&>button:last-child]:grid [&>button:last-child]:size-9 [&>button:last-child]:place-items-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-black/30 [&>button:last-child]:text-white [&>button:last-child]:z-20 [&>button:last-child]:opacity-100'
       >
-        <MatchupHeader row={row} small={small} onGamePage={onGamePage} onClose={() => onOpenChange(false)} />
+        <div aria-hidden={!small}
+          className={cn('absolute inset-x-0 top-0 z-10 transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none',
+            small ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0')}>
+          <MatchupHeader row={row} small onGamePage={onGamePage} onClose={() => onOpenChange(false)} />
+        </div>
 
-        <div onScroll={(e) => setSmall(e.currentTarget.scrollTop > 56)}
-          className='flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain [&>*]:shrink-0 px-5 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]'>
+        <div onScroll={(e) => setSmall(e.currentTarget.scrollTop > (headRef.current?.offsetHeight ?? 180) - 64)}
+          className='flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0'>
+          <div ref={headRef}>
+            <MatchupHeader row={row} small={false} onGamePage={onGamePage} onClose={() => onOpenChange(false)} />
+          </div>
+          <div className='flex flex-col gap-4 px-5 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] [&>*]:shrink-0'>
           <GameInfo row={row}
             chances={{ away: sideChance(row, 'away', labGame?.home_wp, dvGame?.home_wp), home: sideChance(row, 'home', labGame?.home_wp, dvGame?.home_wp) }}
             homeMargin={(dvGame ?? labGame)?.home_line != null ? -(dvGame ?? labGame)!.home_line! : null} />
@@ -148,6 +157,7 @@ export function TeamSheet({
           )}
 
           <NarrativeButton row={row} level={lv} />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

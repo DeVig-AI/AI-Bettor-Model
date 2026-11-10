@@ -1,1 +1,0 @@
-import{D as e}from"./index-CZ4gylBI.js";var t=e;export{t as component};
