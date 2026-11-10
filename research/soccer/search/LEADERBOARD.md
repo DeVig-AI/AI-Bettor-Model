@@ -1,10 +1,10 @@
 # Research Lab search (SOCCER) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-11-10T12:13:26Z by research/lab/search.py. Scores are on the search seasons 2020–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-11-10T13:26:03Z by research/lab/search.py. Scores are on the search seasons 2020–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-30587 configurations scored so far.
+30886 configurations scored so far.
 
-## Moneyline -- top 25 of 30587
+## Moneyline -- top 25 of 30886
 
 | # | id | model | effect | t | 2020 | 2021 | 2022 |
 |---|---|---|---|---|---|---|---|
@@ -36,15 +36,15 @@ _Generated 2026-11-10T12:13:26Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `hfa_elo`: best 30 (median t -inf), worst 30 (-inf) over 27008 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 27008 configurations
-- moneyline · elo_ml · `k`: best 10 (median t -inf), worst 10 (-inf) over 27008 configurations
-- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 27008 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 27008 configurations
-- moneyline · elo_ml · `revert`: best 0.1 (median t -inf), worst 0.1 (-inf) over 27008 configurations
+- moneyline · elo_ml · `hfa_elo`: best 30 (median t -inf), worst 30 (-inf) over 27304 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 27304 configurations
+- moneyline · elo_ml · `k`: best 10 (median t -inf), worst 10 (-inf) over 27304 configurations
+- moneyline · elo_ml · `market_blend`: best 0.0 (median t -inf), worst 0.0 (-inf) over 27304 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 27304 configurations
+- moneyline · elo_ml · `revert`: best 0.1 (median t -inf), worst 0.1 (-inf) over 27304 configurations
 - moneyline · rating_ml · `def_weight`: best 1.0 (median t -0.84), worst 0.5 (-1.19) over 588 configurations
 - moneyline · rating_ml · `halflife`: best 1 (median t -0.60), worst 10 (-1.23) over 588 configurations
 - moneyline · rating_ml · `season_carry`: best 0.9 (median t -0.81), worst 0.2 (-1.82) over 588 configurations
-- moneyline · srs_ml · `carry`: best 0.625 (median t -1.21), worst 0.2 (-1.47) over 2455 configurations
-- moneyline · srs_ml · `margin_cap`: best 3 (median t -0.94), worst None (-1.48) over 2455 configurations
-- moneyline · srs_ml · `prior_w`: best 2 (median t -1.20), worst 8 (-1.54) over 2455 configurations
+- moneyline · srs_ml · `carry`: best 0.625 (median t -1.21), worst 0.2 (-1.47) over 2458 configurations
+- moneyline · srs_ml · `margin_cap`: best 3 (median t -0.94), worst None (-1.48) over 2458 configurations
+- moneyline · srs_ml · `prior_w`: best 2 (median t -1.20), worst 8 (-1.55) over 2458 configurations
