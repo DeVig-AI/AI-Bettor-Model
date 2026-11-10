@@ -1,1 +1,0 @@
-import{n as e}from"./props-B529PQdv.js";var t=e;export{t as component};

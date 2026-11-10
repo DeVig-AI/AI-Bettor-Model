@@ -25,6 +25,7 @@ const LAST = 10
 const SPORT_WORDS: Record<string, string> = { CBB: 'college basketball', CFB: 'college football' }
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const pct = (p: number) => `${Math.round(p * 100)}%`
+const under = (p: number) => `${100 - Math.round(p * 100)}%` // so Over + Under shows 100%
 const one = (x: number) => x.toFixed(1).replace(/\.0$/, '')
 const signed = (x: number) => (x > 0 ? '+' : x < 0 ? '−' : '') + one(Math.abs(x))
 const avg = (a: number[]) => a.reduce((s, x) => s + x, 0) / a.length
@@ -81,8 +82,11 @@ function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): 
 }
 
 const rungsOf = (c: Ctx, kind: Kind): Rung[] => (kind === 'total' ? c.d.total : (kind === 'tt' ? c.d.tt : c.d.by)[c.k] ?? [])
+// points and the game total read as over/under a half-point line (Kalshi's "22+" is over 21.5); win-by stays N+
+const ln = (need: number) => (need - 0.5).toFixed(1)
+const got = (kind: Kind) => (kind === 'by' ? 'got there' : 'went over')
 const betWords = (c: Ctx, kind: Kind, need: number) =>
-  kind === 'tt' ? `${need}+ ${c.unit}` : kind === 'by' ? `Win by ${need}+` : `Both teams: ${need}+ ${c.unit}`
+  kind === 'tt' ? `O/U ${ln(need)} ${c.unit}` : kind === 'by' ? `Win by ${need}+` : `Total O/U ${ln(need)}`
 
 export function TeamProps({ row, side }: { row: GameRow; side: Side }) {
   const q = useTeamProps(row, true)
@@ -110,13 +114,15 @@ export function TeamProps({ row, side }: { row: GameRow; side: Side }) {
                   <span className='truncate text-sm font-semibold'>{betWords(c, kind, m[0])}</span>
                   <span className='truncate text-xs text-muted-foreground'>
                     {vs.length
-                      ? `last ${vs.length}: ${hitCount(vs, m[0])} of ${vs.length} · avg ${kind === 'by' ? signed(avg(vs)) : one(avg(vs))}`
+                      ? kind !== 'by'
+                        ? `last ${vs.length}: ${hitCount(vs, m[0])} over, ${vs.length - hitCount(vs, m[0])} under · avg ${one(avg(vs))}`
+                        : `last ${vs.length}: ${hitCount(vs, m[0])} of ${vs.length} · avg ${kind === 'by' ? signed(avg(vs)) : one(avg(vs))}`
                       : 'no past games saved yet'}
                   </span>
                 </span>
                 <span className='flex shrink-0 flex-col items-end font-condensed leading-tight tabular-nums'>
-                  <span className='text-[15px] font-bold'>Kalshi {pct(mid(m))}</span>
-                  <span className='text-xs text-muted-foreground'>{rungsOf(c, kind).length} lines</span>
+                  <span className='text-[15px] font-bold'>{kind === 'by' ? 'Kalshi' : 'Over'} {pct(mid(m))}</span>
+                  <span className='text-xs text-muted-foreground'>{kind === 'by' ? '' : `Under ${under(mid(m))} · `}{rungsOf(c, kind).length} lines</span>
                 </span>
                 <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
               </button>
@@ -150,8 +156,8 @@ function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; op
   const color = (c.side === 'home' ? row.colors?.home : row.colors?.away) || 'var(--side-home)'
   const id = c.side === 'home' ? row.ids?.home : row.ids?.away
   const title = kind === 'tt' ? `${c.nick} ${c.unit}` : kind === 'by' ? `${c.nick} win by` : 'Game total'
-  const ask = kind === 'tt' ? `Will ${c.the}${c.nick} score ${need}+ ${c.unit}?`
-    : kind === 'by' ? `Will ${c.the}${c.nick} win by ${need}+?` : `Will both teams score ${need}+ ${c.unit} together?`
+  const ask = kind === 'tt' ? `${cap(c.the)}${c.nick}: over or under ${ln(need)} ${c.unit}?`
+    : kind === 'by' ? `Will ${c.the}${c.nick} win by ${need}+?` : `Both teams together: over or under ${ln(need)} ${c.unit}?`
   const m = mid(r)
   const chips = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -183,7 +189,7 @@ function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; op
                 <button key={x[3]} type='button' aria-pressed={x[0] === need} onClick={() => setPick(x[0])}
                   className={cn('h-10 min-w-14 shrink-0 rounded-xl border px-3 font-condensed text-base font-bold tabular-nums transition-colors duration-150',
                     x[0] === need ? 'border-foreground bg-foreground text-background' : 'text-muted-foreground hover:text-foreground')}>
-                  {x[0]}+
+                  {kind === 'by' ? `${x[0]}+` : ln(x[0])}
                 </button>
               ))}
             </div>
@@ -198,14 +204,15 @@ function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; op
           )}
 
           <section className='flex flex-col gap-3'>
-            <h3 className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>Chance it happens</h3>
+            <h3 className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>{kind === 'by' ? 'Chance it happens' : 'Chance of the over'}</h3>
             <Bar label='Kalshi' sub='what bettors pay' p={m} value={pct(m)} tone='bg-foreground' />
-            {last.length > 0 && <Bar label={`Last ${last.length}`} sub={`${h10} of ${last.length} got there`} p={h10 / last.length} value={`${h10}/${last.length}`} tone='bg-good' />}
+            {last.length > 0 && <Bar label={`Last ${last.length}`} sub={`${h10} of ${last.length} ${got(kind)}`} p={h10 / last.length} value={`${h10}/${last.length}`} tone='bg-good' />}
             {now.length > 0 && <Bar label='This season' sub={`${hs} of ${now.length}`} p={hs / now.length} value={`${hs}/${now.length}`} tone='bg-good' />}
             <div aria-hidden='true' className='grid grid-cols-[6.5rem_1fr_3rem] gap-3 text-[11px] text-muted-foreground tabular-nums'>
               <span /><span className='flex justify-between'><span>0%</span><span>50%</span><span>100%</span></span><span />
             </div>
             <p className='rounded-2xl bg-muted px-4 py-3 text-sm leading-relaxed text-muted-foreground'>
+              {kind !== 'by' && <>Under is the other side: Kalshi {under(m)}{last.length ? `, last ${last.length}: ${last.length - h10} of ${last.length}` : ''}. </>}
               DeVig has no model for {kind === 'tt' ? 'team totals' : kind === 'by' ? 'winning margins' : 'game totals'} yet, so there&apos;s
               no DeVig chance here. {last.length ? 'These are counts, not a pick.' : `DeVig doesn't save ${SPORT_WORDS[row.sport] ?? row.sport} scores yet, so there are no past games to count.`}
             </p>
@@ -217,12 +224,12 @@ function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; op
             <section className='flex flex-col gap-2'>
               <h3 className='flex items-baseline justify-between text-xs font-semibold tracking-wide text-muted-foreground uppercase'>
                 {kind === 'by' ? `Their last ${last.length} margins` : `Their last ${last.length} games`}
-                <span className='font-sans text-sm font-semibold tracking-normal text-foreground normal-case'>{h10} of {last.length} got there</span>
+                <span className='font-sans text-sm font-semibold tracking-normal text-foreground normal-case'>{h10} of {last.length} {got(kind)}</span>
               </h3>
               <LastChart last={last} need={need} margin={kind === 'by'} />
               <p className='flex items-center gap-2 text-xs text-muted-foreground'>
                 <svg width='22' height='4' aria-hidden='true'><line x1='0' x2='22' y1='2' y2='2' stroke='currentColor' strokeWidth='1.5' strokeDasharray='5 4' /></svg>
-                {kind === 'by' ? `wins by ${need}` : `needs ${need}`} · green games got there{kind === 'by' ? ' · below zero = lost' : ''}
+                {kind === 'by' ? `wins by ${need}` : `line ${ln(need)}`} · green games {got(kind)}{kind === 'by' ? ' · below zero = lost' : ''}
               </p>
             </section>
           )}
@@ -245,7 +252,7 @@ function Expect({ c, kind, need, last, oppLast }: { c: Ctx; kind: Kind; need: nu
     big = one(e.pts[c.k])
     body = <>Kalshi&apos;s lines put the game total near <b>{one(e.total)}</b> and the {fav} ahead by about <b>{one(e.margin)}</b>.
       Split the total by the margin: ({one(e.total)} {e.fav === c.k ? '+' : '−'} {one(e.margin)}) ÷ 2 ≈ <b>{one(e.pts[c.k])}</b> {c.unit} for {c.the}{c.nick}.
-      {Math.abs(e.pts[c.k] - need) <= 1.5 ? ` That's why ${need}+ is priced near even.` : ''}</>
+      {Math.abs(e.pts[c.k] - need) <= 1.5 ? ` That's why ${ln(need)} is priced near even.` : ''}</>
   } else if (kind === 'by' && e.margin != null && fav) {
     big = e.fav === c.k ? `by ${one(e.margin)}` : `−${one(e.margin)}`
     body = <>Kalshi&apos;s lines have {c.the}<b>{fav}</b> winning by about <b>{one(e.margin)}</b>.
@@ -282,16 +289,16 @@ function Facts({ c, kind, need, all, season, oppGames, oppSeason }: {
   const items: [string, React.ReactNode][] = []
   if (kind === 'tt') {
     items.push(["Their offense lately", <>{last4.join(', ')} in their last {last4.length} games{now.length ? <>, <b>{one(avg(now.map((g) => g.v)))}</b> a game this season</> : null}.</>])
-    if (opp.length) items.push(['The defense they face', <>{cap(c.the)}{c.oppNick} give up <b>{one(avg(opp))}</b> a game this season. Their opponents got {need}+ in <b>{hitCount(opp, need)} of {opp.length}</b>.</>])
+    if (opp.length) items.push(['The defense they face', <>{cap(c.the)}{c.oppNick} give up <b>{one(avg(opp))}</b> a game this season. Their opponents went over {ln(need)} in <b>{hitCount(opp, need)} of {opp.length}</b>.</>])
   } else if (kind === 'by') {
     items.push(['Their margins lately', <>{last4.map(signed).join(', ')} in their last {last4.length} games.{now.length ? ` ${won}-${now.length - won} this season.` : ''}</>])
     if (opp.length) items.push(['The other side', <>{cap(c.the)}{c.oppNick} lost by {need}+ in <b>{hitCount(opp, need)} of {opp.length}</b> games this season.</>])
   } else {
     items.push(["Their games", <>{last4.join(', ')} total {c.unit} in their last {last4.length}{now.length ? <>, <b>{one(avg(now.map((g) => g.v)))}</b> a game this season</> : null}.</>])
-    if (opp.length) items.push(["The other team's games", <>{cap(c.the)}{poss(c.oppNick)} games got to {need}+ in <b>{hitCount(opp, need)} of {opp.length}</b> this season (avg {one(avg(opp))}).</>])
+    if (opp.length) items.push(["The other team's games", <>{cap(c.the)}{poss(c.oppNick)} games went over {ln(need)} in <b>{hitCount(opp, need)} of {opp.length}</b> this season (avg {one(avg(opp))}).</>])
   }
   if (venue.length) items.push([c.side === 'home' ? 'At home' : 'On the road',
-    <>{c.side === 'home' ? 'At home' : 'On the road'} this season: <b>{hitCount(venue, need)} of {venue.length}</b> got there ({venue.map(show).join(', ')}).</>])
+    <>{c.side === 'home' ? 'At home' : 'On the road'} this season: <b>{hitCount(venue, need)} of {venue.length}</b> {got(kind)} ({venue.map(show).join(', ')}).</>])
   return (
     <section className='flex flex-col gap-2'>
       <h3 className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>Tonight vs. usual</h3>
@@ -342,7 +349,7 @@ function Costs({ c, kind, r }: { c: Ctx; kind: Kind; r: Rung }) {
   const sides = (['yes', 'no'] as const).map((s) => {
     const ps = propSide(px, s === 'yes' ? 'over' : 'under')
     const pay = payout(px, s === 'yes')
-    const label = s === 'yes' ? `Yes, ${kind === 'by' ? `win by ${r[0]}+` : betWords(c, kind, r[0]).replace(/^Both teams: /, '')}` : kind === 'by' ? `No, not by ${r[0]}+` : `No, ${r[0] - 1} or fewer`
+    const label = kind === 'by' ? (s === 'yes' ? `Yes, win by ${r[0]}+` : `No, not by ${r[0]}+`) : `${s === 'yes' ? 'Over' : 'Under'} ${ln(r[0])}`
     return { s, ps, pay, label, link: pre ? kalshiLink(r[3], s) : null }
   })
   return (

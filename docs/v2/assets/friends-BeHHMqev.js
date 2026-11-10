@@ -1,1 +1,0 @@
-import{n as e}from"./friends-D_XDlSFp.js";var t=e;export{t as component};
