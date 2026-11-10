@@ -1,5 +1,5 @@
 // The top of the team drawer: the matchup (both teams, pinned while the drawer scrolls) and what's useful to know
-// about the game before picking a side: Kalshi's lines, how the two teams are playing (the stats bot's team files),
+// about the game before picking a side: Kalshi's lines, how the two teams are playing (the stats bot's team files; none for soccer),
 // who might sit (the injuries bot), and whose chances the tabs below show. Facts and prices only; nothing here is a pick.
 import { useMemo } from 'react'
 import { ChevronRight } from 'lucide-react'
@@ -124,7 +124,7 @@ export function GameInfo({ row, chanceWho }: { row: GameRow; chanceWho: string }
     ),
   ].filter(Boolean)
 
-  // how they're playing, from the stats bot's team files (none for college basketball or soccer)
+  // how they're playing, from the stats bot's team files (none for soccer)
   const a = away?.this, h = home?.this
   const pts = (s: typeof a) => num(s?.gf ?? s?.rpg ?? s?.ppg) // NHL's ppg is power-play goals, so goals first
   const opp = (s: typeof a) => num(s?.ga ?? s?.rapg ?? s?.oppg)

@@ -1,0 +1,1 @@
+import{t as e}from"./research-38RTKOQx.js";var t=e;export{t as component};

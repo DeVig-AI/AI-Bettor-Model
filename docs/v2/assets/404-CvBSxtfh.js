@@ -1,0 +1,1 @@
+import{D as e}from"./index-C-UxCav9.js";var t=e;export{t as component};

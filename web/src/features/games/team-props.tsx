@@ -44,7 +44,7 @@ export function useTeamProps(row: GameRow, on: boolean) {
   })
 }
 
-// a team's games from the stats bot (none for college basketball yet)
+// a team's games from the stats bot
 export function useGames(sport: string, code: string) {
   const ok = (RS_SPORTS as readonly string[]).includes(sport)
   const q = useRsTeam(sport, ok ? statsCode(sport, code) : '')
@@ -71,7 +71,7 @@ function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): 
   if (!d) return null
   // stats files carry the full name; pro rows only have the code
   const nickOf = (c: string, full: string | undefined, name: string) =>
-    (row.sport === 'NFL' && nflNick(c)) || (full && row.sport !== 'CFB' ? nickname(full) : '') || name || c
+    (row.sport === 'NFL' && nflNick(c)) || (full && row.sport !== 'CFB' && row.sport !== 'CBB' ? nickname(full) : '') || name || c
   return {
     row, side, d, k: home ? d.home : d.away, ko: home ? d.away : d.home, code, oppCode,
     nick: nickOf(code, mine?.name, home ? row.homeName : row.awayName),

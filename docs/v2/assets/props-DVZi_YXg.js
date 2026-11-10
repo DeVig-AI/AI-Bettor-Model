@@ -1,1 +1,0 @@
-import{n as e}from"./props-C9-GTaCk.js";var t=e;export{t as component};
