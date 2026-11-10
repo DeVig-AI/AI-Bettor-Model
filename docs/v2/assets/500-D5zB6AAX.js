@@ -1,0 +1,1 @@
+import{O as e}from"./index-BWLK8muN.js";var t=e;export{t as component};

@@ -1,0 +1,1 @@
+import{n as e}from"./friends-CtM61Pso.js";var t=e;export{t as component};

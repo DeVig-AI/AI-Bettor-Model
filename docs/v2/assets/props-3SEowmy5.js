@@ -1,1 +1,0 @@
-import{n as e}from"./props-DSZpCot6.js";var t=e;export{t as component};
