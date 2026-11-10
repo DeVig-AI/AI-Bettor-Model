@@ -7,7 +7,8 @@
 //      LOCAL_AI_KEY are set. It answers with tools (functions/lib/devig-tools.js): it looks up the game, record,
 //      injuries or a slang word itself instead of reading the whole board, so a small model stays fast and on point.
 //      Off, busy (one question at a time) or slow: the next AI answers instead.
-//   1. Google Gemini, if GEMINI_API_KEY is set (free key from Google AI Studio; about 1,000 answers a day free)
+//   1. Google Gemini, if GEMINI_API_KEY is set (free key from Google AI Studio; about 1,000 answers a day free), with
+//      the same tools as the Mac, so it can look up a player's game log against the lines or compare two teams
 //   2. Cloudflare Workers AI through the AI binding: a small, cheap model so the free daily allowance covers a few
 //      hundred answers (AI_MODEL picks another one)
 // Accuracy is "good enough": the AI answers from what it's given, and every answer ends with a reminder that AI can
@@ -16,7 +17,7 @@
 // Needs, in the Pages project settings (see ACCOUNTS.md): the USERS KV binding and Access variables (as for /api/me)
 // and either a Workers AI binding named AI or a GEMINI_API_KEY secret (or both).
 import { accessUser, userKey } from "./me.js";
-import { LINGO, LOCAL_GUIDE, TOOLS, runTool, splitAppMessage, termsIn } from "../lib/devig-tools.js";
+import { LINGO, LOCAL_GUIDE, TOOLS, WHY_GUIDE, runTool, splitAppMessage, termsIn } from "../lib/devig-tools.js";
 
 // Workers AI models to try in order (names change over time; a missing one is skipped)
 const CF_MODELS = ["@cf/meta/llama-3.1-8b-instruct-fast", "@cf/meta/llama-3.1-8b-instruct-fp8", "@cf/meta/llama-3.1-8b-instruct",
@@ -31,6 +32,10 @@ const MAX_TOKENS = 700;
 const LOCAL_MODEL = "qwen3:4b-instruct";
 const LOCAL_BUDGET = 60_000;        // the Mac gets this long for the whole answer, tools included
 const LOCAL_ROUNDS = 4;             // tool rounds before it must answer
+const CLOUD_ROUNDS = 3;             // Gemini's tool rounds
+const CLOUD_TOOLS_NOTE = "LOOKUPS: the games, picks, record and injuries are in the app data below. For a player's props " +
+  "(and his recent games against each line) call player_props; for a team's season, margin, rating and ranks call team_stats. " +
+  "Look things up before answering a why-question about them. Never name the tools in your answer.";
 
 export const BETTING_GUIDE = [
   "GENERAL SPORTS-BETTING KNOWLEDGE (use it to explain; label it as general, not as the app's data):",
@@ -63,8 +68,9 @@ export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET
   const today = app && app.now ? `Now: ${app.now}.` : "";
   const terms = termsIn(convo[convo.length - 1].content);
   const said = terms.length ? `\nBettor terms in this question:\n${terms.join("\n")}` : "";
-  const messages = [{role: "system", content: `${LOCAL_GUIDE}\n${today}${said}`}, ...convo];
+  const messages = [{role: "system", content: `${LOCAL_GUIDE}\n${WHY_GUIDE}\n${today}${said}`}, ...convo];
   const end = Date.now() + budget;
+  const cache = new Map();                          // each stats file is fetched once per question
   for (let round = 0; round <= LOCAL_ROUNDS; round++) {
     const left = end - Date.now();
     if (left < 2000) return null;
@@ -87,11 +93,48 @@ export async function askLocal(msgs, env, fetcher = fetch, budget = LOCAL_BUDGET
       const f = c.function || {};
       let args = f.arguments;
       if (typeof args === "string") { try { args = JSON.parse(args); } catch (e) { args = {}; } }
-      const out = await runTool(f.name, args, {app, env, fetcher});
+      const out = await runTool(f.name, args, {app, env, fetcher, cache});
       messages.push({role: "tool", tool_name: f.name, content: JSON.stringify(out).slice(0, 6000)});
     }
   }
   return null;
+}
+
+// Gemini with DeVig's tools: it gets the app's data in the question as before, and can look up a player's props
+// against his game log, a team's season, or slang. Returns {text} / {quota: true} / null (try the next model).
+export async function askGemini(messages, app, model, env, fetcher = fetch) {
+  messages = messages.slice();
+  const cache = new Map();
+  let tools = true;
+  for (let round = 0; round <= CLOUD_ROUNDS; round++) {
+    let d;
+    try {
+      // Gemini 3 models think first and the thinking counts against max_tokens: keep it low and leave room for it
+      const r = await fetcher(GEMINI_URL, {method: "POST",
+        headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
+        body: JSON.stringify({model, messages, max_tokens: MAX_TOKENS + 1500, reasoning_effort: "low", temperature: 0.4,
+          ...(tools && round < CLOUD_ROUNDS ? {tools: TOOLS, tool_choice: "auto"} : {})}),
+        signal: AbortSignal.timeout(25_000)});
+      if (r.status === 429) return {quota: true};
+      // a 400 on the first try may be the tools: ask once more without them, as before tools existed
+      if (r.status === 400 && tools && round === 0) { tools = false; round = -1; continue; }
+      if (!r.ok) return r.status === 404 || r.status === 400 ? null : {fail: true};
+      d = await r.json();
+    } catch (e) { return {fail: true}; }
+    const m = d && d.choices && d.choices[0] && d.choices[0].message;
+    if (!m) return {fail: true};
+    const calls = Array.isArray(m.tool_calls) ? m.tool_calls : [];
+    if (!calls.length) return typeof m.content === "string" && m.content.trim() ? {text: m.content.trim()} : {fail: true};
+    messages.push(m);                                   // as sent: Gemini 3 needs its thought signatures back
+    for (const c of calls.slice(0, 3)) {
+      const f = c.function || {};
+      let args = f.arguments;
+      if (typeof args === "string") { try { args = JSON.parse(args); } catch (e) { args = {}; } }
+      const out = await runTool(f.name, args, {app, env, fetcher, cache});
+      messages.push({role: "tool", tool_call_id: c.id, name: f.name, content: JSON.stringify(out).slice(0, 6000)});
+    }
+  }
+  return {fail: true};
 }
 
 // one finished answer as the same OpenAI-style stream the app already reads
@@ -127,27 +170,25 @@ export async function handle(request, env, fetcher = fetch) {
   if (used >= PER_DAY) return json({error: `that's today's ${PER_DAY} questions; more tomorrow`, code: "limit"}, 429);
   await env.USERS.put(countKey, String(used + 1), {expirationTtl: 2 * 86400});
 
-  const messages = [{role: "system", content: BETTING_GUIDE}, ...msgs];
+  const messages = [{role: "system", content: `${BETTING_GUIDE}\n${CLOUD_TOOLS_NOTE}\n${WHY_GUIDE}`}, ...msgs];
   const sse = body => new Response(body, {headers: {"content-type": "text/event-stream", "cache-control": "no-store"}});
   let quota = false;
 
   const local = await askLocal(msgs, env, fetcher);
   if (local) return sse(sseText(local));
 
-  if (env.GEMINI_API_KEY) {                       // OpenAI-style stream: data: {"choices":[{"delta":{"content":...}}]}
+  if (env.GEMINI_API_KEY) {                       // with tools, so one finished answer (not a stream)
     const models = env.GEMINI_MODEL ? [env.GEMINI_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
+    const first = splitAppMessage(msgs[0].content);
     for (const model of models) {
-      try {
-        // Gemini 3 models think first and the thinking counts against max_tokens: keep it low and leave room for it
-        const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-          body: JSON.stringify({model, messages, max_tokens: MAX_TOKENS + 1500, reasoning_effort: "low", temperature: 0.4, stream: true})});
-        if (r.ok && r.body) return sse(r.body);
-        if (r.status === 429) { quota = true; break; }
-        if (r.status !== 404 && r.status !== 400) break;
-      } catch (e) { break; }
+      const a = await askGemini(messages, first ? first.app : null, model, env, fetcher);
+      if (a && a.text) return sse(sseText(a.text));
+      if (a && a.quota) { quota = true; break; }
+      if (a && a.fail) break;
     }
   }
   if (env.AI) {                                   // Workers AI stream: data: {"response":...}
+    messages[0] = {role: "system", content: `${BETTING_GUIDE}\n${WHY_GUIDE}`};   // no tools here
     const models = env.AI_MODEL ? [env.AI_MODEL, ...CF_MODELS] : CF_MODELS;
     for (const model of models) {
       try {
