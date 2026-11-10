@@ -5,9 +5,10 @@ import { type PropLine, overTxt, underTxt, useProps } from '@/lib/props'
 import { PlayerPhoto } from '@/components/team-logo'
 import { GameProps, type Shown, withLive } from '@/features/props'
 import { usePropPlayer, usePropWhy } from '@/features/props/why'
+import { PlayerSheet } from '@/features/props/player-sheet'
 
-// A game's player props, right under its card on Games (the Props tab's per-game drawer, without the extra tab): the
-// two props where (before tip-off) DeVig's props model and Kalshi's price are furthest apart, then "All N props" opens the full list.
+// A game's player props, right under its card on Games: the
+// two props where (before tip-off) DeVig's props model and Kalshi's price are furthest apart, then "All N props" opens the game's props board. A row opens that player's drawer.
 // Same filters as the Props page's Biggest gaps: no thin markets, no players with fewer than 40 games. Not proven.
 
 const fair = (l: Shown) => l.modelOver != null && l.spread <= 0.05 && (l.oi || 0) >= 100 && l.games >= 40
@@ -17,14 +18,18 @@ export function usePropsFor(row: GameRow): PropLine[] {
   return useMemo(() => lines.filter((l) => l.sport === row.sport && l.away === row.away && l.home === row.home), [lines, row.sport, row.away, row.home])
 }
 
-function StripRow({ l, row }: { l: Shown; row: GameRow }) {
+function StripRow({ l, row, ls }: { l: Shown; row: GameRow; ls: PropLine[] }) {
+  const [open, setOpen] = useState(false)
+  const mine = useMemo(() => ls.filter((x) => x.player === l.player && x.stat === l.stat), [ls, l.player, l.stat])
   const w = usePropWhy(l)
   const { pid, team, color, unit } = usePropPlayer(l, w, row)
   const over = l.modelOver! >= l.mid // the side DeVig likes more than Kalshi does
   const dv = over ? l.modelOver! : 1 - l.modelOver!
   const k = over ? l.mid : 1 - l.mid
   return (
-    <li className='flex items-center gap-3 border-b px-3 py-2'>
+    <li className='border-b'>
+      <button type='button' aria-haspopup='dialog' onClick={() => setOpen(true)}
+        className='flex w-full items-center gap-3 px-3 py-2 text-start transition-colors duration-150 hover:bg-white/5'>
       <PlayerPhoto sport={l.sport} unit={unit} pid={pid} team={team} teamColor={color} className='size-9' badge='size-4 text-[6px]' />
       <span className='flex min-w-0 flex-1 flex-col leading-tight'>
         <span className='truncate text-sm font-semibold'>{l.player}</span>
@@ -34,6 +39,8 @@ function StripRow({ l, row }: { l: Shown; row: GameRow }) {
         <span className='text-[15px] font-bold text-devig'>DeVig {fmtPct(dv)}</span>
         <span className='text-xs text-muted-foreground'>Kalshi {fmtPct(k)}</span>
       </span>
+      </button>
+      {open && <PlayerSheet ls={mine} line={l.line} game={row} open={open} onOpenChange={setOpen} />}
     </li>
   )
 }
@@ -54,7 +61,7 @@ export function GamePropsStrip({ row }: { row: GameRow }) {
     <div className='overflow-hidden rounded-[14px] bg-card'>
       {top.length > 0 && (
         <ul>
-          {top.map((l) => <StripRow key={l.key} l={l} row={row} />)}
+          {top.map((l) => <StripRow key={l.key} l={l} row={row} ls={ls} />)}
         </ul>
       )}
       <button type='button' aria-haspopup='dialog' onClick={() => setOpen(true)}

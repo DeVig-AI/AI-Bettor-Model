@@ -1,1 +1,0 @@
-import{t as e}from"./friends-Dd3NSqjY.js";import{i as t}from"./index-BH67xrLY.js";import{t as n}from"./jsx-runtime-DyZJNswf.js";var r=n();function i(){let{code:n}=t.useParams();return(0,r.jsx)(e,{code:n})}export{i as component};

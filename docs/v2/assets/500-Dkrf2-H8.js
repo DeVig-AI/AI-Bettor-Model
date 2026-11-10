@@ -1,0 +1,1 @@
+import{O as e}from"./index-BYMwmC2o.js";var t=e;export{t as component};

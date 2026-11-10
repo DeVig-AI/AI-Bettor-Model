@@ -1,0 +1,1 @@
+import{t as e}from"./research-BPw43zbt.js";var t=e;export{t as component};

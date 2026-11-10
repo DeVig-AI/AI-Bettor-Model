@@ -23,8 +23,8 @@ const SPORTS = ['NBA', 'NHL', 'NFL']
 const timeFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
 const clockFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
 
-type Summary = { generated_at: string; sports: Record<string, StreakSummary> }
-function useStreakSummary() {
+export type Summary = { generated_at: string; sports: Record<string, StreakSummary> }
+export function useStreakSummary() {
   return useQuery({
     queryKey: ['props_streaks'],
     queryFn: async () => {
