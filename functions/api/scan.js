@@ -14,11 +14,21 @@ import { accessUser, userKey } from "./me.js";
 
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 // Google retires model versions (gemini-2.5-flash shut down 2026-10-16 and the reader broke), so try the always-current
-// alias first and named versions after it; a model that's gone (404/400) just moves on to the next one
-const GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash"];
+// alias first and named versions after it; a model that's gone (404/400), busy (5xx, after one retry) or out of its own
+// quota (429) moves on to the next one, so one overloaded model doesn't take the whole reader down
+const GEMINI_MODELS = ["gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash", "gemini-flash-lite-latest"];
+const RETRY_MS = 1200;                  // wait before asking a busy (503) Gemini model a second time
 const LOCAL_MODEL = "qwen2.5vl:3b";   // fits an 8 GB Mac; reads a slip in about 30 s
 const LOCAL_TIMEOUT = 90_000;
-const CF_VISION = ["@cf/meta/llama-3.2-11b-vision-instruct"];
+// Cloudflare's vision models, each with the input shape it takes; the second is tried when the first errors
+const CF_VISION = [
+  {model: "@cf/meta/llama-3.2-11b-vision-instruct", input: (prompt, url, bytes) => ({messages: [{role: "user", content: prompt}], image: bytes})},
+  {model: "@cf/meta/llama-4-scout-17b-16e-instruct", input: (prompt, url) => ({messages: [{role: "user", content: [
+    {type: "text", text: prompt}, {type: "image_url", image_url: {url}}]}]})},
+];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// a short reason for the "why" line, so a failure can be fixed from the screenshot of it
+const why = e => String(e && e.message || e).replace(/\s+/g, " ").slice(0, 60);
 const PER_DAY = 20;                     // screenshots per person per day
 const MAX_BODY = 4_000_000;             // the app shrinks photos to about 1600px JPEG first (~300 KB)
 const IMAGE = /^data:image\/(jpeg|png|webp|gif);base64,([A-Za-z0-9+/=]+)$/;
@@ -184,24 +194,30 @@ export async function handle(request, env, fetcher = fetch) {
   if (env.GEMINI_API_KEY) {
     const models = env.GEMINI_VISION_MODEL ? [env.GEMINI_VISION_MODEL, ...GEMINI_MODELS] : GEMINI_MODELS;
     for (const model of models) {
-      try {
-        // Gemini 3 models think first, and the thinking counts against max_tokens: keep it low and leave room,
-        // or the JSON comes back cut off
-        const r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
-          body: JSON.stringify({model, temperature: 0, max_tokens: 8192, reasoning_effort: "low",
-            response_format: {type: "json_object"},
-            messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
+      for (let attempt = 0; attempt < 2; attempt++) {
+        let r;
+        try {
+          // Gemini 3 models think first, and the thinking counts against max_tokens: keep it low and leave room,
+          // or the JSON comes back cut off
+          r = await fetcher(GEMINI_URL, {method: "POST", headers: {"content-type": "application/json", authorization: "Bearer " + env.GEMINI_API_KEY},
+            body: JSON.stringify({model, temperature: 0, max_tokens: 8192, reasoning_effort: "low",
+              response_format: {type: "json_object"},
+              messages: [{role: "user", content: [{type: "text", text: prompt}, {type: "image_url", image_url: {url: m[0]}}]}]})});
+        } catch (e) { tries.push(`${model}:fetch`); break; }
         if (r.ok) {
           const c = (await r.json())?.choices?.[0];
           const text = c?.message?.content ?? null;
-          if (text != null && clean(parseAnswer(text))) { answer = text; break; }
-          tries.push(`${model}:${text == null ? "empty" : "unparsed"}${c?.finish_reason ? "/" + c.finish_reason : ""}`);
-          continue;
+          if (text != null && clean(parseAnswer(text))) answer = text;
+          else tries.push(`${model}:${text == null ? "empty" : "unparsed"}${c?.finish_reason ? "/" + c.finish_reason : ""}`);
+          break;
         }
         tries.push(`${model}:${r.status}`);
-        if (r.status === 429) { quota = true; break; }
-        if (r.status !== 404 && r.status !== 400) break;
-      } catch (e) { tries.push(`${model}:fetch`); break; }
+        if (r.status === 429) quota = true;
+        // busy: one more try after a pause; anything else (gone, quota, bad request): the next model
+        if (r.status >= 500 && attempt === 0) { await sleep(RETRY_MS); continue; }
+        break;
+      }
+      if (answer != null) break;
     }
   } else tries.push("no-gemini-key");
   if (answer == null && env.LOCAL_AI_URL && env.LOCAL_AI_KEY) {
@@ -221,12 +237,12 @@ export async function handle(request, env, fetcher = fetch) {
   }
   if (answer == null && env.AI) {
     const bytes = [...Uint8Array.from(atob(m[2]), c => c.charCodeAt(0))];
-    for (const model of CF_VISION) {
-      const run = () => env.AI.run(model, {messages: [{role: "user", content: prompt}], image: bytes, max_tokens: 1500, temperature: 0});
+    for (const {model, input} of CF_VISION) {
+      const run = () => env.AI.run(model, {...input(prompt, m[0], bytes), max_tokens: 1500, temperature: 0});
       try {
         let out;
         try { out = await run(); } catch (e) {
-          // Meta's vision model needs its license accepted once per Cloudflare account
+          // Meta's vision models need their license accepted once per Cloudflare account
           if (!/agree|5016/i.test(String(e && e.message || e))) throw e;
           await env.AI.run(model, {prompt: "agree"});
           out = await run();
@@ -235,8 +251,8 @@ export async function handle(request, env, fetcher = fetch) {
         if (text != null && (typeof text === "object" || clean(parseAnswer(text)))) { answer = text; break; }
         tries.push(`cf:${text == null ? "empty" : "unparsed"}`);
       } catch (e) {
-        tries.push("cf:error");
-        if (/limit|quota|neuron|429|capacity/i.test(String(e && e.message || e))) { quota = true; break; }
+        tries.push(`cf:error(${why(e)})`);
+        if (/limit|quota|neuron|429/i.test(String(e && e.message || e))) { quota = true; break; }
       }
     }
   }

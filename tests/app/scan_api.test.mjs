@@ -162,7 +162,7 @@ test("a cut-off answer tries the next model, and a failure says why", async () =
   const r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
   assert.equal(r.status, 502);
   const d = await r.json();
-  assert.equal(sent.length, 3);
+  assert.equal(sent.length, 4);
   assert.equal(sent[0].reasoning_effort, "low");
   assert.ok(sent[0].max_tokens >= 4000);
   assert.match(d.why, /gemini-flash-latest:unparsed\/length/);
@@ -194,4 +194,34 @@ test("share links: FanDuel's short links count; a book's logo isn't a picture of
   assert.equal(brandImage("https://sportsbook.draftkings.com/static/DraftKings_Sportsbook_blk.png"), true);
   assert.equal(brandImage("https://cdn.hardrocksportsbook.com/images/socialShareMeta.png"), true);
   assert.equal(brandImage("https://dk-share.s3.amazonaws.com/bets/8f2c1a.png"), false);
+});
+
+test("a busy Gemini (503) is asked again, then the next Gemini model, before giving up on Gemini", async () => {
+  const sent = [];
+  const s = await setup({gemini: b => {
+    sent.push(b.model);
+    if (sent.length <= 3) return new Response("{}", {status: 503});   // flash-latest twice, then 3.5-flash once
+    return new Response(JSON.stringify({choices: [{message: {content: JSON.stringify(SLIP)}}]}));
+  }});
+  const r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
+  assert.equal(r.status, 200);
+  assert.deepEqual(sent, ["gemini-flash-latest", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3.5-flash"]);
+});
+
+test("a Workers AI error says why, and the next Cloudflare model is tried", async () => {
+  const models = [];
+  const ai = {run: async (model, input) => {
+    models.push(model);
+    if (model.includes("llama-3.2")) throw new Error("3040: Capacity temporarily exceeded");
+    assert.equal(input.messages[0].content[1].image_url.url, IMG);
+    return {response: JSON.stringify(SLIP)};
+  }};
+  const s = await setup({ai});
+  const r = await handle(await s.req({image: IMG}), s.env, s.fetcher);
+  assert.equal(r.status, 200);
+  assert.equal(models.length, 2);
+
+  const dead = await setup({ai: {run: async () => { throw new Error("3040: Capacity temporarily exceeded"); }}});
+  const d = await (await handle(await dead.req({image: IMG}), dead.env, dead.fetcher)).json();
+  assert.match(d.why, /cf:error\(3040: Capacity temporarily exceeded\)/);
 });
