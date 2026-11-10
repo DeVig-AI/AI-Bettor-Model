@@ -1,3 +1,5 @@
+import { Link, useLocation } from '@tanstack/react-router'
+import { Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
@@ -7,7 +9,7 @@ type HeaderProps = React.HTMLAttributes<HTMLElement> & {
 }
 
 // Sticky top bar. On phones it carries the DeVig mark (navigation lives in the bottom tab bar);
-// from md up the sidebar toggle takes that place.
+// from md up the sidebar toggle takes that place. Friends floats at its right end on phones (on a computer it's in the sidebar).
 export function Header({ className, children, ...props }: HeaderProps) {
   return (
     <header
@@ -29,7 +31,25 @@ export function Header({ className, children, ...props }: HeaderProps) {
         <SidebarTrigger variant='ghost' className='max-md:hidden' />
         <Separator orientation='vertical' className='h-6 max-md:hidden' />
         {children}
+        <FriendsButton />
       </div>
     </header>
+  )
+}
+
+function FriendsButton() {
+  const here = useLocation({ select: (l) => l.pathname.startsWith('/friends') })
+  return (
+    <Link
+      to='/friends'
+      aria-label='Friends'
+      aria-current={here ? 'page' : undefined}
+      className={cn(
+        'grid size-10 shrink-0 place-items-center rounded-full border bg-card text-muted-foreground shadow-[0_6px_18px_rgba(0,0,0,0.18)] transition-colors duration-150 hover:text-foreground md:hidden',
+        here && 'border-devig text-devig'
+      )}
+    >
+      <Users className='size-5' aria-hidden='true' />
+    </Link>
   )
 }

@@ -45,7 +45,7 @@ export function useTeamProps(row: GameRow, on: boolean) {
 }
 
 // a team's games from the stats bot (none for college basketball yet)
-function useGames(sport: string, code: string) {
+export function useGames(sport: string, code: string) {
   const ok = (RS_SPORTS as readonly string[]).includes(sport)
   const q = useRsTeam(sport, ok ? statsCode(sport, code) : '')
   return ok ? q.data ?? null : null
@@ -62,7 +62,7 @@ const poss = (n: string) => (/s$/.test(n) ? `${n}'` : `${n}'s`)
 
 // "New York Knicks" -> "Knicks", "Portland Trail Blazers" -> "Trail Blazers"
 const TWO = /(Trail Blazers|Red Sox|White Sox|Blue Jays|Maple Leafs|Blue Jackets|Golden Knights|Red Wings)$/
-const nickname = (full: string) => full.match(TWO)?.[1] ?? full.split(' ').pop() ?? full
+export const nickname = (full: string) => full.match(TWO)?.[1] ?? full.split(' ').pop() ?? full
 
 function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): Ctx | null {
   const home = side === 'home'

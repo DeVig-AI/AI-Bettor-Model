@@ -1,1 +1,0 @@
-import{t as e}from"./research-CtcWpMoG.js";var t=e;export{t as component};
