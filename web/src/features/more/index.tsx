@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { BarChart3, Calculator, ChevronRight, CircleUserRound, Cross, ExternalLink, History, Info, MessageCircle, Search, Users } from 'lucide-react'
+import { BarChart3, Calculator, ChevronRight, Cross, ExternalLink, History, Info, MessageCircle, Search, Users } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -15,7 +15,6 @@ const PAGES = [
   { to: '/models', icon: BarChart3, title: 'Models', note: "DeVig's models next to other people's, graded the same way" },
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
   { to: '/friends', icon: Users, title: 'Friends', note: 'Follow friends: the parlays they save, their record, and what they put in vs. got back' },
-  { to: '/profile', icon: CircleUserRound, title: 'Profile', note: 'What you track, your name tag, favorite teams, and account' },
 ] as const
 
 const CLASSIC = ['Odds-screen photo scans']

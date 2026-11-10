@@ -60,6 +60,25 @@ jobs:
         with:
           key: mlb-box-${{ github.run_id }}
           path: .cache/mlb
+      # Men's college basketball: ESPN's daily scoreboards, this season only (2025-26 is sealed for the research lab).
+      # Finished days never change, so they stay in the private Actions cache and each run fetches only new days.
+      - name: Restore the college basketball scoreboards
+        uses: actions/cache/restore@v4
+        with:
+          key: cbb-espn-none
+          restore-keys: cbb-espn-
+          path: .cache/cbb-espn
+      - name: College basketball (ESPN daily scoreboards, Division I teams)
+        continue-on-error: true          # a new source's failure never holds back the other sports' files
+        env:
+          CBB_ESPN_CACHE: .cache/cbb-espn
+        run: python3 tools/stats_cbb.py
+      - name: Keep the college basketball scoreboards
+        if: always() && hashFiles('.cache/cbb-espn/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          key: cbb-espn-${{ github.run_id }}
+          path: .cache/cbb-espn
       - name: Keep the college football box scores
         if: always() && hashFiles('.cache/cfb-espn/**') != ''
         uses: actions/cache/save@v4

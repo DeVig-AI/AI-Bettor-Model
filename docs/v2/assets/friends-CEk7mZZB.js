@@ -1,1 +1,0 @@
-import{n as e}from"./friends-1oiilc_F.js";var t=e;export{t as component};

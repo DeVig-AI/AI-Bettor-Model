@@ -190,7 +190,7 @@ export function GamePage({ id }: { id: string }) {
                 className='flex min-h-14 items-center justify-between gap-2 rounded-2xl bg-card px-4 py-2.5 hover:bg-muted/50'>
                 <span className='min-w-0'>
                   <span className='block truncate font-semibold'>{name}</span>
-                  <span className='block text-xs text-muted-foreground'>Stats, games, roster</span>
+                  <span className='block text-xs text-muted-foreground'>{row.sport === 'CBB' ? 'Stats and games' : 'Stats, games, roster'}</span>
                 </span>
                 <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
               </Link>

@@ -5,7 +5,7 @@
 // reasoning, the graded record, injuries), so the AI sees what the user sees. Without it (MCP), find_games reads the
 // public board file the app itself loads. web_search needs OLLAMA_API_KEY and is Ask-only (it spends a quota).
 
-import { compareFacts, getJson, playerFacts, teamFacts } from "./ask-facts.js";
+import { compareFacts, getJson, logOnlyFacts, playerFacts, teamFacts } from "./ask-facts.js";
 
 const RAW = "https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/";
 const WEB_SEARCH = "https://ollama.com/api/web_search";
@@ -78,6 +78,7 @@ export const WHY_GUIDE = [
 export const LOCAL_GUIDE = [
   "You are DeVig's assistant, inside a sports odds app. The user is on a phone and talks like a bettor.",
   "THINK LIKE A BETTOR: first work out exactly what they mean in betting terms. 'Bills -3 a good spot?' = is the Bills spread at -3 worth the price, given DeVig's model and Kalshi's line. 'Why does the model like KC' = explain the model's own reasoning for that game. 'Tease them' = a teaser through 3 and 7. Use explain_term for slang you aren't sure of.",
+  "ANY question that names a player (his stats, 'does he get 25', 'goes for 200 yards', 'how's he doing') = call player_props first, even if he has no game tonight: it returns his recent games and counts any numbers the user named. Never say you don't have a player's stats without calling it.",
   "ALWAYS look up the game, record or injuries with the tools before answering about them. Never invent odds, picks, scores, records or injuries; if a tool returns nothing, say it isn't on DeVig's board.",
   "Answer the specific thing they asked, in 2-5 short sentences or a short list. No long intros.",
   "How the data reads: kalshi_odds = Kalshi's American odds with its fee in. market_fair = Kalshi's chance with the fee removed. devig_pick.action ML = DeVig's model picked a side and cleared its confidence bar; PASS = not confident enough. devig_prob = the model's chance. edge = devig_prob minus market_fair. break_even = the win rate the price needs; if it's above devig_prob the price is too steep.",
@@ -99,9 +100,10 @@ export const TOOLS = [
      sport: {type: "string", description: "NFL, NBA, MLB, NHL, CFB, CBB (football, basketball, baseball also work)"}}),
   T("track_record", "DeVig's graded picks this season (won, lost, units) and the latest results, for one sport or all.",
     {sport: {type: "string", description: "NFL, NBA or MLB; leave empty for all"}}),
-  T("player_props", "A player's prop lines tonight (points, rebounds, yards...): Kalshi's price, how often he hit each line in his last 10 games and this season, his averages and minutes, the opponent's defense, how Kalshi lines at that price did on past games, DeVig's props model chance and injury tag. Spelling can be rough.",
+  T("player_props", "A player's prop lines tonight (points, rebounds, yards...): Kalshi's price, how often he hit each line in his last 10 games and this season, his averages and minutes, the opponent's defense, how Kalshi lines at that price did on past games, DeVig's props model chance and injury tag. Works with no lines posted too (his past games only), and counts how often he reached the numbers asked about. Spelling can be rough.",
     {player: {type: "string", description: "player name, e.g. Scottie Barnes"},
-     stat: {type: "string", description: "points, rebounds, assists, threes, pass_yds, rush_yds, rec_yds, receptions, touchdowns, goals, shots..."}}, ["player"]),
+     stat: {type: "string", description: "points, rebounds, assists, threes, pass_yds, rush_yds, rec_yds, receptions, touchdowns, goals, shots..."},
+     numbers: {type: "string", description: "numbers the user asked about, with the stat, e.g. '200 passing yards, 5 rush attempts'"}}, ["player"]),
   T("team_stats", "A team's season: record, home/away, last 10, streak, scoring margin, schedule-adjusted rating and rank, pace, offense/defense ranks, last 5 results. Use it to compare two teams.",
     {team: {type: "string", description: "team name, city or code"},
      opponent: {type: "string", description: "the other team, to compare the two and get their game's line"},
@@ -148,7 +150,22 @@ const STAT_WORDS = {pts: "points", point: "points", reb: "rebounds", rebound: "r
   "3s": "threes", three: "threes", "3pm": "threes", pra: "pts_reb_ast", td: "touchdowns", tds: "touchdowns", touchdown: "touchdowns",
   "passing yards": "passing_yards", "pass yds": "passing_yards", "pass_yds": "passing_yards", "rushing yards": "rushing_yards",
   "rush yds": "rushing_yards", "rush_yds": "rushing_yards", "receiving yards": "receiving_yards", "rec yds": "receiving_yards",
-  "rec_yds": "receiving_yards", rec: "receptions", sog: "shots", goal: "goals"};
+  "rec_yds": "receiving_yards", rec: "receptions", sog: "shots", goal: "goals",
+  "rush attempts": "rushing_attempts", "rushing attempts": "rushing_attempts", "run attempts": "rushing_attempts", runs: "rushing_attempts",
+  carries: "rushing_attempts", rushes: "rushing_attempts", "pass attempts": "passing_attempts", "passing attempts": "passing_attempts",
+  completions: "passing_completions", "passing tds": "passing_tds", "passing touchdowns": "passing_tds", "td passes": "passing_tds",
+  "rush rec yards": "rush_rec_yards", "rushing and receiving yards": "rush_rec_yards", catches: "receptions",
+  receptions: "receptions", ints: "interceptions", interceptions: "interceptions", shots: "shots", goals: "goals"};
+// "200 passing yards, 5 run attempts" → [{stat: "passing_yards", need: 200}, {stat: "rushing_attempts", need: 5}]
+export function parseNumbers(text) {
+  const out = [];
+  for (const m of String(text || "").toLowerCase().matchAll(/(\d+(?:\.\d+)?)\s*\+?\s*([a-z][a-z ]*?)(?=\s*(?:[,;?.!]|\band\b|\bor\b|&|\d|$))/g)) {
+    const w = m[2].trim().replace(/^(?:or more|plus)\s+/, "");
+    const stat = STAT_WORDS[w] || STAT_WORDS[w.replace(/s$/, "")] || STAT_WORDS[w + "s"] || (/^[a-z]+_[a-z_]+$/.test(w) ? w : null) || w.replace(/ /g, "_");
+    out.push({stat, need: Number(m[1])});
+  }
+  return out;
+}
 const american = p => (p > 0 && p < 1 ? Math.round(p >= 0.5 ? (-100 * p) / (1 - p) : (100 * (1 - p)) / p) : null);
 
 async function props(args, ctx) {
@@ -175,7 +192,7 @@ async function props(args, ctx) {
   }
   const best = Math.max(0, ...rows.map(r => r.hit));
   let mine = rows.filter(r => r.hit === best && best >= Math.min(want.length, 2));
-  if (!mine.length) return {note: "No Kalshi prop lines for that player on DeVig's board right now."};
+  if (!mine.length) return (await statsOnly(want, args, ctx)) || {note: "That player isn't on DeVig's board or in its stats files."};
   const players = [...new Set(mine.map(r => r.x.player))];
   if (players.length > 1) mine = mine.filter(r => r.x.player === players[0]);
   const allStats = [...new Set(mine.map(r => r.x.stat))];
@@ -194,6 +211,48 @@ async function props(args, ctx) {
     devig_paper_pick: first.picks.filter(p => p.player === first.x.player).map(p => `${p.side} ${p.line} ${p.stat}`)[0] || null,
     how_the_props_model_does: rep ? `${rep.wins} of ${rep.paper_picks_graded} paper picks won, ROI ${rep.roi == null ? "n/a" : Math.round(rep.roi * 1000) / 10 + "%"}. ${rep.backtest || ""}`.trim() : null,
   };
+}
+
+// no lines up: find him in the stats files' player lists and read his game log
+async function statsOnly(want, args, ctx) {
+  const found = [];
+  for (const sp of sportsOf(args.sport) || ["NFL", "NBA", "NHL"]) {
+    const idx = await getJson(`stats/${sp.toLowerCase()}/index.json`, ctx);
+    for (const row of (idx && idx.players) || []) {
+      const name = words(row[1]);
+      const hit = want.filter(w => name.some(n => near(w, n))).length;
+      if (hit >= Math.min(want.length, 2)) found.push({sp, row, hit, exact: want.join("") === name.join(""), extra: name.length - hit,
+        cur: row[row.length - 1] === idx.season_year, gp: Number(row[4]) || 0});
+    }
+  }
+  if (!found.length) return null;
+  // the closest name (all words, then the exact name, then no extra words), then someone playing this season, then the most games
+  found.sort((a, b) => b.hit - a.hit || b.exact - a.exact || a.extra - b.extra || b.cur - a.cur || b.gp - a.gp);
+  const {sp, row} = found[0];
+  const valid = new Set(["passing_yards", "passing_tds", "passing_completions", "passing_attempts", "interceptions", "rushing_yards",
+    "rushing_attempts", "receptions", "receiving_yards", "rush_rec_yards", "touchdowns", "points", "rebounds", "assists", "threes",
+    "pts_reb_ast", "pts_reb", "pts_ast", "reb_ast", "steals", "blocks", "stl_blk", "turnovers", "goals", "shots"]);
+  let checks = parseNumbers(args.numbers).filter(c => valid.has(c.stat));
+  if (!checks.length) checks = parseNumbers(ctx.question).filter(c => valid.has(c.stat));
+  const f = await logOnlyFacts(sp, row, checks, ctx);
+  if (!f) return null;
+  const others = found.filter(x => x.hit === found[0].hit && x.row[1] !== row[1]).slice(0, 3).map(x => `${x.row[1]} (${x.row[2]})`);
+  return {...f, sport: sp, lines: [], other_players_with_that_name: others.length ? others : undefined};
+}
+
+// a player's full name in the question ("Josh Allen's stats"), from the stats files' player lists, or null
+export async function playerNamed(question, fetcher = fetch, cache = new Map()) {
+  const q = ` ${words(String(question || "").replace(/['’]s\b/g, "")).join(" ")} `;
+  const ctx = {fetcher, cache};
+  let best = null;
+  for (const sp of ["NFL", "NBA", "NHL"]) {
+    const idx = await getJson(`stats/${sp.toLowerCase()}/index.json`, ctx);
+    for (const row of (idx && idx.players) || []) {
+      const n = words(row[1]).join(" ");
+      if (n.includes(" ") && q.includes(` ${n} `) && (!best || n.length > best.length)) best = n;
+    }
+  }
+  return best;
 }
 
 const cut = (s, n) => (s.length > n ? s.slice(0, n) + "…" : s);
@@ -228,9 +287,9 @@ async function boardGames(ctx) {
 
 // ---------- running a tool ----------
 // ctx: {app (the app's data, or null), env, fetcher}. Always resolves to a short JSON-able result.
-export async function runTool(name, args, {app = null, env = {}, fetcher = fetch, cache} = {}) {
+export async function runTool(name, args, {app = null, env = {}, fetcher = fetch, cache, question = ""} = {}) {
   args = args && typeof args === "object" ? args : {};
-  const ctx = {fetcher, cache: cache || new Map()};
+  const ctx = {fetcher, cache: cache || new Map(), question};
   try {
     if (name === "find_games") {
       let games = app && Array.isArray(app.games) ? app.games : await boardGames(ctx);

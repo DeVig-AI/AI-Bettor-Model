@@ -82,7 +82,7 @@ export function Research() {
               </button>
             ))}
           </div>
-          {!soccer && <div role='tablist' className='grid grid-cols-2 rounded-xl bg-card p-1'>
+          {!soccer && (idx?.players.length ?? 1) > 0 && <div role='tablist' className='grid grid-cols-2 rounded-xl bg-card p-1'>
             {([['rank', 'Power rankings'], ['players', 'Players']] as const).map(([k, label]) => (
               <button key={k} type='button' role='tab' aria-selected={tab === k} onClick={() => setTab(k)}
                 className={cn('h-9 rounded-lg text-sm font-semibold text-muted-foreground', tab === k && 'bg-background text-foreground shadow-sm')}>
@@ -100,7 +100,7 @@ export function Research() {
           </p>
         ) : isLoading || !idx ? (
           <Skeleton className='h-96 w-full rounded-[18px]' />
-        ) : tab === 'rank' ? (
+        ) : tab === 'rank' || idx?.players.length === 0 ? (
           <section aria-label={`${sport} power rankings`} className='flex flex-col gap-2'>
             <ol className='overflow-hidden rounded-[18px] bg-card'>
               {idx.teams.map((t) => {

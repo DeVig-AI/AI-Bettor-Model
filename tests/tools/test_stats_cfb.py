@@ -19,7 +19,7 @@ TEAMS = {"1": ("UGA", "Georgia Bulldogs", "BA0C2F"), "2": ("BAMA", "Alabama Crim
          "3": ("TA&M", "Texas A&M Aggies", "500000")}
 GAMES = [  # id, week, date, home, away, home pts, away pts
     ("g1", 1, "2026-09-05", "1", "9", 45, 3),        # Georgia vs an FCS team (id 9, "SAM")
-    ("g2", 2, "2026-09-12", "2", "3", 24, 27),
+    ("g2", 2, "2026-09-12", "3", "2", 27, 24),       # at Texas A&M: with both wins at Alabama, the home edge made them tie
     ("g3", 3, "2026-09-19", "1", "2", 31, 20),
     ("g4", 3, "2026-09-19", "3", "8", 38, 10),       # Texas A&M vs another FCS team (id 8, "CIT")
 ]

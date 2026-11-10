@@ -7,6 +7,8 @@ const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const TTL = 30, MAX_TICKERS = 40;
 // player-prop series DeVig reads: KX + league + stat, e.g. KXNBAAST, KXNBAPTS, KXNFLRSHYDS, KXNHLGOAL
 const TICKER = /^KX(?:NBA|WNBA|NFL|NHL|MLB)[A-Z0-9]{2,12}-[A-Z0-9]{6,30}-[A-Z0-9]{2,40}-[0-9]{1,4}(?:P[0-9]{1,2})?$/;   // NFL fantasy lines end like 22P5 (22.5)
+// team props (functions/api/team-props.js): KXNFLTEAMTOTAL-26NOV16LACBAL-BAL22, KXNBASPREAD-...-PHX9, KXNHLTOTAL-...-6
+const TEAM_TICKER = /^KX(?:NBA|WNBA|NFL|NHL|MLB|NCAAMB|NCAAF)(?:TEAMTOTAL|SPREAD|TOTAL)-[0-9]{2}[A-Z]{3}[0-9]{2}[A-Z0-9]{2,16}-[A-Z0-9]{1,12}$/;
 const mem = new Map();
 
 function json(body, status = 200, maxAge = 0) {
@@ -26,7 +28,7 @@ export function parseTickers(raw) {
   const out = [];
   for (const t of String(raw || "").split(",")) {
     const s = t.trim().toUpperCase();
-    if (s && TICKER.test(s) && !out.includes(s)) out.push(s);
+    if (s && (TICKER.test(s) || TEAM_TICKER.test(s)) && !out.includes(s)) out.push(s);
   }
   return out.slice(0, MAX_TICKERS);
 }

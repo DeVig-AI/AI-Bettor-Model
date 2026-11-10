@@ -4,7 +4,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 const RAW = 'https://raw.githubusercontent.com/DeVig-AI/AI-Bettor-Model/main/stats/'
-export const RS_SPORTS = ['NBA', 'NHL', 'NFL', 'WNBA', 'CFB', 'MLB'] as const
+export const RS_SPORTS = ['NBA', 'NHL', 'NFL', 'WNBA', 'CFB', 'CBB', 'MLB'] as const
 
 // [label, field, decimals?, signed?]
 export type Col = [string, string, number?, boolean?]

@@ -1,11 +1,14 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { morePages, sidebarData } from './data/sidebar-data'
 
 // Phone navigation: the same pages as the sidebar, as a bottom tab bar within thumb reach.
 export function MobileTabBar() {
   const path = useLocation({ select: (l) => l.pathname })
-  const items = sidebarData.navGroups.flatMap((g) => g.items).filter((i) => i.only !== 'sidebar')
+  const items = sidebarData.navGroups
+    .flatMap((g) => g.items)
+    .filter((i) => i.only !== 'sidebar')
   return (
     <nav
       aria-label='Main'
@@ -13,10 +16,18 @@ export function MobileTabBar() {
       // bottom, the space under the tabs stays solid instead of showing the cards scrolling behind it
       className='fixed inset-x-0 bottom-0 z-40 border-t bg-sidebar pb-[env(safe-area-inset-bottom)] after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[50vh] after:bg-sidebar md:hidden'
     >
-      <ul className='grid' style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
+      <ul
+        className='grid'
+        style={{
+          gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
+        }}
+      >
         {items.map((item) => {
           if (!item.url) return null
-          const active = path === item.url || (item.url === '/more' && morePages.some((m) => path === m || path.startsWith(`${m}/`)))
+          const active =
+            path === item.url ||
+            (item.url === '/more' &&
+              morePages.some((m) => path === m || path.startsWith(`${m}/`)))
           const Icon = item.icon
           return (
             <li key={item.title}>
@@ -36,5 +47,25 @@ export function MobileTabBar() {
         })}
       </ul>
     </nav>
+  )
+}
+
+// Phones: Friends floats at the bottom right, just above the tab bar. Not on Ask (it would cover the message box)
+// or on Friends itself.
+export function FriendsFab() {
+  const path = useLocation({ select: (l) => l.pathname })
+  if (path.startsWith('/ask') || path.startsWith('/friends')) return null
+  return (
+    <>
+      {/* room at the end of the page, so the button never sits over the last row */}
+      <div aria-hidden='true' className='h-20 md:hidden' />
+      <Link
+        to='/friends'
+        aria-label='Friends'
+        className='fixed right-4 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+1rem)] z-30 grid size-14 place-items-center rounded-full bg-devig text-devig-ink shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-transform duration-150 active:scale-95 md:hidden'
+      >
+        <Users className='size-6' aria-hidden='true' />
+      </Link>
+    </>
   )
 }

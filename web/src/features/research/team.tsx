@@ -362,7 +362,8 @@ export function ResearchTeam({ sport, code }: { sport: string; code: string }) {
           </section>
         )}
 
-        <Roster idx={idx} t={t} sport={sport} lines={lines} />
+        {/* college basketball's files have teams only, no players yet */}
+        {(t.players?.length ?? 0) > 0 && <Roster idx={idx} t={t} sport={sport} lines={lines} />}
         <p className='px-1 text-xs text-muted-foreground'>{idx.source}</p>
       </main>
     </>
