@@ -13,7 +13,6 @@ import { LevelPicker, PassBody, PickBody } from './explain-sheet'
 import { CollegeCall, NoModelBody } from './model-why'
 import { GameInfo, MatchupHeader } from './game-info'
 import { NarrativeButton } from './narrative'
-import { TeamProps } from './team-props'
 import { isPick } from './plate'
 
 // What opens when someone taps a team's half of a plate (Games, a game's page, or a leg in the parlay): the matchup
@@ -85,7 +84,9 @@ export function TeamSheet({
 
         <div onScroll={(e) => setSmall(e.currentTarget.scrollTop > 56)}
           className='flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-5 pt-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]'>
-          <GameInfo row={row} chanceWho={sideChance(row, 'home', labGame?.home_wp, dvGame?.home_wp).who} />
+          <GameInfo row={row}
+            chances={{ away: sideChance(row, 'away', labGame?.home_wp, dvGame?.home_wp), home: sideChance(row, 'home', labGame?.home_wp, dvGame?.home_wp) }}
+            homeMargin={(dvGame ?? labGame)?.home_line != null ? -(dvGame ?? labGame)!.home_line! : null} />
 
           <h3 className='-mb-2 text-[11.5px] font-semibold tracking-[0.06em] text-muted-foreground uppercase'>Pick a side to dig in</h3>
           <div role='tablist' aria-label='Team' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
@@ -129,8 +130,6 @@ export function TeamSheet({
             <NoModelBody row={row} side={side} level={lv} labGame={labGame} labFile={lab?.[row.sport]}
               devigGame={dvGame} devigFile={devigFiles?.[row.sport]} />
           )}
-
-          <TeamProps row={row} side={side} />
 
           {leg && (
             <button

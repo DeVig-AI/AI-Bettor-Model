@@ -4,7 +4,7 @@
 // over time, and what each side costs (a link to Kalshi; not in the parlay, since its legs are priced as if unrelated).
 // DeVig has no model for these: it's the history next to the price, never a pick.
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowUpRight, ChevronRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { type GameRow, fmtAmerican, nflNick } from '@/lib/devig'
 import { RS_SPORTS, statsCode, useRsTeam } from '@/lib/research'
@@ -24,9 +24,9 @@ import type { Side } from './team-sheet'
 const LAST = 10
 const SPORT_WORDS: Record<string, string> = { CBB: 'college basketball', CFB: 'college football' }
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
-const pct = (p: number) => `${Math.round(p * 100)}%`
-const under = (p: number) => `${100 - Math.round(p * 100)}%` // so Over + Under shows 100%
-const one = (x: number) => x.toFixed(1).replace(/\.0$/, '')
+export const pct = (p: number) => `${Math.round(p * 100)}%`
+export const under = (p: number) => `${100 - Math.round(p * 100)}%` // so Over + Under shows 100%
+export const one = (x: number) => x.toFixed(1).replace(/\.0$/, '')
 const signed = (x: number) => (x > 0 ? '+' : x < 0 ? '−' : '') + one(Math.abs(x))
 const avg = (a: number[]) => a.reduce((s, x) => s + x, 0) / a.length
 
@@ -51,7 +51,7 @@ export function useGames(sport: string, code: string) {
   return ok ? q.data ?? null : null
 }
 
-type Ctx = {
+export type Ctx = {
   row: GameRow; side: Side; d: TeamPropsData
   k: string; ko: string // Kalshi's codes for this team and the other one
   code: string; oppCode: string; nick: string; oppNick: string; unit: string
@@ -64,7 +64,7 @@ const poss = (n: string) => (/s$/.test(n) ? `${n}'` : `${n}'s`)
 const TWO = /(Trail Blazers|Red Sox|White Sox|Blue Jays|Maple Leafs|Blue Jackets|Golden Knights|Red Wings)$/
 export const nickname = (full: string) => full.match(TWO)?.[1] ?? full.split(' ').pop() ?? full
 
-function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): Ctx | null {
+export function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): Ctx | null {
   const home = side === 'home'
   const code = home ? row.home : row.away, oppCode = home ? row.away : row.home
   const mine = useGames(row.sport, code), theirs = useGames(row.sport, oppCode)
@@ -81,69 +81,19 @@ function useCtx(row: GameRow, side: Side, d: TeamPropsData | null | undefined): 
   }
 }
 
-const rungsOf = (c: Ctx, kind: Kind): Rung[] => (kind === 'total' ? c.d.total : (kind === 'tt' ? c.d.tt : c.d.by)[c.k] ?? [])
+export const rungsOf = (c: Ctx, kind: Kind): Rung[] => (kind === 'total' ? c.d.total : (kind === 'tt' ? c.d.tt : c.d.by)[c.k] ?? [])
 // points and the game total read as over/under a half-point line (Kalshi's "22+" is over 21.5); win-by stays N+
-const ln = (need: number) => (need - 0.5).toFixed(1)
+export const ln = (need: number) => (need - 0.5).toFixed(1)
 const got = (kind: Kind) => (kind === 'by' ? 'got there' : 'went over')
-const betWords = (c: Ctx, kind: Kind, need: number) =>
-  kind === 'tt' ? `O/U ${ln(need)} ${c.unit}` : kind === 'by' ? `Win by ${need}+` : `Total O/U ${ln(need)}`
 
-export function TeamProps({ row, side }: { row: GameRow; side: Side }) {
-  const q = useTeamProps(row, true)
-  const c = useCtx(row, side, q.data)
-  const file = useGames(row.sport, side === 'home' ? row.home : row.away)
-  const [open, setOpen] = useState<Kind | null>(null)
-  if (!c) return null
-  const kinds = (['tt', 'by', 'total'] as Kind[]).filter((k) => rungsOf(c, k).length)
-  if (!kinds.length) return null
-  return (
-    <section aria-labelledby='tp-h' className='overflow-hidden rounded-2xl border bg-background'>
-      <div className='flex items-center justify-between px-3.5 pt-3 pb-2'>
-        <h3 id='tp-h' className='text-[15px] font-bold'>{c.nick} props</h3>
-        <span className='text-xs font-semibold text-muted-foreground'>from Kalshi</span>
-      </div>
-      <ul>
-        {kinds.map((kind) => {
-          const m = mainRung(rungsOf(c, kind))!
-          const vs = valuesOf(file?.games, kind).slice(0, LAST).map((g) => g.v)
-          return (
-            <li key={kind} className='border-t'>
-              <button type='button' aria-haspopup='dialog' onClick={() => setOpen(kind)}
-                className='flex w-full items-center gap-3 px-3.5 py-2.5 text-start transition-colors duration-150 hover:bg-white/5'>
-                <span className='flex min-w-0 flex-1 flex-col leading-tight'>
-                  <span className='truncate text-sm font-semibold'>{betWords(c, kind, m[0])}</span>
-                  <span className='truncate text-xs text-muted-foreground'>
-                    {vs.length
-                      ? kind !== 'by'
-                        ? `last ${vs.length}: ${hitCount(vs, m[0])} over, ${vs.length - hitCount(vs, m[0])} under · avg ${one(avg(vs))}`
-                        : `last ${vs.length}: ${hitCount(vs, m[0])} of ${vs.length} · avg ${kind === 'by' ? signed(avg(vs)) : one(avg(vs))}`
-                      : 'no past games saved yet'}
-                  </span>
-                </span>
-                <span className='flex shrink-0 flex-col items-end font-condensed leading-tight tabular-nums'>
-                  <span className='text-[15px] font-bold'>{kind === 'by' ? 'Kalshi' : 'Over'} {pct(mid(m))}</span>
-                  <span className='text-xs text-muted-foreground'>{kind === 'by' ? '' : `Under ${under(mid(m))} · `}{rungsOf(c, kind).length} lines</span>
-                </span>
-                <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-      <p className='border-t px-3.5 py-2.5 text-xs leading-relaxed text-muted-foreground'>
-        {file?.games?.length
-          ? <>No DeVig model for these yet: Kalshi&apos;s price next to the team&apos;s last {LAST} games, not a pick.</>
-          : <>No DeVig model for these yet, and DeVig doesn&apos;t save {SPORT_WORDS[row.sport] ?? row.sport} scores yet: Kalshi&apos;s prices only, not a pick.</>}
-      </p>
-      {open && <TeamPropSheet c={c} kind={open} open={!!open} onOpenChange={(v) => !v && setOpen(null)} />}
-    </section>
-  )
-}
-
-function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; open: boolean; onOpenChange: (v: boolean) => void }) {
+export function TeamPropSheet({ c, kind, open, onOpenChange, start, devigMargin }: {
+  c: Ctx; kind: Kind; open: boolean; onOpenChange: (v: boolean) => void
+  start?: number // the line to open on (the game's spread); else the one nearest even
+  devigMargin?: number | null // DeVig's expected margin for this team (its model's number, not a chance)
+}) {
   const { row } = c
   const rungs = rungsOf(c, kind)
-  const [pick, setPick] = useState(() => mainRung(rungs)![0])
+  const [pick, setPick] = useState(() => (start != null && rungs.some((x) => x[0] === start) ? start : mainRung(rungs)![0]))
   const r = rungs.find((x) => x[0] === pick) ?? mainRung(rungs)!
   const need = r[0]
   const file = useGames(row.sport, c.code)
@@ -213,10 +163,24 @@ function TeamPropSheet({ c, kind, open, onOpenChange }: { c: Ctx; kind: Kind; op
             </div>
             <p className='rounded-2xl bg-muted px-4 py-3 text-sm leading-relaxed text-muted-foreground'>
               {kind !== 'by' && <>Under is the other side: Kalshi {under(m)}{last.length ? `, last ${last.length}: ${last.length - h10} of ${last.length}` : ''}. </>}
-              DeVig has no model for {kind === 'tt' ? 'team totals' : kind === 'by' ? 'winning margins' : 'game totals'} yet, so there&apos;s
+              DeVig has no chance model for {kind === 'tt' ? 'team totals' : kind === 'by' ? 'winning margins' : 'game totals'} yet, so there&apos;s
               no DeVig chance here. {last.length ? 'These are counts, not a pick.' : `DeVig doesn't save ${SPORT_WORDS[row.sport] ?? row.sport} scores yet, so there are no past games to count.`}
             </p>
           </section>
+
+          {kind === 'by' && devigMargin != null && (
+            <section className='flex flex-col gap-2 rounded-2xl border border-devig/25 bg-devig/10 p-4'>
+              <div className='flex items-end justify-between gap-3'>
+                <div className='text-xs font-semibold tracking-wide text-muted-foreground uppercase'>DeVig&apos;s model expects</div>
+                <div className='font-display text-[36px] leading-none font-black text-devig tabular-nums'>{signed(devigMargin)}</div>
+              </div>
+              <p className='text-sm leading-relaxed'>
+                {devigMargin > 0 ? <>{cap(c.the)}{c.nick} by <b>{one(devigMargin)}</b></> : <>{cap(c.the)}{c.nick} losing by <b>{one(-devigMargin)}</b></>}
+                {devigMargin > 0 && <>{devigMargin >= need ? `, past the ${need}+ line` : `, short of the ${need}+ line`}</>}.
+                {' '}That&apos;s its margin, not a chance: DeVig&apos;s model is tested on who wins, not on spreads, so it isn&apos;t a spread pick.
+              </p>
+            </section>
+          )}
 
           <Expect c={c} kind={kind} need={need} last={last} oppLast={valuesOf(oppFile?.games, kind).slice(0, LAST).map((g) => g.v)} />
 
