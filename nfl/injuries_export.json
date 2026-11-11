@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Wed Nov 11 \u00b7 12:59 AM ET \u00b7 Week 10",
+    "as_of": "Wed Nov 11 \u00b7 9:05 AM ET \u00b7 Week 10",
     "date": "2026-11-11",
     "sport": "NFL"
    },
@@ -2184,29 +2184,6 @@
     "confirmed": false,
     "home": "IND",
     "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (100% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "player": "Malik Willis",
-    "reason": "QB \u00b7 Groin",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "MIA",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1115-1300"
-   },
-   "doc_id": "nfl-mia-malik-willis"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIA",
-    "confirmed": false,
-    "home": "IND",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -2222,6 +2199,30 @@
     "tip_sort": "1115-1300"
    },
    "doc_id": "nfl-mia-zach-sieler"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MIA",
+    "confirmed": false,
+    "home": "IND",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (100% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Malik Willis",
+    "reason": "QB \u00b7 Groin",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "MIA",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1115-1300"
+   },
+   "doc_id": "nfl-mia-malik-willis"
   },
   {
    "collection": "injuries",
@@ -3533,6 +3534,6 @@
    "doc_id": "nfl-was-javon-kinlaw"
   }
  ],
- "generated_at": "2026-11-11T05:59:25Z",
+ "generated_at": "2026-11-11T14:05:57Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
