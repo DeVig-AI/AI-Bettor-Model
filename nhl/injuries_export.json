@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Wed Nov 11 \u00b7 9:05 AM ET",
+    "as_of": "Wed Nov 11 \u00b7 4:20 PM ET",
     "date": "2026-11-11",
     "sport": "NHL"
    },
@@ -196,11 +196,12 @@
      "level": "some",
      "why": "25 min a game \u00b7 11 points in 15 games = 8% of DAL's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Miro Heiskanen",
-    "reason": "D",
+    "reason": "D \u00b7 Upper body",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "DAL",
     "tip": "Thu 8:00 PM",
     "tip_sort": "1112-2000"
@@ -216,7 +217,7 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "22 min a game \u00b7 6 points in 10 games = 5% of DET's points"
+     "why": "22 min a game \u00b7 6 points in 10 games = 4% of DET's points"
     },
     "player": "Dylan Larkin",
     "reason": "C",
@@ -260,7 +261,7 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "12 min a game \u00b7 7 points in 16 games = 5% of FLA's points"
+     "why": "12 min a game \u00b7 7 points in 16 games = 4% of FLA's points"
     },
     "player": "Sandis Vilmanis",
     "reason": "LW \u00b7 Undisclosed",
@@ -276,6 +277,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "NYI",
+    "home": "LA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "22 min a game \u00b7 7 points in 15 games = 6% of LA's points"
+    },
+    "player": "Drew Doughty",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "LA",
+    "tip": "Thu 10:00 PM",
+    "tip_sort": "1112-2200"
+   },
+   "doc_id": "nhl-la-drew-doughty"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "PHI",
     "home": "EDM",
     "impact": {
@@ -284,12 +307,12 @@
      "level": "minor",
      "why": "No games for him in this season's stats"
     },
-    "note": "Downgraded from day-to-day",
+    "note": "Upgraded from out",
     "player": "Erik Gustafsson",
     "reason": "D",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "PHI",
     "tip": "Wed 9:00 PM",
     "tip_sort": "1111-2100"
@@ -327,13 +350,14 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "24 min a game \u00b7 4 points in 8 games = 3% of MTL's points"
+     "why": "24 min a game \u00b7 4 points in 8 games = 2% of MTL's points"
     },
+    "note": "Upgraded from out",
     "player": "Mike Matheson",
-    "reason": "D \u00b7 Lower body",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "MTL",
     "tip": "Thu 7:00 PM",
     "tip_sort": "1112-1900"
@@ -373,11 +397,12 @@
      "level": "minor",
      "why": "17 min a game \u00b7 5 points in 14 games = 3% of NSH's points"
     },
+    "note": "Upgraded from out",
     "player": "Jonathan Marchessault",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "NSH",
     "tip": "Wed 10:00 PM",
     "tip_sort": "1111-2200"
@@ -393,7 +418,7 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "15 min a game \u00b7 1 point in 12 games = 1% of NJ's points"
+     "why": "15 min a game \u00b7 2 points in 13 games = 1% of NJ's points"
     },
     "player": "Johnathan Kovacevic",
     "reason": "D",
@@ -412,15 +437,15 @@
     "away": "WSH",
     "home": "NJ",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "14 min a game \u00b7 10 points in 17 games = 6% of NJ's points"
     },
     "player": "Anthony Mantha",
     "reason": "RW",
     "sport": "NHL",
-    "starter": true,
+    "starter": false,
     "status": "Out",
     "team": "NJ",
     "tip": "Thu 7:00 PM",
@@ -503,13 +528,14 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "10 min a game \u00b7 3 points in 18 games = 2% of OTT's points"
+     "why": "10 min a game \u00b7 3 points in 19 games = 2% of OTT's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Nick Cousins",
     "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "OTT",
     "tip": "Thu 7:00 PM",
     "tip_sort": "1112-1900"
@@ -527,11 +553,12 @@
      "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
+    "note": "Upgraded from out",
     "player": "Linus Ullmark",
     "reason": "G",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "OTT",
     "tip": "Thu 7:00 PM",
     "tip_sort": "1112-1900"
@@ -655,16 +682,39 @@
     "away": "MIN",
     "home": "TOR",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "8 min a game \u00b7 4 points in 14 games = 2% of TOR's points"
+    },
+    "player": "Zack MacEwen",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "TOR",
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1112-1900"
+   },
+   "doc_id": "nhl-tor-zack-macewen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MIN",
+    "home": "TOR",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
      "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
     },
+    "note": "Upgraded from out",
     "player": "Morgan Rielly",
-    "reason": "D \u00b7 Lower body",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TOR",
     "tip": "Thu 7:00 PM",
     "tip_sort": "1112-1900"
@@ -959,6 +1009,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-11T14:05:57Z",
+ "generated_at": "2026-11-11T21:20:07Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
