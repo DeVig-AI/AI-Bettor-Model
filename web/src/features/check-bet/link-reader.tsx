@@ -173,6 +173,16 @@ function useBetReader() {
     go, data, lastLink, saved, isSaved, store, err, pending: read.isPending,
     entry: saved.find((s) => s.link === lastLink) ?? null,
     save: () => { if (data && !isSaved) store({}) },
+    // a game link (Kalshi's Share on a game page) doesn't say which side you took: once you pick one, that single bet
+    // is saved in the game link's place, so it can be graded and followed like any other bet
+    pickSide: (m: KLeg) => {
+      if (!m.ticker) return
+      const old = getSaved().find((s) => s.link === lastLink)
+      if (old) removeSaved(old.link)
+      const cur = getSaved().filter((s) => s.link !== m.ticker)
+      storeSaved([{ link: m.ticker, label: legLabel(m), savedAt: old?.savedAt ?? new Date().toISOString() }, ...cur])
+      go(m.ticker)
+    },
     remove: removeSaved,
     close: () => { setLastLink(''); setData(null); read.reset() },
   }
@@ -199,10 +209,40 @@ function KeepResult({ r, d }: { r: Reader; d: Extract<KRead, { kind: 'market' }>
   return null
 }
 
+// a game link: every market in the game, and you pick the one you bet
+function SidePicker({ d, onPick }: { d: Extract<KRead, { kind: 'event' }>; onPick: (m: KLeg) => void }) {
+  return (
+    <section className='flex flex-col gap-2 rounded-[18px] bg-card p-4'>
+      <h3 className='font-display text-xl font-extrabold'>Which side did you take?</h3>
+      <p className='text-sm text-muted-foreground'>This link is for the whole game{d.title ? ` (${d.title})` : ''}, so it doesn&apos;t say which side is yours. Pick it and DeVig will follow just that bet.</p>
+      <div className='mt-1 flex flex-col gap-2'>
+        {d.markets.filter((m) => m.ticker).map((m) => (
+          <button key={m.ticker} type='button' onClick={() => onPick(m)}
+            className='flex min-h-12 items-center justify-between gap-3 rounded-xl border bg-background px-4 py-2 text-start font-semibold hover:border-foreground'>
+            <span className='min-w-0'>{legLabel(m)}</span>
+            <span className='shrink-0 text-sm text-muted-foreground tabular-nums'>{m.result ? (m.result === 'won' ? 'Won' : 'Lost') : pct(m.chance)}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
+  if (d.kind === 'event') {
+    return (
+      <>
+        <SidePicker d={d} onPick={r.pickSide} />
+        {r.isSaved && (
+          <button type='button' onClick={() => { r.remove(r.lastLink); r.close() }}
+            className='h-10 self-end rounded-full px-3 text-sm font-semibold text-muted-foreground hover:text-bad'>Remove</button>
+        )}
+      </>
+    )
+  }
   return (
     <>
-      {d.kind !== 'event' && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
+      <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
       <div className='flex gap-2'>
         {!r.isSaved && <button type='button' onClick={r.save} className='h-10 rounded-full border px-4 text-sm font-semibold'>Save this</button>}
