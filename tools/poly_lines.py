@@ -111,19 +111,20 @@ def league_games(sport, series, now, until):
         hit = None
         for h, a, hn, an in espn.get(day, []):
             if f in an and s in hn:                  # first-listed team is the away team
-                hit = (h, a, r["bid"], r["ask"])
+                hit = (h, a, r["bid"], r["ask"], "away")
             elif f in hn and s in an:                # listed home first: flip the price to the away team
-                hit = (h, a, round(1 - r["ask"], 4), round(1 - r["bid"], 4))
+                hit = (h, a, round(1 - r["ask"], 4), round(1 - r["bid"], 4), "home")
             if hit:
                 break
         if not hit:
             unmatched.append(f"{sport}: {r['first']} vs {r['second']} ({r['slug']})")
             continue
-        h, a, abid, aask = hit
+        h, a, abid, aask, first = hit
         liq = r["liquidity"]
         games.append({"sport": sport, "date": day, "kickoff": r["start"].strftime("%Y-%m-%dT%H:%M:%SZ"), "home": h, "away": a,
                       "away_bid": abid, "away_ask": aask, "home_bid": round(1 - aask, 4), "home_ask": round(1 - abid, 4),
-                      "liquidity": round(float(liq)) if liq not in (None, "") else None, "slug": r["slug"]})
+                      "liquidity": round(float(liq)) if liq not in (None, "") else None, "slug": r["slug"],
+                      "listed_first": first})   # which team is outcome 0 of the moneyline (tools/sharps_log.py)
     return games, unmatched
 
 
