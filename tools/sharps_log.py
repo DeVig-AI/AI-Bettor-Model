@@ -36,6 +36,7 @@ PENDING = DIR / "pending.json"
 LOCKS = DIR / "LOCKS.csv"
 TOP_N = 20
 MIN_USD = 1000.0          # a trader counts only with at least this much more on one team than the other
+CHUNK = 10               # markets per trades request
 GIVE_UP = timedelta(hours=72)  # a game still unlocked this long after its start is logged as missed
 COLUMNS = ["locked_at", "key", "sport", "date", "away", "home", "kickoff", "slug", "condition_id", "status",
            "board_at", "kalshi_seen", "kalshi_away_ml", "kalshi_home_ml", "kalshi_home_wp", "poly_at", "poly_away_mid",
@@ -124,17 +125,22 @@ def moneyline(slug):
 
 
 def trades(wallet, cids):
-    """Every trade this wallet made on these markets, or None when the history couldn't be read in full."""
-    out, cursor = [], None
-    for _ in range(20):
-        d = KG.get(f"{DATA}/trades", {"user": wallet, "condition": ",".join(sorted(cids)), "limit": 500, "cursor": cursor})
-        if d is None or "data" not in d:
+    """Every trade this wallet made on these markets, or None when the history couldn't be read in full. The API
+    refuses a long list of markets (HTTP 400 at 31), so they're asked CHUNK at a time."""
+    out, cids = [], sorted(cids)
+    for i in range(0, len(cids), CHUNK):
+        cursor = None
+        for _ in range(20):
+            d = KG.get(f"{DATA}/trades", {"user": wallet, "condition": ",".join(cids[i:i + CHUNK]), "limit": 500, "cursor": cursor})
+            if d is None or "data" not in d:
+                return None
+            out += d["data"]
+            cursor = (d.get("pagination") or {}).get("next_cursor")
+            if not (d.get("pagination") or {}).get("has_more") or not cursor:
+                break
+        else:
             return None
-        out += d["data"]
-        cursor = (d.get("pagination") or {}).get("next_cursor")
-        if not (d.get("pagination") or {}).get("has_more") or not cursor:
-            return out
-    return None
+    return out
 
 
 def tally(game, cid, board, rows_by_wallet):

@@ -66,6 +66,32 @@ class Tally(unittest.TestCase):
         self.assertEqual(r["sharp_side"], "")
 
 
+class Trades(unittest.TestCase):
+    def test_long_market_lists_are_asked_in_chunks_and_paged(self):
+        calls, orig = [], L.KG.get
+
+        def fake(url, params):
+            calls.append((params["condition"].count(",") + 1, params.get("cursor")))
+            if params.get("cursor") is None and params["condition"].startswith("c00"):
+                return {"data": [{"n": 1}], "pagination": {"has_more": True, "next_cursor": "p2"}}
+            return {"data": [{"n": 2}], "pagination": {"has_more": False}}
+        L.KG.get = fake
+        try:
+            rows = L.trades("0x00", {f"c{i:02d}" for i in range(31)})
+        finally:
+            L.KG.get = orig
+        self.assertEqual(calls, [(10, None), (10, "p2"), (10, None), (10, None), (1, None)])
+        self.assertEqual(len(rows), 5)
+
+    def test_a_refused_chunk_means_unreadable(self):
+        orig = L.KG.get
+        L.KG.get = lambda url, params: None if params["condition"].startswith("c10") else {"data": [], "pagination": {}}
+        try:
+            self.assertIsNone(L.trades("0x00", {f"c{i:02d}" for i in range(31)}))
+        finally:
+            L.KG.get = orig
+
+
 class Lock(unittest.TestCase):
     def setUp(self):
         self._orig = (L.moneyline, L.trades)
