@@ -20,6 +20,7 @@ import { GameWrap } from './wrap'
 import { BoxScore } from './box-score'
 import { SoccerGame } from './soccer'
 import { Streaks } from '../props/streaks'
+import { Sharps } from './sharps'
 
 // One game: the big plate, the prices, DeVig's read, who's hurt, and this game's props. Tap a team on the plate to
 // see why (and add it to the parlay), the same as on Games; tap Over or Under on a prop for its why.
@@ -171,6 +172,7 @@ export function GamePage({ id }: { id: string }) {
         <PriceAlert row={row} />
 
         <Read row={row} onWhy={why} />
+        <Sharps row={row} />
 
           <GapChart row={row} />
           <FieldMovers row={row} />

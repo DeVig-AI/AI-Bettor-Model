@@ -28,3 +28,6 @@ PASS: the owner decides whether the app shows the "Where the sharps are" card, l
 
 ## What will NOT happen
 No change to the top-20 list, the $1,000 rule, the price, the grading or the pass rule after data is seen. Pipeline bug fixes are logged in FROZEN_CHANGES.md with a date. No bets are placed by any script.
+
+## Amendment 2026-11-11 (owner's decision, before any game was locked)
+The owner chose to show the "Where the sharps are" card on the game page now, while the test runs ("it's not proven but it will be in the app"). It is labeled Polymarket money, not a DeVig pick and not proven. Its file (live/sharps/now.json, tools/sharps_now.py) is separate from the test's: the test's games, counting, price, grading, pass rule and one look are unchanged. "Nothing is shown in the app while this test runs" and "PASS: the owner decides whether the app shows the card" no longer apply; after a FAIL the card is taken down or relabeled, owner's call.
