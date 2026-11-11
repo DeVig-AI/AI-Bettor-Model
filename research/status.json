@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-11T13:42:03Z",
+ "updated_at": "2026-11-11T13:49:46Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -3692,7 +3692,7 @@
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-11T13:47:04Z",
+   "updated_at": "2026-11-11T13:54:50Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5674,7 +5674,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-11T13:47:51Z",
+   "updated_at": "2026-11-11T13:55:37Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6367,7 +6367,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-11T13:48:11Z",
+   "updated_at": "2026-11-11T13:55:59Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6913,7 +6913,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-11T13:48:29Z",
+   "updated_at": "2026-11-11T13:56:18Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7316,7 +7316,7 @@
    ]
   },
   "CBB": {
-   "updated_at": "2026-11-11T13:42:02Z",
+   "updated_at": "2026-11-11T13:49:43Z",
    "scope": "CBB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7352,21 +7352,29 @@
    "runs": [
     {
      "kind": "search",
-     "name": "Search round 123 (CBB, running)",
-     "started_at": "2026-11-11T13:22:00Z",
-     "finished_at": null,
+     "name": "Search round 123",
+     "started_at": "2026-11-11T13:49:42Z",
+     "finished_at": "2026-11-11T13:49:42Z",
      "duration_s": null,
-     "run_number": 2979,
+     "run_number": null,
      "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/43021363552",
-     "summary": "278 of 392 models scored on 2019–2022",
+     "summary": "392 models scored → 1 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation",
      "funnel": [
       {
        "label": "models scored",
-       "count": 278
+       "count": 392
       },
       {
-       "label": "planned this round",
-       "count": 392
+       "label": "consistent",
+       "count": 1
+      },
+      {
+       "label": "strong (t ≥ 2.5)",
+       "count": 0
+      },
+      {
+       "label": "sent to confirmation",
+       "count": 0
       }
      ],
      "steps": []
@@ -7635,7 +7643,7 @@
    ]
   },
   "SOCCER": {
-   "updated_at": "2026-11-11T13:48:30Z",
+   "updated_at": "2026-11-11T13:56:19Z",
    "scope": "SOCCER",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
