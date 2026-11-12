@@ -1,10 +1,10 @@
 # Research Lab search (CBB) -- leaderboard (EXPLORATORY)
 
-_Generated 2026-11-11T20:10:31Z by research/lab/search.py. Scores are on the search seasons 2019–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
+_Generated 2026-11-11T23:57:35Z by research/lab/search.py. Scores are on the search seasons 2019–2022 only: effect = cover points (moneyline: win-chance points) per game beyond the line-only baseline, t = effect ÷ its standard error. Thousands of tries mean the best t here is partly luck: that is why only the shortlist is confirmed, on seasons the search never saw._
 
-39307 configurations scored so far.
+39606 configurations scored so far.
 
-## Moneyline -- top 25 of 39307
+## Moneyline -- top 25 of 39606
 
 | # | id | model | effect | t | 2019 | 2020 | 2022 |
 |---|---|---|---|---|---|---|---|
@@ -36,17 +36,17 @@ _Generated 2026-11-11T20:10:31Z by research/lab/search.py. Scores are on the sea
 
 ## What the search learned (exploratory)
 
-- moneyline · elo_ml · `hfa_elo`: best 106 (median t -2.40), worst 50 (-inf) over 36861 configurations
-- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 36861 configurations
-- moneyline · elo_ml · `k`: best 42 (median t -1.78), worst 15 (-inf) over 36861 configurations
-- moneyline · elo_ml · `market_blend`: best 0.5625 (median t -1.67), worst 0.0 (-inf) over 36861 configurations
-- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 36861 configurations
-- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 36861 configurations
-- moneyline · elo_ml · `revert`: best 0.2125 (median t -1.76), worst 0.25 (-inf) over 36861 configurations
-- moneyline · rating_ml · `def_weight`: best 1.0 (median t -1.24), worst 0.5 (-3.13) over 464 configurations
-- moneyline · rating_ml · `halflife`: best 16 (median t -1.65), worst 3 (-2.78) over 464 configurations
-- moneyline · rating_ml · `season_carry`: best 0.475 (median t -1.62), worst 0.8 (-2.67) over 464 configurations
-- moneyline · srs_ml · `carry`: best 0.525 (median t -1.14), worst 0.2 (-1.87) over 1440 configurations
-- moneyline · srs_ml · `hfa_pts`: best 3.0 (median t -1.13), worst 5.0 (-1.86) over 1440 configurations
-- moneyline · srs_ml · `margin_cap`: best 20 (median t -1.32), worst None (-1.58) over 1440 configurations
-- moneyline · srs_ml · `prior_w`: best 7 (median t -1.02), worst 32 (-2.25) over 1440 configurations
+- moneyline · elo_ml · `hfa_elo`: best 94 (median t -2.37), worst 50 (-inf) over 37143 configurations
+- moneyline · elo_ml · `hfa_mode`: best fixed (median t -inf), worst fixed (-inf) over 37143 configurations
+- moneyline · elo_ml · `k`: best 42 (median t -1.76), worst 15 (-inf) over 37143 configurations
+- moneyline · elo_ml · `market_blend`: best 0.5625 (median t -1.72), worst 0.0 (-inf) over 37143 configurations
+- moneyline · elo_ml · `mov`: best none (median t -inf), worst none (-inf) over 37143 configurations
+- moneyline · elo_ml · `prob`: best elo (median t -inf), worst elo (-inf) over 37143 configurations
+- moneyline · elo_ml · `revert`: best 0.2125 (median t -1.76), worst 0.25 (-inf) over 37143 configurations
+- moneyline · rating_ml · `def_weight`: best 1.0 (median t -1.24), worst 0.5 (-3.12) over 465 configurations
+- moneyline · rating_ml · `halflife`: best 15 (median t -1.67), worst 3 (-2.78) over 465 configurations
+- moneyline · rating_ml · `season_carry`: best 0.475 (median t -1.62), worst 0.8 (-2.67) over 465 configurations
+- moneyline · srs_ml · `carry`: best 0.525 (median t -1.15), worst 0.2 (-1.87) over 1456 configurations
+- moneyline · srs_ml · `hfa_pts`: best 3.0 (median t -1.13), worst 5.0 (-1.86) over 1456 configurations
+- moneyline · srs_ml · `margin_cap`: best 20 (median t -1.32), worst None (-1.58) over 1456 configurations
+- moneyline · srs_ml · `prior_w`: best 7 (median t -1.02), worst 32 (-2.25) over 1456 configurations
