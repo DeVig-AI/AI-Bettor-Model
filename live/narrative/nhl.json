@@ -4,10 +4,57 @@
  "version": "v0",
  "kind": "ml",
  "tested": false,
- "updated": "2026-11-12T12:55:10+00:00",
+ "updated": "2026-11-12T20:56:11+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401892704",
+   "date": "2026-11-12",
+   "start": "2026-11-13T02:00Z",
+   "game": "STL @ UTA",
+   "home": "UTA",
+   "away": "STL",
+   "home_id": "129764",
+   "away_id": "19",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 5.5,
+   "score": 3.0,
+   "why_for": [
+    "UTA on tired legs (back-to-back)",
+    "Pace: their games average 6.7 goals, the total is 5.5",
+    "Buy low on the dropping total: 6.5 to 5.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401892704",
+   "date": "2026-11-12",
+   "start": "2026-11-13T02:00Z",
+   "game": "STL @ UTA",
+   "home": "UTA",
+   "away": "STL",
+   "home_id": "129764",
+   "away_id": "19",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "STL",
+   "line": -130.0,
+   "score": 2.0,
+   "why_for": [
+    "UTA: Second night of a back-to-back",
+    "UTA: Logan Cooley (1.2 points a game) is out"
+   ],
+   "why_opp": [
+    "UTA: Fade the line move: the price moved 10 points of chance away from UTA"
+   ]
+  },
   {
    "id": "401892701",
    "date": "2026-11-12",
@@ -17,7 +64,7 @@
    "away": "TB",
    "home_id": "29",
    "away_id": "20",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -290,22 +337,24 @@
    "note": null,
    "side": {
     "lean": "STL",
-    "score": 1.5,
+    "score": 2.0,
     "capped": false,
     "why_for": [
      "UTA: Second night of a back-to-back",
      "UTA: Logan Cooley (1.2 points a game) is out"
     ],
     "why_opp": [
-     "UTA: Line tell: the price makes UTA the favorite though STL has the better goal difference"
+     "UTA: Fade the line move: the price moved 10 points of chance away from UTA"
     ]
    },
    "total": {
     "lean": "OVER",
-    "line": 6.5,
-    "score": 0.5,
+    "line": 5.5,
+    "score": 3.0,
     "why_for": [
-     "UTA on tired legs (back-to-back)"
+     "UTA on tired legs (back-to-back)",
+     "Pace: their games average 6.7 goals, the total is 5.5",
+     "Buy low on the dropping total: 6.5 to 5.5"
     ],
     "why_opp": []
    }
@@ -456,12 +505,14 @@
    "note": null,
    "side": {
     "lean": "OTT",
-    "score": 1.5,
+    "score": 0.5,
     "capped": false,
     "why_for": [
      "Line tell: the price makes OTT the favorite though COL has the better goal difference"
     ],
-    "why_opp": []
+    "why_opp": [
+     "COL: Fade the line move: the price moved 4 points of chance away from COL"
+    ]
    },
    "total": {
     "lean": null,
