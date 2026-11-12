@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Wed Nov 11 \u00b7 4:20 PM ET",
+    "as_of": "Wed Nov 11 \u00b7 9:53 PM ET",
     "date": "2026-11-11",
     "sport": "NHL"
    },
@@ -34,8 +34,8 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "TB",
-    "home": "BUF",
+    "away": "BUF",
+    "home": "CHI",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -48,16 +48,16 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "BUF",
-    "tip": "Wed 7:00 PM",
-    "tip_sort": "1111-1900"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1112-2000"
    },
    "doc_id": "nhl-buf-alex-lyon"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "TB",
-    "home": "BUF",
+    "away": "BUF",
+    "home": "CHI",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -70,8 +70,8 @@
     "starter": false,
     "status": "Out",
     "team": "BUF",
-    "tip": "Wed 7:00 PM",
-    "tip_sort": "1111-1900"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1112-2000"
    },
    "doc_id": "nhl-buf-konsta-helenius"
   },
@@ -397,12 +397,12 @@
      "level": "minor",
      "why": "17 min a game \u00b7 5 points in 14 games = 3% of NSH's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Jonathan Marchessault",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "NSH",
     "tip": "Wed 10:00 PM",
     "tip_sort": "1111-2200"
@@ -430,28 +430,6 @@
     "tip_sort": "1112-1900"
    },
    "doc_id": "nhl-nj-johnathan-kovacevic"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WSH",
-    "home": "NJ",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min a game \u00b7 10 points in 17 games = 6% of NJ's points"
-    },
-    "player": "Anthony Mantha",
-    "reason": "RW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "NJ",
-    "tip": "Thu 7:00 PM",
-    "tip_sort": "1112-1900"
-   },
-   "doc_id": "nhl-nj-anthony-mantha"
   },
   {
    "collection": "injuries",
@@ -571,29 +549,6 @@
     "away": "PIT",
     "home": "SJ",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min a game \u00b7 6 points in 15 games = 4% of PIT's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Ville Koivunen",
-    "reason": "RW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "PIT",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1111-2200"
-   },
-   "doc_id": "nhl-pit-ville-koivunen"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PIT",
-    "home": "SJ",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -658,7 +613,7 @@
    "collection": "injuries",
    "data": {
     "away": "TB",
-    "home": "BUF",
+    "home": "CBJ",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -671,8 +626,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "TB",
-    "tip": "Wed 7:00 PM",
-    "tip_sort": "1111-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1112-1900"
    },
    "doc_id": "nhl-tb-brayden-point"
   },
@@ -796,18 +751,18 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "17 min a game \u00b7 12 points in 18 games = 7% of UTA's points"
+     "why": "18 min a game \u00b7 21 points in 18 games = 12% of UTA's points"
     },
-    "player": "Dylan Guenther",
-    "reason": "RW",
+    "player": "Logan Cooley",
+    "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "UTA",
     "tip": "Wed 9:30 PM",
     "tip_sort": "1111-2130"
    },
-   "doc_id": "nhl-uta-dylan-guenther"
+   "doc_id": "nhl-uta-logan-cooley"
   },
   {
    "collection": "injuries",
@@ -820,17 +775,38 @@
      "level": "some",
      "why": "19 min a game \u00b7 4 points in 17 games = 2% of UTA's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Nate Schmidt",
-    "reason": "D \u00b7 Upper body",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Injured Reserve",
     "team": "UTA",
     "tip": "Wed 9:30 PM",
     "tip_sort": "1111-2130"
    },
    "doc_id": "nhl-uta-nate-schmidt"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UTA",
+    "home": "VGK",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "17 min a game \u00b7 12 points in 18 games = 7% of UTA's points"
+    },
+    "player": "Dylan Guenther",
+    "reason": "RW",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "UTA",
+    "tip": "Wed 9:30 PM",
+    "tip_sort": "1111-2130"
+   },
+   "doc_id": "nhl-uta-dylan-guenther"
   },
   {
    "collection": "injuries",
@@ -945,28 +921,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "UTA",
-    "home": "VGK",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 0 points in 6 games = 0% of VGK's points"
-    },
-    "player": "Parker Wotherspoon",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "VGK",
-    "tip": "Wed 9:30 PM",
-    "tip_sort": "1111-2130"
-   },
-   "doc_id": "nhl-vgk-parker-wotherspoon"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "WSH",
     "home": "NJ",
     "impact": {
@@ -1009,6 +963,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-11T21:20:07Z",
+ "generated_at": "2026-11-12T02:53:19Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
