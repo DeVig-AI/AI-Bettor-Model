@@ -3,1327 +3,56 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 11 \u00b7 9:45 PM ET report",
-    "date": "2026-11-11",
+    "as_of": "Nov 12 \u00b7 5:45 AM ET report",
+    "date": "2026-11-12",
     "not_submitted": {
+     "ATL@CHI": [
+      "ATL",
+      "CHI"
+     ],
+     "CLE@MIA": [
+      "CLE",
+      "MIA"
+     ],
      "DET@WAS": [
       "WAS"
      ],
+     "GSW@SAS": [
+      "GSW",
+      "SAS"
+     ],
+     "MEM@NOP": [
+      "MEM",
+      "NOP"
+     ],
+     "MIL@ORL": [
+      "MIL",
+      "ORL"
+     ],
+     "NYK@IND": [
+      "NYK",
+      "IND"
+     ],
+     "OKC@LAC": [
+      "OKC",
+      "LAC"
+     ],
+     "POR@SAC": [
+      "POR",
+      "SAC"
+     ],
      "TOR@PHI": [
       "TOR"
+     ],
+     "UTA@HOU": [
+      "UTA",
+      "HOU"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-11_09_45PM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-12_05_45AM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "TOR",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "30 min \u00b7 22.0 pts a game = 19% of BOS's points"
-    },
-    "player": "Paul George",
-    "reason": "Illness",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "BOS",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-bos-paul-george"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "TOR",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "33 min \u00b7 23.5 pts a game = 20% of TOR's points"
-    },
-    "player": "Scottie Barnes",
-    "reason": "Left Groin Strain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "TOR",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-tor-scottie-barnes"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "TOR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Nate Bittle",
-    "reason": "Right Avulsion Fracture",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "TOR",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-tor-nate-bittle"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "TOR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "7 min \u00b7 3.1 pts a game = 3% of TOR's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Trayce Jackson-Davis",
-    "reason": "Illness",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "TOR",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-tor-trayce-jackson-davis"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "TOR",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "32 min \u00b7 27.9 pts a game = 24% of TOR's points (last season)"
-    },
-    "player": "Kawhi Leonard",
-    "reason": "Left Knee Injury Management",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "TOR",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-tor-kawhi-leonard"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CLE",
-    "home": "NYK",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "23 min \u00b7 7.7 pts a game = 7% of CLE's points"
-    },
-    "player": "Sam Merrill",
-    "reason": "Right Elbow Injury Management",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "CLE",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-cle-sam-merrill"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CLE",
-    "home": "NYK",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Nae'Qwan Tomlin",
-    "reason": "Low Back Stress Reaction",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "CLE",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-cle-naeqwan-tomlin"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Reece Beekman",
-    "reason": "Right AC Joint Injury",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "WAS",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-was-reece-beekman"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min \u00b7 7.2 pts a game = 7% of WAS's points"
-    },
-    "player": "Justin Champagnie",
-    "reason": "Right Foot Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "WAS",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-was-justin-champagnie"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Tristan Vukcevic",
-    "reason": "Left Hip Impingement",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "WAS",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-was-tristan-vukcevic"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Jamir Watkins",
-    "reason": "Left ACL Repair/Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "WAS",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-was-jamir-watkins"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Johnny Furphy",
-    "reason": "Right ACL Repair/Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "IND",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-ind-johnny-furphy"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "33 min \u00b7 21.8 pts a game = 20% of IND's points"
-    },
-    "player": "Tyrese Haliburton",
-    "reason": "Left Hamstring Strain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "IND",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-ind-tyrese-haliburton"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "home": "IND",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "21 min \u00b7 7.1 pts a game = 6% of IND's points (last season)"
-    },
-    "player": "Ben Sheppard",
-    "reason": "Left Meniscus Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "IND",
-    "tip": "7:00 PM",
-    "tip_sort": "11111900"
-   },
-   "doc_id": "nba-ind-ben-sheppard"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "23 min \u00b7 12.9 pts a game = 12% of BKN's points"
-    },
-    "player": "Mikel Brown Jr.",
-    "reason": "Illness",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "BKN",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-bkn-mikel-brown"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "22 min \u00b7 12.9 pts a game = 12% of BKN's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Nolan Traore",
-    "reason": "Right Calf Tightness/Soreness",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "BKN",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-bkn-nolan-traore"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min \u00b7 6.0 pts a game = 5% of NOP's points"
-    },
-    "player": "Bennedict Mathurin",
-    "reason": "Right Thumb Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "NOP",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-nop-bennedict-mathurin"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "20 min \u00b7 5.7 pts a game = 5% of NOP's points (last season)"
-    },
-    "player": "Yves Missi",
-    "reason": "Left Knee Contusion/Bone Bruise",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "NOP",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-nop-yves-missi"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "33 min \u00b7 15.6 pts a game = 13% of NOP's points"
-    },
-    "note": "Downgraded from doubtful",
-    "player": "Trey Murphy III",
-    "reason": "Bilateral Patellar Tendinopathy",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "NOP",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-nop-trey-murphy"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BKN",
-    "home": "NOP",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "18 min \u00b7 7.2 pts a game = 6% of NOP's points"
-    },
-    "player": "Trendon Watford",
-    "reason": "Right Ankle Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "NOP",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-nop-trendon-watford"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "home": "MEM",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "15 min \u00b7 7.2 pts a game = 6% of DEN's points (last season)"
-    },
-    "player": "Julian Strawther",
-    "reason": "Left Knee Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "DEN",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-den-julian-strawther"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "home": "MEM",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min \u00b7 6.4 pts a game = 5% of MEM's points"
-    },
-    "player": "Scotty Pippen Jr.",
-    "reason": "Lumbar Disc Herniation",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "MEM",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-mem-scotty-pippen"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "home": "MEM",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "13 min \u00b7 5.0 pts a game = 4% of MEM's points"
-    },
-    "player": "Quinten Post",
-    "reason": "Concussion Protocol",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "MEM",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-mem-quinten-post"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "home": "MEM",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Richie Saunders",
-    "reason": "Right Knee Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "MEM",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-mem-richie-saunders"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAL",
-    "home": "MIL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "26 min \u00b7 8.0 pts a game = 7% of LAL's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Quentin Grimes",
-    "reason": "Right Finger Sprain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "LAL",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-lal-quentin-grimes"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAL",
-    "home": "MIL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "27 min \u00b7 6.7 pts a game = 6% of MIL's points"
-    },
-    "player": "Myles Turner",
-    "reason": "Rest",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "MIL",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-mil-myles-turner"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Tobias Harris",
-    "reason": "Left Calf Strain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "SAS",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-sas-tobias-harris"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Jayden Quaintance",
-    "reason": "Right Knee Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "SAS",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-sas-jayden-quaintance"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "30 min \u00b7 11.9 pts a game = 10% of SAS's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Devin Vassell",
-    "reason": "Left Adductor Tightness",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "SAS",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-sas-devin-vassell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min \u00b7 2.0 pts a game = 2% of CHI's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Tobe Awaka",
-    "reason": "Low Back Tightness",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-chi-tobe-awaka"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "29 min \u00b7 19.2 pts a game = 17% of CHI's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Norman Powell",
-    "reason": "Low Back Spasms",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-chi-norman-powell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SAS",
-    "home": "CHI",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Dailyn Swain",
-    "reason": "Right Disc Irritation",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "8:00 PM",
-    "tip_sort": "11112000"
-   },
-   "doc_id": "nba-chi-dailyn-swain"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "35 min \u00b7 22.2 pts a game = 21% of ORL's points (last season)"
-    },
-    "player": "Paolo Banchero",
-    "reason": "Right High Ankle Sprain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-paolo-banchero"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "20 min \u00b7 7.0 pts a game = 7% of ORL's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Jamal Cain",
-    "reason": "Left Shoulder Contusion",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-jamal-cain"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "30 min \u00b7 15.1 pts a game = 14% of ORL's points"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Tristan da Silva",
-    "reason": "Left Calf Strain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-tristan-da-silva"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Jonathan Isaac",
-    "reason": "Left Knee Injury Management",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-jonathan-isaac"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Izaiyah Nelson",
-    "reason": "Left Ankle Injury Recovery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-izaiyah-nelson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Noah Penda",
-    "reason": "Right Partially Torn Hamstring",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-noah-penda"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "33 min \u00b7 8.0 pts a game = 7% of ORL's points"
-    },
-    "player": "Jalen Suggs",
-    "reason": "Right Knee Contusion/Bone Bruise",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "ORL",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-orl-jalen-suggs"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "26 min \u00b7 16.2 pts a game = 15% of UTA's points"
-    },
-    "player": "Jaren Jackson Jr.",
-    "reason": "Right MCL Tear",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "UTA",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-uta-jaren-jackson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "31 min \u00b7 18.0 pts a game = 17% of UTA's points"
-    },
-    "player": "Lauri Markkanen",
-    "reason": "Right Hand Fracture",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "UTA",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-uta-lauri-markkanen"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ORL",
-    "home": "UTA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Jusuf Nurkic",
-    "reason": "Right 2nd Plantar Plate Tear",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "UTA",
-    "tip": "9:00 PM",
-    "tip_sort": "11112100"
-   },
-   "doc_id": "nba-uta-jusuf-nurkic"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Jimmy Butler III",
-    "reason": "Right ACL Repair/Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "GSW",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-gsw-jimmy-butler"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Moses Moody",
-    "reason": "Left Patellar Tendon Repair/Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "GSW",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-gsw-moses-moody"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "13 min \u00b7 5.0 pts a game = 4% of GSW's points"
-    },
-    "player": "Gary Payton II",
-    "reason": "Left Knee Inflammation",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "GSW",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-gsw-gary-payton"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Kristaps Porzingis",
-    "reason": "Not With Team",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "GSW",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-gsw-kristaps-porzingis"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "16 min \u00b7 10.4 pts a game = 9% of GSW's points"
-    },
-    "player": "Brandon Williams",
-    "reason": "Left Hamstring Strain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "GSW",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-gsw-brandon-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "23 min \u00b7 5.8 pts a game = 5% of HOU's points (last season)"
-    },
-    "player": "Steven Adams",
-    "reason": "Right Soleus Strain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "HOU",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-hou-steven-adams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GSW",
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min \u00b7 3.2 pts a game = 3% of HOU's points"
-    },
-    "player": "Clint Capela",
-    "reason": "Right Ankle Sprain",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "HOU",
-    "tip": "9:30 PM",
-    "tip_sort": "11112130"
-   },
-   "doc_id": "nba-hou-clint-capela"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "30 min \u00b7 12.0 pts a game = 11% of OKC's points"
-    },
-    "player": "Chet Holmgren",
-    "reason": "Right Knee/Injury Recovery",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-chet-holmgren"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "27 min \u00b7 18.5 pts a game = 17% of OKC's points"
-    },
-    "player": "Ajay Mitchell",
-    "reason": "Left Ankle Sprain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-ajay-mitchell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Thomas Sorber",
-    "reason": "Right Knee Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-thomas-sorber"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min \u00b7 6.3 pts a game = 6% of OKC's points"
-    },
-    "player": "Cason Wallace",
-    "reason": "Left Shoulder Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-cason-wallace"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "32 min \u00b7 13.7 pts a game = 12% of OKC's points"
-    },
-    "player": "Jalen Williams",
-    "reason": "Left Ankle Surgery",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-jalen-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "18 min \u00b7 2.9 pts a game = 3% of OKC's points"
-    },
-    "player": "Jaylin Williams",
-    "reason": "Low Back Spasms",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "OKC",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-okc-jaylin-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min \u00b7 2.7 pts a game = 2% of POR's points"
-    },
-    "player": "Vit Krejci",
-    "reason": "Left Ankle Fracture",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "POR",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-por-vit-krejci"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "26 min \u00b7 15.8 pts a game = 13% of POR's points"
-    },
-    "player": "Ja Morant",
-    "reason": "Left Hamstring Strain",
-    "sport": "NBA",
-    "starter": true,
-    "status": "Out",
-    "team": "POR",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-por-ja-morant"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in his team's rotation stats"
-    },
-    "player": "Shaedon Sharpe",
-    "reason": "Right Meniscus Surgery",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "POR",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-por-shaedon-sharpe"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "OKC",
-    "home": "POR",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min \u00b7 6.0 pts a game = 5% of POR's points"
-    },
-    "player": "Chris Youngblood",
-    "reason": "Right Bone Bruise",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Out",
-    "team": "POR",
-    "tip": "10:00 PM",
-    "tip_sort": "11112200"
-   },
-   "doc_id": "nba-por-chris-youngblood"
   },
   {
    "collection": "injuries",
@@ -1342,7 +71,7 @@
     "starter": true,
     "status": "Out",
     "team": "DET",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-det-jalen-duren"
@@ -1364,7 +93,7 @@
     "starter": false,
     "status": "Out",
     "team": "DET",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-det-isaiah-joe"
@@ -1386,7 +115,7 @@
     "starter": false,
     "status": "Out",
     "team": "PHI",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-phi-dominick-barlow"
@@ -1408,7 +137,7 @@
     "starter": false,
     "status": "Out",
     "team": "PHI",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-phi-adem-bona"
@@ -1430,7 +159,7 @@
     "starter": true,
     "status": "Questionable",
     "team": "PHI",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-phi-joel-embiid"
@@ -1452,7 +181,7 @@
     "starter": false,
     "status": "Out",
     "team": "PHI",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-phi-ariel-hukporti"
@@ -1474,7 +203,7 @@
     "starter": true,
     "status": "Questionable",
     "team": "PHI",
-    "tip": "Thu 7:00 PM",
+    "tip": "7:00 PM",
     "tip_sort": "11121900"
    },
    "doc_id": "nba-phi-lebron-james"
@@ -1496,7 +225,7 @@
     "starter": false,
     "status": "Out",
     "team": "DAL",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-dal-tarik-biberovic"
@@ -1518,7 +247,7 @@
     "starter": false,
     "status": "Out",
     "team": "DAL",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-dal-sergio-de-larrea"
@@ -1540,7 +269,7 @@
     "starter": false,
     "status": "Probable",
     "team": "DAL",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-dal-morez-johnson"
@@ -1562,7 +291,7 @@
     "starter": false,
     "status": "Out",
     "team": "DAL",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-dal-dereck-lively"
@@ -1584,7 +313,7 @@
     "starter": false,
     "status": "Out",
     "team": "MIN",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-min-donte-divincenzo"
@@ -1606,7 +335,7 @@
     "starter": true,
     "status": "Out",
     "team": "MIN",
-    "tip": "Thu 8:00 PM",
+    "tip": "8:00 PM",
     "tip_sort": "11122000"
    },
    "doc_id": "nba-min-anthony-edwards"
@@ -1628,7 +357,7 @@
     "starter": true,
     "status": "Probable",
     "team": "CHA",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-cha-moussa-diabate"
@@ -1650,7 +379,7 @@
     "starter": true,
     "status": "Out",
     "team": "CHA",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-cha-kon-knueppel"
@@ -1672,7 +401,7 @@
     "starter": true,
     "status": "Out",
     "team": "CHA",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-cha-brandon-miller"
@@ -1694,7 +423,7 @@
     "starter": true,
     "status": "Out",
     "team": "CHA",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-cha-dennis-schroder"
@@ -1716,7 +445,7 @@
     "starter": false,
     "status": "Probable",
     "team": "CHA",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-cha-grant-williams"
@@ -1738,12 +467,12 @@
     "starter": false,
     "status": "Out",
     "team": "PHX",
-    "tip": "Thu 9:00 PM",
+    "tip": "9:00 PM",
     "tip_sort": "11122100"
    },
    "doc_id": "nba-phx-mark-williams"
   }
  ],
- "generated_at": "2026-11-12T02:53:16Z",
- "source": "NBA official injury report (Injury-Report_2026-11-11_09_45PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-12T10:55:23Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-12_05_45AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
