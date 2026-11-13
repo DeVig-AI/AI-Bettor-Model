@@ -1648,16 +1648,16 @@
   "2026_10_LA_ARI": {
    "away": "LA",
    "home": "ARI",
-   "home_wp": 0.1412,
+   "home_wp": 0.15,
    "injuries": {
-    "d_out": 1.0,
+    "d_out": 0.0,
     "d_q": 0.0,
     "d_qb": 1.0
    },
    "steps": {
     "form": 0.2441,
     "home_field": 0.5484,
-    "who_is_out": 0.1412
+    "who_is_out": 0.15
    },
    "teams": {
     "away": {
@@ -1789,16 +1789,16 @@
   "2026_10_NE_DET": {
    "away": "NE",
    "home": "DET",
-   "home_wp": 0.6647,
+   "home_wp": 0.6909,
    "injuries": {
     "d_out": 1.0,
-    "d_q": 0.0,
+    "d_q": -3.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6808,
     "home_field": 0.5484,
-    "who_is_out": 0.6647
+    "who_is_out": 0.6909
    },
    "teams": {
     "away": {
@@ -2022,7 +2022,7 @@
    }
   }
  },
- "generated_at": "2026-11-13T11:31:01Z",
+ "generated_at": "2026-11-13T20:00:35Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
  "max_gap_vs_upcoming": 0.0,
  "model": "NFL_MODEL_2_0",
