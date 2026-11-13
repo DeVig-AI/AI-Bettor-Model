@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-13T17:52:48+00:00",
+ "updated": "2026-11-13T23:41:40+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -30,7 +30,7 @@
    "away": "GS",
    "home_id": "24",
    "away_id": "9",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "total",
@@ -44,28 +44,6 @@
    "why_opp": []
   },
   {
-   "id": "401909302",
-   "date": "2026-11-13",
-   "start": "2026-11-14T02:30Z",
-   "game": "GS @ SA",
-   "home": "SA",
-   "away": "GS",
-   "home_id": "24",
-   "away_id": "9",
-   "book": "Draft Kings",
-   "result": null,
-   "final": null,
-   "type": "side",
-   "pick": "SA",
-   "line": -11.5,
-   "score": 3.0,
-   "why_for": [
-    "Line tell: the line rates SA 7.3 points better than results so far",
-    "GS: Stephen Curry (28 points a game) is out"
-   ],
-   "why_opp": []
-  },
-  {
    "id": "401909299",
    "date": "2026-11-13",
    "start": "2026-11-14T01:00Z",
@@ -74,12 +52,12 @@
    "away": "ATL",
    "home_id": "4",
    "away_id": "1",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
    "pick": "ATL",
-   "line": -7.5,
+   "line": -6.5,
    "score": 2.0,
    "why_for": [
     "CHI: Caleb Wilson (19 points a game) is out",
@@ -96,19 +74,19 @@
    "away": "NY",
    "home_id": "11",
    "away_id": "18",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
    "pick": "NY",
-   "line": -8.5,
+   "line": -7.5,
    "score": 2.0,
    "why_for": [
-    "Line tell: the line rates NY 6.4 points better than results so far",
+    "Line tell: the line rates NY 5.4 points better than results so far",
     "IND: Tyrese Haliburton (22 points a game) is out"
    ],
    "why_opp": [
-    "IND: Fade the line move: IND went from +2.5 to +8.5"
+    "IND: Fade the line move: IND went from +2.5 to +7.5"
    ]
   },
   {
@@ -935,9 +913,10 @@
    "side": {
     "lean": "SA",
     "score": 3.0,
-    "capped": false,
+    "capped": true,
     "why_for": [
-     "Line tell: the line rates SA 7.3 points better than results so far",
+     "Line tell: the line rates SA 8.3 points better than results so far",
+     "Never lay 12 or more",
      "GS: Stephen Curry (28 points a game) is out"
     ],
     "why_opp": []
@@ -1009,7 +988,7 @@
    },
    "total": {
     "lean": null,
-    "line": 235.5,
+    "line": 236.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1037,10 +1016,10 @@
    },
    "total": {
     "lean": "UNDER",
-    "line": 245.5,
+    "line": 246.5,
     "score": 1.5,
     "why_for": [
-     "Pace: their games average 238 points, the total is 245.5"
+     "Pace: their games average 238 points, the total is 246.5"
     ],
     "why_opp": []
    }
@@ -1056,23 +1035,21 @@
    "away_id": "29",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "MEM",
+    "score": 0.5,
     "capped": false,
     "why_for": [
-     "Fade the line move: MEM went from -4.5 to -2.5"
+     "NO: Trey Murphy III (16 points a game) is out"
     ],
     "why_opp": [
      "NO: Bounce-back spot after losing by 34"
     ]
    },
    "total": {
-    "lean": "UNDER",
-    "line": 237.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 234.5 to 237.5"
-    ],
+    "lean": null,
+    "line": 235.5,
+    "score": 0.0,
+    "why_for": [],
     "why_opp": []
    }
   },
@@ -1091,11 +1068,11 @@
     "score": 2.0,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates NY 6.4 points better than results so far",
+     "Line tell: the line rates NY 5.4 points better than results so far",
      "IND: Tyrese Haliburton (22 points a game) is out"
     ],
     "why_opp": [
-     "IND: Fade the line move: IND went from +2.5 to +8.5"
+     "IND: Fade the line move: IND went from +2.5 to +7.5"
     ]
    },
    "total": {
@@ -1130,7 +1107,7 @@
    },
    "total": {
     "lean": null,
-    "line": 223.5,
+    "line": 224.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
