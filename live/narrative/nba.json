@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-13T09:43:24+00:00",
+ "updated": "2026-11-13T17:52:48+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -30,16 +30,38 @@
    "away": "GS",
    "home_id": "24",
    "away_id": "9",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
    "pick": "OVER",
-   "line": 220.5,
+   "line": 217.5,
    "score": 2.5,
    "why_for": [
-    "Pace: their games average 229 points, the total is 220.5",
-    "Buy low on the dropping total: 234.5 to 220.5"
+    "Pace: their games average 229 points, the total is 217.5",
+    "Buy low on the dropping total: 234.5 to 217.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401909302",
+   "date": "2026-11-13",
+   "start": "2026-11-14T02:30Z",
+   "game": "GS @ SA",
+   "home": "SA",
+   "away": "GS",
+   "home_id": "24",
+   "away_id": "9",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "SA",
+   "line": -11.5,
+   "score": 3.0,
+   "why_for": [
+    "Line tell: the line rates SA 7.3 points better than results so far",
+    "GS: Stephen Curry (28 points a game) is out"
    ],
    "why_opp": []
   },
@@ -52,7 +74,7 @@
    "away": "ATL",
    "home_id": "4",
    "away_id": "1",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
@@ -74,19 +96,19 @@
    "away": "NY",
    "home_id": "11",
    "away_id": "18",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
    "pick": "NY",
-   "line": -7.5,
+   "line": -8.5,
    "score": 2.0,
    "why_for": [
-    "Line tell: the line rates NY 5.4 points better than results so far",
+    "Line tell: the line rates NY 6.4 points better than results so far",
     "IND: Tyrese Haliburton (22 points a game) is out"
    ],
    "why_opp": [
-    "IND: Fade the line move: IND went from +2.5 to +7.5"
+    "IND: Fade the line move: IND went from +2.5 to +8.5"
    ]
   },
   {
@@ -913,21 +935,20 @@
    "side": {
     "lean": "SA",
     "score": 3.0,
-    "capped": true,
+    "capped": false,
     "why_for": [
-     "Line tell: the line rates SA 8.3 points better than results so far",
-     "Never lay 12 or more",
+     "Line tell: the line rates SA 7.3 points better than results so far",
      "GS: Stephen Curry (28 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 220.5,
+    "line": 217.5,
     "score": 2.5,
     "why_for": [
-     "Pace: their games average 229 points, the total is 220.5",
-     "Buy low on the dropping total: 234.5 to 220.5"
+     "Pace: their games average 229 points, the total is 217.5",
+     "Buy low on the dropping total: 234.5 to 217.5"
     ],
     "why_opp": []
    }
@@ -944,9 +965,10 @@
    "note": null,
    "side": {
     "lean": "HOU",
-    "score": 2.5,
+    "score": 3.5,
     "capped": true,
     "why_for": [
+     "Fade the line move: HOU went from -17.5 to -15.5",
      "Never lay 12 or more",
      "UTAH: Lauri Markkanen (18 points a game) is out",
      "UTAH: Jaren Jackson Jr. (16 points a game) is out",
@@ -957,10 +979,12 @@
     ]
    },
    "total": {
-    "lean": null,
-    "line": 219.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 220.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 217.5 to 220.5"
+    ],
     "why_opp": []
    }
   },
@@ -985,7 +1009,7 @@
    },
    "total": {
     "lean": null,
-    "line": 236.5,
+    "line": 235.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1032,19 +1056,23 @@
    "away_id": "29",
    "note": null,
    "side": {
-    "lean": "NO",
-    "score": 1.0,
+    "lean": null,
+    "score": 0.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 34"
+     "Fade the line move: MEM went from -4.5 to -2.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "NO: Bounce-back spot after losing by 34"
+    ]
    },
    "total": {
-    "lean": null,
-    "line": 235.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 237.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 234.5 to 237.5"
+    ],
     "why_opp": []
    }
   },
@@ -1063,19 +1091,19 @@
     "score": 2.0,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates NY 5.4 points better than results so far",
+     "Line tell: the line rates NY 6.4 points better than results so far",
      "IND: Tyrese Haliburton (22 points a game) is out"
     ],
     "why_opp": [
-     "IND: Fade the line move: IND went from +2.5 to +7.5"
+     "IND: Fade the line move: IND went from +2.5 to +8.5"
     ]
    },
    "total": {
     "lean": "OVER",
-    "line": 220.5,
+    "line": 219.5,
     "score": 1.0,
     "why_for": [
-     "Buy low on the dropping total: 233.5 to 220.5"
+     "Buy low on the dropping total: 233.5 to 219.5"
     ],
     "why_opp": []
    }
@@ -1102,7 +1130,7 @@
    },
    "total": {
     "lean": null,
-    "line": 224.5,
+    "line": 223.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []

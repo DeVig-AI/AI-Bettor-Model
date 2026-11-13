@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-13T09:43:27+00:00",
+ "updated": "2026-11-13T17:52:50+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
@@ -17,7 +17,7 @@
    "away": "LAC",
    "home_id": "33",
    "away_id": "24",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -39,7 +39,7 @@
    "away": "SF",
    "home_id": "6",
    "away_id": "25",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -61,7 +61,7 @@
    "away": "SEA",
    "home_id": "13",
    "away_id": "26",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -83,7 +83,7 @@
    "away": "LAR",
    "home_id": "22",
    "away_id": "14",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -105,7 +105,7 @@
    "away": "MIA",
    "home_id": "11",
    "away_id": "15",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -127,7 +127,7 @@
    "away": "BUF",
    "home_id": "20",
    "away_id": "2",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
@@ -137,6 +137,28 @@
    "why_for": [
     "Bounce-back spot after losing by 23",
     "Fade the line move: NYJ went from +7 to +8.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401873053",
+   "date": "2026-11-15",
+   "start": "2026-11-15T14:30Z",
+   "game": "NE @ DET",
+   "home": "DET",
+   "away": "NE",
+   "home_id": "8",
+   "away_id": "17",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "NE",
+   "line": 3.0,
+   "score": 2.0,
+   "why_for": [
+    "Bounce-back spot after losing by 18",
+    "Fade the line move: NE went from +1.5 to +3"
    ],
    "why_opp": []
   },
@@ -521,10 +543,12 @@
     ]
    },
    "total": {
-    "lean": null,
-    "line": 46.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 47.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 45.5 to 47.5"
+    ],
     "why_opp": []
    }
   },
@@ -580,10 +604,10 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 41.5,
+    "line": 42.5,
     "score": 1.0,
     "why_for": [
-     "Buy low on the dropping total: 45.5 to 41.5"
+     "Buy low on the dropping total: 45.5 to 42.5"
     ],
     "why_opp": []
    }
@@ -717,20 +741,19 @@
    "note": null,
    "side": {
     "lean": "NE",
-    "score": 1.0,
+    "score": 2.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 18"
+     "Bounce-back spot after losing by 18",
+     "Fade the line move: NE went from +1.5 to +3"
     ],
     "why_opp": []
    },
    "total": {
-    "lean": "UNDER",
-    "line": 50.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 48.5 to 50.5"
-    ],
+    "lean": null,
+    "line": 49.5,
+    "score": 0.0,
+    "why_for": [],
     "why_opp": []
    }
   },
