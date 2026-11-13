@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Fri Nov 13 \u00b7 2:50 AM ET",
+    "as_of": "Fri Nov 13 \u00b7 11:11 AM ET",
     "date": "2026-11-13",
     "sport": "NHL"
    },
@@ -144,6 +144,51 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "PHI",
+    "home": "CBJ",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "16 min a game \u00b7 6 points in 16 games = 5% of CBJ's points"
+    },
+    "player": "Sean Monahan",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "CBJ",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1114-1900"
+   },
+   "doc_id": "nhl-cbj-sean-monahan"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BUF",
+    "home": "DAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "25 min a game \u00b7 11 points in 15 games = 8% of DAL's points"
+    },
+    "note": "Upgraded from out",
+    "player": "Miro Heiskanen",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "DAL",
+    "tip": "Sat 8:00 PM",
+    "tip_sort": "1114-2000"
+   },
+   "doc_id": "nhl-dal-miro-heiskanen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "BUF",
     "home": "DAL",
     "impact": {
@@ -162,28 +207,6 @@
     "tip_sort": "1114-2000"
    },
    "doc_id": "nhl-dal-lian-bichsel"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BUF",
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "25 min a game \u00b7 11 points in 15 games = 8% of DAL's points"
-    },
-    "player": "Miro Heiskanen",
-    "reason": "D \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Out",
-    "team": "DAL",
-    "tip": "Sat 8:00 PM",
-    "tip_sort": "1114-2000"
-   },
-   "doc_id": "nhl-dal-miro-heiskanen"
   },
   {
    "collection": "injuries",
@@ -240,12 +263,12 @@
      "level": "minor",
      "why": "No games for him in this season's stats"
     },
-    "note": "Downgraded from day-to-day",
+    "note": "Upgraded from out",
     "player": "Erik Gustafsson",
     "reason": "D",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "PHI",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1114-1900"
@@ -369,6 +392,29 @@
     "away": "NJ",
     "home": "WSH",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "21 min a game \u00b7 8 points in 19 games = 5% of NJ's points"
+    },
+    "note": "Upgraded from out",
+    "player": "Brett Pesce",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "NJ",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1114-1900"
+   },
+   "doc_id": "nhl-nj-brett-pesce"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NJ",
+    "home": "WSH",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -388,28 +434,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "NJ",
-    "home": "WSH",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "21 min a game \u00b7 8 points in 19 games = 5% of NJ's points"
-    },
-    "player": "Brett Pesce",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Out",
-    "team": "NJ",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1114-1900"
-   },
-   "doc_id": "nhl-nj-brett-pesce"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "NYI",
     "home": "ANA",
     "impact": {
@@ -418,11 +442,12 @@
      "level": "some",
      "why": "16 min a game \u00b7 8 points in 17 games = 6% of NYI's points"
     },
+    "note": "Upgraded from out",
     "player": "Jean-Gabriel Pageau",
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "NYI",
     "tip": "Sat 10:00 PM",
     "tip_sort": "1114-2200"
@@ -592,18 +617,19 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "17 min a game \u00b7 14 points in 18 games = 7% of TB's points"
+     "why": "18 min a game \u00b7 7 points in 17 games = 4% of TB's points"
     },
-    "player": "Anthony Cirelli",
-    "reason": "C \u00b7 Undisclosed",
+    "note": "Upgraded from out",
+    "player": "Erik Cernak",
+    "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TB",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1114-1900"
    },
-   "doc_id": "nhl-tb-anthony-cirelli"
+   "doc_id": "nhl-tb-erik-cernak"
   },
   {
    "collection": "injuries",
@@ -614,18 +640,19 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "18 min a game \u00b7 7 points in 17 games = 4% of TB's points"
+     "why": "17 min a game \u00b7 14 points in 18 games = 7% of TB's points"
     },
-    "player": "Erik Cernak",
-    "reason": "D",
+    "note": "Upgraded from out",
+    "player": "Anthony Cirelli",
+    "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TB",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1114-1900"
    },
-   "doc_id": "nhl-tb-erik-cernak"
+   "doc_id": "nhl-tb-anthony-cirelli"
   },
   {
    "collection": "injuries",
@@ -660,11 +687,12 @@
      "level": "some",
      "why": "19 min a game \u00b7 12 points in 18 games = 7% of TOR's points"
     },
+    "note": "Upgraded from out",
     "player": "Morgan Rielly",
     "reason": "D",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "TOR",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1114-1900"
@@ -726,16 +754,40 @@
      "level": "some",
      "why": "17 min a game \u00b7 20 points in 19 games = 11% of UTA's points"
     },
+    "note": "Upgraded from out",
     "player": "Nick Schmaltz",
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "UTA",
     "tip": "Sat 9:00 PM",
     "tip_sort": "1114-2100"
    },
    "doc_id": "nhl-uta-nick-schmaltz"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SJ",
+    "home": "UTA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "18 min a game \u00b7 21 points in 18 games = 11% of UTA's points"
+    },
+    "note": "Upgraded from out",
+    "player": "Logan Cooley",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "UTA",
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "1114-2100"
+   },
+   "doc_id": "nhl-uta-logan-cooley"
   },
   {
    "collection": "injuries",
@@ -758,28 +810,6 @@
     "tip_sort": "1114-2100"
    },
    "doc_id": "nhl-uta-nate-schmidt"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SJ",
-    "home": "UTA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 21 points in 18 games = 11% of UTA's points"
-    },
-    "player": "Logan Cooley",
-    "reason": "C \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Out",
-    "team": "UTA",
-    "tip": "Sat 9:00 PM",
-    "tip_sort": "1114-2100"
-   },
-   "doc_id": "nhl-uta-logan-cooley"
   },
   {
    "collection": "injuries",
@@ -834,28 +864,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 3 points in 16 games = 2% of VAN's points"
-    },
-    "player": "Tom Willander",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "VAN",
-    "tip": "Fri 9:00 PM",
-    "tip_sort": "1113-2100"
-   },
-   "doc_id": "nhl-van-tom-willander"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYR",
-    "home": "VAN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "20 min a game \u00b7 2 points in 7 games = 1% of VAN's points"
     },
     "player": "Filip Chytil",
@@ -868,6 +876,28 @@
     "tip_sort": "1113-2100"
    },
    "doc_id": "nhl-van-filip-chytil"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYR",
+    "home": "VAN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "20 min a game \u00b7 3 points in 16 games = 2% of VAN's points"
+    },
+    "player": "Tom Willander",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "VAN",
+    "tip": "Fri 9:00 PM",
+    "tip_sort": "1113-2100"
+   },
+   "doc_id": "nhl-van-tom-willander"
   },
   {
    "collection": "injuries",
@@ -980,6 +1010,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-13T07:50:15Z",
+ "generated_at": "2026-11-13T16:11:34Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }

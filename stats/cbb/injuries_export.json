@@ -3,11 +3,28 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Fri Nov 13 \u00b7 2:50 AM ET",
+    "as_of": "Fri Nov 13 \u00b7 11:11 AM ET",
     "date": "2026-11-13",
     "sport": "CBB"
    },
    "doc_id": "cbb-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "HALL",
+    "home": "ALA",
+    "impact": null,
+    "player": "Jamarion Davis Fleming",
+    "reason": "F \u00b7 Leg \u00b7 reported Nov 12",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "ALA",
+    "tip": "Fri 9:00 PM",
+    "tip_sort": "1113-2100"
+   },
+   "doc_id": "cbb-ala-jamarion-davis-fleming"
   },
   {
    "collection": "injuries",
@@ -306,11 +323,12 @@
     "away": "GTWN",
     "home": "CLEM",
     "impact": null,
+    "note": "Downgraded from questionable",
     "player": "Vyctorius Miller",
     "reason": "G \u00b7 Hand \u00b7 reported Nov 5",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "GTWN",
     "tip": "Fri 6:00 PM",
     "tip_sort": "1113-1800"
@@ -1254,6 +1272,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-13T07:50:16Z",
+ "generated_at": "2026-11-13T16:11:36Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }
