@@ -29,6 +29,16 @@
 "tip": "Sun 4:05 PM",
 "tip_sort": "1115-1605"
 },
+"nfl-ari-darius-robinson": {
+"away": "LA",
+"home": "ARI",
+"player": "Darius Robinson",
+"reason": "DE \u00b7 Wrist",
+"status": "Questionable",
+"team": "ARI",
+"tip": "Sun 4:05 PM",
+"tip_sort": "1115-1605"
+},
 "nfl-ari-gardner-minshew": {
 "away": "LA",
 "home": "ARI",
@@ -159,12 +169,12 @@
 "tip": "Sun 1:00 PM",
 "tip_sort": "1115-1300"
 },
-"nfl-bal-gerad-lichtenhan": {
+"nfl-bal-adisa-isaac": {
 "away": "LAC",
 "home": "BAL",
-"player": "Gerad Lichtenhan",
-"reason": "OT \u00b7 Undisclosed",
-"status": "Out",
+"player": "Adisa Isaac",
+"reason": "LB \u00b7 Hamstring",
+"status": "Questionable",
 "team": "BAL",
 "tip": "Mon 8:15 PM",
 "tip_sort": "1116-2015"
@@ -325,16 +335,6 @@
 "player": "Andrei Iosivas",
 "reason": "WR \u00b7 Thumb",
 "status": "Injured Reserve",
-"team": "CIN",
-"tip": "Sun 8:20 PM",
-"tip_sort": "1115-2020"
-},
-"nfl-cin-dj-turner": {
-"away": "PIT",
-"home": "CIN",
-"player": "DJ Turner II",
-"reason": "CB \u00b7 Ankle",
-"status": "Questionable",
 "team": "CIN",
 "tip": "Sun 8:20 PM",
 "tip_sort": "1115-2020"
@@ -1114,7 +1114,7 @@
 "home": "ARI",
 "player": "Puka Nacua",
 "reason": "WR \u00b7 Knee - MCL",
-"status": "Out",
+"status": "Injured Reserve",
 "team": "LA",
 "tip": "Sun 4:05 PM",
 "tip_sort": "1115-1605"
@@ -1134,6 +1134,16 @@
 "home": "ARI",
 "player": "Trent McDuffie",
 "reason": "CB \u00b7 Back",
+"status": "Questionable",
+"team": "LA",
+"tip": "Sun 4:05 PM",
+"tip_sort": "1115-1605"
+},
+"nfl-la-tyler-higbee": {
+"away": "LA",
+"home": "ARI",
+"player": "Tyler Higbee",
+"reason": "TE \u00b7 Illness",
 "status": "Questionable",
 "team": "LA",
 "tip": "Sun 4:05 PM",
@@ -1194,16 +1204,6 @@
 "home": "BAL",
 "player": "Isas Waxter",
 "reason": "CB \u00b7 Ankle",
-"status": "Questionable",
-"team": "LAC",
-"tip": "Mon 8:15 PM",
-"tip_sort": "1116-2015"
-},
-"nfl-lac-justin-eboigbe": {
-"away": "LAC",
-"home": "BAL",
-"player": "Justin Eboigbe",
-"reason": "DT \u00b7 Ankle",
 "status": "Questionable",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
@@ -1659,76 +1659,6 @@
 "tip": "Sun 1:00 PM",
 "tip_sort": "1115-1300"
 },
-"nfl-nyg-cj-okoye": {
-"away": "WAS",
-"home": "NYG",
-"player": "CJ Okoye",
-"reason": "DT \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-jc-davis": {
-"away": "WAS",
-"home": "NYG",
-"player": "J.C. Davis",
-"reason": "OT \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-josh-sills": {
-"away": "WAS",
-"home": "NYG",
-"player": "Josh Sills",
-"reason": "G \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-malik-harrison": {
-"away": "WAS",
-"home": "NYG",
-"player": "Malik Harrison",
-"reason": "LB \u00b7 Groin",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-nikko-reed": {
-"away": "WAS",
-"home": "NYG",
-"player": "Nikko Reed",
-"reason": "CB \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-paulson-adebo": {
-"away": "WAS",
-"home": "NYG",
-"player": "Paulson Adebo",
-"reason": "CB \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-nyg-thomas-fidone": {
-"away": "WAS",
-"home": "NYG",
-"player": "Thomas Fidone II",
-"reason": "TE \u00b7 Coach's Decision",
-"status": "Out",
-"team": "NYG",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
 "nfl-nyj-garrett-wilson": {
 "away": "BUF",
 "home": "NYJ",
@@ -2068,75 +1998,5 @@
 "team": "TEN",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1115-1300"
-},
-"nfl-was-athan-kaliakmanis": {
-"away": "WAS",
-"home": "NYG",
-"player": "Athan Kaliakmanis",
-"reason": "QB \u00b7 Coach's Decision",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-colson-yankoff": {
-"away": "WAS",
-"home": "NYG",
-"player": "Colson Yankoff",
-"reason": "TE \u00b7 Knee",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-daron-payne": {
-"away": "WAS",
-"home": "NYG",
-"player": "Daron Payne",
-"reason": "DT \u00b7 Foot",
-"status": "Injured Reserve",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-isaac-yiadom": {
-"away": "WAS",
-"home": "NYG",
-"player": "Isaac Yiadom",
-"reason": "CB \u00b7 Coach's Decision",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-lucas-patrick": {
-"away": "WAS",
-"home": "NYG",
-"player": "Lucas Patrick",
-"reason": "G \u00b7 Concussion",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-ricky-barber": {
-"away": "WAS",
-"home": "NYG",
-"player": "Ricky Barber",
-"reason": "DT \u00b7 Coach's Decision",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
-},
-"nfl-was-tanoa-togiai": {
-"away": "WAS",
-"home": "NYG",
-"player": "Tanoa Togiai",
-"reason": "G \u00b7 Coach's Decision",
-"status": "Out",
-"team": "WAS",
-"tip": "Thu 8:15 PM",
-"tip_sort": "1112-2015"
 }
 }
