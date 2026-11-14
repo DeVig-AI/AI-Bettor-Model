@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Fri Nov 13 \u00b7 10:06 PM ET",
-    "date": "2026-11-13",
+    "as_of": "Sat Nov 14 \u00b7 5:14 AM ET",
+    "date": "2026-11-14",
     "sport": "EPL"
    },
    "doc_id": "epl-meta"
@@ -1379,6 +1379,28 @@
     "away": "MAN",
     "home": "LIV",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 2 of MAN's 10 league matches \u00b7 a goal or assist on 3 of their 14 goals (21%)"
+    },
+    "player": "Patrick Dorgu",
+    "reason": "Hamstring injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "MAN",
+    "tip": "Sun 11:30 AM",
+    "tip_sort": "1122-1130"
+   },
+   "doc_id": "epl-man-patrick-dorgu"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MAN",
+    "home": "LIV",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -1814,6 +1836,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-14T03:06:23Z",
+ "generated_at": "2026-11-14T10:14:06Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
