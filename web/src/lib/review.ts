@@ -2,7 +2,8 @@ import { useQueries } from '@tanstack/react-query'
 import { type GameRow, SCORE_EVERY, useGames } from './devig'
 import { normName } from './headshots'
 import { hexColor } from '@/components/leg-bar'
-import type { KLeg, KRead } from './kalshi-link'
+import { type KLeg, type KRead, readLink } from './kalshi-link'
+import type { TrackedLeg } from './track'
 import { useProps } from './props'
 import { type Raw, boxPlayers, first, num, sideMap } from './wrap'
 
@@ -98,6 +99,51 @@ export function parseLeg(leg: KLeg): LegInfo {
   return out
 }
 
+// ---------- a leg built on DeVig's own slip, read the same way as a Kalshi leg ----------
+// DeVig saves a prop's stat in words ("points", "rush_rec_yards"); Kalshi's ticker says it outright when the leg has one
+const STAT_WORDS: Record<string, string> = { receptions: 'catches', rush_rec_yards: 'rushing + receiving yards', shots: 'shots on goal', three_pointers: 'threes' }
+function statByName(sport: string | null, name: string | undefined): Stat | null {
+  const fam = STATS[FAMILY[sport ?? ''] ?? '']
+  if (!fam || !name) return null
+  const want = STAT_WORDS[name] ?? name.replace(/_/g, ' ').toLowerCase()
+  return Object.values(fam).find((s) => s.label === want) ?? null
+}
+// result: how the leg went for you (DeVig's grading); chance: Kalshi's price now for your side, when the leg has a market
+export function trackedInfo(l: TrackedLeg, n: number, result: 'won' | 'lost' | null, chance: number | null): LegInfo {
+  const prop = l.mk === 'prop'
+  const leg: KLeg = {
+    ticker: l.ticker ?? null, event: null, title: prop && l.player ? `${l.player}: ${l.desc}` : l.desc, pick: l.desc,
+    side: prop && l.side === 'UNDER' ? 'no' : 'yes', status: null, result, bid: null, ask: null, last: null, chance, closes: null,
+    strike: prop ? (l.line ?? null) : null,
+  }
+  const k = l.ticker ? parseLeg(leg) : null
+  const sport = l.sport ?? k?.sport ?? null
+  const team = l.side === 'home' ? l.home : l.side === 'away' ? l.away : undefined
+  return {
+    key: `${n}|${l.ticker ?? l.desc}`, leg, label: l.desc, sport,
+    kind: prop ? 'prop' : l.mk === 'ml' && team ? 'game' : 'other',
+    match: k?.match ?? null, date: k?.date ?? null, teams: k?.teams ?? (l.away && l.home ? l.away + l.home : null),
+    code: l.mk === 'ml' ? (team ?? null) : null,
+    stat: prop ? (k?.stat ?? statByName(sport, l.stat)) : null, player: prop ? (l.player ?? null) : null, strike: prop ? (l.line ?? null) : null,
+  }
+}
+// Kalshi's market for each ticker, re-read every 30 seconds until it settles
+export function useLegMarkets(tickers: (string | null | undefined)[]): Record<string, KLeg | null> {
+  const list = [...new Set(tickers.filter((t): t is string => !!t))]
+  const qs = useQueries({
+    queries: list.map((t) => ({
+      queryKey: ['kalshi-leg', t],
+      queryFn: async () => { const d = await readLink(t); return d.kind === 'market' ? d.market : null },
+      staleTime: 15e3,
+      refetchInterval: (q: { state: { data?: KLeg | null } }) => (q.state.data?.result ? false : 30e3),
+      retry: 1,
+    })),
+  })
+  const out: Record<string, KLeg | null> = {}
+  list.forEach((t, n) => (out[t] = qs[n]?.data ?? null))
+  return out
+}
+
 // ---------- the leg's game: on DeVig's board (with its pick), else ESPN's scoreboard for that day ----------
 export type LegGame = {
   sport: string; eid: string; away: string; home: string; kickoff: string
@@ -150,8 +196,7 @@ export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame |
   for (const i of infos) {
     const r = onBoard(i)
     if (r) {
-      out[i.key] = { sport: r.sport, eid: r.id.split('|')[1], away: r.away, home: r.home, kickoff: r.kickoff, state: r.state, detail: r.detail, awayScore: r.awayScore, homeScore: r.homeScore, row: r,
-        colors: pair(r.colors?.away, r.colors?.home), ids: r.ids ?? null }
+      out[i.key] = legGameOf(r)
       continue
     }
     const g = i.teams && i.sport && i.date ? findGame(i.teams, day[`${i.sport}|${i.date}`] ?? []) : null
@@ -161,6 +206,11 @@ export function useLegGames(infos: LegInfo[]): { games: Record<string, LegGame |
       : null
   }
   return { games: out, loading: isLoading || boards.some((b) => b.isLoading) }
+}
+// a game on DeVig's board, in the shape a leg's game takes
+export function legGameOf(r: GameRow): LegGame {
+  return { sport: r.sport, eid: r.id.split('|')[1], away: r.away, home: r.home, kickoff: r.kickoff, state: r.state, detail: r.detail, awayScore: r.awayScore, homeScore: r.homeScore, row: r,
+    colors: pair(r.colors?.away, r.colors?.home), ids: r.ids ?? null }
 }
 const pair = (a?: string | null, h?: string | null) => { const x = hexColor(a), y = hexColor(h); return x && y ? { away: x, home: y } : null }
 const dayKey = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date(iso)).replace(/-/g, '')
