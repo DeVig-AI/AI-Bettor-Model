@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/switch'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
-// Profile → TV: the score dock on the living-room TV. Paramount+ ×3 on the remote opens and closes it; it shows the
+// Profile → TV: the score dock on the living-room TV. It stays a small pill; Paramount+ ×3 opens the full view and hold hides it; it shows the
 // games in your bets with each leg, your ★ teams' games, and a small note when a prop hits. Set up with a TV code
 // typed once into the launcher's settings.
 
@@ -64,9 +64,9 @@ export function TvDock({ joined }: { joined: boolean }) {
       <Shell>
         <div className='flex flex-col gap-3 rounded-[18px] bg-card p-4'>
           <p className='text-sm leading-relaxed text-muted-foreground'>
-            A small dock over whatever you&apos;re watching: the games in your bets with each leg, your ★ teams&apos;
-            scores, and a quick note when a prop hits. Press <b className='text-foreground'>Paramount+</b> three times on
-            the remote to open or close it.
+            A small pill over whatever you&apos;re watching with the score and how your bet is doing, plus a quick note
+            when a prop hits. Press <b className='text-foreground'>Paramount+</b> three times to open the full view (and
+            again to shrink it). Hold it to hide the dock.
           </p>
           <button type='button' onClick={() => op.mutate({ op: 'code' })} disabled={busy}
             className='inline-flex h-11 items-center justify-center gap-2 self-start rounded-full bg-devig px-5 font-bold text-devig-ink disabled:opacity-50'>
@@ -150,11 +150,11 @@ export function TvDock({ joined }: { joined: boolean }) {
         <Row title='Close finishes' sub='A note when a game in your bets is within one score late.'>
           <Switch checked={s.close} onCheckedChange={(v) => set({ close: v })} aria-label='Close finish notes' className='mt-1' />
         </Row>
-        <Row title='Bet settled' sub='A card when a whole bet hits or misses, with what it pays.'>
-          <Switch checked={s.settled} onCheckedChange={(v) => set({ settled: v })} aria-label='Bet settled card' className='mt-1' />
+        <Row title='Bet settled' sub='A short note when a whole bet hits or misses, with what it pays.'>
+          <Switch checked={s.settled} onCheckedChange={(v) => set({ settled: v })} aria-label='Bet settled notes' className='mt-1' />
         </Row>
-        <Row title='Open on its own' sub='The dock comes up as a small pill when a game in your bets starts.'>
-          <Switch checked={s.auto} onCheckedChange={(v) => set({ auto: v })} aria-label='Open the dock on its own' className='mt-1' />
+        <Row title='Show on its own' sub='The small pill shows up when a game in your bets starts. It only opens when you ask.'>
+          <Switch checked={s.auto} onCheckedChange={(v) => set({ auto: v })} aria-label='Show the pill on its own' className='mt-1' />
         </Row>
         <Row title='Hide when nothing is live' sub="With no game going in your bets, the pill tucks away until there's something to show.">
           <Switch checked={s.quiet} onCheckedChange={(v) => set({ quiet: v })} aria-label='Hide when nothing is live' className='mt-1' />
