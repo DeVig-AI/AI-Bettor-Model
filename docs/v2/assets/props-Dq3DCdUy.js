@@ -1,0 +1,1 @@
+import{n as e}from"./props-Li66VbF7.js";var t=e;export{t as component};

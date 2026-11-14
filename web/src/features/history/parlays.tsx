@@ -8,6 +8,7 @@ import { readLink } from '@/lib/kalshi-link'
 import { type TrackedLeg, type TrackedParlay, removeParlay } from '@/lib/track'
 import { cn } from '@/lib/utils'
 import { record } from '@/lib/friends'
+import { BetDrawer } from '../check-bet/bet-drawer'
 
 // What a card can show at its foot: your own parlays have Remove; a friend's have none, or a Tail button
 export type Foot = { own: boolean; action?: (p: Graded) => ReactNode }
@@ -181,6 +182,55 @@ function LegList({ p }: { p: Graded }) {
   )
 }
 
+// your own live / coming-up parlay, closed: how it's going in one glance. Tap for the drawer with every leg
+function ParlayRow({ p, foot }: { p: Graded; foot: Foot }) {
+  const [open, setOpen] = useState(false)
+  const n = p.legs.length
+  const won = p.states.filter((s) => s.st === 'won').length
+  const playing = p.states.filter((s) => s.st === 'live').length
+  const stake = Number(p.stake) || 0
+  const live = p.status === 'live'
+  const line = live ? `${won} of ${n} hit${playing ? ` · ${playing} playing` : ''}` : `${n} ${n === 1 ? 'leg' : 'legs'} · saved ${p.at ? dayFmt.format(new Date(p.at)) : ''}`
+  const bar = (
+    <span className='grid gap-1' style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }} aria-hidden='true'>
+      {p.states.map((s, i) => (
+        <span key={i} className={cn('h-1.5 rounded-full', s.st === 'won' ? 'bg-good' : s.st === 'lost' ? 'bg-bad' : s.st === 'live' ? 'bg-devig/60' : 'bg-muted')} />
+      ))}
+    </span>
+  )
+  return (
+    <>
+      <button type='button' onClick={() => setOpen(true)} aria-haspopup='dialog'
+        className={cn('flex w-full flex-col gap-2.5 rounded-[18px] bg-card px-4 py-3.5 text-start transition-colors duration-150 hover:bg-muted/40', live && 'border border-devig/30')}>
+        <span className='flex w-full items-center gap-3'>
+          <span className='flex min-w-0 flex-1 flex-col'>
+            <span className={cn('flex items-center gap-1.5 text-xs font-bold', live ? 'text-[#b5ffd0]' : 'text-muted-foreground')}>
+              {live && <span aria-hidden='true' className='size-1.5 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />}
+              {line}
+            </span>
+            <span className='font-display text-lg leading-tight font-extrabold tabular-nums'>{money(stake)} to win {money(p.payout - stake)}</span>
+          </span>
+          <span className='font-condensed text-base font-bold text-devig'>{fmtAmerican(p.odds)}</span>
+          <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+        </span>
+        {bar}
+      </button>
+      {open && (
+        <BetDrawer open onClose={() => setOpen(false)} only={['legs']} title={`${money(stake)} to win ${money(p.payout - stake)}`}
+          sub={`${n}-leg parlay · ${fmtAmerican(p.odds)}`}
+          head={<div className='flex flex-col gap-2'><span className={cn('text-xs font-bold', live ? 'text-[#b5ffd0]' : 'text-muted-foreground')}>{line}</span>{bar}</div>}>
+          <div className='overflow-hidden rounded-[18px] bg-card [&>ul]:border-t-0'>
+            <LegList p={p} />
+            {(foot.own || foot.action) && (
+              <div className='flex justify-end gap-1 border-t px-2 py-1'>{foot.action?.(p)}{foot.own && <RemoveButton id={p.id} />}</div>
+            )}
+          </div>
+        </BetDrawer>
+      )}
+    </>
+  )
+}
+
 export function OpenCard({ p, foot, by }: { p: Graded; foot: Foot; by?: string }) {
   const n = p.legs.length
   const won = p.states.filter((s) => s.st === 'won').length
@@ -336,11 +386,11 @@ export function YourParlays({ list, owner, action, part }: { list: TrackedParlay
   return (
     <div className='flex flex-col gap-4'>
       {settled.length > 0 && <RecordTiles settled={settled} />}
-      {live.length > 0 && <Group title='Live now'>{live.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
-      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
+      {live.length > 0 && <Group title='Live now'>{live.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
+      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
       {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} foot={foot} />)}</Group>}
       <p className='px-1 text-xs text-muted-foreground'>
-        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'}{part === 'open' ? '' : ' Tap a settled parlay for every leg.'}
+        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'}{part === 'open' ? ' Tap a parlay for every leg.' : ' Tap a settled parlay for every leg.'}
       </p>
     </div>
   )

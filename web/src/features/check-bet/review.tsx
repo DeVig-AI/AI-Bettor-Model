@@ -11,6 +11,7 @@ import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
 import { PulseCard } from './pulse'
+import { useShow } from './bet-drawer'
 import { ShareCard } from './share-card'
 import { type ShareLeg, shareText } from '@/lib/share-math'
 import { LegBar } from '@/components/leg-bar'
@@ -28,6 +29,7 @@ const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'sh
 const TONE: Record<string, string> = { A: 'bg-good/15 text-good', B: 'bg-good/10 text-good', C: 'bg-muted text-foreground', D: 'bg-[#F5C77A]/15 text-[#F5C77A]', F: 'bg-bad/15 text-bad' }
 
 export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Saved | null; all: Saved[]; onStore: (s: Partial<Saved>) => void }) {
+  const show = useShow()
   const infos = useMemo(() => d.legs.map(parseLeg), [d.legs])
   const { games, loading: gLoading } = useLegGames(infos)
   const { views: devig, loading: dLoading } = useDevigViews(infos, games)
@@ -108,25 +110,25 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
 
   return (
     <div className='flex flex-col gap-3'>
-      <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />
-      <GradeCard g={snap && anyStarted ? { ...g, letter: snap.letter, score: snap.score, summary: SUMMARY[snap.letter] } : g} snap={snap} started={anyStarted} />
-      {weak.length > 0 && !decided && (
+      {show('chance') && <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />}
+      {show('grade') && <GradeCard g={snap && anyStarted ? { ...g, letter: snap.letter, score: snap.score, summary: SUMMARY[snap.letter] } : g} snap={snap} started={anyStarted} />}
+      {show('grade') && weak.length > 0 && !decided && (
         <section aria-label='Weak spots' className='rounded-[18px] bg-card p-4'>
           <h3 className='flex items-center gap-2 font-display text-lg font-extrabold'><AlertTriangle className='size-4 text-[#F5C77A]' aria-hidden='true' />Weak spots</h3>
           <ul className='mt-2 flex flex-col gap-2 text-sm leading-relaxed'>{weak.map((w, n) => <li key={n}>{w.text}</li>)}</ul>
         </section>
       )}
-      {groups.map(([k, ls]) => (
+      {show('legs') && groups.map(([k, ls]) => (
         <GameGroup key={k} legs={ls} game={k === 'other' ? null : games[ls[0].key]} devig={devig} snap={snap} kick={(i) => kickOf(i)} weakestKey={weakestKey} />
       ))}
-      {learn.length > 0 && (
+      {show('learn') && learn.length > 0 && (
         <section aria-label='What to learn from this one' className='rounded-[18px] bg-card p-4'>
           <h3 className='flex items-center gap-2 font-display text-lg font-extrabold'><Lightbulb className='size-4 text-devig' aria-hidden='true' />What to learn from this one</h3>
           <ul className='mt-2 flex list-disc flex-col gap-2 ps-5 text-sm leading-relaxed'>{learn.map((t, n) => <li key={n}>{t}</li>)}</ul>
         </section>
       )}
-      {decided && share && <ShareCard t={share.t} legs={share.legs} letter={snap?.letter ?? g.letter} won={won} />}
-      {outs.length >= 2 && (
+      {show('learn') && decided && share && <ShareCard t={share.t} legs={share.legs} letter={snap?.letter ?? g.letter} won={won} />}
+      {show('learn') && outs.length >= 2 && (
         <section aria-label='Your past checked combos' className='rounded-[18px] bg-card p-4'>
           <h3 className='font-display text-lg font-extrabold'>What your {outs.length} finished combos say</h3>
           <p className='mt-1 text-sm text-muted-foreground'>{decided ? 'Includes this one.' : 'Not this one: it’s still going. These are earlier combos you checked here.'}</p>
