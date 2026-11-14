@@ -1,12 +1,14 @@
-import { useEffect, useMemo } from 'react'
+import { type ReactNode, useEffect, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { AlertTriangle, Check, ChevronRight, Lightbulb, X } from 'lucide-react'
 import type { KRead, Saved } from '@/lib/kalshi-link'
 import {
   type GradeLeg, type LegGame, type LegInfo, type Outcome, type Snap, type TakeLeg,
-  SUMMARY, codes, grade, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, useDevigViews, useHistories, useLegGames, weakSpots, weakestOf,
+  SUMMARY, codes, grade, legGameOf, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, trackedInfo, useDevigViews, useHistories, useLegGames, useLegMarkets, weakSpots, weakestOf,
 } from '@/lib/review'
 import { type Raw, useSummary } from '@/lib/wrap'
+import type { GameRow } from '@/lib/devig'
+import type { TrackedLeg } from '@/lib/track'
 import type { Pace } from '@/lib/pace-math'
 import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
@@ -121,12 +123,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
     <div className={inDrawer ? 'contents' : 'flex flex-col gap-3'}>
       {inDrawer && (
         <>
-          <Progress segs={infos.map(segOf)} side={cashNow != null && (
-            <span className='text-end'>
-              <span className='block font-condensed text-2xl leading-none font-bold tabular-nums'>{fine(cashNow)}</span>
-              <span className='block text-xs text-muted-foreground'>to cash now{snap?.hit != null ? ` · was ${fine(snap.hit)}` : ''}</span>
-            </span>
-          )} />
+          <Progress segs={infos.map(segOf)} side={cashNow != null && <CashNow p={cashNow} was={snap?.hit ?? null} />} />
           <TrackList items={infos.map((i) => ({
             key: i.key, st: segOf(i),
             row: <ComboLegRow i={i} st={segOf(i)} game={games[i.key] ?? null} dv={devig[i.key] ?? null} snap={snap} k={kickOf(i)} weakest={i.key === weakestKey && stillOpen.length > 1} />,
@@ -382,8 +379,9 @@ export function Scoreline({ g }: { g: Pick<LegGame, 'sport' | 'away' | 'home' | 
 }
 
 // one leg of a combo in the drawer: a line on how it's doing now; tap for the score, the pace and the prices
-function ComboLegRow({ i, st, game, dv, snap, k, weakest }: {
+function ComboLegRow({ i, st, game, dv, snap, k, weakest, fallback, children }: {
   i: LegInfo; st: Seg; game: LegGame | null; dv: { p: number; note: string } | null; snap: Snap | null; k: number | null; weakest: boolean
+  fallback?: ReactNode; children?: ReactNode // fallback: the right side when there's no price to show
 }) {
   const l = i.leg
   const started = !!game && game.state !== 'pre'
@@ -398,7 +396,7 @@ function ComboLegRow({ i, st, game, dv, snap, k, weakest }: {
   const subTone = live ? (on == null ? undefined : on ? 'text-good' : 'text-bad') : undefined
   return (
     <TrackRow st={st} title={i.label} sub={sub} subTone={subTone}
-      right={!l.result && l.chance != null && (
+      right={!l.result && l.chance == null ? fallback : !l.result && l.chance != null && (
         <span className='text-end'>
           <span className={cn('block font-condensed text-lg leading-none font-bold tabular-nums', tone)}>{pct(l.chance)}</span>
           {moved != null && Math.abs(moved) >= 0.02 && (
@@ -409,6 +407,7 @@ function ComboLegRow({ i, st, game, dv, snap, k, weakest }: {
       {started && <Scoreline g={game!} />}
       {!started && <p className='text-muted-foreground'>{game ? `${game.away} at ${game.home} · ${dayFmt.format(new Date(game.kickoff))}` : i.sport ? `${i.sport} · not on DeVig's board` : "Kalshi market"}</p>}
       <LegDetails i={i} game={game} sum={sum ?? null} dv={dv} before={before} k={k} weakest={weakest} />
+      {children}
       {game?.row?.id && (
         <Link to='/game/$id' params={{ id: game.row.id }} search={(i.player ? { player: i.player } : {}) as never}
           className='flex min-h-10 items-center gap-1 self-start font-semibold text-devig'>
@@ -416,5 +415,54 @@ function ComboLegRow({ i, st, game, dv, snap, k, weakest }: {
         </Link>
       )}
     </TrackRow>
+  )
+}
+
+// the chance the whole bet cashes, on the prices now (and what it was when you saved it)
+function CashNow({ p, was }: { p: number; was: number | null }) {
+  return (
+    <span className='text-end'>
+      <span className='block font-condensed text-2xl leading-none font-bold tabular-nums'>{fine(p)}</span>
+      <span className='block text-xs text-muted-foreground'>to cash now{was != null ? ` · was ${fine(was)}` : ''}</span>
+    </span>
+  )
+}
+
+// a parlay built on DeVig's slip, followed exactly like a Kalshi combo: the same progress, the same leg rows with the
+// pace bar, Kalshi's price now where the leg has a market, and DeVig's view
+export type TrackedLegIn = { l: TrackedLeg; result: 'won' | 'lost' | null; st: Seg; row: GameRow | null }
+export function TrackedLegs({ legs, was, payout, price }: { legs: TrackedLegIn[]; was: number | null; payout: string | null; price: (l: TrackedLeg) => string }) {
+  const markets = useLegMarkets(legs.map((x) => x.l.ticker))
+  const infos = useMemo(() => legs.map((x, n) => {
+    const m = x.l.ticker ? markets[x.l.ticker] : null
+    // the market's price is for its Yes side; a prop's under is the No
+    const yes = m?.chance ?? null
+    const mine = yes == null || m?.result ? null : x.l.mk === 'prop' && x.l.side === 'UNDER' ? 1 - yes : yes
+    return trackedInfo(x.l, n, x.result, x.result ? null : mine)
+  }), [legs, markets])
+  const games = useMemo(() => Object.fromEntries(infos.map((i, n) => [i.key, legs[n].row ? legGameOf(legs[n].row!) : null])), [infos, legs])
+  const { views } = useDevigViews(infos, games)
+  const open = infos.filter((i, n) => !i.leg.result && legs[n].st !== 'push')
+  const lost = legs.some((x) => x.st === 'lost')
+  const cashNow = lost || !open.length || !open.every((i) => i.leg.chance != null) ? null : open.reduce((m, i) => m * i.leg.chance!, 1)
+  const weakest = open.length > 1 ? weakestOf(open.map((i) => ({ key: i.key, chance: i.leg.chance })))?.key ?? null : null
+  return (
+    <>
+      <Progress segs={legs.map((x) => x.st)} side={cashNow != null ? <CashNow p={cashNow} was={was} /> : payout && !lost && (
+        <span className='text-end'>
+          <span className='block font-condensed text-2xl leading-none font-bold tabular-nums'>{payout}</span>
+          <span className='block text-xs text-muted-foreground'>if it all hits</span>
+        </span>
+      )} />
+      <TrackList items={infos.map((i, n) => ({
+        key: i.key, st: legs[n].st,
+        row: (
+          <ComboLegRow i={i} st={legs[n].st} game={games[i.key]} dv={views[i.key] ?? null} snap={null} k={null} weakest={i.key === weakest}
+            fallback={<span className='font-condensed text-[15px] font-bold text-muted-foreground tabular-nums'>{price(legs[n].l)}</span>}>
+            <p className='text-muted-foreground'>Your price {price(legs[n].l)}{legs[n].l.mk === 'prop' && !i.leg.result ? ". Props are graded once Kalshi settles the market." : '.'}</p>
+          </ComboLegRow>
+        ),
+      }))} />
+    </>
   )
 }

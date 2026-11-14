@@ -1,11 +1,12 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
-import { Check, ChevronRight, Link2, Minus, X } from 'lucide-react'
+import { Check, Link2, Minus, X } from 'lucide-react'
 import {
   type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
-import { BetDrawer, Fold, useInDrawer } from './bet-drawer'
+import { BetBadge, BetCard, BetDrawer, BetHead, Fold, type Seg, betStatus, useInDrawer } from './bet-drawer'
+import { parseLeg, useLegGames } from '@/lib/review'
 import { BetBox, betFacts, betLine, hasBet } from './bet-box'
 import { cn } from '@/lib/utils'
 import { useAccount } from '@/lib/profile'
@@ -318,50 +319,37 @@ function useSavedFacts(s: Saved, owner?: string) {
   return { q, legs, result, letter, label, tone, status }
 }
 
-function LegBarRow({ legs }: { legs: KLeg[] }) {
-  if (legs.length < 2) return null
-  return (
-    <span className='flex gap-1' aria-hidden='true'>
-      {legs.map((l, i) => <span key={i} className={cn('h-1.5 flex-1 rounded-full', l.result === 'won' ? 'bg-good' : l.result === 'lost' ? 'bg-bad' : 'bg-muted')} />)}
-    </span>
-  )
+// the American odds a saved stake pays at, for the badge when there's no grade
+const oddsOf = (b: Saved['bet']) => {
+  if (!hasBet(b) || !(b.pays > b.stake)) return null
+  const d = b.pays / b.stake
+  return d >= 2 ? `+${Math.round((d - 1) * 100)}` : `−${Math.round(100 / (d - 1))}`
 }
 
-// one saved bet, closed: just how it's going. Tap it for the drawer with the rest
+// each leg's state for the card's bar: hit, missed, playing now, not started
+function useSegs(legs: KLeg[]) {
+  const infos = useMemo(() => legs.map(parseLeg), [legs])
+  const { games } = useLegGames(infos)
+  const segs: Seg[] = infos.map((i) => i.leg.result ?? (games[i.key] && games[i.key]!.state !== 'pre' ? 'live' : 'later'))
+  const kicks = infos.map((i) => games[i.key]?.kickoff).filter((x): x is string => !!x).sort()
+  return { segs, firstKick: kicks[0] ?? null }
+}
+
+// one saved bet, closed: just how it's going. Tap it for the drawer with the rest (the same card as a parlay saved from DeVig's slip)
 function SavedCard({ s, onOpen, owner }: { s: Saved; onOpen: () => void; owner?: string }) {
   const f = useSavedFacts(s, owner)
+  const { segs, firstKick } = useSegs(f.legs)
   return (
-    <button type='button' onClick={onOpen} aria-haspopup='dialog'
-      className='flex w-full flex-col gap-2.5 rounded-[18px] bg-card px-4 py-3.5 text-start transition-colors duration-150 hover:bg-muted/40'>
-      <span className='flex w-full items-center gap-3'>
-        <span className='min-w-0 flex-1'>
-          <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status} · {dayFmt.format(new Date(s.savedAt))}</span>
-          <span className='mt-0.5 block truncate font-semibold'>{f.label}</span>
-          {hasBet(s.bet) && <span className='block font-display text-lg leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
-        </span>
-        {f.letter && (
-          <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${f.letter}`}>{f.letter}</span>
-        )}
-        <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
-      </span>
-      {f.q.isPending ? <Skeleton className='h-1.5 w-full' /> : <LegBarRow legs={f.legs} />}
-    </button>
+    <BetCard onOpen={onOpen} status={betStatus(segs, f.result, firstKick, s.savedAt)} title={f.label}
+      line={hasBet(s.bet) ? betLine(s.bet) : null} badge={<BetBadge letter={f.letter} odds={oddsOf(s.bet)} />} segs={segs} loading={f.q.isPending} />
   )
 }
 
 function SavedHead({ s, owner }: { s: Saved; owner?: string }) {
   const f = useSavedFacts(s, owner)
-  return (
-    <div className='flex flex-col gap-2'>
-      <div className='flex items-end justify-between gap-3'>
-        <span className='min-w-0'>
-          {(f.result || f.legs.length < 2) && <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status}</span>}
-          {hasBet(s.bet) && <span className='block font-display text-xl leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
-        </span>
-        {f.letter && <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${f.letter}`}>{f.letter}</span>}
-      </div>
-    </div>
-  )
+  const { segs, firstKick } = useSegs(f.legs)
+  const st = betStatus(segs, f.result, firstKick, s.savedAt)
+  return <BetHead status={f.result || f.legs.length < 2 ? st : null} line={hasBet(s.bet) ? betLine(s.bet) : null} badge={<BetBadge letter={f.letter} odds={oddsOf(s.bet)} />} />
 }
 
 function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; openLink: string | null; onToggle: (s: Saved) => void; owner?: string; body: ReactNode }) {

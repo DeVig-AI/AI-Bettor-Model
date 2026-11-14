@@ -1,1 +1,0 @@
-import{n as e}from"./friends-DGRF2MCe.js";var t=e;export{t as component};

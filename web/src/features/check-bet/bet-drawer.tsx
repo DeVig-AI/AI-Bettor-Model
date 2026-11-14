@@ -1,5 +1,5 @@
 import { type ReactNode, Fragment, createContext, useContext, useState } from 'react'
-import { Check, ChevronDown, Clock, Minus, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Clock, Minus, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 
@@ -145,4 +145,74 @@ export function TrackList({ items }: { items: { key: string; st: Seg; row: React
 
 export function MoreLabel() {
   return <p className='px-1 pt-3 text-xs font-bold tracking-wide text-muted-foreground uppercase'>More about this bet</p>
+}
+
+// ---------- every tracked parlay's card and drawer header, whether it came from a Kalshi link or DeVig's slip ----------
+const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+const timeOnly = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
+const whenOf = (iso: string) => { const d = new Date(iso); return d.toDateString() === new Date().toDateString() ? `today ${timeOnly.format(d)}` : dayFmt.format(d) }
+
+export type BetStatus = { text: string; tone: string; live: boolean }
+// "Won", "3 of 6 hit · 2 live", "Starts today 7:00 PM"
+export function betStatus(segs: Seg[], result: 'won' | 'lost' | null, firstKick: string | null, savedAt: string | null): BetStatus {
+  if (result === 'won') return { text: 'Won', tone: 'text-good', live: false }
+  if (result === 'lost' || segs.includes('lost')) return { text: segs.length > 1 ? `Lost · ${segs.filter((s) => s === 'won').length} of ${segs.length} hit` : 'Lost', tone: 'text-bad', live: false }
+  const won = segs.filter((s) => s === 'won').length, live = segs.filter((s) => s === 'live').length
+  if (live || won) return { text: segs.length > 1 ? `${won} of ${segs.length} hit${live ? ` · ${live} live` : ''}` : 'Live', tone: 'text-[#b5ffd0]', live: !!live }
+  if (firstKick && Date.parse(firstKick) > Date.now()) return { text: `Starts ${whenOf(firstKick)}`, tone: 'text-muted-foreground', live: false }
+  return { text: savedAt ? `Saved ${dayFmt.format(new Date(savedAt))}` : 'Open', tone: 'text-muted-foreground', live: false }
+}
+
+// the small box at a card's right: the grade letter, or the odds when there's no grade
+export function BetBadge({ letter, odds }: { letter?: string | null; odds?: string | null }) {
+  if (!letter && !odds) return null
+  return letter
+    ? <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${letter}`}>{letter}</span>
+    : <span className='grid h-10 min-w-10 shrink-0 place-items-center rounded-xl bg-muted px-2 font-condensed text-base font-bold text-devig tabular-nums' aria-label={`Odds ${odds}`}>{odds}</span>
+}
+
+function SegBar({ segs }: { segs: Seg[] }) {
+  return (
+    <span className='grid gap-1' style={{ gridTemplateColumns: `repeat(${segs.length}, minmax(0, 1fr))` }} aria-hidden='true'>
+      {[...segs].sort((a, b) => SEG_ORDER[a] - SEG_ORDER[b]).map((s, i) => <span key={i} className={cn('h-1.5 rounded-full', SEG_BG[s])} />)}
+    </span>
+  )
+}
+
+// a tracked bet, closed: how it's going in one glance. Tap for the drawer
+export function BetCard({ onOpen, status, title, line, badge, segs, loading }: {
+  onOpen: () => void; status: BetStatus; title: string; line?: string | null; badge?: ReactNode; segs: Seg[]; loading?: boolean
+}) {
+  return (
+    <button type='button' onClick={onOpen} aria-haspopup='dialog'
+      className={cn('flex w-full flex-col gap-2.5 rounded-[18px] bg-card px-4 py-3.5 text-start transition-colors duration-150 hover:bg-muted/40', status.live && 'ring-1 ring-devig/30')}>
+      <span className='flex w-full items-center gap-3'>
+        <span className='min-w-0 flex-1'>
+          <span className={cn('flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase', status.tone)}>
+            {status.live && <span aria-hidden='true' className='size-1.5 shrink-0 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />}
+            <span className='truncate'>{status.text}</span>
+          </span>
+          <span className='mt-0.5 block truncate font-semibold'>{title}</span>
+          {line && <span className='block font-display text-lg leading-tight font-extrabold tabular-nums'>{line}</span>}
+        </span>
+        {badge}
+        <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+      </span>
+      {loading ? <span className='h-1.5 w-full animate-pulse rounded-full bg-muted' /> : segs.length > 1 && <SegBar segs={segs} />}
+    </button>
+  )
+}
+
+// under the drawer's title: the stake line and the badge (and the result, once it's in or for a single bet)
+export function BetHead({ status, line, badge }: { status?: BetStatus | null; line?: string | null; badge?: ReactNode }) {
+  if (!status && !line && !badge) return null
+  return (
+    <div className='flex items-end justify-between gap-3'>
+      <span className='min-w-0'>
+        {status && <span className={cn('block text-xs font-bold tracking-wide uppercase', status.tone)}>{status.text}</span>}
+        {line && <span className='block font-display text-xl leading-tight font-extrabold tabular-nums'>{line}</span>}
+      </span>
+      {badge}
+    </div>
+  )
 }
