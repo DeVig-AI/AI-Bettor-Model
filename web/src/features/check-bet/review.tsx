@@ -1,17 +1,18 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
-import { AlertTriangle, Check, Lightbulb, X } from 'lucide-react'
+import { AlertTriangle, Check, ChevronRight, Lightbulb, X } from 'lucide-react'
 import type { KRead, Saved } from '@/lib/kalshi-link'
 import {
   type GradeLeg, type LegGame, type LegInfo, type Outcome, type Snap, type TakeLeg,
   SUMMARY, codes, grade, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, useDevigViews, useHistories, useLegGames, weakSpots, weakestOf,
 } from '@/lib/review'
 import { type Raw, useSummary } from '@/lib/wrap'
+import type { Pace } from '@/lib/pace-math'
 import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
 import { PulseCard } from './pulse'
-import { Fold, useInDrawer } from './bet-drawer'
+import { Fold, MoreLabel, Progress, type Seg, TrackList, TrackRow, useInDrawer } from './bet-drawer'
 import { ShareCard } from './share-card'
 import { type ShareLeg, shareText } from '@/lib/share-math'
 import { LegBar } from '@/components/leg-bar'
@@ -111,8 +112,28 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
   const outs = all.filter((s) => s !== entry || decided).map((s) => s.outcome).filter((o): o is Outcome => !!o)
   const past = lessons(outs)
 
+  const segOf = (i: LegInfo): Seg => i.leg.result ?? (games[i.key] && games[i.key]!.state !== 'pre' ? 'live' : 'later')
+  const stillOpen = infos.filter((i) => !i.leg.result)
+  const cashNow = d.lost > 0 || d.combo.result ? null
+    : d.combo.chance ?? (stillOpen.every((i) => i.leg.chance != null) ? stillOpen.reduce((m, i) => m * i.leg.chance!, 1) : null)
+
   return (
     <div className={inDrawer ? 'contents' : 'flex flex-col gap-3'}>
+      {inDrawer && (
+        <>
+          <Progress segs={infos.map(segOf)} side={cashNow != null && (
+            <span className='text-end'>
+              <span className='block font-condensed text-2xl leading-none font-bold tabular-nums'>{fine(cashNow)}</span>
+              <span className='block text-xs text-muted-foreground'>to cash now{snap?.hit != null ? ` · was ${fine(snap.hit)}` : ''}</span>
+            </span>
+          )} />
+          <TrackList items={infos.map((i) => ({
+            key: i.key, st: segOf(i),
+            row: <ComboLegRow i={i} st={segOf(i)} game={games[i.key] ?? null} dv={devig[i.key] ?? null} snap={snap} k={kickOf(i)} weakest={i.key === weakestKey && stillOpen.length > 1} />,
+          }))} />
+          <MoreLabel />
+        </>
+      )}
       <Fold title='Chance it all hits' peek='Chart'>
         <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />
       </Fold>
@@ -125,11 +146,9 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
           </section>
         )}
       </Fold>
-      <Fold title='Game by game' peek={`${groups.length} ${groups.length === 1 ? 'game' : 'games'}`}>
-        {groups.map(([k, ls]) => (
-          <GameGroup key={k} legs={ls} game={k === 'other' ? null : games[ls[0].key]} devig={devig} snap={snap} kick={(i) => kickOf(i)} weakestKey={weakestKey} />
-        ))}
-      </Fold>
+      {!inDrawer && groups.map(([k, ls]) => (
+        <GameGroup key={k} legs={ls} game={k === 'other' ? null : games[ls[0].key]} devig={devig} snap={snap} kick={(i) => kickOf(i)} weakestKey={weakestKey} />
+      ))}
       {(learn.length > 0 || (decided && share) || outs.length >= 2) && (
         <Fold title='Lessons' peek={decided ? 'What to learn' : 'Your past combos'}>
           {learn.length > 0 && (
@@ -204,18 +223,8 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
       <ul className='flex flex-col gap-3'>
         {legs.map((i) => {
           const l = i.leg
-          const dv = devig[i.key]
           const before = snap?.legs[i.key]?.chance ?? null
-          const k = kick(i)
-          const out = legOutcome(i, game ?? null, sum ?? null)
-          // saved -> kickoff -> now, skipping a step that says the same as the one before; one step alone says nothing new, unless it's the kickoff price
-          const steps: [string, number][] = []
-          for (const [w, v] of [['saved', before], ['kickoff', k], ['now', l.result ? null : l.chance]] as const)
-            if (v != null && (!steps.length || pct(steps[steps.length - 1][1]) !== pct(v))) steps.push([w, v])
-          const path = steps.length > 1 || steps[0]?.[0] === 'kickoff' ? steps.map(([w, v]) => `${w} ${pct(v)}`) : []
           const moved = !l.result && before != null && l.chance != null ? l.chance - before : null
-          const ref = k ?? before ?? l.chance
-          const gap = dv && ref != null ? dv.p - ref : 0
           return (
             <li key={i.key} className='flex flex-col gap-1.5'>
               <LegLink id={game?.row?.id} player={i.player}><KalshiLegBar i={i} game={game ?? null} right={
@@ -234,18 +243,7 @@ function GameGroup({ legs, game, devig, snap, kick, weakestKey }: {
                 )
               } /></LegLink>
               <div className='flex flex-col gap-1 px-1 text-sm'>
-                <LegNow i={i} game={game ?? null} sum={sum ?? null} out={out} lost={l.result === 'lost'} />
-                <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
-                  {dv && (
-                    <span className={cn('rounded-full px-2 py-0.5 text-xs font-bold', gap <= -0.03 ? 'bg-bad/15 text-bad' : gap >= 0.03 ? 'bg-devig/15 text-devig' : 'bg-muted text-muted-foreground')}>
-                      {gap <= -0.03 ? 'DeVig is less sure' : gap >= 0.03 ? 'DeVig likes it' : 'About even with Kalshi'}
-                    </span>
-                  )}
-                  {!dv && <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>Market only</span>}
-                  {i.key === weakestKey && legs.length > 0 && <span className='rounded-full bg-[#F5C77A]/15 px-2 py-0.5 text-xs font-bold text-[#F5C77A]'>Weakest leg</span>}
-                  {dv && <span className='font-semibold text-devig'>DeVig {pct(dv.p)}</span>}
-                  {path.length > 0 && <span className='text-muted-foreground'>Kalshi {path.join(' → ')}</span>}
-                </p>
+                <LegDetails i={i} game={game ?? null} sum={sum ?? null} dv={devig[i.key] ?? null} before={before} k={kick(i)} weakest={i.key === weakestKey} />
               </div>
             </li>
           )
@@ -301,5 +299,122 @@ function LegLink({ id, player, children }: { id: string | undefined; player: str
     <Link to='/game/$id' params={{ id }} search={(player ? { player } : {}) as never} aria-label='Open this game' className='block rounded-[18px] active:opacity-80'>
       {children}
     </Link>
+  )
+}
+
+const fine = (p: number) => (p > 0 && p < 0.001 ? '<0.1%' : p < 0.1 && p > 0 ? `${(p * 100).toFixed(1)}%` : `${Math.round(p * 100)}%`)
+const n1 = (v: number) => String(Math.round(v * 10) / 10)
+const timeOnly = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' })
+// "today 9:30 PM" for tonight's games, else the day and time
+export const when2 = (iso: string) => { const d = new Date(iso); return d.toDateString() === new Date().toDateString() ? `today ${timeOnly.format(d)}` : dayFmt.format(d) }
+
+// what happened in the leg's game, then the price path and DeVig's view
+function LegDetails({ i, game, sum, dv, before, k, weakest }: {
+  i: LegInfo; game: LegGame | null; sum: Raw | null; dv: { p: number; note: string } | null; before: number | null; k: number | null; weakest: boolean
+}) {
+  const l = i.leg
+  const out = legOutcome(i, game, sum)
+  // saved -> kickoff -> now, skipping a step that says the same as the one before; one step alone says nothing new, unless it's the kickoff price
+  const steps: [string, number][] = []
+  for (const [w, v] of [['saved', before], ['kickoff', k], ['now', l.result ? null : l.chance]] as const)
+    if (v != null && (!steps.length || pct(steps[steps.length - 1][1]) !== pct(v))) steps.push([w, v])
+  const path = steps.length > 1 || steps[0]?.[0] === 'kickoff' ? steps.map(([w, v]) => `${w} ${pct(v)}`) : []
+  const ref = k ?? before ?? l.chance
+  const gap = dv && ref != null ? dv.p - ref : 0
+  return (
+    <>
+      <LegNow i={i} game={game} sum={sum} out={out} lost={l.result === 'lost'} />
+      <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
+        {dv && (
+          <span className={cn('rounded-full px-2 py-0.5 text-xs font-bold', gap <= -0.03 ? 'bg-bad/15 text-bad' : gap >= 0.03 ? 'bg-devig/15 text-devig' : 'bg-muted text-muted-foreground')}>
+            {gap <= -0.03 ? 'DeVig is less sure' : gap >= 0.03 ? 'DeVig likes it' : 'About even with Kalshi'}
+          </span>
+        )}
+        {!dv && <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>Market only</span>}
+        {weakest && <span className='rounded-full bg-[#F5C77A]/15 px-2 py-0.5 text-xs font-bold text-[#F5C77A]'>Weakest leg</span>}
+        {dv && <span className='font-semibold text-devig'>DeVig {pct(dv.p)}</span>}
+        {path.length > 0 && <span className='text-muted-foreground'>Kalshi {path.join(' → ')}</span>}
+      </p>
+    </>
+  )
+}
+
+// the leg in one line, while it plays: "BYU up 7, needs 4+ · 3rd 5:12", "18 points, needs 25+ · Q3"
+function legShort(i: LegInfo, g: LegGame | null, pace: Pace | null): [string | null, boolean | null] {
+  const [t, on] = legLine(i, g, pace)
+  return [t, on == null ? null : i.leg.side === 'no' && !pace ? !on : on]
+}
+// the line, and whether the leg is winning right now (null when the score can't say)
+function legLine(i: LegInfo, g: LegGame | null, pace: Pace | null): [string | null, boolean | null] {
+  const l = i.leg
+  if (!g) return [l.result ? null : l.closes ? `Closes ${when2(l.closes)}` : null, null]
+  if (g.state === 'pre') return [`Starts ${when2(g.kickoff)}`, null]
+  const when = g.state === 'post' ? (l.result ? 'Final' : "Final · waiting on Kalshi's result") : g.detail
+  const a = g.awayScore, h = g.homeScore
+  const need = (strike: number) => { const t = Math.floor(strike) + 1; return l.side === 'no' ? `needs under ${t}` : `needs ${t}+` }
+  if (pace && i.stat) return [`${n1(pace.v)} ${i.stat.label}, ${need(pace.target - 0.5)} · ${when}`, pace.status === 'early' ? null : ['hit', 'ahead', 'on'].includes(pace.status) === (l.side !== 'no')]
+  if (a == null || h == null) return [when, null]
+  const side = i.code ? (codes(g.away).includes(i.code) ? 'away' : codes(g.home).includes(i.code) ? 'home' : null) : null
+  if ((i.kind === 'game' || i.kind === 'spread') && side) {
+    const m = side === 'away' ? a - h : h - a
+    const who = side === 'away' ? g.away : g.home
+    const lead = m > 0 ? `${who} ${g.state === 'post' ? 'won' : 'up'} by ${m}` : m < 0 ? `${who} ${g.state === 'post' ? 'lost' : 'down'} by ${-m}` : 'Tied'
+    return i.kind === 'spread' && i.strike != null ? [`${lead}, ${need(i.strike)} · ${when}`, m > i.strike] : [`${lead} · ${when}`, m === 0 ? null : m > 0]
+  }
+  if (i.kind === 'total' && i.strike != null) return [`${a + h} total, ${need(i.strike)} · ${when}`, a + h > i.strike ? true : null]
+  return [`${g.away} ${a}–${h} ${g.home} · ${when}`, null]
+}
+
+export function Scoreline({ g }: { g: Pick<LegGame, 'sport' | 'away' | 'home' | 'awayScore' | 'homeScore' | 'state' | 'detail' | 'colors' | 'ids'> }) {
+  const team = (k: 'away' | 'home') => (
+    <span className='flex items-center gap-2'>
+      <TeamLogo sport={g.sport} code={g[k]} id={g.ids?.[k] ?? null} color={g.colors?.[k] ?? null} px={48} className='size-6 text-[8px]' />
+      <span className='font-semibold'>{g[k]}</span>
+      <span className='ms-auto font-condensed text-lg font-bold tabular-nums'>{(k === 'away' ? g.awayScore : g.homeScore) ?? '–'}</span>
+    </span>
+  )
+  return (
+    <div className='flex items-center gap-4 rounded-xl bg-background/60 px-3 py-2'>
+      <div className='flex min-w-0 flex-1 flex-col gap-1'>{team('away')}{team('home')}</div>
+      <span className={cn('shrink-0 text-xs font-bold', g.state === 'in' ? 'text-devig' : 'text-muted-foreground')}>{g.state === 'post' ? 'Final' : g.detail}</span>
+    </div>
+  )
+}
+
+// one leg of a combo in the drawer: a line on how it's doing now; tap for the score, the pace and the prices
+function ComboLegRow({ i, st, game, dv, snap, k, weakest }: {
+  i: LegInfo; st: Seg; game: LegGame | null; dv: { p: number; note: string } | null; snap: Snap | null; k: number | null; weakest: boolean
+}) {
+  const l = i.leg
+  const started = !!game && game.state !== 'pre'
+  const { data: sum } = useSummary(started && i.kind === 'prop' ? rowOf(game!) : null)
+  const pace = usePropPace(i, game, sum ?? null)
+  const before = snap?.legs[i.key]?.chance ?? null
+  const ref = k ?? before
+  const moved = !l.result && ref != null && l.chance != null ? l.chance - ref : null
+  const live = !l.result && game?.state === 'in'
+  const [sub, on] = legShort(i, game, pace)
+  const tone = live && l.chance != null ? (l.chance >= 0.6 ? 'text-good' : l.chance <= 0.4 ? 'text-bad' : 'text-foreground') : undefined
+  const subTone = live ? (on == null ? undefined : on ? 'text-good' : 'text-bad') : undefined
+  return (
+    <TrackRow st={st} title={i.label} sub={sub} subTone={subTone}
+      right={!l.result && l.chance != null && (
+        <span className='text-end'>
+          <span className={cn('block font-condensed text-lg leading-none font-bold tabular-nums', tone)}>{pct(l.chance)}</span>
+          {moved != null && Math.abs(moved) >= 0.02 && (
+            <span className={cn('block text-[11px] font-semibold', moved > 0 ? 'text-good' : 'text-bad')}>{moved > 0 ? '▲' : '▼'} {Math.round(Math.abs(moved) * 100)}</span>
+          )}
+        </span>
+      )}>
+      {started && <Scoreline g={game!} />}
+      {!started && <p className='text-muted-foreground'>{game ? `${game.away} at ${game.home} · ${dayFmt.format(new Date(game.kickoff))}` : i.sport ? `${i.sport} · not on DeVig's board` : "Kalshi market"}</p>}
+      <LegDetails i={i} game={game} sum={sum ?? null} dv={dv} before={before} k={k} weakest={weakest} />
+      {game?.row?.id && (
+        <Link to='/game/$id' params={{ id: game.row.id }} search={(i.player ? { player: i.player } : {}) as never}
+          className='flex min-h-10 items-center gap-1 self-start font-semibold text-devig'>
+          {i.kind === 'prop' ? 'Box score' : 'Full game'}<ChevronRight className='size-4' aria-hidden='true' />
+        </Link>
+      )}
+    </TrackRow>
   )
 }

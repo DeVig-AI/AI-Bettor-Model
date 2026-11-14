@@ -106,16 +106,17 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
     const legsPeek = [d.won && `${d.won} won`, d.lost && `${d.lost} lost`, open && `${open} to go`].filter(Boolean).join(' · ')
     return (
       <>
-        <Fold title='Legs' peek={legsPeek} tone={d.lost ? 'text-bad' : undefined}>
-          <Legs legs={legs} won={d.won} />
-          {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
-        </Fold>
+        {review ?? (
+          <Fold title='Legs' peek={legsPeek} tone={d.lost ? 'text-bad' : undefined}>
+            <Legs legs={legs} won={d.won} />
+          </Fold>
+        )}
+        {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
         {priced && (
           <Fold title='Prices' peek={c.ask != null ? `${cents(c.ask)} to buy` : pct(d.multiplied)}>
             <div className='px-2'>{prices}</div>{priceNote}{updated}
           </Fold>
         )}
-        {review}
       </>
     )
   }
@@ -354,12 +355,11 @@ function SavedHead({ s, owner }: { s: Saved; owner?: string }) {
     <div className='flex flex-col gap-2'>
       <div className='flex items-end justify-between gap-3'>
         <span className='min-w-0'>
-          <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status}</span>
+          {(f.result || f.legs.length < 2) && <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status}</span>}
           {hasBet(s.bet) && <span className='block font-display text-xl leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
         </span>
         {f.letter && <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${f.letter}`}>{f.letter}</span>}
       </div>
-      <LegBarRow legs={f.legs} />
     </div>
   )
 }
