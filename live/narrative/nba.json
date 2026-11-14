@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-14T14:17:37+00:00",
+ "updated": "2026-11-14T19:15:01+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -22,6 +22,28 @@
  ],
  "picks": [
   {
+   "id": "401909982",
+   "date": "2026-11-14",
+   "start": "2026-11-15T01:00Z",
+   "game": "DET @ MIA",
+   "home": "MIA",
+   "away": "DET",
+   "home_id": "14",
+   "away_id": "8",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "DET",
+   "line": -3.5,
+   "score": 2.5,
+   "why_for": [
+    "Fade the line move: DET went from -5.5 to -3.5",
+    "MIA: Second night of a back-to-back"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401909981",
    "date": "2026-11-14",
    "start": "2026-11-15T00:30Z",
@@ -35,15 +57,16 @@
    "final": null,
    "type": "side",
    "pick": "DAL",
-   "line": 1.5,
-   "score": 3.0,
+   "line": -4.5,
+   "score": 4.5,
    "why_for": [
     "Bounce-back spot after losing by 39",
+    "Line tell: the line rates DAL 7.0 points better than results so far",
     "CLE: Second night of a back-to-back",
     "CLE: Evan Mobley (17 points a game) is out"
    ],
    "why_opp": [
-    "CLE: Fade the line move: CLE went from -3.5 to -1.5"
+    "CLE: Fade the line move: CLE went from -3.5 to +4.5"
    ]
   },
   {
@@ -924,9 +947,10 @@
    "note": null,
    "side": {
     "lean": "DET",
-    "score": 1.5,
+    "score": 2.5,
     "capped": false,
     "why_for": [
+     "Fade the line move: DET went from -5.5 to -3.5",
      "MIA: Second night of a back-to-back"
     ],
     "why_opp": []
@@ -958,11 +982,11 @@
     "score": 1.25,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates BKN 5.6 points better than results so far",
+     "Line tell: the line rates BKN 6.6 points better than results so far",
      "MEM: Second night of a back-to-back (last night was a blowout, so starters may have rested)"
     ],
     "why_opp": [
-     "MEM: Fade the line move: MEM went from -5.5 to -3.5"
+     "MEM: Fade the line move: MEM went from -5.5 to -2.5"
     ]
    },
    "total": {
@@ -1021,23 +1045,25 @@
    "note": null,
    "side": {
     "lean": "DAL",
-    "score": 3.0,
+    "score": 4.5,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 39",
+     "Line tell: the line rates DAL 7.0 points better than results so far",
      "CLE: Second night of a back-to-back",
      "CLE: Evan Mobley (17 points a game) is out"
     ],
     "why_opp": [
-     "CLE: Fade the line move: CLE went from -3.5 to -1.5"
+     "CLE: Fade the line move: CLE went from -3.5 to +4.5"
     ]
    },
    "total": {
     "lean": "OVER",
-    "line": 231.5,
-    "score": 0.5,
+    "line": 227.5,
+    "score": 1.5,
     "why_for": [
-     "CLE on tired legs (back-to-back)"
+     "CLE on tired legs (back-to-back)",
+     "Buy low on the dropping total: 231.5 to 227.5"
     ],
     "why_opp": []
    }
