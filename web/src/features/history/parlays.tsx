@@ -8,6 +8,8 @@ import { readLink } from '@/lib/kalshi-link'
 import { type TrackedLeg, type TrackedParlay, removeParlay } from '@/lib/track'
 import { cn } from '@/lib/utils'
 import { record } from '@/lib/friends'
+import { BetDrawer, Progress, type Seg, TrackList, TrackRow } from '../check-bet/bet-drawer'
+import { Scoreline, when2 } from '../check-bet/review'
 
 // What a card can show at its foot: your own parlays have Remove; a friend's have none, or a Tail button
 export type Foot = { own: boolean; action?: (p: Graded) => ReactNode }
@@ -181,6 +183,94 @@ function LegList({ p }: { p: Graded }) {
   )
 }
 
+const segOf = (s: LegState): Seg => (s.st === 'pending' ? (s.note === 'Waiting on the result' || s.note.startsWith('Final') ? 'live' : 'later') : s.st)
+
+// one leg in the drawer: how it's doing in a line; tap for the score and the way to its game
+function ParlayLegRow({ l, s }: { l: TrackedLeg; s: LegState }) {
+  const { rows } = useGames()
+  const { finals } = useFinals()
+  const g = findGame(l, rows) ?? findGame(l, finals)
+  const started = !!g && g.state !== 'pre' && g.awayScore != null
+  let sub = s.st === 'pending' && !started && l.kickoff && Date.parse(l.kickoff) > Date.now() ? `Starts ${when2(l.kickoff)}` : s.note || l.game || ''
+  if (g && started && l.mk === 'ml' && (l.side === 'home' || l.side === 'away')) {
+    const m = l.side === 'home' ? g.homeScore! - g.awayScore! : g.awayScore! - g.homeScore!
+    const who = l.side === 'home' ? g.home : g.away
+    const when = g.state === 'post' ? 'Final' : g.detail
+    sub = `${m > 0 ? `${who} ${g.state === 'post' ? 'won' : 'up'} by ${m}` : m < 0 ? `${who} ${g.state === 'post' ? 'lost' : 'down'} by ${-m}` : 'Tied'} · ${when}`
+  }
+  const extra = [s.chip !== l.desc && s.chip, !started && s.note && s.note !== sub && s.note].filter(Boolean).join('. ')
+  const tone = s.st === 'live' && sub.includes(' up by ') ? 'text-good' : s.st === 'live' && sub.includes(' down by ') ? 'text-bad' : undefined
+  return (
+    <TrackRow st={segOf(s)} title={l.desc} sub={sub} subTone={tone}
+      right={<span className='font-condensed text-[15px] font-bold text-muted-foreground tabular-nums'>{fmtAmerican(l.odds)}</span>}>
+      {g && started && <Scoreline g={g} />}
+      {g && !started && <p className='text-muted-foreground'>{g.away} at {g.home} · {when2(g.kickoff)}</p>}
+      {!g && l.game && <p className='text-muted-foreground'>{l.game}{l.when ? ` · ${l.when}` : ''}</p>}
+      {extra && <p>{extra}</p>}
+      <p className='text-muted-foreground'>Your price {fmtAmerican(l.odds)}{l.mk === 'prop' ? '. Props are graded once Kalshi settles the market.' : '.'}</p>
+      {g && (
+        <Link to='/game/$id' params={{ id: g.id }} search={(l.player ? { player: l.player } : {}) as never}
+          className='flex min-h-10 items-center gap-1 self-start font-semibold text-devig'>
+          {l.player ? 'Box score' : 'Full game'}<ChevronRight className='size-4' aria-hidden='true' />
+        </Link>
+      )}
+    </TrackRow>
+  )
+}
+
+// your own live / coming-up parlay, closed: how it's going in one glance. Tap for the drawer with every leg
+function ParlayRow({ p, foot }: { p: Graded; foot: Foot }) {
+  const [open, setOpen] = useState(false)
+  const n = p.legs.length
+  const won = p.states.filter((s) => s.st === 'won').length
+  const playing = p.states.filter((s) => s.st === 'live').length
+  const stake = Number(p.stake) || 0
+  const live = p.status === 'live'
+  const line = live ? `${won} of ${n} hit${playing ? ` · ${playing} playing` : ''}` : `${n} ${n === 1 ? 'leg' : 'legs'} · saved ${p.at ? dayFmt.format(new Date(p.at)) : ''}`
+  const bar = (
+    <span className='grid gap-1' style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }} aria-hidden='true'>
+      {p.states.map((s, i) => (
+        <span key={i} className={cn('h-1.5 rounded-full', s.st === 'won' ? 'bg-good' : s.st === 'lost' ? 'bg-bad' : s.st === 'live' ? 'bg-devig/60' : 'bg-muted')} />
+      ))}
+    </span>
+  )
+  return (
+    <>
+      <button type='button' onClick={() => setOpen(true)} aria-haspopup='dialog'
+        className={cn('flex w-full flex-col gap-2.5 rounded-[18px] bg-card px-4 py-3.5 text-start transition-colors duration-150 hover:bg-muted/40', live && 'border border-devig/30')}>
+        <span className='flex w-full items-center gap-3'>
+          <span className='flex min-w-0 flex-1 flex-col'>
+            <span className={cn('flex items-center gap-1.5 text-xs font-bold', live ? 'text-[#b5ffd0]' : 'text-muted-foreground')}>
+              {live && <span aria-hidden='true' className='size-1.5 rounded-full bg-[#b5ffd0] motion-safe:animate-pulse' />}
+              {line}
+            </span>
+            <span className='font-display text-lg leading-tight font-extrabold tabular-nums'>{money(stake)} to win {money(p.payout - stake)}</span>
+          </span>
+          <span className='font-condensed text-base font-bold text-devig'>{fmtAmerican(p.odds)}</span>
+          <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
+        </span>
+        {bar}
+      </button>
+      {open && (
+        <BetDrawer open onClose={() => setOpen(false)} title={`${money(stake)} to win ${money(p.payout - stake)}`}
+          sub={`${n}-leg parlay · ${fmtAmerican(p.odds)}`}
+>
+          <Progress segs={p.states.map(segOf)} side={live && (
+            <span className='text-end'>
+              <span className='block font-condensed text-2xl leading-none font-bold tabular-nums'>{money(p.payout)}</span>
+              <span className='block text-xs text-muted-foreground'>if it all hits</span>
+            </span>
+          )} />
+          <TrackList items={p.legs.map((l, i) => ({ key: String(i), st: segOf(p.states[i]), row: <ParlayLegRow l={l} s={p.states[i]} /> }))} />
+          {(foot.own || foot.action) && (
+            <div className='flex justify-end gap-1 px-1'>{foot.action?.(p)}{foot.own && <RemoveButton id={p.id} />}</div>
+          )}
+        </BetDrawer>
+      )}
+    </>
+  )
+}
+
 export function OpenCard({ p, foot, by }: { p: Graded; foot: Foot; by?: string }) {
   const n = p.legs.length
   const won = p.states.filter((s) => s.st === 'won').length
@@ -336,11 +426,11 @@ export function YourParlays({ list, owner, action, part }: { list: TrackedParlay
   return (
     <div className='flex flex-col gap-4'>
       {settled.length > 0 && <RecordTiles settled={settled} />}
-      {live.length > 0 && <Group title='Live now'>{live.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
-      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => <OpenCard key={p.id} p={p} foot={foot} />)}</Group>}
+      {live.length > 0 && <Group title='Live now'>{live.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
+      {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
       {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} foot={foot} />)}</Group>}
       <p className='px-1 text-xs text-muted-foreground'>
-        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'}{part === 'open' ? '' : ' Tap a settled parlay for every leg.'}
+        Teams are graded from the final score, props from Kalshi&apos;s result for that market.{owner ? '' : ' Saved on this device and your account.'}{part === 'open' ? ' Tap a parlay for every leg.' : ' Tap a settled parlay for every leg.'}
       </p>
     </div>
   )

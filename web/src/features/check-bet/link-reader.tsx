@@ -1,10 +1,11 @@
-import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
-import { Check, ChevronDown, Link2, Minus, X } from 'lucide-react'
+import { Check, ChevronRight, Link2, Minus, X } from 'lucide-react'
 import {
   type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
+import { BetDrawer, Fold, useInDrawer } from './bet-drawer'
 import { BetBox, betFacts, betLine, hasBet } from './bet-box'
 import { cn } from '@/lib/utils'
 import { useAccount } from '@/lib/profile'
@@ -50,8 +51,18 @@ function LegRow({ l }: { l: KLeg }) {
 }
 
 function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
+  const inDrawer = useInDrawer()
   const updated = <p className='px-1 text-xs text-muted-foreground'>Kalshi&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
   if (d.kind === 'market') {
+    if (inDrawer) {
+      const m = d.market
+      return (
+        <Fold title='Price now' peek={m.result ? (m.result === 'won' ? 'Won' : 'Lost') : pct(m.chance)}>
+          <ul className='overflow-hidden rounded-[18px] bg-card'><LegRow l={m} /></ul>
+          {updated}
+        </Fold>
+      )
+    }
     return (
       <div className='flex flex-col gap-2'>
         <ul className='overflow-hidden rounded-[18px] bg-card'><LegRow l={d.market} /></ul>
@@ -72,6 +83,43 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   const open = d.legs.length - d.won - d.lost
   const legs = [...d.legs].sort((a, b) => rank(a) - rank(b))
   const status = c.result === 'won' ? 'Won' : c.result === 'lost' || d.lost > 0 ? 'Lost' : open === 0 ? 'Every leg won' : 'Still alive'
+  const priced = !c.result && d.lost === 0 && d.ticker !== 'slip'
+  const prices = (
+    <dl className='grid grid-cols-2 gap-2 text-sm'>
+      <div>
+        <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
+        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}</dd>
+      </div>
+      <div>
+        <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
+        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{pct(d.multiplied)}</dd>
+      </div>
+    </dl>
+  )
+  const priceNote = (
+    <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
+      Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
+      usually move together, so treat it as a rough check on the combo price, not a fair price.
+    </p>
+  )
+  if (inDrawer) {
+    const legsPeek = [d.won && `${d.won} won`, d.lost && `${d.lost} lost`, open && `${open} to go`].filter(Boolean).join(' · ')
+    return (
+      <>
+        {review ?? (
+          <Fold title='Legs' peek={legsPeek} tone={d.lost ? 'text-bad' : undefined}>
+            <Legs legs={legs} won={d.won} />
+          </Fold>
+        )}
+        {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
+        {priced && (
+          <Fold title='Prices' peek={c.ask != null ? `${cents(c.ask)} to buy` : pct(d.multiplied)}>
+            <div className='px-2'>{prices}</div>{priceNote}{updated}
+          </Fold>
+        )}
+      </>
+    )
+  }
   return (
     <div className='flex flex-col gap-2'>
       <section className={cn('rounded-[18px] p-4', status === 'Lost' ? 'bg-bad/10' : status === 'Still alive' ? 'bg-card' : 'bg-good/10')}>
@@ -87,27 +135,9 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
             </div>
           ))}
         </div>
-        {!c.result && d.lost === 0 && d.ticker !== 'slip' && (
-          <dl className='mt-3 grid grid-cols-2 gap-2 text-sm'>
-            <div>
-              <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
-              <dd className='font-condensed text-[17px] font-bold tabular-nums'>
-                {c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}
-              </dd>
-            </div>
-            <div>
-              <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
-              <dd className='font-condensed text-[17px] font-bold tabular-nums'>{pct(d.multiplied)}</dd>
-            </div>
-          </dl>
-        )}
+        {priced && <div className='mt-3'>{prices}</div>}
       </section>
-      {!c.result && d.lost === 0 && d.ticker !== 'slip' && (
-        <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
-          Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
-          usually move together, so treat it as a rough check on the combo price, not a fair price.
-        </p>
-      )}
+      {priced && priceNote}
       {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
       {review ?? <Legs legs={legs} won={d.won} />}
       {updated}
@@ -229,6 +259,7 @@ function SidePicker({ d, onPick }: { d: Extract<KRead, { kind: 'event' }>; onPic
 }
 
 function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
+  const inDrawer = useInDrawer()
   if (d.kind === 'event') {
     return (
       <>
@@ -242,8 +273,13 @@ function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
   }
   return (
     <>
-      <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />
+      {!inDrawer && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
+      {inDrawer && (
+        <Fold title='My stake' peek={hasBet(r.entry?.bet) ? betLine(r.entry.bet) : 'Add it'}>
+          <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />
+        </Fold>
+      )}
       <div className='flex gap-2'>
         {!r.isSaved && <button type='button' onClick={r.save} className='h-10 rounded-full border px-4 text-sm font-semibold'>Save this</button>}
         <button type='button' onClick={() => r.go(r.lastLink)} className='h-10 rounded-full border px-4 text-sm font-semibold'>Check again</button>
@@ -259,11 +295,10 @@ function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
 
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 const legsOf = (d: KRead | undefined): KLeg[] => (!d ? [] : d.kind === 'combo' ? d.legs : d.kind === 'market' ? [d.market] : d.markets)
-const PEEK = 3
 const peek = (link: string) => ({ queryKey: ['kalshi-peek', link], queryFn: () => readLink(link), staleTime: 2 * 60e3, retry: 1 })
 
-// one saved bet, closed: what you bet, how it's going, and its first few legs. Read from Kalshi like the review (kept 2 minutes)
-function SavedCard({ s, open, onToggle, owner }: { s: Saved; open: boolean; onToggle: () => void; owner?: string }) {
+// what a saved bet's card and drawer header both show: how it's going, read from Kalshi like the review (kept 2 minutes)
+function useSavedFacts(s: Saved, owner?: string) {
   const q = useQuery(peek(s.link))
   const d = q.data
   const legs = legsOf(d)
@@ -275,62 +310,77 @@ function SavedCard({ s, open, onToggle, owner }: { s: Saved; open: boolean; onTo
     }
   }, [d?.fetched_at]) // eslint-disable-line react-hooks/exhaustive-deps
   const won = legs.filter((l) => l.result === 'won').length
+  const left = legs.filter((l) => !l.result).length
   const letter = s.outcome?.letter ?? s.snap?.letter ?? null
   const label = owner ? s.label.replace(/^Your parlay/, 'DeVig parlay') : s.label
   const tone = result === 'won' ? 'text-good' : result === 'lost' ? 'text-bad' : 'text-muted-foreground'
-  const status = result === 'won' ? 'Won' : result === 'lost' ? 'Lost' : legs.length > 1 ? `${won} of ${legs.length} hit` : 'Open'
+  const status = result === 'won' ? 'Won' : result === 'lost' ? 'Lost' : legs.length > 1 ? `${won} of ${legs.length} hit${left && left < legs.length ? ` · ${left} to go` : ''}` : 'Open'
+  return { q, legs, result, letter, label, tone, status }
+}
+
+function LegBarRow({ legs }: { legs: KLeg[] }) {
+  if (legs.length < 2) return null
   return (
-    <button type='button' onClick={onToggle} aria-expanded={open}
-      className={cn('block w-full rounded-[18px] bg-card p-4 text-start transition-colors duration-150 hover:bg-muted/40', open && 'ring-1 ring-devig/60')}>
-      <span className='flex items-start gap-3'>
+    <span className='flex gap-1' aria-hidden='true'>
+      {legs.map((l, i) => <span key={i} className={cn('h-1.5 flex-1 rounded-full', l.result === 'won' ? 'bg-good' : l.result === 'lost' ? 'bg-bad' : 'bg-muted')} />)}
+    </span>
+  )
+}
+
+// one saved bet, closed: just how it's going. Tap it for the drawer with the rest
+function SavedCard({ s, onOpen, owner }: { s: Saved; onOpen: () => void; owner?: string }) {
+  const f = useSavedFacts(s, owner)
+  return (
+    <button type='button' onClick={onOpen} aria-haspopup='dialog'
+      className='flex w-full flex-col gap-2.5 rounded-[18px] bg-card px-4 py-3.5 text-start transition-colors duration-150 hover:bg-muted/40'>
+      <span className='flex w-full items-center gap-3'>
         <span className='min-w-0 flex-1'>
-          <span className={cn('block text-xs font-bold tracking-wide uppercase', tone)}>{status} · {dayFmt.format(new Date(s.savedAt))}</span>
-          <span className='mt-0.5 block truncate font-semibold'>{label}</span>
-          {hasBet(s.bet) && <span className='block font-display text-[22px] leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
+          <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status} · {dayFmt.format(new Date(s.savedAt))}</span>
+          <span className='mt-0.5 block truncate font-semibold'>{f.label}</span>
+          {hasBet(s.bet) && <span className='block font-display text-lg leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
         </span>
-        {letter && (
-          <span className='grid size-11 shrink-0 place-items-center rounded-xl bg-muted font-display text-xl font-black' aria-label={`Grade ${letter}`}>{letter}</span>
+        {f.letter && (
+          <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${f.letter}`}>{f.letter}</span>
         )}
+        <ChevronRight className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
       </span>
-      {legs.length > 1 && (
-        <span className='mt-3 flex gap-1' aria-hidden='true'>
-          {legs.map((l, i) => <span key={i} className={cn('h-1.5 flex-1 rounded-full', l.result === 'won' ? 'bg-good' : l.result === 'lost' ? 'bg-bad' : 'bg-muted')} />)}
-        </span>
-      )}
-      {q.isPending ? (
-        <span className='mt-3 flex flex-col gap-2'><Skeleton className='h-4 w-3/4' /><Skeleton className='h-4 w-2/3' /></span>
-      ) : legs.length > 0 && (
-        <span className='mt-3 flex flex-col gap-1.5'>
-          {[...legs].sort((x, y) => rank(x) - rank(y)).slice(0, PEEK).map((l, i) => (
-            <span key={i} className='flex items-center gap-2.5 text-sm'>
-              <Mark r={l.result} />
-              <span className={cn('min-w-0 flex-1 truncate', l.result === 'lost' && 'text-bad')}>{legLabel(l)}</span>
-              <span className='shrink-0 tabular-nums text-muted-foreground'>{l.result ? (l.result === 'won' ? 'Won' : 'Lost') : pct(l.chance)}</span>
-            </span>
-          ))}
-        </span>
-      )}
-      <span className='mt-3 flex items-center justify-between text-sm'>
-        <span className='text-muted-foreground'>{legs.length > PEEK ? `+${legs.length - PEEK} more ${legs.length - PEEK === 1 ? 'leg' : 'legs'}` : ''}</span>
-        <span className='flex items-center gap-1 font-semibold text-devig'>
-          {open ? 'Hide' : 'Open'}<ChevronDown className={cn('size-4 transition-transform duration-150 motion-reduce:transition-none', open && 'rotate-180')} aria-hidden='true' />
-        </span>
-      </span>
+      {f.q.isPending ? <Skeleton className='h-1.5 w-full' /> : <LegBarRow legs={f.legs} />}
     </button>
   )
 }
 
-function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; openLink: string | null; onToggle: (s: Saved) => void; owner?: string; body: ReactNode }) {
+function SavedHead({ s, owner }: { s: Saved; owner?: string }) {
+  const f = useSavedFacts(s, owner)
   return (
-    <div className='flex flex-col gap-3'>
-      {list.map((s) => (
-        <Fragment key={s.link}>
-          <SavedCard s={s} open={s.link === openLink} onToggle={() => onToggle(s)} owner={owner} />
-          {s.link === openLink && <div className='flex flex-col gap-3'>{body}</div>}
-        </Fragment>
-      ))}
+    <div className='flex flex-col gap-2'>
+      <div className='flex items-end justify-between gap-3'>
+        <span className='min-w-0'>
+          {(f.result || f.legs.length < 2) && <span className={cn('block text-xs font-bold tracking-wide uppercase', f.tone)}>{f.status}</span>}
+          {hasBet(s.bet) && <span className='block font-display text-xl leading-tight font-extrabold tabular-nums'>{betLine(s.bet)}</span>}
+        </span>
+        {f.letter && <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-muted font-display text-lg font-black' aria-label={`Grade ${f.letter}`}>{f.letter}</span>}
+      </div>
     </div>
   )
+}
+
+function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; openLink: string | null; onToggle: (s: Saved) => void; owner?: string; body: ReactNode }) {
+  const cur = list.find((s) => s.link === openLink) ?? null
+  return (
+    <div className='flex flex-col gap-2'>
+      {list.map((s) => <SavedCard key={s.link} s={s} onOpen={() => onToggle(s)} owner={owner} />)}
+      {cur && (
+        <BetDrawer open onClose={() => onToggle(cur)} title={owner ? cur.label.replace(/^Your parlay/, 'DeVig parlay') : cur.label}
+          sub={`Saved ${dayFmt.format(new Date(cur.savedAt))}`} head={<SavedHead s={cur} owner={owner} />}>
+          {body}
+        </BetDrawer>
+      )}
+    </div>
+  )
+}
+
+function FriendBet({ bet, d, owner }: { bet: Saved['bet']; d: KRead; owner: string }) {
+  return <BetBox bet={bet} {...betFacts(d)} owner={owner} />
 }
 
 function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick?: (s: Saved) => void }) {
@@ -373,7 +423,7 @@ export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
           {read.error && <p role='alert' className='px-1 text-sm text-bad'>{read.error instanceof LinkError ? read.error.message : 'Something went wrong. Try again.'}</p>}
           {read.isPending ? <Skeleton className='h-48 w-full rounded-[18px]' /> : data && (
             <>
-              {data.kind !== 'event' && <BetBox bet={cur?.bet} {...betFacts(data)} owner={owner} />}
+              {data.kind !== 'event' && <FriendBet bet={cur?.bet} d={data} owner={owner} />}
               <Result d={data} review={data.kind === 'combo' ? <ParlayReview d={data} entry={cur} all={list} onStore={() => {}} /> : undefined} />
             </>
           )}

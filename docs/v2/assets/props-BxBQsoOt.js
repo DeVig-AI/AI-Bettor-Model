@@ -1,1 +1,0 @@
-import{n as e}from"./props-NJafd1LV.js";var t=e;export{t as component};

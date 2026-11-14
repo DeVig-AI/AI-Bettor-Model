@@ -1,0 +1,1 @@
+import{O as e}from"./index-LB4pxyd7.js";var t=e;export{t as component};
