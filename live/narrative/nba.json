@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-14T06:43:10+00:00",
+ "updated": "2026-11-14T14:17:37+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -35,38 +35,15 @@
    "final": null,
    "type": "side",
    "pick": "DAL",
-   "line": 3.5,
-   "score": 4.0,
+   "line": 1.5,
+   "score": 3.0,
    "why_for": [
     "Bounce-back spot after losing by 39",
     "CLE: Second night of a back-to-back",
     "CLE: Evan Mobley (17 points a game) is out"
    ],
-   "why_opp": []
-  },
-  {
-   "id": "401909980",
-   "date": "2026-11-14",
-   "start": "2026-11-15T00:00Z",
-   "game": "DEN @ NO",
-   "home": "NO",
-   "away": "DEN",
-   "home_id": "3",
-   "away_id": "7",
-   "book": "DraftKings",
-   "result": null,
-   "final": null,
-   "type": "side",
-   "pick": "DEN",
-   "line": -11.5,
-   "score": 2.75,
-   "why_for": [
-    "Line tell: the line rates DEN 8.8 points better than results so far",
-    "NO: Second night of a back-to-back (last night was a blowout, so starters may have rested)",
-    "NO: Trey Murphy III (16 points a game) is out"
-   ],
    "why_opp": [
-    "NO: Bounce-back spot after losing by 31"
+    "CLE: Fade the line move: CLE went from -3.5 to -1.5"
    ]
   },
   {
@@ -955,13 +932,15 @@
     "why_opp": []
    },
    "total": {
-    "lean": "OVER",
-    "line": 228.5,
+    "lean": "UNDER",
+    "line": 229.5,
     "score": 0.5,
     "why_for": [
-     "MIA on tired legs (back-to-back)"
+     "Fade the inflated total: 226.5 to 229.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "MIA on tired legs (back-to-back)"
+    ]
    }
   },
   {
@@ -976,21 +955,26 @@
    "note": null,
    "side": {
     "lean": "BKN",
-    "score": 0.75,
+    "score": 1.25,
     "capped": false,
     "why_for": [
+     "Line tell: the line rates BKN 5.6 points better than results so far",
      "MEM: Second night of a back-to-back (last night was a blowout, so starters may have rested)"
     ],
-    "why_opp": []
+    "why_opp": [
+     "MEM: Fade the line move: MEM went from -5.5 to -3.5"
+    ]
    },
    "total": {
-    "lean": "OVER",
-    "line": 226.5,
+    "lean": "UNDER",
+    "line": 228.5,
     "score": 0.5,
     "why_for": [
-     "MEM on tired legs (back-to-back)"
+     "Fade the inflated total: 225.5 to 228.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "MEM on tired legs (back-to-back)"
+    ]
    }
   },
   {
@@ -1017,7 +1001,7 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 236.5,
+    "line": 235.5,
     "score": 0.5,
     "why_for": [
      "CHI on tired legs (back-to-back)"
@@ -1037,14 +1021,16 @@
    "note": null,
    "side": {
     "lean": "DAL",
-    "score": 4.0,
+    "score": 3.0,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 39",
      "CLE: Second night of a back-to-back",
      "CLE: Evan Mobley (17 points a game) is out"
     ],
-    "why_opp": []
+    "why_opp": [
+     "CLE: Fade the line move: CLE went from -3.5 to -1.5"
+    ]
    },
    "total": {
     "lean": "OVER",
@@ -1068,15 +1054,17 @@
    "note": null,
    "side": {
     "lean": "DEN",
-    "score": 2.75,
-    "capped": false,
+    "score": 1.75,
+    "capped": true,
     "why_for": [
-     "Line tell: the line rates DEN 8.8 points better than results so far",
+     "Line tell: the line rates DEN 9.8 points better than results so far",
+     "Never lay 12 or more",
      "NO: Second night of a back-to-back (last night was a blowout, so starters may have rested)",
      "NO: Trey Murphy III (16 points a game) is out"
     ],
     "why_opp": [
-     "NO: Bounce-back spot after losing by 31"
+     "NO: Bounce-back spot after losing by 31",
+     "NO: Fade the line move: NO went from +10.5 to +12.5"
     ]
    },
    "total": {
