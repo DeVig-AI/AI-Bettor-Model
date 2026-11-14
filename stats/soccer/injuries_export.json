@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 14 \u00b7 5:14 AM ET",
+    "as_of": "Sat Nov 14 \u00b7 11:59 AM ET",
     "date": "2026-11-14",
     "sport": "EPL"
    },
@@ -470,6 +470,50 @@
     "tip_sort": "1122-0900"
    },
    "doc_id": "epl-bha-pascal-struijk"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BHA",
+    "home": "HUL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 0 of BHA's 10 league matches \u00b7 a goal or assist on 1 of their 26 goals (4%)"
+    },
+    "player": "Jaouen Hadjam",
+    "reason": "Unspecified injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "BHA",
+    "tip": "Sun 9:00 AM",
+    "tip_sort": "1122-0900"
+   },
+   "doc_id": "epl-bha-jaouen-hadjam"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BHA",
+    "home": "HUL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 6 of BHA's 10 league matches \u00b7 a goal or assist on 2 of their 26 goals (8%)"
+    },
+    "player": "Chema Andr\u00e9s",
+    "reason": "Hip injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "BHA",
+    "tip": "Sun 9:00 AM",
+    "tip_sort": "1122-0900"
+   },
+   "doc_id": "epl-bha-chema-andres"
   },
   {
    "collection": "injuries",
@@ -1836,6 +1880,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-14T10:14:06Z",
+ "generated_at": "2026-11-14T16:59:43Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }

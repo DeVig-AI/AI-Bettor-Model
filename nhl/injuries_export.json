@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 14 \u00b7 5:14 AM ET",
+    "as_of": "Sat Nov 14 \u00b7 11:59 AM ET",
     "date": "2026-11-14",
     "sport": "NHL"
    },
@@ -147,28 +147,6 @@
     "away": "BUF",
     "home": "DAL",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min a game \u00b7 1 point in 18 games = 1% of DAL's points"
-    },
-    "player": "Lian Bichsel",
-    "reason": "D \u00b7 Lower body",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "DAL",
-    "tip": "Sat 8:00 PM",
-    "tip_sort": "1114-2000"
-   },
-   "doc_id": "nhl-dal-lian-bichsel"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BUF",
-    "home": "DAL",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -262,28 +240,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "19 min a game \u00b7 17 points in 21 games = 9% of MIN's points"
-    },
-    "player": "Joel Eriksson Ek",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "MIN",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1114-1900"
-   },
-   "doc_id": "nhl-min-joel-eriksson-ek"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "BOS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Filip Gustavsson",
@@ -308,11 +264,12 @@
      "level": "minor",
      "why": "13 min a game \u00b7 9 points in 19 games = 5% of MTL's points"
     },
+    "note": "Downgraded from day-to-day",
     "player": "Chris Kreider",
-    "reason": "LW",
+    "reason": "LW \u00b7 Lower body",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "MTL",
     "tip": "Sat 7:00 PM",
     "tip_sort": "1114-1900"
@@ -352,11 +309,12 @@
      "level": "minor",
      "why": "17 min a game \u00b7 5 points in 14 games = 3% of NSH's points"
     },
+    "note": "Upgraded from out",
     "player": "Jonathan Marchessault",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "NSH",
     "tip": "Sun 9:00 PM",
     "tip_sort": "1115-2100"
@@ -965,6 +923,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-14T10:14:05Z",
+ "generated_at": "2026-11-14T16:59:43Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
