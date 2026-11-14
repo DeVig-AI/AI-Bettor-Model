@@ -216,7 +216,7 @@ function ParlayRow({ p, foot }: { p: Graded; foot: Foot }) {
         {bar}
       </button>
       {open && (
-        <BetDrawer open onClose={() => setOpen(false)} only={['legs']} title={`${money(stake)} to win ${money(p.payout - stake)}`}
+        <BetDrawer open onClose={() => setOpen(false)} title={`${money(stake)} to win ${money(p.payout - stake)}`}
           sub={`${n}-leg parlay · ${fmtAmerican(p.odds)}`}
           head={<div className='flex flex-col gap-2'><span className={cn('text-xs font-bold', live ? 'text-[#b5ffd0]' : 'text-muted-foreground')}>{line}</span>{bar}</div>}>
           <div className='overflow-hidden rounded-[18px] bg-card [&>ul]:border-t-0'>

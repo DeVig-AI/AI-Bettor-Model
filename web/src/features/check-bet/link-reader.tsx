@@ -1,11 +1,11 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import { Check, ChevronRight, Link2, Minus, X } from 'lucide-react'
 import {
   type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
-import { BetDrawer, type Sec, useInDrawer, useShow } from './bet-drawer'
+import { BetDrawer, Fold, useInDrawer } from './bet-drawer'
 import { BetBox, betFacts, betLine, hasBet } from './bet-box'
 import { cn } from '@/lib/utils'
 import { useAccount } from '@/lib/profile'
@@ -51,11 +51,18 @@ function LegRow({ l }: { l: KLeg }) {
 }
 
 function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
-  const show = useShow()
   const inDrawer = useInDrawer()
-  const updated = !show('prices') ? null : <p className='px-1 text-xs text-muted-foreground'>Kalshi&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
+  const updated = <p className='px-1 text-xs text-muted-foreground'>Kalshi&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
   if (d.kind === 'market') {
-    if (!show('legs') && !show('prices')) return null
+    if (inDrawer) {
+      const m = d.market
+      return (
+        <Fold title='Price now' peek={m.result ? (m.result === 'won' ? 'Won' : 'Lost') : pct(m.chance)}>
+          <ul className='overflow-hidden rounded-[18px] bg-card'><LegRow l={m} /></ul>
+          {updated}
+        </Fold>
+      )
+    }
     return (
       <div className='flex flex-col gap-2'>
         <ul className='overflow-hidden rounded-[18px] bg-card'><LegRow l={d.market} /></ul>
@@ -76,9 +83,45 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   const open = d.legs.length - d.won - d.lost
   const legs = [...d.legs].sort((a, b) => rank(a) - rank(b))
   const status = c.result === 'won' ? 'Won' : c.result === 'lost' || d.lost > 0 ? 'Lost' : open === 0 ? 'Every leg won' : 'Still alive'
+  const priced = !c.result && d.lost === 0 && d.ticker !== 'slip'
+  const prices = (
+    <dl className='grid grid-cols-2 gap-2 text-sm'>
+      <div>
+        <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
+        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}</dd>
+      </div>
+      <div>
+        <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
+        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{pct(d.multiplied)}</dd>
+      </div>
+    </dl>
+  )
+  const priceNote = (
+    <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
+      Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
+      usually move together, so treat it as a rough check on the combo price, not a fair price.
+    </p>
+  )
+  if (inDrawer) {
+    const legsPeek = [d.won && `${d.won} won`, d.lost && `${d.lost} lost`, open && `${open} to go`].filter(Boolean).join(' · ')
+    return (
+      <>
+        <Fold title='Legs' peek={legsPeek} tone={d.lost ? 'text-bad' : undefined}>
+          <Legs legs={legs} won={d.won} />
+          {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
+        </Fold>
+        {priced && (
+          <Fold title='Prices' peek={c.ask != null ? `${cents(c.ask)} to buy` : pct(d.multiplied)}>
+            <div className='px-2'>{prices}</div>{priceNote}{updated}
+          </Fold>
+        )}
+        {review}
+      </>
+    )
+  }
   return (
     <div className='flex flex-col gap-2'>
-      {!inDrawer && <section className={cn('rounded-[18px] p-4', status === 'Lost' ? 'bg-bad/10' : status === 'Still alive' ? 'bg-card' : 'bg-good/10')}>
+      <section className={cn('rounded-[18px] p-4', status === 'Lost' ? 'bg-bad/10' : status === 'Still alive' ? 'bg-card' : 'bg-good/10')}>
         <div className='flex items-baseline justify-between gap-3'>
           <span className='font-display text-2xl font-black'>{status}</span>
           <span className='text-sm text-muted-foreground'>{d.legs.length} legs</span>
@@ -91,41 +134,11 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
             </div>
           ))}
         </div>
-        {!c.result && d.lost === 0 && d.ticker !== 'slip' && show('prices') && (
-          <dl className='mt-3 grid grid-cols-2 gap-2 text-sm'>
-            <div>
-              <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
-              <dd className='font-condensed text-[17px] font-bold tabular-nums'>
-                {c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}
-              </dd>
-            </div>
-            <div>
-              <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
-              <dd className='font-condensed text-[17px] font-bold tabular-nums'>{pct(d.multiplied)}</dd>
-            </div>
-          </dl>
-        )}
-      </section>}
-      {inDrawer && show('prices') && !c.result && d.lost === 0 && d.ticker !== 'slip' && (
-        <dl className='grid grid-cols-2 gap-2 rounded-[18px] bg-card p-4 text-sm'>
-          <div>
-            <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
-            <dd className='font-condensed text-[17px] font-bold tabular-nums'>{c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}</dd>
-          </div>
-          <div>
-            <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
-            <dd className='font-condensed text-[17px] font-bold tabular-nums'>{pct(d.multiplied)}</dd>
-          </div>
-        </dl>
-      )}
-      {!c.result && d.lost === 0 && d.ticker !== 'slip' && show('prices') && (
-        <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
-          Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
-          usually move together, so treat it as a rough check on the combo price, not a fair price.
-        </p>
-      )}
+        {priced && <div className='mt-3'>{prices}</div>}
+      </section>
+      {priced && priceNote}
       {d.truncated && <p className='px-1 text-xs text-muted-foreground'>Only the first 80 legs are shown.</p>}
-      {review ?? (show('legs') && <Legs legs={legs} won={d.won} />)}
+      {review ?? <Legs legs={legs} won={d.won} />}
       {updated}
     </div>
   )
@@ -245,7 +258,7 @@ function SidePicker({ d, onPick }: { d: Extract<KRead, { kind: 'event' }>; onPic
 }
 
 function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
-  const show = useShow()
+  const inDrawer = useInDrawer()
   if (d.kind === 'event') {
     return (
       <>
@@ -259,8 +272,13 @@ function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
   }
   return (
     <>
-      {show('bet') && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
+      {!inDrawer && <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />}
       <Result d={d} review={d.kind === 'combo' ? <ParlayReview d={d} entry={r.entry} all={r.saved} onStore={r.store} /> : undefined} />
+      {inDrawer && (
+        <Fold title='My stake' peek={hasBet(r.entry?.bet) ? betLine(r.entry.bet) : 'Add it'}>
+          <BetBox key={r.lastLink} bet={r.entry?.bet} {...betFacts(d)} onSave={(bet) => r.store({ bet })} />
+        </Fold>
+      )}
       <div className='flex gap-2'>
         {!r.isSaved && <button type='button' onClick={r.save} className='h-10 rounded-full border px-4 text-sm font-semibold'>Save this</button>}
         <button type='button' onClick={() => r.go(r.lastLink)} className='h-10 rounded-full border px-4 text-sm font-semibold'>Check again</button>
@@ -346,19 +364,13 @@ function SavedHead({ s, owner }: { s: Saved; owner?: string }) {
   )
 }
 
-// the chips that mean something for this kind of bet: a single bet has no chance chart, grade or lessons
-const onlyFor = (link: string, kindOf: (l: string) => KRead['kind'] | undefined): Sec[] | undefined =>
-  link.startsWith('slip:') || kindOf(link) === 'combo' ? undefined : ['legs', 'bet', 'prices']
-
 function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; openLink: string | null; onToggle: (s: Saved) => void; owner?: string; body: ReactNode }) {
   const cur = list.find((s) => s.link === openLink) ?? null
-  const qc = useQueryClient()
-  const kindOf = (l: string) => qc.getQueryData<KRead>(['kalshi-peek', l])?.kind
   return (
     <div className='flex flex-col gap-2'>
       {list.map((s) => <SavedCard key={s.link} s={s} onOpen={() => onToggle(s)} owner={owner} />)}
       {cur && (
-        <BetDrawer open onClose={() => onToggle(cur)} only={onlyFor(cur.link, kindOf)} title={owner ? cur.label.replace(/^Your parlay/, 'DeVig parlay') : cur.label}
+        <BetDrawer open onClose={() => onToggle(cur)} title={owner ? cur.label.replace(/^Your parlay/, 'DeVig parlay') : cur.label}
           sub={`Saved ${dayFmt.format(new Date(cur.savedAt))}`} head={<SavedHead s={cur} owner={owner} />}>
           {body}
         </BetDrawer>
@@ -368,8 +380,7 @@ function SavedCards({ list, openLink, onToggle, owner, body }: { list: Saved[]; 
 }
 
 function FriendBet({ bet, d, owner }: { bet: Saved['bet']; d: KRead; owner: string }) {
-  const show = useShow()
-  return show('bet') ? <BetBox bet={bet} {...betFacts(d)} owner={owner} /> : null
+  return <BetBox bet={bet} {...betFacts(d)} owner={owner} />
 }
 
 function SavedList({ r, list, title, onPick }: { r: Reader; list: Saved[]; title: string; onPick?: (s: Saved) => void }) {
