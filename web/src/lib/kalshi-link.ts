@@ -1,5 +1,6 @@
 // The Kalshi link reader: paste a link from Kalshi's Share button (one bet, a game, or a combo) and /api/kalshi
-// (functions/api/kalshi.js) returns its prices now and, for a combo, every leg. Saved links live in this browser
+// (functions/api/kalshi.js) returns its prices now and, for a combo, every leg. Polymarket links work the same way
+// (functions/lib/polymarket.js): a game or market link, then the side you took ("pm:<market>~<side>"), no combos. Saved links live in this browser
 // and, when signed in, on the account (lib/profile.ts), so every device and friends who follow you see them.
 import { useSyncExternalStore } from 'react'
 import { useMutation } from '@tanstack/react-query'
@@ -13,10 +14,16 @@ export type KLeg = {
   bid: number | null; ask: number | null; last: number | null; chance: number | null; closes: string | null
   strike?: number | null; strike_type?: string | null // 224.5 'greater' = 225+
 }
-export type KRead =
+export type Source = 'kalshi' | 'polymarket'
+export type KRead = { source?: Source } & (
   | { kind: 'combo'; ticker: string; fetched_at: string; combo: KLeg; legs: KLeg[]; multiplied: number | null; won: number; lost: number; truncated: boolean }
   | { kind: 'market'; ticker: string; fetched_at: string; market: KLeg }
-  | { kind: 'event'; ticker: string; fetched_at: string; title: string | null; sub: string | null; markets: KLeg[] }
+  | { kind: 'event'; ticker: string; fetched_at: string; title: string | null; sub: string | null; markets: KLeg[] })
+
+// who the prices are from, in words
+export const sourceName = (d: { source?: Source } | null | undefined) => (d?.source === 'polymarket' ? 'Polymarket' : 'Kalshi')
+// a link the link reader takes (and the Book link tab hands over)
+export const isExchangeLink = (s: string) => /^\s*(https?:\/\/)?(www\.|[a-z]+\.)?(kalshi|polymarket)\.com\//i.test(s) || /^\s*pm:/i.test(s)
 
 export class LinkError extends Error {}
 
@@ -29,7 +36,7 @@ export async function readLink(link: string): Promise<KRead> {
     throw new LinkError("Couldn't reach DeVig. Check your connection and try again.")
   }
   const d = await r.json().catch(() => null)
-  if (!r.ok || !d) throw new LinkError(d?.error ?? "Kalshi isn't answering right now. Try again in a minute.")
+  if (!r.ok || !d) throw new LinkError(d?.error ?? "That site isn't answering right now. Try again in a minute.")
   return d as KRead
 }
 

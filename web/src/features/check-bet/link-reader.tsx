@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { Check, Link2, Minus, X } from 'lucide-react'
 import {
-  type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, storeSaved, useReadLink, useSaved,
+  type KLeg, type KRead, type Saved, LinkError, getSaved, labelFor, legLabel, readLink, removeSaved, sourceName, storeSaved, useReadLink, useSaved,
 } from '@/lib/kalshi-link'
 import { ParlayReview } from './review'
 import { BetBadge, BetCard, BetDrawer, BetHead, Fold, type Seg, betStatus, useInDrawer } from './bet-drawer'
@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 import { useAccount } from '@/lib/profile'
 import { Skeleton } from '@/components/ui/skeleton'
 
-// Check a Kalshi bet from its Share link (one bet, a game, or a combo leg by leg), and keep links on this device.
+// Check a Kalshi or Polymarket bet from its Share link (one bet, a game, or a Kalshi combo leg by leg), and keep links on this device.
 // Used on History and on Parlay.
 
 const timeFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
@@ -53,7 +53,7 @@ function LegRow({ l }: { l: KLeg }) {
 
 function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   const inDrawer = useInDrawer()
-  const updated = <p className='px-1 text-xs text-muted-foreground'>Kalshi&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
+  const updated = <p className='px-1 text-xs text-muted-foreground'>{sourceName(d)}&apos;s prices as of {timeFmt.format(new Date(d.fetched_at))}. Gold buy–sell gap = more than 10¢ apart, so the % is rough.</p>
   if (d.kind === 'market') {
     if (inDrawer) {
       const m = d.market
@@ -424,16 +424,18 @@ export function FriendSaved({ list, owner }: { list: Saved[]; owner: string }) {
 const isDone = (s: Saved, d: KRead | undefined) => !!s.outcome || (!!d && d.kind !== 'event' && betFacts(d).result != null)
 
 // part: with no paste box, just your saved bets, 'open' ones (Parlay tab) or 'done' ones (History), each opened right under its card
-export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = true, part }: {
+export function LinkReader({ title = 'Check a Kalshi or Polymarket bet', blurb, showSaved = true, part, start }: {
   title?: string; blurb?: React.ReactNode; showSaved?: boolean; part?: 'open' | 'done'
+  start?: string // a link to read right away (pasted into the Book link tab)
 } = {}) {
   const r = useBetReader()
-  const [link, setLink] = useState('')
+  const [link, setLink] = useState(start ?? '')
+  useEffect(() => { if (start) r.go(start) }, [start]) // eslint-disable-line react-hooks/exhaustive-deps
   const reads = useQueries({ queries: (part ? r.saved : []).map((s) => peek(s.link)) })
   if (part) {
     const list = r.saved.filter((s, i) => isDone(s, reads[i]?.data) === (part === 'done'))
     if (!list.length && !r.data) return null
-    const heading = part === 'done' ? 'Finished Kalshi bets' : 'Saved Kalshi bets'
+    const heading = part === 'done' ? 'Finished Kalshi & Polymarket bets' : 'Saved Kalshi & Polymarket bets'
     return (
       <section aria-label={heading} className='flex flex-col gap-3'>
         <SavedList r={r} list={list} title={heading} />
@@ -445,11 +447,11 @@ export function LinkReader({ title = 'Check a Kalshi bet', blurb, showSaved = tr
     <section aria-label={title} className='flex flex-col gap-3'>
       <div className='rounded-[18px] bg-card p-4'>
         <h2 className='font-display text-[22px] font-extrabold'>{title}</h2>
-        <p className='mt-1 text-sm text-muted-foreground'>{blurb ?? <>Paste a link from Kalshi&apos;s Share button: one bet, a game, or a combo. You&apos;ll see every leg, what&apos;s won, and the prices now.</>}</p>
+        <p className='mt-1 text-sm text-muted-foreground'>{blurb ?? <>Paste a link from Kalshi or Polymarket&apos;s Share button: one bet, a game, or a Kalshi combo. You&apos;ll see every leg, what&apos;s won, and the prices now.</>}</p>
         <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); r.go(link) }}>
           <label className='flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border bg-background px-3 focus-within:border-foreground'>
             <Link2 className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
-            <input value={link} onChange={(e) => setLink(e.target.value)} placeholder='kalshi.com/markets/…' aria-label='Kalshi link'
+            <input value={link} onChange={(e) => setLink(e.target.value)} placeholder='kalshi.com/… or polymarket.com/…' aria-label='Kalshi or Polymarket link'
               inputMode='url' autoComplete='off' autoCapitalize='off' spellCheck={false}
               className='h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground' />
           </label>
