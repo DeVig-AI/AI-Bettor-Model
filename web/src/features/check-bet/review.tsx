@@ -1,7 +1,9 @@
 import { type ReactNode, useEffect, useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
 import { AlertTriangle, Check, ChevronRight, Lightbulb, X } from 'lucide-react'
-import type { KRead, Saved } from '@/lib/kalshi-link'
+import { type KLeg, type KRead, type Saved, sourceName } from '@/lib/kalshi-link'
+// whose market a leg is from, in words
+const exch = (l: KLeg) => (l.ticker?.startsWith('pm') ? 'Polymarket' : 'Kalshi')
 import {
   type GradeLeg, type LegGame, type LegInfo, type Outcome, type Snap, type TakeLeg,
   SUMMARY, codes, grade, legGameOf, legOutcome, lessons, parseLeg, priceAt, rowOf, snapOf, takeaways, trackedInfo, useDevigViews, useHistories, useLegGames, useLegMarkets, weakSpots, weakestOf,
@@ -77,7 +79,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
     key: i.key, label: i.label, result: i.leg.result, before: snap?.legs[i.key]?.chance ?? null, kick: kickOf(i),
     devig: gl[n].devig, weakest: i.key === weakestKey,
   }))
-  const histReady = infos.every((i) => games[i.key]?.state == null || games[i.key]!.state === 'pre' || hist[i.key] !== undefined)
+  const histReady = infos.every((i) => i.leg.ticker?.startsWith('pm') || games[i.key]?.state == null || games[i.key]!.state === 'pre' || hist[i.key] !== undefined)
   useEffect(() => {
     if (!decided || entry?.outcome || !histReady) return
     const o: Outcome = {
@@ -131,11 +133,13 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
           <MoreLabel />
         </>
       )}
-      <Fold title='Chance it all hits' peek='Chart'>
-        <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />
-      </Fold>
+      {d.source !== 'polymarket' && (
+        <Fold title='Chance it all hits' peek='Chart'>
+          <PulseCard d={d} savedAt={entry?.savedAt ?? null} label={entry?.label ?? null} />
+        </Fold>
+      )}
       <Fold title='Grade' peek={shownG.letter + (weak.length && !decided ? ` · ${weak.length} weak ${weak.length === 1 ? 'spot' : 'spots'}` : '')}>
-        <GradeCard g={shownG} snap={snap} started={anyStarted} />
+        <GradeCard g={shownG} snap={snap} started={anyStarted} src={sourceName(d)} />
         {weak.length > 0 && !decided && (
           <section aria-label='Weak spots' className='rounded-[18px] bg-card p-4'>
             <h3 className='flex items-center gap-2 font-display text-lg font-extrabold'><AlertTriangle className='size-4 text-[#F5C77A]' aria-hidden='true' />Weak spots</h3>
@@ -169,7 +173,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
   )
 }
 
-function GradeCard({ g, snap, started }: { g: ReturnType<typeof grade>; snap: Snap | null; started: boolean }) {
+function GradeCard({ g, snap, started, src }: { g: ReturnType<typeof grade>; snap: Snap | null; started: boolean; src: string }) {
   const when = snap && started ? `Graded when you first checked it, ${dayFmt.format(new Date(snap.at))}.` : started ? 'Graded on the prices at kickoff.' : 'Graded on the prices now.'
   return (
     <section aria-label='Grade' className='rounded-[18px] bg-card p-4'>
@@ -178,7 +182,7 @@ function GradeCard({ g, snap, started }: { g: ReturnType<typeof grade>; snap: Sn
         <div className='min-w-0'>
           <p className='font-semibold leading-snug'>{g.summary}</p>
           <p className='mt-1 text-xs text-muted-foreground'>
-            {when}{g.hit != null && <> Kalshi&apos;s prices give it about <b className='text-foreground'>1 in {Math.max(1, Math.round(1 / g.hit))}</b>{g.devigHit != null && Math.abs(g.devigHit - g.hit) > 0.005 ? <>; DeVig&apos;s, 1 in {Math.max(1, Math.round(1 / g.devigHit))}</> : null}.</>}
+            {when}{g.hit != null && <> {src}&apos;s prices give it about <b className='text-foreground'>1 in {Math.max(1, Math.round(1 / g.hit))}</b>{g.devigHit != null && Math.abs(g.devigHit - g.hit) > 0.005 ? <>; DeVig&apos;s, 1 in {Math.max(1, Math.round(1 / g.devigHit))}</> : null}.</>}
           </p>
         </div>
       </div>
@@ -279,7 +283,7 @@ function KalshiLegBar({ i, game, right }: { i: LegInfo; game: LegGame | null; ri
   return (
     <LegBar
       title={i.label}
-      sub={game ? `${sport} · ${game.away} at ${game.home}` : [i.sport, i.teams].filter(Boolean).join(' · ') || 'Kalshi'}
+      sub={game ? `${sport} · ${game.away} at ${game.home}` : [i.sport, i.teams].filter(Boolean).join(' · ') || exch(i.leg)}
       colors={colors}
       sideIsHome={s == null ? null : s === 'home'}
       logo={logo}
@@ -324,13 +328,13 @@ function LegDetails({ i, game, sum, dv, before, k, weakest }: {
       <p className='flex flex-wrap items-center gap-x-3 gap-y-1'>
         {dv && (
           <span className={cn('rounded-full px-2 py-0.5 text-xs font-bold', gap <= -0.03 ? 'bg-bad/15 text-bad' : gap >= 0.03 ? 'bg-devig/15 text-devig' : 'bg-muted text-muted-foreground')}>
-            {gap <= -0.03 ? 'DeVig is less sure' : gap >= 0.03 ? 'DeVig likes it' : 'About even with Kalshi'}
+            {gap <= -0.03 ? 'DeVig is less sure' : gap >= 0.03 ? 'DeVig likes it' : `About even with ${exch(i.leg)}`}
           </span>
         )}
         {!dv && <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground'>Market only</span>}
         {weakest && <span className='rounded-full bg-[#F5C77A]/15 px-2 py-0.5 text-xs font-bold text-[#F5C77A]'>Weakest leg</span>}
         {dv && <span className='font-semibold text-devig'>DeVig {pct(dv.p)}</span>}
-        {path.length > 0 && <span className='text-muted-foreground'>Kalshi {path.join(' → ')}</span>}
+        {path.length > 0 && <span className='text-muted-foreground'>{exch(i.leg)} {path.join(' → ')}</span>}
       </p>
     </>
   )
@@ -346,7 +350,7 @@ function legLine(i: LegInfo, g: LegGame | null, pace: Pace | null): [string | nu
   const l = i.leg
   if (!g) return [l.result ? null : l.closes ? `Closes ${when2(l.closes)}` : null, null]
   if (g.state === 'pre') return [`Starts ${when2(g.kickoff)}`, null]
-  const when = g.state === 'post' ? (l.result ? 'Final' : "Final · waiting on Kalshi's result") : g.detail
+  const when = g.state === 'post' ? (l.result ? 'Final' : `Final · waiting on ${exch(l)}'s result`) : g.detail
   const a = g.awayScore, h = g.homeScore
   const need = (strike: number) => { const t = Math.floor(strike) + 1; return l.side === 'no' ? `needs under ${t}` : `needs ${t}+` }
   if (pace && i.stat) return [`${n1(pace.v)} ${i.stat.label}, ${need(pace.target - 0.5)} · ${when}`, pace.status === 'early' ? null : ['hit', 'ahead', 'on'].includes(pace.status) === (l.side !== 'no')]
@@ -405,7 +409,7 @@ function ComboLegRow({ i, st, game, dv, snap, k, weakest, fallback, children }: 
         </span>
       )}>
       {started && <Scoreline g={game!} />}
-      {!started && <p className='text-muted-foreground'>{game ? `${game.away} at ${game.home} · ${dayFmt.format(new Date(game.kickoff))}` : i.sport ? `${i.sport} · not on DeVig's board` : "Kalshi market"}</p>}
+      {!started && <p className='text-muted-foreground'>{game ? `${game.away} at ${game.home} · ${dayFmt.format(new Date(game.kickoff))}` : i.sport ? `${i.sport} · not on DeVig's board` : `${exch(i.leg)} market`}</p>}
       <LegDetails i={i} game={game} sum={sum ?? null} dv={dv} before={before} k={k} weakest={weakest} />
       {children}
       {game?.row?.id && (

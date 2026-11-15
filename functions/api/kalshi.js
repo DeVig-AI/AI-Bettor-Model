@@ -155,12 +155,12 @@ async function history(q, fetcher, now) {
 }
 
 async function polymarket(p, fetcher, now) {
-  const key = `pm:${p.slug}|${p.market || ""}|${p.side ?? ""}`;
+  const key = p.combo ? `pmus:${p.combo}` : `pm:${p.slug}|${p.market || ""}|${p.side ?? ""}`;
   const hit = mem.get(key);
   if (hit && now() - hit.at < TTL * 1000) return json(hit.data, 200, 15);
   try {
     const found = await readPoly(p, fetcher);
-    if (!found) return json({error: "Polymarket doesn't have a market or event with that link.", code: "not_found"}, 404);
+    if (!found) return json({error: p.combo ? "Polymarket doesn't show that combo. Share it again from the app and paste the new link." : "Polymarket doesn't have a market or event with that link.", code: "not_found"}, 404);
     const data = {fetched_at: new Date(now()).toISOString().replace(/\.\d+Z$/, "Z"), ...found};
     mem.set(key, {at: now(), data});
     if (mem.size > 200) mem.delete(mem.keys().next().value);

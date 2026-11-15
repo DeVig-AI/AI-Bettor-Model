@@ -269,9 +269,9 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
           const m = d.market, no = side === "no";
           b.legs.push(kalshiLeg({...m, side: no ? "no" : "yes", result: no ? (m.result === "won" ? "lost" : m.result === "lost" ? "won" : null) : m.result}));
         }
-      } else if (b.link.startsWith("pm:")) {
+      } else if (b.link.startsWith("pm:") || /polymarket\.us\//i.test(b.link)) {
         const d = await readPoly(b.link);
-        b.legs = d && d.kind === "market" ? [polyLeg(d.market)] : [];
+        b.legs = d && d.kind === "market" ? [polyLeg(d.market)] : d && d.kind === "combo" ? d.legs.map(polyLeg) : [];
       } else {
         const t = parseLink(b.link), d = t ? await readKalshi(t) : null;
         b.legs = d && d.kind === "combo" ? d.legs.map(kalshiLeg) : d && d.kind === "market" ? [kalshiLeg(d.market)] : [];

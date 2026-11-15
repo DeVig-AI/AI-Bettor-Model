@@ -76,6 +76,21 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 export function parseLeg(leg: KLeg): LegInfo {
   const key = `${leg.ticker}|${leg.side}`
   const label = (leg.side === 'no' ? 'No: ' : '') + (leg.title || leg.pick).replace(/\?$/, '').replace(/^Full Game: /i, '')
+  const base0: LegInfo = { key, leg, label, sport: null, kind: 'other', match: null, date: null, teams: null, code: null, stat: null, player: null, strike: null }
+  // a Polymarket side, "pm:nfl-lar-ari-2026-11-15~1": the game from the slug (away team first), side 0 = the first team
+  const pm = /^pm:([a-z]+)-([a-z0-9]{2,5})-([a-z0-9]{2,5})-(\d{4})-(\d{2})-(\d{2})(?:-(.*))?~([01])$/.exec(leg.ticker ?? '')
+  if (pm) {
+    const [, lg, a, h, y, mo, dd, tail = '', n] = pm
+    const sport = LEAGUES.find(([, s]) => s === lg.toUpperCase())?.[1] ?? null
+    if (!sport) return base0
+    const teams = (a + h).toUpperCase(), code = (n === '0' ? a : h).toUpperCase()
+    const out: LegInfo = { ...base0, sport, match: `${y.slice(2)}${MONTHS[Number(mo) - 1]}${dd}${teams}`, date: `${y}${mo}${dd}`, teams }
+    const line = num(/([+-]?\d+(?:\.\d+)?)\s*$/.exec(leg.title ?? '')?.[1])
+    if (!tail) return { ...out, kind: 'game', code, label: `${code} to win` }
+    if (/^spread/.test(tail) && line != null) return { ...out, kind: 'spread', code, strike: -line }
+    if (/^total/.test(tail) && line != null) return { ...out, kind: 'total', strike: line }
+    return out
+  }
   const ev = String(leg.event || leg.ticker?.split('-').slice(0, 2).join('-') || '')
   const m = /^([A-Z0-9]+)-(\d{2})([A-Z]{3})(\d{2})([A-Z][A-Z0-9]*)$/.exec(ev)
   const base: LegInfo = { key, leg, label, sport: null, kind: 'other', match: null, date: null, teams: null, code: null, stat: null, player: null, strike: null }
@@ -442,7 +457,7 @@ export function useHistories(items: { key: string; ticker: string | null; from: 
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return ((await r.json()) as { points: { t: number; p: number }[] }).points
       },
-      enabled: x.on && !!x.ticker && !!x.from,
+      enabled: x.on && !!x.ticker && !!x.from && !x.ticker.startsWith('pm'), // Kalshi keeps a price history; Polymarket here doesn't
       staleTime: 5 * 6e4,
     })),
   })

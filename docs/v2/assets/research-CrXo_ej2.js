@@ -1,1 +1,0 @@
-import{t as e}from"./research-kWSE2yL2.js";var t=e;export{t as component};

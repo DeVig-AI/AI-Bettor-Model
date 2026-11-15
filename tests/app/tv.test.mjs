@@ -142,6 +142,12 @@ test("feed: saved Polymarket sides — the winner, a spread and a total — foll
   const f = await buildFeed({user, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null, readPoly: read});
   assert.deepEqual(f.bets.map(b => [b.legs[0].label, b.legs[0].state, b.legs[0].note, b.legs[0].game]),
     [["MIA to win", "live", "up 6", "nba:401"], ["Pistons -4.5", "live", "down 6", "nba:401"], ["Under 231.5", "live", "102 of 232+", "nba:401"]]);
+  // a Polymarket US combo saved from its link: every leg on the TV
+  const combo = {kind: "combo", source: "polymarket", legs: [{ticker: "pm:nba-det-mia-2026-11-14~1", title: "MIA Heat to win", side: "yes", result: null},
+    {ticker: "pmus:aec-total-x", title: "Over 231.5", side: "yes", result: "won"}]};
+  const u2 = {...USER, tracked: {g: {}, p: {}}, saved: {items: [{link: "https://polymarket.us/combos/abc123", label: "Combo, 2 legs", savedAt: "2026-11-14T22:00:00Z"}]}};
+  const f2 = await buildFeed({user: u2, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null, readPoly: async () => combo});
+  assert.deepEqual(f2.bets[0].legs.map(l => [l.label, l.state]), [["MIA to win", "live"], ["Over 231.5", "won"]]);
   // the spread is graded from that side: Heat +4.5 needs Miami to lose by less than 4.5
   assert.equal(polyLeg({ticker: "pm:nba-det-mia-2026-11-14-spread-away-4pt5~1", title: "Heat +4.5"}).strike, -4.5);
   assert.equal(polyLeg({ticker: "pm:nba-2027-champion~0", title: "Boston Celtics"}).kind, "other");

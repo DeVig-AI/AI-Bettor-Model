@@ -1,0 +1,1 @@
+import{A as e}from"./index-DKMXvSWB.js";var t=e;export{t as component};
