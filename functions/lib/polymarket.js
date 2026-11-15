@@ -12,15 +12,24 @@ const SLUG = /^[a-z0-9][a-z0-9-]{1,199}$/;
 // a polymarket.com link -> {slug, market} (market: the link names one market inside the event), "pm:slug~1" ->
 // {slug, side: 1}. Anything else -> null.
 export function parsePoly(raw) {
-  const s = String(raw || "").trim();
+  let s = String(raw || "").trim();
   if (!s || s.length > 600) return null;
+  // the app's Share button sends words around the link ("Check out this market on Polymarket: https://…")
+  const inText = /(?<![\w.-])(?:https?:\/\/)?(?:www\.)?polymarket\.(?:com|us)\/[^\s<>"']+/i.exec(s);
+  if (inText && !/^pm:/i.test(s)) s = inText[0].replace(/[).,!?]+$/, "");
   const pm = /^pm:([a-z0-9-]+)~([01])$/i.exec(s);
   if (pm) return SLUG.test(pm[1].toLowerCase()) ? {slug: pm[1].toLowerCase(), side: Number(pm[2])} : null;
-  if (!/^https?:\/\//i.test(s) && !/^(www\.)?polymarket\.com\//i.test(s)) return null;
+  if (!/^https?:\/\//i.test(s) && !/^(www\.)?polymarket\.(com|us)\//i.test(s)) return null;
   let u;
   try { u = new URL(/^https?:/i.test(s) ? s : `https://${s}`); } catch (e) { return null; }
+  // Polymarket US (the app in the States): a shared combo, polymarket.us/combos/<id>
+  if (/^(www\.)?polymarket\.us$/i.test(u.hostname)) {
+    const c = /^\/combos\/([A-Za-z0-9_-]{6,40})\/?$/.exec(u.pathname);
+    return c ? {combo: c[1]} : null;
+  }
   if (!/^(www\.)?polymarket\.com$/i.test(u.hostname)) return null;
   const parts = u.pathname.split("/").filter(Boolean).map(p => { try { return decodeURIComponent(p).toLowerCase(); } catch (e) { return ""; } });
+  if (/^[a-z]{2}(-[a-z]{2})?$/.test(parts[0] || "") && parts.length > 1) parts.shift();   // a language: /en/event/…, /es/sports/…
   let slug = null, market = null;
   if ((parts[0] === "event" || parts[0] === "market") && parts[1]) { slug = parts[1]; market = parts[2] || (parts[0] === "market" ? parts[1] : null); }
   else if (parts[0] === "sports" && parts.length > 1) slug = parts[parts.length - 1];   // polymarket.com/sports/nba/games/…/<game>
@@ -118,6 +127,7 @@ async function market(fetcher, slug) {
 
 // {slug, market?, side?} from parsePoly -> the reader's answer, or null when Polymarket has nothing at that link
 export async function readPoly(p, fetcher = fetch) {
+  if (p.combo) return readUsCombo(p.combo, fetcher);
   if (p.side != null) {
     const m = await market(fetcher, p.slug);
     if (!m || list(m.outcomes).length !== 2) return null;
@@ -137,4 +147,72 @@ export async function readPoly(p, fetcher = fetch) {
   const m = await market(fetcher, p.slug);
   if (m) return {kind: "event", source: "polymarket", ticker: `pm:${p.slug}`, title: m.question || null, sub: null, markets: sides([m])};
   return null;
+}
+
+// ---------- Polymarket US combos (parlays) ----------
+// polymarket.us has no public market API yet, but a shared combo's page carries the whole combo as data
+// ({comboSlug, multiplier, seed: {groups: [{eventSlug, startTime, selections: [{title, compactTitle, status, chance}]}]}}).
+const US = "https://polymarket.us";
+const undef = v => (v === "$undefined" || v === undefined ? null : v);
+
+// the combo object out of the page: each JSON object starting with "comboSlug", braces matched (strings skipped); the
+// page carries more than one (a bare outline and the priced one), so the one with seed.groups wins
+export function comboFromPage(html) {
+  const t = String(html || "").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  let i = -1, first = null;
+  while ((i = t.indexOf('{"comboSlug"', i + 1)) >= 0) {
+    let depth = 0, str = false, o = null;
+    for (let k = i; k < t.length && k < i + 400000; k++) {
+      const c = t[k];
+      if (str) { if (c === "\\") k++; else if (c === '"') str = false; continue; }
+      if (c === '"') str = true;
+      else if (c === "{") depth++;
+      else if (c === "}" && --depth === 0) { try { o = JSON.parse(t.slice(i, k + 1)); } catch (e) { /* not this one */ } break; }
+    }
+    if (o && o.seed && Array.isArray(o.seed.groups)) return o;
+    if (o && !first) first = o;
+  }
+  return first;
+}
+
+// one pick in a combo, in the reader's leg shape. A team to win reads as "pm:<game>~<0|1>" (side 0 is the first
+// team in the game's slug) so the TV can follow it like a polymarket.com bet.
+export function usLeg(g, x) {
+  const title = String(undef(x.title) || undef(x.selectionTitle) || "Pick").replace(/\s+/g, " ").trim();
+  const st = String(undef(x.status) || undef(x.outcome) || "").toLowerCase();
+  const result = /^(won|win|winning_settled|yes)$/.test(st) ? "won" : /^(lost|lose|loss|no)$/.test(st) ? "lost" : null;
+  const ch = num(x.chance && x.chance.originalValue);
+  const slug = String(g.eventSlug || ""), teams = /^[a-z]+-([a-z0-9]{2,5})-([a-z0-9]{2,5})-\d{4}-\d{2}-\d{2}$/.exec(slug);
+  const code = String(undef(x.compactTitle) || "").split(" ")[0].toLowerCase();
+  const toWin = /to win$/i.test(title) && undef(x.totalSide) == null;
+  const i = teams && toWin ? [teams[1], teams[2]].indexOf(code) : -1;
+  return {
+    ticker: i >= 0 ? `pm:${slug}~${i}` : `pmus:${String(x.marketSlug || slug).slice(0, 120)}`,
+    event: slug || null, title, pick: title, side: "yes",
+    status: result ? "finalized" : g.ended ? "closed" : g.live ? "active" : null,
+    result, bid: null, ask: null, last: null,
+    chance: result ? (result === "won" ? 1 : 0) : ch != null ? r4(ch / 100) : null,
+    closes: null, strike: null, strike_type: null,
+  };
+}
+
+async function readUsCombo(id, fetcher) {
+  const r = await fetcher(`${US}/combos/${encodeURIComponent(id)}`, {headers: {accept: "text/html", "user-agent": "Mozilla/5.0 (DeVig link reader)"},
+    cf: {cacheTtl: TTL, cacheEverything: true}});
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`polymarket.us ${r.status}`);
+  const c = comboFromPage(await r.text());
+  const groups = (c && c.seed && Array.isArray(c.seed.groups)) ? c.seed.groups : null;
+  if (!groups) return null;
+  const legs = [];
+  for (const g of groups) for (const x of g.selections || []) legs.push(usLeg(g, x));
+  if (!legs.length) return null;
+  const mult = num(c.multiplier);
+  const won = legs.filter(l => l.result === "won").length, lost = legs.filter(l => l.result === "lost").length;
+  const chance = lost ? 0 : won === legs.length ? 1 : mult && mult > 1 ? r4(1 / mult) : null;
+  const combo = {ticker: `pmus:${id}`, event: null, title: `Combo, ${legs.length} legs`, pick: `All ${legs.length} legs`, side: "yes",
+    status: lost || won === legs.length ? "finalized" : "active", result: lost ? "lost" : won === legs.length ? "won" : null,
+    bid: null, ask: null, last: null, chance, closes: null, strike: null, strike_type: null};
+  const live = legs.every(l => l.chance != null) ? Math.round(legs.reduce((p, l) => p * l.chance, 1) * 1e6) / 1e6 : null;
+  return {kind: "combo", source: "polymarket", ticker: `${US}/combos/${id}`, combo, legs, multiplied: live, won, lost, truncated: false};
 }

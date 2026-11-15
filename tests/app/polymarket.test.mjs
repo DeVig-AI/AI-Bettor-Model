@@ -2,7 +2,7 @@
 //   node --test tests/app/polymarket.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parsePoly, pricedPoly, sideWords } from "../../functions/lib/polymarket.js";
+import { comboFromPage, parsePoly, pricedPoly, sideWords } from "../../functions/lib/polymarket.js";
 import { handle } from "../../functions/api/kalshi.js";
 import { shownSaved } from "../../functions/api/friends.js";
 
@@ -48,6 +48,9 @@ test("links: event pages, a market inside one, sports pages and picked sides; ot
     {slug: "nba-det-mia-2026-11-14", market: "nba-det-mia-2026-11-14-total-231pt5"});
   assert.deepEqual(parsePoly("https://www.polymarket.com/sports/nba/games/week/2/nba-det-mia-2026-11-14"), {slug: "nba-det-mia-2026-11-14"});
   assert.deepEqual(parsePoly("pm:nba-det-mia-2026-11-14~1"), {slug: "nba-det-mia-2026-11-14", side: 1});
+  assert.deepEqual(parsePoly("Check out this market on Polymarket: https://polymarket.com/event/nba-det-mia-2026-11-14?via=rey."), {slug: "nba-det-mia-2026-11-14"});
+  assert.deepEqual(parsePoly("https://polymarket.com/en/event/nba-det-mia-2026-11-14"), {slug: "nba-det-mia-2026-11-14"});
+  assert.equal(parsePoly("look https://polymarket.com.evil.com/event/x-y"), null);
   assert.equal(parsePoly("https://polymarket.com.evil.com/event/x-y"), null);
   assert.equal(parsePoly("https://evil.com/event/nba-det-mia-2026-11-14"), null);
   assert.equal(parsePoly("https://polymarket.com/"), null);
@@ -109,4 +112,31 @@ test("friends see saved Polymarket bets, the link cut to the page", () => {
     {link: "pm:../../etc~1", label: "bad", savedAt: "2026-11-14"},
   ]}});
   assert.deepEqual(out.map(o => o.link), ["pm:nba-det-mia-2026-11-14~1", "https://polymarket.com/event/nba-det-mia-2026-11-14"]);
+});
+
+// a polymarket.us combo page: the combo rides in the page's data, escaped inside a script string
+const sel = (game, code, name, chance, status = "pending") => ({id: `aec-${game}:OUTCOME_SIDE_NO:0`, marketSlug: `aec-${game}`,
+  outcomeSide: "OUTCOME_SIDE_NO", totalSide: "$undefined", title: `${code} ${name} to win`, outcome: "$undefined", status,
+  chance: {originalValue: String(chance)}, compactTitle: `${code} to win`, selectionTitle: `${code} ${name}`, description: "To win"});
+const COMBO = {comboSlug: "crossd-1", multiplier: "30.03003003", seed: {groups: [
+  {eventSlug: "nfl-lar-ari-2026-11-15", startTime: "2026-11-15T21:05:00Z", live: true, ended: false, selections: [sel("nfl-lar-ari-2026-11-15", "ARI", "Cardinals", 18.88)]},
+  {eventSlug: "nfl-sea-lv-2026-11-15", live: true, ended: false, selections: [sel("nfl-sea-lv-2026-11-15", "LV", "Raiders", 32.62)]},
+  {eventSlug: "nfl-sf-dal-2026-11-15", live: false, ended: true, selections: [sel("nfl-sf-dal-2026-11-15", "SF", "49ers", 100, "won")]}]}};
+const OUTLINE = {comboSlug: "crossd-1", link: "share", structure: [{eventSlug: "nfl-lar-ari-2026-11-15", selections: []}]};
+const page = `<html><script>self.__next_f.push([1,"97:${JSON.stringify(OUTLINE).replace(/"/g, '\\\\"')}"])</script><script>self.__next_f.push([1,"98:[\\"$\\",\\"$L99\\",null,${JSON.stringify(COMBO).replace(/"/g, '\\"')}]"])</script></html>`;
+
+test("Polymarket US combos: a shared combo link reads as a parlay, each team to win followed by its game", async () => {
+  assert.deepEqual(parsePoly("Check out my combo https://polymarket.us/combos/SP8ITfSHHltb33eTBhFc?referrer=someone"), {combo: "SP8ITfSHHltb33eTBhFc"});
+  assert.equal(parsePoly("https://polymarket.us/sports/nfl"), null);
+  assert.equal(comboFromPage(page).multiplier, "30.03003003");
+  const calls = [];
+  const {status, d} = await ask("https://polymarket.us/combos/SP8ITfSHHltb33eTBhFc?referrer=someone", async (u) => { calls.push(u); return new Response(page); });
+  assert.equal(status, 200);
+  assert.ok(!calls[0].includes("referrer"));
+  assert.deepEqual([d.kind, d.source, d.legs.length, d.won, d.lost, d.combo.chance], ["combo", "polymarket", 3, 1, 0, 0.0333]);
+  assert.deepEqual(d.legs.map(l => [l.ticker, l.title, l.chance, l.result]), [
+    ["pm:nfl-lar-ari-2026-11-15~1", "ARI Cardinals to win", 0.1888, null],
+    ["pm:nfl-sea-lv-2026-11-15~1", "LV Raiders to win", 0.3262, null],
+    ["pm:nfl-sf-dal-2026-11-15~0", "SF 49ers to win", 1, "won"]]);
+  assert.equal((await ask("https://polymarket.us/combos/gone123", async () => new Response("<html></html>"))).status, 404);
 });

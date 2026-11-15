@@ -23,7 +23,7 @@ export type KRead = { source?: Source } & (
 // who the prices are from, in words
 export const sourceName = (d: { source?: Source } | null | undefined) => (d?.source === 'polymarket' ? 'Polymarket' : 'Kalshi')
 // a link the link reader takes (and the Book link tab hands over)
-export const isExchangeLink = (s: string) => /^\s*(https?:\/\/)?(www\.|[a-z]+\.)?(kalshi|polymarket)\.com\//i.test(s) || /^\s*pm:/i.test(s)
+export const isExchangeLink = (s: string) => /(^|[\s:(/])(www\.|[a-z]+\.)?(kalshi\.com|polymarket\.(com|us))\//i.test(s) || /^\s*pm:/i.test(s)
 
 export class LinkError extends Error {}
 

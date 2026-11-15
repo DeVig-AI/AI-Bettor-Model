@@ -88,8 +88,8 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   const prices = (
     <dl className='grid grid-cols-2 gap-2 text-sm'>
       <div>
-        <dt className='text-xs text-muted-foreground'>Kalshi&apos;s combo price</dt>
-        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}</dd>
+        <dt className='text-xs text-muted-foreground'>{d.source === 'polymarket' ? 'Your combo pays' : 'Kalshi’s combo price'}</dt>
+        <dd className='font-condensed text-[17px] font-bold tabular-nums'>{d.source === 'polymarket' ? (c.chance ? `${(1 / c.chance).toFixed(2)}x` : '—') : c.bid == null && c.ask == null ? 'no offers' : `${cents(c.bid)} sell · ${cents(c.ask)} buy`}</dd>
       </div>
       <div>
         <dt className='text-xs text-muted-foreground'>Legs multiplied</dt>
@@ -99,7 +99,7 @@ function Result({ d, review }: { d: KRead; review?: React.ReactNode }) {
   )
   const priceNote = (
     <p className='px-1 text-xs leading-relaxed text-muted-foreground'>
-      Legs multiplied = each leg&apos;s Kalshi chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
+      Legs multiplied = each leg&apos;s {sourceName(d)} chance multiplied together, as if the legs had nothing to do with each other. Legs from the same game
       usually move together, so treat it as a rough check on the combo price, not a fair price.
     </p>
   )
