@@ -3,11 +3,28 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 14 \u00b7 4:23 PM ET",
+    "as_of": "Sat Nov 14 \u00b7 8:48 PM ET",
     "date": "2026-11-14",
     "sport": "CBB"
    },
    "doc_id": "cbb-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "KENN",
+    "home": "ALA",
+    "impact": null,
+    "player": "Jamarion Davis Fleming",
+    "reason": "F \u00b7 Leg \u00b7 reported Nov 12",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ALA",
+    "tip": "Tue 7:30 PM",
+    "tip_sort": "1117-1930"
+   },
+   "doc_id": "cbb-ala-jamarion-davis-fleming"
   },
   {
    "collection": "injuries",
@@ -25,40 +42,6 @@
     "tip_sort": "1115-1330"
    },
    "doc_id": "cbb-bc-jacob-furphy"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "UTU",
-    "home": "CAL",
-    "impact": null,
-    "player": "Lee Dort",
-    "reason": "F \u00b7 Ankle \u00b7 reported Nov 1",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CAL",
-    "tip": "Sat 5:00 PM",
-    "tip_sort": "1114-1700"
-   },
-   "doc_id": "cbb-cal-lee-dort"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CIN",
-    "home": "DAY",
-    "impact": null,
-    "player": "Jayden Hastings",
-    "reason": "F \u00b7 Shoulder \u00b7 reported Nov 1",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CIN",
-    "tip": "Sat 7:30 PM",
-    "tip_sort": "1114-1930"
-   },
-   "doc_id": "cbb-cin-jayden-hastings"
   },
   {
    "collection": "injuries",
@@ -97,17 +80,17 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CIN",
+    "away": "CMU",
     "home": "DAY",
     "impact": null,
     "player": "Zaide Lowery",
     "reason": "G \u00b7 Foot \u00b7 reported Nov 6",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "DAY",
-    "tip": "Sat 7:30 PM",
-    "tip_sort": "1114-1930"
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
    },
    "doc_id": "cbb-day-zaide-lowery"
   },
@@ -131,19 +114,121 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "UCR",
-    "home": "FRES",
+    "away": "UMES",
+    "home": "DEP",
     "impact": null,
-    "player": "Nathan Zulemie",
-    "reason": "G \u00b7 Knee \u00b7 reported Oct 4",
+    "player": "Amsal Delalic",
+    "reason": "G \u00b7 Knee \u00b7 reported Aug 6",
     "sport": "CBB",
     "starter": false,
     "status": "Out",
-    "team": "FRES",
-    "tip": "Sat 6:00 PM",
-    "tip_sort": "1114-1800"
+    "team": "DEP",
+    "tip": "Tue 8:00 PM",
+    "tip_sort": "1117-2000"
    },
-   "doc_id": "cbb-fres-nathan-zulemie"
+   "doc_id": "cbb-dep-amsal-delalic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ND",
+    "home": "FLA",
+    "impact": null,
+    "player": "Boogie Fland",
+    "reason": "G \u00b7 Shoulder \u00b7 reported Nov 12",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "FLA",
+    "tip": "Tue 4:30 PM",
+    "tip_sort": "1117-1630"
+   },
+   "doc_id": "cbb-fla-boogie-fland"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BALL",
+    "home": "FSU",
+    "impact": null,
+    "player": "Aj Swinton",
+    "reason": "F \u00b7 Suspension \u00b7 reported Oct 29",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "FSU",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-fsu-aj-swinton"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GB",
+    "home": "UWF",
+    "impact": null,
+    "player": "Jalen Overway",
+    "reason": "F \u00b7 Knee (ACL) \u00b7 reported Oct 18",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "GB",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-gb-jalen-overway"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GB",
+    "home": "UWF",
+    "impact": null,
+    "player": "Jaxon Edwards",
+    "reason": "G \u00b7 Knee \u00b7 reported Sep 5",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "GB",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-gb-jaxon-edwards"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ILL",
+    "home": "DUKE",
+    "impact": null,
+    "player": "Jake Davis",
+    "reason": "F \u00b7 Shoulder \u00b7 reported Nov 2",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "ILL",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-ill-jake-davis"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ARK",
+    "home": "IU",
+    "impact": null,
+    "player": "Prince Alexander Moody",
+    "reason": "G \u00b7 Knee \u00b7 reported Nov 2",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "IU",
+    "tip": "Tue 7:30 PM",
+    "tip_sort": "1117-1930"
+   },
+   "doc_id": "cbb-iu-prince-alexander-moody"
   },
   {
    "collection": "injuries",
@@ -178,6 +263,23 @@
     "tip_sort": "1115-1300"
    },
    "doc_id": "cbb-isu-killyan-toure"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LIB",
+    "home": "SIU",
+    "impact": null,
+    "player": "Dillon Claussen",
+    "reason": "F \u00b7 Knee \u00b7 reported Nov 6",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "LIB",
+    "tip": "Tue 6:00 PM",
+    "tip_sort": "1117-1800"
+   },
+   "doc_id": "cbb-lib-dillon-claussen"
   },
   {
    "collection": "injuries",
@@ -246,6 +348,40 @@
     "tip_sort": "1116-1800"
    },
    "doc_id": "cbb-md-guillermo-del-pino"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LOU",
+    "home": "MEM",
+    "impact": null,
+    "player": "Jayden Reid",
+    "reason": "G \u00b7 Ankle \u00b7 reported Nov 13",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MEM",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1115-1300"
+   },
+   "doc_id": "cbb-mem-jayden-reid"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LOU",
+    "home": "MEM",
+    "impact": null,
+    "player": "Luke Almodovar",
+    "reason": "G \u00b7 Head \u00b7 reported Nov 13",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MEM",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1115-1300"
+   },
+   "doc_id": "cbb-mem-luke-almodovar"
   },
   {
    "collection": "injuries",
@@ -352,6 +488,57 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "LEH",
+    "home": "MSM",
+    "impact": null,
+    "player": "Mason So",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 5",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MSM",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-msm-mason-so"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LEH",
+    "home": "MSM",
+    "impact": null,
+    "player": "Jaxon Hartman",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 5",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MSM",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-msm-jaxon-hartman"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LEH",
+    "home": "MSM",
+    "impact": null,
+    "player": "Liam Joyce",
+    "reason": "F \u00b7 Undisclosed \u00b7 reported Nov 5",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "MSM",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-msm-liam-joyce"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "NMSU",
     "home": "SDSU",
     "impact": null,
@@ -386,23 +573,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "USA",
-    "home": "UNT",
-    "impact": null,
-    "player": "Mitchell Holmes",
-    "reason": "F \u00b7 Undisclosed \u00b7 reported Oct 30",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Questionable",
-    "team": "UNT",
-    "tip": "Sat 6:00 PM",
-    "tip_sort": "1114-1800"
-   },
-   "doc_id": "cbb-unt-mitchell-holmes"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "COLU",
     "home": "NU",
     "impact": null,
@@ -416,6 +586,23 @@
     "tip_sort": "1116-2000"
    },
    "doc_id": "cbb-nu-luke-mceldon"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ND",
+    "home": "FLA",
+    "impact": null,
+    "player": "Tommy Ahneman",
+    "reason": "C \u00b7 Wrist \u00b7 reported Nov 10",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "ND",
+    "tip": "Tue 4:30 PM",
+    "tip_sort": "1117-1630"
+   },
+   "doc_id": "cbb-nd-tommy-ahneman"
   },
   {
    "collection": "injuries",
@@ -450,23 +637,6 @@
     "tip_sort": "1115-1630"
    },
    "doc_id": "cbb-psu-roberts-blums"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "COLO",
-    "home": "PROV",
-    "impact": null,
-    "player": "Arrinten Page",
-    "reason": "F \u00b7 Knee \u00b7 reported Nov 2",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Questionable",
-    "team": "PROV",
-    "tip": "Sat 6:00 PM",
-    "tip_sort": "1114-1800"
-   },
-   "doc_id": "cbb-prov-arrinten-page"
   },
   {
    "collection": "injuries",
@@ -556,58 +726,7 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "BRWN",
-    "home": "SIE",
-    "impact": null,
-    "player": "Yannis Steger",
-    "reason": "G \u00b7 Knee \u00b7 reported Oct 23",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "SIE",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1114-1900"
-   },
-   "doc_id": "cbb-sie-yannis-steger"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GWEB",
-    "home": "SC",
-    "impact": null,
-    "player": "Grant Polk",
-    "reason": "G \u00b7 Lower Leg \u00b7 reported Oct 24",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "SC",
-    "tip": "Sat 2:00 PM",
-    "tip_sort": "1114-1400"
-   },
-   "doc_id": "cbb-sc-grant-polk"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GWEB",
-    "home": "SC",
-    "impact": null,
-    "player": "Mathias Alessanco",
-    "reason": "F \u00b7 Knee (ACL) \u00b7 reported Oct 18",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "SC",
-    "tip": "Sat 2:00 PM",
-    "tip_sort": "1114-1400"
-   },
-   "doc_id": "cbb-sc-mathias-alessanco"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "COPP",
+    "away": "TNST",
     "home": "USF",
     "impact": null,
     "player": "Aj Dancler",
@@ -616,27 +735,10 @@
     "starter": false,
     "status": "Out",
     "team": "USF",
-    "tip": "Sat 2:00 PM",
-    "tip_sort": "1114-1400"
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
    },
    "doc_id": "cbb-usf-aj-dancler"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAF",
-    "home": "SBU",
-    "impact": null,
-    "player": "Joe Grahovac",
-    "reason": "F \u00b7 Leg \u00b7 reported Nov 1",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SBU",
-    "tip": "Sat 4:00 PM",
-    "tip_sort": "1114-1600"
-   },
-   "doc_id": "cbb-sbu-joe-grahovac"
   },
   {
    "collection": "injuries",
@@ -726,23 +828,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "STO",
-    "home": "TTU",
-    "impact": null,
-    "player": "Jt Toppin",
-    "reason": "F \u00b7 Knee \u00b7 reported Oct 19",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "TTU",
-    "tip": "Sat 2:00 PM",
-    "tip_sort": "1114-1400"
-   },
-   "doc_id": "cbb-ttu-jt-toppin"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "LBSU",
     "home": "UCLA",
     "impact": null,
@@ -794,37 +879,36 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "APSU",
-    "home": "WICH",
+    "away": "EIU",
+    "home": "VAN",
     "impact": null,
-    "note": "Upgraded from out",
-    "player": "Will Berg",
-    "reason": "C \u00b7 Undisclosed \u00b7 reported Nov 10",
+    "player": "Gabe Nesmith",
+    "reason": "G \u00b7 Ankle \u00b7 reported Nov 1",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
-    "team": "WICH",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1114-1900"
+    "status": "Out",
+    "team": "VAN",
+    "tip": "Tue 8:00 PM",
+    "tip_sort": "1117-2000"
    },
-   "doc_id": "cbb-wich-will-berg"
+   "doc_id": "cbb-van-gabe-nesmith"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "APSU",
-    "home": "WICH",
+    "away": "VILL",
+    "home": "PITT",
     "impact": null,
-    "player": "Noah Hill",
-    "reason": "F \u00b7 Toe \u00b7 reported Oct 19",
+    "player": "Luigi Suigo",
+    "reason": "NA \u00b7 Knee \u00b7 reported Nov 13",
     "sport": "CBB",
     "starter": false,
     "status": "Out",
-    "team": "WICH",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1114-1900"
+    "team": "VILL",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
    },
-   "doc_id": "cbb-wich-noah-hill"
+   "doc_id": "cbb-vill-luigi-suigo"
   },
   {
    "collection": "injuries",
@@ -859,8 +943,25 @@
     "tip_sort": "1115-2000"
    },
    "doc_id": "cbb-wis-josh-manchester"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CLE",
+    "home": "XAV",
+    "impact": null,
+    "player": "Braden Appelhans",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 6",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "XAV",
+    "tip": "Tue 7:00 PM",
+    "tip_sort": "1117-1900"
+   },
+   "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-14T21:23:54Z",
+ "generated_at": "2026-11-15T01:48:29Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }

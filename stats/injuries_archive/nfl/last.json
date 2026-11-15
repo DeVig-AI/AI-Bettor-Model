@@ -39,6 +39,16 @@
 "tip": "Sun 4:05 PM",
 "tip_sort": "1115-1605"
 },
+"nfl-ari-hunter-long": {
+"away": "LA",
+"home": "ARI",
+"player": "Hunter Long",
+"reason": "TE \u00b7 Knee",
+"status": "Questionable",
+"team": "ARI",
+"tip": "Sun 4:05 PM",
+"tip_sort": "1115-1605"
+},
 "nfl-ari-jayden-williams": {
 "away": "LA",
 "home": "ARI",
@@ -128,16 +138,6 @@
 "team": "ATL",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1115-1300"
-},
-"nfl-bal-adisa-isaac": {
-"away": "LAC",
-"home": "BAL",
-"player": "Adisa Isaac",
-"reason": "LB \u00b7 Hamstring",
-"status": "Questionable",
-"team": "BAL",
-"tip": "Mon 8:15 PM",
-"tip_sort": "1116-2015"
 },
 "nfl-bal-jaylinn-hawkins": {
 "away": "LAC",
@@ -904,7 +904,7 @@
 "home": "BAL",
 "player": "Branson Taylor",
 "reason": "G \u00b7 Ankle",
-"status": "Questionable",
+"status": "Out",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
 "tip_sort": "1116-2015"
@@ -914,16 +914,36 @@
 "home": "BAL",
 "player": "Brenen Thompson",
 "reason": "WR \u00b7 Hamstring",
-"status": "Questionable",
+"status": "Doubtful",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
 "tip_sort": "1116-2015"
 },
-"nfl-lac-deane-leonard": {
+"nfl-lac-denzel-perryman": {
 "away": "LAC",
 "home": "BAL",
-"player": "Deane Leonard",
-"reason": "CB \u00b7 Concussion",
+"player": "Denzel Perryman",
+"reason": "LB \u00b7 Pectoral",
+"status": "Injured Reserve",
+"team": "LAC",
+"tip": "Mon 8:15 PM",
+"tip_sort": "1116-2015"
+},
+"nfl-lac-isas-waxter": {
+"away": "LAC",
+"home": "BAL",
+"player": "Isas Waxter",
+"reason": "CB \u00b7 Ankle",
+"status": "Out",
+"team": "LAC",
+"tip": "Mon 8:15 PM",
+"tip_sort": "1116-2015"
+},
+"nfl-lac-justin-eboigbe": {
+"away": "LAC",
+"home": "BAL",
+"player": "Justin Eboigbe",
+"reason": "DT \u00b7 Ankle",
 "status": "Questionable",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
@@ -939,22 +959,12 @@
 "tip": "Mon 8:15 PM",
 "tip_sort": "1116-2015"
 },
-"nfl-lac-keaton-mitchell": {
-"away": "LAC",
-"home": "BAL",
-"player": "Keaton Mitchell",
-"reason": "RB \u00b7 Hip",
-"status": "Questionable",
-"team": "LAC",
-"tip": "Mon 8:15 PM",
-"tip_sort": "1116-2015"
-},
 "nfl-lac-kendall-williamson": {
 "away": "LAC",
 "home": "BAL",
 "player": "Kendall Williamson",
 "reason": "S \u00b7 Calf",
-"status": "Questionable",
+"status": "Out",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
 "tip_sort": "1116-2015"
@@ -964,16 +974,6 @@
 "home": "BAL",
 "player": "Ladd McConkey",
 "reason": "WR \u00b7 Back",
-"status": "Questionable",
-"team": "LAC",
-"tip": "Mon 8:15 PM",
-"tip_sort": "1116-2015"
-},
-"nfl-lac-rodney-shelley": {
-"away": "LAC",
-"home": "BAL",
-"player": "Rodney Shelley",
-"reason": "CB \u00b7 Calf",
 "status": "Questionable",
 "team": "LAC",
 "tip": "Mon 8:15 PM",
@@ -1199,11 +1199,31 @@
 "tip": "Sun 9:30 AM",
 "tip_sort": "1115-0930"
 },
+"nfl-ne-greg-van-roten": {
+"away": "NE",
+"home": "DET",
+"player": "Greg Van Roten",
+"reason": "G \u00b7 Hamstring",
+"status": "Questionable",
+"team": "NE",
+"tip": "Sun 9:30 AM",
+"tip_sort": "1115-0930"
+},
 "nfl-ne-kevin-byard": {
 "away": "NE",
 "home": "DET",
 "player": "Kevin Byard",
 "reason": "S \u00b7 Chest",
+"status": "Questionable",
+"team": "NE",
+"tip": "Sun 9:30 AM",
+"tip_sort": "1115-0930"
+},
+"nfl-ne-reggie-gilliam": {
+"away": "NE",
+"home": "DET",
+"player": "Reggie Gilliam",
+"reason": "FB \u00b7 Knee",
 "status": "Questionable",
 "team": "NE",
 "tip": "Sun 9:30 AM",
@@ -1219,16 +1239,6 @@
 "tip": "Sun 9:30 AM",
 "tip_sort": "1115-0930"
 },
-"nfl-ne-treveyon-henderson": {
-"away": "NE",
-"home": "DET",
-"player": "TreVeyon Henderson",
-"reason": "RB \u00b7 Illness",
-"status": "Out",
-"team": "NE",
-"tip": "Sun 9:30 AM",
-"tip_sort": "1115-0930"
-},
 "nfl-ne-walter-rouse": {
 "away": "NE",
 "home": "DET",
@@ -1238,16 +1248,6 @@
 "team": "NE",
 "tip": "Sun 9:30 AM",
 "tip_sort": "1115-0930"
-},
-"nfl-no-christen-miller": {
-"away": "CAR",
-"home": "NO",
-"player": "Christen Miller",
-"reason": "DT \u00b7 Knee",
-"status": "Out",
-"team": "NO",
-"tip": "Sun 1:00 PM",
-"tip_sort": "1115-1300"
 },
 "nfl-no-cj-donaldson": {
 "away": "CAR",
@@ -1375,6 +1375,16 @@
 "player": "Trevin Wallace",
 "reason": "LB \u00b7 Groin",
 "status": "Out",
+"team": "NYJ",
+"tip": "Sun 1:00 PM",
+"tip_sort": "1115-1300"
+},
+"nfl-nyj-vj-payne": {
+"away": "BUF",
+"home": "NYJ",
+"player": "VJ Payne",
+"reason": "S \u00b7 Knee",
+"status": "Questionable",
 "team": "NYJ",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1115-1300"
