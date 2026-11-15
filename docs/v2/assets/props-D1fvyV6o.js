@@ -1,0 +1,1 @@
+import{n as e}from"./props-UZ8g_kzf.js";var t=e;export{t as component};
