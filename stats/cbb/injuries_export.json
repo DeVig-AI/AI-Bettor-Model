@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 14 \u00b7 8:48 PM ET",
-    "date": "2026-11-14",
+    "as_of": "Sun Nov 15 \u00b7 4:13 AM ET",
+    "date": "2026-11-15",
     "sport": "CBB"
    },
    "doc_id": "cbb-meta"
@@ -83,11 +83,12 @@
     "away": "CMU",
     "home": "DAY",
     "impact": null,
+    "note": "Upgraded from out",
     "player": "Zaide Lowery",
     "reason": "G \u00b7 Foot \u00b7 reported Nov 6",
     "sport": "CBB",
     "starter": false,
-    "status": "Out",
+    "status": "Questionable",
     "team": "DAY",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1117-1900"
@@ -263,6 +264,57 @@
     "tip_sort": "1115-1300"
    },
    "doc_id": "cbb-isu-killyan-toure"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UNLV",
+    "home": "KU",
+    "impact": null,
+    "player": "Kohl Rosario",
+    "reason": "G \u00b7 Concussion \u00b7 reported Nov 12",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "KU",
+    "tip": "Tue 9:30 PM",
+    "tip_sort": "1117-2130"
+   },
+   "doc_id": "cbb-ku-kohl-rosario"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UNLV",
+    "home": "KU",
+    "impact": null,
+    "player": "Melvin Council Jr.",
+    "reason": "G \u00b7 Foot \u00b7 reported Nov 8",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "KU",
+    "tip": "Tue 9:30 PM",
+    "tip_sort": "1117-2130"
+   },
+   "doc_id": "cbb-ku-melvin-council"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "UNLV",
+    "home": "KU",
+    "impact": null,
+    "player": "Grant Mordini",
+    "reason": "F \u00b7 Quadricep \u00b7 reported Oct 18",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "KU",
+    "tip": "Tue 9:30 PM",
+    "tip_sort": "1117-2130"
+   },
+   "doc_id": "cbb-ku-grant-mordini"
   },
   {
    "collection": "injuries",
@@ -794,6 +846,23 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "MSU",
+    "home": "TENN",
+    "impact": null,
+    "player": "Jalen Washington",
+    "reason": "F \u00b7 Eligibility \u00b7 reported Oct 19",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "TENN",
+    "tip": "Tue 9:00 PM",
+    "tip_sort": "1117-2100"
+   },
+   "doc_id": "cbb-tenn-jalen-washington"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "BAY",
     "home": "TEX",
     "impact": null,
@@ -824,6 +893,23 @@
     "tip_sort": "1116-2030"
    },
    "doc_id": "cbb-tam-cade-phillips"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "FIU",
+    "home": "UAB",
+    "impact": null,
+    "player": "Deuce Jones II",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 13",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "UAB",
+    "tip": "Tue 7:30 PM",
+    "tip_sort": "1117-1930"
+   },
+   "doc_id": "cbb-uab-deuce-jones"
   },
   {
    "collection": "injuries",
@@ -899,11 +985,12 @@
     "away": "VILL",
     "home": "PITT",
     "impact": null,
+    "note": "Upgraded from out",
     "player": "Luigi Suigo",
     "reason": "NA \u00b7 Knee \u00b7 reported Nov 13",
     "sport": "CBB",
     "starter": false,
-    "status": "Out",
+    "status": "Questionable",
     "team": "VILL",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1117-1900"
@@ -962,6 +1049,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-15T01:48:29Z",
+ "generated_at": "2026-11-15T09:13:46Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }
