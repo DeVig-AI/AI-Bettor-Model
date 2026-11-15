@@ -195,3 +195,16 @@ test("API: make a code, the TV reads with it, settings stick, a new code cuts of
   for (let i = 0; i < 20; i++) await call(null, "GET", null, "?key=zzzzzzzz", "9.9.9.9");
   assert.equal((await call(null, "GET", null, `?key=${c2}`, "9.9.9.9")).status, 429);              // guessing is cut off
 });
+
+test("feed: a bet whose games are all final leaves the dock a few hours later; saved links from an earlier day go too", async () => {
+  const done = {kind: "market", market: {ticker: "KXNBAGAME-26NOV14LALPHX-LAL", title: "Los Angeles L at Phoenix Winner?", side: "yes", result: null}};
+  const stale = {kind: "market", market: {ticker: "KXNBAGAME-26NOV12ORLATL-ORL", title: "Orlando at Atlanta Winner?", side: "yes", result: null}};
+  const user = {...USER, tracked: {g: {}, p: {}}, saved: {items: [
+    {link: "https://kalshi.com/x?marketTicker=DONE", label: "Lakers", savedAt: "2026-11-14T22:00:00Z"},
+    {link: "https://kalshi.com/x?marketTicker=STALE", label: "Magic", savedAt: "2026-11-12T20:00:00Z"},
+    {link: "https://kalshi.com/x?marketTicker=FRESH", label: "Magic tonight", savedAt: "2026-11-15T00:00:00Z"}]}};
+  const read = async t => (t === "DONE" ? done : stale);
+  const at = now => buildFeed({user, settings: {show: "bets"}, now, fetcher: espn, readKalshi: read, parseLink: l => l.split("=")[1]});
+  assert.deepEqual((await at(NOW)).bets.map(b => [b.label, b.done]), [["Lakers", "won"], ["Magic tonight", null]]);
+  assert.deepEqual((await at(NOW + 4 * 3600e3)).bets.map(b => b.label), ["Magic tonight"]);
+});

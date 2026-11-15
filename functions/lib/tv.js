@@ -216,6 +216,7 @@ export function legState(leg, game, box) {
 // ---------- open bets ----------
 const americanPays = (stake, odds) => (stake > 0 && odds ? +(stake * (odds > 0 ? odds / 100 + 1 : 100 / -odds + 1)).toFixed(2) : null);
 const OPEN_H = 16;     // a bet stays on the TV this many hours after its last leg's start
+const DONE_H = 4;      // ...or until its games are all final and the latest started this long ago
 
 // ★ tracked parlays, logged bets and saved links that may still be going: {id, label, stake, pays, legs?, link?}
 export function openBets(user, now) {
@@ -245,10 +246,10 @@ export function openBets(user, now) {
     if (!s || typeof s.link !== "string" || s.outcome) continue;
     const at = Date.parse(s.savedAt || "");
     if (!isFinite(at) || now - at > 4 * 86400e3) continue;
-    out.push({id: `s:${s.link.slice(0, 80)}`, label: String(s.label || "Saved bet").slice(0, 40), link: s.link,
+    out.push({id: `s:${s.link.slice(0, 80)}`, label: String(s.label || "Saved bet").slice(0, 40), link: s.link, at,
       stake: s.bet ? num(s.bet.stake) : null, pays: s.bet ? num(s.bet.pays) : null});
   }
-  return out.slice(0, 8);
+  return out.slice(0, 24);
 }
 
 // ---------- the whole dock ----------
@@ -306,8 +307,17 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
     } catch (e) { /* stays live without a number */ }
   }
 
+  // a bet whose games are all over leaves the dock (saved links would otherwise sit there for 4 days)
+  const over = b => {
+    if (b.legs.some(l => !l.result && !(l.game && l.game.state === "post"))) {
+      // a leg still to go, unless it's a saved link whose games aren't on any board: those are from an earlier day
+      return b.at != null && now - b.at > OPEN_H * 3600e3 && b.legs.every(l => !l.game);
+    }
+    const ks = b.legs.map(l => Date.parse((l.game && l.game.kickoff) || "")).filter(isFinite);
+    return !ks.length || now - Math.max(...ks) > DONE_H * 3600e3;
+  };
   const legCount = {};
-  const outBets = live.map(b => {
+  const outBets = live.filter(b => !over(b)).slice(0, 8).map(b => {
     const legs = b.legs.map(l => {
       const st = legState(l, l.game, l.game && boxes[l.game.id]);
       if (l.game) legCount[`${l.sport}:${l.game.id}`] = (legCount[`${l.sport}:${l.game.id}`] || 0) + 1;
