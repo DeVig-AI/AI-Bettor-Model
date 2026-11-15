@@ -4,10 +4,32 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-15T02:50:43+00:00",
+ "updated": "2026-11-15T11:13:38+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401866465",
+   "date": "2026-11-17",
+   "start": "2026-11-17T23:00Z",
+   "game": "EMU @ WMU",
+   "home": "WMU",
+   "away": "EMU",
+   "home_id": "2711",
+   "away_id": "2199",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "EMU",
+   "line": 14.5,
+   "score": 2.0,
+   "why_for": [
+    "Coming off a bye week, rested and with extra time to prepare",
+    "Bounce-back spot after losing by 28"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401864537",
    "date": "2026-11-14",
@@ -18,8 +40,8 @@
    "home_id": "62",
    "away_id": "2449",
    "book": "Draft Kings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "NDSU 21, HAW 13",
    "type": "side",
    "pick": "NDSU",
    "line": -7.5,
@@ -40,8 +62,8 @@
    "home_id": "197",
    "away_id": "2641",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "TTU 52, OKST 27",
    "type": "total",
    "pick": "UNDER",
    "line": 73.5,
@@ -62,8 +84,8 @@
    "home_id": "202",
    "away_id": "2226",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "FAU 21, TLSA 38",
    "type": "total",
    "pick": "UNDER",
    "line": 73.5,
@@ -493,7 +515,25 @@
    "away": "SMU",
    "home_id": "87",
    "away_id": "2567",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "ND",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates ND 6.4 points better than results so far"
+    ],
+    "why_opp": [
+     "SMU: Bounce-back spot after losing by 42"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 57.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856751",
@@ -504,7 +544,23 @@
    "away": "UK",
    "home_id": "142",
    "away_id": "96",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "MIZ",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 27"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 48.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401858308",
@@ -625,7 +681,24 @@
    "away": "ARK",
    "home_id": "251",
    "away_id": "8",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "TEX",
+    "score": 1.5,
+    "capped": true,
+    "why_for": [
+     "Line tell: the line rates TEX 10.3 points better than results so far",
+     "Never lay 21 or more"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 48.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856754",
@@ -636,7 +709,23 @@
    "away": "LSU",
    "home_id": "2633",
    "away_id": "99",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 47.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 57.5 to 47.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401856747",
@@ -683,6 +772,58 @@
    "note": "No line posted yet"
   },
   {
+   "id": "401858528",
+   "date": "2026-11-21",
+   "start": "2026-11-21T20:30Z",
+   "game": "UCLA @ MICH",
+   "home": "MICH",
+   "away": "UCLA",
+   "home_id": "130",
+   "away_id": "26",
+   "note": null,
+   "side": {
+    "lean": "MICH",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 24"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 41.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
+   "id": "401858535",
+   "date": "2026-11-21",
+   "start": "2026-11-21T20:30Z",
+   "game": "IU @ WASH",
+   "home": "WASH",
+   "away": "IU",
+   "home_id": "264",
+   "away_id": "84",
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 43.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
+  },
+  {
    "id": "401869946",
    "date": "2026-11-21",
    "start": "2026-11-21T20:00Z",
@@ -724,7 +865,21 @@
    "away": "IOWA",
    "home_id": "356",
    "away_id": "2294",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 43.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401862833",
@@ -925,6 +1080,35 @@
    "note": "No line posted yet"
   },
   {
+   "id": "401858531",
+   "date": "2026-11-21",
+   "start": "2026-11-21T17:00Z",
+   "game": "OSU @ NEB",
+   "home": "NEB",
+   "away": "OSU",
+   "home_id": "158",
+   "away_id": "194",
+   "note": null,
+   "side": {
+    "lean": "OSU",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates OSU 6.5 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 44.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 47.5 to 44.5"
+    ],
+    "why_opp": []
+   }
+  },
+  {
    "id": "401856872",
    "date": "2026-11-21",
    "start": "2026-11-21T05:00Z",
@@ -936,17 +1120,6 @@
    "note": "No line posted yet"
   },
   {
-   "id": "401858528",
-   "date": "2026-11-21",
-   "start": "2026-11-21T05:00Z",
-   "game": "UCLA @ MICH",
-   "home": "MICH",
-   "away": "UCLA",
-   "home_id": "130",
-   "away_id": "26",
-   "note": "No line posted yet"
-  },
-  {
    "id": "401858302",
    "date": "2026-11-21",
    "start": "2026-11-21T05:00Z",
@@ -955,18 +1128,27 @@
    "away": "VT",
    "home_id": "2390",
    "away_id": "259",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401858535",
-   "date": "2026-11-21",
-   "start": "2026-11-21T05:00Z",
-   "game": "IU @ WASH",
-   "home": "WASH",
-   "away": "IU",
-   "home_id": "264",
-   "away_id": "84",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "MIA",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates MIA 8.6 points better than results so far"
+    ],
+    "why_opp": [
+     "VT: Fade the line move: VT went from +16.5 to +19.5"
+    ]
+   },
+   "total": {
+    "lean": "UNDER",
+    "line": 61.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 56.5 to 61.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401856866",
@@ -977,7 +1159,23 @@
    "away": "BYU",
    "home_id": "2305",
    "away_id": "252",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "BYU",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates BYU 7.2 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856871",
@@ -999,7 +1197,24 @@
    "away": "WAKE",
    "home_id": "59",
    "away_id": "154",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "WAKE",
+    "score": 1.5,
+    "capped": true,
+    "why_for": [
+     "Line tell: the line rates WAKE 6.0 points better than results so far",
+     "Never lay 21 or more"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 56.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856868",
@@ -1010,17 +1225,6 @@
    "away": "HOU",
    "home_id": "277",
    "away_id": "248",
-   "note": "No line posted yet"
-  },
-  {
-   "id": "401858531",
-   "date": "2026-11-21",
-   "start": "2026-11-21T05:00Z",
-   "game": "OSU @ NEB",
-   "home": "NEB",
-   "away": "OSU",
-   "home_id": "158",
-   "away_id": "194",
    "note": "No line posted yet"
   },
   {
@@ -1087,7 +1291,23 @@
    "away": "ORE",
    "home_id": "127",
    "away_id": "2483",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "ORE",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates ORE 7.2 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 44.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401864545",
@@ -1109,7 +1329,21 @@
    "away": "CLEM",
    "home_id": "150",
    "away_id": "228",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 44.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401866468",
@@ -1131,7 +1365,21 @@
    "away": "ISU",
    "home_id": "2116",
    "away_id": "66",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 54.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401862830",
@@ -1153,7 +1401,21 @@
    "away": "CMU",
    "home_id": "2084",
    "away_id": "2117",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 43.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401866467",
@@ -1164,7 +1426,27 @@
    "away": "AKR",
    "home_id": "113",
    "away_id": "2006",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "AKR",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 28",
+     "Struggling team (one win or fewer)",
+     "Line tell: the line rates AKR 8.3 points better than results so far"
+    ],
+    "why_opp": [
+     "MASS: Bounce-back spot after losing by 24"
+    ]
+   },
+   "total": {
+    "lean": null,
+    "line": 45.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401866464",
@@ -1175,7 +1457,23 @@
    "away": "BALL",
    "home_id": "195",
    "away_id": "2050",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "BALL",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 21"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 50.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401866466",
@@ -1186,7 +1484,21 @@
    "away": "M-OH",
    "home_id": "2309",
    "away_id": "193",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 45.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401866465",
@@ -1197,7 +1509,24 @@
    "away": "EMU",
    "home_id": "2711",
    "away_id": "2199",
-   "note": "No line posted yet"
+   "note": null,
+   "side": {
+    "lean": "EMU",
+    "score": 2.0,
+    "capped": false,
+    "why_for": [
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Bounce-back spot after losing by 28"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 47.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401856887",
@@ -2858,62 +3187,6 @@
    "total": {
     "lean": null,
     "line": 52.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401869969",
-   "date": "2026-11-12",
-   "start": "2026-11-13T02:00Z",
-   "game": "UL @ ULM",
-   "home": "ULM",
-   "away": "UL",
-   "home_id": "2433",
-   "away_id": "309",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [
-     "Short week: 5 days since its last game",
-     "ULM: Short week: 5 days since its last game"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 47.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401862824",
-   "date": "2026-11-12",
-   "start": "2026-11-13T01:00Z",
-   "game": "MEM @ USF",
-   "home": "USF",
-   "away": "MEM",
-   "home_id": "58",
-   "away_id": "235",
-   "note": null,
-   "side": {
-    "lean": "MEM",
-    "score": 2.0,
-    "capped": false,
-    "why_for": [
-     "Coming off a bye week, rested and with extra time to prepare",
-     "Fade the line move: MEM went from -6 to -4"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 49.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []

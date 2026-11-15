@@ -4,10 +4,31 @@
  "version": "v0",
  "kind": "ml",
  "tested": false,
- "updated": "2026-11-15T02:50:29+00:00",
+ "updated": "2026-11-15T11:13:31+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401892725",
+   "date": "2026-11-15",
+   "start": "2026-11-16T02:00Z",
+   "game": "NSH @ SJ",
+   "home": "SJ",
+   "away": "NSH",
+   "home_id": "18",
+   "away_id": "27",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "NSH",
+   "line": -170.0,
+   "score": 2.0,
+   "why_for": [
+    "SJ: Second night of a back-to-back, after overtime"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401892717",
    "date": "2026-11-14",
@@ -18,8 +39,8 @@
    "home_id": "9",
    "away_id": "2",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "BUF 0, DAL 2",
    "type": "side",
    "pick": "DAL",
    "line": -135.0,
@@ -40,8 +61,8 @@
    "home_id": "10",
    "away_id": "17",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "COL 4, MTL 1",
    "type": "side",
    "pick": "MTL",
    "line": -142.0,
@@ -368,6 +389,28 @@
  ],
  "reads": [
   {
+   "id": "401892727",
+   "date": "2026-11-16",
+   "start": "2026-11-17T02:30Z",
+   "game": "VAN @ UTA",
+   "home": "UTA",
+   "away": "VAN",
+   "home_id": "129764",
+   "away_id": "22",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401892726",
+   "date": "2026-11-16",
+   "start": "2026-11-17T00:30Z",
+   "game": "MTL @ NYR",
+   "home": "NYR",
+   "away": "MTL",
+   "home_id": "13",
+   "away_id": "10",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
    "id": "401892724",
    "date": "2026-11-15",
    "start": "2026-11-16T02:00Z",
@@ -376,7 +419,24 @@
    "away": "VAN",
    "home_id": "37",
    "away_id": "22",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "VAN",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 4",
+     "Struggling team (one win or fewer)"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892725",
@@ -387,7 +447,25 @@
    "away": "NSH",
    "home_id": "18",
    "away_id": "27",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "NSH",
+    "score": 2.0,
+    "capped": false,
+    "why_for": [
+     "SJ: Second night of a back-to-back, after overtime"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 6.5,
+    "score": 0.5,
+    "why_for": [
+     "SJ on tired legs (back-to-back)"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892722",
@@ -398,7 +476,26 @@
    "away": "FLA",
    "home_id": "9",
    "away_id": "26",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "DAL",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Second night of a back-to-back",
+     "FLA: Second night of a back-to-back, both on the road"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 5.5,
+    "score": 1.5,
+    "why_for": [
+     "Both teams on a back-to-back: tired legs and goalies mean goals"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892723",
@@ -409,7 +506,27 @@
    "away": "CGY",
    "home_id": "25",
    "away_id": "3",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "ANA",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Second night of a back-to-back",
+     "Bounce-back spot after losing by 4",
+     "CGY: Second night of a back-to-back, both on the road"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 6.5,
+    "score": 1.5,
+    "why_for": [
+     "Both teams on a back-to-back: tired legs and goalies mean goals"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892721",
@@ -420,7 +537,26 @@
    "away": "EDM",
    "home_id": "15",
    "away_id": "6",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "PHI",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Second night of a back-to-back",
+     "EDM: Second night of a back-to-back, both on the road"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 6.5,
+    "score": 1.5,
+    "why_for": [
+     "Both teams on a back-to-back: tired legs and goalies mean goals"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892719",
@@ -847,315 +983,6 @@
     "why_for": [
      "Struggling team (one win or fewer)",
      "Fade the line move: the price moved 4 points of chance away from VAN"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 6.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892705",
-   "date": "2026-11-12",
-   "start": "2026-11-13T03:00Z",
-   "game": "NYI @ LA",
-   "home": "LA",
-   "away": "NYI",
-   "home_id": "8",
-   "away_id": "12",
-   "note": null,
-   "side": {
-    "lean": "LA",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 3"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 5.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892704",
-   "date": "2026-11-12",
-   "start": "2026-11-13T02:00Z",
-   "game": "STL @ UTA",
-   "home": "UTA",
-   "away": "STL",
-   "home_id": "129764",
-   "away_id": "19",
-   "note": null,
-   "side": {
-    "lean": "STL",
-    "score": 2.0,
-    "capped": false,
-    "why_for": [
-     "UTA: Second night of a back-to-back",
-     "UTA: Logan Cooley (1.2 points a game) is out"
-    ],
-    "why_opp": [
-     "UTA: Fade the line move: the price moved 11 points of chance away from UTA"
-    ]
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 5.5,
-    "score": 3.0,
-    "why_for": [
-     "UTA on tired legs (back-to-back)",
-     "Pace: their games average 6.7 goals, the total is 5.5",
-     "Buy low on the dropping total: 6.5 to 5.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892702",
-   "date": "2026-11-12",
-   "start": "2026-11-13T01:00Z",
-   "game": "BUF @ CHI",
-   "home": "CHI",
-   "away": "BUF",
-   "home_id": "4",
-   "away_id": "2",
-   "note": null,
-   "side": {
-    "lean": "CHI",
-    "score": 0.75,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 7",
-     "BUF: Second night of a back-to-back (last night was a blowout, so starters may have rested)"
-    ],
-    "why_opp": [
-     "BUF: Bounce-back spot after losing by 5"
-    ]
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 6.5,
-    "score": 0.5,
-    "why_for": [
-     "BUF on tired legs (back-to-back)"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892703",
-   "date": "2026-11-12",
-   "start": "2026-11-13T01:00Z",
-   "game": "WPG @ DAL",
-   "home": "DAL",
-   "away": "WPG",
-   "home_id": "9",
-   "away_id": "28",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 5.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892699",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:30Z",
-   "game": "DET @ FLA",
-   "home": "FLA",
-   "away": "DET",
-   "home_id": "26",
-   "away_id": "5",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 5.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892696",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:00Z",
-   "game": "MTL @ BOS",
-   "home": "BOS",
-   "away": "MTL",
-   "home_id": "1",
-   "away_id": "10",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 6.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892697",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:00Z",
-   "game": "MIN @ TOR",
-   "home": "TOR",
-   "away": "MIN",
-   "home_id": "21",
-   "away_id": "30",
-   "note": null,
-   "side": {
-    "lean": "TOR",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 3"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 6.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892698",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:00Z",
-   "game": "COL @ OTT",
-   "home": "OTT",
-   "away": "COL",
-   "home_id": "14",
-   "away_id": "17",
-   "note": null,
-   "side": {
-    "lean": "OTT",
-    "score": 0.5,
-    "capped": false,
-    "why_for": [
-     "Line tell: the price makes OTT the favorite though COL has the better goal difference"
-    ],
-    "why_opp": [
-     "COL: Fade the line move: the price moved 4 points of chance away from COL"
-    ]
-   },
-   "total": {
-    "lean": null,
-    "line": 6.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892700",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:00Z",
-   "game": "WSH @ NJ",
-   "home": "NJ",
-   "away": "WSH",
-   "home_id": "11",
-   "away_id": "23",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "UNDER",
-    "line": 6.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 5.5 to 6.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892701",
-   "date": "2026-11-12",
-   "start": "2026-11-13T00:00Z",
-   "game": "TB @ CBJ",
-   "home": "CBJ",
-   "away": "TB",
-   "home_id": "29",
-   "away_id": "20",
-   "note": null,
-   "side": {
-    "lean": "CBJ",
-    "score": 3.75,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 3",
-     "Line tell: the price makes CBJ the favorite though TB has the better goal difference",
-     "TB: Second night of a back-to-back, both on the road (last night was a blowout, so starters may have rested)"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 6.5,
-    "score": 0.5,
-    "why_for": [
-     "TB on tired legs (back-to-back)"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401891808",
-   "date": "2026-11-12",
-   "start": "2026-11-12T17:00Z",
-   "game": "CAR @ SEA",
-   "home": "SEA",
-   "away": "CAR",
-   "home_id": "124292",
-   "away_id": "7",
-   "note": null,
-   "side": {
-    "lean": "SEA",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: the price moved 5 points of chance away from SEA"
     ],
     "why_opp": []
    },
