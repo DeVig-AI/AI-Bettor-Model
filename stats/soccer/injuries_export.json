@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 15 \u00b7 11:59 AM ET",
+    "as_of": "Sun Nov 15 \u00b7 4:42 PM ET",
     "date": "2026-11-15",
     "sport": "EPL"
    },
@@ -1662,6 +1662,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "NFO",
+    "home": "BOU",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 9 of NFO's 10 league matches \u00b7 a goal or assist on 1 of their 9 goals (11%)"
+    },
+    "player": "Xaver Schlager",
+    "reason": "Thigh injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "NFO",
+    "tip": "Sat 10:00 AM",
+    "tip_sort": "1121-1000"
+   },
+   "doc_id": "epl-nfo-xaver-schlager"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "IPS",
     "home": "TOT",
     "impact": {
@@ -1902,6 +1924,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-15T16:59:57Z",
+ "generated_at": "2026-11-15T21:42:36Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
