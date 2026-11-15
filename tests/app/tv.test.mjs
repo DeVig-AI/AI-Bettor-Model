@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { handle, newCode, normCode } from "../../functions/api/tv.js";
-import { buildFeed, cleanSettings, findGame, findPlayer, kalshiLeg, legState, openBets, trackedLeg } from "../../functions/lib/tv.js";
+import { buildFeed, cleanSettings, findGame, findPlayer, kalshiLeg, legState, openBets, polyLeg, trackedLeg } from "../../functions/lib/tv.js";
 import { userKey } from "../../functions/api/me.js";
 
 const te = new TextEncoder();
@@ -134,9 +134,35 @@ test("feed: a saved Kalshi combo is read leg by leg", async () => {
   assert.deepEqual(f.games.map(g => g.key), ["nba:401"]);
 });
 
+test("feed: saved Polymarket sides — the winner, a spread and a total — follow the game from the slug", async () => {
+  const items = [["pm:nba-det-mia-2026-11-14~1", "Heat win"], ["pm:nba-det-mia-2026-11-14-spread-away-4pt5~0", "Pistons -4.5"],
+    ["pm:nba-det-mia-2026-11-14-total-231pt5~1", "Under 231.5"]];
+  const user = {...USER, tracked: {g: {}, p: {}}, saved: {items: items.map(([link, label]) => ({link, label, savedAt: "2026-11-14T22:00:00Z"}))}};
+  const read = async l => ({kind: "market", source: "polymarket", market: {ticker: l, title: items.find(x => x[0] === l)[1], side: "yes", result: null}});
+  const f = await buildFeed({user, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null, readPoly: read});
+  assert.deepEqual(f.bets.map(b => [b.legs[0].label, b.legs[0].state, b.legs[0].note, b.legs[0].game]),
+    [["MIA to win", "live", "up 6", "nba:401"], ["Pistons -4.5", "live", "down 6", "nba:401"], ["Under 231.5", "live", "102 of 232+", "nba:401"]]);
+  // the spread is graded from that side: Heat +4.5 needs Miami to lose by less than 4.5
+  assert.equal(polyLeg({ticker: "pm:nba-det-mia-2026-11-14-spread-away-4pt5~1", title: "Heat +4.5"}).strike, -4.5);
+  assert.equal(polyLeg({ticker: "pm:nba-2027-champion~0", title: "Boston Celtics"}).kind, "other");
+});
+
+test("open bets: a bet typed into the bet log shows as that team to win until its game is long over", async () => {
+  const user = {...USER, tracked: {g: {}, p: {}}, bets: {bets: {
+    k1: {id: "k1", sport: "NBA", away: "DET", home: "MIA", kickoff: "2026-11-15T00:30:00Z", side: "away", odds: 150, stake: 20, book: "FanDuel"},
+    old: {id: "old", sport: "NBA", away: "DET", home: "MIA", kickoff: "2026-11-01T00:30:00Z", side: "home", odds: -120, stake: 10},
+    gone: {removed: 1}}}};
+  assert.deepEqual(openBets(user, NOW).map(b => [b.id, b.label, b.pays]), [["b:k1", "DET +150 · FanDuel", 50]]);
+  const f = await buildFeed({user, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null});
+  assert.deepEqual(f.bets[0].legs.map(l => [l.label, l.state, l.note, l.game]), [["DET to win", "live", "down 6", "nba:401"]]);
+});
+
 test("API: make a code, the TV reads with it, settings stick, a new code cuts off the old one", async () => {
   const ka = await userKey("rey@example.com"), h = ka.slice(5);
-  const env = {ACCESS_TEAM_DOMAIN: DOMAIN, USERS: kv({[ka]: USER})};
+  // the API reads the real clock: a parlay that started an hour ago
+  const soon = new Date(Date.now() - 3600e3).toISOString();
+  const live = {...USER, tracked: {...USER.tracked, parlays: {a1: {...USER.tracked.parlays.a1, legs: LEGS.map(l => ({...l, kickoff: soon}))}}}};
+  const env = {ACCESS_TEAM_DOMAIN: DOMAIN, USERS: kv({[ka]: live})};
   const call = async (who, method, body, qs = "", ip = "1.1.1.1") => {
     const r = await handle(new Request(`https://devigai.pages.dev/api/tv${qs}`, {method,
       headers: {"content-type": "application/json", "cf-connecting-ip": ip, ...(who ? {"cf-access-jwt-assertion": await token(who)} : {})},

@@ -18,6 +18,7 @@
 import { accessUser, userKey } from "./me.js";
 import { parseLink, read } from "./kalshi.js";
 import { buildFeed, cleanSettings } from "../lib/tv.js";
+import { parsePoly, readPoly } from "../lib/polymarket.js";
 
 const CODE_CHARS = "23456789abcdefghjkmnpqrstuvwxyz";   // no 0/o, 1/l/i: typed with a TV remote
 const CODE_RE = /^[23456789a-hjkmnp-z]{8}$/;
@@ -55,6 +56,16 @@ async function cachedKalshi(ticker, fetcher) {
   return d;
 }
 
+// a saved Polymarket side, cached like the Kalshi reads
+async function cachedPoly(link, fetcher) {
+  const hit = kalshi.get(link);
+  if (hit && Date.now() - hit.at < KALSHI_TTL) return hit.d;
+  const p = parsePoly(link), d = p ? await readPoly(p, fetcher) : null;
+  kalshi.set(link, {at: Date.now(), d});
+  if (kalshi.size > 300) kalshi.delete(kalshi.keys().next().value);
+  return d;
+}
+
 async function tvFeed(request, env, fetcher, key) {
   const ip = request.headers.get("cf-connecting-ip") || "?";
   if (missed(ip, false) >= MAX_MISSES) return json({error: "too many codes tried, wait 15 minutes"}, 429);
@@ -66,7 +77,7 @@ async function tvFeed(request, env, fetcher, key) {
   const [user, rec] = await Promise.all([env.USERS.get(`user:${h}`, "json"), env.USERS.get(`tv:${h}`, "json")]);
   if (!user || !rec || rec.code !== code) return json({error: "no account has that TV code"}, 404);
   const body = await buildFeed({user, settings: rec.settings, now: Date.now(), fetcher,
-    readKalshi: t => cachedKalshi(t, fetcher), parseLink});
+    readKalshi: t => cachedKalshi(t, fetcher), parseLink, readPoly: l => cachedPoly(l, fetcher)});
   feeds.set(h, {at: Date.now(), body});
   if (feeds.size > 200) feeds.delete(feeds.keys().next().value);
   return json(body);

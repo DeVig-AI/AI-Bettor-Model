@@ -80,6 +80,28 @@ export function kalshiLeg(k) {
 }
 
 // a leg of a ★ tracked parlay (web/src/lib/track.ts TrackedLeg)
+// a saved Polymarket side ("pm:nba-det-mia-2026-11-14-spread-away-4pt5~1", read by lib/polymarket.js) -> a dock leg.
+// The game comes from the slug (league, the two teams away then home, the day); the kind from its tail, the line
+// from the side's own words ("Heat +4.5", "Under 231.5"). Side 0 is the first team in the slug.
+const PM_SPORTS = {nba: "nba", nfl: "nfl", nhl: "nhl", mlb: "mlb", wnba: "wnba", cfb: "cfb", cbb: "cbb"};
+export function polyLeg(k) {
+  const m = /^pm:([a-z0-9-]+)~([01])$/.exec(String(k.ticker || ""));
+  const words = String(k.title || k.pick || "Polymarket bet");
+  const base = {label: (k.side === "no" ? "No: " : "") + words, ticker: k.ticker || null, side: k.side === "no" ? "no" : "yes",
+    result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other"};
+  if (!m) return base;
+  const g = /^([a-z]+)-([a-z0-9]{2,5})-([a-z0-9]{2,5})-(\d{4}-\d{2}-\d{2})(?:-(.*))?$/.exec(m[1]);
+  if (!g || !PM_SPORTS[g[1]]) return base;
+  const [, lg, away, home, date, tail = ""] = g, i = Number(m[2]);
+  const team = (i === 0 ? away : home).toUpperCase();
+  const out = {...base, sport: PM_SPORTS[lg], date, teams: (away + home).toUpperCase()};
+  const line = num(/([+-]?\d+(?:\.\d+)?)\s*$/.exec(words)?.[1]);
+  if (!tail) return {...out, kind: "game", team, label: `${team} to win`};
+  if (/^spread/.test(tail) && line != null) return {...out, kind: "spread", team, strike: -line};
+  if (/^total/.test(tail) && line != null) return {...out, kind: "total", strike: line, side: /^under/i.test(words) ? "no" : "yes"};
+  return out;
+}
+
 export function trackedLeg(l) {
   const sport = String(l.sport || "").toLowerCase() || null;
   const base = {label: String(l.desc || "").slice(0, 60), ticker: l.ticker || null, sport, away: l.away || null, home: l.home || null,
@@ -195,7 +217,7 @@ export function legState(leg, game, box) {
 const americanPays = (stake, odds) => (stake > 0 && odds ? +(stake * (odds > 0 ? odds / 100 + 1 : 100 / -odds + 1)).toFixed(2) : null);
 const OPEN_H = 16;     // a bet stays on the TV this many hours after its last leg's start
 
-// ★ tracked parlays and saved links that may still be going: {id, label, stake, pays, legs?, link?}
+// ★ tracked parlays, logged bets and saved links that may still be going: {id, label, stake, pays, legs?, link?}
 export function openBets(user, now) {
   const out = [];
   const ps = Object.entries(((user && user.tracked) || {}).parlays || {});
@@ -206,6 +228,17 @@ export function openBets(user, now) {
     if (!isFinite(last) || now - last > OPEN_H * 3600e3) continue;
     out.push({id: `p:${id}`, label: `${p.legs.length}-leg parlay`, stake: num(p.stake), pays: americanPays(num(p.stake), num(p.odds)),
       legs: p.legs.slice(0, 12).map(trackedLeg)});
+  }
+  // bets typed into the bet log (functions/api/me.js cleanBets): one team to win, at a book's odds
+  const logged = Object.values(((user && user.bets) || {}).bets || {});
+  for (const x of logged) {
+    if (!x || x.removed || (x.side !== "home" && x.side !== "away") || !x.away || !x.home) continue;
+    const k = Date.parse(x.kickoff || "");
+    if (!isFinite(k) || now - k > OPEN_H * 3600e3) continue;
+    const team = x.side === "home" ? x.home : x.away, odds = num(x.odds);
+    out.push({id: `b:${x.id}`, label: `${team} ${odds > 0 ? "+" : ""}${odds}${x.book ? ` · ${String(x.book).slice(0, 16)}` : ""}`,
+      stake: num(x.stake), pays: americanPays(num(x.stake), odds),
+      legs: [trackedLeg({desc: `${team} ML`, mk: "ml", side: x.side, sport: x.sport, away: x.away, home: x.home, kickoff: x.kickoff})]});
   }
   const items = ((user && user.saved) || {}).items || [];
   for (const s of items) {
@@ -220,7 +253,7 @@ export function openBets(user, now) {
 
 // ---------- the whole dock ----------
 // readKalshi(ticker) -> functions/api/kalshi.js read() shape; parse(link) -> ticker (kalshi.js parseLink)
-export async function buildFeed({user, settings, now, fetcher = fetch, readKalshi, parseLink}) {
+export async function buildFeed({user, settings, now, fetcher = fetch, readKalshi, parseLink, readPoly = async () => null}) {
   const set = cleanSettings(settings);
   const bets = openBets(user, now);
   // saved Kalshi links / DeVig slips: their legs from Kalshi (cached by the caller)
@@ -236,6 +269,9 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
           const m = d.market, no = side === "no";
           b.legs.push(kalshiLeg({...m, side: no ? "no" : "yes", result: no ? (m.result === "won" ? "lost" : m.result === "lost" ? "won" : null) : m.result}));
         }
+      } else if (b.link.startsWith("pm:")) {
+        const d = await readPoly(b.link);
+        b.legs = d && d.kind === "market" ? [polyLeg(d.market)] : [];
       } else {
         const t = parseLink(b.link), d = t ? await readKalshi(t) : null;
         b.legs = d && d.kind === "combo" ? d.legs.map(kalshiLeg) : d && d.kind === "market" ? [kalshiLeg(d.market)] : [];
