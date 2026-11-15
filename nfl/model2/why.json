@@ -1413,16 +1413,16 @@
   "2026_10_CAR_NO": {
    "away": "CAR",
    "home": "NO",
-   "home_wp": 0.6075,
+   "home_wp": 0.5904,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 1.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6174,
     "home_field": 0.5484,
-    "who_is_out": 0.6075
+    "who_is_out": 0.5904
    },
    "teams": {
     "away": {
@@ -2022,9 +2022,9 @@
    }
   }
  },
- "generated_at": "2026-11-15T07:09:48Z",
+ "generated_at": "2026-11-15T16:34:56Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
- "max_gap_vs_upcoming": 0.0,
+ "max_gap_vs_upcoming": 0.0087,
  "model": "NFL_MODEL_2_0",
  "season": 2026,
  "week": 10
