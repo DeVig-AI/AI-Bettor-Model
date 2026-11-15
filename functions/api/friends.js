@@ -48,7 +48,7 @@ export function shownParlays(user) {
     .sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 
-// what a friend sees of the Kalshi combos and bets someone saved (Saved bets): the label, when, the grade and how it
+// what a friend sees of the Kalshi combos, Kalshi and Polymarket bets someone saved (Saved bets): the label, when, the grade and how it
 // ended, and the link cut to what finds the market (no referral or tracking bits). DeVig slips are left out: each is
 // also a saved parlay above.
 export function shownSaved(user) {
@@ -61,11 +61,18 @@ export function shownSaved(user) {
       // a parlay built in DeVig: Kalshi tickers and sides only
       if (s.link.length > 600 || !/^slip:[A-Za-z0-9._-]+~(yes|no)(,[A-Za-z0-9._-]+~(yes|no))*$/.test(s.link)) continue;
       link = s.link;
+    } else if (s.link.startsWith("pm:")) {
+      // one side of a Polymarket market (functions/lib/polymarket.js)
+      if (!/^pm:[a-z0-9-]{2,200}~[01]$/.test(s.link)) continue;
+      link = s.link;
     } else try {
       const u = new URL(/^https?:/i.test(s.link) ? s.link : `https://${s.link}`);
-      if (!/(^|\.)kalshi\.com$/i.test(u.hostname)) continue;
-      const t = u.searchParams.get("marketTicker") || u.searchParams.get("market_ticker");
-      link = `https://kalshi.com${u.pathname}${t ? `?marketTicker=${encodeURIComponent(t)}` : ""}`;
+      if (/^(www\.)?polymarket\.com$/i.test(u.hostname)) link = `https://polymarket.com${u.pathname}`;
+      else {
+        if (!/(^|\.)kalshi\.com$/i.test(u.hostname)) continue;
+        const t = u.searchParams.get("marketTicker") || u.searchParams.get("market_ticker");
+        link = `https://kalshi.com${u.pathname}${t ? `?marketTicker=${encodeURIComponent(t)}` : ""}`;
+      }
     } catch (e) { continue; }
     const o = {link, label: String(s.label || "").slice(0, 120), savedAt: String(s.savedAt || "")};
     if (s.snap && typeof s.snap === "object") o.snap = s.snap;

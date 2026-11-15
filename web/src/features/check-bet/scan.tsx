@@ -7,6 +7,7 @@ import { decimal, toAmerican, useSlip } from '@/lib/parlay'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { mlLeg } from '../parlay/legs'
+import { isExchangeLink } from '@/lib/kalshi-link'
 
 // Check a bet from a screenshot: /api/scan (functions/api/scan.js) reads the legs with the AI, then this matches
 // moneyline legs to today's games and puts the book's price next to Kalshi's fair chance and DeVig's pick.
@@ -234,7 +235,8 @@ function ErrorLine({ err }: { err: ScanError | null }) {
   )
 }
 
-export function BookLinkReader({ onExplained }: { onExplained?: () => void }) {
+// onExchange: a Kalshi or Polymarket link pasted here goes to the link reader instead (it reads those directly)
+export function BookLinkReader({ onExplained, onExchange }: { onExplained?: () => void; onExchange?: (link: string) => void }) {
   const [link, setLink] = useState('')
   const read = useMutation({ mutationFn: scanLink })
   const explain = useExplain(read.data, onExplained)
@@ -245,7 +247,7 @@ export function BookLinkReader({ onExplained }: { onExplained?: () => void }) {
           On your sportsbook, tap Share on the bet and paste the link. DeVig reads the picture of the slip the link shows, so odds for
           each leg may be missing; a screenshot shows more.
         </p>
-        <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); if (link.trim()) read.mutate(link) }}>
+        <form className='mt-3 flex gap-2' onSubmit={(e) => { e.preventDefault(); if (!link.trim()) return; if (onExchange && isExchangeLink(link)) onExchange(link.trim()); else read.mutate(link) }}>
           <label className='flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border bg-background px-3 focus-within:border-foreground'>
             <Link2 className='size-4 shrink-0 text-muted-foreground' aria-hidden='true' />
             <input value={link} onChange={(e) => setLink(e.target.value)} placeholder='sportsbook.draftkings.com/social/post/…' aria-label='Sportsbook share link'

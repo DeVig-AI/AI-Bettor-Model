@@ -6,7 +6,9 @@
 //   - an event (a game page link): each of its markets
 // GET /api/kalshi?history=<ticker>&from=<unix seconds> returns that market's Yes price by the hour (the midpoint of buy
 // and sell, else the last trade) for the parlay review's "what changed": the price when saved, at kickoff, and after.
+// Polymarket links read back the same way (functions/lib/polymarket.js), with source "polymarket".
 // Display only. Answers are kept for 30 seconds so many viewers share one Kalshi request.
+import { parsePoly, readPoly } from "../lib/polymarket.js";
 const KALSHI = "https://api.elections.kalshi.com/trade-api/v2";
 const TTL = 30, MAX_LEGS = 80, MAX_EVENT_MARKETS = 40;
 const TICKER = /^[A-Z0-9][A-Z0-9._-]{2,99}$/;
@@ -152,16 +154,36 @@ async function history(q, fetcher, now) {
   }
 }
 
+async function polymarket(p, fetcher, now) {
+  const key = `pm:${p.slug}|${p.market || ""}|${p.side ?? ""}`;
+  const hit = mem.get(key);
+  if (hit && now() - hit.at < TTL * 1000) return json(hit.data, 200, 15);
+  try {
+    const found = await readPoly(p, fetcher);
+    if (!found) return json({error: "Polymarket doesn't have a market or event with that link.", code: "not_found"}, 404);
+    const data = {fetched_at: new Date(now()).toISOString().replace(/\.\d+Z$/, "Z"), ...found};
+    mem.set(key, {at: now(), data});
+    if (mem.size > 200) mem.delete(mem.keys().next().value);
+    return json(data, 200, 15);
+  } catch (e) {
+    return json({error: "Polymarket isn't answering right now. Try again in a minute.", code: "unavailable"}, 502);
+  }
+}
+
 export async function handle(request, fetcher = fetch, now = Date.now) {
   if (request.method !== "GET") return json({error: "method not allowed"}, 405);
   const q = new URL(request.url).searchParams;
   if (q.has("history")) return history(q, fetcher, now);
-  const ticker = parseLink(new URL(request.url).searchParams.get("link"));
-  if (!ticker) return json({error: "That doesn't look like a Kalshi link.", code: "bad_link"}, 400);
+  const link = q.get("link");
+  const poly = parsePoly(link);
+  if (poly) return polymarket(poly, fetcher, now);
+  const ticker = parseLink(link);
+  if (!ticker) return json({error: "That doesn't look like a Kalshi or Polymarket link.", code: "bad_link"}, 400);
   const hit = mem.get(ticker);
   if (hit && now() - hit.at < TTL * 1000) return json(hit.data, 200, 15);
   try {
     const found = await read(ticker, fetcher);
+    if (found) found.source = "kalshi";
     if (!found) return json({error: "Kalshi doesn't have a market or event with that link.", code: "not_found"}, 404);
     const data = {fetched_at: new Date(now()).toISOString().replace(/\.\d+Z$/, "Z"), ...found};
     mem.set(ticker, {at: now(), data});

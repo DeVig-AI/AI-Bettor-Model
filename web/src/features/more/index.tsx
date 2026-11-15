@@ -10,7 +10,7 @@ const PAGES = [
   { to: '/fair', icon: Calculator, title: 'Fair price', note: 'Take the vig off any sportsbook’s price, size the bet, and see if your bets beat the close' },
   { to: '/ask', icon: MessageCircle, title: 'Ask', note: 'Questions about the picks, answered from DeVig’s data' },
   { to: '/research', icon: Search, title: 'Research', note: 'Power rankings, team and player stats, and how often a player cleared a line' },
-  { to: '/history', icon: History, title: 'History', note: 'Check a Kalshi bet from its link, combos leg by leg, and recent finals' },
+  { to: '/history', icon: History, title: 'History', note: 'Check a Kalshi or Polymarket bet from its link, combos leg by leg, and recent finals' },
   { to: '/injuries', icon: Cross, title: 'Injuries', note: "Each league's report, game by game, starters first" },
   { to: '/models', icon: BarChart3, title: 'Models', note: "DeVig's models next to other people's, graded the same way" },
   { to: '/about', icon: Info, title: 'About', note: 'How DeVig works, and what testing has found' },
