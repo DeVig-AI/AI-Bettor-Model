@@ -12,8 +12,11 @@ const SLUG = /^[a-z0-9][a-z0-9-]{1,199}$/;
 // a polymarket.com link -> {slug, market} (market: the link names one market inside the event), "pm:slug~1" ->
 // {slug, side: 1}. Anything else -> null.
 export function parsePoly(raw) {
-  const s = String(raw || "").trim();
+  let s = String(raw || "").trim();
   if (!s || s.length > 600) return null;
+  // the app's Share button sends words around the link ("Check out this market on Polymarket: https://…")
+  const inText = /(?<![\w.-])(?:https?:\/\/)?(?:www\.)?polymarket\.com\/[^\s<>"']+/i.exec(s);
+  if (inText && !/^pm:/i.test(s)) s = inText[0].replace(/[).,!?]+$/, "");
   const pm = /^pm:([a-z0-9-]+)~([01])$/i.exec(s);
   if (pm) return SLUG.test(pm[1].toLowerCase()) ? {slug: pm[1].toLowerCase(), side: Number(pm[2])} : null;
   if (!/^https?:\/\//i.test(s) && !/^(www\.)?polymarket\.com\//i.test(s)) return null;
@@ -21,6 +24,7 @@ export function parsePoly(raw) {
   try { u = new URL(/^https?:/i.test(s) ? s : `https://${s}`); } catch (e) { return null; }
   if (!/^(www\.)?polymarket\.com$/i.test(u.hostname)) return null;
   const parts = u.pathname.split("/").filter(Boolean).map(p => { try { return decodeURIComponent(p).toLowerCase(); } catch (e) { return ""; } });
+  if (/^[a-z]{2}(-[a-z]{2})?$/.test(parts[0] || "") && parts.length > 1) parts.shift();   // a language: /en/event/…, /es/sports/…
   let slug = null, market = null;
   if ((parts[0] === "event" || parts[0] === "market") && parts[1]) { slug = parts[1]; market = parts[2] || (parts[0] === "market" ? parts[1] : null); }
   else if (parts[0] === "sports" && parts.length > 1) slug = parts[parts.length - 1];   // polymarket.com/sports/nba/games/…/<game>

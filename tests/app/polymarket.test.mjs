@@ -48,6 +48,9 @@ test("links: event pages, a market inside one, sports pages and picked sides; ot
     {slug: "nba-det-mia-2026-11-14", market: "nba-det-mia-2026-11-14-total-231pt5"});
   assert.deepEqual(parsePoly("https://www.polymarket.com/sports/nba/games/week/2/nba-det-mia-2026-11-14"), {slug: "nba-det-mia-2026-11-14"});
   assert.deepEqual(parsePoly("pm:nba-det-mia-2026-11-14~1"), {slug: "nba-det-mia-2026-11-14", side: 1});
+  assert.deepEqual(parsePoly("Check out this market on Polymarket: https://polymarket.com/event/nba-det-mia-2026-11-14?via=rey."), {slug: "nba-det-mia-2026-11-14"});
+  assert.deepEqual(parsePoly("https://polymarket.com/en/event/nba-det-mia-2026-11-14"), {slug: "nba-det-mia-2026-11-14"});
+  assert.equal(parsePoly("look https://polymarket.com.evil.com/event/x-y"), null);
   assert.equal(parsePoly("https://polymarket.com.evil.com/event/x-y"), null);
   assert.equal(parsePoly("https://evil.com/event/nba-det-mia-2026-11-14"), null);
   assert.equal(parsePoly("https://polymarket.com/"), null);
