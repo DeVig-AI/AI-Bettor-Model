@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 15 \u00b7 4:13 AM ET",
+    "as_of": "Sun Nov 15 \u00b7 11:59 AM ET",
     "date": "2026-11-15",
     "sport": "EPL"
    },
@@ -52,6 +52,28 @@
     "tip_sort": "1121-1230"
    },
    "doc_id": "epl-ars-max-dowman"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SUN",
+    "home": "AVL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 7 of AVL's 10 league matches"
+    },
+    "player": "Matty Cash",
+    "reason": "Concussion - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "AVL",
+    "tip": "Sat 10:00 AM",
+    "tip_sort": "1121-1000"
+   },
+   "doc_id": "epl-avl-matty-cash"
   },
   {
    "collection": "injuries",
@@ -1880,6 +1902,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-15T09:13:45Z",
+ "generated_at": "2026-11-15T16:59:57Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
