@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-15T11:13:30+00:00",
+ "updated": "2026-11-15T17:50:27+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -57,14 +57,16 @@
    "final": null,
    "type": "side",
    "pick": "NY",
-   "line": -4.5,
-   "score": 4.5,
+   "line": -5.5,
+   "score": 3.5,
    "why_for": [
-    "Line tell: the line rates NY 4.7 points better than results so far",
+    "Line tell: the line rates NY 5.7 points better than results so far",
     "TOR: Scottie Barnes (24 points a game) is out",
     "TOR: Kawhi Leonard (20 points a game) is out"
    ],
-   "why_opp": []
+   "why_opp": [
+    "TOR: Fade the line move: TOR went from +3.5 to +5.5"
+   ]
   },
   {
    "id": "401909982",
@@ -1033,21 +1035,20 @@
    "away_id": "1",
    "note": null,
    "side": {
-    "lean": "ATL",
+    "lean": "MIL",
     "score": 0.5,
     "capped": false,
     "why_for": [
-     "MIL: Struggling team (one win or fewer)"
+     "Struggling team (one win or fewer)",
+     "Fade the line move: MIL went from +6.5 to +8.5"
     ],
     "why_opp": []
    },
    "total": {
-    "lean": "UNDER",
-    "line": 235.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 232.5 to 235.5"
-    ],
+    "lean": null,
+    "line": 233.5,
+    "score": 0.0,
+    "why_for": [],
     "why_opp": []
    }
   },
@@ -1062,17 +1063,15 @@
    "away_id": "10",
    "note": null,
    "side": {
-    "lean": "HOU",
-    "score": 1.5,
+    "lean": null,
+    "score": 0.0,
     "capped": false,
-    "why_for": [
-     "Line tell: the line rates HOU 4.7 points better than results so far"
-    ],
+    "why_for": [],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 222.5,
+    "line": 224.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1100,13 +1099,15 @@
     "why_opp": []
    },
    "total": {
-    "lean": "OVER",
-    "line": 216.5,
+    "lean": "UNDER",
+    "line": 219.5,
     "score": 0.5,
     "why_for": [
-     "DAL on tired legs (back-to-back)"
+     "Fade the inflated total: 216.5 to 219.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "DAL on tired legs (back-to-back)"
+    ]
    }
   },
   {
@@ -1121,14 +1122,16 @@
    "note": null,
    "side": {
     "lean": "NY",
-    "score": 4.5,
+    "score": 3.5,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates NY 4.7 points better than results so far",
+     "Line tell: the line rates NY 5.7 points better than results so far",
      "TOR: Scottie Barnes (24 points a game) is out",
      "TOR: Kawhi Leonard (20 points a game) is out"
     ],
-    "why_opp": []
+    "why_opp": [
+     "TOR: Fade the line move: TOR went from +3.5 to +5.5"
+    ]
    },
    "total": {
     "lean": null,
@@ -1150,10 +1153,11 @@
    "note": null,
    "side": {
     "lean": "SA",
-    "score": 3.5,
+    "score": 4.5,
     "capped": true,
     "why_for": [
-     "Line tell: the line rates SA 7.8 points better than results so far",
+     "Line tell: the line rates SA 5.8 points better than results so far",
+     "Fade the line move: SA went from -17.5 to -15.5",
      "Never lay 12 or more",
      "UTAH: Lauri Markkanen (18 points a game) is out",
      "UTAH: Struggling team (one win or fewer)"
@@ -1162,7 +1166,7 @@
    },
    "total": {
     "lean": null,
-    "line": 224.5,
+    "line": 225.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1179,15 +1183,19 @@
    "away_id": "30",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "CHA",
+    "score": 0.5,
     "capped": false,
-    "why_for": [],
-    "why_opp": []
+    "why_for": [
+     "Line tell: the line rates CHA 6.9 points better than results so far"
+    ],
+    "why_opp": [
+     "LAC: Fade the line move: LAC went from -2.5 to +1.5"
+    ]
    },
    "total": {
     "lean": null,
-    "line": 215.5,
+    "line": 213.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1214,7 +1222,7 @@
    },
    "total": {
     "lean": null,
-    "line": 227.5,
+    "line": 226.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1231,20 +1239,23 @@
    "away_id": "11",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "PHI",
+    "score": 1.5,
     "capped": false,
     "why_for": [
-     "Tyrese Haliburton (22 points a game) is out",
-     "PHI: Joel Embiid (18 points a game) is out"
+     "Joel Embiid (18 points a game) is out",
+     "IND: Tyrese Haliburton (22 points a game) is out",
+     "IND: Andrew Nembhard (17 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 224.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 226.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 222.5 to 226.5"
+    ],
     "why_opp": []
    }
   },
