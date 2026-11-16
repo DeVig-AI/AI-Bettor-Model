@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 15 \u00b7 4:42 PM ET",
+    "as_of": "Sun Nov 15 \u00b7 8:55 PM ET",
     "date": "2026-11-15",
     "sport": "NHL"
    },
@@ -172,6 +172,28 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "18 min a game \u00b7 11 points in 12 games = 5% of EDM's points"
+    },
+    "player": "Ryan Nugent-Hopkins",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "EDM",
+    "tip": "Sun 7:30 PM",
+    "tip_sort": "1115-1930"
+   },
+   "doc_id": "nhl-edm-ryan-nugent-hopkins"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "EDM",
+    "home": "PHI",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Frederik Andersen",
@@ -288,7 +310,7 @@
      "why": "14 min a game \u00b7 12 points in 19 games = 7% of MTL's points"
     },
     "player": "Josh Anderson",
-    "reason": "RW",
+    "reason": "RW \u00b7 Lower body",
     "sport": "NHL",
     "starter": true,
     "status": "Injured Reserve",
@@ -331,12 +353,12 @@
      "level": "minor",
      "why": "17 min a game \u00b7 5 points in 14 games = 3% of NSH's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Jonathan Marchessault",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "NSH",
     "tip": "Sun 9:00 PM",
     "tip_sort": "1115-2100"
@@ -501,6 +523,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "EDM",
+    "home": "PHI",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "15 min a game \u00b7 10 points in 19 games = 7% of PHI's points"
+    },
+    "player": "Denver Barkey",
+    "reason": "C \u00b7 Illness",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Sun 7:30 PM",
+    "tip_sort": "1115-1930"
+   },
+   "doc_id": "nhl-phi-denver-barkey"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "NSH",
     "home": "SJ",
     "impact": {
@@ -509,12 +553,12 @@
      "level": "some",
      "why": "20 min a game \u00b7 3 points in 11 games = 2% of SJ's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Alexander Wennberg",
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "SJ",
     "tip": "Sun 9:00 PM",
     "tip_sort": "1115-2100"
@@ -989,6 +1033,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-15T21:42:33Z",
+ "generated_at": "2026-11-16T01:55:07Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
