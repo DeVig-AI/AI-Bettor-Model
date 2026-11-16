@@ -12,16 +12,16 @@
    {
     "hi": 0.5,
     "lo": 0.4,
-    "n": 988,
+    "n": 990,
     "said": 0.457,
     "won": 0.465
    },
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 1490,
+    "n": 1492,
     "said": 0.55,
-    "won": 0.531
+    "won": 0.532
    },
    {
     "hi": 0.7,
@@ -33,19 +33,19 @@
    {
     "hi": 1,
     "lo": 0.7,
-    "n": 335,
+    "n": 336,
     "said": 0.743,
-    "won": 0.77
+    "won": 0.768
    }
   ],
-  "games": 4261,
+  "games": 4266,
   "home_rate_log_loss": 0.6898,
-  "log_loss": 0.667,
+  "log_loss": 0.6671,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
- "data_through": "2026-11-14",
- "finals_used": 5917,
+ "data_through": "2026-11-15",
+ "finals_used": 5922,
  "games": [
   {
    "away": "MTL",
@@ -69,12 +69,12 @@
    "game_id": "2026020332",
    "home": "UTA",
    "home_name": "Utah Mammoth",
-   "home_wp": 0.7386,
+   "home_wp": 0.7651,
    "kickoff": "2026-11-17T02:30:00Z",
    "parts": {
-    "b2b": 0,
-    "elo": 1.0555,
-    "sh": 0.7504
+    "b2b": -1,
+    "elo": 1.0087,
+    "sh": 0.7623
    }
   },
   {
@@ -99,12 +99,12 @@
    "game_id": "2026020335",
    "home": "FLA",
    "home_name": "Florida Panthers",
-   "home_wp": 0.5531,
+   "home_wp": 0.558,
    "kickoff": "2026-11-18T00:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.135,
-    "sh": 0.1971
+    "elo": 0.0945,
+    "sh": 0.2795
    }
   },
   {
@@ -129,12 +129,12 @@
    "game_id": "2026020337",
    "home": "PHI",
    "home_name": "Philadelphia Flyers",
-   "home_wp": 0.4633,
+   "home_wp": 0.47,
    "kickoff": "2026-11-18T00:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": -0.0485,
-    "sh": -0.2849
+    "elo": -0.0761,
+    "sh": -0.2032
    }
   },
   {
@@ -189,12 +189,12 @@
    "game_id": "2026020339",
    "home": "STL",
    "home_name": "St. Louis Blues",
-   "home_wp": 0.5492,
+   "home_wp": 0.5369,
    "kickoff": "2026-11-18T01:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.4666,
-    "sh": -0.1989
+    "elo": 0.4332,
+    "sh": -0.2563
    }
   },
   {
@@ -204,12 +204,12 @@
    "game_id": "2026020340",
    "home": "MIN",
    "home_name": "Minnesota Wild",
-   "home_wp": 0.6523,
+   "home_wp": 0.6493,
    "kickoff": "2026-11-18T01:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.736,
-    "sh": 0.3239
+    "elo": 0.7633,
+    "sh": 0.2692
    }
   },
   {
@@ -219,12 +219,12 @@
    "game_id": "2026020342",
    "home": "VGK",
    "home_name": "Vegas Golden Knights",
-   "home_wp": 0.5486,
+   "home_wp": 0.5478,
    "kickoff": "2026-11-18T03:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.2887,
-    "sh": -0.0072
+    "elo": 0.229,
+    "sh": 0.0531
    }
   },
   {
@@ -234,12 +234,12 @@
    "game_id": "2026020343",
    "home": "SJS",
    "home_name": "San Jose Sharks",
-   "home_wp": 0.5168,
+   "home_wp": 0.5276,
    "kickoff": "2026-11-18T03:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.0452,
-    "sh": 0.0189
+    "elo": 0.1059,
+    "sh": 0.0339
    }
   },
   {
@@ -271,9 +271,24 @@
     "elo": 0.1475,
     "sh": 0.5295
    }
+  },
+  {
+   "away": "COL",
+   "away_name": "Colorado Avalanche",
+   "date": "2026-11-18",
+   "game_id": "2026020346",
+   "home": "UTA",
+   "home_name": "Utah Mammoth",
+   "home_wp": 0.4542,
+   "kickoff": "2026-11-19T03:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.3095,
+    "sh": -0.0663
+   }
   }
  ],
- "generated_at": "2026-11-16T02:50:54Z",
+ "generated_at": "2026-11-16T11:43:22Z",
  "model": {
   "elo": {
    "carry": 0.85,
