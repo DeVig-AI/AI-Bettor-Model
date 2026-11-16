@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-16T11:43:28+00:00",
+ "updated": "2026-11-16T22:19:04+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
@@ -17,7 +17,7 @@
    "away": "NYJ",
    "home_id": "24",
    "away_id": "20",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
@@ -36,6 +36,28 @@
    ]
   },
   {
+   "id": "401873067",
+   "date": "2026-11-22",
+   "start": "2026-11-22T18:00Z",
+   "game": "ARI @ KC",
+   "home": "KC",
+   "away": "ARI",
+   "home_id": "12",
+   "away_id": "22",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 40.5,
+   "score": 2.5,
+   "why_for": [
+    "Pace: their games average 45 points, the total is 40.5",
+    "Buy low on the dropping total: 44.5 to 40.5"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401873068",
    "date": "2026-11-22",
    "start": "2026-11-22T18:00Z",
@@ -44,7 +66,7 @@
    "away": "BAL",
    "home_id": "29",
    "away_id": "33",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -58,6 +80,28 @@
    "why_opp": []
   },
   {
+   "id": "401873072",
+   "date": "2026-11-22",
+   "start": "2026-11-22T18:00Z",
+   "game": "TB @ DET",
+   "home": "DET",
+   "away": "TB",
+   "home_id": "8",
+   "away_id": "27",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "TB",
+   "line": 6.5,
+   "score": 2.0,
+   "why_for": [
+    "Coming off a bye week, rested and with extra time to prepare",
+    "Fade the line move: TB went from +4.5 to +6.5"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401873068",
    "date": "2026-11-22",
    "start": "2026-11-22T18:00Z",
@@ -66,7 +110,7 @@
    "away": "BAL",
    "home_id": "29",
    "away_id": "33",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
@@ -89,16 +133,16 @@
    "away": "LAC",
    "home_id": "33",
    "away_id": "24",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
    "pick": "OVER",
-   "line": 38.5,
+   "line": 39.5,
    "score": 2.5,
    "why_for": [
-    "Pace: their games average 45 points, the total is 38.5",
-    "Buy low on the dropping total: 48.5 to 38.5"
+    "Pace: their games average 45 points, the total is 39.5",
+    "Buy low on the dropping total: 48.5 to 39.5"
    ],
    "why_opp": []
   },
@@ -426,13 +470,13 @@
     "score": 1.0,
     "capped": false,
     "why_for": [
-     "Fade the line move: WSH went from +1.5 to +4.5"
+     "Fade the line move: WSH went from +1.5 to +6.5"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 51.5,
+    "line": 52.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -511,7 +555,7 @@
     "score": 1.0,
     "capped": false,
     "why_for": [
-     "Fade the line move: NYG went from +1.5 to +6.5"
+     "Fade the line move: NYG went from +1.5 to +6"
     ],
     "why_opp": []
    },
@@ -580,10 +624,12 @@
     ]
    },
    "total": {
-    "lean": null,
-    "line": 46.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 45.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 47.5 to 45.5"
+    ],
     "why_opp": []
    }
   },
@@ -598,14 +644,16 @@
    "away_id": "18",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
+    "lean": "CHI",
+    "score": 1.5,
+    "capped": true,
     "why_for": [
-     "Fade the line move: NO went from +6.5 to +10"
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Line tell: the line rates CHI 4.9 points better than results so far",
+     "Never lay 10 or more"
     ],
     "why_opp": [
-     "CHI: Coming off a bye week, rested and with extra time to prepare"
+     "NO: Fade the line move: NO went from +6.5 to +11.5"
     ]
    },
    "total": {
@@ -630,20 +678,21 @@
    "note": null,
    "side": {
     "lean": "TEN",
-    "score": 0.5,
+    "score": 1.5,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 17",
-     "Struggling team (one win or fewer)"
+     "Struggling team (one win or fewer)",
+     "Fade the line move: TEN went from +6.5 to +8.5"
     ],
     "why_opp": []
    },
    "total": {
     "lean": "UNDER",
-    "line": 53.5,
+    "line": 54.5,
     "score": 1.0,
     "why_for": [
-     "Fade the inflated total: 48.5 to 53.5"
+     "Fade the inflated total: 48.5 to 54.5"
     ],
     "why_opp": []
    }
@@ -660,10 +709,11 @@
    "note": null,
    "side": {
     "lean": "TB",
-    "score": 1.0,
+    "score": 2.0,
     "capped": false,
     "why_for": [
-     "Coming off a bye week, rested and with extra time to prepare"
+     "Coming off a bye week, rested and with extra time to prepare",
+     "Fade the line move: TB went from +4.5 to +6.5"
     ],
     "why_opp": []
    },
@@ -701,10 +751,11 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 41.5,
-    "score": 1.0,
+    "line": 40.5,
+    "score": 2.5,
     "why_for": [
-     "Buy low on the dropping total: 44.5 to 41.5"
+     "Pace: their games average 45 points, the total is 40.5",
+     "Buy low on the dropping total: 44.5 to 40.5"
     ],
     "why_opp": []
    }
@@ -789,12 +840,12 @@
     "capped": true,
     "why_for": [
      "Short week: 4 days since its last game",
-     "Line tell: the line rates HOU 5.1 points better than results so far",
+     "Line tell: the line rates HOU 6.1 points better than results so far",
      "Never lay 10 or more",
      "IND: Short week: 4 days since its last game"
     ],
     "why_opp": [
-     "IND: Fade the line move: IND went from +5.5 to +10.5"
+     "IND: Fade the line move: IND went from +5.5 to +11.5"
     ]
    },
    "total": {
@@ -832,11 +883,11 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 38.5,
+    "line": 39.5,
     "score": 2.5,
     "why_for": [
-     "Pace: their games average 45 points, the total is 38.5",
-     "Buy low on the dropping total: 48.5 to 38.5"
+     "Pace: their games average 45 points, the total is 39.5",
+     "Buy low on the dropping total: 48.5 to 39.5"
     ],
     "why_opp": []
    }

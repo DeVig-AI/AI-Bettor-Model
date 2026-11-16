@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-16T11:43:26+00:00",
+ "updated": "2026-11-16T22:19:00+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -22,24 +22,46 @@
  ],
  "picks": [
   {
-   "id": "401910001",
+   "id": "401910000",
    "date": "2026-11-16",
-   "start": "2026-11-17T02:00Z",
-   "game": "PHX @ DEN",
-   "home": "DEN",
-   "away": "PHX",
-   "home_id": "7",
-   "away_id": "21",
-   "book": "DraftKings",
+   "start": "2026-11-17T01:00Z",
+   "game": "GS @ NO",
+   "home": "NO",
+   "away": "GS",
+   "home_id": "3",
+   "away_id": "9",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 223.5,
+   "score": 2.5,
+   "why_for": [
+    "Pace: their games average 235 points, the total is 223.5",
+    "Buy low on the dropping total: 226.5 to 223.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401909997",
+   "date": "2026-11-16",
+   "start": "2026-11-17T00:30Z",
+   "game": "PHI @ BKN",
+   "home": "BKN",
+   "away": "PHI",
+   "home_id": "17",
+   "away_id": "20",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
-   "pick": "DEN",
-   "line": -10.5,
-   "score": 3.0,
+   "pick": "BKN",
+   "line": 4.5,
+   "score": 2.5,
    "why_for": [
-    "Line tell: the line rates DEN 4.8 points better than results so far",
-    "PHX: Second night of a back-to-back"
+    "Bounce-back spot after losing by 19",
+    "PHI: Second night of a back-to-back"
    ],
    "why_opp": []
   },
@@ -52,7 +74,7 @@
    "away": "ORL",
    "home_id": "2",
    "away_id": "19",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -994,17 +1016,16 @@
    "note": null,
    "side": {
     "lean": "DEN",
-    "score": 3.0,
+    "score": 1.5,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates DEN 4.8 points better than results so far",
      "PHX: Second night of a back-to-back"
     ],
     "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 227.5,
+    "line": 229.5,
     "score": 0.5,
     "why_for": [
      "PHX on tired legs (back-to-back)"
@@ -1023,19 +1044,18 @@
    "away_id": "22",
    "note": null,
    "side": {
-    "lean": "MIN",
-    "score": 1.0,
-    "capped": true,
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
     "why_for": [
-     "Anthony Edwards (33 points a game) is out",
-     "Fade the line move: MIN went from -3.5 to -1.5",
-     "POR: Ja Morant (16 points a game) is out"
+     "Ja Morant (16 points a game) is out",
+     "MIN: Anthony Edwards (33 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 227.5,
+    "line": 228.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1064,10 +1084,11 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 225.5,
-    "score": 1.5,
+    "line": 223.5,
+    "score": 2.5,
     "why_for": [
-     "Pace: their games average 235 points, the total is 225.5"
+     "Pace: their games average 235 points, the total is 223.5",
+     "Buy low on the dropping total: 226.5 to 223.5"
     ],
     "why_opp": []
    }
@@ -1084,19 +1105,17 @@
    "note": null,
    "side": {
     "lean": "BKN",
-    "score": 1.0,
+    "score": 2.5,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 19",
      "PHI: Second night of a back-to-back"
     ],
-    "why_opp": [
-     "PHI: Line tell: the line rates PHI 4.8 points better than results so far"
-    ]
+    "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 225.5,
+    "line": 226.5,
     "score": 0.5,
     "why_for": [
      "PHI on tired legs (back-to-back)"
@@ -1124,13 +1143,15 @@
     "why_opp": []
    },
    "total": {
-    "lean": "OVER",
-    "line": 230.5,
+    "lean": "UNDER",
+    "line": 232.5,
     "score": 0.5,
     "why_for": [
-     "HOU on tired legs (back-to-back)"
+     "Fade the inflated total: 228.5 to 232.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "HOU on tired legs (back-to-back)"
+    ]
    }
   },
   {
@@ -1213,12 +1234,12 @@
      "MEM: Ty Jerome (25 points a game) is out"
     ],
     "why_opp": [
-     "MEM: Fade the line move: MEM went from -6.5 to -4.5"
+     "MEM: Fade the line move: MEM went from -6.5 to -3.5"
     ]
    },
    "total": {
     "lean": "OVER",
-    "line": 230.5,
+    "line": 232.5,
     "score": 0.5,
     "why_for": [
      "WSH on tired legs (back-to-back)"
