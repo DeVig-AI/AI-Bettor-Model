@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 16 \u00b7 4:30 AM ET",
+    "as_of": "Mon Nov 16 \u00b7 3:20 PM ET",
     "date": "2026-11-16",
     "sport": "EPL"
    },
@@ -30,6 +30,28 @@
     "tip_sort": "1121-1230"
    },
    "doc_id": "epl-ars-bukayo-saka"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ARS",
+    "home": "NEW",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 0 of ARS's 10 league matches"
+    },
+    "player": "Mart\u00edn Zubimendi Ib\u00e1\u00f1ez",
+    "reason": "Hamstring injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "ARS",
+    "tip": "Sat 12:30 PM",
+    "tip_sort": "1121-1230"
+   },
+   "doc_id": "epl-ars-martin-zubimendi-ibanez"
   },
   {
    "collection": "injuries",
@@ -250,6 +272,28 @@
     "tip_sort": "1121-1000"
    },
    "doc_id": "epl-bou-juanlu-sanchez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "EVE",
+    "home": "BRE",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 3 of BRE's 10 league matches"
+    },
+    "player": "Nathan Collins",
+    "reason": "Knee injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "BRE",
+    "tip": "Mon 3:00 PM",
+    "tip_sort": "1123-1500"
+   },
+   "doc_id": "epl-bre-nathan-collins"
   },
   {
    "collection": "injuries",
@@ -1115,6 +1159,28 @@
     "away": "BHA",
     "home": "HUL",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 7 of HUL's 10 league matches \u00b7 a goal or assist on 1 of their 11 goals (9%)"
+    },
+    "player": "Nobel Mendy",
+    "reason": "Knee injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "HUL",
+    "tip": "Sun 9:00 AM",
+    "tip_sort": "1122-0900"
+   },
+   "doc_id": "epl-hul-nobel-mendy"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BHA",
+    "home": "HUL",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -1621,6 +1687,28 @@
     "away": "NFO",
     "home": "BOU",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 10 of NFO's 10 league matches \u00b7 a goal or assist on 2 of their 9 goals (22%)"
+    },
+    "player": "Neco Williams",
+    "reason": "Ankle injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "NFO",
+    "tip": "Sat 10:00 AM",
+    "tip_sort": "1121-1000"
+   },
+   "doc_id": "epl-nfo-neco-williams"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NFO",
+    "home": "BOU",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -1924,6 +2012,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-16T09:30:26Z",
+ "generated_at": "2026-11-16T20:20:59Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
