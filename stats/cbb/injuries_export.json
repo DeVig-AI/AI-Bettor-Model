@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 16 \u00b7 10:44 PM ET",
-    "date": "2026-11-16",
+    "as_of": "Tue Nov 17 \u00b7 8:11 AM ET",
+    "date": "2026-11-17",
     "sport": "CBB"
    },
    "doc_id": "cbb-meta"
@@ -93,23 +93,6 @@
     "tip_sort": "1118-2000"
    },
    "doc_id": "cbb-bc-money-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BC",
-    "home": "HARV",
-    "impact": null,
-    "player": "Jacob Furphy",
-    "reason": "G \u00b7 Knee \u00b7 reported Oct 26",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "BC",
-    "tip": "Wed 8:00 PM",
-    "tip_sort": "1118-2000"
-   },
-   "doc_id": "cbb-bc-jacob-furphy"
   },
   {
    "collection": "injuries",
@@ -526,11 +509,12 @@
     "away": "ALCN",
     "home": "MIZ",
     "impact": null,
+    "note": "Upgraded from out",
     "player": "Mark Mitchell",
     "reason": "G \u00b7 Concussion \u00b7 reported Nov 14",
     "sport": "CBB",
     "starter": false,
-    "status": "Out",
+    "status": "Questionable",
     "team": "MIZ",
     "tip": "Wed 9:00 PM",
     "tip_sort": "1118-2100"
@@ -723,23 +707,6 @@
     "tip_sort": "1118-1830"
    },
    "doc_id": "cbb-psu-roberts-blums"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "RUTG",
-    "home": "HOU",
-    "impact": null,
-    "player": "Dorin Buca",
-    "reason": "C \u00b7 Knee \u00b7 reported Oct 17",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "RUTG",
-    "tip": "Tue 2:00 PM",
-    "tip_sort": "1117-1400"
-   },
-   "doc_id": "cbb-rutg-dorin-buca"
   },
   {
    "collection": "injuries",
@@ -1050,7 +1017,7 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "LBSU",
+    "away": "CSUF",
     "home": "UCLA",
     "impact": null,
     "player": "Xavier Booker",
@@ -1059,15 +1026,15 @@
     "starter": false,
     "status": "Questionable",
     "team": "UCLA",
-    "tip": "Mon 10:00 PM",
-    "tip_sort": "1116-2200"
+    "tip": "Wed 10:30 PM",
+    "tip_sort": "1118-2230"
    },
    "doc_id": "cbb-ucla-xavier-booker"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "LBSU",
+    "away": "CSUF",
     "home": "UCLA",
     "impact": null,
     "player": "Filip Jovic",
@@ -1076,10 +1043,27 @@
     "starter": false,
     "status": "Questionable",
     "team": "UCLA",
-    "tip": "Mon 10:00 PM",
-    "tip_sort": "1116-2200"
+    "tip": "Wed 10:30 PM",
+    "tip_sort": "1118-2230"
    },
    "doc_id": "cbb-ucla-filip-jovic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TAR",
+    "home": "USC",
+    "impact": null,
+    "player": "Eric Reibe",
+    "reason": "C \u00b7 Foot \u00b7 reported Oct 19",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "USC",
+    "tip": "Thu 11:00 PM",
+    "tip_sort": "1119-2300"
+   },
+   "doc_id": "cbb-usc-eric-reibe"
   },
   {
    "collection": "injuries",
@@ -1287,6 +1271,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-17T03:44:40Z",
+ "generated_at": "2026-11-17T13:11:10Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }

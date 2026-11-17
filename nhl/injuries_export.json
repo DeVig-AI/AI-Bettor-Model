@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 16 \u00b7 10:44 PM ET",
-    "date": "2026-11-16",
+    "as_of": "Tue Nov 17 \u00b7 8:11 AM ET",
+    "date": "2026-11-17",
     "sport": "NHL"
    },
    "doc_id": "nhl-meta"
@@ -682,6 +682,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "VAN",
+    "home": "SEA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+    },
+    "player": "Nikke Kokko",
+    "reason": "G",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "SEA",
+    "tip": "Thu 9:40 PM",
+    "tip_sort": "1119-2140"
+   },
+   "doc_id": "nhl-sea-nikke-kokko"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "ANA",
     "home": "STL",
     "impact": {
@@ -861,7 +883,7 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "VAN",
+    "away": "COL",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -875,15 +897,15 @@
     "starter": true,
     "status": "Out",
     "team": "UTA",
-    "tip": "Mon 9:30 PM",
-    "tip_sort": "1116-2130"
+    "tip": "Wed 10:00 PM",
+    "tip_sort": "1118-2200"
    },
    "doc_id": "nhl-uta-nick-schmaltz"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "VAN",
+    "away": "COL",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -897,15 +919,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Mon 9:30 PM",
-    "tip_sort": "1116-2130"
+    "tip": "Wed 10:00 PM",
+    "tip_sort": "1118-2200"
    },
    "doc_id": "nhl-uta-nate-schmidt"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "VAN",
+    "away": "COL",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -919,15 +941,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Mon 9:30 PM",
-    "tip_sort": "1116-2130"
+    "tip": "Wed 10:00 PM",
+    "tip_sort": "1118-2200"
    },
    "doc_id": "nhl-uta-dylan-guenther"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "VAN",
+    "away": "COL",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -941,8 +963,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Mon 9:30 PM",
-    "tip_sort": "1116-2130"
+    "tip": "Wed 10:00 PM",
+    "tip_sort": "1118-2200"
    },
    "doc_id": "nhl-uta-john-marino"
   },
@@ -950,7 +972,7 @@
    "collection": "injuries",
    "data": {
     "away": "VAN",
-    "home": "UTA",
+    "home": "SEA",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -963,8 +985,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "VAN",
-    "tip": "Mon 9:30 PM",
-    "tip_sort": "1116-2130"
+    "tip": "Thu 9:40 PM",
+    "tip_sort": "1119-2140"
    },
    "doc_id": "nhl-van-thatcher-demko"
   },
@@ -1080,6 +1102,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-17T03:44:38Z",
+ "generated_at": "2026-11-17T13:11:10Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }

@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 16 \u00b7 10:44 PM ET",
-    "date": "2026-11-16",
+    "as_of": "Tue Nov 17 \u00b7 8:11 AM ET",
+    "date": "2026-11-17",
     "sport": "EPL"
    },
    "doc_id": "epl-meta"
@@ -316,6 +316,28 @@
     "tip_sort": "1123-1500"
    },
    "doc_id": "epl-bre-rico-henry"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "EVE",
+    "home": "BRE",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 3 of BRE's 10 league matches"
+    },
+    "player": "Aaron Hickey",
+    "reason": "Hamstring injury - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "BRE",
+    "tip": "Mon 3:00 PM",
+    "tip_sort": "1123-1500"
+   },
+   "doc_id": "epl-bre-aaron-hickey"
   },
   {
    "collection": "injuries",
@@ -2012,6 +2034,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-17T03:44:39Z",
+ "generated_at": "2026-11-17T13:11:10Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
