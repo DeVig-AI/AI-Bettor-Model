@@ -321,7 +321,9 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
     const legs = b.legs.map(l => {
       const st = legState(l, l.game, l.game && boxes[l.game.id]);
       if (l.game) legCount[`${l.sport}:${l.game.id}`] = (legCount[`${l.sport}:${l.game.id}`] || 0) + 1;
-      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...st};
+      // props also say who and what, so the TV can write "Herro 24 pts · 1 to go" as the number moves
+      const prop = l.kind === "prop" && l.strike != null ? {who: lastName(l.player), unit: SHORT[l.stat] || String(l.stat).replace(/_/g, " "), side: l.side, strike: l.strike} : {};
+      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...prop, ...st};
     });
     const won = legs.filter(l => l.state === "won").length, lost = legs.filter(l => l.state === "lost").length;
     const done = lost ? "lost" : won === legs.length ? "won" : null;
@@ -331,7 +333,9 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
   const shown = games.map(g => {
     const key = `${g.sport}:${g.id}`, mine = legCount[key] || 0, fav = favOf(g.sport, g.away) || favOf(g.sport, g.home);
     return {key, sport: g.sport, away: g.away, home: g.home, as: g.away_score, hs: g.home_score, state: g.state,
-      detail: g.detail, kickoff: g.kickoff, mine, fav};
+      detail: g.detail, kickoff: g.kickoff, mine, fav,
+      // football: ESPN's last play, so a touchdown on the TV can say who scored it
+      ...(g.state === "in" && g.situation && g.situation.last_play ? {last: String(g.situation.last_play).slice(0, 200)} : {})};
   }).filter(g => {
     if (g.mine) return true;
     if (g.state === "post") return false;
