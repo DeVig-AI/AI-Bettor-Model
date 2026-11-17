@@ -3,11 +3,126 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 16 \u00b7 3:20 PM ET \u00b7 Week 10",
+    "as_of": "Mon Nov 16 \u00b7 10:44 PM ET \u00b7 Week 10",
     "date": "2026-11-16",
     "sport": "NFL"
    },
    "doc_id": "nfl-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (90% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Olaivavega Ioane",
+    "reason": "G \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-olaivavega-ioane"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (3% of snaps)"
+    },
+    "player": "Kedon Slovis",
+    "reason": "QB \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-kedon-slovis"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (13% of snaps)"
+    },
+    "player": "Aeneas Peebles",
+    "reason": "DT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-aeneas-peebles"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (22% of snaps)"
+    },
+    "player": "Chandler Rivers",
+    "reason": "CB \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-chandler-rivers"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (36% of snaps)"
+    },
+    "player": "Elijah Sarratt",
+    "reason": "WR \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-elijah-sarratt"
   },
   {
    "collection": "injuries",
@@ -32,6 +147,29 @@
     "tip_sort": "1116-2015"
    },
    "doc_id": "nfl-bal-jaylinn-hawkins"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Emery Jones Jr.",
+    "reason": "OT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "BAL",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-bal-emery-jones"
   },
   {
    "collection": "injuries",
@@ -66,19 +204,113 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Part-time (14% of snaps)"
+    },
+    "player": "Rodney Shelley",
+    "reason": "CB \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "LAC",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-lac-rodney-shelley"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Part-time (18% of snaps)"
     },
-    "note": "Downgraded from questionable",
+    "note": "Downgraded from doubtful",
     "player": "Brenen Thompson",
     "reason": "WR \u00b7 Hamstring",
     "sport": "NFL",
     "starter": false,
-    "status": "Doubtful",
+    "status": "Out",
     "team": "LAC",
     "tip": "Mon 8:15 PM",
     "tip_sort": "1116-2015"
    },
    "doc_id": "nfl-lac-brenen-thompson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (47% of snaps)"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Justin Eboigbe",
+    "reason": "DT \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "LAC",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-lac-justin-eboigbe"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (19% of snaps)"
+    },
+    "player": "Isas Waxter",
+    "reason": "CB \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "LAC",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-lac-isas-waxter"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LAC",
+    "confirmed": true,
+    "home": "BAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (0% of snaps)"
+    },
+    "note": "Downgraded from questionable",
+    "player": "Kendall Williamson",
+    "reason": "S \u00b7 Calf",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "LAC",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1116-2015"
+   },
+   "doc_id": "nfl-lac-kendall-williamson"
   },
   {
    "collection": "injuries",
@@ -114,11 +346,10 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Part-time (3% of snaps)"
+     "why": "Part-time (16% of snaps)"
     },
-    "note": "Downgraded from questionable",
-    "player": "Branson Taylor",
-    "reason": "G \u00b7 Ankle",
+    "player": "Bud Dupree",
+    "reason": "LB \u00b7 Coach's Decision",
     "sport": "NFL",
     "starter": false,
     "status": "Out",
@@ -126,125 +357,9 @@
     "tip": "Mon 8:15 PM",
     "tip_sort": "1116-2015"
    },
-   "doc_id": "nfl-lac-branson-taylor"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (69% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Kayode Awosika",
-    "reason": "G \u00b7 Lower Leg",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "LAC",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1116-2015"
-   },
-   "doc_id": "nfl-lac-kayode-awosika"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (0% of snaps)"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Kendall Williamson",
-    "reason": "S \u00b7 Calf",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "LAC",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1116-2015"
-   },
-   "doc_id": "nfl-lac-kendall-williamson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (19% of snaps)"
-    },
-    "player": "Isas Waxter",
-    "reason": "CB \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "LAC",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1116-2015"
-   },
-   "doc_id": "nfl-lac-isas-waxter"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (47% of snaps)"
-    },
-    "player": "Justin Eboigbe",
-    "reason": "DT \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "LAC",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1116-2015"
-   },
-   "doc_id": "nfl-lac-justin-eboigbe"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "confirmed": true,
-    "home": "BAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (52% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Denzel Perryman",
-    "reason": "LB \u00b7 Pectoral",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Injured Reserve",
-    "team": "LAC",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1116-2015"
-   },
-   "doc_id": "nfl-lac-denzel-perryman"
+   "doc_id": "nfl-lac-bud-dupree"
   }
  ],
- "generated_at": "2026-11-16T20:20:58Z",
+ "generated_at": "2026-11-17T03:44:38Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
