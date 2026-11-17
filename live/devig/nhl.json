@@ -19,7 +19,7 @@
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 1492,
+    "n": 1493,
     "said": 0.55,
     "won": 0.532
    },
@@ -38,45 +38,15 @@
     "won": 0.768
    }
   ],
-  "games": 4266,
+  "games": 4267,
   "home_rate_log_loss": 0.6898,
   "log_loss": 0.6671,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
- "data_through": "2026-11-15",
- "finals_used": 5922,
+ "data_through": "2026-11-16",
+ "finals_used": 5923,
  "games": [
-  {
-   "away": "MTL",
-   "away_name": "Montr\u00e9al Canadiens",
-   "date": "2026-11-16",
-   "game_id": "2026020331",
-   "home": "NYR",
-   "home_name": "New York Rangers",
-   "home_wp": 0.5132,
-   "kickoff": "2026-11-17T00:30:00Z",
-   "parts": {
-    "b2b": 0,
-    "elo": -0.0089,
-    "sh": 0.0514
-   }
-  },
-  {
-   "away": "VAN",
-   "away_name": "Vancouver Canucks",
-   "date": "2026-11-16",
-   "game_id": "2026020332",
-   "home": "UTA",
-   "home_name": "Utah Mammoth",
-   "home_wp": 0.7651,
-   "kickoff": "2026-11-17T02:30:00Z",
-   "parts": {
-    "b2b": -1,
-    "elo": 1.0087,
-    "sh": 0.7623
-   }
-  },
   {
    "away": "LAK",
    "away_name": "Los Angeles Kings",
@@ -264,12 +234,12 @@
    "game_id": "2026020345",
    "home": "NJD",
    "home_name": "New Jersey Devils",
-   "home_wp": 0.5979,
+   "home_wp": 0.6012,
    "kickoff": "2026-11-19T00:30:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.1475,
-    "sh": 0.5321
+    "elo": 0.1724,
+    "sh": 0.5307
    }
   },
   {
@@ -286,9 +256,189 @@
     "elo": -0.3095,
     "sh": -0.0663
    }
+  },
+  {
+   "away": "LAK",
+   "away_name": "Los Angeles Kings",
+   "date": "2026-11-19",
+   "game_id": "2026020347",
+   "home": "TOR",
+   "home_name": "Toronto Maple Leafs",
+   "home_wp": 0.5084,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.2646,
+    "sh": -0.2873
+   }
+  },
+  {
+   "away": "PHI",
+   "away_name": "Philadelphia Flyers",
+   "date": "2026-11-19",
+   "game_id": "2026020348",
+   "home": "OTT",
+   "home_name": "Ottawa Senators",
+   "home_wp": 0.6334,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.6924,
+    "sh": 0.216
+   }
+  },
+  {
+   "away": "STL",
+   "away_name": "St. Louis Blues",
+   "date": "2026-11-19",
+   "game_id": "2026020350",
+   "home": "PIT",
+   "home_name": "Pittsburgh Penguins",
+   "home_wp": 0.5386,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.161,
+    "sh": 0.0577
+   }
+  },
+  {
+   "away": "BUF",
+   "away_name": "Buffalo Sabres",
+   "date": "2026-11-19",
+   "game_id": "2026020351",
+   "home": "WSH",
+   "home_name": "Washington Capitals",
+   "home_wp": 0.5323,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.2613,
+    "sh": -0.1015
+   }
+  },
+  {
+   "away": "MTL",
+   "away_name": "Montr\u00e9al Canadiens",
+   "date": "2026-11-19",
+   "game_id": "2026020352",
+   "home": "CAR",
+   "home_name": "Carolina Hurricanes",
+   "home_wp": 0.7362,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.7803,
+    "sh": 1.0307
+   }
+  },
+  {
+   "away": "NYI",
+   "away_name": "New York Islanders",
+   "date": "2026-11-19",
+   "game_id": "2026020354",
+   "home": "WPG",
+   "home_name": "Winnipeg Jets",
+   "home_wp": 0.5803,
+   "kickoff": "2026-11-20T00:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.311,
+    "sh": 0.2135
+   }
+  },
+  {
+   "away": "EDM",
+   "away_name": "Edmonton Oilers",
+   "date": "2026-11-19",
+   "game_id": "2026020349",
+   "home": "TBL",
+   "home_name": "Tampa Bay Lightning",
+   "home_wp": 0.6178,
+   "kickoff": "2026-11-20T00:30:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.4023,
+    "sh": 0.4099
+   }
+  },
+  {
+   "away": "CBJ",
+   "away_name": "Columbus Blue Jackets",
+   "date": "2026-11-19",
+   "game_id": "2026020353",
+   "home": "CHI",
+   "home_name": "Chicago Blackhawks",
+   "home_wp": 0.3905,
+   "kickoff": "2026-11-20T01:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.3543,
+    "sh": -0.514
+   }
+  },
+  {
+   "away": "MIN",
+   "away_name": "Minnesota Wild",
+   "date": "2026-11-19",
+   "game_id": "2026020355",
+   "home": "CGY",
+   "home_name": "Calgary Flames",
+   "home_wp": 0.3804,
+   "kickoff": "2026-11-20T01:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.5462,
+    "sh": -0.3833
+   }
+  },
+  {
+   "away": "ANA",
+   "away_name": "Anaheim Ducks",
+   "date": "2026-11-19",
+   "game_id": "2026020356",
+   "home": "COL",
+   "home_name": "Colorado Avalanche",
+   "home_wp": 0.6686,
+   "kickoff": "2026-11-20T02:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.9882,
+    "sh": 0.1837
+   }
+  },
+  {
+   "away": "VAN",
+   "away_name": "Vancouver Canucks",
+   "date": "2026-11-19",
+   "game_id": "2026020357",
+   "home": "SEA",
+   "home_name": "Seattle Kraken",
+   "home_wp": 0.6199,
+   "kickoff": "2026-11-20T02:40:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.7382,
+    "sh": 0.0555
+   }
+  },
+  {
+   "away": "DAL",
+   "away_name": "Dallas Stars",
+   "date": "2026-11-19",
+   "game_id": "2026020358",
+   "home": "VGK",
+   "home_name": "Vegas Golden Knights",
+   "home_wp": 0.5478,
+   "kickoff": "2026-11-20T03:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.229,
+    "sh": 0.0531
+   }
   }
  ],
- "generated_at": "2026-11-16T22:18:45Z",
+ "generated_at": "2026-11-17T04:35:59Z",
  "model": {
   "elo": {
    "carry": 0.85,
