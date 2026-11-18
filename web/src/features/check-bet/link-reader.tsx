@@ -296,7 +296,7 @@ function ReaderInner({ r, d }: { r: Reader; d: KRead }) {
 
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 const legsOf = (d: KRead | undefined): KLeg[] => (!d ? [] : d.kind === 'combo' ? d.legs : d.kind === 'market' ? [d.market] : d.markets)
-const peek = (link: string) => ({ queryKey: ['kalshi-peek', link], queryFn: () => readLink(link), staleTime: 2 * 60e3, retry: 1 })
+export const peek = (link: string) => ({ queryKey: ['kalshi-peek', link], queryFn: () => readLink(link), staleTime: 2 * 60e3, retry: 1 })
 
 // what a saved bet's card and drawer header both show: how it's going, read from Kalshi like the review (kept 2 minutes)
 function useSavedFacts(s: Saved, owner?: string) {

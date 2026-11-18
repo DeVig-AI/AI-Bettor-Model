@@ -13,6 +13,7 @@ import { ThemeProvider } from './context/theme-provider'
 import { routeTree } from './routeTree.gen'
 // Styles
 import './styles/index.css'
+import { catchShared } from './lib/shared-link'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,8 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+catchShared() // a bet shared to DeVig from Kalshi, Polymarket or a sportsbook opens on Parlay
 
 // Hash URLs (/v2/#/track-record) work on Cloudflare Pages without a rewrite rule, and inside the app shells (file://).
 const router = createRouter({

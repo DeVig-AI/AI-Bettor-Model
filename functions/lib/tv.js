@@ -216,6 +216,7 @@ export function legState(leg, game, box) {
 // ---------- open bets ----------
 const americanPays = (stake, odds) => (stake > 0 && odds ? +(stake * (odds > 0 ? odds / 100 + 1 : 100 / -odds + 1)).toFixed(2) : null);
 const OPEN_H = 16;     // a bet stays on the TV this many hours after its last leg's start
+const DONE_H = 4;      // ...or until its games are all final and the latest started this long ago
 
 // ★ tracked parlays, logged bets and saved links that may still be going: {id, label, stake, pays, legs?, link?}
 export function openBets(user, now) {
@@ -245,10 +246,10 @@ export function openBets(user, now) {
     if (!s || typeof s.link !== "string" || s.outcome) continue;
     const at = Date.parse(s.savedAt || "");
     if (!isFinite(at) || now - at > 4 * 86400e3) continue;
-    out.push({id: `s:${s.link.slice(0, 80)}`, label: String(s.label || "Saved bet").slice(0, 40), link: s.link,
+    out.push({id: `s:${s.link.slice(0, 80)}`, label: String(s.label || "Saved bet").slice(0, 40), link: s.link, at,
       stake: s.bet ? num(s.bet.stake) : null, pays: s.bet ? num(s.bet.pays) : null});
   }
-  return out.slice(0, 8);
+  return out.slice(0, 24);
 }
 
 // ---------- the whole dock ----------
@@ -306,12 +307,23 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
     } catch (e) { /* stays live without a number */ }
   }
 
+  // a bet whose games are all over leaves the dock (saved links would otherwise sit there for 4 days)
+  const over = b => {
+    if (b.legs.some(l => !l.result && !(l.game && l.game.state === "post"))) {
+      // a leg still to go, unless it's a saved link whose games aren't on any board: those are from an earlier day
+      return b.at != null && now - b.at > OPEN_H * 3600e3 && b.legs.every(l => !l.game);
+    }
+    const ks = b.legs.map(l => Date.parse((l.game && l.game.kickoff) || "")).filter(isFinite);
+    return !ks.length || now - Math.max(...ks) > DONE_H * 3600e3;
+  };
   const legCount = {};
-  const outBets = live.map(b => {
+  const outBets = live.filter(b => !over(b)).slice(0, 8).map(b => {
     const legs = b.legs.map(l => {
       const st = legState(l, l.game, l.game && boxes[l.game.id]);
       if (l.game) legCount[`${l.sport}:${l.game.id}`] = (legCount[`${l.sport}:${l.game.id}`] || 0) + 1;
-      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...st};
+      // props also say who and what, so the TV can write "Herro 24 pts · 1 to go" as the number moves
+      const prop = l.kind === "prop" && l.strike != null ? {who: lastName(l.player), unit: SHORT[l.stat] || String(l.stat).replace(/_/g, " "), side: l.side, strike: l.strike} : {};
+      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...prop, ...st};
     });
     const won = legs.filter(l => l.state === "won").length, lost = legs.filter(l => l.state === "lost").length;
     const done = lost ? "lost" : won === legs.length ? "won" : null;
@@ -321,7 +333,9 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
   const shown = games.map(g => {
     const key = `${g.sport}:${g.id}`, mine = legCount[key] || 0, fav = favOf(g.sport, g.away) || favOf(g.sport, g.home);
     return {key, sport: g.sport, away: g.away, home: g.home, as: g.away_score, hs: g.home_score, state: g.state,
-      detail: g.detail, kickoff: g.kickoff, mine, fav};
+      detail: g.detail, kickoff: g.kickoff, mine, fav,
+      // football: ESPN's last play, so a touchdown on the TV can say who scored it
+      ...(g.state === "in" && g.situation && g.situation.last_play ? {last: String(g.situation.last_play).slice(0, 200)} : {})};
   }).filter(g => {
     if (g.mine) return true;
     if (g.state === "post") return false;

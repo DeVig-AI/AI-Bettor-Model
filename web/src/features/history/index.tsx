@@ -3,7 +3,8 @@ import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import { type GameRow, useFinals } from '@/lib/devig'
 import { trackedParlays, useTracked } from '@/lib/track'
-import { YourParlays, useGradedParlays } from './parlays'
+import { RecordTiles, YourParlays, useGradedParlays } from './parlays'
+import { useMyRecord } from './my-record'
 import { LinkReader } from '../check-bet/link-reader'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -106,7 +107,8 @@ export function History() {
   const { tracked } = useTracked()
   const list = useMemo(() => trackedParlays(tracked), [tracked])
   const graded = useGradedParlays(list)
-  const done = graded.filter((p) => p.status === 'hit' || p.status === 'missed').length
+  const mine = useMyRecord()
+  const done = mine.list.length || graded.filter((p) => p.status === 'hit' || p.status === 'missed').length
   const [pickView, setView] = useState<'parlays' | 'games' | null>(null)
   const view = pickView ?? (done ? 'parlays' : 'games')
   return (
@@ -120,7 +122,7 @@ export function History() {
       </Header>
       <Main className='flex flex-col gap-6'>
         <div role='radiogroup' aria-label='Show' className='grid grid-cols-2 gap-1 rounded-xl bg-muted p-1'>
-          {([['parlays', `Your parlays${done ? ` (${done})` : ''}`], ['games', 'Games']] as const).map(([k, t]) => (
+          {([['parlays', `Your bets${done ? ` (${done})` : ''}`], ['games', 'Games']] as const).map(([k, t]) => (
             <button key={k} type='button' role='radio' aria-checked={view === k} onClick={() => setView(k)}
               className={cn('h-10 rounded-lg text-sm font-semibold transition-colors duration-150', view === k ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
               {t}
@@ -129,7 +131,18 @@ export function History() {
         </div>
         {view === 'parlays' ? (
           <>
-            <YourParlays list={list} part='done' />
+            {mine.list.length > 0 && (
+              <section aria-label='Your record' className='flex flex-col gap-1.5'>
+                <h2 className='px-1 font-display text-[22px] font-extrabold'>Your record</h2>
+                <RecordTiles settled={mine.list} noun='bet' />
+                {mine.unstaked > 0 && (
+                  <p className='px-1 text-xs text-muted-foreground'>
+                    {mine.unstaked} finished Kalshi or Polymarket {mine.unstaked === 1 ? 'bet isn’t' : 'bets aren’t'} counted: open {mine.unstaked === 1 ? 'it' : 'one'} and add how much you bet.
+                  </p>
+                )}
+              </section>
+            )}
+            {(list.length > 0 || !mine.links) && <YourParlays list={list} part='done' tiles={false} />}
             <LinkReader part='done' />
           </>
         ) : (

@@ -195,3 +195,31 @@ test("API: make a code, the TV reads with it, settings stick, a new code cuts of
   for (let i = 0; i < 20; i++) await call(null, "GET", null, "?key=zzzzzzzz", "9.9.9.9");
   assert.equal((await call(null, "GET", null, `?key=${c2}`, "9.9.9.9")).status, 429);              // guessing is cut off
 });
+
+test("feed: a bet whose games are all final leaves the dock a few hours later; saved links from an earlier day go too", async () => {
+  const done = {kind: "market", market: {ticker: "KXNBAGAME-26NOV14LALPHX-LAL", title: "Los Angeles L at Phoenix Winner?", side: "yes", result: null}};
+  const stale = {kind: "market", market: {ticker: "KXNBAGAME-26NOV12ORLATL-ORL", title: "Orlando at Atlanta Winner?", side: "yes", result: null}};
+  const user = {...USER, tracked: {g: {}, p: {}}, saved: {items: [
+    {link: "https://kalshi.com/x?marketTicker=DONE", label: "Lakers", savedAt: "2026-11-14T22:00:00Z"},
+    {link: "https://kalshi.com/x?marketTicker=STALE", label: "Magic", savedAt: "2026-11-12T20:00:00Z"},
+    {link: "https://kalshi.com/x?marketTicker=FRESH", label: "Magic tonight", savedAt: "2026-11-15T00:00:00Z"}]}};
+  const read = async t => (t === "DONE" ? done : stale);
+  const at = now => buildFeed({user, settings: {show: "bets"}, now, fetcher: espn, readKalshi: read, parseLink: l => l.split("=")[1]});
+  assert.deepEqual((await at(NOW)).bets.map(b => [b.label, b.done]), [["Lakers", "won"], ["Magic tonight", null]]);
+  assert.deepEqual((await at(NOW + 4 * 3600e3)).bets.map(b => b.label), ["Magic tonight"]);
+});
+
+test("feed: prop legs say who and what for the TV's notes; a live football game carries ESPN's last play", async () => {
+  const f = await buildFeed({user: USER, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null});
+  const herro = f.bets[0].legs.find(l => l.kind === "prop" && l.who === "Herro");
+  assert.deepEqual([herro.who, herro.unit, herro.side, herro.strike, herro.now, herro.need], ["Herro", "pts", "yes", 19.5, 22, "20+"]);
+  const nfl = {events: [{...comp("601", "BUF", "MIA", 14, 7, "in", "4:10 - 2nd"),
+    competitions: [{...comp("601", "BUF", "MIA", 14, 7, "in", "4:10 - 2nd").competitions[0],
+      situation: {lastPlay: {text: "J.Allen pass short right to D.Kincaid for 12 yards, TOUCHDOWN."}}}]}]};
+  // college football: its own scoreboard address, so the NFL board other tests cached doesn't get in the way
+  const fetcher = async u => (String(u).includes("college-football/scoreboard") ? new Response(JSON.stringify(nfl)) : espn(u));
+  const user = {...USER, tracked: {g: {}, p: {}, parlays: {x: {at: "2026-11-15T00:00:00Z", legs: [{desc: "Bills ML", mk: "ml", side: "away", sport: "CFB", away: "BUF", home: "MIA", kickoff: "2026-11-15T00:30:00Z"}]}}}};
+  const ff = await buildFeed({user, settings: {show: "bets"}, now: NOW, fetcher, readKalshi: async () => null, parseLink: () => null});
+  const g = ff.games.find(x => x.key === "cfb:601");
+  assert.equal(g.last, "J.Allen pass short right to D.Kincaid for 12 yards, TOUCHDOWN.");
+});

@@ -23,8 +23,11 @@ function json(body, status = 200, maxAge = 0) {
 // "https://kalshi.com/markets/kxnbagame/professional-basketball-game/kxnbagame-26oct31poruta" -> the event ticker.
 // A bare ticker works too. Anything else -> null.
 export function parseLink(raw) {
-  const s = String(raw || "").trim();
+  let s = String(raw || "").trim();
   if (!s || s.length > 600) return null;
+  // pasted with the app's share text around it: take the link
+  const inText = /(?<![\w.-])(?:https?:\/\/)?(?:www\.)?kalshi\.com\/[^\s<>"']+/i.exec(s);
+  if (inText && inText[0] !== s) s = inText[0].replace(/[).,!?]+$/, "");
   let t = null;
   if (/^https?:\/\//i.test(s) || /^(www\.)?kalshi\.com\//i.test(s)) {
     let u;
@@ -33,8 +36,10 @@ export function parseLink(raw) {
     t = u.searchParams.get("marketTicker") || u.searchParams.get("market_ticker");
     if (!t) {
       const parts = u.pathname.split("/").filter(Boolean);
-      if (parts[0] !== "markets" && parts[0] !== "events") return null;
-      t = parts.length > 1 ? parts[parts.length - 1] : null;
+      // the app's share links: kalshi.com/s/m/<event>/<market's own part>, or /s/<kind>/<event>
+      if (parts[0] === "s") t = parts[1] === "m" && parts.length >= 4 ? `${parts[2]}-${parts[3]}` : parts[2] || null;
+      else if (parts[0] !== "markets" && parts[0] !== "events") return null;
+      else t = parts.length > 1 ? parts[parts.length - 1] : null;
     }
   } else t = s;
   t = t ? decodeURIComponent(t).trim().toUpperCase() : null;

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useMutation } from '@tanstack/react-query'
 import { ImageUp, Link2 } from 'lucide-react'
@@ -236,9 +236,10 @@ function ErrorLine({ err }: { err: ScanError | null }) {
 }
 
 // onExchange: a Kalshi or Polymarket link pasted here goes to the link reader instead (it reads those directly)
-export function BookLinkReader({ onExplained, onExchange }: { onExplained?: () => void; onExchange?: (link: string) => void }) {
-  const [link, setLink] = useState('')
+export function BookLinkReader({ onExplained, onExchange, start }: { onExplained?: () => void; onExchange?: (link: string) => void; start?: string }) {
+  const [link, setLink] = useState(start ?? '')
   const read = useMutation({ mutationFn: scanLink })
+  useEffect(() => { if (start) read.mutate(start) }, [start]) // eslint-disable-line react-hooks/exhaustive-deps
   const explain = useExplain(read.data, onExplained)
   return (
     <div className='flex flex-col gap-3'>
