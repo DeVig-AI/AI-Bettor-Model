@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 17 \u00b7 5:13 PM ET",
+    "as_of": "Tue Nov 17 \u00b7 11:12 PM ET",
     "date": "2026-11-17",
     "sport": "NHL"
    },
@@ -12,8 +12,30 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "LA",
-    "home": "BOS",
+    "away": "ANA",
+    "home": "COL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "20 min a game \u00b7 26 points in 21 games = 12% of ANA's points"
+    },
+    "player": "Beckett Sennecke",
+    "reason": "RW",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "ANA",
+    "tip": "Thu 9:00 PM",
+    "tip_sort": "1119-2100"
+   },
+   "doc_id": "nhl-ana-beckett-sennecke"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BOS",
+    "home": "DET",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -26,8 +48,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "BOS",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Wed 7:30 PM",
+    "tip_sort": "1118-1930"
    },
    "doc_id": "nhl-bos-james-hagens"
   },
@@ -100,7 +122,29 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "TOR",
+    "away": "CBJ",
+    "home": "CHI",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "21 min a game \u00b7 17 points in 14 games = 14% of CHI's points"
+    },
+    "player": "Connor Bedard",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "CHI",
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
+   },
+   "doc_id": "nhl-chi-connor-bedard"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CBJ",
     "home": "CHI",
     "impact": {
      "bars": 2,
@@ -114,8 +158,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "CHI",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-chi-bowen-byram"
   },
@@ -189,22 +233,21 @@
    "collection": "injuries",
    "data": {
     "away": "CBJ",
-    "home": "NYI",
+    "home": "CHI",
     "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "16 min a game \u00b7 7 points in 17 games = 6% of CBJ's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Sean Monahan",
     "reason": "C",
     "sport": "NHL",
     "starter": false,
     "status": "Out",
     "team": "CBJ",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-cbj-sean-monahan"
   },
@@ -279,22 +322,21 @@
    "collection": "injuries",
    "data": {
     "away": "EDM",
-    "home": "FLA",
+    "home": "TB",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
      "why": "18 min a game \u00b7 11 points in 12 games = 5% of EDM's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Ryan Nugent-Hopkins",
     "reason": "C \u00b7 Undisclosed",
     "sport": "NHL",
     "starter": true,
     "status": "Out",
     "team": "EDM",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:30 PM",
+    "tip_sort": "1119-1930"
    },
    "doc_id": "nhl-edm-ryan-nugent-hopkins"
   },
@@ -302,7 +344,7 @@
    "collection": "injuries",
    "data": {
     "away": "EDM",
-    "home": "FLA",
+    "home": "TB",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -315,8 +357,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "EDM",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:30 PM",
+    "tip_sort": "1119-1930"
    },
    "doc_id": "nhl-edm-frederik-andersen"
   },
@@ -324,30 +366,29 @@
    "collection": "injuries",
    "data": {
     "away": "LA",
-    "home": "BOS",
+    "home": "TOR",
     "impact": {
      "bars": 3,
      "label": "Big",
      "level": "big",
      "why": "21 min a game \u00b7 19 points in 17 games = 15% of LA's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Artemi Panarin",
     "reason": "LW",
     "sport": "NHL",
     "starter": true,
     "status": "Out",
     "team": "LA",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-la-artemi-panarin"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "NSH",
-    "home": "MIN",
+    "away": "MIN",
+    "home": "CGY",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -360,16 +401,16 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "MIN",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1117-2000"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-min-olli-maatta"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "NSH",
-    "home": "MIN",
+    "away": "MIN",
+    "home": "CGY",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -382,8 +423,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "MIN",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1117-2000"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-min-filip-gustavsson"
   },
@@ -478,77 +519,96 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CBJ",
-    "home": "NYI",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "21 min a game \u00b7 5 points in 19 games = 3% of NYI's points"
-    },
-    "note": "Downgraded from day-to-day",
-    "player": "Logan Stanley",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Out",
-    "team": "NYI",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
-   },
-   "doc_id": "nhl-nyi-logan-stanley"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CBJ",
-    "home": "NYI",
+    "away": "NYI",
+    "home": "WPG",
     "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "16 min a game \u00b7 8 points in 17 games = 5% of NYI's points"
     },
-    "note": "Upgraded from out",
     "player": "Jean-Gabriel Pageau",
-    "reason": "C \u00b7 Lower body",
+    "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "NYI",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-nyi-jean-gabriel-pageau"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "OTT",
+    "away": "NYI",
     "home": "WPG",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "21 min a game \u00b7 5 points in 19 games = 3% of NYI's points"
+    },
+    "player": "Logan Stanley",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Out",
+    "team": "NYI",
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
+   },
+   "doc_id": "nhl-nyi-logan-stanley"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "home": "OTT",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "24 min a game \u00b7 11 points in 17 games = 6% of OTT's points"
+    },
+    "player": "Thomas Chabot",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "OTT",
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
+   },
+   "doc_id": "nhl-ott-thomas-chabot"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "home": "OTT",
     "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "5 min a game \u00b7 1 point in 10 games = 1% of OTT's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Hayden Hodgson",
     "reason": "RW \u00b7 Groin",
     "sport": "NHL",
     "starter": false,
     "status": "Out",
     "team": "OTT",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-ott-hayden-hodgson"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "OTT",
-    "home": "WPG",
+    "away": "PHI",
+    "home": "OTT",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -561,8 +621,8 @@
     "starter": false,
     "status": "Out",
     "team": "OTT",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-ott-nick-cousins"
   },
@@ -636,77 +696,74 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "ANA",
-    "home": "STL",
+    "away": "STL",
+    "home": "PIT",
     "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "9 min a game \u00b7 1 point in 12 games = 1% of STL's points"
     },
-    "note": "Downgraded from day-to-day",
     "player": "Ross Johnston",
     "reason": "LW \u00b7 Upper body",
     "sport": "NHL",
     "starter": false,
     "status": "Out",
     "team": "STL",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1117-2000"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-stl-ross-johnston"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "WSH",
+    "away": "EDM",
     "home": "TB",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "17 min a game \u00b7 14 points in 18 games = 7% of TB's points"
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "15 min a game \u00b7 4 points in 17 games = 2% of TB's points"
     },
-    "note": "Upgraded from out",
-    "player": "Anthony Cirelli",
-    "reason": "C \u00b7 Lower body",
+    "player": "Zemgus Girgensons",
+    "reason": "C",
     "sport": "NHL",
-    "starter": true,
+    "starter": false,
     "status": "Day-To-Day",
     "team": "TB",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 7:30 PM",
+    "tip_sort": "1119-1930"
    },
-   "doc_id": "nhl-tb-anthony-cirelli"
+   "doc_id": "nhl-tb-zemgus-girgensons"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "WSH",
+    "away": "EDM",
     "home": "TB",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 7 points in 17 games = 4% of TB's points"
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "20 min a game \u00b7 24 points in 20 games = 12% of TB's points"
     },
-    "note": "Upgraded from out",
-    "player": "Erik Cernak",
-    "reason": "D \u00b7 Upper body",
+    "player": "Brandon Hagel",
+    "reason": "LW \u00b7 Undisclosed",
     "sport": "NHL",
     "starter": true,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "TB",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 7:30 PM",
+    "tip_sort": "1119-1930"
    },
-   "doc_id": "nhl-tb-erik-cernak"
+   "doc_id": "nhl-tb-brandon-hagel"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "TOR",
-    "home": "CHI",
+    "away": "LA",
+    "home": "TOR",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -719,16 +776,16 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "TOR",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-tor-kirill-marchenko"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "TOR",
-    "home": "CHI",
+    "away": "LA",
+    "home": "TOR",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -741,8 +798,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "TOR",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-tor-elvis-merzlikins"
   },
@@ -758,10 +815,10 @@
      "why": "17 min a game \u00b7 20 points in 19 games = 10% of UTA's points"
     },
     "player": "Nick Schmaltz",
-    "reason": "C \u00b7 Lower body",
+    "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Injured Reserve",
     "team": "UTA",
     "tip": "Wed 10:00 PM",
     "tip_sort": "1118-2200"
@@ -859,8 +916,8 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "WSH",
-    "home": "TB",
+    "away": "BUF",
+    "home": "WSH",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -873,15 +930,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "WSH",
-    "tip": "Tue 7:30 PM",
-    "tip_sort": "1117-1930"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-wsh-vincent-desharnais"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "OTT",
+    "away": "NYI",
     "home": "WPG",
     "impact": {
      "bars": 2,
@@ -895,15 +952,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "WPG",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-wpg-dylan-demelo"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "OTT",
+    "away": "NYI",
     "home": "WPG",
     "impact": {
      "bars": 2,
@@ -917,12 +974,12 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "WPG",
-    "tip": "Tue 7:00 PM",
-    "tip_sort": "1117-1900"
+    "tip": "Thu 7:00 PM",
+    "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-17T22:13:43Z",
+ "generated_at": "2026-11-18T04:12:11Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
