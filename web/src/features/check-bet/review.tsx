@@ -16,7 +16,7 @@ import { PaceBar, usePropPace } from './prop-pace'
 import { cn } from '@/lib/utils'
 import { GameWrap } from '../game/wrap'
 import { PulseCard } from './pulse'
-import { Fold, MoreLabel, Progress, type Seg, TrackList, TrackRow, useInDrawer } from './bet-drawer'
+import { Fold, MoreLabel, Progress, type Seg, TrackList, TrackRow, groupOf, useInDrawer } from './bet-drawer'
 import { ShareCard } from './share-card'
 import { type ShareLeg, shareText } from '@/lib/share-math'
 import { LegBar } from '@/components/leg-bar'
@@ -70,6 +70,8 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
   const decided = d.combo.result != null || d.lost > 0 || d.won === d.legs.length
   const won = d.combo.result === 'won' || (d.combo.result == null && d.lost === 0 && d.won === d.legs.length)
 
+  // a combo is saved as soon as it's read, even once its games have started (then without the pre-game snapshot)
+  useEffect(() => { if (!entry) onStore({}) }, [d.ticker]) // eslint-disable-line react-hooks/exhaustive-deps
   // keep the first read (while legs are open), and the outcome once it's decided
   useEffect(() => {
     if (!snap && !anyStarted && !gLoading && !dLoading && gl.every((l) => l.chance != null)) onStore({ snap: snapOf(d, g, gl) })
@@ -127,7 +129,7 @@ export function ParlayReview({ d, entry, all, onStore }: { d: Combo; entry: Save
         <>
           <Progress segs={infos.map(segOf)} side={cashNow != null && <CashNow p={cashNow} was={snap?.hit ?? null} />} />
           <TrackList items={infos.map((i) => ({
-            key: i.key, st: segOf(i),
+            key: i.key, st: segOf(i), group: groupOf(games[i.key]),
             row: <ComboLegRow i={i} st={segOf(i)} game={games[i.key] ?? null} dv={devig[i.key] ?? null} snap={snap} k={kickOf(i)} weakest={i.key === weakestKey && stillOpen.length > 1} />,
           }))} />
           <MoreLabel />
@@ -459,7 +461,7 @@ export function TrackedLegs({ legs, was, payout, price }: { legs: TrackedLegIn[]
         </span>
       )} />
       <TrackList items={infos.map((i, n) => ({
-        key: i.key, st: legs[n].st,
+        key: i.key, st: legs[n].st, group: groupOf(games[i.key]),
         row: (
           <ComboLegRow i={i} st={legs[n].st} game={games[i.key]} dv={views[i.key] ?? null} snap={null} k={null} weakest={i.key === weakest}
             fallback={<span className='font-condensed text-[15px] font-bold text-muted-foreground tabular-nums'>{price(legs[n].l)}</span>}>

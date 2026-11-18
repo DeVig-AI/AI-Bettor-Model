@@ -25,8 +25,8 @@ export type Graded = TrackedParlay & { states: LegState[]; status: 'hit' | 'miss
 
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 const whenFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
-const money = (v: number) => `$${Math.abs(v) >= 1000 ? Math.round(Math.abs(v)).toLocaleString() : Math.abs(v).toFixed(2)}`
-const signed = (v: number) => (v > 0 ? '+' : v < 0 ? '−' : '') + money(v)
+export const money = (v: number) => `$${Math.abs(v) >= 1000 ? Math.round(Math.abs(v)).toLocaleString() : Math.abs(v).toFixed(2)}`
+export const signed = (v: number) => (v > 0 ? '+' : v < 0 ? '−' : '') + money(v)
 
 function findGame(l: TrackedLeg, games: GameRow[]) {
   if (!l.away || !l.home) return null
@@ -321,7 +321,7 @@ function SettledCard({ p, foot }: { p: Graded; foot: Foot }) {
 const pct = (v: number) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(Math.round(v * 100))}%`
 
 // Hit, missed, net, and the return on what was put in, from settled parlays
-export function RecordTiles({ settled }: { settled: Graded[] }) {
+export function RecordTiles({ settled, noun = 'parlay' }: { settled: { status: string; stake: number; payout: number }[]; noun?: string }) {
   const r = record(settled)
   const tile = (label: string, value: string, tone?: string) => (
     <div className='min-w-0 rounded-2xl bg-card px-2.5 py-2.5'>
@@ -338,14 +338,14 @@ export function RecordTiles({ settled }: { settled: Graded[] }) {
         {tile('Return', r.roi == null ? '–' : pct(r.roi), r.roi == null ? undefined : r.roi >= 0 ? 'text-good' : 'text-bad')}
       </div>
       <p className='px-1 text-xs text-muted-foreground tabular-nums'>
-        {money(r.staked)} put in across {settled.length} settled {settled.length === 1 ? 'parlay' : 'parlays'}, {r.net >= 0 ? `${money(r.net)} profit` : `${money(-r.net)} down`}.
+        {money(r.staked)} put in across {settled.length} settled {settled.length === 1 ? noun : `${noun}s`}, {r.net >= 0 ? `${money(r.net)} profit` : `${money(-r.net)} down`}.
       </p>
     </div>
   )
 }
 
 // part: 'open' = live and coming up (Parlay tab), 'done' = settled with your record (History); left out = all (a friend's page)
-export function YourParlays({ list, owner, action, part }: { list: TrackedParlay[]; owner?: string; action?: (p: Graded) => ReactNode; part?: 'open' | 'done' }) {
+export function YourParlays({ list, owner, action, part, tiles = true }: { list: TrackedParlay[]; owner?: string; action?: (p: Graded) => ReactNode; part?: 'open' | 'done'; tiles?: boolean }) {
   const foot: Foot = { own: !owner, action }
   const graded = useGradedParlays(list)
   const settled = part === 'open' ? [] : graded.filter((p) => p.status === 'hit' || p.status === 'missed')
@@ -377,7 +377,7 @@ export function YourParlays({ list, owner, action, part }: { list: TrackedParlay
   }
   return (
     <div className='flex flex-col gap-4'>
-      {settled.length > 0 && <RecordTiles settled={settled} />}
+      {tiles && settled.length > 0 && <RecordTiles settled={settled} />}
       {live.length > 0 && <Group title='Live now'>{live.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
       {upcoming.length > 0 && <Group title='Coming up'>{upcoming.map((p) => (owner ? <OpenCard key={p.id} p={p} foot={foot} /> : <ParlayRow key={p.id} p={p} foot={foot} />))}</Group>}
       {settled.length > 0 && <Group title='Settled'>{settled.map((p) => <SettledCard key={p.id} p={p} foot={foot} />)}</Group>}

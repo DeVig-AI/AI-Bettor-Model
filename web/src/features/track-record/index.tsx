@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { MyRecordLine } from '../history/my-record'
 
 // Track record, honestly: win–loss AND units at the price each pick locked at, so a good record that lost money
 // reads as exactly that. Every pick here is a paper pick from the repo's append-only logs.
@@ -134,6 +135,7 @@ export function TrackRecord() {
       </Header>
       <Main className='flex flex-col gap-5'>
         {error && <p className='text-sm text-bad'>The record didn&apos;t load. Check your connection and reload.</p>}
+        <MyRecordLine />
 
         <div role='tablist' aria-label='Sport' className='flex gap-2'>
           {records.map((r) => (

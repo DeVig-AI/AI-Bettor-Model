@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { clearShared, isExchange, sharedLink } from '@/lib/shared-link'
 import { Link } from '@tanstack/react-router'
 import { ArrowUpRight, Check, X } from 'lucide-react'
 import { type GameRow, fmtAmerican, fmtPct, useGames } from '@/lib/devig'
@@ -664,11 +665,18 @@ function LongShot() {
 
 // ---------- check a bet you already made: a screenshot (any book), a sportsbook share link, or a Kalshi / Polymarket link ----------
 function CheckBet() {
-  const [how, setHow] = useState<'shot' | 'book' | 'link'>('shot')
-  const [handed, setHanded] = useState<string | undefined>()
+  // a link shared to DeVig from another app lands here, already being read
+  const [shared] = useState(() => sharedLink())
+  const [how, setHow] = useState<'shot' | 'book' | 'link'>(shared ? (isExchange(shared) ? 'link' : 'book') : 'shot')
+  const [handed, setHanded] = useState<string | undefined>(shared && isExchange(shared) ? shared : undefined)
+  useEffect(() => {
+    if (!shared) return
+    clearShared()
+    setTimeout(() => document.getElementById('check-bet')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
+  }, [shared])
   const toSlip = () => setTimeout(() => document.getElementById('your-parlay')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
   return (
-    <section aria-label='Check a bet you made' className='flex flex-col gap-3'>
+    <section id='check-bet' aria-label='Check a bet you made' className='flex scroll-mt-20 flex-col gap-3'>
       <div className='flex flex-wrap items-end justify-between gap-3'>
         <div>
           <h2 className='font-display text-[22px] font-extrabold'>Check a bet you made</h2>
@@ -683,7 +691,7 @@ function CheckBet() {
           ))}
         </div>
       </div>
-      {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : how === 'book' ? <BookLinkReader onExplained={toSlip} onExchange={(l) => { setHanded(l); setHow('link') }} /> : (
+      {how === 'shot' ? <ScreenshotReader onExplained={toSlip} /> : how === 'book' ? <BookLinkReader start={shared && !isExchange(shared) ? shared : undefined} onExplained={toSlip} onExchange={(l) => { setHanded(l); setHow('link') }} /> : (
         <LinkReader key={handed} start={handed} showSaved={false} title='From a Kalshi or Polymarket link'
           blurb={<>On Kalshi or Polymarket, tap Share on your bet and paste the link here. A Kalshi combo shows every leg; a Polymarket game asks which side you took. You&apos;ll see what&apos;s won and the prices now.</>} />
       )}

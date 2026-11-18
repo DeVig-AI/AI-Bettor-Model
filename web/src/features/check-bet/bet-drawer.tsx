@@ -118,12 +118,27 @@ export function TrackRow({ st, title, sub, subTone, right, children }: {
   )
 }
 
-// the legs, the ones still in play first; a long run of legs that already hit folds into one line
-export function TrackList({ items }: { items: { key: string; st: Seg; row: ReactNode }[] }) {
+// which game a leg is in, for the drawer's game headers
+export type LegGroup = { key: string; title: string; sub?: string | null }
+const groupTime = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+export function groupOf(g: { sport: string; eid: string; away: string; home: string; kickoff: string; state: 'pre' | 'in' | 'post'; detail: string; awayScore: number | null; homeScore: number | null } | null | undefined): LegGroup | undefined {
+  if (!g) return undefined
+  const score = g.awayScore != null && g.homeScore != null ? `${g.awayScore}–${g.homeScore}` : null
+  const sub = g.state === 'in' ? [score, g.detail].filter(Boolean).join(' · ') : g.state === 'post' ? `Final${score ? ` ${score}` : ''}` : groupTime.format(new Date(g.kickoff))
+  return { key: `${g.sport}|${g.eid}`, title: `${g.away} @ ${g.home}`, sub }
+}
+
+type Item = { key: string; st: Seg; row: ReactNode; group?: LegGroup }
+const ORDER: Record<Seg, number> = { lost: 0, live: 1, later: 2, push: 3, won: 4 }
+
+// the legs, the ones still in play first; a long run of legs that already hit folds into one line.
+// Legs in several games (a big combo) are grouped under each game, the games you're sweating first.
+export function TrackList({ items }: { items: Item[] }) {
   const [all, setAll] = useState(false)
-  const order: Record<Seg, number> = { lost: 0, live: 1, later: 2, push: 3, won: 4 }
-  const sorted = [...items].sort((a, b) => order[a.st] - order[b.st])
+  const sorted = [...items].sort((a, b) => ORDER[a.st] - ORDER[b.st])
   const won = items.filter((i) => i.st === 'won').length
+  const keys = new Set(items.map((i) => i.group?.key ?? ''))
+  if (items.length >= 4 && keys.size >= 2 && items.some((i) => i.group)) return <GroupedList items={sorted} />
   const fold = won > 4 && won < items.length
   const shown = fold && !all ? sorted.filter((i) => i.st !== 'won') : sorted
   return (
@@ -140,6 +155,46 @@ export function TrackList({ items }: { items: { key: string; st: Seg; row: React
         </li>
       )}
     </ul>
+  )
+}
+
+function GroupedList({ items }: { items: Item[] }) {
+  const groups = new Map<string, { g: LegGroup | undefined; items: Item[] }>()
+  for (const i of items) {
+    const k = i.group?.key ?? ''
+    if (!groups.has(k)) groups.set(k, { g: i.group, items: [] })
+    groups.get(k)!.items.push(i)
+  }
+  // a game with a leg that missed, then live, then coming up; games where every leg hit last; legs DeVig can't place at the end
+  const rank = (x: { g: LegGroup | undefined; items: Item[] }) => (x.g ? Math.min(...x.items.map((i) => ORDER[i.st])) : 9)
+  const list = [...groups.values()].sort((a, b) => rank(a) - rank(b))
+  return (
+    <div aria-label='Legs by game' className='flex flex-col gap-2'>
+      {list.map((x) => <GameLegs key={x.g?.key ?? 'other'} g={x.g} items={x.items} />)}
+    </div>
+  )
+}
+
+function GameLegs({ g, items }: { g: LegGroup | undefined; items: Item[] }) {
+  const allWon = items.every((i) => i.st === 'won')
+  const [open, setOpen] = useState(!allWon)
+  const lost = items.some((i) => i.st === 'lost'), live = items.some((i) => i.st === 'live')
+  const n = items.length
+  return (
+    <section aria-label={g?.title ?? 'Other legs'} className='overflow-hidden rounded-2xl bg-card'>
+      <button type='button' aria-expanded={open} onClick={() => setOpen(!open)}
+        className='flex min-h-12 w-full items-center gap-3 border-b px-3.5 py-2 text-start active:bg-muted/50'>
+        <span className='min-w-0 flex-1'>
+          <span className='block truncate text-sm font-bold'>{g?.title ?? 'Other legs'}</span>
+          {g?.sub && <span className={cn('block truncate text-xs font-medium tabular-nums', live ? 'text-devig' : 'text-muted-foreground')}>{g.sub}</span>}
+        </span>
+        <span className={cn('shrink-0 text-xs font-semibold', lost ? 'text-bad' : allWon ? 'text-good' : 'text-muted-foreground')}>
+          {allWon ? (n === 1 ? 'Hit' : `All ${n} hit`) : `${n} ${n === 1 ? 'leg' : 'legs'}`}
+        </span>
+        <ChevronDown className={cn('size-4 shrink-0 text-muted-foreground transition-transform duration-150 motion-reduce:transition-none', open && 'rotate-180')} aria-hidden='true' />
+      </button>
+      {open && <ul aria-label={`Legs in ${g?.title ?? 'other games'}`}>{items.map((i) => <Fragment key={i.key}>{i.row}</Fragment>)}</ul>}
+    </section>
   )
 }
 
