@@ -1,6 +1,9 @@
 name: DeVig apps -- build Mac, Windows, Android and iPhone downloads
 on:
   workflow_dispatch:
+  # a branch named app-check/... builds the iPhone app only, to see that it compiles; nothing is published
+  push:
+    branches: ['app-check/**']
 permissions:
   contents: write
 concurrency:
@@ -127,6 +130,10 @@ jobs:
           /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLName string dev.pages.devigai.app' $P
           /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes array' $P
           /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string devig' $P
+      - name: Share sheet (DeVig next to Messages)
+        run: |
+          mkdir -p ios/App/DeVigShare && cp native/ios/DeVigShare/* ios/App/DeVigShare/
+          ruby native/add_share_extension.rb
       - name: App icons
         continue-on-error: true
         run: npx @capacitor/assets generate --ios $ICON_ARGS
@@ -151,7 +158,7 @@ jobs:
           if-no-files-found: error
   release:
     needs: [desktop, android, ios]
-    if: always() && (needs.desktop.result == 'success' || needs.android.result == 'success' || needs.ios.result == 'success')
+    if: always() && github.event_name == 'workflow_dispatch' && (needs.desktop.result == 'success' || needs.android.result == 'success' || needs.ios.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
