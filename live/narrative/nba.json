@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-18T14:15:45+00:00",
+ "updated": "2026-11-18T22:06:56+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -21,28 +21,6 @@
   }
  ],
  "picks": [
-  {
-   "id": "401910017",
-   "date": "2026-11-18",
-   "start": "2026-11-19T03:00Z",
-   "game": "UTAH @ LAL",
-   "home": "LAL",
-   "away": "UTAH",
-   "home_id": "13",
-   "away_id": "26",
-   "book": "DraftKings",
-   "result": null,
-   "final": null,
-   "type": "total",
-   "pick": "OVER",
-   "line": 228.5,
-   "score": 2.5,
-   "why_for": [
-    "Both teams on a back-to-back: tired defenses mean points",
-    "Buy low on the dropping total: 231.5 to 228.5"
-   ],
-   "why_opp": []
-  },
   {
    "id": "401910016",
    "date": "2026-11-18",
@@ -83,14 +61,17 @@
    "final": null,
    "type": "side",
    "pick": "WSH",
-   "line": 6.5,
-   "score": 4.0,
+   "line": 5.5,
+   "score": 4.5,
    "why_for": [
     "Bounce-back spot after losing by 16",
     "TOR: Second night of a back-to-back",
+    "TOR: Scottie Barnes (24 points a game) is out",
     "TOR: Kawhi Leonard (20 points a game) is out"
    ],
-   "why_opp": []
+   "why_opp": [
+    "TOR: Fade the line move: TOR went from -7.5 to -5.5"
+   ]
   },
   {
    "id": "401910008",
@@ -1146,26 +1127,22 @@
    "note": null,
    "side": {
     "lean": "UTAH",
-    "score": 1.25,
+    "score": 0.75,
     "capped": false,
     "why_for": [
      "Second night of a back-to-back, both on the road (last night was a blowout, so starters may have rested)",
      "Lauri Markkanen (18 points a game) is out",
      "LAL: Second night of a back-to-back, after overtime",
-     "LAL: Austin Reaves (25 points a game) is out",
-     "LAL: Walker Kessler (14 points a game) is out"
+     "LAL: Austin Reaves (25 points a game) is out"
     ],
-    "why_opp": [
-     "LAL: Fade the line move: LAL went from -12.5 to -10.5"
-    ]
+    "why_opp": []
    },
    "total": {
     "lean": "OVER",
-    "line": 228.5,
-    "score": 2.5,
+    "line": 231.5,
+    "score": 1.5,
     "why_for": [
-     "Both teams on a back-to-back: tired defenses mean points",
-     "Buy low on the dropping total: 231.5 to 228.5"
+     "Both teams on a back-to-back: tired defenses mean points"
     ],
     "why_opp": []
    }
@@ -1191,10 +1168,12 @@
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 227.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 226.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 229.5 to 226.5"
+    ],
     "why_opp": []
    }
   },
@@ -1216,12 +1195,10 @@
     "why_opp": []
    },
    "total": {
-    "lean": "UNDER",
-    "line": 222.5,
-    "score": 1.0,
-    "why_for": [
-     "Fade the inflated total: 219.5 to 222.5"
-    ],
+    "lean": null,
+    "line": 218.5,
+    "score": 0.0,
+    "why_for": [],
     "why_opp": []
    }
   },
@@ -1245,15 +1222,16 @@
      "DET: Duncan Robinson (17 points a game) is out"
     ],
     "why_opp": [
-     "DET: Fade the line move: DET went from -8.5 to -6.5"
+     "DET: Fade the line move: DET went from -8.5 to -4.5"
     ]
    },
    "total": {
     "lean": "OVER",
-    "line": 227.5,
-    "score": 0.5,
+    "line": 226.5,
+    "score": 1.5,
     "why_for": [
-     "DET on tired legs (back-to-back)"
+     "DET on tired legs (back-to-back)",
+     "Buy low on the dropping total: 229.5 to 226.5"
     ],
     "why_opp": []
    }
@@ -1269,18 +1247,19 @@
    "away_id": "1",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "OKC",
+    "score": 1.0,
     "capped": false,
     "why_for": [
-     "CJ McCollum (14 points a game) is out",
-     "OKC: Jalen Williams (14 points a game) is out"
+     "Jalen Williams (14 points a game) is out",
+     "Fade the line move: OKC went from -7.5 to -5.5",
+     "ATL: CJ McCollum (14 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 227.5,
+    "line": 228.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1311,10 +1290,12 @@
     ]
    },
    "total": {
-    "lean": null,
-    "line": 222.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 225.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 221.5 to 225.5"
+    ],
     "why_opp": []
    }
   },
@@ -1357,18 +1338,21 @@
    "note": null,
    "side": {
     "lean": "WSH",
-    "score": 4.0,
+    "score": 4.5,
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 16",
      "TOR: Second night of a back-to-back",
+     "TOR: Scottie Barnes (24 points a game) is out",
      "TOR: Kawhi Leonard (20 points a game) is out"
     ],
-    "why_opp": []
+    "why_opp": [
+     "TOR: Fade the line move: TOR went from -7.5 to -5.5"
+    ]
    },
    "total": {
     "lean": "OVER",
-    "line": 227.5,
+    "line": 225.5,
     "score": 0.5,
     "why_for": [
      "TOR on tired legs (back-to-back)"
@@ -1399,7 +1383,7 @@
    },
    "total": {
     "lean": null,
-    "line": 234.5,
+    "line": 238.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1428,7 +1412,7 @@
    },
    "total": {
     "lean": null,
-    "line": 224.5,
+    "line": 225.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1447,15 +1431,16 @@
    "side": {
     "lean": "MIA",
     "score": 0.5,
-    "capped": false,
+    "capped": true,
     "why_for": [
+     "Never lay 12 or more",
      "MIL: Struggling team (one win or fewer)"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 234.5,
+    "line": 235.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
