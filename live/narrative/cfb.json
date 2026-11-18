@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-18T04:32:34+00:00",
+ "updated": "2026-11-18T14:15:56+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
@@ -593,7 +593,7 @@
    },
    "total": {
     "lean": null,
-    "line": 62.5,
+    "line": 61.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -877,10 +877,12 @@
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 52.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "UNDER",
+    "line": 53.5,
+    "score": 1.0,
+    "why_for": [
+     "Fade the inflated total: 50.5 to 53.5"
+    ],
     "why_opp": []
    }
   },
@@ -1533,7 +1535,7 @@
    },
    "total": {
     "lean": null,
-    "line": 49.5,
+    "line": 50.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1665,7 +1667,7 @@
    },
    "total": {
     "lean": null,
-    "line": 53.5,
+    "line": 52.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1752,10 +1754,12 @@
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 47.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 46.5,
+    "score": 1.5,
+    "why_for": [
+     "Pace: their games average 54 points, the total is 46.5"
+    ],
     "why_opp": []
    }
   },
@@ -1993,10 +1997,13 @@
    "away_id": "154",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
+    "lean": "WAKE",
+    "score": 1.5,
+    "capped": true,
+    "why_for": [
+     "Line tell: the line rates WAKE 6.0 points better than results so far",
+     "Never lay 21 or more"
+    ],
     "why_opp": []
    },
    "total": {
@@ -2278,7 +2285,7 @@
     "why_for": [
      "Bounce-back spot after losing by 28",
      "Struggling team (one win or fewer)",
-     "Line tell: the line rates AKR 7.8 points better than results so far"
+     "Line tell: the line rates AKR 7.3 points better than results so far"
     ],
     "why_opp": [
      "MASS: Bounce-back spot after losing by 24"
@@ -2372,35 +2379,6 @@
     "line": 45.5,
     "score": 0.0,
     "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856887",
-   "date": "2026-11-15",
-   "start": "2026-11-15T18:00Z",
-   "game": "MISS @ OU",
-   "home": "OU",
-   "away": "MISS",
-   "home_id": "201",
-   "away_id": "145",
-   "note": null,
-   "side": {
-    "lean": "MISS",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 35"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 48.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 53.5 to 48.5"
-    ],
     "why_opp": []
    }
   }
