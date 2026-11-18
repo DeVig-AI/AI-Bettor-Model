@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 17 \u00b7 11:12 PM ET",
-    "date": "2026-11-17",
+    "as_of": "Wed Nov 18 \u00b7 8:51 AM ET",
+    "date": "2026-11-18",
     "sport": "SOCCER"
    },
    "doc_id": "soccer-meta"
@@ -1196,8 +1196,74 @@
     "tip_sort": "1120-2210"
    },
    "doc_id": "soccer-atl-hardy-meza"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DEP",
+    "home": "ALA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 1 of ALA's last 10 matches"
+    },
+    "player": "Mikel Rodr\u00edguez",
+    "reason": "Injury \u00b7 expected return: out for season",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "ALA",
+    "tip": "Sat 8:00 AM",
+    "tip_sort": "1121-0800"
+   },
+   "doc_id": "soccer-ala-mikel-rodriguez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DEP",
+    "home": "ALA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 4 of DEP's last 10 matches"
+    },
+    "player": "Bright Ede",
+    "reason": "Injury \u00b7 expected return: late November 2026",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "DEP",
+    "tip": "Sat 8:00 AM",
+    "tip_sort": "1121-0800"
+   },
+   "doc_id": "soccer-dep-bright-ede"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DEP",
+    "home": "ALA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 3 of DEP's last 10 matches \u00b7 a goal or assist on 1 of their 11 goals (9%)"
+    },
+    "player": "Zakaria Eddahchouri",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "DEP",
+    "tip": "Sat 8:00 AM",
+    "tip_sort": "1121-0800"
+   },
+   "doc_id": "soccer-dep-zakaria-eddahchouri"
   }
  ],
- "generated_at": "2026-11-18T04:12:14Z",
+ "generated_at": "2026-11-18T13:51:22Z",
  "source": "FotMob match pages (unavailable players); role scale from stats/soccer (tools/injuries_export.py)"
 }

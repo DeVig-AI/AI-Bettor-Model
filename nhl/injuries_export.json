@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 17 \u00b7 11:12 PM ET",
-    "date": "2026-11-17",
+    "as_of": "Wed Nov 18 \u00b7 8:51 AM ET",
+    "date": "2026-11-18",
     "sport": "NHL"
    },
    "doc_id": "nhl-meta"
@@ -56,8 +56,8 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CGY",
-    "home": "SJ",
+    "away": "MIN",
+    "home": "CGY",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -70,16 +70,16 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "CGY",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-cgy-kevin-bahl"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "CGY",
-    "home": "SJ",
+    "away": "MIN",
+    "home": "CGY",
     "impact": {
      "bars": 1,
      "label": "Minor",
@@ -92,8 +92,8 @@
     "starter": false,
     "status": "Out",
     "team": "CGY",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-cgy-connor-zary"
   },
@@ -269,8 +269,8 @@
     "starter": false,
     "status": "Out",
     "team": "DAL",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
+    "tip": "Thu 10:00 PM",
+    "tip_sort": "1119-2200"
    },
    "doc_id": "nhl-dal-tyler-myers"
   },
@@ -393,28 +393,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "19 min a game \u00b7 6 points in 18 games = 3% of MIN's points"
-    },
-    "player": "Olli Maatta",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "MIN",
-    "tip": "Thu 8:00 PM",
-    "tip_sort": "1119-2000"
-   },
-   "doc_id": "nhl-min-olli-maatta"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "CGY",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Filip Gustavsson",
@@ -427,6 +405,28 @@
     "tip_sort": "1119-2000"
    },
    "doc_id": "nhl-min-filip-gustavsson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MIN",
+    "home": "CGY",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "19 min a game \u00b7 6 points in 18 games = 3% of MIN's points"
+    },
+    "player": "Olli Maatta",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "MIN",
+    "tip": "Thu 8:00 PM",
+    "tip_sort": "1119-2000"
+   },
+   "doc_id": "nhl-min-olli-maatta"
   },
   {
    "collection": "injuries",
@@ -625,51 +625,6 @@
     "tip_sort": "1119-1900"
    },
    "doc_id": "nhl-ott-nick-cousins"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CGY",
-    "home": "SJ",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "16 min a game \u00b7 9 points in 23 games = 5% of SJ's points"
-    },
-    "note": "Downgraded from day-to-day",
-    "player": "Kiefer Sherwood",
-    "reason": "LW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "SJ",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
-   },
-   "doc_id": "nhl-sj-kiefer-sherwood"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CGY",
-    "home": "SJ",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
-    },
-    "player": "Kyle Keyser",
-    "reason": "G \u00b7 Upper body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "SJ",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
-   },
-   "doc_id": "nhl-sj-kyle-keyser"
   },
   {
    "collection": "injuries",
@@ -908,8 +863,8 @@
     "starter": true,
     "status": "Out",
     "team": "VGK",
-    "tip": "Tue 10:00 PM",
-    "tip_sort": "1117-2200"
+    "tip": "Thu 10:00 PM",
+    "tip_sort": "1119-2200"
    },
    "doc_id": "nhl-vgk-noah-hanifin"
   },
@@ -980,6 +935,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-18T04:12:11Z",
+ "generated_at": "2026-11-18T13:51:19Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }

@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 17 \u00b7 11:12 PM ET",
-    "date": "2026-11-17",
+    "as_of": "Wed Nov 18 \u00b7 8:51 AM ET",
+    "date": "2026-11-18",
     "sport": "CBB"
    },
    "doc_id": "cbb-meta"
@@ -185,6 +185,23 @@
     "away": "GB",
     "home": "FSU",
     "impact": null,
+    "player": "Anthony Robinson II",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 16",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "FSU",
+    "tip": "Fri 12:00 PM",
+    "tip_sort": "1120-1200"
+   },
+   "doc_id": "cbb-fsu-anthony-robinson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GB",
+    "home": "FSU",
+    "impact": null,
     "player": "Aj Swinton",
     "reason": "F \u00b7 Suspension \u00b7 reported Oct 29",
     "sport": "CBB",
@@ -335,25 +352,25 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "UNLV",
-    "home": "KU",
+    "away": "KU",
+    "home": "WVU",
     "impact": null,
-    "player": "Kohl Rosario",
-    "reason": "G \u00b7 Concussion \u00b7 reported Nov 12",
+    "player": "Tyran Stokes",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 16",
     "sport": "CBB",
     "starter": false,
-    "status": "Doubtful",
+    "status": "Questionable",
     "team": "KU",
-    "tip": "Tue 9:30 PM",
-    "tip_sort": "1117-2130"
+    "tip": "Wed 7:30 PM",
+    "tip_sort": "1118-1930"
    },
-   "doc_id": "cbb-ku-kohl-rosario"
+   "doc_id": "cbb-ku-tyran-stokes"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "UNLV",
-    "home": "KU",
+    "away": "KU",
+    "home": "WVU",
     "impact": null,
     "player": "Melvin Council Jr.",
     "reason": "G \u00b7 Foot \u00b7 reported Nov 8",
@@ -361,16 +378,16 @@
     "starter": false,
     "status": "Out",
     "team": "KU",
-    "tip": "Tue 9:30 PM",
-    "tip_sort": "1117-2130"
+    "tip": "Wed 7:30 PM",
+    "tip_sort": "1118-1930"
    },
    "doc_id": "cbb-ku-melvin-council"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "UNLV",
-    "home": "KU",
+    "away": "KU",
+    "home": "WVU",
     "impact": null,
     "player": "Grant Mordini",
     "reason": "F \u00b7 Quadricep \u00b7 reported Oct 18",
@@ -378,8 +395,8 @@
     "starter": false,
     "status": "Out",
     "team": "KU",
-    "tip": "Tue 9:30 PM",
-    "tip_sort": "1117-2130"
+    "tip": "Wed 7:30 PM",
+    "tip_sort": "1118-1930"
    },
    "doc_id": "cbb-ku-grant-mordini"
   },
@@ -982,23 +999,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CCU",
-    "home": "TENN",
-    "impact": null,
-    "player": "Jalen Washington",
-    "reason": "F \u00b7 Eligibility \u00b7 reported Oct 19",
-    "sport": "CBB",
-    "starter": false,
-    "status": "Out",
-    "team": "TENN",
-    "tip": "Fri 7:00 PM",
-    "tip_sort": "1120-1900"
-   },
-   "doc_id": "cbb-tenn-jalen-washington"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "SUU",
     "home": "TEX",
     "impact": null,
@@ -1337,6 +1337,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-18T04:12:15Z",
+ "generated_at": "2026-11-18T13:51:22Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }

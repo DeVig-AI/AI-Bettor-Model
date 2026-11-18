@@ -3,11 +3,34 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 17 \u00b7 11:12 PM ET \u00b7 Week 11",
-    "date": "2026-11-17",
+    "as_of": "Wed Nov 18 \u00b7 8:51 AM ET \u00b7 Week 11",
+    "date": "2026-11-18",
     "sport": "NFL"
    },
    "doc_id": "nfl-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ARI",
+    "confirmed": false,
+    "home": "KC",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (71% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "player": "Gardner Minshew II",
+    "reason": "QB \u00b7 Elbow",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "ARI",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1122-1300"
+   },
+   "doc_id": "nfl-ari-gardner-minshew"
   },
   {
    "collection": "injuries",
@@ -126,29 +149,6 @@
     "tip_sort": "1122-1300"
    },
    "doc_id": "nfl-ari-jon-gaines"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ARI",
-    "confirmed": false,
-    "home": "KC",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (71% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "player": "Gardner Minshew II",
-    "reason": "QB \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "ARI",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1122-1300"
-   },
-   "doc_id": "nfl-ari-gardner-minshew"
   },
   {
    "collection": "injuries",
@@ -3098,6 +3098,6 @@
    "doc_id": "nfl-was-laremy-tunsil"
   }
  ],
- "generated_at": "2026-11-18T04:12:10Z",
+ "generated_at": "2026-11-18T13:51:19Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
