@@ -11,6 +11,10 @@ test("links and tickers: the market ticker wins, then the last path part; other 
   assert.equal(parseLink("https://kalshi.com/markets/kxnbagame/professional-basketball-game/kxnbagame-26oct31poruta"), "KXNBAGAME-26OCT31PORUTA");
   assert.equal(parseLink("kalshi.com/markets/kxnbagame/x/kxnbagame-26oct31poruta"), "KXNBAGAME-26OCT31PORUTA");
   assert.equal(parseLink(" kxnbagame-26oct31poruta-uta "), "KXNBAGAME-26OCT31PORUTA-UTA");
+  // the app's share link (/s/m/<event>/<market's part>), alone or with the share text around it
+  assert.equal(parseLink("https://kalshi.com/s/m/KXMVECROSSCATEGORY-S2026ABCDEFGHJK/7XY2Z9Q?r=abc123"), "KXMVECROSSCATEGORY-S2026ABCDEFGHJK-7XY2Z9Q");
+  assert.equal(parseLink("Check out my bet on Kalshi! https://kalshi.com/s/m/KXMVECROSSCATEGORY-S2026ABCDEFGHJK/7XY2Z9Q?r=abc123."), "KXMVECROSSCATEGORY-S2026ABCDEFGHJK-7XY2Z9Q");
+  assert.equal(parseLink("My pick: https://kalshi.com/markets/kxnbagame/x/kxnbagame-26oct31poruta"), "KXNBAGAME-26OCT31PORUTA");
   assert.equal(parseLink("https://evil.com/markets/x/KXNBAGAME-26OCT31PORUTA"), null);
   assert.equal(parseLink("https://kalshi.com.evil.com/markets/x/y"), null);
   assert.equal(parseLink("https://kalshi.com/markets"), null);
