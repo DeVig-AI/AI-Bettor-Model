@@ -27,8 +27,7 @@ ext.build_configurations.each do |c|
   s['CURRENT_PROJECT_VERSION'] = app_conf['CURRENT_PROJECT_VERSION'] || '1'
   s['CODE_SIGNING_ALLOWED'] = 'NO'
   s['CODE_SIGN_STYLE'] = 'Manual'
-  # opening the app goes through UIApplication, which extension-only API checks forbid
-  s['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+  s['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
 end
 
 app.add_dependency(ext)

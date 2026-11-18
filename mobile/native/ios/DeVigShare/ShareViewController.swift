@@ -45,16 +45,19 @@ class ShareViewController: UIViewController {
     private func hand(_ text: String) {
         let q = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
         guard !q.isEmpty, let url = URL(string: "devig://open?text=" + q) else { return close() }
-        // a share extension can't open its app directly: walk up to the UIApplication and ask it
+        // a share extension can't call UIApplication.open: find the application up the responder chain and send it
+        // open(_:options:completionHandler:) by selector instead
+        let sel = NSSelectorFromString("openURL:options:completionHandler:")
         var r: UIResponder? = self
         while let cur = r {
-            if let app = cur as? UIApplication {
-                app.open(url, options: [:]) { [weak self] _ in self?.close() }
-                return
+            if cur.responds(to: sel), let imp = cur.method(for: sel) {
+                typealias Open = @convention(c) (AnyObject, Selector, URL, [String: Any], ((Bool) -> Void)?) -> Void
+                unsafeBitCast(imp, to: Open.self)(cur, sel, url, [:], nil)
+                break
             }
             r = cur.next
         }
-        close()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.close() }
     }
 
     private func close() { extensionContext?.completeRequest(returningItems: nil, completionHandler: nil) }
