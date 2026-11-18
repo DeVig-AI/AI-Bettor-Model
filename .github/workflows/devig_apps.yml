@@ -121,6 +121,12 @@ jobs:
           /usr/libexec/PlistBuddy -c 'Add :NSCameraUsageDescription string "Take a photo of a bet slip for DeVig to read."' $P
           /usr/libexec/PlistBuddy -c 'Add :NSPhotoLibraryUsageDescription string "Pick a screenshot of a bet slip for DeVig to read."' $P
           /usr/libexec/PlistBuddy -c 'Add :NSPhotoLibraryAddUsageDescription string "Save DeVig share cards to your photos."' $P
+          # devig://open?text=<shared bet>: the share-sheet Shortcut opens the bet in the app (DeVigViewController)
+          /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes array' $P
+          /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0 dict' $P
+          /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLName string dev.pages.devigai.app' $P
+          /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes array' $P
+          /usr/libexec/PlistBuddy -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string devig' $P
       - name: App icons
         continue-on-error: true
         run: npx @capacitor/assets generate --ios $ICON_ARGS
