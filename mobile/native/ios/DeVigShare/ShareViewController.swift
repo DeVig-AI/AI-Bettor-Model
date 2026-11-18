@@ -51,8 +51,8 @@ class ShareViewController: UIViewController {
         var r: UIResponder? = self
         while let cur = r {
             if cur.responds(to: sel), let imp = cur.method(for: sel) {
-                typealias Open = @convention(c) (AnyObject, Selector, URL, [String: Any], ((Bool) -> Void)?) -> Void
-                unsafeBitCast(imp, to: Open.self)(cur, sel, url, [:], nil)
+                typealias Open = @convention(c) (AnyObject, Selector, NSURL, NSDictionary, (@convention(block) (Bool) -> Void)?) -> Void
+                unsafeBitCast(imp, to: Open.self)(cur, sel, url as NSURL, NSDictionary(), nil)
                 break
             }
             r = cur.next
