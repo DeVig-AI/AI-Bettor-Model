@@ -213,3 +213,23 @@ export class Delayed {
   at(t) { let best = null; for (const x of this.list) if (x.t <= t) best = x; return best ? best.v : this.list.length ? null : null }
   newest() { return this.list.length ? this.list[this.list.length - 1].v : null }
 }
+
+// ---------- clearing a finished bet ----------
+// Cleared ids live in this browser (shared by the pill and the second screen, same site) and, when signed in, on
+// the account (POST /api/tv {op: "hide"}) so the TV and other devices drop the bet too. Kept 5 days.
+const HIDDEN_KEY = 'devig:hidden', HIDDEN_DAYS = 5
+export function hiddenIds(now = Date.now()) {
+  try {
+    const o = JSON.parse(localStorage.getItem(HIDDEN_KEY) || '{}') || {}
+    for (const k of Object.keys(o)) if (now - o[k] > HIDDEN_DAYS * 864e5) delete o[k]
+    return o
+  } catch { return {} }
+}
+export function clearBet(id, now = Date.now()) {
+  const o = hiddenIds(now)
+  o[id] = now
+  try { localStorage.setItem(HIDDEN_KEY, JSON.stringify(o)) } catch {}
+  try { fetch('/api/tv', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'hide', id }) }).catch(() => {}) } catch {}
+}
+/** the feed without bets cleared here */
+export function unhidden(f, hidden = hiddenIds()) { return f ? { ...f, bets: (f.bets || []).filter((b) => !hidden[b.id]) } : f }

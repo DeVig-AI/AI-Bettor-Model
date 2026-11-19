@@ -31,9 +31,13 @@
     box-shadow: inset 0 0.5px 0 rgba(255,255,255,.28), inset 0 0 0 0.5px rgba(255,255,255,.12), 0 18px 50px rgba(0,0,0,.45); }
   body.pip #root { width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none; }
   #root.open { min-width: 340px; }
-  .pill { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 14px; white-space: nowrap; user-select: none; cursor: default; }
-  body.electron .pill { -webkit-app-region: drag; }
-  body.electron .pill button, body.electron .card, body.electron .games, body.electron .bar, body.electron .toast { -webkit-app-region: no-drag; }
+  .pill { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 14px; white-space: nowrap; user-select: none; cursor: pointer; }
+  /* in the app the window moves by a grip on the left: a drag region on macOS eats clicks, so the rest of the pill stays clickable */
+  .grip { display: none; }
+  body.electron .grip { display: flex; align-items: center; justify-content: center; align-self: stretch; width: 22px; margin: -10px 0 -10px -14px; padding-left: 4px;
+    -webkit-app-region: drag; cursor: grab; background: rgba(255,255,255,.06); border-right: .5px solid rgba(255,255,255,.12); color: rgba(255,255,255,.55); font: normal 15px/1 system-ui; }
+  body.electron .grip::before { content: '⠿'; }
+  body.electron .grip:hover { background: rgba(255,255,255,.14); color: #fff; }
   .stale { opacity: .55; }
   .logo { width: 20px; height: 20px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
   .abbr { font-weight: 600; font-size: 13px; }
@@ -54,7 +58,11 @@
   .toast b { font-weight: 600; } .toast .sub { color: var(--dim); font-size: 12px; margin: 2px 0 0 20px; }
   .toast.won { background: rgba(53,208,127,.14); } .toast.lost { background: rgba(255,93,93,.14); } .toast.info, .toast.close { background: rgba(245,184,61,.12); }
   .card { padding: 11px 14px 12px; }
-  .head { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--dim); }
+  .head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--dim); }
+  .head .right { display: flex; align-items: center; gap: 8px; }
+  .head .clr { font: 600 11px/1 inherit; letter-spacing: 0; padding: 4px 9px; border-radius: 6px; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.12); color: var(--ink, #fff); }
+  .head .clr:hover { background: rgba(255,255,255,.22); }
   .prog { display: flex; gap: 3px; margin: 8px 0 3px; }
   .prog i { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,.14); }
   .prog i.w { background: var(--good); } .prog i.l { background: var(--bad); }
@@ -88,6 +96,7 @@
 <div id="root"></div>
 <script type="module">
 import { Dock, parseFeed, clock, IDLE_POLL_MS, legKey, moveText, hedge, money } from './pill-core.js'
+import { clearBet, unhidden, hiddenIds } from './screen-core.js'
 
 const FEED = '/api/tv?key='
 const ESPN_ABBR = { 'NBA:NYK': 'ny', 'NBA:GSW': 'gs', 'NBA:SAS': 'sa', 'NBA:NOP': 'no', 'NBA:UTA': 'utah', 'NBA:WAS': 'wsh',
@@ -131,7 +140,7 @@ async function poll() {
       const r = await fetch(FEED + code, { cache: 'no-store' })
       if (r.status === 404) throw new Error("That TV code isn't linked")
       if (!r.ok) throw new Error("Can't reach DeVig")
-      dock.add(parseFeed(await r.json(), Date.now()))
+      dock.add(parseFeed(unhidden(await r.json()), Date.now()))
       lastOk = Date.now(); error = null
     } catch (e) { error = /linked/.test(e.message) ? e.message : "Can't reach DeVig" }
   }
@@ -159,6 +168,7 @@ function pill(v) {
   const p = h('div', 'pill' + (v && v.stale ? ' stale' : ''))
   p.title = open ? 'Hide details' : 'Show bets and games'
   p.onclick = (e) => { if (e.target.closest('button')) return; open = !open; render() }
+  if (shell) { const g = h('i', 'grip'); g.title = 'Drag to move'; p.append(g) }
   if (!v) {
     p.append(h('span', 'gold', 'DeVig'), h('span', 'muted', error || 'loading…'))
   } else if (v.game) {
@@ -184,8 +194,13 @@ function toast(t) {
 
 function cards() {
   const out = [], f = dock.shown
-  for (const b of f.bets.slice(0, 2)) {
-    const c = h('div', 'card', h('div', 'head', h('span', null, b.label.toUpperCase()), h('span', b.lost ? 'bad' : 'good', `${b.won} OF ${b.n}`)))
+  const hid = hiddenIds()
+  for (const b of f.bets.filter((x) => !hid[x.id]).slice(0, 2)) {
+    // a finished bet (hit, or a leg missed) can be cleared off the pill, the second screen and the TV
+    let clr = null
+    if (b.done) { clr = h('button', 'clr', 'Clear'); clr.title = 'Take this finished bet off the pill, second screen and TV'; clr.onclick = () => { clearBet(b.id); render() } }
+    const c = h('div', 'card', h('div', 'head', h('span', null, b.label.toUpperCase()),
+      h('span', 'right', h('span', b.lost ? 'bad' : 'good', b.done === 'won' ? 'HIT' : b.lost ? 'MISSED' : `${b.won} OF ${b.n}`), clr)))
     const prog = h('div', 'prog')
     for (let i = 0; i < b.n; i++) prog.append(h('i', i < b.won ? 'w' : i < b.won + b.lost ? 'l' : ''))
     c.append(prog)
