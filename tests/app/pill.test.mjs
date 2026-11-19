@@ -89,3 +89,33 @@ test('two of my games live take turns on the pill', () => {
   assert.equal(d.view(0, 0).game.away, 'DET')
   assert.equal(d.view(8_000, 8_000).game.away, 'NYK')
 })
+
+// ---------- line moves ----------
+import { Moves, moveText } from '../../web/public/pill-core.js'
+
+test('a leg moving 12 points within 3 minutes flashes once, with first-seen kept', () => {
+  const m = new Moves()
+  assert.equal(m.see('K~yes', 0.50, 0), null)
+  assert.equal(m.see('K~yes', 0.55, 60e3), null)
+  assert.deepEqual(m.see('K~yes', 0.36, 120e3), { was: 0.55, now: 0.36 })
+  assert.equal(m.see('K~yes', 0.30, 150e3), null)            // just said it
+  assert.equal(m.first('K~yes'), 0.5)
+  // slow drift over 10 minutes doesn't flash
+  const s = new Moves()
+  for (let i = 0; i <= 10; i++) assert.equal(s.see('S', 0.6 - i * 0.02, i * 60e3), null)
+  assert.equal(moveText(0.49, 0.33), '+104 → +203')
+  assert.equal(moveText(0.5, 0.51), '−104')
+})
+
+test('the dock flashes a big line move on the game and suggests a hedge on the last team leg', () => {
+  const g = {key: 'NBA:1', sport: 'NBA', away: 'LAL', home: 'DEN', as: 90, hs: 88, state: 'in', detail: '3:40 - 4th', mine: 1}
+  const bet = (c) => ({id: 'b1', label: 'LAL parlay', stake: 10, pays: 50, n: 2, won: 1, lost: 0,
+    legs: [{label: 'Reaves 15+', kind: 'prop', state: 'won', ticker: 'A'}, {label: 'LAL to win', kind: 'game', team: 'LAL', game: 'NBA:1', state: 'live', ticker: 'B', chance: c}]})
+  const d = new Dock({delay: 0})
+  d.add(parseFeed(feed([g], [bet(0.55)]), 0)); d.step(0)
+  d.add(parseFeed(feed([g], [bet(0.75)]), 60e3)); d.step(60e3)
+  const v = d.view(60e3, 60e3)
+  assert.equal(v.note, '📈 LAL −122 → −300')
+  assert.match(v.toast.text, /^Hedge: \$13\.50 against LAL locks \+\$26\.50$/)
+  assert.equal(d.moves.first('B~yes'), 0.55)
+})

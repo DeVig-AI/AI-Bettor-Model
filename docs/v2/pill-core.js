@@ -8,6 +8,12 @@
 export const LIVE_POLL_MS = 5_000, IDLE_POLL_MS = 120_000, ROTATE_MS = 8_000, FLASH_MS = 7_000, TOAST_MS = 9_000
 export const STALE_MS = 60_000, AHEAD_MS = 60_000
 const LEAD_GAP_MS = 45_000, PROP_GAP_MS = 45_000, TRY_MS = 4 * 60_000
+// a line move: the market's chance on a leg moving this much within MOVE_WINDOW_MS flashes; once per leg per MOVE_GAP_MS
+export const MOVE_BIG = 0.12, MOVE_WINDOW_MS = 3 * 60_000, MOVE_GAP_MS = 4 * 60_000, MOVE_SHOWN = 0.03
+const HEDGE_GAP_MS = 10 * 60_000
+
+import { american, hedge } from './screen-core.js'
+export { american, hedge }
 
 export const football = (s) => s === 'NFL' || s === 'CFB'
 export const basketball = (s) => s === 'NBA' || s === 'WNBA' || s === 'CBB'
@@ -184,8 +190,48 @@ export function parseFeed(j, fetched) {
     settings: {show: 'teams', pos: 'corner', delay: 30, props: true, lost: true, close: true, settled: true, auto: true, quiet: true, ...s},
     games: (j && j.games || []).map((g) => ({...g, sport: up(g.sport), as: g.as | 0, hs: g.hs | 0, mine: g.mine | 0, fav: !!g.fav, last: g.last ?? null})),
     bets: (j && j.bets || []).map((b) => ({...b, n: b.n | 0, won: b.won | 0, lost: b.lost | 0, pays: +b.pays || 0, done: b.done ?? null,
-      legs: (b.legs || []).map((l) => ({...l, note: l.note ?? '', side: l.side || 'yes', strike: num(l.strike), now: num(l.now)}))})),
+      legs: (b.legs || []).map((l) => ({...l, note: l.note ?? '', side: l.side || 'yes', strike: num(l.strike), now: num(l.now), chance: prob(l.chance)}))})),
   }
+}
+
+const prob = (v) => { const n = num(v); return n != null && n >= 0 && n <= 1 ? n : null }
+/** A leg's key for price tracking: its market (ticker and side) when known, so the same leg in two bets moves once. */
+export const legKey = (b, l, i) => (l.ticker ? l.ticker + '~' + (l.side || 'yes') : b.id + '#' + i)
+
+/**
+ * Line moves: the price each leg had when first seen (kept by the page across reloads) and its last few minutes,
+ * so a big move can flash and the card can show "from → now".
+ */
+export class Moves {
+  constructor(from = {}) { this.from = from; this.hist = new Map(); this.saidAt = new Map(); this.changed = false }
+  /** Record a leg's chance at time t; returns {was, now} when it moved MOVE_BIG within the window (and not said lately). */
+  see(key, chance, t) {
+    if (chance == null) return null
+    if (this.from[key] == null) { this.from[key] = {p: chance, at: t}; this.changed = true }
+    let h = this.hist.get(key)
+    if (!h) this.hist.set(key, h = [])
+    h.push([t, chance])
+    while (h.length && t - h[0][0] > MOVE_WINDOW_MS) h.shift()
+    let far = null
+    for (const [, p] of h) if (far == null || Math.abs(chance - p) > Math.abs(chance - far)) far = p
+    const said = this.saidAt.get(key)
+    if (far == null || Math.abs(chance - far) < MOVE_BIG || (said != null && t - said < MOVE_GAP_MS)) return null
+    this.saidAt.set(key, t)
+    h.splice(0, h.length - 1)
+    return {was: far, now: chance}
+  }
+  first(key) { const f = this.from[key]; return f ? f.p : null }
+  /** Keep the newest n first-seen prices (for the page to save). */
+  trim(n = 300) {
+    const k = Object.keys(this.from)
+    if (k.length > n) { k.sort((a, b) => this.from[a].at - this.from[b].at).slice(0, k.length - n).forEach((x) => delete this.from[x]); this.changed = true }
+    return this.from
+  }
+}
+/** "−104 → +203", or just the price when it hasn't moved MOVE_SHOWN since first seen. */
+export function moveText(from, now) {
+  if (now == null) return null
+  return from != null && Math.abs(now - from) >= MOVE_SHOWN ? `${american(from)} → ${american(now)}` : american(now)
 }
 
 const anyLive = (f) => f.games.some((g) => g.state === 'in')
@@ -199,6 +245,8 @@ const gameOf = (f, key) => f.games.find((g) => g.key === key) || null
 export class Dock {
   constructor(opts = {}) {
     this.notes = new Notes()
+    this.moves = new Moves(opts.from || {})
+    this.hedgeAt = new Map()
     this.buffer = []
     this.shown = null
     this.flashes = []; this.flashUntil = 0; this.flashFresh = false
@@ -272,6 +320,23 @@ export class Dock {
   }
 
   diff(a, b, t) {
+    // line moves first: every feed counts, the first one too (it sets the "first seen" prices)
+    for (const x of b.bets) {
+      if (!x.done && !x.lost) x.legs.forEach((l, i) => {
+        if (l.state === 'won' || l.state === 'lost') return
+        const mv = this.moves.see(legKey(x, l, i), l.chance, t)
+        if (!mv) return
+        const up = mv.now > mv.was, who = l.kind === 'game' && l.team ? l.team : l.label
+        const text = `${up ? '📈' : '📉'} ${who} ${american(mv.was)} → ${american(mv.now)}`
+        if (l.game && gameOf(b, l.game)) this.flash(l.game, text, t)
+        else this.toast(up ? 'info' : 'lost', text, x.label, t)
+        const hg = hedge(x), at = this.hedgeAt.get(x.id)
+        if (hg && (at == null || t - at >= HEDGE_GAP_MS)) {
+          this.hedgeAt.set(x.id, t)
+          this.toast('info', `Hedge: $${money(hg.stake)} against ${hg.leg.team} locks +$${money(hg.locked)}`, `Either way · ${x.label}`, t)
+        }
+      })
+    }
     if (!a) return
     const s = b.settings
     for (const g of b.games) {

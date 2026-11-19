@@ -50,7 +50,7 @@
   @keyframes slide { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
   /* sections inside the panel, split by hairlines */
   .toast, .card, .games, .bar { border-top: 0.5px solid rgba(255,255,255,.14); }
-  .toast { order: -1; border-top: 0; border-bottom: 0.5px solid rgba(255,255,255,.14); padding: 10px 14px; max-width: 360px; }
+  .toast { order: -1; border-top: 0; border-bottom: 0.5px solid rgba(255,255,255,.14); padding: 10px 14px; } .toast > div { max-width: 340px; }
   .toast b { font-weight: 600; } .toast .sub { color: var(--dim); font-size: 12px; margin: 2px 0 0 20px; }
   .toast.won { background: rgba(53,208,127,.14); } .toast.lost { background: rgba(255,93,93,.14); } .toast.info, .toast.close { background: rgba(245,184,61,.12); }
   .card { padding: 11px 14px 12px; }
@@ -60,6 +60,8 @@
   .prog i.w { background: var(--good); } .prog i.l { background: var(--bad); }
   .leg { display: flex; align-items: baseline; gap: 6px; margin-top: 6px; font-size: 13.5px; }
   .leg .mk { width: 16px; font-weight: 700; } .leg .lb { flex: 1; } .leg .nt { font-size: 12px; font-variant-numeric: tabular-nums; }
+  .leg .px { font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; white-space: nowrap; }
+  .hedge { margin-top: 8px; padding: 6px 9px; border-radius: 8px; background: rgba(53,208,127,.12); font-size: 12px; }
   .games { display: flex; gap: 6px; padding: 10px 12px; }
   .game { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.07);
     box-shadow: inset 0 0 0 0.5px rgba(255,255,255,.08); }
@@ -85,7 +87,7 @@
 <body>
 <div id="root"></div>
 <script type="module">
-import { Dock, parseFeed, clock, IDLE_POLL_MS } from './pill-core.js'
+import { Dock, parseFeed, clock, IDLE_POLL_MS, legKey, moveText, hedge, money } from './pill-core.js'
 
 const FEED = '/api/tv?key='
 const ESPN_ABBR = { 'NBA:NYK': 'ny', 'NBA:GSW': 'gs', 'NBA:SAS': 'sa', 'NBA:NOP': 'no', 'NBA:UTA': 'utah', 'NBA:WAS': 'wsh',
@@ -96,7 +98,11 @@ const store = {
   set(k, v) { try { v == null ? localStorage.removeItem('devig-pill:' + k) : localStorage.setItem('devig-pill:' + k, v) } catch {} },
 }
 const savedDelay = store.get('delay')
-const dock = new Dock({ delay: savedDelay == null ? null : +savedDelay, onAhead: (d) => store.set('delay', String(d)) })
+let from = {}
+try { from = JSON.parse(store.get('from') || '{}') || {} } catch { from = {} }
+const dock = new Dock({ delay: savedDelay == null ? null : +savedDelay, onAhead: (d) => store.set('delay', String(d)), from })
+// the price each leg had when first seen, kept across reloads so "from → now" survives closing the pill
+setInterval(() => { if (dock.moves.changed) { dock.moves.changed = false; store.set('from', JSON.stringify(dock.moves.trim())) } }, 5000)
 
 let doc = document, root = document.getElementById('root'), pip = null
 let code = null, lastOk = 0, lastTry = 0, error = null, open = false, polling = false
@@ -183,12 +189,16 @@ function cards() {
     const prog = h('div', 'prog')
     for (let i = 0; i < b.n; i++) prog.append(h('i', i < b.won ? 'w' : i < b.won + b.lost ? 'l' : ''))
     c.append(prog)
-    for (const l of b.legs) {
+    b.legs.forEach((l, i) => {
       const w = l.state === 'won', x = l.state === 'lost'
       const nt = l.state === 'pre' ? 'not started' : l.state === 'unknown' ? "can't read yet" : l.note
+      const first = dock.moves.first(legKey(b, l, i)), px = !w && !x ? moveText(first, l.chance) : null
+      const pxTone = first != null && l.chance != null && Math.abs(l.chance - first) >= 0.03 ? (l.chance > first ? 'good' : 'bad') : 'faint'
       c.append(h('div', 'leg', h('span', 'mk ' + (w ? 'good' : x ? 'bad' : 'muted'), w ? '✓' : x ? '✗' : l.state === 'unknown' ? '?' : '○'),
-        h('span', 'lb' + (x ? ' faint' : ''), l.label), h('span', 'nt ' + (w ? 'good' : x ? 'bad' : 'muted'), nt)))
-    }
+        h('span', 'lb' + (x ? ' faint' : ''), l.label), h('span', 'nt ' + (w ? 'good' : x ? 'bad' : 'muted'), nt), px && h('span', 'px ' + pxTone, px)))
+    })
+    const hg = hedge(b)
+    if (hg) c.append(h('div', 'hedge', `Hedge $${money(hg.stake)} against ${hg.leg.team} → `, h('b', 'good', `+$${money(hg.locked)}`), ' either way'))
     out.push(c)
   }
   const gs = f.games.slice(0, 3)
