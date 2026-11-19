@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { RefreshCw, Tv } from 'lucide-react'
+import { Monitor, RefreshCw, Tv } from 'lucide-react'
 import { formatTvCode, TV_DELAYS, TV_SPORTS, type TvSettings, useTv, useTvOp } from '@/lib/tv'
 import { Switch } from '@/components/ui/switch'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -55,6 +55,7 @@ export function TvDock({ joined }: { joined: boolean }) {
   if (error || !data) return <Shell>{note(error?.message ?? "Couldn't load the TV settings.")}</Shell>
 
   const s = data.settings
+  const computer = typeof window !== 'undefined' && window.matchMedia?.('(pointer: fine)').matches
   const set = (p: Partial<TvSettings>) => op.mutate({ op: 'settings', settings: { ...s, ...p } })
   const busy = op.isPending
   const twice = (k: 'new' | 'off', run: () => void) => { if (sure === k) { setSure(''); run() } else setSure(k) }
@@ -103,6 +104,22 @@ export function TvDock({ joined }: { joined: boolean }) {
           </button>
         </div>
       </div>
+
+      {computer && (
+        <div className='flex items-center gap-3 rounded-[18px] bg-card p-4'>
+          <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-devig/15 text-devig'><Monitor className='size-5' aria-hidden='true' /></span>
+          <div className='min-w-0 flex-1'>
+            <p className='font-semibold'>Score pill on this computer</p>
+            <p className='text-xs leading-relaxed text-muted-foreground'>
+              The same pill, floating over a game you watch here. In the DeVig app it stays on top, even full screen (⌘⇧P).
+            </p>
+          </div>
+          <button type='button' onClick={() => window.open('./pill.html', 'devig-pill', 'popup,width=420,height=260')}
+            className='h-9 shrink-0 rounded-full bg-devig px-4 text-xs font-bold text-devig-ink'>
+            Open
+          </button>
+        </div>
+      )}
 
       <div className={cn('overflow-hidden rounded-[18px] bg-card', busy && 'opacity-80')}>
         <div className='border-b px-4 py-3'>

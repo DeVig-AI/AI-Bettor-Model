@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeVig Pill</title>
+<!-- DeVig score pill for a computer: the TV dock's pill (pill-core.js) floating over a game you're watching on a Mac or PC.
+     In the DeVig desktop app it opens as its own always-on-top window (desktop/main.js); in Chrome it can pop out as a
+     picture-in-picture window that stays above other windows. -->
+<style>
+  :root {
+    --ink: #f4f6f8; --dim: rgba(244,246,248,.7); --faint: rgba(244,246,248,.4);
+    --good: #35d07f; --bad: #ff5d5d; --gold: #f5b83d;
+    --glass: rgba(16,19,26,.86); --line: rgba(255,255,255,.2); --page: #0c0f14;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--page); color: var(--ink);
+    font: 500 14px/1.25 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif; }
+  /* one glass panel, like Control Center. In the DeVig app macOS draws the frosted glass behind the window (vibrancy in
+     desktop/main.js), so the page stays clear; in a browser tab or Chrome's floating window it brings its own. */
+  body.float { background: transparent; overflow: hidden; }
+  body.float #root { position: absolute; top: 0; right: 0; max-width: none; }
+  body.tab { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 32px 16px; gap: 20px;
+    background: radial-gradient(120% 80% at 50% 0%, #1b2130 0%, var(--page) 70%); }
+  body.pip { background: #12161f; }
+  #root { display: flex; flex-direction: column; width: max-content; max-width: 100%; }
+  body:not(.float) #root { border-radius: 16px; overflow: hidden;
+    background: linear-gradient(180deg, rgba(58,64,80,.55), rgba(28,32,42,.72));
+    backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8);
+    box-shadow: inset 0 0.5px 0 rgba(255,255,255,.28), inset 0 0 0 0.5px rgba(255,255,255,.12), 0 18px 50px rgba(0,0,0,.45); }
+  body.pip #root { width: 100%; min-height: 100vh; border-radius: 0; box-shadow: none; }
+  #root.open { min-width: 340px; }
+  .pill { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 14px; white-space: nowrap; user-select: none; cursor: default; }
+  body.electron .pill { -webkit-app-region: drag; }
+  body.electron .pill button, body.electron .card, body.electron .games, body.electron .bar, body.electron .toast { -webkit-app-region: no-drag; }
+  .stale { opacity: .55; }
+  .logo { width: 20px; height: 20px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  .abbr { font-weight: 600; font-size: 13px; }
+  .score { font: 700 17px/1 -apple-system, "SF Pro Rounded", "SF Pro Display", system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .score.flash { color: var(--gold); }
+  .muted { color: var(--dim); }
+  .faint { color: var(--faint); }
+  .sep { width: 0.5px; align-self: stretch; margin: 2px 4px; background: rgba(255,255,255,.22); }
+  .note { font-weight: 600; }
+  .good { color: var(--good); } .bad { color: var(--bad); } .gold { color: var(--gold); }
+  .pop { animation: pop .52s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pop { from { transform: scale(1.45); } to { transform: scale(1); } }
+  .slide { animation: slide .38s ease-out .12s both; }
+  @keyframes slide { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+  /* sections inside the panel, split by hairlines */
+  .toast, .card, .games, .bar { border-top: 0.5px solid rgba(255,255,255,.14); }
+  .toast { order: -1; border-top: 0; border-bottom: 0.5px solid rgba(255,255,255,.14); padding: 10px 14px; max-width: 360px; }
+  .toast b { font-weight: 600; } .toast .sub { color: var(--dim); font-size: 12px; margin: 2px 0 0 20px; }
+  .toast.won { background: rgba(53,208,127,.14); } .toast.lost { background: rgba(255,93,93,.14); } .toast.info, .toast.close { background: rgba(245,184,61,.12); }
+  .card { padding: 11px 14px 12px; }
+  .head { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--dim); }
+  .prog { display: flex; gap: 3px; margin: 8px 0 3px; }
+  .prog i { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,.14); }
+  .prog i.w { background: var(--good); } .prog i.l { background: var(--bad); }
+  .leg { display: flex; align-items: baseline; gap: 6px; margin-top: 6px; font-size: 13.5px; }
+  .leg .mk { width: 16px; font-weight: 700; } .leg .lb { flex: 1; } .leg .nt { font-size: 12px; font-variant-numeric: tabular-nums; }
+  .games { display: flex; gap: 6px; padding: 10px 12px; }
+  .game { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.07);
+    box-shadow: inset 0 0 0 0.5px rgba(255,255,255,.08); }
+  .game.mine { box-shadow: inset 0 0 0 1px rgba(245,184,61,.5); }
+  .game .row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 13px; }
+  .game .row span:nth-child(2) { flex: 1; font-weight: 600; }
+  .game .row .score { font-size: 15px; }
+  .game .tag { font-size: 11px; color: var(--dim); margin-top: 4px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 9px 12px 10px; font-size: 12px; }
+  .bar label { color: var(--dim); }
+  button, select, input { font: inherit; color: var(--ink); background: rgba(255,255,255,.1); border: 0;
+    box-shadow: inset 0 0.5px 0 rgba(255,255,255,.18); border-radius: 7px; padding: 4px 9px; }
+  button { cursor: default; } button:hover { background: rgba(255,255,255,.17); } button:active { background: rgba(255,255,255,.24); }
+  button.x { background: none; box-shadow: none; padding: 0 0 0 4px; color: var(--faint); font-size: 15px; line-height: 1; } button.x:hover { color: var(--ink); background: none; }
+  .setup { width: min(360px, 100vw); padding: 18px; }
+  .setup h1 { font-size: 17px; margin: 0 0 6px; } .setup p { margin: 0 0 12px; color: var(--dim); }
+  .setup form { display: flex; gap: 8px; } .setup input { flex: 1; text-transform: uppercase; letter-spacing: .08em; }
+  .err { color: var(--bad); margin-top: 8px; min-height: 1em; }
+  .help { max-width: 360px; color: var(--dim); font-size: 13px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+import { Dock, parseFeed, clock, IDLE_POLL_MS } from './pill-core.js'
+
+const FEED = '/api/tv?key='
+const ESPN_ABBR = { 'NBA:NYK': 'ny', 'NBA:GSW': 'gs', 'NBA:SAS': 'sa', 'NBA:NOP': 'no', 'NBA:UTA': 'utah', 'NBA:WAS': 'wsh',
+  'NFL:WAS': 'wsh', 'NHL:WAS': 'wsh', 'NHL:LAK': 'la', 'NHL:SJS': 'sj', 'NHL:TBL': 'tb', 'NHL:NJD': 'nj' }
+const shell = window.devigPill || null                  // the desktop app's floating window (desktop/pill-preload.js)
+const store = {
+  get(k) { try { return localStorage.getItem('devig-pill:' + k) } catch { return null } },
+  set(k, v) { try { v == null ? localStorage.removeItem('devig-pill:' + k) : localStorage.setItem('devig-pill:' + k, v) } catch {} },
+}
+const savedDelay = store.get('delay')
+const dock = new Dock({ delay: savedDelay == null ? null : +savedDelay, onAhead: (d) => store.set('delay', String(d)) })
+
+let doc = document, root = document.getElementById('root'), pip = null
+let code = null, lastOk = 0, lastTry = 0, error = null, open = false, polling = false
+document.body.classList.add(shell ? 'float' : 'tab')
+if (shell) document.body.classList.add('electron')
+
+// ---------- the TV code: the signed-in account's own, else one typed in ----------
+const norm = (c) => { const s = String(c || '').toLowerCase().replace(/[^a-z0-9]/g, ''); return /^[23456789a-hjkmnp-z]{8}$/.test(s) ? s : null }
+async function findCode() {
+  const fromUrl = norm(new URLSearchParams(location.search).get('code'))
+  if (fromUrl) { store.set('code', fromUrl); return fromUrl }
+  try {
+    const r = await fetch('/api/tv', { credentials: 'same-origin', headers: { accept: 'application/json' } })
+    const d = r.ok ? await r.json() : null
+    if (d && norm(d.code)) { store.set('code', d.code); return norm(d.code) }
+  } catch {}
+  return norm(store.get('code'))
+}
+
+// ---------- polling ----------
+async function poll() {
+  const now = Date.now()
+  if (code && now - lastTry >= dock.pollEvery() - 500) {
+    lastTry = now
+    try {
+      const r = await fetch(FEED + code, { cache: 'no-store' })
+      if (r.status === 404) throw new Error("That TV code isn't linked")
+      if (!r.ok) throw new Error("Can't reach DeVig")
+      dock.add(parseFeed(await r.json(), Date.now()))
+      lastOk = Date.now(); error = null
+    } catch (e) { error = /linked/.test(e.message) ? e.message : "Can't reach DeVig" }
+  }
+}
+function tick() { poll(); dock.step(Date.now()); render() }
+
+// ---------- drawing ----------
+const h = (tag, cls, ...kids) => {
+  const e = doc.createElement(tag)
+  if (cls) e.className = cls
+  for (const k of kids) if (k != null && k !== false) e.append(typeof k === 'string' || typeof k === 'number' ? doc.createTextNode(String(k)) : k)
+  return e
+}
+function logo(sport, team) {
+  const league = { NFL: 'nfl', NBA: 'nba', NHL: 'nhl' }[sport]
+  if (!league) return h('span', 'abbr', team)
+  const img = h('img', 'logo')
+  img.alt = team
+  img.src = `https://a.espncdn.com/i/teamlogos/${league}/500/${ESPN_ABBR[sport + ':' + team] || team.toLowerCase()}.png`
+  img.onerror = () => img.replaceWith(h('span', 'abbr', team))
+  return img
+}
+
+function pill(v) {
+  const p = h('div', 'pill' + (v && v.stale ? ' stale' : ''))
+  p.title = open ? 'Hide details' : 'Show bets and games'
+  p.onclick = (e) => { if (e.target.closest('button')) return; open = !open; render() }
+  if (!v) {
+    p.append(h('span', 'gold', 'DeVig'), h('span', 'muted', error || 'loading…'))
+  } else if (v.game) {
+    const g = v.game
+    if (g.mine > 0) p.append(h('span', null, '🎟'))
+    else if (g.fav) p.append(h('span', 'gold', '★'))
+    const score = h('span', 'score' + (g.state === 'pre' ? ' muted' : v.note ? ' flash' : '') + (v.fresh || v.bump ? ' pop' : ''),
+      g.state === 'pre' ? '@' : `${g.as}–${g.hs}`)
+    p.append(logo(g.sport, g.away), score, logo(g.sport, g.home), h('span', 'muted', clock(g)))
+    if (v.note) p.append(h('i', 'sep'), h('span', 'note' + (v.fresh ? ' slide' : ''), v.note))
+  } else p.append(h('span', 'muted', 'No games on now'))
+  if (v && v.bet) p.append(h('i', 'sep'), h('span', 'note ' + v.bet.tone, v.bet.text))
+  if (v && v.stale) p.append(h('span', 'faint', 'updating…'))
+  if (shell) { const x = h('button', 'x', '×'); x.title = 'Close the pill'; x.onclick = () => shell.close(); p.append(x) }
+  return p
+}
+
+function toast(t) {
+  const mk = t.kind === 'won' ? '✓' : t.kind === 'lost' ? '✗' : '●'
+  const tone = t.kind === 'won' ? 'good' : t.kind === 'lost' ? 'bad' : 'gold'
+  return h('div', 'toast ' + t.kind, h('div', null, h('b', tone, mk + ' '), h('b', null, t.text)), t.sub && h('div', 'sub', t.sub))
+}
+
+function cards() {
+  const out = [], f = dock.shown
+  for (const b of f.bets.slice(0, 2)) {
+    const c = h('div', 'card', h('div', 'head', h('span', null, b.label.toUpperCase()), h('span', b.lost ? 'bad' : 'good', `${b.won} OF ${b.n}`)))
+    const prog = h('div', 'prog')
+    for (let i = 0; i < b.n; i++) prog.append(h('i', i < b.won ? 'w' : i < b.won + b.lost ? 'l' : ''))
+    c.append(prog)
+    for (const l of b.legs) {
+      const w = l.state === 'won', x = l.state === 'lost'
+      const nt = l.state === 'pre' ? 'not started' : l.state === 'unknown' ? "can't read yet" : l.note
+      c.append(h('div', 'leg', h('span', 'mk ' + (w ? 'good' : x ? 'bad' : 'muted'), w ? '✓' : x ? '✗' : l.state === 'unknown' ? '?' : '○'),
+        h('span', 'lb' + (x ? ' faint' : ''), l.label), h('span', 'nt ' + (w ? 'good' : x ? 'bad' : 'muted'), nt)))
+    }
+    out.push(c)
+  }
+  const gs = f.games.slice(0, 3)
+  if (gs.length) out.push(h('div', 'games', ...gs.map((g) => {
+    const row = (team, s, o) => h('div', 'row', logo(g.sport, team), h('span', null, team),
+      g.state !== 'pre' && h('span', 'score' + (g.state === 'post' && s < o ? ' faint' : ''), s))
+    return h('div', 'game' + (g.mine ? ' mine' : ''), row(g.away, g.as, g.hs), row(g.home, g.hs, g.as),
+      h('div', 'tag', (g.mine ? `🎟 ${g.mine} · ` : g.fav ? '★ ' : '') + clock(g)))
+  })))
+  out.push(controls())
+  return out
+}
+
+function controls() {
+  const sel = h('select')
+  const opts = [['', `TV setting (${dock.newest() ? dock.newest().settings.delay : 30}s)`], ...[0, 15, 30, 45, 60].map((d) => [String(d), d + 's'])]
+  for (const [val, txt] of opts) { const o = h('option', null, txt); o.value = val; sel.append(o) }
+  const cur = dock.myDelay == null ? '' : String(dock.myDelay)
+  if (!opts.some(([v]) => v === cur)) { const o = h('option', null, cur + 's'); o.value = cur; sel.append(o) }
+  sel.value = cur
+  sel.onchange = () => { dock.myDelay = sel.value === '' ? null : +sel.value; store.set('delay', sel.value === '' ? null : sel.value); render() }
+  const saw = h('button', null, 'I just saw a score')
+  saw.title = 'Click the moment your stream shows a score: the pill learns how far behind your stream runs'
+  saw.onclick = () => {
+    const d = dock.sync(Date.now())
+    if (d >= 0) store.set('delay', String(d))
+    dock.toast('info', d >= 0 ? `Stream delay set to ${d}s` : 'Got it', d >= 0 ? 'Scores now wait for your stream' : 'If the score shows up in the next minute, your stream is ahead', Date.now())
+    render()
+  }
+  const bar = h('div', 'bar', h('label', null, 'Delay'), sel, saw)
+  if (!shell && !pip && 'documentPictureInPicture' in window) {
+    const pop = h('button', null, 'Float over the game')
+    pop.onclick = popOut
+    bar.append(pop)
+  }
+  return bar
+}
+
+let lastHtml = ''
+function render() {
+  const v = dock.view(Date.now(), lastOk)
+  if (!code) return
+  const kids = []
+  if (v && v.toast) kids.push(toast(v.toast))
+  kids.push(pill(v))
+  if (open && dock.shown) kids.push(...cards())
+  const box = h('div'); box.append(...kids)
+  // redraw only when something changed, so animations and open menus aren't cut off
+  const html = box.innerHTML
+  if (html === lastHtml && !(v && (v.fresh || v.bump))) return
+  if (doc.activeElement && doc.activeElement.tagName === 'SELECT') return
+  lastHtml = html
+  root.classList.toggle('open', open && !!dock.shown)
+  root.replaceChildren(...kids)
+  if (shell) requestAnimationFrame(() => { const r = root.getBoundingClientRect(); shell.resize(Math.ceil(r.width), Math.ceil(r.height)) })
+}
+
+// ---------- Chrome's picture-in-picture: the pill in a small window that stays on top ----------
+async function popOut() {
+  try {
+    pip = await window.documentPictureInPicture.requestWindow({ width: 380, height: 120 })
+  } catch { return }
+  for (const s of document.querySelectorAll('style')) pip.document.head.append(s.cloneNode(true))
+  pip.document.body.className = 'pip'
+  pip.document.body.append(root)
+  doc = pip.document
+  document.querySelector('.help')?.remove()
+  document.body.append(h('p', 'help', 'The pill is floating in its own window. Close it to bring it back here.'))
+  pip.addEventListener('pagehide', () => {
+    doc = document; pip = null
+    document.querySelector('.help')?.remove()
+    document.body.prepend(root); lastHtml = ''; render()
+  })
+  lastHtml = ''; render()
+}
+
+// ---------- setup ----------
+function askCode() {
+  const input = h('input'); input.placeholder = 'ABCD-EFGH'; input.autocomplete = 'off'
+  const err = h('div', 'err')
+  const form = h('form', null, input, h('button', null, 'Start'))
+  form.onsubmit = (e) => {
+    e.preventDefault()
+    const c = norm(input.value)
+    if (!c) { err.textContent = 'A TV code is 8 letters and numbers.'; return }
+    store.set('code', c); start(c)
+  }
+  root.replaceChildren(h('div', 'setup', h('h1', null, 'DeVig score pill'),
+    h('p', null, 'Type the TV code from DeVig → Profile → TV. The pill shows the same scores and bets as your TV.'), form, err))
+  if (shell) requestAnimationFrame(() => { const r = root.getBoundingClientRect(); shell.resize(Math.ceil(r.width), Math.ceil(r.height)) })
+  input.focus()
+}
+
+function start(c) {
+  code = c; lastTry = 0; lastHtml = ''
+  root.replaceChildren(); render()
+  tick()
+  if (!polling) { polling = true; setInterval(tick, 1000) }
+}
+
+findCode().then((c) => c ? start(c) : askCode())
+</script>
+</body>
+</html>
