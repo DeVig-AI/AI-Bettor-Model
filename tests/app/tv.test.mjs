@@ -223,3 +223,10 @@ test("feed: prop legs say who and what for the TV's notes; a live football game 
   const g = ff.games.find(x => x.key === "cfb:601");
   assert.equal(g.last, "J.Allen pass short right to D.Kincaid for 12 yards, TOUCHDOWN.");
 });
+
+test('legs keep the market chance for the second screen (0-1 only)', async () => {
+  const { kalshiLeg, polyLeg } = await import('../../functions/lib/tv.js')
+  assert.equal(kalshiLeg({ ticker: 'KXNBAGAME-26NOV18NYKBOS-NYK', title: 'Knicks', side: 'yes', chance: 0.62 }).chance, 0.62)
+  assert.equal(kalshiLeg({ ticker: 'X', title: 'x', chance: 7 }).chance, null)
+  assert.equal(polyLeg({ ticker: 'pm:nba-nyk-bos-2026-11-18~0', title: 'Knicks', chance: 0.4 }).chance, 0.4)
+})

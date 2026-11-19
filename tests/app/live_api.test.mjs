@@ -75,7 +75,7 @@ test("the NBA summary becomes plays with shots, the run, quarter scores and the 
   assert.deepEqual(d.plays[4].shot, {x: 16, y: 17.3, made: false});
   assert.deepEqual(d.run, {team: "BOS", points: 9});
   assert.deepEqual(d.linescore, {away: [29, 26, 25], home: [24, 31, 35]});
-  assert.deepEqual(d.box[0].labels, ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "+/-"]);
+  assert.deepEqual(d.box[0].labels, ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "PF", "+/-"]);
   assert.deepEqual(d.box[0].rows.map(r => r.name), ["Luka Doncic", "LeBron James"], "no row for a player who didn't play");
   assert.equal(d.box[0].rows[0].stats[1], "26");
   assert.equal(nbaGame(nbaSummary({next: true})).run, undefined, "a Lakers bucket ends the run");

@@ -52,11 +52,14 @@ const SHORT = {points: "pts", rebounds: "reb", assists: "ast", threes: "3PM", st
   receiving_yards: "rec yds", receptions: "rec", rush_rec_yards: "rush+rec yds", touchdowns: "TD", goals: "goals", shots: "SOG"};
 const num = x => { const v = parseFloat(x); return isFinite(v) ? v : null; };
 
+// the market's chance now (0-1, the middle of the bid and ask), for the second screen's live price; null when unpriced
+const chanceOf = k => { const c = num(k.chance); return c != null && c >= 0 && c <= 1 ? c : null; };
+
 // a Kalshi leg ({ticker, event, title, side, result, strike}, as functions/api/kalshi.js priced() gives it)
 export function kalshiLeg(k) {
   const title = String(k.title || k.pick || k.ticker || "").replace(/\?$/, "").replace(/^Full Game: /i, "");
   const base = {label: (k.side === "no" ? "No: " : "") + title, ticker: k.ticker || null, side: k.side === "no" ? "no" : "yes",
-    result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other"};
+    result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other", chance: chanceOf(k)};
   const ev = String(k.event || String(k.ticker || "").split("-").slice(0, 2).join("-"));
   const m = /^([A-Z0-9]+)-(\d{2})([A-Z]{3})(\d{2})([A-Z][A-Z0-9]*)$/.exec(ev);
   if (!m) return base;
@@ -88,7 +91,7 @@ export function polyLeg(k) {
   const m = /^pm:([a-z0-9-]+)~([01])$/.exec(String(k.ticker || ""));
   const words = String(k.title || k.pick || "Polymarket bet");
   const base = {label: (k.side === "no" ? "No: " : "") + words, ticker: k.ticker || null, side: k.side === "no" ? "no" : "yes",
-    result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other"};
+    result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other", chance: chanceOf(k)};
   if (!m) return base;
   const g = /^([a-z]+)-([a-z0-9]{2,5})-([a-z0-9]{2,5})-(\d{4}-\d{2}-\d{2})(?:-(.*))?$/.exec(m[1]);
   if (!g || !PM_SPORTS[g[1]]) return base;
@@ -273,9 +276,11 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
       } else if (b.link.startsWith("pm:") || /polymarket\.us\//i.test(b.link)) {
         const d = await readPoly(b.link);
         b.legs = d && d.kind === "market" ? [polyLeg(d.market)] : d && d.kind === "combo" ? d.legs.map(polyLeg) : [];
+        if (d && d.kind === "combo" && d.combo) b.chance = chanceOf(d.combo);
       } else {
         const t = parseLink(b.link), d = t ? await readKalshi(t) : null;
         b.legs = d && d.kind === "combo" ? d.legs.map(kalshiLeg) : d && d.kind === "market" ? [kalshiLeg(d.market)] : [];
+        if (d && d.kind === "combo" && d.combo) b.chance = chanceOf(d.combo);
       }
     } catch (e) { b.legs = []; }
   }
@@ -323,11 +328,16 @@ export async function buildFeed({user, settings, now, fetcher = fetch, readKalsh
       if (l.game) legCount[`${l.sport}:${l.game.id}`] = (legCount[`${l.sport}:${l.game.id}`] || 0) + 1;
       // props also say who and what, so the TV can write "Herro 24 pts · 1 to go" as the number moves
       const prop = l.kind === "prop" && l.strike != null ? {who: lastName(l.player), unit: SHORT[l.stat] || String(l.stat).replace(/_/g, " "), side: l.side, strike: l.strike} : {};
-      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...prop, ...st};
+      // the second screen also reads the full name and stat (to find the player in the box score) and the live chance
+      const more = {...(l.kind === "prop" ? {player: l.player || null, stat: l.stat || null} : {}), ...(l.team ? {team: l.team} : {}),
+        ...(l.strike != null && l.kind !== "prop" ? {strike: l.strike, side: l.side} : {}), ...(l.chance != null ? {chance: l.chance} : {}),
+        ...(l.ticker ? {ticker: String(l.ticker).slice(0, 120)} : {})};
+      return {label: l.label, kind: l.kind, sport: l.sport, game: l.game ? `${l.sport}:${l.game.id}` : null, ...prop, ...more, ...st};
     });
     const won = legs.filter(l => l.state === "won").length, lost = legs.filter(l => l.state === "lost").length;
     const done = lost ? "lost" : won === legs.length ? "won" : null;
-    return {id: b.id, label: b.label, stake: b.stake, pays: b.pays, n: legs.length, won, lost, done, legs};
+    return {id: b.id, label: b.label, stake: b.stake, pays: b.pays, n: legs.length, won, lost, done, legs,
+      ...(b.chance != null ? {chance: b.chance} : {})};
   });
 
   const shown = games.map(g => {

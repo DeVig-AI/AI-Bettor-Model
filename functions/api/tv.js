@@ -22,7 +22,7 @@ import { parsePoly, readPoly } from "../lib/polymarket.js";
 
 const CODE_CHARS = "23456789abcdefghjkmnpqrstuvwxyz";   // no 0/o, 1/l/i: typed with a TV remote
 const CODE_RE = /^[23456789a-hjkmnp-z]{8}$/;
-const WRITES_PER_DAY = 40, MAX_MISSES = 20, MISS_WINDOW = 900e3, FEED_TTL = 5e3, KALSHI_TTL = 30e3;
+const WRITES_PER_DAY = 40, MAX_MISSES = 20, MISS_WINDOW = 900e3, FEED_TTL = 5e3, KALSHI_TTL = 10e3;   // prices: the second screen shows them live
 const misses = new Map(), feeds = new Map(), kalshi = new Map();
 
 function json(body, status = 200) {
