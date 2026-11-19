@@ -190,6 +190,13 @@ test("API: make a code, the TV reads with it, settings stick, a new code cuts of
   assert.equal((await call(null, "GET", null, `?key=${c1}`, "2.2.2.2")).status, 404);
   r = await call(null, "GET", null, `?key=${c2}`, "2.2.2.2");
   assert.equal(r.body.settings.delay, 45); assert.equal(r.body.settings.show, "bets");
+  // clearing a finished bet takes it off the feed (and needs the login, not the TV code)
+  const id = r.body.bets[0].id;
+  assert.equal((await call(null, "POST", {op: "hide", id})).status, 401);
+  assert.equal((await call("rey@example.com", "POST", {op: "hide", id: "nope"})).status, 400);
+  assert.equal((await call("rey@example.com", "POST", {op: "hide", id})).status, 200);
+  r = await call(null, "GET", null, `?key=${c2}`, "2.2.2.2");
+  assert.equal(r.body.bets.length, 0);
   await call("rey@example.com", "POST", {op: "off"});
   assert.equal((await call(null, "GET", null, `?key=${c2}`, "3.3.3.3")).status, 404);
   for (let i = 0; i < 20; i++) await call(null, "GET", null, "?key=zzzzzzzz", "9.9.9.9");
@@ -230,3 +237,17 @@ test('legs keep the market chance for the second screen (0-1 only)', async () =>
   assert.equal(kalshiLeg({ ticker: 'X', title: 'x', chance: 7 }).chance, null)
   assert.equal(polyLeg({ ticker: 'pm:nba-nyk-bos-2026-11-18~0', title: 'Knicks', chance: 0.4 }).chance, 0.4)
 })
+
+test("feed: Polymarket US combo props find their game and player and show what they have", async () => {
+  const leg = polyLeg({ticker: "pmus:astatc-nba-det-mia-2026-11-14-pts-tylher-gte20", title: "Tyler Herro 20+ points"});
+  assert.deepEqual([leg.kind, leg.player, leg.stat, leg.strike, leg.side, leg.label], ["prop", "Tyler Herro", "points", 19.5, "yes", "Herro 20+ pts"]);
+  assert.equal(polyLeg({ticker: "pmus:astatc-nba-det-mia-2026-11-14-3pm-tylher-gte3", title: "Tyler Herro 3+ three-pointers made"}).stat, "threes");
+  assert.equal(polyLeg({ticker: "pmus:astatc-nba-det-mia-2026-11-14-xyz-tylher-gte3", title: "Tyler Herro 3+ xyz"}).kind, "other");
+  const combo = {kind: "combo", source: "polymarket", legs: [
+    {ticker: "pmus:astatc-nba-det-mia-2026-11-14-pts-tylher-gte25", title: "Tyler Herro 25+ points", side: "yes", result: null},
+    {ticker: "pmus:astatc-nba-det-mia-2026-11-14-reb-bamade-gte8", title: "Bam Adebayo 8+ rebounds", side: "yes", result: null}]};
+  const u = {...USER, tracked: {g: {}, p: {}}, saved: {items: [{link: "https://polymarket.us/combos/abc999", label: "Combo, 2 legs", savedAt: "2026-11-14T22:00:00Z"}]}};
+  const f = await buildFeed({user: u, settings: {show: "bets"}, now: NOW, fetcher: espn, readKalshi: async () => null, parseLink: () => null, readPoly: async () => combo});
+  assert.deepEqual(f.bets[0].legs.map(l => [l.label, l.state, l.game, l.now, l.need]),
+    [["Herro 25+ pts", "live", "nba:401", 22, "25+"], ["Adebayo 8+ reb", "won", "nba:401", 9, "8+"]]);
+});

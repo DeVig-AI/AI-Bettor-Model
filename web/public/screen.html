@@ -61,7 +61,8 @@ aside{display:flex;flex-direction:column;gap:14px;min-width:0}
 .slip{position:relative;overflow:hidden;padding:14px 16px}
 .slip.k-risk{box-shadow:inset 0 0 0 1.2px rgba(255,93,93,.55),0 14px 40px rgba(0,0,0,.35)}.slip.k-close{box-shadow:inset 0 0 0 1.2px rgba(245,184,61,.5),0 14px 40px rgba(0,0,0,.35)}
 .slip.k-near{box-shadow:inset 0 0 0 1.2px rgba(53,208,127,.55),0 14px 40px rgba(0,0,0,.35)}
-.slip .hd{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
+.slip .hd .r{display:flex;align-items:center;gap:8px}.slip .hd .clr{padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-size:11px;letter-spacing:0;text-transform:none}.slip .hd .clr:hover{background:rgba(255,255,255,.22)}
+.slip .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
 .prog{display:flex;gap:3px;margin:9px 0 4px}.prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}.prog i.w{background:var(--good)}.prog i.l{background:var(--bad)}
 .prog i.risk{background:rgba(255,93,93,.5)}.prog i.close{background:rgba(245,184,61,.55)}.prog i.near{background:rgba(53,208,127,.5)}
 .lg{display:flex;gap:8px;font-size:13px;margin-top:6px;align-items:baseline}.lg .t{flex:1;min-width:0}.lg .mv{font-size:11.5px;white-space:nowrap}
@@ -81,7 +82,7 @@ footer{grid-column:1/3;padding:10px 18px;display:flex;gap:28px;font-size:13.5px;
 <body>
 <div id="app"></div>
 <script type="module">
-import { FEED_MS, GAME_MS, price, money, pct, clockText, gameClock, boxRow, pace, mark, RANK, betChance, hedge, tonight, Delayed } from './screen-core.js'
+import { FEED_MS, GAME_MS, price, money, pct, clockText, gameClock, boxRow, pace, mark, RANK, betChance, hedge, tonight, Delayed, clearBet, unhidden, hiddenIds } from './screen-core.js'
 
 const ESPN_ABBR = { 'nba:NYK': 'ny', 'nba:GSW': 'gs', 'nba:SAS': 'sa', 'nba:NOP': 'no', 'nba:UTA': 'utah', 'nba:WAS': 'wsh',
   'nfl:WAS': 'wsh', 'nhl:WAS': 'wsh', 'nhl:LAK': 'la', 'nhl:SJS': 'sj', 'nhl:TBL': 'tb', 'nhl:NJD': 'nj' }
@@ -124,7 +125,7 @@ async function pollFeed() {
     const r = await fetch('/api/tv?key=' + code, { cache: 'no-store' })
     if (r.status === 404) throw new Error("That TV code isn't linked")
     if (!r.ok) throw new Error("Can't reach DeVig")
-    const f = await r.json()
+    const f = unhidden(await r.json())
     f.games = (f.games || []).map((g) => ({ ...g, sport: String(g.sport || '').toLowerCase() }))
     feeds.push(Date.now(), f)
     lastOk = Date.now(); error = null
@@ -147,7 +148,8 @@ function pollGames() {
 }
 function noteSeen(f) {
   let changed = false
-  for (const b of f.bets || []) (b.legs || []).forEach((l, i) => {
+  const hid = hiddenIds()
+  for (const b of (f.bets || []).filter((x) => !hid[x.id])) (b.legs || []).forEach((l, i) => {
     const k = legKey(b, l, i)
     if (l.chance != null && seen[k] == null) { seen[k] = { p: l.chance, at: Date.now() }; changed = true }
   })
@@ -185,7 +187,8 @@ const seg = (name, pairs) => h('div', 'seg', pairs.map(([v, t]) => {
 function marked(f) {
   const byGame = new Map(f.games.map((g) => [g.key, g]))
   const out = []
-  for (const b of f.bets || []) (b.legs || []).forEach((l, i) => {
+  const hid = hiddenIds()
+  for (const b of (f.bets || []).filter((x) => !hid[x.id])) (b.legs || []).forEach((l, i) => {
     const g = byGame.get(l.game) || null, d = g && games.get(g.key) && games.get(g.key).buf.at(Date.now() - delayMs())
     const box = l.kind === 'prop' && d ? boxRow(d.box, l.player || l.who) : null
     const sp = g ? g.sport : String(l.sport || '').toLowerCase()
@@ -294,7 +297,9 @@ function slip(b, legs) {
   const k = b.lost ? '' : worst && ['risk', 'close', 'near'].includes(worst.m.st) ? ' k-' + worst.m.st : ''
   const ch = betChance(b)
   const e = h('div', 'slip glass' + k)
-  e.append(h('div', 'hd', h('span', null, b.label), h('span', b.lost ? 'bad' : 'good', b.done === 'won' ? 'WON' : b.lost ? 'LOST' : `${b.won} OF ${b.n}`)))
+  let clr = null
+  if (b.done) { clr = h('button', 'clr', 'Clear'); clr.title = 'Take this finished bet off the second screen, pill and TV'; clr.onclick = () => { clearBet(b.id); render() } }
+  e.append(h('div', 'hd', h('span', null, b.label), h('span', 'r', h('span', b.lost ? 'bad' : 'good', b.done === 'won' ? 'WON' : b.lost ? 'LOST' : `${b.won} OF ${b.n}`), clr)))
   const prog = h('div', 'prog')
   for (const x of legs) prog.append(h('i', x.m.st === 'hit' ? 'w' : x.m.st === 'lost' ? 'l' : ['risk', 'close', 'near'].includes(x.m.st) ? x.m.st : ''))
   e.append(prog)
@@ -328,9 +333,12 @@ function render() {
   const shown = f.games.filter((g) => (opt.scope === 'all' ? g.state !== 'post' || g.mine : g.mine))
     .sort((a, b) => Math.min(9, ...byGame(a.key).map((x) => RANK[x.m.st])) - Math.min(9, ...byGame(b.key).map((x) => RANK[x.m.st])) || (a.state === 'in' ? 0 : 1) - (b.state === 'in' ? 0 : 1))
   const main = h('main', null, shown.length ? shown.map((g) => gameCard(g, byGame(g.key))) : h('div', 'empty glass', opt.scope === 'mine' ? 'None of your bets are on a game today. Try All games.' : 'No games on now.'))
-  const bets = (f.bets || []).filter((b) => !b.done || b.done === 'won')
+  const hid = hiddenIds(), all = (f.bets || []).filter((b) => !hid[b.id])
+  const bets = all.filter((b) => !b.done || b.done === 'won')
   const t = tonight(bets)
-  const aside = h('aside', null, bets.slice(0, 6).map((b) => slip(b, legs.filter((x) => x.b === b))),
+  // open bets first, finished ones after (each with Clear)
+  const order = [...all.filter((b) => !b.done), ...all.filter((b) => b.done)]
+  const aside = h('aside', null, order.slice(0, 6).map((b) => slip(b, legs.filter((x) => x.b === b))),
     bets.length ? h('div', 'slip glass', h('div', 'hd', h('span', null, 'Tonight')), h('div', 'kv', h('span', 'dim', 'Staked'), h('span', 'num', money(t.staked))),
       h('div', 'kv', h('span', 'dim', 'If everything hits'), h('span', 'num good', money(t.all))),
       t.worth != null && h('div', 'kv', h('span', 'dim', 'Worth now at market'), h('span', 'num gold', money(t.worth)))) : h('div', 'slip glass dim', 'No open bets.'))
@@ -353,7 +361,7 @@ function render() {
   events.splice(12)
   const foot = moves.length || events.length ? h('footer', 'glass', moves.map((x) => h('span', null, h('b', null, 'Line move '), `${x.l.who || x.l.label} ${price(x.was, opt.mode)} → ${price(x.l.chance, opt.mode)}`)),
     events.slice(0, 6).map((ev) => h('span', ev.gold ? 'gold' : 'dim', ev.text))) : null
-  app.replaceChildren(header(f, legs), main, aside, others, foot)
+  app.replaceChildren(...[header(f, legs), main, aside, others, foot].filter(Boolean))
 }
 const lastMark = new Map()
 

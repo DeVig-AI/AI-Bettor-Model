@@ -6,6 +6,7 @@
 //   POST {op: "code"}           a new code; the old one stops working right away
 //   POST {op: "off"}            no code: every TV linked to this account stops
 //   POST {op: "settings", settings}
+//   POST {op: "hide", id}       clear a finished bet off the dock, pill and second screen (a feed bet's id)
 // The TV, with no login:
 //   GET ?key=<code>             {at, settings, games, bets}: open bets leg by leg, the person's games, live scores
 // A TV code reads only what the dock shows (open bets, ★ teams, these settings). It can't change anything, and it
@@ -13,7 +14,7 @@
 // address so they can't be guessed.
 //
 // KV (the same USERS namespace as /api/me):
-//   tv:<hash>      {code, settings, day, writes}
+//   tv:<hash>      {code, settings, day, writes, hidden: {betId: ms}}
 //   tvcode:<code>  <hash>
 import { accessUser, userKey } from "./me.js";
 import { parseLink, read } from "./kalshi.js";
@@ -22,6 +23,7 @@ import { parsePoly, readPoly } from "../lib/polymarket.js";
 
 const CODE_CHARS = "23456789abcdefghjkmnpqrstuvwxyz";   // no 0/o, 1/l/i: typed with a TV remote
 const CODE_RE = /^[23456789a-hjkmnp-z]{8}$/;
+const HIDE_KEEP = 5 * 86400e3, HIDE_MAX = 80;   // a cleared bet stays cleared 5 days (bets leave the feed within 4)
 const WRITES_PER_DAY = 40, MAX_MISSES = 20, MISS_WINDOW = 900e3, FEED_TTL = 5e3, KALSHI_TTL = 10e3;   // prices: the second screen shows them live
 const misses = new Map(), feeds = new Map(), kalshi = new Map();
 
@@ -76,7 +78,7 @@ async function tvFeed(request, env, fetcher, key) {
   if (hit && Date.now() - hit.at < FEED_TTL) return json(hit.body);
   const [user, rec] = await Promise.all([env.USERS.get(`user:${h}`, "json"), env.USERS.get(`tv:${h}`, "json")]);
   if (!user || !rec || rec.code !== code) return json({error: "no account has that TV code"}, 404);
-  const body = await buildFeed({user, settings: rec.settings, now: Date.now(), fetcher,
+  const body = await buildFeed({user, settings: rec.settings, hidden: rec.hidden, now: Date.now(), fetcher,
     readKalshi: t => cachedKalshi(t, fetcher), parseLink, readPoly: l => cachedPoly(l, fetcher)});
   feeds.set(h, {at: Date.now(), body});
   if (feeds.size > 200) feeds.delete(feeds.keys().next().value);
@@ -103,8 +105,18 @@ export async function handle(request, env, fetcher = fetch) {
   try { body = JSON.parse((await request.text()).slice(0, 2000)); } catch (e) { return json({error: "not JSON"}, 400); }
   const day = new Date().toISOString().slice(0, 10);
   const writes = rec.day === day ? rec.writes || 0 : 0;
-  if (writes >= WRITES_PER_DAY) return json({error: "too many changes today, try tomorrow"}, 429);
   const op = body && body.op;
+  if (op === "hide") {
+    // its own limit (the hidden list's size), so clearing bets never uses up the day's settings changes
+    const id = typeof body.id === "string" ? body.id.slice(0, 120) : "";
+    if (!/^[psb]:/.test(id)) return json({error: "not a bet id"}, 400);
+    const now = Date.now(), kept = Object.entries(rec.hidden || {}).filter(([, t]) => now - t < HIDE_KEEP).slice(-(HIDE_MAX - 1));
+    rec.hidden = Object.fromEntries([...kept, [id, now]]);
+    await env.USERS.put(`tv:${h}`, JSON.stringify(rec));
+    feeds.delete(h);
+    return json({ok: true});
+  }
+  if (writes >= WRITES_PER_DAY) return json({error: "too many changes today, try tomorrow"}, 429);
   if (op === "code" || op === "off") {
     if (rec.code) await env.USERS.delete(`tvcode:${rec.code}`);
     rec.code = op === "code" ? newCode() : null;

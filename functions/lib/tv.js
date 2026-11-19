@@ -87,12 +87,28 @@ export function kalshiLeg(k) {
 // The game comes from the slug (league, the two teams away then home, the day); the kind from its tail, the line
 // from the side's own words ("Heat +4.5", "Under 231.5"). Side 0 is the first team in the slug.
 const PM_SPORTS = {nba: "nba", nfl: "nfl", nhl: "nhl", mlb: "mlb", wnba: "wnba", cfb: "cfb", cbb: "cbb"};
+// Polymarket US combo props ("pmus:astatc-nba-pho-sac-2026-11-18-pts-devboo-gte20", title "Devin Booker 20+ points"):
+// the stat code in the slug -> the box score's stat; the player's full name comes from the title
+const PMUS_STAT = {pts: "points", reb: "rebounds", ast: "assists", "3pm": "threes", stl: "steals", blk: "blocks",
+  pra: "pts_reb_ast", pr: "pts_reb", pa: "pts_ast", ra: "reb_ast", passyds: "passing_yards", passtds: "passing_tds",
+  rushyds: "rushing_yards", recyds: "receiving_yards", rec: "receptions", td: "touchdowns"};
+function usProp(base, k, words) {
+  const m = /^pmus:[a-z]+-([a-z]+)-([a-z0-9]{2,5})-([a-z0-9]{2,5})-(\d{4}-\d{2}-\d{2})-([a-z0-9]+)-[a-z0-9]+-(gte|lte)(\d+(?:pt\d+)?)$/.exec(String(k.ticker || ""));
+  if (!m || !PM_SPORTS[m[1]] || !PMUS_STAT[m[5]]) return null;
+  const [, lg, away, home, date, code, op, n] = m, line = Number(n.replace("pt", "."));
+  const player = words.replace(/\s+(?:over|under)?\s*\d+(?:\.\d+)?\+?\s.*$/i, "").trim();
+  if (!player || player === words) return null;
+  const stat = PMUS_STAT[code], side = op === "lte" ? "no" : "yes", strike = op === "lte" ? line + 0.5 : line - 0.5;
+  return {...base, sport: PM_SPORTS[lg], date, teams: (away + home).toUpperCase(), kind: "prop", player, stat, strike, side,
+    label: propLabel(player, stat, strike, side)};
+}
+
 export function polyLeg(k) {
   const m = /^pm:([a-z0-9-]+)~([01])$/.exec(String(k.ticker || ""));
   const words = String(k.title || k.pick || "Polymarket bet");
   const base = {label: (k.side === "no" ? "No: " : "") + words, ticker: k.ticker || null, side: k.side === "no" ? "no" : "yes",
     result: k.result === "won" || k.result === "lost" ? k.result : null, sport: null, kind: "other", chance: chanceOf(k)};
-  if (!m) return base;
+  if (!m) return usProp(base, k, words) || base;
   const g = /^([a-z]+)-([a-z0-9]{2,5})-([a-z0-9]{2,5})-(\d{4}-\d{2}-\d{2})(?:-(.*))?$/.exec(m[1]);
   if (!g || !PM_SPORTS[g[1]]) return base;
   const [, lg, away, home, date, tail = ""] = g, i = Number(m[2]);
@@ -257,9 +273,9 @@ export function openBets(user, now) {
 
 // ---------- the whole dock ----------
 // readKalshi(ticker) -> functions/api/kalshi.js read() shape; parse(link) -> ticker (kalshi.js parseLink)
-export async function buildFeed({user, settings, now, fetcher = fetch, readKalshi, parseLink, readPoly = async () => null}) {
+export async function buildFeed({user, settings, hidden, now, fetcher = fetch, readKalshi, parseLink, readPoly = async () => null}) {
   const set = cleanSettings(settings);
-  const bets = openBets(user, now);
+  const bets = openBets(user, now).filter(b => !(hidden && hidden[b.id]));   // cleared from the pill or second screen
   // saved Kalshi links / DeVig slips: their legs from Kalshi (cached by the caller)
   for (const b of bets) {
     if (b.legs || !b.link) continue;
