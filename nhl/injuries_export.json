@@ -3,8 +3,8 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Wed Nov 18 \u00b7 10:15 PM ET",
-    "date": "2026-11-18",
+    "as_of": "Thu Nov 19 \u00b7 7:53 AM ET",
+    "date": "2026-11-19",
     "sport": "NHL"
    },
    "doc_id": "nhl-meta"
@@ -31,6 +31,28 @@
     "tip_sort": "1119-2100"
    },
    "doc_id": "nhl-ana-beckett-sennecke"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "WSH",
+    "home": "BOS",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "13 min a game \u00b7 12 points in 17 games = 6% of BOS's points"
+    },
+    "player": "James Hagens",
+    "reason": "C \u00b7 Back",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "BOS",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1121-1900"
+   },
+   "doc_id": "nhl-bos-james-hagens"
   },
   {
    "collection": "injuries",
@@ -123,8 +145,30 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
-    "home": "UTA",
+    "away": "ANA",
+    "home": "COL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "9 min a game \u00b7 1 point in 6 games = 0% of COL's points"
+    },
+    "player": "Gavin Brindley",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "COL",
+    "tip": "Thu 9:00 PM",
+    "tip_sort": "1119-2100"
+   },
+   "doc_id": "nhl-col-gavin-brindley"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ANA",
+    "home": "COL",
     "impact": {
      "bars": 2,
      "label": "Some",
@@ -137,16 +181,16 @@
     "starter": true,
     "status": "Out",
     "team": "COL",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1118-2200"
+    "tip": "Thu 9:00 PM",
+    "tip_sort": "1119-2100"
    },
    "doc_id": "nhl-col-cale-makar"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
-    "home": "UTA",
+    "away": "ANA",
+    "home": "COL",
     "impact": {
      "bars": 3,
      "label": "Big",
@@ -159,8 +203,8 @@
     "starter": true,
     "status": "Out",
     "team": "COL",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1118-2200"
+    "tip": "Thu 9:00 PM",
+    "tip_sort": "1119-2100"
    },
    "doc_id": "nhl-col-nathan-mackinnon"
   },
@@ -208,6 +252,50 @@
     "tip_sort": "1119-2200"
    },
    "doc_id": "nhl-dal-tyler-myers"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYI",
+    "home": "DET",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "17 min a game \u00b7 6 points in 16 games = 4% of DET's points"
+    },
+    "player": "William Wallinder",
+    "reason": "D \u00b7 Upper body",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "DET",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1121-1900"
+   },
+   "doc_id": "nhl-det-william-wallinder"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYI",
+    "home": "DET",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "22 min a game \u00b7 6 points in 10 games = 4% of DET's points"
+    },
+    "player": "Dylan Larkin",
+    "reason": "C",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "DET",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1121-1900"
+   },
+   "doc_id": "nhl-det-dylan-larkin"
   },
   {
    "collection": "injuries",
@@ -333,7 +421,7 @@
      "why": "No games for him in this season's stats"
     },
     "player": "Zack Bolduc",
-    "reason": "RW \u00b7 Undisclosed",
+    "reason": "RW",
     "sport": "NHL",
     "starter": false,
     "status": "Day-To-Day",
@@ -526,6 +614,50 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "SEA",
+    "home": "SJ",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "16 min a game \u00b7 9 points in 23 games = 5% of SJ's points"
+    },
+    "player": "Kiefer Sherwood",
+    "reason": "LW",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "SJ",
+    "tip": "Sat 10:00 PM",
+    "tip_sort": "1121-2200"
+   },
+   "doc_id": "nhl-sj-kiefer-sherwood"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SEA",
+    "home": "SJ",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
+    },
+    "player": "Kyle Keyser",
+    "reason": "G \u00b7 Upper body",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "SJ",
+    "tip": "Sat 10:00 PM",
+    "tip_sort": "1121-2200"
+   },
+   "doc_id": "nhl-sj-kyle-keyser"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "VAN",
     "home": "SEA",
     "impact": {
@@ -660,7 +792,7 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
+    "away": "ANA",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -674,15 +806,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1118-2200"
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "1121-2100"
    },
    "doc_id": "nhl-uta-john-marino"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
+    "away": "ANA",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -696,15 +828,15 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1118-2200"
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "1121-2100"
    },
    "doc_id": "nhl-uta-nick-schmaltz"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "COL",
+    "away": "ANA",
     "home": "UTA",
     "impact": {
      "bars": 2,
@@ -718,8 +850,8 @@
     "starter": true,
     "status": "Injured Reserve",
     "team": "UTA",
-    "tip": "Wed 10:00 PM",
-    "tip_sort": "1118-2200"
+    "tip": "Sat 9:00 PM",
+    "tip_sort": "1121-2100"
    },
    "doc_id": "nhl-uta-nate-schmidt"
   },
@@ -834,6 +966,6 @@
    "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-19T03:15:58Z",
+ "generated_at": "2026-11-19T12:53:12Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
