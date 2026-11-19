@@ -2165,16 +2165,16 @@
   "2026_11_IND_HOU": {
    "away": "IND",
    "home": "HOU",
-   "home_wp": 0.6187,
+   "home_wp": 0.6281,
    "injuries": {
     "d_out": -1.0,
-    "d_q": 0.0,
+    "d_q": -1.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6022,
     "home_field": 0.5484,
-    "who_is_out": 0.6187
+    "who_is_out": 0.6281
    },
    "teams": {
     "away": {
@@ -2494,16 +2494,16 @@
   "2026_11_PIT_PHI": {
    "away": "PIT",
    "home": "PHI",
-   "home_wp": 0.3343,
+   "home_wp": 0.3503,
    "injuries": {
-    "d_out": 2.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.3671,
     "home_field": 0.5484,
-    "who_is_out": 0.3343
+    "who_is_out": 0.3503
    },
    "teams": {
     "away": {
@@ -2541,16 +2541,16 @@
   "2026_11_TB_DET": {
    "away": "TB",
    "home": "DET",
-   "home_wp": 0.6923,
+   "home_wp": 0.677,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6927,
     "home_field": 0.5484,
-    "who_is_out": 0.6923
+    "who_is_out": 0.677
    },
    "teams": {
     "away": {
@@ -2633,7 +2633,7 @@
    }
   }
  },
- "generated_at": "2026-11-19T02:48:02Z",
+ "generated_at": "2026-11-19T12:07:18Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
  "max_gap_vs_upcoming": 0.0,
  "model": "NFL_MODEL_2_0",
