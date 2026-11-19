@@ -34,9 +34,10 @@
   .pill { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 14px; white-space: nowrap; user-select: none; cursor: pointer; }
   /* in the app the window moves by a grip on the left: a drag region on macOS eats clicks, so the rest of the pill stays clickable */
   .grip { display: none; }
-  body.electron .grip { display: block; -webkit-app-region: drag; cursor: grab; align-self: stretch; width: 14px; margin: -10px 0 -10px -8px;
-    background: radial-gradient(circle, rgba(255,255,255,.4) 1px, transparent 1.4px) center / 5px 5px repeat-y; background-size: 5px 5px; background-position: 4px center; }
-  body.electron .grip:hover { background-image: radial-gradient(circle, rgba(255,255,255,.75) 1px, transparent 1.4px); }
+  body.electron .grip { display: flex; align-items: center; justify-content: center; align-self: stretch; width: 22px; margin: -10px 0 -10px -14px; padding-left: 4px;
+    -webkit-app-region: drag; cursor: grab; background: rgba(255,255,255,.06); border-right: .5px solid rgba(255,255,255,.12); color: rgba(255,255,255,.55); font: normal 15px/1 system-ui; }
+  body.electron .grip::before { content: '⠿'; }
+  body.electron .grip:hover { background: rgba(255,255,255,.14); color: #fff; }
   .stale { opacity: .55; }
   .logo { width: 20px; height: 20px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
   .abbr { font-weight: 600; font-size: 13px; }
