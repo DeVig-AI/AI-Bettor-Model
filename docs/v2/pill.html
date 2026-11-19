@@ -72,6 +72,7 @@
   .bar label { color: var(--dim); }
   button, select, input { font: inherit; color: var(--ink); background: rgba(255,255,255,.1); border: 0;
     box-shadow: inset 0 0.5px 0 rgba(255,255,255,.18); border-radius: 7px; padding: 4px 9px; }
+  .bar a { color: var(--gold); text-decoration: none; padding: 4px 6px; } .bar a:hover { text-decoration: underline; }
   button { cursor: default; } button:hover { background: rgba(255,255,255,.17); } button:active { background: rgba(255,255,255,.24); }
   button.x { background: none; box-shadow: none; padding: 0 0 0 4px; color: var(--faint); font-size: 15px; line-height: 1; } button.x:hover { color: var(--ink); background: none; }
   .setup { width: min(360px, 100vw); padding: 18px; }
@@ -218,6 +219,10 @@ function controls() {
     render()
   }
   const bar = h('div', 'bar', h('label', null, 'Delay'), sel, saw)
+  const big = h('a', null, 'Second screen')
+  big.href = './screen.html' + (code ? '?code=' + code : ''); big.target = '_blank'; big.rel = 'noopener'
+  big.title = 'Every bet, live, full screen: for an iPad, a second monitor or a TV browser'
+  bar.append(big)
   if (!shell && !pip && 'documentPictureInPicture' in window) {
     const pop = h('button', null, 'Float over the game')
     pop.onclick = popOut

@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeVig Second Screen</title>
+<meta name="theme-color" content="#0b0e13">
+<style>
+:root{--good:#35d07f;--bad:#ff5d5d;--gold:#f5b83d;--blue:#5aa7ff;--ink:#f4f6f8;--dim:rgba(244,246,248,.58);--faint:rgba(244,246,248,.36);--hair:rgba(255,255,255,.12);--bg:#0b0e13}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font:500 14px/1.3 -apple-system,system-ui,"Segoe UI",sans-serif;color:var(--ink);background-color:var(--bg);
+ background-image:radial-gradient(70% 60% at 12% 0%,#283a68,transparent 60%),radial-gradient(60% 60% at 100% 100%,#55284a,transparent 60%);background-attachment:fixed}
+#app{min-height:100%;display:grid;grid-template-columns:1fr 400px;grid-template-rows:auto 1fr auto auto;gap:16px;padding:20px 22px}
+.glass{border-radius:18px;background:linear-gradient(180deg,rgba(70,76,96,.40),rgba(26,30,40,.62));-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);
+ box-shadow:inset 0 .5px 0 rgba(255,255,255,.26),inset 0 0 0 .5px rgba(255,255,255,.09),0 14px 40px rgba(0,0,0,.35)}
+.num{font-variant-numeric:tabular-nums}.good{color:var(--good)}.bad{color:var(--bad)}.gold{color:var(--gold)}.dim{color:var(--dim)}.faint{color:var(--faint)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+header{grid-column:1/3;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-size:20px;font-weight:700}.brand b{color:var(--gold)}
+.live{color:var(--bad);font-weight:600;display:flex;align-items:center;gap:6px;font-size:13px}.live i{width:7px;height:7px;border-radius:50%;background:var(--bad);animation:beat 1.6s infinite}
+.live.off{color:var(--faint)}.live.off i{background:var(--faint);animation:none}
+@keyframes beat{50%{opacity:.35}}
+.seg{display:inline-flex;padding:2px;border-radius:9px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 .5px var(--hair)}
+.seg button{padding:4px 12px;border-radius:7px;font-size:13px;color:var(--dim)}.seg button.on{background:rgba(255,255,255,.18);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+select{font:inherit;font-size:13px;color:var(--ink);background:rgba(255,255,255,.08);border:0;border-radius:8px;padding:4px 8px;box-shadow:inset 0 0 0 .5px var(--hair)}
+.sp{flex:1}.lbl{font-size:12px;color:var(--faint);margin-right:2px}
+.sum{display:flex;gap:8px}.sum span{font-size:12px;font-weight:650;padding:3px 10px;border-radius:999px}
+.sum .c-hit{background:var(--good);color:#06240f}.sum .c-near{color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}.sum .c-close{background:var(--gold);color:#2a1c00}.sum .c-risk{background:var(--bad);color:#2a0606}
+main{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:16px;align-content:start;min-width:0}
+.game{padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px;min-width:0}.game.mine{box-shadow:inset 0 0 0 1.2px rgba(245,184,61,.5),0 14px 40px rgba(0,0,0,.35)}
+.gtop{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.team{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:650;min-width:0}.team.r{flex-direction:row-reverse}.team img,.team .ab{width:34px;height:34px;flex:none}
+.ab{display:inline-grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.1);font-size:11px;font-weight:700}
+.team .s{font:700 38px/1 -apple-system,system-ui,sans-serif;font-variant-numeric:tabular-nums;margin:0 6px}.team.lo{color:var(--dim)}
+.pop{animation:pop .9s ease-out}@keyframes pop{0%{color:var(--gold);transform:scale(1.12)}100%{transform:none}}
+.mid{text-align:center}.clk{font-weight:650;font-size:15px}.sub{font-size:11.5px;color:var(--faint);margin-top:2px}
+.wp{display:flex;align-items:center;gap:8px;font-size:12px}.wp .bar{flex:1;height:6px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,.1)}
+.wp .bar i{display:block;height:100%;transition:width .8s ease}
+.note{font-size:12.5px;color:var(--gold);font-weight:600}
+.sec{font-size:10.5px;font-weight:650;letter-spacing:.07em;color:var(--faint);display:flex;justify-content:space-between;margin-top:2px;text-transform:uppercase}
+.prop{position:relative;display:grid;grid-template-columns:30px 1fr auto;gap:4px 10px;align-items:center;padding:8px 10px 8px 12px;margin-top:5px;border-radius:11px;background:rgba(255,255,255,.035);transition:box-shadow .4s,background .4s}
+.prop::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:transparent}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:1px}
+.s-hit{background:rgba(53,208,127,.10)}.s-hit::before{background:var(--good)}.s-hit .badge{background:var(--good);color:#06240f}
+.s-near{background:rgba(53,208,127,.06);box-shadow:inset 0 0 0 1px rgba(53,208,127,.55),0 0 18px rgba(53,208,127,.18)}.s-near::before{background:var(--good)}.s-near .badge{color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.s-close{background:rgba(245,184,61,.08)}.s-close::before{background:var(--gold)}.s-close .badge{color:#2a1c00;background:var(--gold)}
+.s-risk{background:rgba(255,93,93,.10);box-shadow:inset 0 0 0 1px rgba(255,93,93,.45)}.s-risk::before{background:var(--bad)}.s-risk .badge{background:var(--bad);color:#2a0606}
+.s-lost{opacity:.55}
+.why{grid-column:2/4;font-size:11.5px;font-weight:600}.s-risk .why{color:var(--bad)}.s-close .why{color:var(--gold)}.s-near .why,.s-hit .why{color:var(--good)}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;grid-row:span 2;background:rgba(255,255,255,.1)}
+.pn{font-weight:600;min-width:0}.pn small{font-weight:500;color:var(--dim);margin-left:6px}
+.pr{text-align:right;font-weight:650;font-size:13px;white-space:nowrap}.pr small{display:block;font-size:11px;font-weight:600}
+.track{grid-column:2/4;position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09)}
+.track .f{position:absolute;inset:0 auto 0 0;border-radius:4px;transition:width .8s ease}.track .pace{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.55);border-radius:1px}
+.track .line{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff}
+.meta{grid-column:2/4;display:flex;gap:12px;font-size:11.5px;color:var(--dim);flex-wrap:wrap}.meta b{color:var(--ink);font-weight:600}
+.plays{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--dim);border-top:.5px solid var(--hair);padding-top:8px}.plays b{color:var(--faint);font-weight:600;width:52px;display:inline-block}
+.plays .me{color:var(--ink)}
+aside{display:flex;flex-direction:column;gap:14px;min-width:0}
+.slip{position:relative;overflow:hidden;padding:14px 16px}
+.slip.k-risk{box-shadow:inset 0 0 0 1.2px rgba(255,93,93,.55),0 14px 40px rgba(0,0,0,.35)}.slip.k-close{box-shadow:inset 0 0 0 1.2px rgba(245,184,61,.5),0 14px 40px rgba(0,0,0,.35)}
+.slip.k-near{box-shadow:inset 0 0 0 1.2px rgba(53,208,127,.55),0 14px 40px rgba(0,0,0,.35)}
+.slip .hd{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
+.prog{display:flex;gap:3px;margin:9px 0 4px}.prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}.prog i.w{background:var(--good)}.prog i.l{background:var(--bad)}
+.prog i.risk{background:rgba(255,93,93,.5)}.prog i.close{background:rgba(245,184,61,.55)}.prog i.near{background:rgba(53,208,127,.5)}
+.lg{display:flex;gap:8px;font-size:13px;margin-top:6px;align-items:baseline}.lg .t{flex:1;min-width:0}.lg .mv{font-size:11.5px;white-space:nowrap}
+.lg.risk .t{color:var(--bad)}.lg.close .t{color:var(--gold)}.lg.near .t{color:var(--good)}
+.big{display:flex;align-items:baseline;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:.5px solid var(--hair)}
+.big b{font:700 26px -apple-system,system-ui,sans-serif;font-variant-numeric:tabular-nums}.kv{display:flex;justify-content:space-between;font-size:12.5px;margin-top:5px}
+.hedge{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(53,208,127,.1);font-size:12.5px}
+.others{grid-column:1/3;display:flex;gap:12px;flex-wrap:wrap}
+.mini{flex:1;min-width:200px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px}.mini img,.mini .ab{width:20px;height:20px;font-size:8px}.mini .num{font-weight:700}
+footer{grid-column:1/3;padding:10px 18px;display:flex;gap:28px;font-size:13.5px;white-space:nowrap;overflow:hidden}footer b{color:var(--gold)}
+.empty{padding:28px;text-align:center;color:var(--dim);font-size:15px;line-height:1.5}
+.empty input{font:inherit;font-size:18px;letter-spacing:.12em;text-align:center;width:220px;margin:10px 0;padding:8px;border-radius:10px;border:0;background:rgba(255,255,255,.1);color:var(--ink)}
+@media (max-width:1100px){#app{grid-template-columns:1fr}header,.others,footer{grid-column:1}main{grid-template-columns:1fr}}
+@media (max-width:600px){#app{padding:14px 16px}.team .s{font-size:30px}.team{font-size:15px}.team img,.team .ab{width:26px;height:26px}main{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { FEED_MS, GAME_MS, price, money, pct, clockText, gameClock, boxRow, pace, mark, RANK, betChance, hedge, tonight, Delayed } from './screen-core.js'
+
+const ESPN_ABBR = { 'nba:NYK': 'ny', 'nba:GSW': 'gs', 'nba:SAS': 'sa', 'nba:NOP': 'no', 'nba:UTA': 'utah', 'nba:WAS': 'wsh',
+  'nfl:WAS': 'wsh', 'nhl:WAS': 'wsh', 'nhl:LAK': 'la', 'nhl:SJS': 'sj', 'nhl:TBL': 'tb', 'nhl:NJD': 'nj' }
+const LIVE_SPORTS = new Set(['nba', 'wnba', 'cbb', 'nfl', 'cfb', 'nhl'])
+const store = {
+  get(k) { try { return localStorage.getItem('devig-screen:' + k) } catch { return null } },
+  set(k, v) { try { v == null ? localStorage.removeItem('devig-screen:' + k) : localStorage.setItem('devig-screen:' + k, v) } catch {} },
+}
+const opt = { mode: store.get('mode') || 'odds', scope: store.get('scope') || 'mine', view: store.get('view') || 'bars' }
+const q = new URLSearchParams(location.search)
+if (q.get('m') === 'pct' || q.get('m') === 'odds') opt.mode = q.get('m')
+let delay = store.get('delay') == null ? null : +store.get('delay')   // null: the TV setting from the feed
+
+const feeds = new Delayed(), games = new Map()   // key -> {buf: Delayed, lastTry, busy}
+let code = null, error = null, lastOk = 0, lastFeedTry = 0
+// the price each leg had when this screen first saw it (localStorage), so a move shows as "from → now"
+let seen = {}
+try { seen = JSON.parse(store.get('seen') || '{}') || {} } catch { seen = {} }
+const prevScores = new Map(), events = []
+
+// ---------- the TV code, as the pill finds it ----------
+const norm = (c) => { const s = String(c || '').toLowerCase().replace(/[^a-z0-9]/g, ''); return /^[23456789a-hjkmnp-z]{8}$/.test(s) ? s : null }
+async function findCode() {
+  const fromUrl = norm(q.get('code'))
+  if (fromUrl) { store.set('code', fromUrl); return fromUrl }
+  try {
+    const r = await fetch('/api/tv', { credentials: 'same-origin', headers: { accept: 'application/json' } })
+    const d = r.ok ? await r.json() : null
+    if (d && norm(d.code)) { store.set('code', d.code); return norm(d.code) }
+  } catch {}
+  return norm(store.get('code')) || norm(localStorage.getItem('devig-pill:code'))
+}
+
+// ---------- polling: the feed every 5s, each live game with my bets every 6s ----------
+const delayMs = () => 1000 * (delay != null ? delay : (feeds.newest() && feeds.newest().settings && feeds.newest().settings.delay) || 0)
+async function pollFeed() {
+  if (!code || Date.now() - lastFeedTry < FEED_MS - 300) return
+  lastFeedTry = Date.now()
+  try {
+    const r = await fetch('/api/tv?key=' + code, { cache: 'no-store' })
+    if (r.status === 404) throw new Error("That TV code isn't linked")
+    if (!r.ok) throw new Error("Can't reach DeVig")
+    const f = await r.json()
+    f.games = (f.games || []).map((g) => ({ ...g, sport: String(g.sport || '').toLowerCase() }))
+    feeds.push(Date.now(), f)
+    lastOk = Date.now(); error = null
+    noteSeen(f)
+  } catch (e) { error = /linked/.test(e.message) ? e.message : "Can't reach DeVig" }
+}
+function pollGames() {
+  const f = feeds.newest()
+  if (!f) return
+  for (const g of f.games) {
+    if (g.state !== 'in' || !LIVE_SPORTS.has(g.sport) || (opt.scope === 'mine' && !g.mine)) continue
+    let s = games.get(g.key)
+    if (!s) games.set(g.key, (s = { buf: new Delayed(120), lastTry: 0, busy: false }))
+    if (s.busy || Date.now() - s.lastTry < GAME_MS - 300) continue
+    s.lastTry = Date.now(); s.busy = true
+    const id = g.key.split(':')[1]
+    fetch(`/api/live?sport=${g.sport}&event=${encodeURIComponent(id)}&game=1`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null)).then((d) => { if (d) s.buf.push(Date.now(), d) }).catch(() => {}).finally(() => { s.busy = false })
+  }
+}
+function noteSeen(f) {
+  let changed = false
+  for (const b of f.bets || []) (b.legs || []).forEach((l, i) => {
+    const k = legKey(b, l, i)
+    if (l.chance != null && seen[k] == null) { seen[k] = { p: l.chance, at: Date.now() }; changed = true }
+  })
+  const keys = Object.keys(seen)
+  if (keys.length > 400) { keys.sort((a, b) => seen[a].at - seen[b].at).slice(0, keys.length - 400).forEach((k) => delete seen[k]); changed = true }
+  if (changed) store.set('seen', JSON.stringify(seen))
+}
+const legKey = (b, l, i) => (l.ticker ? l.ticker + '~' + (l.side || 'yes') : b.id + '#' + i)
+
+// ---------- drawing ----------
+const h = (tag, cls, ...kids) => {
+  const e = document.createElement(tag)
+  if (cls) e.className = cls
+  for (const k of kids.flat()) if (k != null && k !== false) e.append(typeof k === 'string' || typeof k === 'number' ? document.createTextNode(String(k)) : k)
+  return e
+}
+function logo(sport, team) {
+  const league = { nfl: 'nfl', nba: 'nba', nhl: 'nhl', wnba: 'wnba' }[sport]
+  if (!league) return h('span', 'ab', String(team).slice(0, 4))
+  const img = h('img')
+  img.alt = team
+  img.src = `https://a.espncdn.com/i/teamlogos/${league}/500/${ESPN_ABBR[sport + ':' + team] || String(team).toLowerCase()}.png`
+  img.onerror = () => img.replaceWith(h('span', 'ab', team))
+  return img
+}
+const initials = (n) => String(n || '?').split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase()
+const BADGE = { hit: 'HIT ✓', near: 'ABOUT TO HIT', close: 'CLOSE', risk: 'AT RISK', lost: 'MISSED' }
+const seg = (name, pairs) => h('div', 'seg', pairs.map(([v, t]) => {
+  const b = h('button', opt[name] === v ? 'on' : null, t)
+  b.onclick = () => { opt[name] = v; store.set(name, v); render() }
+  return b
+}))
+
+// every leg on the shown feed, with its mark, game and live box row
+function marked(f) {
+  const byGame = new Map(f.games.map((g) => [g.key, g]))
+  const out = []
+  for (const b of f.bets || []) (b.legs || []).forEach((l, i) => {
+    const g = byGame.get(l.game) || null, d = g && games.get(g.key) && games.get(g.key).buf.at(Date.now() - delayMs())
+    const box = l.kind === 'prop' && d ? boxRow(d.box, l.player || l.who) : null
+    const sp = g ? g.sport : String(l.sport || '').toLowerCase()
+    const c = g ? gameClock(g.detail, sp, g.state) : null
+    const pc = box && c ? pace(l.now, box.min, c.frac, sp) : null
+    const was = seen[legKey(b, l, i)] ? seen[legKey(b, l, i)].p : null
+    out.push({ b, l, i, g, box, pace: pc, was, m: mark({ ...l, strike: l.strike != null ? +l.strike : null }, g, { box, was, pace: pc }) })
+  })
+  return out
+}
+
+function header(f, legs) {
+  const n = (st) => legs.filter((x) => x.m.st === st).length
+  const anyLive = f && f.games.some((g) => g.state === 'in')
+  const ago = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null
+  const sel = h('select')
+  for (const [v, t] of [['', `TV (${(f && f.settings && f.settings.delay) || 0}s)`], ...[0, 15, 30, 45, 60].map((d) => [String(d), d + 's'])]) { const o = h('option', null, t); o.value = v; sel.append(o) }
+  sel.value = delay == null ? '' : String(delay)
+  if (sel.value !== (delay == null ? '' : String(delay))) { const o = h('option', null, delay + 's'); o.value = String(delay); sel.append(o); sel.value = String(delay) }
+  sel.onchange = () => { delay = sel.value === '' ? null : +sel.value; store.set('delay', sel.value === '' ? null : sel.value); render() }
+  return h('header', null,
+    h('div', 'brand', h('b', null, 'DeVig'), ' Live'),
+    h('span', 'live' + (anyLive && !error ? '' : ' off'), h('i'), error ? error : anyLive ? 'LIVE' : 'No games live'),
+    h('div', 'sum', [['hit', 'hit'], ['near', 'about to hit'], ['close', 'close'], ['risk', 'at risk']].map(([st, t]) => n(st) ? h('span', 'c-' + st, `${n(st)} ${t}`) : null)),
+    h('span', 'sp'),
+    h('span', 'lbl', 'Show'), seg('mode', [['odds', 'Odds'], ['pct', 'Chance %']]),
+    seg('scope', [['mine', 'My bets'], ['all', 'All games']]),
+    seg('view', [['bars', 'Bars'], ['nums', 'Numbers']]),
+    h('span', 'lbl', 'Delay'), sel,
+    h('span', 'faint num', ago == null ? '' : ago < 2 ? 'updated now' : `updated ${ago}s ago`))
+}
+
+function propRow(x) {
+  const { l, m, box } = x, line = +l.strike, now = l.now == null ? 0 : +l.now
+  const over = l.side !== 'no', need = Math.floor(line) + 1
+  const e = h('div', 'prop s-' + m.st)
+  const nm = l.player || l.who || l.label
+  const priceNow = l.chance != null ? h('small', x.was != null && Math.abs(l.chance - x.was) >= 0.03 ? (l.chance > x.was ? 'good' : 'bad') : 'dim',
+    x.was != null && Math.abs(l.chance - x.was) >= 0.03 ? `${price(x.was, opt.mode)} → ${price(l.chance, opt.mode)}` : price(l.chance, opt.mode)) : null
+  e.append(h('div', 'av', initials(nm)),
+    h('div', 'pn', nm, h('small', null, `${over ? 'over' : 'under'} ${line} ${l.unit || ''}`), BADGE[m.st] && h('span', 'badge', BADGE[m.st])),
+    h('div', 'pr num', h('span', m.st === 'hit' ? 'good' : m.st === 'risk' || m.st === 'lost' ? 'bad' : null, `${now}`), h('span', 'faint', ` / ${need}`), priceNow))
+  if (opt.view === 'bars') {
+    const top = Math.max(need * 1.25, now, x.pace || 0, 1), w = (v) => Math.min(100, (v / top) * 100) + '%'
+    const tr = h('div', 'track')
+    const fill = h('div', 'f'); fill.style.width = w(now)
+    fill.style.background = m.st === 'risk' ? 'var(--bad)' : m.st === 'close' ? 'var(--gold)' : m.st === 'hit' || m.st === 'near' ? 'var(--good)' : 'var(--blue)'
+    tr.append(fill)
+    const ln = h('div', 'line'); ln.style.left = w(line); tr.append(ln)
+    if (x.pace != null && m.st !== 'hit') { const p = h('div', 'pace'); p.style.left = w(x.pace); p.title = 'On pace for ' + x.pace; tr.append(p) }
+    e.append(tr)
+  }
+  if (box) e.append(h('div', 'meta', h('span', null, h('b', null, box.min ?? 0), ' min'), box.fg && h('span', null, 'FG ', h('b', null, box.fg)),
+    box.pf != null && h('span', box.pf >= 4 ? 'bad' : null, h('b', null, box.pf), box.pf === 1 ? ' foul' : ' fouls'), x.pace != null && h('span', null, 'pace ', h('b', null, x.pace)),
+    opt.view === 'nums' && box.reb != null && h('span', null, `${box.pts ?? 0} pts · ${box.reb} reb · ${box.ast ?? 0} ast`)))
+  if (m.why) e.append(h('div', 'why', (m.st === 'risk' ? '⚠ ' : m.st === 'near' ? '↑ ' : '') + m.why))
+  return e
+}
+function legRow(x) {
+  const { l, m } = x
+  const e = h('div', 'prop s-' + m.st)
+  e.style.gridTemplateColumns = '1fr auto'
+  const moved = x.was != null && l.chance != null && Math.abs(l.chance - x.was) >= 0.03
+  e.append(h('div', 'pn', l.label, BADGE[m.st] && h('span', 'badge', BADGE[m.st])),
+    h('div', 'pr num', l.chance != null ? h('span', moved ? (l.chance > x.was ? 'good' : 'bad') : null, moved ? `${price(x.was, opt.mode)} → ${price(l.chance, opt.mode)}` : price(l.chance, opt.mode)) : h('span', 'dim', l.note || '')))
+  if (m.why) { const w = h('div', 'why', (m.st === 'risk' ? '⚠ ' : '') + m.why); w.style.gridColumn = '1/3'; e.append(w) }
+  return e
+}
+
+function gameCard(g, legs) {
+  const d = games.get(g.key) && games.get(g.key).buf.at(Date.now() - delayMs())
+  const prev = prevScores.get(g.key), bumpA = prev && prev.as !== g.as, bumpH = prev && prev.hs !== g.hs
+  const pre = g.state === 'pre'
+  const side = (team, s, o, r, bump) => h('div', 'team' + (r ? ' r' : '') + (g.state === 'post' && s < o ? ' lo' : ''), logo(g.sport, team), h('span', null, team),
+    !pre && h('span', 's' + (bump ? ' pop' : ''), s))
+  const c = h('div', 'game glass' + (g.mine ? ' mine' : ''))
+  const sub = d && d.run ? `${d.run.team} on a ${d.run.points}-0 run` : g.mine ? `${g.mine} of your legs` : g.fav ? '★ your team' : ''
+  c.append(h('div', 'gtop', side(g.away, g.as, g.hs, false, bumpA), h('div', 'mid', h('div', 'clk num', clockText(g)), sub && h('div', 'sub', sub)), side(g.home, g.hs, g.as, true, bumpH)))
+  const wp = d && d.wp && d.wp.length ? d.wp[d.wp.length - 1][1] : null
+  if (wp != null && g.state === 'in') {
+    const bar = h('div', 'bar'), a = h('i'), b = h('i')
+    a.style.width = (1 - wp) * 100 + '%'; a.style.background = 'var(--blue)'; b.style.width = wp * 100 + '%'; b.style.background = 'rgba(255,255,255,.55)'
+    bar.append(a, b)
+    c.append(h('div', 'wp num', h('span', null, `${g.away} ${opt.mode === 'pct' ? pct(1 - wp) : price(1 - wp, 'odds')}`), bar, h('span', null, `${opt.mode === 'pct' ? pct(wp) : price(wp, 'odds')} ${g.home}`)))
+  }
+  const worst = legs.filter((x) => ['risk', 'close', 'near'].includes(x.m.st)).sort((a, b) => RANK[a.m.st] - RANK[b.m.st])[0]
+  const note = worst ? `${worst.m.st === 'risk' ? '⚠' : worst.m.st === 'near' ? '↑' : '●'} ${worst.l.who || worst.l.label}: ${worst.m.why || BADGE[worst.m.st]}` : g.last || null
+  if (note) c.append(h('div', 'note', note))
+  if (legs.length) {
+    const props = legs.filter((x) => x.l.kind === 'prop' && x.l.strike != null), rest = legs.filter((x) => !props.includes(x))
+    if (props.length) { c.append(h('div', 'sec', h('span', null, 'Player props'), h('span', null, opt.view === 'bars' ? 'now · line · pace' : 'now / needs'))); props.forEach((x) => c.append(propRow(x))) }
+    if (rest.length) { c.append(h('div', 'sec', h('span', null, 'Game bets'), h('span', null, opt.mode === 'pct' ? 'chance' : 'price'))); rest.forEach((x) => c.append(legRow(x))) }
+  }
+  if (d && d.plays && d.plays.length) {
+    const mine = new Set(legs.map((x) => (x.l.player || '').split(' ').slice(-1)[0].toLowerCase()).filter(Boolean))
+    c.append(h('div', 'plays', d.plays.slice(0, 4).map((p) => {
+      const me = [...mine].some((n) => p.text.toLowerCase().includes(n))
+      return h('div', me ? 'me' : null, h('b', 'num', `Q${p.q || ''} ${p.clock}`), p.text)
+    })))
+  }
+  return c
+}
+
+function slip(b, legs) {
+  const worst = legs.filter((x) => x.m.st !== 'hit' && x.m.st !== 'lost').sort((a, z) => RANK[a.m.st] - RANK[z.m.st])[0]
+  const k = b.lost ? '' : worst && ['risk', 'close', 'near'].includes(worst.m.st) ? ' k-' + worst.m.st : ''
+  const ch = betChance(b)
+  const e = h('div', 'slip glass' + k)
+  e.append(h('div', 'hd', h('span', null, b.label), h('span', b.lost ? 'bad' : 'good', b.done === 'won' ? 'WON' : b.lost ? 'LOST' : `${b.won} OF ${b.n}`)))
+  const prog = h('div', 'prog')
+  for (const x of legs) prog.append(h('i', x.m.st === 'hit' ? 'w' : x.m.st === 'lost' ? 'l' : ['risk', 'close', 'near'].includes(x.m.st) ? x.m.st : ''))
+  e.append(prog)
+  for (const x of legs) {
+    const mk = x.m.st === 'hit' ? '✓' : x.m.st === 'lost' ? '✗' : x.m.st === 'risk' ? '⚠' : x.m.st === 'near' ? '↑' : x.m.st === 'close' ? '●' : '○'
+    const moved = x.was != null && x.l.chance != null && Math.abs(x.l.chance - x.was) >= 0.03
+    e.append(h('div', 'lg ' + x.m.st, h('span', x.m.st === 'hit' ? 'good' : x.m.st === 'lost' || x.m.st === 'risk' ? 'bad' : x.m.st === 'close' ? 'gold' : 'dim', mk),
+      h('span', 't', x.l.label), h('span', 'mv num ' + (moved ? (x.l.chance > x.was ? 'good' : 'bad') : 'dim'),
+        x.m.st === 'hit' || x.m.st === 'lost' ? x.l.note || '' : x.l.chance != null ? (moved ? `${price(x.was, opt.mode)} → ${price(x.l.chance, opt.mode)}` : price(x.l.chance, opt.mode)) : x.l.note || '')))
+  }
+  if (b.pays) {
+    e.append(h('div', 'big', h('span', 'dim', 'Pays'), h('b', b.lost ? 'faint' : null, money(b.pays))))
+    if (b.stake != null) e.append(h('div', 'kv', h('span', 'dim', 'Staked'), h('span', 'num', money(b.stake))))
+    if (!b.lost && b.done !== 'won' && ch != null) {
+      e.append(h('div', 'kv', h('span', 'dim', 'Chance now'), h('span', 'num', opt.mode === 'pct' ? pct(ch) : price(ch, 'odds'))))
+      e.append(h('div', 'kv', h('span', 'dim', 'Worth at market'), h('span', 'num gold', money(b.pays * ch))))
+    }
+    const hg = hedge(b)
+    if (hg) e.append(h('div', 'hedge', `Hedge: $${hg.stake.toFixed(2)} on the other side of ${hg.leg.team} at ${price(hg.price, opt.mode)} locks `, h('b', 'good', `+$${hg.locked.toFixed(2)}`), ' either way'))
+  }
+  return e
+}
+
+function render() {
+  const app = document.getElementById('app')
+  const f = feeds.at(Date.now() - delayMs()) || feeds.newest()
+  if (!code) return app.replaceChildren(askCode())
+  if (!f) return app.replaceChildren(h('div', 'empty glass', error || 'Loading your bets…'))
+  const legs = marked(f)
+  const byGame = (key) => legs.filter((x) => x.g && x.g.key === key)
+  const shown = f.games.filter((g) => (opt.scope === 'all' ? g.state !== 'post' || g.mine : g.mine))
+    .sort((a, b) => Math.min(9, ...byGame(a.key).map((x) => RANK[x.m.st])) - Math.min(9, ...byGame(b.key).map((x) => RANK[x.m.st])) || (a.state === 'in' ? 0 : 1) - (b.state === 'in' ? 0 : 1))
+  const main = h('main', null, shown.length ? shown.map((g) => gameCard(g, byGame(g.key))) : h('div', 'empty glass', opt.scope === 'mine' ? 'None of your bets are on a game today. Try All games.' : 'No games on now.'))
+  const bets = (f.bets || []).filter((b) => !b.done || b.done === 'won')
+  const t = tonight(bets)
+  const aside = h('aside', null, bets.slice(0, 6).map((b) => slip(b, legs.filter((x) => x.b === b))),
+    bets.length ? h('div', 'slip glass', h('div', 'hd', h('span', null, 'Tonight')), h('div', 'kv', h('span', 'dim', 'Staked'), h('span', 'num', money(t.staked))),
+      h('div', 'kv', h('span', 'dim', 'If everything hits'), h('span', 'num good', money(t.all))),
+      t.worth != null && h('div', 'kv', h('span', 'dim', 'Worth now at market'), h('span', 'num gold', money(t.worth)))) : h('div', 'slip glass dim', 'No open bets.'))
+  const rest = f.games.filter((g) => !shown.includes(g)).slice(0, 5)
+  const others = rest.length ? h('div', 'others', rest.map((g) => h('div', 'mini glass', logo(g.sport, g.away), h('span', 'num', g.state === 'pre' ? g.away : g.as),
+    h('span', 'faint', '–'), h('span', 'num', g.state === 'pre' ? g.home : g.hs), logo(g.sport, g.home), h('span', 'sp'), h('span', 'faint num', clockText(g))))) : null
+  // events: the biggest price moves since first seen, then what just changed
+  const moves = legs.filter((x) => x.was != null && x.l.chance != null && Math.abs(x.l.chance - x.was) >= 0.05 && x.m.st !== 'hit' && x.m.st !== 'lost')
+    .sort((a, b) => Math.abs(b.l.chance - b.was) - Math.abs(a.l.chance - a.was)).slice(0, 3)
+  for (const g of f.games) {
+    const p = prevScores.get(g.key)
+    if (p && (p.as !== g.as || p.hs !== g.hs) && g.state === 'in') events.unshift({ at: Date.now(), text: `${g.away} ${g.as}–${g.hs} ${g.home} · ${clockText(g)}` })
+    prevScores.set(g.key, { as: g.as, hs: g.hs })
+  }
+  for (const x of legs) {
+    const k = legKey(x.b, x.l, x.i), was = lastMark.get(k)
+    if (was && was !== x.m.st && ['hit', 'risk', 'near'].includes(x.m.st)) events.unshift({ at: Date.now(), text: `${x.m.st === 'hit' ? '✓' : x.m.st === 'risk' ? '⚠' : '↑'} ${x.l.label}${x.m.st === 'hit' ? ' hit' : x.m.st === 'risk' ? ' now at risk' : ' about to hit'}`, gold: true })
+    lastMark.set(k, x.m.st)
+  }
+  events.splice(12)
+  const foot = moves.length || events.length ? h('footer', 'glass', moves.map((x) => h('span', null, h('b', null, 'Line move '), `${x.l.who || x.l.label} ${price(x.was, opt.mode)} → ${price(x.l.chance, opt.mode)}`)),
+    events.slice(0, 6).map((ev) => h('span', ev.gold ? 'gold' : 'dim', ev.text))) : null
+  app.replaceChildren(header(f, legs), main, aside, others, foot)
+}
+const lastMark = new Map()
+
+function askCode() {
+  const inp = h('input'); inp.placeholder = 'TV code'; inp.maxLength = 12
+  const go = h('button', 'gold', 'Show my bets')
+  go.onclick = () => { const c = norm(inp.value); if (c) { code = c; store.set('code', c); lastFeedTry = 0; tick() } else inp.style.boxShadow = 'inset 0 0 0 1px var(--bad)' }
+  inp.onkeydown = (e) => { if (e.key === 'Enter') go.click() }
+  return h('div', 'empty glass', h('div', 'brand', h('b', null, 'DeVig'), ' Live'), h('div', null, 'Sign in on devigai.pages.dev, or type the TV code from your profile.'), inp, h('div', null, go))
+}
+
+async function tick() {
+  await pollFeed(); pollGames()
+  const a = document.activeElement
+  if (!(a && (a.tagName === 'SELECT' || a.tagName === 'INPUT'))) render()   // don't redraw under an open menu
+}
+code = await findCode()
+render(); tick()
+setInterval(tick, 1000)
+</script>
+</body>
+</html>

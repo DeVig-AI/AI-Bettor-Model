@@ -301,7 +301,7 @@ export function nbaShot(c) {
   y = Math.min(47, y + RIM_Y);
   return {x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10};
 }
-const NBA_PLAYS_KEPT = 80, NBA_BOX = ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "+/-"];
+const NBA_PLAYS_KEPT = 80, NBA_BOX = ["MIN", "PTS", "REB", "AST", "FG", "3PT", "STL", "BLK", "TO", "PF", "+/-"];   // PF: foul trouble on the second screen
 
 // For the gap chart: ESPN's own win chance for the home team after each play, the runs (8+ unanswered points,
 // marked at the run's last bucket) and when each quarter started. Same shape as nflSwing.
