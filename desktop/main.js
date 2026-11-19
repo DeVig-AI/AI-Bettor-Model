@@ -56,7 +56,9 @@ function openPill() {
   let at = { x: area.x + area.width - 420 - 16, y: area.y + 16 };
   try { at = { ...at, ...JSON.parse(fs.readFileSync(pillPlace(), "utf8")) }; } catch {}
   pill = new BrowserWindow({
-    x: at.x, y: at.y, width: 420, height: 70, frame: false, transparent: true, resizable: false, hasShadow: false,
+    x: at.x, y: at.y, width: 420, height: 46, frame: false, resizable: false, hasShadow: true,
+    // macOS's own frosted glass behind the page (Control Center's look); the window's corners round on their own
+    vibrancy: "hud", visualEffectState: "active", backgroundColor: "#00000000", roundedCorners: true,
     skipTaskbar: true, fullscreenable: false, minimizable: false, maximizable: false, alwaysOnTop: true, title: "DeVig Pill",
     webPreferences: { contextIsolation: true, sandbox: true, preload: path.join(__dirname, "pill-preload.js") },
   });
