@@ -4,10 +4,102 @@
  "version": "v0",
  "kind": "ml",
  "tested": false,
- "updated": "2026-11-19T03:40:13+00:00",
+ "updated": "2026-11-19T13:28:57+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401892751",
+   "date": "2026-11-19",
+   "start": "2026-11-20T02:00Z",
+   "game": "ANA @ COL",
+   "home": "COL",
+   "away": "ANA",
+   "home_id": "17",
+   "away_id": "25",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 6.5,
+   "score": 2.0,
+   "why_for": [
+    "COL on tired legs (back-to-back)",
+    "Pace: their games average 7.3 goals, the total is 6.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401892751",
+   "date": "2026-11-19",
+   "start": "2026-11-20T02:00Z",
+   "game": "ANA @ COL",
+   "home": "COL",
+   "away": "ANA",
+   "home_id": "17",
+   "away_id": "25",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "ANA",
+   "line": 110.0,
+   "score": 2.5,
+   "why_for": [
+    "COL: Second night of a back-to-back",
+    "COL: Nathan MacKinnon (1.4 points a game) is out",
+    "COL: Cale Makar (1.2 points a game) is out"
+   ],
+   "why_opp": [
+    "COL: Bounce-back spot after losing by 3",
+    "COL: Fade the line move: the price moved 4 points of chance away from COL"
+   ]
+  },
+  {
+   "id": "401892742",
+   "date": "2026-11-19",
+   "start": "2026-11-20T00:00Z",
+   "game": "LA @ TOR",
+   "home": "TOR",
+   "away": "LA",
+   "home_id": "21",
+   "away_id": "8",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "TOR",
+   "line": -115.0,
+   "score": 2.5,
+   "why_for": [
+    "Bounce-back spot after losing by 3",
+    "LA: Artemi Panarin (1.1 points a game) is out"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401892745",
+   "date": "2026-11-19",
+   "start": "2026-11-20T00:00Z",
+   "game": "STL @ PIT",
+   "home": "PIT",
+   "away": "STL",
+   "home_id": "16",
+   "away_id": "19",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "PIT",
+   "line": -112.0,
+   "score": 2.5,
+   "why_for": [
+    "Bounce-back spot after losing by 3",
+    "Line tell: the price makes PIT the favorite though STL has the better goal difference"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401892741",
    "date": "2026-11-18",
@@ -18,8 +110,8 @@
    "home_id": "129764",
    "away_id": "17",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "COL 1, UTA 4",
    "type": "side",
    "pick": "UTA",
    "line": -110.0,
@@ -488,7 +580,23 @@
    "away": "DAL",
    "home_id": "37",
    "away_id": "9",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "VGK",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Zigzag: lost to this same team in the last three days"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 5.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892752",
@@ -499,7 +607,23 @@
    "away": "VAN",
    "home_id": "124292",
    "away_id": "22",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "SEA",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 4"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892751",
@@ -510,7 +634,31 @@
    "away": "ANA",
    "home_id": "17",
    "away_id": "25",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "ANA",
+    "score": 2.5,
+    "capped": false,
+    "why_for": [
+     "COL: Second night of a back-to-back",
+     "COL: Nathan MacKinnon (1.4 points a game) is out",
+     "COL: Cale Makar (1.2 points a game) is out"
+    ],
+    "why_opp": [
+     "COL: Bounce-back spot after losing by 3",
+     "COL: Fade the line move: the price moved 4 points of chance away from COL"
+    ]
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 6.5,
+    "score": 2.0,
+    "why_for": [
+     "COL on tired legs (back-to-back)",
+     "Pace: their games average 7.3 goals, the total is 6.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892748",
@@ -521,7 +669,23 @@
    "away": "CBJ",
    "home_id": "4",
    "away_id": "29",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "CBJ",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 4"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 5.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892750",
@@ -532,7 +696,21 @@
    "away": "MIN",
    "home_id": "3",
    "away_id": "30",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892744",
@@ -543,7 +721,21 @@
    "away": "EDM",
    "home_id": "20",
    "away_id": "6",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892742",
@@ -554,7 +746,24 @@
    "away": "LA",
    "home_id": "21",
    "away_id": "8",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "TOR",
+    "score": 2.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 3",
+     "LA: Artemi Panarin (1.1 points a game) is out"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892743",
@@ -565,7 +774,21 @@
    "away": "PHI",
    "home_id": "14",
    "away_id": "15",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": null,
+    "score": 0.0,
+    "capped": false,
+    "why_for": [],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 5.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892745",
@@ -576,7 +799,24 @@
    "away": "STL",
    "home_id": "16",
    "away_id": "19",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "PIT",
+    "score": 2.5,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 3",
+     "Line tell: the price makes PIT the favorite though STL has the better goal difference"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892746",
@@ -587,7 +827,23 @@
    "away": "BUF",
    "home_id": "23",
    "away_id": "2",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "WSH",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 3"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892747",
@@ -598,7 +854,26 @@
    "away": "MTL",
    "home_id": "7",
    "away_id": "10",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "CAR",
+    "score": 2.0,
+    "capped": true,
+    "why_for": [
+     "Never lay a price this big",
+     "MTL: Second night of a back-to-back, both on the road"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 6.5,
+    "score": 0.5,
+    "why_for": [
+     "MTL on tired legs (back-to-back)"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401892749",
@@ -609,7 +884,23 @@
    "away": "NYI",
    "home_id": "28",
    "away_id": "12",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "WPG",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the price makes WPG the favorite though NYI has the better goal difference"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": null,
+    "line": 6.5,
+    "score": 0.0,
+    "why_for": [],
+    "why_opp": []
+   }
   },
   {
    "id": "401892741",
@@ -992,63 +1283,6 @@
      "Pace: their games average 6.5 goals, the total is 5.5",
      "Buy low on the dropping total: 6.5 to 5.5"
     ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892727",
-   "date": "2026-11-16",
-   "start": "2026-11-17T02:30Z",
-   "game": "VAN @ UTA",
-   "home": "UTA",
-   "away": "VAN",
-   "home_id": "129764",
-   "away_id": "22",
-   "note": null,
-   "side": {
-    "lean": "UTA",
-    "score": 2.0,
-    "capped": true,
-    "why_for": [
-     "Never lay a price this big",
-     "VAN: Second night of a back-to-back, both on the road"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 6.5,
-    "score": 0.5,
-    "why_for": [
-     "VAN on tired legs (back-to-back)"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401892726",
-   "date": "2026-11-16",
-   "start": "2026-11-17T00:30Z",
-   "game": "MTL @ NYR",
-   "home": "NYR",
-   "away": "MTL",
-   "home_id": "13",
-   "away_id": "10",
-   "note": null,
-   "side": {
-    "lean": "MTL",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Bounce-back spot after losing by 3"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 6.5,
-    "score": 0.0,
-    "why_for": [],
     "why_opp": []
    }
   }
