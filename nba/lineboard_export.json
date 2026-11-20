@@ -3,303 +3,6 @@
   {
    "collection": "slate",
    "data": {
-    "away_team": "LAL",
-    "export_hash": "c1ddf1c229526a459e45d9bd8e7efdb54f0f1cc414ed4d2939a3b449f7220ccb",
-    "game_date": "2026-11-15",
-    "game_id": "401909986",
-    "home_team": "PHX",
-    "kickoff_time": "2026-11-15T21:00:00Z",
-    "market": {
-     "book": "Kalshi",
-     "moneyline_away": -161,
-     "moneyline_home": 140
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the tracker (NBA_MODEL_C_INJ_V1_LIVE): points scored/allowed over the last 10 games, rest days and back-to-backs, plus the official injury report (minutes of players listed out, doubtful or questionable). Odds from Kalshi.",
-     "source_snapshot_time": "2026-11-15T18:35:47.677723+00:00",
-     "status": "locked",
-     "tiers": {
-      "from": "walk-forward test games 2023-24 .. 2025-26 (research/injuries/nba_modelc_plus_injuries_v1.py)",
-      "games": 3693,
-      "top25": 0.7159,
-      "top50": 0.6297
-     },
-     "winner_prob": 0.5726442523533113,
-     "winner_side": "PHX"
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
-   },
-   "doc_id": "401909986"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "LAL",
-    "decision": {
-     "action": "PASS",
-     "bar": 0.6297,
-     "prob": 0.5726442523533113,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "388dd266807aec3b6c54cbcf803beb428416ca72911bae6615a87782b229274d",
-    "game_date": "2026-11-15",
-    "game_id": "401909986",
-    "home_team": "PHX",
-    "inputs": {
-     "away": {
-      "back_to_back": false,
-      "injury_report": true,
-      "minutes_out_pct": 0.142,
-      "minutes_q_pct": 0.093,
-      "papg_last10": 114.0,
-      "ppg_last10": 120.4,
-      "rest_days": 2.0,
-      "top_player_out": true,
-      "winpct_last10": 0.8
-     },
-     "home": {
-      "back_to_back": false,
-      "injury_report": true,
-      "minutes_out_pct": 0.0,
-      "minutes_q_pct": 0.0,
-      "papg_last10": 115.3,
-      "ppg_last10": 114.6,
-      "rest_days": 1.0,
-      "top_player_out": false,
-      "winpct_last10": 0.5
-     },
-     "market_book": "Kalshi",
-     "market_prob_home_at_lock": 0.4033,
-     "model_version": "NBA_MODEL_C_INJ_V1_LIVE"
-    },
-    "kickoff_time": "2026-11-15T21:00:00Z",
-    "locked_at": "2026-11-15T18:35:47.677723+00:00",
-    "market_snapshot": {
-     "moneyline_away": -161,
-     "moneyline_home": 140
-    },
-    "outcome": {
-     "away_score": 131,
-     "decision_correct": null,
-     "graded_source": "ESPN final score via the GitHub Actions grader",
-     "home_score": 123,
-     "resolved": true,
-     "spread_correct": null,
-     "spread_decision_correct": null,
-     "teaser_correct": null
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "spread_read": null,
-    "teaser_signal": null
-   },
-   "doc_id": "401909986"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "CHA",
-    "export_hash": "418f3bf27569dcc8d61f82de1ccf53f7ebc7da5a6be0149ead6a8a431c84abcf",
-    "game_date": "2026-11-15",
-    "game_id": "401909987",
-    "home_team": "LAC",
-    "kickoff_time": "2026-11-15T21:30:00Z",
-    "market": {
-     "book": "Kalshi",
-     "moneyline_away": -107,
-     "moneyline_home": -112
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the tracker (NBA_MODEL_C_INJ_V1_LIVE): points scored/allowed over the last 10 games, rest days and back-to-backs, plus the official injury report (minutes of players listed out, doubtful or questionable). Odds from Kalshi.",
-     "source_snapshot_time": "2026-11-15T18:35:47.677723+00:00",
-     "status": "locked",
-     "tiers": {
-      "from": "walk-forward test games 2023-24 .. 2025-26 (research/injuries/nba_modelc_plus_injuries_v1.py)",
-      "games": 3693,
-      "top25": 0.7159,
-      "top50": 0.6297
-     },
-     "winner_prob": 0.526071733830646,
-     "winner_side": "LAC"
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
-   },
-   "doc_id": "401909987"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "CHA",
-    "decision": {
-     "action": "PASS",
-     "bar": 0.6297,
-     "prob": 0.526071733830646,
-     "side": null,
-     "tier": null
-    },
-    "export_hash": "ef1d669b84bf6fc90b0bb0e63089e439569d6196bf72a255ab069ff8430a4e9b",
-    "game_date": "2026-11-15",
-    "game_id": "401909987",
-    "home_team": "LAC",
-    "inputs": {
-     "away": {
-      "back_to_back": false,
-      "injury_report": true,
-      "minutes_out_pct": 0.113,
-      "minutes_q_pct": 0.0,
-      "papg_last10": 108.4,
-      "ppg_last10": 99.2,
-      "rest_days": 1.0,
-      "top_player_out": false,
-      "winpct_last10": 0.3
-     },
-     "home": {
-      "back_to_back": true,
-      "injury_report": true,
-      "minutes_out_pct": 0.0,
-      "minutes_q_pct": 0.008,
-      "papg_last10": 119.7,
-      "ppg_last10": 111.4,
-      "rest_days": 0.0,
-      "top_player_out": false,
-      "winpct_last10": 0.2
-     },
-     "market_book": "Kalshi",
-     "market_prob_home_at_lock": 0.5047,
-     "model_version": "NBA_MODEL_C_INJ_V1_LIVE"
-    },
-    "kickoff_time": "2026-11-15T21:30:00Z",
-    "locked_at": "2026-11-15T18:35:47.677723+00:00",
-    "market_snapshot": {
-     "moneyline_away": -107,
-     "moneyline_home": -112
-    },
-    "outcome": {
-     "away_score": 105,
-     "decision_correct": null,
-     "graded_source": "ESPN final score via the GitHub Actions grader",
-     "home_score": 113,
-     "resolved": true,
-     "spread_correct": null,
-     "spread_decision_correct": null,
-     "teaser_correct": null
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "spread_read": null,
-    "teaser_signal": null
-   },
-   "doc_id": "401909987"
-  },
-  {
-   "collection": "slate",
-   "data": {
-    "away_team": "SAS",
-    "export_hash": "4a76bbf319e29fcb4f4d8a4d234e55b8294fcd4919214e35a3ac29f2485f7832",
-    "game_date": "2026-11-15",
-    "game_id": "401909988",
-    "home_team": "UTA",
-    "kickoff_time": "2026-11-15T22:00:00Z",
-    "market": {
-     "book": "Kalshi",
-     "moneyline_away": -967,
-     "moneyline_home": 756
-    },
-    "model": {
-     "available": true,
-     "note": "Locked pregame by the tracker (NBA_MODEL_C_INJ_V1_LIVE): points scored/allowed over the last 10 games, rest days and back-to-backs, plus the official injury report (minutes of players listed out, doubtful or questionable). Odds from Kalshi.",
-     "source_snapshot_time": "2026-11-15T18:35:47.677723+00:00",
-     "status": "locked",
-     "tiers": {
-      "from": "walk-forward test games 2023-24 .. 2025-26 (research/injuries/nba_modelc_plus_injuries_v1.py)",
-      "games": 3693,
-      "top25": 0.7159,
-      "top50": 0.6297
-     },
-     "winner_prob": 0.8698551363016833,
-     "winner_side": "SAS"
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
-   },
-   "doc_id": "401909988"
-  },
-  {
-   "collection": "decisions",
-   "data": {
-    "away_team": "SAS",
-    "decision": {
-     "action": "ML",
-     "bar": 0.6297,
-     "prob": 0.8698551363016833,
-     "side": "SAS",
-     "tier": "top25"
-    },
-    "export_hash": "29073c7a2a25645ad4e1e18b06059b5d4b286f58f75126e955b1f80ce7352c8e",
-    "game_date": "2026-11-15",
-    "game_id": "401909988",
-    "home_team": "UTA",
-    "inputs": {
-     "away": {
-      "back_to_back": true,
-      "injury_report": true,
-      "minutes_out_pct": 0.0,
-      "minutes_q_pct": 0.116,
-      "papg_last10": 104.5,
-      "ppg_last10": 121.7,
-      "rest_days": 0.0,
-      "top_player_out": false,
-      "winpct_last10": 1.0
-     },
-     "home": {
-      "back_to_back": true,
-      "injury_report": true,
-      "minutes_out_pct": 0.149,
-      "minutes_q_pct": 0.0,
-      "papg_last10": 116.8,
-      "ppg_last10": 105.1,
-      "rest_days": 0.0,
-      "top_player_out": false,
-      "winpct_last10": 0.0
-     },
-     "market_book": "Kalshi",
-     "market_prob_home_at_lock": 0.1142,
-     "model_version": "NBA_MODEL_C_INJ_V1_LIVE"
-    },
-    "kickoff_time": "2026-11-15T22:00:00Z",
-    "locked_at": "2026-11-15T18:35:47.677723+00:00",
-    "market_snapshot": {
-     "moneyline_away": -967,
-     "moneyline_home": 756
-    },
-    "outcome": {
-     "away_score": 110,
-     "decision_correct": true,
-     "graded_source": "ESPN final score via the GitHub Actions grader",
-     "home_score": 102,
-     "resolved": true,
-     "spread_correct": null,
-     "spread_decision_correct": null,
-     "teaser_correct": null
-    },
-    "season": 2027,
-    "sport": "NBA",
-    "spread_read": null,
-    "teaser_signal": null
-   },
-   "doc_id": "401909988"
-  },
-  {
-   "collection": "slate",
-   "data": {
     "away_team": "DAL",
     "export_hash": "032c5c25c06a90f853478392dd84fb810e1e089247877010d69eec93c99667bb",
     "game_date": "2026-11-15",
@@ -327,7 +30,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909989"
   },
@@ -426,7 +129,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909990"
   },
@@ -525,7 +228,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909991"
   },
@@ -624,7 +327,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909992"
   },
@@ -723,7 +426,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909993"
   },
@@ -822,7 +525,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909995"
   },
@@ -921,7 +624,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909996"
   },
@@ -1020,7 +723,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909994"
   },
@@ -1119,7 +822,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909998"
   },
@@ -1218,7 +921,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909997"
   },
@@ -1317,7 +1020,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910000"
   },
@@ -1416,7 +1119,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909999"
   },
@@ -1515,7 +1218,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910001"
   },
@@ -1614,7 +1317,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910002"
   },
@@ -1713,7 +1416,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910004"
   },
@@ -1812,7 +1515,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910003"
   },
@@ -1911,7 +1614,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910006"
   },
@@ -2010,7 +1713,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910005"
   },
@@ -2109,7 +1812,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910008"
   },
@@ -2208,7 +1911,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910007"
   },
@@ -2307,7 +2010,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910009"
   },
@@ -2406,7 +2109,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910010"
   },
@@ -2505,7 +2208,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910011"
   },
@@ -2604,7 +2307,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910012"
   },
@@ -2703,7 +2406,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910014"
   },
@@ -2802,7 +2505,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910013"
   },
@@ -2901,7 +2604,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910016"
   },
@@ -3000,7 +2703,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910015"
   },
@@ -3099,7 +2802,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910018"
   },
@@ -3198,7 +2901,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910017"
   },
@@ -3297,7 +3000,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910019"
   },
@@ -3396,7 +3099,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910022"
   },
@@ -3495,7 +3198,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910021"
   },
@@ -3594,7 +3297,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401910020"
   },
@@ -3693,7 +3396,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909305"
   },
@@ -3791,7 +3494,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909307"
   },
@@ -3889,7 +3592,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909306"
   },
@@ -3987,7 +3690,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909308"
   },
@@ -4085,7 +3788,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909310"
   },
@@ -4183,7 +3886,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909309"
   },
@@ -4281,7 +3984,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909311"
   },
@@ -4379,7 +4082,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909312"
   },
@@ -4477,7 +4180,7 @@
     },
     "season": 2027,
     "sport": "NBA",
-    "synced_at": "2026-11-20T19:44:02.563345Z"
+    "synced_at": "2026-11-20T22:12:13.244139Z"
    },
    "doc_id": "401909313"
   },
@@ -4546,7 +4249,7 @@
    "doc_id": "401909313"
   }
  ],
- "generated_at": "2026-11-20T19:44:02.563345Z",
- "n_docs": 92,
+ "generated_at": "2026-11-20T22:12:13.244139Z",
+ "n_docs": 86,
  "sport": "NBA"
 }
