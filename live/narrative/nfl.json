@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-20T13:10:16+00:00",
+ "updated": "2026-11-20T21:17:04+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
@@ -17,7 +17,7 @@
    "away": "PHI",
    "home_id": "6",
    "away_id": "21",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "side",
@@ -39,7 +39,7 @@
    "away": "CHI",
    "home_id": "8",
    "away_id": "3",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -53,6 +53,27 @@
    "why_opp": []
   },
   {
+   "id": "401873077",
+   "date": "2026-11-22",
+   "start": "2026-11-23T01:20Z",
+   "game": "MIN @ SF",
+   "home": "SF",
+   "away": "MIN",
+   "home_id": "25",
+   "away_id": "16",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "SF",
+   "line": -3.0,
+   "score": 2.0,
+   "why_for": [
+    "MIN: Starting quarterback Kyler Murray is out"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401873067",
    "date": "2026-11-22",
    "start": "2026-11-22T18:00Z",
@@ -61,7 +82,7 @@
    "away": "ARI",
    "home_id": "12",
    "away_id": "22",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -75,6 +96,28 @@
    "why_opp": []
   },
   {
+   "id": "401873076",
+   "date": "2026-11-22",
+   "start": "2026-11-22T18:00Z",
+   "game": "PIT @ PHI",
+   "home": "PHI",
+   "away": "PIT",
+   "home_id": "21",
+   "away_id": "23",
+   "book": "Draft Kings",
+   "result": null,
+   "final": null,
+   "type": "total",
+   "pick": "OVER",
+   "line": 37.5,
+   "score": 2.5,
+   "why_for": [
+    "Pace: their games average 42 points, the total is 37.5",
+    "Buy low on the dropping total: 42.5 to 37.5"
+   ],
+   "why_opp": []
+  },
+  {
    "id": "401873068",
    "date": "2026-11-22",
    "start": "2026-11-22T18:00Z",
@@ -83,7 +126,7 @@
    "away": "BAL",
    "home_id": "29",
    "away_id": "33",
-   "book": "DraftKings",
+   "book": "Draft Kings",
    "result": null,
    "final": null,
    "type": "total",
@@ -93,28 +136,6 @@
    "why_for": [
     "Pace: their games average 49 points, the total is 43.5",
     "Buy low on the dropping total: 46.5 to 43.5"
-   ],
-   "why_opp": []
-  },
-  {
-   "id": "401873072",
-   "date": "2026-11-22",
-   "start": "2026-11-22T18:00Z",
-   "game": "TB @ DET",
-   "home": "DET",
-   "away": "TB",
-   "home_id": "8",
-   "away_id": "27",
-   "book": "DraftKings",
-   "result": null,
-   "final": null,
-   "type": "side",
-   "pick": "TB",
-   "line": 6.0,
-   "score": 2.0,
-   "why_for": [
-    "Coming off a bye week, rested and with extra time to prepare",
-    "Fade the line move: TB went from +4.5 to +6"
    ],
    "why_opp": []
   },
@@ -635,10 +656,12 @@
    "away_id": "16",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "SF",
+    "score": 2.0,
     "capped": false,
-    "why_for": [],
+    "why_for": [
+     "MIN: Starting quarterback Kyler Murray is out"
+    ],
     "why_opp": []
    },
    "total": {
@@ -665,11 +688,11 @@
     "capped": true,
     "why_for": [
      "Coming off a bye week, rested and with extra time to prepare",
-     "Line tell: the line rates DEN 6.4 points better than results so far",
+     "Line tell: the line rates DEN 5.9 points better than results so far",
      "Never lay 10 or more"
     ],
     "why_opp": [
-     "LV: Fade the line move: LV went from +8.5 to +10.5"
+     "LV: Fade the line move: LV went from +8.5 to +10"
     ]
    },
    "total": {
@@ -848,11 +871,10 @@
    "note": null,
    "side": {
     "lean": "TB",
-    "score": 2.0,
+    "score": 1.0,
     "capped": false,
     "why_for": [
-     "Coming off a bye week, rested and with extra time to prepare",
-     "Fade the line move: TB went from +4.5 to +6"
+     "Coming off a bye week, rested and with extra time to prepare"
     ],
     "why_opp": []
    },
@@ -923,10 +945,11 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 38.5,
-    "score": 1.0,
+    "line": 37.5,
+    "score": 2.5,
     "why_for": [
-     "Buy low on the dropping total: 42.5 to 38.5"
+     "Pace: their games average 42 points, the total is 37.5",
+     "Buy low on the dropping total: 42.5 to 37.5"
     ],
     "why_opp": []
    }
