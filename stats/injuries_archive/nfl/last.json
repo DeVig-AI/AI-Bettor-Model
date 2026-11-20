@@ -74,7 +74,7 @@
 "home": "CAR",
 "player": "Jaylinn Hawkins",
 "reason": "S \u00b7 Knee",
-"status": "Questionable",
+"status": "Out",
 "team": "BAL",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -104,7 +104,7 @@
 "home": "CAR",
 "player": "Nnamdi Madubuike",
 "reason": "DT \u00b7 Hamstring",
-"status": "Questionable",
+"status": "Out",
 "team": "BAL",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -124,7 +124,7 @@
 "home": "BUF",
 "player": "Christian Benford",
 "reason": "CB \u00b7 Groin",
-"status": "Questionable",
+"status": "Out",
 "team": "BUF",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -134,7 +134,7 @@
 "home": "BUF",
 "player": "Dalton Kincaid",
 "reason": "TE \u00b7 Thumb",
-"status": "Questionable",
+"status": "Doubtful",
 "team": "BUF",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -164,7 +164,7 @@
 "home": "BUF",
 "player": "Dorian Williams",
 "reason": "LB \u00b7 Calf",
-"status": "Questionable",
+"status": "Out",
 "team": "BUF",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -204,7 +204,7 @@
 "home": "CAR",
 "player": "Bobby Okereke",
 "reason": "LB \u00b7 Foot",
-"status": "Questionable",
+"status": "Out",
 "team": "CAR",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -234,7 +234,7 @@
 "home": "CAR",
 "player": "Isaiah Simmons",
 "reason": "S \u00b7 Knee",
-"status": "Questionable",
+"status": "Out",
 "team": "CAR",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -249,21 +249,21 @@
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
 },
-"nfl-chi-jeffery-simmons": {
-"away": "NO",
-"home": "CHI",
-"player": "Jeffery Simmons",
-"reason": "DT \u00b7 Knee",
-"status": "Questionable",
-"team": "CHI",
-"tip": "Sun 1:00 PM",
-"tip_sort": "1122-1300"
-},
 "nfl-chi-kyler-gordon": {
 "away": "NO",
 "home": "CHI",
 "player": "Kyler Gordon",
 "reason": "CB \u00b7 Shoulder",
+"status": "Out",
+"team": "CHI",
+"tip": "Sun 1:00 PM",
+"tip_sort": "1122-1300"
+},
+"nfl-chi-zavion-thomas": {
+"away": "NO",
+"home": "CHI",
+"player": "Zavion Thomas",
+"reason": "WR \u00b7 Ankle",
 "status": "Questionable",
 "team": "CHI",
 "tip": "Sun 1:00 PM",
@@ -799,6 +799,16 @@
 "tip": "Sun 4:25 PM",
 "tip_sort": "1122-1625"
 },
+"nfl-lv-ian-thomas": {
+"away": "LV",
+"home": "DEN",
+"player": "Ian Thomas",
+"reason": "TE \u00b7 Calf",
+"status": "Questionable",
+"team": "LV",
+"tip": "Sun 4:25 PM",
+"tip_sort": "1122-1625"
+},
 "nfl-lv-matt-gay": {
 "away": "LV",
 "home": "DEN",
@@ -814,6 +824,16 @@
 "home": "DEN",
 "player": "Tonka Hemingway",
 "reason": "DT \u00b7 Upper Body",
+"status": "Questionable",
+"team": "LV",
+"tip": "Sun 4:25 PM",
+"tip_sort": "1122-1625"
+},
+"nfl-lv-trey-zuhn": {
+"away": "LV",
+"home": "DEN",
+"player": "Trey Zuhn III",
+"reason": "C \u00b7 Illness",
 "status": "Questionable",
 "team": "LV",
 "tip": "Sun 4:25 PM",
@@ -844,7 +864,7 @@
 "home": "BUF",
 "player": "Bradley Pinion",
 "reason": "P \u00b7 Groin",
-"status": "Questionable",
+"status": "Out",
 "team": "MIA",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -874,7 +894,7 @@
 "home": "BUF",
 "player": "Dante Trader Jr.",
 "reason": "S \u00b7 Shoulder",
-"status": "Questionable",
+"status": "Doubtful",
 "team": "MIA",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -959,26 +979,6 @@
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
 },
-"nfl-min-andrew-van-ginkel": {
-"away": "MIN",
-"home": "SF",
-"player": "Andrew Van Ginkel",
-"reason": "LB \u00b7 Quadriceps",
-"status": "Questionable",
-"team": "MIN",
-"tip": "Sun 8:20 PM",
-"tip_sort": "1122-2020"
-},
-"nfl-min-blake-cashman": {
-"away": "MIN",
-"home": "SF",
-"player": "Blake Cashman",
-"reason": "LB \u00b7 Concussion",
-"status": "Questionable",
-"team": "MIN",
-"tip": "Sun 8:20 PM",
-"tip_sort": "1122-2020"
-},
 "nfl-min-isaiah-rodgers": {
 "away": "MIN",
 "home": "SF",
@@ -994,16 +994,6 @@
 "home": "SF",
 "player": "Jay Ward",
 "reason": "S \u00b7 Knee",
-"status": "Questionable",
-"team": "MIN",
-"tip": "Sun 8:20 PM",
-"tip_sort": "1122-2020"
-},
-"nfl-min-jeshaun-jones": {
-"away": "MIN",
-"home": "SF",
-"player": "Jeshaun Jones",
-"reason": "WR \u00b7 Shoulder",
 "status": "Questionable",
 "team": "MIN",
 "tip": "Sun 8:20 PM",
@@ -1025,16 +1015,6 @@
 "player": "Kyler Murray",
 "reason": "QB \u00b7 Hamstring",
 "status": "Out",
-"team": "MIN",
-"tip": "Sun 8:20 PM",
-"tip_sort": "1122-2020"
-},
-"nfl-min-tj-hockenson": {
-"away": "MIN",
-"home": "SF",
-"player": "T.J. Hockenson",
-"reason": "TE \u00b7 Wrist",
-"status": "Questionable",
 "team": "MIN",
 "tip": "Sun 8:20 PM",
 "tip_sort": "1122-2020"
@@ -1064,17 +1044,7 @@
 "home": "CHI",
 "player": "Erik McCoy",
 "reason": "C \u00b7 Biceps",
-"status": "Doubtful",
-"team": "NO",
-"tip": "Sun 1:00 PM",
-"tip_sort": "1122-1300"
-},
-"nfl-no-jordyn-tyson": {
-"away": "NO",
-"home": "CHI",
-"player": "Jordyn Tyson",
-"reason": "WR \u00b7 Chest",
-"status": "Questionable",
+"status": "Out",
 "team": "NO",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -1084,7 +1054,7 @@
 "home": "CHI",
 "player": "Martin Emerson Jr.",
 "reason": "CB \u00b7 Concussion",
-"status": "Questionable",
+"status": "Out",
 "team": "NO",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
@@ -1104,8 +1074,18 @@
 "home": "CHI",
 "player": "Taliese Fuaga",
 "reason": "OT \u00b7 Knee",
-"status": "Doubtful",
+"status": "Out",
 "team": "NO",
+"tip": "Sun 1:00 PM",
+"tip_sort": "1122-1300"
+},
+"nfl-nyg-isaiah-likely": {
+"away": "JAX",
+"home": "NYG",
+"player": "Isaiah Likely",
+"reason": "TE \u00b7 Undisclosed",
+"status": "Questionable",
+"team": "NYG",
 "tip": "Sun 1:00 PM",
 "tip_sort": "1122-1300"
 },
@@ -1154,7 +1134,7 @@
 "home": "LAC",
 "player": "Isaiah Williams",
 "reason": "WR \u00b7 Ribs",
-"status": "Questionable",
+"status": "Out",
 "team": "NYJ",
 "tip": "Sun 4:05 PM",
 "tip_sort": "1122-1605"
@@ -1174,7 +1154,7 @@
 "home": "LAC",
 "player": "Omar Cooper Jr.",
 "reason": "WR \u00b7 Ankle",
-"status": "Questionable",
+"status": "Out",
 "team": "NYJ",
 "tip": "Sun 4:05 PM",
 "tip_sort": "1122-1605"
@@ -1256,6 +1236,16 @@
 "reason": "LB \u00b7 Back",
 "status": "Questionable",
 "team": "PHI",
+"tip": "Sun 4:25 PM",
+"tip_sort": "1122-1625"
+},
+"nfl-pit-deshon-elliott": {
+"away": "PIT",
+"home": "PHI",
+"player": "DeShon Elliott",
+"reason": "S \u00b7 Knee",
+"status": "Questionable",
+"team": "PIT",
 "tip": "Sun 4:25 PM",
 "tip_sort": "1122-1625"
 },

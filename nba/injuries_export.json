@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 20 \u00b7 6:15 AM ET report",
+    "as_of": "Nov 20 \u00b7 3:00 PM ET report",
     "date": "2026-11-20",
     "not_submitted": {
      "BOS@SAC": [
@@ -31,7 +31,7 @@
       "NYK"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-20_06_15AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-20_03_00PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -707,11 +707,12 @@
      "level": "minor",
      "why": "16 min \u00b7 4.9 pts a game = 4% of DET's points"
     },
+    "note": "Upgraded from out",
     "player": "Ronald Holland II",
     "reason": "Left Knee Contusion/Bone Bruise",
     "sport": "NBA",
     "starter": false,
-    "status": "Out",
+    "status": "Doubtful",
     "team": "DET",
     "tip": "7:30 PM",
     "tip_sort": "11201930"
@@ -1142,6 +1143,28 @@
     "away": "WAS",
     "home": "CHI",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "25 min \u00b7 13.4 pts a game = 12% of CHI's points"
+    },
+    "player": "Jalen Smith",
+    "reason": "Gastrointestinal Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CHI",
+    "tip": "8:00 PM",
+    "tip_sort": "11202000"
+   },
+   "doc_id": "nba-chi-jalen-smith"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "WAS",
+    "home": "CHI",
+    "impact": {
      "bars": 3,
      "label": "Big",
      "level": "big",
@@ -1445,6 +1468,6 @@
    "doc_id": "nba-lal-austin-reaves"
   }
  ],
- "generated_at": "2026-11-20T11:24:38Z",
- "source": "NBA official injury report (Injury-Report_2026-11-20_06_15AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-20T20:01:43Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-20_03_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
