@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 21 \u00b7 4:30 AM ET report",
+    "as_of": "Nov 21 \u00b7 12:15 PM ET report",
     "date": "2026-11-21",
     "not_submitted": {
      "BOS@GSW": [
@@ -41,7 +41,7 @@
       "WAS"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-21_04_30AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-21_12_15PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -321,11 +321,12 @@
      "level": "big",
      "why": "34 min \u00b7 16.3 pts a game = 15% of NYK's points"
     },
+    "note": "Downgraded from questionable",
     "player": "OG Anunoby",
     "reason": "Left Calf Tightness",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Doubtful",
     "team": "NYK",
     "tip": "7:30 PM",
     "tip_sort": "11211930"
@@ -353,6 +354,28 @@
     "tip_sort": "11211930"
    },
    "doc_id": "nba-nyk-jordan-clarkson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "POR",
+    "home": "NYK",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "33 min \u00b7 21.3 pts a game = 19% of NYK's points"
+    },
+    "player": "Karl-Anthony Towns",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "NYK",
+    "tip": "7:30 PM",
+    "tip_sort": "11211930"
+   },
+   "doc_id": "nba-nyk-karl-anthony-towns"
   },
   {
    "collection": "injuries",
@@ -883,6 +906,6 @@
    "doc_id": "nba-bos-derrick-white"
   }
  ],
- "generated_at": "2026-11-21T09:39:29Z",
- "source": "NBA official injury report (Injury-Report_2026-11-21_04_30AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-21T17:23:23Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-21_12_15PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

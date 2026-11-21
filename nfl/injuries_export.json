@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 21 \u00b7 4:39 AM ET \u00b7 Week 11",
+    "as_of": "Sat Nov 21 \u00b7 12:23 PM ET \u00b7 Week 11",
     "date": "2026-11-21",
     "sport": "NFL"
    },
@@ -2521,6 +2521,29 @@
     "confirmed": true,
     "home": "DET",
     "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (97% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "player": "Baker Mayfield",
+    "reason": "QB \u00b7 Foot",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "TB",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1122-1300"
+   },
+   "doc_id": "nfl-tb-baker-mayfield"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TB",
+    "confirmed": true,
+    "home": "DET",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -2564,25 +2587,25 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "TB",
+    "away": "TEN",
     "confirmed": true,
-    "home": "DET",
+    "home": "DAL",
     "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (97% of snaps): about 3.8 points of final margin in DeVig's injury study"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (82% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of TEN's targets and carries"
     },
-    "player": "Baker Mayfield",
-    "reason": "QB \u00b7 Foot",
+    "player": "Carnell Tate",
+    "reason": "WR \u00b7 Shoulder",
     "sport": "NFL",
     "starter": true,
     "status": "Questionable",
-    "team": "TB",
+    "team": "TEN",
     "tip": "Sun 1:00 PM",
     "tip_sort": "1122-1300"
    },
-   "doc_id": "nfl-tb-baker-mayfield"
+   "doc_id": "nfl-ten-carnell-tate"
   },
   {
    "collection": "injuries",
@@ -2686,29 +2709,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (82% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of TEN's targets and carries"
-    },
-    "player": "Carnell Tate",
-    "reason": "WR \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "TEN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1122-1300"
-   },
-   "doc_id": "nfl-ten-carnell-tate"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TEN",
-    "confirmed": true,
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (67% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "player": "Fernando Carmona",
@@ -2744,6 +2744,30 @@
     "tip_sort": "1122-1300"
    },
    "doc_id": "nfl-ten-wandale-robinson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CIN",
+    "confirmed": false,
+    "home": "WAS",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (52% of snaps): about 0.5 points each in DeVig's injury study \u00b7 17% of WAS's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Rachaad White",
+    "reason": "RB \u00b7 Heel",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "WAS",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1123-2015"
+   },
+   "doc_id": "nfl-was-rachaad-white"
   },
   {
    "collection": "injuries",
@@ -2802,30 +2826,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (52% of snaps): about 0.5 points each in DeVig's injury study \u00b7 17% of WAS's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Saturday",
-    "player": "Rachaad White",
-    "reason": "RB \u00b7 Heel",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "WAS",
-    "tip": "Mon 8:15 PM",
-    "tip_sort": "1123-2015"
-   },
-   "doc_id": "nfl-was-rachaad-white"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CIN",
-    "confirmed": false,
-    "home": "WAS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (61% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Saturday",
@@ -2841,6 +2841,6 @@
    "doc_id": "nfl-was-quan-martin"
   }
  ],
- "generated_at": "2026-11-21T09:39:31Z",
+ "generated_at": "2026-11-21T17:23:24Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }

@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sat Nov 21 \u00b7 4:39 AM ET",
+    "as_of": "Sat Nov 21 \u00b7 12:23 PM ET",
     "date": "2026-11-21",
     "sport": "NHL"
    },
@@ -417,29 +417,6 @@
     "away": "PHI",
     "home": "MTL",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "No games for him in this season's stats"
-    },
-    "note": "Upgraded from out",
-    "player": "Zack Bolduc",
-    "reason": "RW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "MTL",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1121-1900"
-   },
-   "doc_id": "nhl-mtl-zack-bolduc"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "home": "MTL",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -506,6 +483,29 @@
     "away": "NYI",
     "home": "DET",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "18 min a game \u00b7 4 points in 17 games = 2% of NYI's points"
+    },
+    "note": "Downgraded from day-to-day",
+    "player": "Ryan Pulock",
+    "reason": "D",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Out",
+    "team": "NYI",
+    "tip": "Sat 7:00 PM",
+    "tip_sort": "1121-1900"
+   },
+   "doc_id": "nhl-nyi-ryan-pulock"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYI",
+    "home": "DET",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -526,24 +526,24 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "NYI",
-    "home": "DET",
+    "away": "CAR",
+    "home": "NYR",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "18 min a game \u00b7 4 points in 17 games = 2% of NYI's points"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "12 min a game \u00b7 11 points in 22 games = 6% of NYR's points"
     },
-    "player": "Ryan Pulock",
-    "reason": "D",
+    "player": "Oliver Bjorkstrand",
+    "reason": "RW \u00b7 Upper body",
     "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "NYI",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1121-1900"
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "NYR",
+    "tip": "Sun 12:30 PM",
+    "tip_sort": "1122-1230"
    },
-   "doc_id": "nhl-nyi-ryan-pulock"
+   "doc_id": "nhl-nyr-oliver-bjorkstrand"
   },
   {
    "collection": "injuries",
@@ -554,9 +554,9 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "12 min a game \u00b7 11 points in 22 games = 6% of NYR's points"
+     "why": "17 min a game \u00b7 12 points in 21 games = 7% of NYR's points"
     },
-    "player": "Oliver Bjorkstrand",
+    "player": "Pavel Dorofeyev",
     "reason": "RW",
     "sport": "NHL",
     "starter": true,
@@ -565,7 +565,7 @@
     "tip": "Sun 12:30 PM",
     "tip_sort": "1122-1230"
    },
-   "doc_id": "nhl-nyr-oliver-bjorkstrand"
+   "doc_id": "nhl-nyr-pavel-dorofeyev"
   },
   {
    "collection": "injuries",
@@ -598,28 +598,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "17 min a game \u00b7 12 points in 21 games = 7% of NYR's points"
-    },
-    "player": "Pavel Dorofeyev",
-    "reason": "RW",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "NYR",
-    "tip": "Sun 12:30 PM",
-    "tip_sort": "1122-1230"
-   },
-   "doc_id": "nhl-nyr-pavel-dorofeyev"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CAR",
-    "home": "NYR",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Igor Shesterkin",
@@ -632,29 +610,6 @@
     "tip_sort": "1122-1230"
    },
    "doc_id": "nhl-nyr-igor-shesterkin"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LA",
-    "home": "OTT",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min a game \u00b7 3 points in 19 games = 2% of OTT's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Nick Cousins",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "OTT",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1121-1900"
-   },
-   "doc_id": "nhl-ott-nick-cousins"
   },
   {
    "collection": "injuries",
@@ -766,29 +721,6 @@
     "tip_sort": "1121-1900"
    },
    "doc_id": "nhl-stl-connor-mcmichael"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NJ",
-    "home": "STL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "9 min a game \u00b7 1 point in 12 games = 1% of STL's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Ross Johnston",
-    "reason": "LW",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "STL",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1121-1900"
-   },
-   "doc_id": "nhl-stl-ross-johnston"
   },
   {
    "collection": "injuries",
@@ -951,28 +883,6 @@
     "away": "MIN",
     "home": "VAN",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "10 min a game \u00b7 4 points in 21 games = 2% of VAN's points"
-    },
-    "player": "Brendan Gallagher",
-    "reason": "RW \u00b7 Lower body",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Day-To-Day",
-    "team": "VAN",
-    "tip": "Sat 10:00 PM",
-    "tip_sort": "1121-2200"
-   },
-   "doc_id": "nhl-van-brendan-gallagher"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MIN",
-    "home": "VAN",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -1032,30 +942,8 @@
     "tip_sort": "1121-1900"
    },
    "doc_id": "nhl-wpg-dylan-demelo"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "VGK",
-    "home": "WPG",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 0 points in 6 games = 0% of WPG's points"
-    },
-    "player": "Elias Salomonsson",
-    "reason": "D",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "WPG",
-    "tip": "Sat 7:00 PM",
-    "tip_sort": "1121-1900"
-   },
-   "doc_id": "nhl-wpg-elias-salomonsson"
   }
  ],
- "generated_at": "2026-11-21T09:39:32Z",
+ "generated_at": "2026-11-21T17:23:25Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
