@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-21T11:24:10+00:00",
+ "updated": "2026-11-21T19:28:14+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -21,6 +21,28 @@
   }
  ],
  "picks": [
+  {
+   "id": "401910024",
+   "date": "2026-11-21",
+   "start": "2026-11-22T00:30Z",
+   "game": "POR @ NY",
+   "home": "NY",
+   "away": "POR",
+   "home_id": "18",
+   "away_id": "22",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "NY",
+   "line": -3.5,
+   "score": 2.5,
+   "why_for": [
+    "Fade the line move: NY went from -5.5 to -3.5",
+    "POR: Ja Morant (16 points a game) is out"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401909313",
    "date": "2026-11-20",
@@ -1299,9 +1321,10 @@
    "note": null,
    "side": {
     "lean": "BOS",
-    "score": 2.0,
+    "score": 3.5,
     "capped": true,
     "why_for": [
+     "Line tell: the line rates BOS 4.2 points better than results so far",
      "Never lay 12 or more",
      "SAC: Second night of a back-to-back",
      "SAC: Struggling team (one win or fewer)"
@@ -1337,7 +1360,7 @@
    },
    "total": {
     "lean": null,
-    "line": 228.5,
+    "line": 230.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1359,14 +1382,14 @@
     "capped": true,
     "why_for": [
      "Anthony Edwards (33 points a game) is out",
-     "MEM: Ty Jerome (25 points a game) is out",
+     "Line tell: the line rates MIN 4.2 points better than results so far",
      "MEM: Cameron Boozer (17 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
     "lean": null,
-    "line": 226.5,
+    "line": 228.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1384,15 +1407,17 @@
    "note": null,
    "side": {
     "lean": "SA",
-    "score": 2.0,
+    "score": 1.0,
     "capped": true,
     "why_for": [
      "Dylan Harper (18 points a game) is out",
-     "Line tell: the line rates SA 5.7 points better than results so far",
+     "Line tell: the line rates SA 6.7 points better than results so far",
      "Never lay 12 or more",
      "NO: Second night of a back-to-back, both on the road"
     ],
-    "why_opp": []
+    "why_opp": [
+     "NO: Fade the line move: NO went from +16.5 to +18.5"
+    ]
    },
    "total": {
     "lean": "OVER",
@@ -1416,18 +1441,21 @@
    "note": null,
    "side": {
     "lean": "NY",
-    "score": 1.5,
+    "score": 2.5,
     "capped": false,
     "why_for": [
+     "Fade the line move: NY went from -5.5 to -3.5",
      "POR: Ja Morant (16 points a game) is out"
     ],
     "why_opp": []
    },
    "total": {
-    "lean": null,
-    "line": 217.5,
-    "score": 0.0,
-    "why_for": [],
+    "lean": "OVER",
+    "line": 215.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 218.5 to 215.5"
+    ],
     "why_opp": []
    }
   },

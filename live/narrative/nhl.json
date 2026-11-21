@@ -4,10 +4,32 @@
  "version": "v0",
  "kind": "ml",
  "tested": false,
- "updated": "2026-11-21T11:24:14+00:00",
+ "updated": "2026-11-21T19:28:20+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
+  {
+   "id": "401892762",
+   "date": "2026-11-21",
+   "start": "2026-11-22T00:00Z",
+   "game": "NYI @ DET",
+   "home": "DET",
+   "away": "NYI",
+   "home_id": "5",
+   "away_id": "12",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "DET",
+   "line": 110.0,
+   "score": 2.0,
+   "why_for": [
+    "Bounce-back spot after losing by 3",
+    "Fade the line move: the price moved 5 points of chance away from DET"
+   ],
+   "why_opp": []
+  },
   {
    "id": "401892755",
    "date": "2026-11-21",
@@ -17,7 +39,7 @@
    "away": "CHI",
    "home_id": "3",
    "away_id": "4",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -659,7 +681,9 @@
     "score": 1.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 4"
+     "Bounce-back spot after losing by 4",
+     "Elias Pettersson (0.8 points a game) is out",
+     "MIN: Quinn Hughes (1.4 points a game) is out"
     ],
     "why_opp": []
    },
@@ -817,11 +841,15 @@
    "away_id": "8",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "OTT",
+    "score": 0.5,
     "capped": false,
-    "why_for": [],
-    "why_opp": []
+    "why_for": [
+     "LA: Artemi Panarin (1.1 points a game) is out"
+    ],
+    "why_opp": [
+     "LA: Fade the line move: the price moved 5 points of chance away from LA"
+    ]
    },
    "total": {
     "lean": null,
@@ -843,10 +871,11 @@
    "note": null,
    "side": {
     "lean": "DET",
-    "score": 1.0,
+    "score": 2.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 3"
+     "Bounce-back spot after losing by 3",
+     "Fade the line move: the price moved 5 points of chance away from DET"
     ],
     "why_opp": []
    },
