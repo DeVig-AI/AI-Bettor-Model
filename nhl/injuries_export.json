@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Sun Nov 22 \u00b7 6:08 AM ET",
+    "as_of": "Sun Nov 22 \u00b7 1:28 PM ET",
     "date": "2026-11-22",
     "sport": "NHL"
    },
@@ -100,28 +100,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CGY",
-    "home": "OTT",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "14 min a game \u00b7 1 point in 2 games = 1% of CGY's points"
-    },
-    "player": "Connor Zary",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": false,
-    "status": "Out",
-    "team": "CGY",
-    "tip": "Mon 7:30 PM",
-    "tip_sort": "1123-1930"
-   },
-   "doc_id": "nhl-cgy-connor-zary"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "CAR",
     "home": "NYR",
     "impact": {
@@ -153,10 +131,10 @@
      "why": "20 min a game \u00b7 18 points in 15 games = 12% of CHI's points"
     },
     "player": "Connor Bedard",
-    "reason": "C",
+    "reason": "C \u00b7 Shoulder",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Injured Reserve",
     "team": "CHI",
     "tip": "Sun 8:00 PM",
     "tip_sort": "1122-2000"
@@ -329,11 +307,12 @@
      "level": "big",
      "why": "21 min a game \u00b7 19 points in 17 games = 13% of LA's points"
     },
+    "note": "Upgraded from out",
     "player": "Artemi Panarin",
     "reason": "LW",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "LA",
     "tip": "Mon 7:30 PM",
     "tip_sort": "1123-1930"
@@ -351,11 +330,12 @@
      "level": "minor",
      "why": "16 min a game \u00b7 6 points in 19 games = 4% of LA's points"
     },
+    "note": "Upgraded from out",
     "player": "Trevor Moore",
-    "reason": "LW \u00b7 Undisclosed",
+    "reason": "LW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "LA",
     "tip": "Mon 7:30 PM",
     "tip_sort": "1123-1930"
@@ -505,11 +485,12 @@
      "level": "minor",
      "why": "18 min a game \u00b7 4 points in 17 games = 2% of NYI's points"
     },
+    "note": "Upgraded from out",
     "player": "Ryan Pulock",
     "reason": "D",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "NYI",
     "tip": "Mon 7:30 PM",
     "tip_sort": "1123-1930"
@@ -569,28 +550,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "20 min a game \u00b7 5 points in 14 games = 3% of NYR's points"
-    },
-    "player": "Sean Durzi",
-    "reason": "D \u00b7 Lower body",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "NYR",
-    "tip": "Sun 12:30 PM",
-    "tip_sort": "1122-1230"
-   },
-   "doc_id": "nhl-nyr-sean-durzi"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CAR",
-    "home": "NYR",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Goalie (DeVig has no goalie stats, so starter or backup isn't told apart)"
     },
     "player": "Igor Shesterkin",
@@ -615,11 +574,12 @@
      "level": "minor",
      "why": "5 min a game \u00b7 1 point in 10 games = 1% of OTT's points"
     },
+    "note": "Upgraded from out",
     "player": "Hayden Hodgson",
     "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "OTT",
     "tip": "Mon 7:30 PM",
     "tip_sort": "1123-1930"
@@ -703,11 +663,12 @@
      "level": "some",
      "why": "16 min a game \u00b7 11 points in 22 games = 6% of STL's points"
     },
+    "note": "Upgraded from out",
     "player": "Connor McMichael",
     "reason": "LW",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "STL",
     "tip": "Sun 7:00 PM",
     "tip_sort": "1122-1900"
@@ -768,6 +729,28 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "18 min a game \u00b7 22 points in 23 games = 11% of TOR's points"
+    },
+    "player": "Jack Roslovic",
+    "reason": "C \u00b7 Upper body",
+    "sport": "NHL",
+    "starter": true,
+    "status": "Day-To-Day",
+    "team": "TOR",
+    "tip": "Mon 7:30 PM",
+    "tip_sort": "1123-1930"
+   },
+   "doc_id": "nhl-tor-jack-roslovic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TOR",
+    "home": "NYI",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "18 min a game \u00b7 14 points in 14 games = 7% of TOR's points"
     },
     "player": "Kirill Marchenko",
@@ -814,11 +797,12 @@
      "level": "big",
      "why": "19 min a game \u00b7 29 points in 23 games = 13% of UTA's points"
     },
+    "note": "Upgraded from out",
     "player": "Clayton Keller",
     "reason": "RW",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "UTA",
     "tip": "Mon 7:30 PM",
     "tip_sort": "1123-1930"
@@ -958,6 +942,6 @@
    "doc_id": "nhl-wpg-dylan-demelo"
   }
  ],
- "generated_at": "2026-11-22T11:08:19Z",
+ "generated_at": "2026-11-22T18:28:47Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }

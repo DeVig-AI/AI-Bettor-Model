@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 22 \u00b7 6:00 AM ET report",
+    "as_of": "Nov 22 \u00b7 1:15 PM ET report",
     "date": "2026-11-22",
     "not_submitted": {
      "BKN@MIN": [
@@ -19,9 +19,6 @@
      ],
      "DAL@UTA": [
       "DAL"
-     ],
-     "IND@NYK": [
-      "NYK"
      ],
      "LAC@HOU": [
       "LAC",
@@ -56,7 +53,7 @@
       "LAL"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-22_06_00AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-22_01_15PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -639,6 +636,28 @@
     "away": "DEN",
     "home": "CHI",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "21 min \u00b7 9.3 pts a game = 8% of CHI's points"
+    },
+    "player": "Nic Claxton",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "CHI",
+    "tip": "7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-chi-nic-claxton"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DEN",
+    "home": "CHI",
+    "impact": {
      "bars": 4,
      "label": "Game changer",
      "level": "gamechanger",
@@ -666,11 +685,12 @@
      "level": "some",
      "why": "25 min \u00b7 13.4 pts a game = 12% of CHI's points"
     },
+    "note": "Upgraded from questionable",
     "player": "Jalen Smith",
     "reason": "Gastrointestinal Illness",
     "sport": "NBA",
     "starter": true,
-    "status": "Questionable",
+    "status": "Probable",
     "team": "CHI",
     "tip": "7:00 PM",
     "tip_sort": "11221900"
@@ -818,6 +838,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "13 min \u00b7 3.8 pts a game = 3% of WAS's points"
+    },
+    "player": "Deandre Ayton",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "WAS",
+    "tip": "7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-was-deandre-ayton"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ORL",
+    "home": "WAS",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Not in his team's rotation stats"
     },
     "player": "Reece Beekman",
@@ -830,6 +872,28 @@
     "tip_sort": "11221900"
    },
    "doc_id": "nba-was-reece-beekman"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ORL",
+    "home": "WAS",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "17 min \u00b7 4.8 pts a game = 4% of WAS's points"
+    },
+    "player": "Bub Carrington",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "WAS",
+    "tip": "7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-was-bub-carrington"
   },
   {
    "collection": "injuries",
@@ -1010,6 +1074,72 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "IND",
+    "home": "NYK",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "34 min \u00b7 16.3 pts a game = 15% of NYK's points"
+    },
+    "player": "OG Anunoby",
+    "reason": "Left Calf Tightness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "NYK",
+    "tip": "8:00 PM",
+    "tip_sort": "11222000"
+   },
+   "doc_id": "nba-nyk-og-anunoby"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "IND",
+    "home": "NYK",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "10 min \u00b7 4.9 pts a game = 4% of NYK's points"
+    },
+    "player": "Jordan Clarkson",
+    "reason": "Right Plantar Fasciitis",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "NYK",
+    "tip": "8:00 PM",
+    "tip_sort": "11222000"
+   },
+   "doc_id": "nba-nyk-jordan-clarkson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "IND",
+    "home": "NYK",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "33 min \u00b7 21.3 pts a game = 19% of NYK's points"
+    },
+    "player": "Karl-Anthony Towns",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Questionable",
+    "team": "NYK",
+    "tip": "8:00 PM",
+    "tip_sort": "11222000"
+   },
+   "doc_id": "nba-nyk-karl-anthony-towns"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "BOS",
     "home": "GSW",
     "impact": {
@@ -1118,6 +1248,6 @@
    "doc_id": "nba-gsw-brandon-williams"
   }
  ],
- "generated_at": "2026-11-22T11:08:18Z",
- "source": "NBA official injury report (Injury-Report_2026-11-22_06_00AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-22T18:28:44Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-22_01_15PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
