@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-22T21:45:29.144364Z",
+ "generated_at": "2026-11-22T22:56:06.714525Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -143,8 +143,8 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-11-22T21:16Z",
-    "injury": "Undisclosed",
+    "espn_updated": "2026-11-22T21:49Z",
+    "injury": "Concussion",
     "name": "Jalen Coker",
     "pos": "WR",
     "return_date": "2026-11-30",
@@ -276,7 +276,7 @@
   ],
   "GB": [
    {
-    "espn_updated": "2026-11-22T00:36Z",
+    "espn_updated": "2026-11-22T21:42Z",
     "injury": "Shin",
     "name": "Zaire Franklin",
     "pos": "LB",
@@ -286,7 +286,7 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-11-17T12:21Z",
+    "espn_updated": "2026-11-22T21:43Z",
     "injury": "Ankle",
     "name": "Sean Rhyan",
     "pos": "G",
@@ -296,7 +296,7 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-11-22T14:36Z",
+    "espn_updated": "2026-11-22T21:54Z",
     "injury": "Knee - ACL",
     "name": "Micah Parsons",
     "pos": "DE",
@@ -306,7 +306,7 @@
     "status": "Out"
    },
    {
-    "espn_updated": "2026-11-22T00:37Z",
+    "espn_updated": "2026-11-22T21:41Z",
     "injury": "Ribs",
     "name": "Brandon Cisse",
     "pos": "CB",
@@ -400,6 +400,16 @@
     "share_basis": "this season",
     "snap_share": 0.91,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-11-22T22:13Z",
+    "injury": "Chest",
+    "name": "Jarrian Jones",
+    "pos": "CB",
+    "return_date": "2026-11-22",
+    "share_basis": "this season",
+    "snap_share": 0.71,
+    "status": "Questionable"
    }
   ],
   "KC": [
@@ -698,7 +708,18 @@
     "status": "Questionable"
    }
   ],
-  "NYG": [],
+  "NYG": [
+   {
+    "espn_updated": "2026-11-22T21:51Z",
+    "injury": "Ankle",
+    "name": "Greg Newsome II",
+    "pos": "CB",
+    "return_date": "2026-11-22",
+    "share_basis": "this season",
+    "snap_share": 0.93,
+    "status": "Questionable"
+   }
+  ],
   "NYJ": [],
   "PHI": [
    {
@@ -896,7 +917,7 @@
     "injury": "Knee",
     "name": "Dan Moore Jr.",
     "pos": "OT",
-    "return_date": "2026-11-22",
+    "return_date": "2026-11-29",
     "share_basis": "this season",
     "snap_share": 1.0,
     "status": "Questionable"
@@ -906,7 +927,7 @@
     "injury": "Neck",
     "name": "Cor'Dale Flott",
     "pos": "CB",
-    "return_date": "2026-11-22",
+    "return_date": "2026-11-29",
     "share_basis": "this season",
     "snap_share": 0.93,
     "status": "Questionable"
