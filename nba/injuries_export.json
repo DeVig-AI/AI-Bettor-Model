@@ -3,21 +3,20 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 21 \u00b7 6:00 PM ET report",
+    "as_of": "Nov 21 \u00b7 10:00 PM ET report",
     "date": "2026-11-21",
     "not_submitted": {
      "BOS@GSW": [
       "BOS"
      ],
      "DAL@UTA": [
-      "DAL",
-      "UTA"
+      "DAL"
      ],
      "IND@NYK": [
       "NYK"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-21_06_00PM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-21_10_00PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -275,28 +274,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "18 min \u00b7 7.1 pts a game = 6% of DAL's points"
-    },
-    "player": "Walter Clayton Jr.",
-    "reason": "Left Patellar Tendinitis",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "DAL",
-    "tip": "8:00 PM",
-    "tip_sort": "11212000"
-   },
-   "doc_id": "nba-dal-walter-clayton"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAC",
-    "home": "DAL",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "12 min \u00b7 5.2 pts a game = 5% of DAL's points"
     },
     "player": "Sergio de Larrea",
@@ -365,12 +342,12 @@
      "level": "big",
      "why": "31 min \u00b7 14.0 pts a game = 12% of DAL's points"
     },
-    "note": "Downgraded from questionable",
+    "note": "Downgraded from doubtful",
     "player": "P.J. Washington",
     "reason": "Illness",
     "sport": "NBA",
     "starter": true,
-    "status": "Doubtful",
+    "status": "Out",
     "team": "DAL",
     "tip": "8:00 PM",
     "tip_sort": "11212000"
@@ -578,28 +555,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "MEM",
-    "home": "MIN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "3 min \u00b7 0.3 pts a game = 0% of MIN's points"
-    },
-    "player": "Isaiah Evans",
-    "reason": "Illness",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "8:00 PM",
-    "tip_sort": "11212000"
-   },
-   "doc_id": "nba-min-isaiah-evans"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "NOP",
     "home": "SAS",
     "impact": {
@@ -706,6 +661,28 @@
     "tip_sort": "11212000"
    },
    "doc_id": "nba-nop-trendon-watford"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NOP",
+    "home": "SAS",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "32 min \u00b7 21.7 pts a game = 19% of NOP's points"
+    },
+    "player": "Zion Williamson",
+    "reason": "Left Thigh Contusion",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "NOP",
+    "tip": "8:00 PM",
+    "tip_sort": "11212000"
+   },
+   "doc_id": "nba-nop-zion-williamson"
   },
   {
    "collection": "injuries",
@@ -840,28 +817,6 @@
     "tip_sort": "11212200"
    },
    "doc_id": "nba-bos-derrick-white"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOS",
-    "home": "SAC",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "25 min \u00b7 9.5 pts a game = 9% of SAC's points"
-    },
-    "player": "Precious Achiuwa",
-    "reason": "Left Lower Leg Contusion",
-    "sport": "NBA",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SAC",
-    "tip": "10:00 PM",
-    "tip_sort": "11212200"
-   },
-   "doc_id": "nba-sac-precious-achiuwa"
   },
   {
    "collection": "injuries",
@@ -1394,6 +1349,72 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "DAL",
+    "home": "UTA",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "26 min \u00b7 16.2 pts a game = 15% of UTA's points"
+    },
+    "player": "Jaren Jackson Jr.",
+    "reason": "Right MCL Tear",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "UTA",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-uta-jaren-jackson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DAL",
+    "home": "UTA",
+    "impact": {
+     "bars": 3,
+     "label": "Big",
+     "level": "big",
+     "why": "31 min \u00b7 18.0 pts a game = 17% of UTA's points"
+    },
+    "player": "Lauri Markkanen",
+    "reason": "Right Hand Fracture",
+    "sport": "NBA",
+    "starter": true,
+    "status": "Out",
+    "team": "UTA",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-uta-lauri-markkanen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "DAL",
+    "home": "UTA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in his team's rotation stats"
+    },
+    "player": "Jusuf Nurkic",
+    "reason": "Right 2nd Plantar Plate Tear",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Out",
+    "team": "UTA",
+    "tip": "Sun 7:00 PM",
+    "tip_sort": "11221900"
+   },
+   "doc_id": "nba-uta-jusuf-nurkic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "DEN",
     "home": "CHI",
     "impact": {
@@ -1667,7 +1688,7 @@
      "why": "Not in his team's rotation stats"
     },
     "player": "Jamir Watkins",
-    "reason": "Left ACL Repair",
+    "reason": "Left ACL Repair/Surgery",
     "sport": "NBA",
     "starter": false,
     "status": "Out",
@@ -1898,6 +1919,6 @@
    "doc_id": "nba-gsw-brandon-williams"
   }
  ],
- "generated_at": "2026-11-21T23:06:06Z",
- "source": "NBA official injury report (Injury-Report_2026-11-21_06_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-22T03:03:28Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-21_10_00PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }
