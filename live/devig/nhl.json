@@ -1,82 +1,52 @@
 {
  "check": {
-  "accuracy": 0.575,
+  "accuracy": 0.576,
   "bands": [
    {
     "hi": 0.4,
     "lo": 0,
-    "n": 105,
+    "n": 106,
     "said": 0.375,
-    "won": 0.324
+    "won": 0.321
    },
    {
     "hi": 0.5,
     "lo": 0.4,
-    "n": 953,
-    "said": 0.464,
-    "won": 0.441
+    "n": 959,
+    "said": 0.465,
+    "won": 0.439
    },
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 2211,
+    "n": 2208,
     "said": 0.549,
     "won": 0.532
    },
    {
     "hi": 0.7,
     "lo": 0.6,
-    "n": 974,
-    "said": 0.635,
-    "won": 0.659
+    "n": 971,
+    "said": 0.636,
+    "won": 0.661
    },
    {
     "hi": 1,
     "lo": 0.7,
     "n": 65,
-    "said": 0.721,
+    "said": 0.722,
     "won": 0.877
    }
   ],
-  "games": 4308,
-  "home_rate_log_loss": 0.6898,
+  "games": 4309,
+  "home_rate_log_loss": 0.6899,
   "log_loss": 0.6721,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
- "data_through": "2026-11-21",
- "finals_used": 5964,
+ "data_through": "2026-11-22",
+ "finals_used": 5965,
  "games": [
-  {
-   "away": "CAR",
-   "away_name": "Carolina Hurricanes",
-   "date": "2026-11-22",
-   "game_id": "2026020373",
-   "home": "NYR",
-   "home_name": "New York Rangers",
-   "home_wp": 0.4581,
-   "kickoff": "2026-11-22T17:30:00Z",
-   "parts": {
-    "b2b": -1,
-    "elo": -0.4802,
-    "sh": -0.1576
-   }
-  },
-  {
-   "away": "BUF",
-   "away_name": "Buffalo Sabres",
-   "date": "2026-11-22",
-   "game_id": "2026020374",
-   "home": "TBL",
-   "home_name": "Tampa Bay Lightning",
-   "home_wp": 0.6336,
-   "kickoff": "2026-11-22T22:00:00Z",
-   "parts": {
-    "b2b": -1,
-    "elo": 0.6264,
-    "sh": -0.0192
-   }
-  },
   {
    "away": "EDM",
    "away_name": "Edmonton Oilers",
@@ -114,12 +84,12 @@
    "game_id": "2026020377",
    "home": "VAN",
    "home_name": "Vancouver Canucks",
-   "home_wp": 0.5377,
+   "home_wp": 0.5385,
    "kickoff": "2026-11-23T01:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.2122,
-    "sh": -0.0059
+    "sh": 0.0
    }
   },
   {
@@ -219,12 +189,12 @@
    "game_id": "2026020384",
    "home": "SJS",
    "home_name": "San Jose Sharks",
-   "home_wp": 0.4023,
+   "home_wp": 0.4015,
    "kickoff": "2026-11-24T03:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": -0.7404,
-    "sh": 0.0059
+    "sh": 0.0
    }
   },
   {
@@ -243,7 +213,7 @@
    }
   }
  ],
- "generated_at": "2026-11-22T16:24:24Z",
+ "generated_at": "2026-11-22T22:32:38Z",
  "model": {
   "elo": {
    "carry": 0.85,
