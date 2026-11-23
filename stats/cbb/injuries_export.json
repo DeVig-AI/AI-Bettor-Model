@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 23 \u00b7 3:56 AM ET",
+    "as_of": "Mon Nov 23 \u00b7 4:15 PM ET",
     "date": "2026-11-23",
     "sport": "CBB"
    },
@@ -59,6 +59,23 @@
     "tip_sort": "1124-2100"
    },
    "doc_id": "cbb-bois-ty-rodgers"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BC",
+    "home": "UCF",
+    "impact": null,
+    "player": "Money Williams",
+    "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 14",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "BC",
+    "tip": "Thu 1:30 PM",
+    "tip_sort": "1126-1330"
+   },
+   "doc_id": "cbb-bc-money-williams"
   },
   {
    "collection": "injuries",
@@ -185,11 +202,12 @@
     "away": "MILW",
     "home": "FLA",
     "impact": null,
+    "note": "Downgraded from questionable",
     "player": "Boogie Fland",
     "reason": "G \u00b7 Shoulder \u00b7 reported Nov 18",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Out",
     "team": "FLA",
     "tip": "Tue 7:00 PM",
     "tip_sort": "1124-1900"
@@ -212,6 +230,23 @@
     "tip_sort": "1124-2100"
    },
    "doc_id": "cbb-fsu-aj-swinton"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GTWN",
+    "home": "TEX",
+    "impact": null,
+    "player": "Vyctorius Miller",
+    "reason": "G \u00b7 Hand \u00b7 reported Nov 5",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Questionable",
+    "team": "GTWN",
+    "tip": "Thu 2:30 PM",
+    "tip_sort": "1126-1430"
+   },
+   "doc_id": "cbb-gtwn-vyctorius-miller"
   },
   {
    "collection": "injuries",
@@ -253,11 +288,12 @@
     "away": "WIN",
     "home": "ILL",
     "impact": null,
+    "note": "Upgraded from questionable",
     "player": "Zvonimir Ivisic",
     "reason": "F \u00b7 Undisclosed \u00b7 reported Nov 19",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Probable",
     "team": "ILL",
     "tip": "Mon 8:00 PM",
     "tip_sort": "1123-2000"
@@ -270,11 +306,12 @@
     "away": "WIN",
     "home": "ILL",
     "impact": null,
+    "note": "Upgraded from questionable",
     "player": "Quentin Coleman",
     "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 19",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Probable",
     "team": "ILL",
     "tip": "Mon 8:00 PM",
     "tip_sort": "1123-2000"
@@ -287,11 +324,12 @@
     "away": "WIN",
     "home": "ILL",
     "impact": null,
+    "note": "Upgraded from questionable",
     "player": "Lincoln Williams",
     "reason": "G \u00b7 Undisclosed \u00b7 reported Nov 19",
     "sport": "CBB",
     "starter": false,
-    "status": "Questionable",
+    "status": "Probable",
     "team": "ILL",
     "tip": "Mon 8:00 PM",
     "tip_sort": "1123-2000"
@@ -1100,6 +1138,40 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "GTWN",
+    "home": "TEX",
+    "impact": null,
+    "player": "John Clark",
+    "reason": "F \u00b7 Foot \u00b7 reported Nov 21",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "TEX",
+    "tip": "Thu 2:30 PM",
+    "tip_sort": "1126-1430"
+   },
+   "doc_id": "cbb-tex-john-clark"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GTWN",
+    "home": "TEX",
+    "impact": null,
+    "player": "Mikey Lewis",
+    "reason": "G \u00b7 Foot \u00b7 reported Sep 29",
+    "sport": "CBB",
+    "starter": false,
+    "status": "Out",
+    "team": "TEX",
+    "tip": "Thu 2:30 PM",
+    "tip_sort": "1126-1430"
+   },
+   "doc_id": "cbb-tex-mikey-lewis"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "TA&M",
     "home": "XAV",
     "impact": null,
@@ -1337,6 +1409,6 @@
    "doc_id": "cbb-xav-braden-appelhans"
   }
  ],
- "generated_at": "2026-11-23T08:56:11Z",
+ "generated_at": "2026-11-23T21:15:31Z",
  "source": "Covers.com injury report (tools/injuries_export.py)"
 }

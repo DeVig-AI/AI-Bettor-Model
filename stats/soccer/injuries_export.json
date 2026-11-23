@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Mon Nov 23 \u00b7 3:56 AM ET",
+    "as_of": "Mon Nov 23 \u00b7 4:15 PM ET",
     "date": "2026-11-23",
     "sport": "EPL"
    },
@@ -21,10 +21,10 @@
      "why": "Started 11 of ARS's 10 league matches"
     },
     "player": "David Raya Mart\u00edn",
-    "reason": "Shoulder injury - 75% chance of playing",
+    "reason": "Shoulder injury - 50% chance of playing",
     "sport": "EPL",
     "starter": true,
-    "status": "75% to play",
+    "status": "50% to play",
     "team": "ARS",
     "tip": "Sun 11:30 AM",
     "tip_sort": "1129-1130"
@@ -87,10 +87,10 @@
      "why": "Started 7 of AVL's 10 league matches"
     },
     "player": "Matty Cash",
-    "reason": "Concussion - Expected back 28 Nov",
+    "reason": "Concussion - 75% chance of playing",
     "sport": "EPL",
     "starter": true,
-    "status": "Out",
+    "status": "75% to play",
     "team": "AVL",
     "tip": "Sat 12:30 PM",
     "tip_sort": "1128-1230"
@@ -348,28 +348,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Started 0 of BRE's 10 league matches \u00b7 a goal or assist on 1 of their 16 goals (6%)"
-    },
-    "player": "F\u00e1bio Carvalho",
-    "reason": "Knock - 75% chance of playing",
-    "sport": "EPL",
-    "starter": false,
-    "status": "75% to play",
-    "team": "BRE",
-    "tip": "Sat 10:00 AM",
-    "tip_sort": "1128-1000"
-   },
-   "doc_id": "epl-bre-fabio-carvalho"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BRE",
-    "home": "MAN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Started 0 of BRE's 10 league matches"
     },
     "player": "Josh Dasilva",
@@ -536,6 +514,28 @@
     "tip_sort": "1129-0905"
    },
    "doc_id": "epl-bha-evan-ferguson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NEW",
+    "home": "BHA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 3 of BHA's 10 league matches \u00b7 a goal or assist on 2 of their 26 goals (8%)"
+    },
+    "player": "Malick Yalcouy\u00e9",
+    "reason": "Unspecified injury - Unknown return date",
+    "sport": "EPL",
+    "starter": false,
+    "status": "Out",
+    "team": "BHA",
+    "tip": "Sun 9:05 AM",
+    "tip_sort": "1129-0905"
+   },
+   "doc_id": "epl-bha-malick-yalcouye"
   },
   {
    "collection": "injuries",
@@ -980,6 +980,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "LIV",
+    "home": "EVE",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 11 of EVE's 10 league matches \u00b7 a goal or assist on 2 of their 12 goals (17%)"
+    },
+    "player": "James Tarkowski",
+    "reason": "Suspended until 13 Dec",
+    "sport": "EPL",
+    "starter": true,
+    "status": "Suspended",
+    "team": "EVE",
+    "tip": "Sun 7:00 AM",
+    "tip_sort": "1129-0700"
+   },
+   "doc_id": "epl-eve-james-tarkowski"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "BOU",
     "home": "FUL",
     "impact": {
@@ -1033,10 +1055,10 @@
      "why": "Started 4 of HUL's 10 league matches \u00b7 a goal or assist on 2 of their 11 goals (18%)"
     },
     "player": "Tim Iroegbunam",
-    "reason": "Hamstring injury - 75% chance of playing",
+    "reason": "Hamstring injury - Unknown return date",
     "sport": "EPL",
     "starter": false,
-    "status": "75% to play",
+    "status": "Out",
     "team": "HUL",
     "tip": "Sun 9:05 AM",
     "tip_sort": "1129-0905"
@@ -1108,6 +1130,28 @@
     "tip_sort": "1129-0905"
    },
    "doc_id": "epl-hul-darko-gyabi"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "HUL",
+    "home": "CRY",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 1 of HUL's 10 league matches \u00b7 a goal or assist on 1 of their 11 goals (9%)"
+    },
+    "player": "Joe Gelhardt",
+    "reason": "Thigh injury - Unknown return date",
+    "sport": "EPL",
+    "starter": false,
+    "status": "Out",
+    "team": "HUL",
+    "tip": "Sun 9:05 AM",
+    "tip_sort": "1129-0905"
+   },
+   "doc_id": "epl-hul-joe-gelhardt"
   },
   {
    "collection": "injuries",
@@ -1350,28 +1394,6 @@
     "tip_sort": "1129-0700"
    },
    "doc_id": "epl-liv-hugo-ekitike"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MNC",
-    "home": "ARS",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Started 5 of MNC's 10 league matches"
-    },
-    "player": "Matheus Nunes",
-    "reason": "Unspecified injury - 50% chance of playing",
-    "sport": "EPL",
-    "starter": false,
-    "status": "50% to play",
-    "team": "MNC",
-    "tip": "Sun 11:30 AM",
-    "tip_sort": "1129-1130"
-   },
-   "doc_id": "epl-mnc-matheus-nunes"
   },
   {
    "collection": "injuries",
@@ -1924,6 +1946,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-23T08:56:06Z",
+ "generated_at": "2026-11-23T21:15:27Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
