@@ -1,28 +1,91 @@
 {
- "generated_at": "2026-11-22T22:32:42Z",
+ "generated_at": "2026-11-23T03:47:43Z",
  "slot": "SOCCER.ml",
  "champion": "devigsoccer",
  "model": "soccer-v1",
  "rule": "CHAMPION_CHALLENGER_V4_PREREG.md",
  "note": "Locked at the last hourly run before kickoff; 90-minute result; log loss of the chance given to what happened (lower is better). New, not proven: nothing is bet.",
  "devig": {
-  "games": 90,
-  "log_loss": 0.9204,
-  "picked_right": 0.6
+  "games": 93,
+  "log_loss": 0.9373,
+  "picked_right": 0.5914
  },
  "shared": {
   "devig": {
-   "games": 90,
-   "log_loss": 0.9204,
-   "picked_right": 0.6
+   "games": 93,
+   "log_loss": 0.9373,
+   "picked_right": 0.5914
   },
   "kalshi": {
-   "games": 90,
-   "log_loss": 0.8979,
-   "picked_right": 0.5778
+   "games": 93,
+   "log_loss": 0.9123,
+   "picked_right": 0.5699
   }
  },
  "recent": [
+  {
+   "game_id": "401882803",
+   "league": "LALIGA",
+   "kickoff": "2026-11-22T20:00Z",
+   "home_name": "Getafe",
+   "away_name": "Atl\u00e9tico Madrid",
+   "result": [
+    0,
+    3
+   ],
+   "model": [
+    0.2056,
+    0.3025,
+    0.4919
+   ],
+   "kalshi": [
+    0.1256,
+    0.2362,
+    0.6382
+   ]
+  },
+  {
+   "game_id": "401876400",
+   "league": "LIGUE1",
+   "kickoff": "2026-11-22T19:45Z",
+   "home_name": "Marseille",
+   "away_name": "Le Mans",
+   "result": [
+    2,
+    3
+   ],
+   "model": [
+    0.699,
+    0.1755,
+    0.1255
+   ],
+   "kalshi": [
+    0.6683,
+    0.196,
+    0.1357
+   ]
+  },
+  {
+   "game_id": "401875001",
+   "league": "SERIEA",
+   "kickoff": "2026-11-22T19:45Z",
+   "home_name": "Atalanta",
+   "away_name": "Internazionale",
+   "result": [
+    4,
+    4
+   ],
+   "model": [
+    0.2203,
+    0.2131,
+    0.5666
+   ],
+   "kalshi": [
+    0.1642,
+    0.204,
+    0.6318
+   ]
+  },
   {
    "game_id": "401882801",
    "league": "LALIGA",
@@ -378,69 +441,6 @@
     0.685,
     0.19,
     0.125
-   ]
-  },
-  {
-   "game_id": "401876396",
-   "league": "LIGUE1",
-   "kickoff": "2026-11-21T19:45Z",
-   "home_name": "Strasbourg",
-   "away_name": "Brest",
-   "result": [
-    0,
-    1
-   ],
-   "model": [
-    0.4639,
-    0.2335,
-    0.3026
-   ],
-   "kalshi": [
-    0.4372,
-    0.2663,
-    0.2965
-   ]
-  },
-  {
-   "game_id": "401875067",
-   "league": "SERIEA",
-   "kickoff": "2026-11-21T19:45Z",
-   "home_name": "Napoli",
-   "away_name": "Torino",
-   "result": [
-    1,
-    0
-   ],
-   "model": [
-    0.6226,
-    0.2199,
-    0.1575
-   ],
-   "kalshi": [
-    0.6418,
-    0.2139,
-    0.1443
-   ]
-  },
-  {
-   "game_id": "401884729",
-   "league": "BUND",
-   "kickoff": "2026-11-21T17:30Z",
-   "home_name": "Schalke 04",
-   "away_name": "VfB Stuttgart",
-   "result": [
-    0,
-    0
-   ],
-   "model": [
-    0.2193,
-    0.2342,
-    0.5465
-   ],
-   "kalshi": [
-    0.2362,
-    0.2362,
-    0.5276
    ]
   }
  ]
