@@ -1,51 +1,51 @@
 {
  "check": {
-  "accuracy": 0.577,
+  "accuracy": 0.576,
   "bands": [
    {
     "hi": 0.4,
     "lo": 0,
     "n": 106,
-    "said": 0.375,
+    "said": 0.374,
     "won": 0.321
    },
    {
     "hi": 0.5,
     "lo": 0.4,
-    "n": 959,
-    "said": 0.465,
-    "won": 0.439
+    "n": 962,
+    "said": 0.464,
+    "won": 0.44
    },
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 2209,
+    "n": 2200,
     "said": 0.549,
     "won": 0.532
    },
    {
     "hi": 0.7,
     "lo": 0.6,
-    "n": 973,
-    "said": 0.636,
-    "won": 0.661
+    "n": 977,
+    "said": 0.635,
+    "won": 0.659
    },
    {
     "hi": 1,
     "lo": 0.7,
-    "n": 65,
-    "said": 0.722,
-    "won": 0.877
+    "n": 68,
+    "said": 0.721,
+    "won": 0.882
    }
   ],
-  "games": 4312,
-  "home_rate_log_loss": 0.6898,
+  "games": 4313,
+  "home_rate_log_loss": 0.6899,
   "log_loss": 0.6721,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
  "data_through": "2026-11-22",
- "finals_used": 5968,
+ "finals_used": 5969,
  "games": [
   {
    "away": "CBJ",
@@ -144,12 +144,12 @@
    "game_id": "2026020384",
    "home": "SJS",
    "home_name": "San Jose Sharks",
-   "home_wp": 0.4015,
+   "home_wp": 0.4024,
    "kickoff": "2026-11-24T03:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": -0.7404,
-    "sh": 0.0
+    "sh": 0.0067
    }
   },
   {
@@ -264,12 +264,12 @@
    "game_id": "2026020392",
    "home": "WSH",
    "home_name": "Washington Capitals",
-   "home_wp": 0.5689,
+   "home_wp": 0.5681,
    "kickoff": "2026-11-26T00:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.4603,
-    "sh": -0.04
+    "sh": -0.0461
    }
   },
   {
@@ -294,11 +294,11 @@
    "game_id": "2026020394",
    "home": "DET",
    "home_name": "Detroit Red Wings",
-   "home_wp": 0.6206,
+   "home_wp": 0.6254,
    "kickoff": "2026-11-26T00:30:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.7935,
+    "elo": 0.8287,
     "sh": 0.0
    }
   },
@@ -324,12 +324,12 @@
    "game_id": "2026020396",
    "home": "MIN",
    "home_name": "Minnesota Wild",
-   "home_wp": 0.6027,
+   "home_wp": 0.6018,
    "kickoff": "2026-11-26T01:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.7213,
-    "sh": -0.0636
+    "sh": -0.0702
    }
   },
   {
@@ -339,12 +339,12 @@
    "game_id": "2026020397",
    "home": "COL",
    "home_name": "Colorado Avalanche",
-   "home_wp": 0.585,
+   "home_wp": 0.5867,
    "kickoff": "2026-11-26T02:30:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.5434,
-    "sh": -0.0065
+    "sh": 0.0067
    }
   },
   {
@@ -354,11 +354,11 @@
    "game_id": "2026020399",
    "home": "SEA",
    "home_name": "Seattle Kraken",
-   "home_wp": 0.6048,
+   "home_wp": 0.5999,
    "kickoff": "2026-11-26T02:40:00Z",
    "parts": {
     "b2b": 0,
-    "elo": 0.6792,
+    "elo": 0.644,
     "sh": 0.0
    }
   },
@@ -378,7 +378,7 @@
    }
   }
  ],
- "generated_at": "2026-11-23T03:47:38Z",
+ "generated_at": "2026-11-23T14:55:09Z",
  "model": {
   "elo": {
    "carry": 0.85,

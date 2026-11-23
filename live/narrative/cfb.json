@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": false,
- "updated": "2026-11-23T03:48:12+00:00",
+ "updated": "2026-11-23T14:55:35+00:00",
  "live_since": "2026-11-04",
  "tests": [],
  "picks": [
@@ -17,7 +17,7 @@
    "away": "MSU",
    "home_id": "164",
    "away_id": "127",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -39,16 +39,38 @@
    "away": "USC",
    "home_id": "26",
    "away_id": "30",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
    "pick": "USC",
-   "line": -7.0,
+   "line": -6.5,
    "score": 2.5,
    "why_for": [
-    "Line tell: the line rates USC 14.4 points better than results so far",
-    "Fade the line move: USC went from -11.5 to -7"
+    "Line tell: the line rates USC 13.9 points better than results so far",
+    "Fade the line move: USC went from -11.5 to -6.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401858316",
+   "date": "2026-11-28",
+   "start": "2026-11-28T20:30Z",
+   "game": "SMU @ STAN",
+   "home": "STAN",
+   "away": "SMU",
+   "home_id": "24",
+   "away_id": "2567",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "SMU",
+   "line": -7.5,
+   "score": 2.0,
+   "why_for": [
+    "Bounce-back spot after losing by 21",
+    "Fade the line move: SMU went from -10 to -7.5"
    ],
    "why_opp": []
   },
@@ -61,7 +83,7 @@
    "away": "TULN",
    "home_id": "58",
    "away_id": "2655",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "side",
@@ -83,7 +105,7 @@
    "away": "SC",
    "home_id": "228",
    "away_id": "2579",
-   "book": "Draft Kings",
+   "book": "DraftKings",
    "result": null,
    "final": null,
    "type": "total",
@@ -93,6 +115,28 @@
    "why_for": [
     "Pace: their games average 48 points, the total is 40.5",
     "Buy low on the dropping total: 53.5 to 40.5"
+   ],
+   "why_opp": []
+  },
+  {
+   "id": "401856878",
+   "date": "2026-11-28",
+   "start": "2026-11-28T19:00Z",
+   "game": "KSU @ ISU",
+   "home": "ISU",
+   "away": "KSU",
+   "home_id": "66",
+   "away_id": "2306",
+   "book": "DraftKings",
+   "result": null,
+   "final": null,
+   "type": "side",
+   "pick": "ISU",
+   "line": -3.5,
+   "score": 2.0,
+   "why_for": [
+    "Bounce-back spot after losing by 31",
+    "Fade the line move: ISU went from -5.5 to -3.5"
    ],
    "why_opp": []
   },
@@ -717,10 +761,12 @@
    "away_id": "239",
    "note": null,
    "side": {
-    "lean": null,
-    "score": 0.0,
+    "lean": "BAY",
+    "score": 1.0,
     "capped": false,
-    "why_for": [],
+    "why_for": [
+     "Fade the line move: BAY went from +4.5 to +6.5"
+    ],
     "why_opp": []
    },
    "total": {
@@ -860,10 +906,10 @@
    },
    "total": {
     "lean": "OVER",
-    "line": 49.5,
+    "line": 48.5,
     "score": 1.0,
     "why_for": [
-     "Buy low on the dropping total: 52.5 to 49.5"
+     "Buy low on the dropping total: 52.5 to 48.5"
     ],
     "why_opp": []
    }
@@ -880,10 +926,10 @@
    "note": null,
    "side": {
     "lean": "ORE",
-    "score": 1.5,
+    "score": 1.0,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates ORE 6.0 points better than results so far"
+     "Fade the line move: ORE went from -15.5 to -13.5"
     ],
     "why_opp": []
    },
@@ -967,13 +1013,15 @@
    "away_id": "21",
    "note": null,
    "side": {
-    "lean": "WSU",
-    "score": 1.0,
+    "lean": null,
+    "score": 0.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 28"
+     "Fade the line move: SDSU went from -3 to +1.5"
     ],
-    "why_opp": []
+    "why_opp": [
+     "WSU: Bounce-back spot after losing by 28"
+    ]
    },
    "total": {
     "lean": "OVER",
@@ -1032,7 +1080,7 @@
    },
    "total": {
     "lean": null,
-    "line": 76.5,
+    "line": 77.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1133,8 +1181,8 @@
     "score": 2.5,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates USC 14.4 points better than results so far",
-     "Fade the line move: USC went from -11.5 to -7"
+     "Line tell: the line rates USC 13.9 points better than results so far",
+     "Fade the line move: USC went from -11.5 to -6.5"
     ],
     "why_opp": []
    },
@@ -1163,15 +1211,15 @@
     "score": 0.5,
     "capped": false,
     "why_for": [
-     "Line tell: the line rates BYU 6.9 points better than results so far"
+     "Line tell: the line rates BYU 7.9 points better than results so far"
     ],
     "why_opp": [
-     "CIN: Fade the line move: CIN went from +12.5 to +14.5"
+     "CIN: Fade the line move: CIN went from +12.5 to +15.5"
     ]
    },
    "total": {
     "lean": null,
-    "line": 55.5,
+    "line": 56.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1326,7 +1374,7 @@
     "score": 0.5,
     "capped": true,
     "why_for": [
-     "Line tell: the line rates UGA 16.7 points better than results so far",
+     "Line tell: the line rates UGA 15.7 points better than results so far",
      "Never lay 21 or more"
     ],
     "why_opp": [
@@ -1382,10 +1430,11 @@
    "note": null,
    "side": {
     "lean": "SMU",
-    "score": 1.0,
+    "score": 2.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 21"
+     "Bounce-back spot after losing by 21",
+     "Fade the line move: SMU went from -10 to -7.5"
     ],
     "why_opp": []
    },
@@ -1523,10 +1572,11 @@
    "note": null,
    "side": {
     "lean": "ISU",
-    "score": 1.0,
+    "score": 2.0,
     "capped": false,
     "why_for": [
-     "Bounce-back spot after losing by 31"
+     "Bounce-back spot after losing by 31",
+     "Fade the line move: ISU went from -5.5 to -3.5"
     ],
     "why_opp": []
    },
@@ -1582,12 +1632,12 @@
      "Bounce-back spot after losing by 24"
     ],
     "why_opp": [
-     "CCU: Fade the line move: CCU went from +13.5 to +15.5"
+     "CCU: Fade the line move: CCU went from +13.5 to +16.5"
     ]
    },
    "total": {
     "lean": null,
-    "line": 56.5,
+    "line": 55.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1824,7 +1874,7 @@
    },
    "total": {
     "lean": null,
-    "line": 47.5,
+    "line": 48.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -1992,7 +2042,7 @@
    },
    "total": {
     "lean": null,
-    "line": 48.5,
+    "line": 47.5,
     "score": 0.0,
     "why_for": [],
     "why_opp": []
@@ -2043,7 +2093,7 @@
     "score": 1.0,
     "capped": false,
     "why_for": [
-     "Fade the line move: CMU went from -6.5 to -4.5"
+     "Fade the line move: CMU went from -6.5 to -4"
     ],
     "why_opp": []
    },
@@ -2120,10 +2170,9 @@
    "side": {
     "lean": "UTAH",
     "score": 1.5,
-    "capped": true,
+    "capped": false,
     "why_for": [
-     "Line tell: the line rates UTAH 8.7 points better than results so far",
-     "Never lay 21 or more"
+     "Line tell: the line rates UTAH 8.2 points better than results so far"
     ],
     "why_opp": []
    },
@@ -2151,10 +2200,10 @@
     "capped": false,
     "why_for": [
      "Bounce-back spot after losing by 21",
-     "Fade the line move: TA&M went from +2.5 to +11.5"
+     "Fade the line move: TA&M went from +2.5 to +12.5"
     ],
     "why_opp": [
-     "TEX: Line tell: the line rates TEX 7.9 points better than results so far"
+     "TEX: Line tell: the line rates TEX 8.9 points better than results so far"
     ]
    },
    "total": {
@@ -2228,12 +2277,10 @@
    "away_id": "57",
    "note": null,
    "side": {
-    "lean": "FLA",
-    "score": 1.5,
+    "lean": null,
+    "score": 0.0,
     "capped": false,
-    "why_for": [
-     "Line tell: the line rates FLA 5.8 points better than results so far"
-    ],
+    "why_for": [],
     "why_opp": []
    },
    "total": {
@@ -2472,8 +2519,8 @@
     "capped": false,
     "why_for": [
      "Short week: 5 days since its last game",
-     "Line tell: the line rates TTU 5.7 points better than results so far",
-     "Fade the line move: TTU went from -16.5 to -12.5",
+     "Line tell: the line rates TTU 6.7 points better than results so far",
+     "Fade the line move: TTU went from -16.5 to -13.5",
      "TCU: Short week: 5 days since its last game"
     ],
     "why_opp": [
@@ -4107,172 +4154,6 @@
     "score": 1.0,
     "why_for": [
      "Buy low on the dropping total: 60.5 to 55.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401864542",
-   "date": "2026-11-20",
-   "start": "2026-11-21T02:00Z",
-   "game": "UNM @ WYO",
-   "home": "WYO",
-   "away": "UNM",
-   "home_id": "2751",
-   "away_id": "167",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 37.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401858529",
-   "date": "2026-11-20",
-   "start": "2026-11-21T01:00Z",
-   "game": "ORE @ MSU",
-   "home": "MSU",
-   "away": "ORE",
-   "home_id": "127",
-   "away_id": "2483",
-   "note": null,
-   "side": {
-    "lean": "ORE",
-    "score": 0.5,
-    "capped": false,
-    "why_for": [
-     "Line tell: the line rates ORE 11.2 points better than results so far"
-    ],
-    "why_opp": [
-     "MSU: Fade the line move: MSU went from +12.5 to +17.5"
-    ]
-   },
-   "total": {
-    "lean": null,
-    "line": 43.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401864545",
-   "date": "2026-11-20",
-   "start": "2026-11-21T01:00Z",
-   "game": "UTEP @ AFA",
-   "home": "AFA",
-   "away": "UTEP",
-   "home_id": "2005",
-   "away_id": "2638",
-   "note": null,
-   "side": {
-    "lean": "AFA",
-    "score": 2.0,
-    "capped": true,
-    "why_for": [
-     "Line tell: the line rates AFA 6.0 points better than results so far",
-     "Never lay 21 or more",
-     "UTEP: Struggling team (one win or fewer)"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 48.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401858303",
-   "date": "2026-11-20",
-   "start": "2026-11-21T00:30Z",
-   "game": "CLEM @ DUKE",
-   "home": "DUKE",
-   "away": "CLEM",
-   "home_id": "150",
-   "away_id": "228",
-   "note": null,
-   "side": {
-    "lean": "CLEM",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: CLEM went from +8.5 to +11.5"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 41.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 44.5 to 41.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401866468",
-   "date": "2026-11-20",
-   "start": "2026-11-21T00:30Z",
-   "game": "BGSU @ TOL",
-   "home": "TOL",
-   "away": "BGSU",
-   "home_id": "2649",
-   "away_id": "189",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 46.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401856869",
-   "date": "2026-11-20",
-   "start": "2026-11-20T23:00Z",
-   "game": "ISU @ UCF",
-   "home": "UCF",
-   "away": "ISU",
-   "home_id": "2116",
-   "away_id": "66",
-   "note": null,
-   "side": {
-    "lean": "UCF",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Fade the line move: UCF went from -1.5 to +1.5"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 49.5,
-    "score": 1.0,
-    "why_for": [
-     "Buy low on the dropping total: 54.5 to 49.5"
     ],
     "why_opp": []
    }
