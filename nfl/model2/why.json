@@ -2165,29 +2165,29 @@
   "2026_11_IND_HOU": {
    "away": "IND",
    "home": "HOU",
-   "home_wp": 0.6281,
+   "home_wp": 0.6354,
    "injuries": {
-    "d_out": -1.0,
-    "d_q": -1.0,
+    "d_out": -2.0,
+    "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6022,
     "home_field": 0.5484,
-    "who_is_out": 0.6281
+    "who_is_out": 0.6354
    },
    "teams": {
     "away": {
      "rest": 4.0,
-     "s12_def_epa_allowed": -0.002,
+     "s12_def_epa_allowed": 0.005,
      "s12_margin": -6.337,
-     "s12_net_epa": -0.125,
-     "s12_off_epa": -0.126,
+     "s12_net_epa": -0.126,
+     "s12_off_epa": -0.121,
      "s12_win": 0.3,
-     "s6_def_epa_allowed": -0.027,
+     "s6_def_epa_allowed": -0.019,
      "s6_margin": -6.927,
-     "s6_net_epa": -0.148,
-     "s6_off_epa": -0.174,
+     "s6_net_epa": -0.149,
+     "s6_off_epa": -0.168,
      "s6_pa": 26.563,
      "s6_pf": 19.636,
      "s6_win": 0.353
@@ -2197,11 +2197,11 @@
      "s12_def_epa_allowed": -0.049,
      "s12_margin": 3.914,
      "s12_net_epa": 0.077,
-     "s12_off_epa": 0.027,
+     "s12_off_epa": 0.028,
      "s12_win": 0.47,
-     "s6_def_epa_allowed": -0.021,
+     "s6_def_epa_allowed": -0.022,
      "s6_margin": 4.262,
-     "s6_net_epa": 0.072,
+     "s6_net_epa": 0.073,
      "s6_off_epa": 0.051,
      "s6_pa": 24.322,
      "s6_pf": 28.584,
@@ -2633,9 +2633,9 @@
    }
   }
  },
- "generated_at": "2026-11-23T13:38:13Z",
+ "generated_at": "2026-11-24T02:34:31Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
- "max_gap_vs_upcoming": 0.0853,
+ "max_gap_vs_upcoming": 0.0902,
  "model": "NFL_MODEL_2_0",
  "season": 2026,
  "week": 11
