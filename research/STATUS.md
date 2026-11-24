@@ -1,10 +1,10 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-11-23T15:22:08Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-24T02:57:16Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 28 registered, 28 tried, 0 running
+- Candidates: 30 registered, 28 tried, 0 running
 - Ledger attempts (all count in the Holm correction): 28 · across all sports: 33 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
@@ -29,11 +29,13 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `s-0501d21a` Blend of 3: s-f3fafc67 + s-1bba7fb4 + s-aaee4789 | spread | failed · gate_2 | +0.84 | -0.05 | -1.06 | +0.01 [-0.51, +0.54] | 1.000 | 49.2% / -5.0% (2150) |
 | `s-0680b479` Signals (SRS · carry 0.7 · prior 4) + def-comp-epa, inj-qb-out, inj-regulars-out | spread | failed · gate_3 | +0.82 | +0.03 | -0.48 | +0.19 [-0.34, +0.71] | 1.000 | 50.0% / -3.4% (2150) |
 | `s-08811515` Elo · K15 · fixed home edge · 538 margin · revert 0.25 · QB · market-resist 1.5039 · bye 40 · travel 8 · market blend 0.125 | spread | failed · gate_3 | +0.83 | +0.42 | -1.14 | +0.16 [-0.46, +0.77] | 1.000 | 50.1% / -3.1% (2150) |
+| `s-24cb8b67` Elo · K15 · home edge by season · 538 margin · revert 0.40 · QB · market-resist 1.5039 · bye 55 · travel 3 · market blend 0.125 | spread | queued | — | — | — | — | — | — |
 | `s-4ab4a086` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + div-game, off-pass-epa | spread | failed · gate_3 | +0.76 | +0.24 | -0.88 | +0.14 [-0.44, +0.72] | 1.000 | 50.3% / -2.8% (2150) |
 | `s-616db01b` Elo · K8 · home edge by season · 538 margin · revert 0.37 · QB · market-resist 0.75 · bye 40 · travel 8 | spread | failed · gate_3 | +0.47 | +0.71 | -1.12 | +0.15 [-0.55, +0.85] | 1.000 | 50.6% / -2.2% (2150) |
 | `s-72bd1682` Blend of 2: s-b4ff1842 + s-1314e7a1 | spread | failed · gate_2 | +0.71 | -0.10 | -0.35 | +0.13 [-0.41, +0.68] | 1.000 | 50.0% / -3.4% (2150) |
 | `s-82e02baf` Blend of 3: s-3ee4ad88 + s-6f3f2250 + s-0b3ca873 | spread | failed · gate_3 | +0.60 | +0.83 | -1.35 | +0.19 [-0.46, +0.81] | 1.000 | 50.3% / -2.8% (2150) |
 | `s-b07a5742` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + bye-diff, qb-change, travel-diff | spread | failed · gate_3 | +0.83 | +0.18 | -0.75 | +0.17 [-0.34, +0.71] | 1.000 | 49.3% / -4.7% (2150) |
+| `s-c0f9abbb` SRS · carry 0.7 · prior 6 · margin cap 32 | spread | queued | — | — | — | — | — | — |
 | `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | failed · gate_3 | +0.55 | +0.73 | -1.30 | +0.14 [-0.48, +0.76] | 1.000 | 49.7% / -4.0% (2150) |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | failed · gate_3 | +0.62 | +0.00 | -0.83 | +0.01 [-0.63, +0.64] | 1.000 | 49.7% / -4.0% (2150) |
 | `tot-epa` + EPA per play as efficiency | total | failed · gate_1 | -0.68 | -0.32 | -1.33 | -0.78 [-1.57, +0.00] | 1.000 | 48.8% / -5.6% (2453) |
@@ -60,11 +62,13 @@ Verdicts (Inspector General):
 - `s-0501d21a`: Fails the lab: not positive in gate 2 (2020–22: -0.05 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-0680b479`: Fails the lab: not positive in gate 3 (2023–24: -0.48 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-08811515`: Fails the lab: not positive in gate 3 (2023–24: -1.14 pts); pooled +0.16 pts, Holm-adjusted p = 1.000 over 28 attempts.
+- `s-24cb8b67`: Registered; runs in the next nightly lab run.
 - `s-4ab4a086`: Fails the lab: not positive in gate 3 (2023–24: -0.88 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-616db01b`: Fails the lab: not positive in gate 3 (2023–24: -1.12 pts); pooled +0.15 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-72bd1682`: Fails the lab: not positive in gate 2 (2020–22: -0.10 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-82e02baf`: Fails the lab: not positive in gate 3 (2023–24: -1.35 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-b07a5742`: Fails the lab: not positive in gate 3 (2023–24: -0.75 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 28 attempts.
+- `s-c0f9abbb`: Registered; runs in the next nightly lab run.
 - `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 28 attempts.
 - `tot-epa`: Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 28 attempts.
@@ -74,10 +78,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 985** 2026-11-24T02:56:41Z: 2,000 models scored → 487 consistent → 13 strong (t ≥ 2.5) → 2 sent to confirmation
 - **Search round 984** 2026-11-23T15:21:44Z: 2,032 models scored → 514 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 983** 2026-11-23T04:04:17Z: 1,999 models scored → 461 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 982** 2026-11-22T22:49:44Z: 1,999 models scored → 486 consistent → 17 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 981** 2026-11-22T17:26:47Z: 1,999 models scored → 499 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 980** 2026-11-22T08:49:48Z: 2,000 models scored → 471 consistent → 21 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).

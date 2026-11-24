@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-23T16:04:18Z",
+ "updated_at": "2026-11-24T02:57:16Z",
  "scope": "NFL",
  "effect_name": "Edge beyond the closing line",
  "effect_unit": "pts",
@@ -1629,6 +1629,61 @@
    "updated_at": "2026-11-16T23:24:20Z"
   },
   {
+   "id": "s-24cb8b67",
+   "name": "Elo · K15 · home edge by season · 538 margin · revert 0.40 · QB · market-resist 1.5039 · bye 55 · travel 3 · market blend 0.125",
+   "market": "spread",
+   "family": "Elo family · search",
+   "reason": "Found by search round 985: on 2006–2016 it beat the line by +1.15 pts a game (t = 3.49), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "queued",
+   "fail_reason": "",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2020–22",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2023–24",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    }
+   ],
+   "pooled": null,
+   "attempts": 28,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": null,
+   "rule_split": [],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Registered; runs in the next nightly lab run.",
+   "graded_at": null,
+   "run_number": null,
+   "run_url": null,
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/candidates/s-24cb8b67.yaml",
+   "updated_at": null
+  },
+  {
    "id": "s-4ab4a086",
    "name": "Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + div-game, off-pass-epa",
    "market": "spread",
@@ -2097,6 +2152,61 @@
    "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/40279939942",
    "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/results/s-b07a5742.json",
    "updated_at": "2026-10-26T06:48:16Z"
+  },
+  {
+   "id": "s-c0f9abbb",
+   "name": "SRS · carry 0.7 · prior 6 · margin cap 32",
+   "market": "spread",
+   "family": "SRS · search",
+   "reason": "Found by search round 985: on 2006–2016 it beat the line by +1.14 pts a game (t = 3.52), positive in all three search periods. Now confirmed on 2017–2024, which the search never saw.",
+   "state": "queued",
+   "fail_reason": "",
+   "gate_now": null,
+   "started_at": null,
+   "eta_at": null,
+   "gates": [
+    {
+     "name": "2017–19",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2020–22",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    },
+    {
+     "name": "2023–24",
+     "effect": null,
+     "ci": null,
+     "games": null,
+     "passed": null
+    }
+   ],
+   "pooled": null,
+   "attempts": 28,
+   "p_bar": 0.05,
+   "fade_ratio": null,
+   "fade_needed": 0.5,
+   "kalshi": null,
+   "rule_split": [],
+   "exam": {
+    "state": "not_taken",
+    "effect": null,
+    "ci": null,
+    "taken_at": null,
+    "note": ""
+   },
+   "verdict": "Registered; runs in the next nightly lab run.",
+   "graded_at": null,
+   "run_number": null,
+   "run_url": null,
+   "file_url": "https://github.com/DeVig-AI/AI-Bettor-Model/blob/main/research/candidates/s-c0f9abbb.yaml",
+   "updated_at": null
   },
   {
    "id": "s-e27628a8",
@@ -3605,6 +3715,35 @@
  "runs": [
   {
    "kind": "search",
+   "name": "Search round 985",
+   "started_at": "2026-11-24T02:56:41Z",
+   "finished_at": "2026-11-24T02:56:41Z",
+   "duration_s": null,
+   "run_number": null,
+   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/45313181341",
+   "summary": "2,000 models scored → 487 consistent → 13 strong (t ≥ 2.5) → 2 sent to confirmation",
+   "funnel": [
+    {
+     "label": "models scored",
+     "count": 2000
+    },
+    {
+     "label": "consistent",
+     "count": 487
+    },
+    {
+     "label": "strong (t ≥ 2.5)",
+     "count": 13
+    },
+    {
+     "label": "sent to confirmation",
+     "count": 2
+    }
+   ],
+   "steps": []
+  },
+  {
+   "kind": "search",
    "name": "Search round 984",
    "started_at": "2026-11-23T15:21:44Z",
    "finished_at": "2026-11-23T15:21:44Z",
@@ -3863,40 +4002,11 @@
     }
    ],
    "steps": []
-  },
-  {
-   "kind": "search",
-   "name": "Search round 975",
-   "started_at": "2026-11-20T21:35:32Z",
-   "finished_at": "2026-11-20T21:35:32Z",
-   "duration_s": null,
-   "run_number": null,
-   "run_url": "https://github.com/DeVig-AI/AI-Bettor-Model/actions/runs/44820874122",
-   "summary": "1,999 models scored → 489 consistent → 18 strong (t ≥ 2.5) → 0 sent to confirmation",
-   "funnel": [
-    {
-     "label": "models scored",
-     "count": 1999
-    },
-    {
-     "label": "consistent",
-     "count": 489
-    },
-    {
-     "label": "strong (t ≥ 2.5)",
-     "count": 18
-    },
-    {
-     "label": "sent to confirmation",
-     "count": 0
-    }
-   ],
-   "steps": []
   }
  ],
  "by_sport": {
   "CFB": {
-   "updated_at": "2026-11-23T16:09:55Z",
+   "updated_at": "2026-11-24T03:03:12Z",
    "scope": "CFB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -5878,7 +5988,7 @@
    ]
   },
   "NBA": {
-   "updated_at": "2026-11-23T16:10:45Z",
+   "updated_at": "2026-11-24T03:04:04Z",
    "scope": "NBA",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -6571,7 +6681,7 @@
    ]
   },
   "NHL": {
-   "updated_at": "2026-11-23T16:11:08Z",
+   "updated_at": "2026-11-24T03:04:25Z",
    "scope": "NHL",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7117,7 +7227,7 @@
    ]
   },
   "MLB": {
-   "updated_at": "2026-11-23T16:11:28Z",
+   "updated_at": "2026-11-24T03:04:44Z",
    "scope": "MLB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7520,7 +7630,7 @@
    ]
   },
   "CBB": {
-   "updated_at": "2026-11-23T16:11:28Z",
+   "updated_at": "2026-11-24T03:04:44Z",
    "scope": "CBB",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
@@ -7847,7 +7957,7 @@
    ]
   },
   "SOCCER": {
-   "updated_at": "2026-11-23T16:04:15Z",
+   "updated_at": "2026-11-24T03:04:46Z",
    "scope": "SOCCER",
    "effect_name": "Edge beyond the closing line",
    "effect_unit": "pts",
