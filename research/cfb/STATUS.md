@@ -1,11 +1,11 @@
 # Research Lab -- status (College football)
 
-_Generated 2026-11-23T15:33:46Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-24T03:45:11Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
 - Candidates: 1 registered, 1 tried, 0 running
-- Ledger attempts (all count in the Holm correction): 1 · across all sports: 33 (reported only, Constitution C4)
+- Ledger attempts (all count in the Holm correction): 1 · across all sports: 35 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 Gates: 2022 / 2023 / 2024 (confirmation; the search uses 2018, 2019, 2021). Search leaderboard: `research/cfb/search/LEADERBOARD.md`.
@@ -20,10 +20,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 806** 2026-11-24T03:45:07Z: 400 models scored → 17 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 805** 2026-11-23T15:33:42Z: 400 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 804** 2026-11-23T04:15:48Z: 400 models scored → 9 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 803** 2026-11-22T22:59:24Z: 400 models scored → 14 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 802** 2026-11-22T17:39:50Z: 399 models scored → 14 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 801** 2026-11-22T09:03:56Z: 400 models scored → 10 consistent → 0 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/cfb/results/<id>.json` (every number), `research/cfb/LEDGER.csv` (every attempt), `research/cfb/LESSONS.md` (exploratory).
