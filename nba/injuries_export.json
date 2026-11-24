@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Nov 24 \u00b7 12:45 AM ET report",
+    "as_of": "Nov 24 \u00b7 12:30 PM ET report",
     "date": "2026-11-24",
     "not_submitted": {
      "BKN@MIL": [
@@ -43,7 +43,7 @@
       "POR"
      ]
     },
-    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-24_12_45AM.pdf",
+    "report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-24_12_30PM.pdf",
     "sport": "NBA"
    },
    "doc_id": "nba-meta"
@@ -321,6 +321,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "5 min \u00b7 1.2 pts a game = 1% of WAS's points"
+    },
+    "player": "Tre Mann",
+    "reason": "Illness",
+    "sport": "NBA",
+    "starter": false,
+    "status": "Questionable",
+    "team": "WAS",
+    "tip": "8:00 PM",
+    "tip_sort": "11242000"
+   },
+   "doc_id": "nba-was-tre-mann"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BOS",
+    "home": "WAS",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Not in his team's rotation stats"
     },
     "player": "Tristan Vukcevic",
@@ -467,6 +489,6 @@
    "doc_id": "nba-dal-pj-washington"
   }
  ],
- "generated_at": "2026-11-24T05:56:29Z",
- "source": "NBA official injury report (Injury-Report_2026-11-24_12_45AM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
+ "generated_at": "2026-11-24T17:32:30Z",
+ "source": "NBA official injury report (Injury-Report_2026-11-24_12_30PM.pdf); game changer scale from stats/nba (tools/injuries_export.py)"
 }

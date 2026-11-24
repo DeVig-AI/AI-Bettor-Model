@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Tue Nov 24 \u00b7 12:56 AM ET",
+    "as_of": "Tue Nov 24 \u00b7 12:32 PM ET",
     "date": "2026-11-24",
     "sport": "NHL"
    },
@@ -20,11 +20,12 @@
      "level": "big",
      "why": "20 min a game \u00b7 29 points in 24 games = 12% of ANA's points"
     },
+    "note": "Upgraded from out",
     "player": "Leo Carlsson",
     "reason": "C",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "ANA",
     "tip": "Wed 10:00 PM",
     "tip_sort": "1125-2200"
@@ -306,18 +307,19 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "16 min a game \u00b7 6 points in 21 games = 4% of CBJ's points"
+     "why": "16 min a game \u00b7 7 points in 17 games = 5% of CBJ's points"
     },
-    "player": "Mathieu Olivier",
-    "reason": "RW",
+    "note": "Upgraded from out",
+    "player": "Sean Monahan",
+    "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "CBJ",
     "tip": "Wed 7:00 PM",
     "tip_sort": "1125-1900"
    },
-   "doc_id": "nhl-cbj-mathieu-olivier"
+   "doc_id": "nhl-cbj-sean-monahan"
   },
   {
    "collection": "injuries",
@@ -328,18 +330,19 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "16 min a game \u00b7 7 points in 17 games = 5% of CBJ's points"
+     "why": "16 min a game \u00b7 6 points in 21 games = 4% of CBJ's points"
     },
-    "player": "Sean Monahan",
-    "reason": "C",
+    "note": "Upgraded from out",
+    "player": "Mathieu Olivier",
+    "reason": "RW",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "CBJ",
     "tip": "Wed 7:00 PM",
     "tip_sort": "1125-1900"
    },
-   "doc_id": "nhl-cbj-sean-monahan"
+   "doc_id": "nhl-cbj-mathieu-olivier"
   },
   {
    "collection": "injuries",
@@ -414,40 +417,17 @@
     "away": "VGK",
     "home": "EDM",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "18 min a game \u00b7 11 points in 12 games = 4% of EDM's points"
-    },
-    "note": "Upgraded from out",
-    "player": "Ryan Nugent-Hopkins",
-    "reason": "C",
-    "sport": "NHL",
-    "starter": true,
-    "status": "Day-To-Day",
-    "team": "EDM",
-    "tip": "Tue 8:00 PM",
-    "tip_sort": "1124-2000"
-   },
-   "doc_id": "nhl-edm-ryan-nugent-hopkins"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "VGK",
-    "home": "EDM",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
      "why": "17 min a game \u00b7 6 points in 14 games = 2% of EDM's points"
     },
-    "note": "Upgraded from out",
+    "note": "Downgraded from day-to-day",
     "player": "Zach Hyman",
-    "reason": "LW",
+    "reason": "LW \u00b7 Migraine",
     "sport": "NHL",
     "starter": false,
-    "status": "Day-To-Day",
+    "status": "Out",
     "team": "EDM",
     "tip": "Tue 8:00 PM",
     "tip_sort": "1124-2000"
@@ -535,7 +515,7 @@
     "reason": "D \u00b7 Lower body",
     "sport": "NHL",
     "starter": true,
-    "status": "Out",
+    "status": "Injured Reserve",
     "team": "MTL",
     "tip": "Wed 9:30 PM",
     "tip_sort": "1125-2130"
@@ -551,10 +531,10 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "16 min a game \u00b7 8 points in 22 games = 4% of NYI's points"
+     "why": "18 min a game \u00b7 4 points in 17 games = 2% of NYI's points"
     },
-    "player": "Kyle Palmieri",
-    "reason": "C",
+    "player": "Ryan Pulock",
+    "reason": "D \u00b7 Shoulder",
     "sport": "NHL",
     "starter": false,
     "status": "Out",
@@ -562,7 +542,7 @@
     "tip": "Wed 7:00 PM",
     "tip_sort": "1125-1900"
    },
-   "doc_id": "nhl-nyi-kyle-palmieri"
+   "doc_id": "nhl-nyi-ryan-pulock"
   },
   {
    "collection": "injuries",
@@ -573,18 +553,19 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "18 min a game \u00b7 4 points in 17 games = 2% of NYI's points"
+     "why": "16 min a game \u00b7 8 points in 22 games = 4% of NYI's points"
     },
-    "player": "Ryan Pulock",
-    "reason": "D",
+    "note": "Upgraded from out",
+    "player": "Kyle Palmieri",
+    "reason": "C",
     "sport": "NHL",
     "starter": false,
-    "status": "Out",
+    "status": "Day-To-Day",
     "team": "NYI",
     "tip": "Wed 7:00 PM",
     "tip_sort": "1125-1900"
    },
-   "doc_id": "nhl-nyi-ryan-pulock"
+   "doc_id": "nhl-nyi-kyle-palmieri"
   },
   {
    "collection": "injuries",
@@ -949,6 +930,28 @@
     "away": "PHI",
     "home": "WSH",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "12 min a game \u00b7 5 points in 20 games = 3% of WSH's points"
+    },
+    "player": "Anthony Beauvillier",
+    "reason": "LW",
+    "sport": "NHL",
+    "starter": false,
+    "status": "Day-To-Day",
+    "team": "WSH",
+    "tip": "Wed 7:00 PM",
+    "tip_sort": "1125-1900"
+   },
+   "doc_id": "nhl-wsh-anthony-beauvillier"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "home": "WSH",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -1010,6 +1013,6 @@
    "doc_id": "nhl-wpg-dylan-demelo"
   }
  ],
- "generated_at": "2026-11-24T05:56:31Z",
+ "generated_at": "2026-11-24T17:32:32Z",
  "source": "ESPN injury feed; role scale from stats/nhl (tools/injuries_export.py)"
 }
