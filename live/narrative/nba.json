@@ -4,7 +4,7 @@
  "version": "v0",
  "kind": "spread",
  "tested": true,
- "updated": "2026-11-24T02:20:34+00:00",
+ "updated": "2026-11-24T12:39:46+00:00",
  "live_since": "2026-11-04",
  "tests": [
   {
@@ -31,8 +31,8 @@
    "home_id": "23",
    "away_id": "24",
    "book": "Draft Kings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "SA 123, SAC 107",
    "type": "side",
    "pick": "SAC",
    "line": 8.5,
@@ -55,8 +55,8 @@
    "home_id": "4",
    "away_id": "5",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "L",
+   "final": "CLE 108, CHI 122",
    "type": "side",
    "pick": "CLE",
    "line": -8.5,
@@ -80,8 +80,8 @@
    "home_id": "28",
    "away_id": "15",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "MIL 116, TOR 111",
    "type": "side",
    "pick": "MIL",
    "line": 10.5,
@@ -103,8 +103,8 @@
    "home_id": "30",
    "away_id": "29",
    "book": "DraftKings",
-   "result": null,
-   "final": null,
+   "result": "W",
+   "final": "MEM 117, CHA 111",
    "type": "total",
    "pick": "OVER",
    "line": 214.5,
@@ -1419,6 +1419,105 @@
  ],
  "reads": [
   {
+   "id": "401909324",
+   "date": "2026-11-25",
+   "start": "2026-11-26T03:00Z",
+   "game": "SAC @ GS",
+   "home": "GS",
+   "away": "SAC",
+   "home_id": "9",
+   "away_id": "23",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909325",
+   "date": "2026-11-25",
+   "start": "2026-11-26T03:00Z",
+   "game": "SA @ POR",
+   "home": "POR",
+   "away": "SA",
+   "home_id": "22",
+   "away_id": "24",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909323",
+   "date": "2026-11-25",
+   "start": "2026-11-26T01:30Z",
+   "game": "PHX @ HOU",
+   "home": "HOU",
+   "away": "PHX",
+   "home_id": "10",
+   "away_id": "21",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909321",
+   "date": "2026-11-25",
+   "start": "2026-11-26T01:00Z",
+   "game": "LAC @ MEM",
+   "home": "MEM",
+   "away": "LAC",
+   "home_id": "29",
+   "away_id": "12",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909322",
+   "date": "2026-11-25",
+   "start": "2026-11-26T01:00Z",
+   "game": "BKN @ MIL",
+   "home": "MIL",
+   "away": "BKN",
+   "home_id": "15",
+   "away_id": "17",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909319",
+   "date": "2026-11-25",
+   "start": "2026-11-26T00:30Z",
+   "game": "CLE @ NY",
+   "home": "NY",
+   "away": "CLE",
+   "home_id": "18",
+   "away_id": "5",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909320",
+   "date": "2026-11-25",
+   "start": "2026-11-26T00:30Z",
+   "game": "MIN @ OKC",
+   "home": "OKC",
+   "away": "MIN",
+   "home_id": "25",
+   "away_id": "16",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909318",
+   "date": "2026-11-25",
+   "start": "2026-11-26T00:00Z",
+   "game": "CHI @ CHA",
+   "home": "CHA",
+   "away": "CHI",
+   "home_id": "30",
+   "away_id": "4",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
+   "id": "401909317",
+   "date": "2026-11-25",
+   "start": "2026-11-25T22:00Z",
+   "game": "MIA @ PHI",
+   "home": "PHI",
+   "away": "MIA",
+   "home_id": "20",
+   "away_id": "14",
+   "note": "The read comes on game day, once tonight's results are in"
+  },
+  {
    "id": "401909316",
    "date": "2026-11-24",
    "start": "2026-11-25T03:00Z",
@@ -1427,7 +1526,25 @@
    "away": "DAL",
    "home_id": "7",
    "away_id": "6",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "DEN",
+    "score": 1.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates DEN 5.1 points better than results so far"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 233.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 236.5 to 233.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401909315",
@@ -1438,7 +1555,27 @@
    "away": "BOS",
    "home_id": "27",
    "away_id": "2",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "BOS",
+    "score": 0.5,
+    "capped": false,
+    "why_for": [
+     "Line tell: the line rates BOS 5.9 points better than results so far"
+    ],
+    "why_opp": [
+     "WSH: Fade the line move: WSH went from +5.5 to +10.5"
+    ]
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 217.5,
+    "score": 1.0,
+    "why_for": [
+     "Buy low on the dropping total: 230.5 to 217.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401909314",
@@ -1449,7 +1586,27 @@
    "away": "DET",
    "home_id": "19",
    "away_id": "8",
-   "note": "The read comes on game day, once tonight's results are in"
+   "note": null,
+   "side": {
+    "lean": "ORL",
+    "score": 1.0,
+    "capped": false,
+    "why_for": [
+     "Bounce-back spot after losing by 20",
+     "Paolo Banchero (24 points a game) is out",
+     "DET: Duncan Robinson (17 points a game) is out"
+    ],
+    "why_opp": []
+   },
+   "total": {
+    "lean": "OVER",
+    "line": 213.5,
+    "score": 1.5,
+    "why_for": [
+     "Pace: their games average 222 points, the total is 213.5"
+    ],
+    "why_opp": []
+   }
   },
   {
    "id": "401910044",
@@ -1963,192 +2120,6 @@
     "why_for": [
      "Buy low on the dropping total: 227.5 to 223.5"
     ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401910028",
-   "date": "2026-11-21",
-   "start": "2026-11-22T03:00Z",
-   "game": "BOS @ SAC",
-   "home": "SAC",
-   "away": "BOS",
-   "home_id": "23",
-   "away_id": "2",
-   "note": null,
-   "side": {
-    "lean": "BOS",
-    "score": 0.5,
-    "capped": true,
-    "why_for": [
-     "Jayson Tatum (26 points a game) is out",
-     "Never lay 12 or more",
-     "SAC: Second night of a back-to-back",
-     "SAC: Struggling team (one win or fewer)"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 215.5,
-    "score": 2.0,
-    "why_for": [
-     "SAC on tired legs (back-to-back)",
-     "Pace: their games average 223 points, the total is 215.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401910025",
-   "date": "2026-11-21",
-   "start": "2026-11-22T01:00Z",
-   "game": "LAC @ DAL",
-   "home": "DAL",
-   "away": "LAC",
-   "home_id": "6",
-   "away_id": "12",
-   "note": null,
-   "side": {
-    "lean": "LAC",
-    "score": 1.5,
-    "capped": false,
-    "why_for": [
-     "DAL: P.J. Washington (14 points a game) is out"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 230.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401910026",
-   "date": "2026-11-21",
-   "start": "2026-11-22T01:00Z",
-   "game": "MEM @ MIN",
-   "home": "MIN",
-   "away": "MEM",
-   "home_id": "16",
-   "away_id": "29",
-   "note": null,
-   "side": {
-    "lean": null,
-    "score": 0.0,
-    "capped": false,
-    "why_for": [
-     "Cameron Boozer (17 points a game) is out",
-     "MIN: Anthony Edwards (33 points a game) is out"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 227.5,
-    "score": 0.0,
-    "why_for": [],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401910027",
-   "date": "2026-11-21",
-   "start": "2026-11-22T01:00Z",
-   "game": "NO @ SA",
-   "home": "SA",
-   "away": "NO",
-   "home_id": "24",
-   "away_id": "3",
-   "note": null,
-   "side": {
-    "lean": "SA",
-    "score": 1.0,
-    "capped": true,
-    "why_for": [
-     "Dylan Harper (18 points a game) is out",
-     "Line tell: the line rates SA 6.7 points better than results so far",
-     "Never lay 12 or more",
-     "NO: Second night of a back-to-back, both on the road"
-    ],
-    "why_opp": [
-     "NO: Fade the line move: NO went from +16.5 to +18.5"
-    ]
-   },
-   "total": {
-    "lean": "UNDER",
-    "line": 229.5,
-    "score": 0.5,
-    "why_for": [
-     "Fade the inflated total: 226.5 to 229.5"
-    ],
-    "why_opp": [
-     "NO on tired legs (back-to-back)"
-    ]
-   }
-  },
-  {
-   "id": "401910024",
-   "date": "2026-11-21",
-   "start": "2026-11-22T00:30Z",
-   "game": "POR @ NY",
-   "home": "NY",
-   "away": "POR",
-   "home_id": "18",
-   "away_id": "22",
-   "note": null,
-   "side": {
-    "lean": "POR",
-    "score": 0.5,
-    "capped": false,
-    "why_for": [
-     "Ja Morant (16 points a game) is out",
-     "NY: Karl-Anthony Towns (21 points a game) is out",
-     "NY: OG Anunoby (16 points a game) is out"
-    ],
-    "why_opp": [
-     "NY: Fade the line move: NY went from -5.5 to +1.5"
-    ]
-   },
-   "total": {
-    "lean": "OVER",
-    "line": 213.5,
-    "score": 2.5,
-    "why_for": [
-     "Pace: their games average 221 points, the total is 213.5",
-     "Buy low on the dropping total: 218.5 to 213.5"
-    ],
-    "why_opp": []
-   }
-  },
-  {
-   "id": "401910023",
-   "date": "2026-11-21",
-   "start": "2026-11-21T18:00Z",
-   "game": "MIL @ PHI",
-   "home": "PHI",
-   "away": "MIL",
-   "home_id": "20",
-   "away_id": "15",
-   "note": null,
-   "side": {
-    "lean": "MIL",
-    "score": 1.0,
-    "capped": false,
-    "why_for": [
-     "Struggling team (one win or fewer)",
-     "PHI: Jaylen Brown (23 points a game) is out"
-    ],
-    "why_opp": []
-   },
-   "total": {
-    "lean": null,
-    "line": 229.5,
-    "score": 0.0,
-    "why_for": [],
     "why_opp": []
    }
   }
