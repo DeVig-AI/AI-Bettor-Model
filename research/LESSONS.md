@@ -1,6 +1,6 @@
 # Research Lab -- lessons, NFL (EXPLORATORY)
 
-_Generated 2026-11-24T03:26:17Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
+_Generated 2026-11-24T03:33:48Z by research/lab/report.py after each run. **Exploratory, not proof**: each line compares a candidate with the one it builds on, gate by gate, with no correction for how many comparisons there are. Only the Inspector General's verdicts and the sealed exam decide anything._
 
 - **helped**: beat its parent in all three gates · **faded**: helped in the first gate but by less than half as much (or not at all) in the last · **no effect**: anything else. A candidate is only compared with a parent that ran under the same Constitution version (same seasons).
 - Lines starting **Signal** come from the search, refreshed every round: the signal on a base model vs that base alone in each search period (2006–2016 only); **helped** = better in all three periods on most of the bases it was tried on.
@@ -11,7 +11,7 @@ _Generated 2026-11-24T03:26:17Z by research/lab/report.py after each run. **Expl
 - + Stronger preseason reversion vs Plain Elo: helped in every gate (+0.20 / +0.20 / +0.36 pts in 2016–18 / 2019–21 / 2022–24).
 - Pace × efficiency, fast (half-life 4) vs Pace × efficiency totals: helped in every gate (+0.51 / +0.06 / +0.11 pts in 2016–18 / 2019–21 / 2022–24).
 
-## Faded (49)
+## Faded (51)
 
 - 538-style combination vs Plain Elo: helped in 2016–18, then faded (+0.14 / +0.05 / -0.26 pts in 2016–18 / 2019–21 / 2022–24).
 - + Rest / bye bonus vs Plain Elo: helped in 2016–18, then faded (+0.08 / -0.02 / +0.00 pts in 2016–18 / 2019–21 / 2022–24).
@@ -28,6 +28,8 @@ _Generated 2026-11-24T03:26:17Z by research/lab/report.py after each run. **Expl
 - Blend of 3: s-3ee4ad88 + s-6f3f2250 + s-0b3ca873 vs the line-only baseline: helped in 2017–19, then faded (+0.60 / +0.83 / -1.35 pts in 2017–19 / 2020–22 / 2023–24).
 - Elo · K15 · fixed home edge · 538 margin · revert 0.25 · QB · market-resist 1.5039 · bye 40 · travel 8 · market blend 0.125 vs the line-only baseline: helped in 2017–19, then faded (+0.83 / +0.42 / -1.14 pts in 2017–19 / 2020–22 / 2023–24).
 - Elo · K8 · home edge by season · 538 margin · revert 0.37 · QB · market-resist 0.75 · bye 40 · travel 8 vs the line-only baseline: helped in 2017–19, then faded (+0.47 / +0.71 / -1.12 pts in 2017–19 / 2020–22 / 2023–24).
+- Elo · K15 · home edge by season · 538 margin · revert 0.40 · QB · market-resist 1.5039 · bye 55 · travel 3 · market blend 0.125 vs the line-only baseline: helped in 2017–19, then faded (+0.75 / +0.79 / -1.08 pts in 2017–19 / 2020–22 / 2023–24).
+- SRS · carry 0.7 · prior 6 · margin cap 32 vs the line-only baseline: helped in 2017–19, then faded (+0.81 / +0.09 / -0.86 pts in 2017–19 / 2020–22 / 2023–24).
 - Signal def-finishing (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.
 - Signal def-finishing~c0.3 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.
 - Signal def-finishing~c0.7 (total) on top of a base model: helped in 2006–09, then faded (helped in all three on 0 of 2); on average +0.01 / -0.08 / -0.01 pts in 2006–09 / 2010–13 / 2014–16.

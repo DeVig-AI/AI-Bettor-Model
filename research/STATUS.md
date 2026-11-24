@@ -1,11 +1,11 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-11-24T03:26:17Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-24T03:33:48Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
-- Candidates: 30 registered, 28 tried, 1 running
-- Ledger attempts (all count in the Holm correction): 28 · across all sports: 33 (reported only, Constitution C4)
+- Candidates: 30 registered, 30 tried, 0 running
+- Ledger attempts (all count in the Holm correction): 30 · across all sports: 35 (reported only, Constitution C4)
 - Lab passes: 0 · exam passes: 0 · sealed 2025 exams left: 3 of 3
 
 Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search uses 2006–16); v1 candidates 2016–18 / 2019–21 / 2022–24 (their ledger rows say which). Search leaderboard: `research/search/LEADERBOARD.md`.
@@ -29,13 +29,13 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 | `s-0501d21a` Blend of 3: s-f3fafc67 + s-1bba7fb4 + s-aaee4789 | spread | failed · gate_2 | +0.84 | -0.05 | -1.06 | +0.01 [-0.51, +0.54] | 1.000 | 49.2% / -5.0% (2150) |
 | `s-0680b479` Signals (SRS · carry 0.7 · prior 4) + def-comp-epa, inj-qb-out, inj-regulars-out | spread | failed · gate_3 | +0.82 | +0.03 | -0.48 | +0.19 [-0.34, +0.71] | 1.000 | 50.0% / -3.4% (2150) |
 | `s-08811515` Elo · K15 · fixed home edge · 538 margin · revert 0.25 · QB · market-resist 1.5039 · bye 40 · travel 8 · market blend 0.125 | spread | failed · gate_3 | +0.83 | +0.42 | -1.14 | +0.16 [-0.46, +0.77] | 1.000 | 50.1% / -3.1% (2150) |
-| `s-24cb8b67` Elo · K15 · home edge by season · 538 margin · revert 0.40 · QB · market-resist 1.5039 · bye 55 · travel 3 · market blend 0.125 | spread | running | — | — | — | — | — | — |
+| `s-24cb8b67` Elo · K15 · home edge by season · 538 margin · revert 0.40 · QB · market-resist 1.5039 · bye 55 · travel 3 · market blend 0.125 | spread | failed · gate_3 | +0.75 | +0.79 | -1.08 | +0.29 [-0.43, +1.01] | 1.000 | 50.1% / -3.1% (2150) |
 | `s-4ab4a086` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + div-game, off-pass-epa | spread | failed · gate_3 | +0.76 | +0.24 | -0.88 | +0.14 [-0.44, +0.72] | 1.000 | 50.3% / -2.8% (2150) |
 | `s-616db01b` Elo · K8 · home edge by season · 538 margin · revert 0.37 · QB · market-resist 0.75 · bye 40 · travel 8 | spread | failed · gate_3 | +0.47 | +0.71 | -1.12 | +0.15 [-0.55, +0.85] | 1.000 | 50.6% / -2.2% (2150) |
 | `s-72bd1682` Blend of 2: s-b4ff1842 + s-1314e7a1 | spread | failed · gate_2 | +0.71 | -0.10 | -0.35 | +0.13 [-0.41, +0.68] | 1.000 | 50.0% / -3.4% (2150) |
 | `s-82e02baf` Blend of 3: s-3ee4ad88 + s-6f3f2250 + s-0b3ca873 | spread | failed · gate_3 | +0.60 | +0.83 | -1.35 | +0.19 [-0.46, +0.81] | 1.000 | 50.3% / -2.8% (2150) |
 | `s-b07a5742` Signals (SRS · carry 0.6 · prior 4 · margin cap 35) + bye-diff, qb-change, travel-diff | spread | failed · gate_3 | +0.83 | +0.18 | -0.75 | +0.17 [-0.34, +0.71] | 1.000 | 49.3% / -4.7% (2150) |
-| `s-c0f9abbb` SRS · carry 0.7 · prior 6 · margin cap 32 | spread | queued | — | — | — | — | — | — |
+| `s-c0f9abbb` SRS · carry 0.7 · prior 6 · margin cap 32 | spread | failed · gate_3 | +0.81 | +0.09 | -0.86 | +0.11 [-0.46, +0.69] | 1.000 | 50.1% / -3.1% (2150) |
 | `s-e27628a8` Blend of 2: s-3770bfc8 + s-6f3641ca | spread | failed · gate_3 | +0.55 | +0.73 | -1.30 | +0.14 [-0.48, +0.76] | 1.000 | 49.7% / -4.0% (2150) |
 | `s-f369d5f7` Blend of 2: s-473e5379 + s-8a5f816b | spread | failed · gate_3 | +0.62 | +0.00 | -0.83 | +0.01 [-0.63, +0.64] | 1.000 | 49.7% / -4.0% (2150) |
 | `tot-epa` + EPA per play as efficiency | total | failed · gate_1 | -0.68 | -0.32 | -1.33 | -0.78 [-1.57, +0.00] | 1.000 | 48.8% / -5.6% (2453) |
@@ -45,40 +45,40 @@ Gates: v4 candidates 2017–19 / 2020–22 / 2023–24 (confirmation; the search
 
 Verdicts (Inspector General):
 
-- `elo-538`: Fails the lab: not positive in gate 2 (2020–22: -0.82 pts); pooled +0.07 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-base`: Fails the lab: not positive in gate 2 (2020–22: -0.87 pts); pooled +0.10 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-bye`: Fails the lab: not positive in gate 2 (2020–22: -0.89 pts); pooled +0.12 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-hfa-trend`: Fails the lab: not positive in gate 2 (2020–22: -0.48 pts); pooled +0.09 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-k10`: Fails the lab: not positive in gate 2 (2020–22: -0.58 pts); pooled +0.24 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-k30`: Fails the lab: not positive in gate 2 (2020–22: -0.84 pts); pooled -0.04 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-market`: Fails the lab: not positive in gate 2 (2020–22: -0.79 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-mov`: Fails the lab: not positive in gate 2 (2020–22: -1.04 pts); pooled -0.15 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-nfelo`: Fails the lab: not positive in gate 2 (2020–22: -0.69 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-playoff`: Fails the lab: not positive in gate 2 (2020–22: -0.80 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-qb`: Fails the lab: not positive in gate 2 (2020–22: -1.00 pts); pooled +0.02 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-resist`: Fails the lab: not positive in gate 2 (2020–22: -0.39 pts); pooled +0.39 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-revert`: Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-0501d21a`: Fails the lab: not positive in gate 2 (2020–22: -0.05 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-0680b479`: Fails the lab: not positive in gate 3 (2023–24: -0.48 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-08811515`: Fails the lab: not positive in gate 3 (2023–24: -1.14 pts); pooled +0.16 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-24cb8b67`: Running through the three gates now.
-- `s-4ab4a086`: Fails the lab: not positive in gate 3 (2023–24: -0.88 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-616db01b`: Fails the lab: not positive in gate 3 (2023–24: -1.12 pts); pooled +0.15 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-72bd1682`: Fails the lab: not positive in gate 2 (2020–22: -0.10 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-82e02baf`: Fails the lab: not positive in gate 3 (2023–24: -1.35 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-b07a5742`: Fails the lab: not positive in gate 3 (2023–24: -0.75 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-c0f9abbb`: Waiting to start.
-- `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `tot-epa`: Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `tot-pe-fast`: Fails the lab: not positive in gate 2 (2020–22: -0.75 pts); pooled -0.27 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `tot-pe-slow`: Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.31 pts, Holm-adjusted p = 1.000 over 28 attempts.
-- `tot-pe`: Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.50 pts, Holm-adjusted p = 1.000 over 28 attempts.
+- `elo-538`: Fails the lab: not positive in gate 2 (2020–22: -0.82 pts); pooled +0.07 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-base`: Fails the lab: not positive in gate 2 (2020–22: -0.87 pts); pooled +0.10 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-bye`: Fails the lab: not positive in gate 2 (2020–22: -0.89 pts); pooled +0.12 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-hfa-trend`: Fails the lab: not positive in gate 2 (2020–22: -0.48 pts); pooled +0.09 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-k10`: Fails the lab: not positive in gate 2 (2020–22: -0.58 pts); pooled +0.24 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-k30`: Fails the lab: not positive in gate 2 (2020–22: -0.84 pts); pooled -0.04 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-market`: Fails the lab: not positive in gate 2 (2020–22: -0.79 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-mov`: Fails the lab: not positive in gate 2 (2020–22: -1.04 pts); pooled -0.15 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-nfelo`: Fails the lab: not positive in gate 2 (2020–22: -0.69 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-playoff`: Fails the lab: not positive in gate 2 (2020–22: -0.80 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-qb`: Fails the lab: not positive in gate 2 (2020–22: -1.00 pts); pooled +0.02 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-resist`: Fails the lab: not positive in gate 2 (2020–22: -0.39 pts); pooled +0.39 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-revert`: Fails the lab: not positive in gate 2 (2020–22: -0.68 pts); pooled +0.35 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `elo-travel`: Fails the lab: not positive in gate 2 (2020–22: -0.74 pts); pooled +0.06 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-0501d21a`: Fails the lab: not positive in gate 2 (2020–22: -0.05 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-0680b479`: Fails the lab: not positive in gate 3 (2023–24: -0.48 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-08811515`: Fails the lab: not positive in gate 3 (2023–24: -1.14 pts); pooled +0.16 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-24cb8b67`: Fails the lab: not positive in gate 3 (2023–24: -1.08 pts); pooled +0.29 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-4ab4a086`: Fails the lab: not positive in gate 3 (2023–24: -0.88 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-616db01b`: Fails the lab: not positive in gate 3 (2023–24: -1.12 pts); pooled +0.15 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-72bd1682`: Fails the lab: not positive in gate 2 (2020–22: -0.10 pts); pooled +0.13 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-82e02baf`: Fails the lab: not positive in gate 3 (2023–24: -1.35 pts); pooled +0.19 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-b07a5742`: Fails the lab: not positive in gate 3 (2023–24: -0.75 pts); pooled +0.17 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-c0f9abbb`: Fails the lab: not positive in gate 3 (2023–24: -0.86 pts); pooled +0.11 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-e27628a8`: Fails the lab: not positive in gate 3 (2023–24: -1.30 pts); pooled +0.14 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `s-f369d5f7`: Fails the lab: not positive in gate 3 (2023–24: -0.83 pts); pooled +0.01 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `tot-epa`: Fails the lab: not positive in gate 1 (2017–19: -0.68 pts); pooled -0.78 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `tot-pe-fast`: Fails the lab: not positive in gate 2 (2020–22: -0.75 pts); pooled -0.27 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `tot-pe-slow`: Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.31 pts, Holm-adjusted p = 1.000 over 30 attempts.
+- `tot-pe`: Fails the lab: not positive in gate 1 (2017–19: -0.39 pts); pooled -0.50 pts, Holm-adjusted p = 1.000 over 30 attempts.
 
 ## Recent runs
 
-- **Research Lab #3031** 2026-11-24T03:26:17Z: 2 tested → running through the gates
+- **Research Lab #3031** 2026-11-24T03:33:47Z, 0 s: 2 tested → 2 past gate 1 → 2 past gate 2 → 0 passed the lab → 0 passed the exam → 0 promoted
 - **Search round 985** 2026-11-24T02:56:41Z: 2,000 models scored → 487 consistent → 13 strong (t ≥ 2.5) → 2 sent to confirmation
 - **Search round 984** 2026-11-23T15:21:44Z: 2,032 models scored → 514 consistent → 26 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 983** 2026-11-23T04:04:17Z: 1,999 models scored → 461 consistent → 22 strong (t ≥ 2.5) → 0 sent to confirmation
