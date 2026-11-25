@@ -19,7 +19,7 @@
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 2215,
+    "n": 2216,
     "said": 0.549,
     "won": 0.532
    },
@@ -38,30 +38,15 @@
     "won": 0.877
    }
   ],
-  "games": 4320,
+  "games": 4321,
   "home_rate_log_loss": 0.6899,
   "log_loss": 0.6721,
   "seasons_from": "2023-24"
  },
  "data_from": "2022-23 season",
- "data_through": "2026-11-23",
- "finals_used": 5976,
+ "data_through": "2026-11-24",
+ "finals_used": 5977,
  "games": [
-  {
-   "away": "VGK",
-   "away_name": "Vegas Golden Knights",
-   "date": "2026-11-24",
-   "game_id": "2026020385",
-   "home": "EDM",
-   "home_name": "Edmonton Oilers",
-   "home_wp": 0.5348,
-   "kickoff": "2026-11-25T01:00:00Z",
-   "parts": {
-    "b2b": 0,
-    "elo": 0.3069,
-    "sh": -0.1326
-   }
-  },
   {
    "away": "WPG",
    "away_name": "Winnipeg Jets",
@@ -429,11 +414,11 @@
    "game_id": "2026020410",
    "home": "SJS",
    "home_name": "San Jose Sharks",
-   "home_wp": 0.4329,
+   "home_wp": 0.4287,
    "kickoff": "2026-11-27T21:00:00Z",
    "parts": {
     "b2b": 0,
-    "elo": -0.5183,
+    "elo": -0.5473,
     "sh": 0.0
    }
   },
@@ -451,9 +436,54 @@
     "elo": -0.3981,
     "sh": 0.0684
    }
+  },
+  {
+   "away": "WPG",
+   "away_name": "Winnipeg Jets",
+   "date": "2026-11-27",
+   "game_id": "2026020412",
+   "home": "NYI",
+   "home_name": "New York Islanders",
+   "home_wp": 0.5429,
+   "kickoff": "2026-11-28T00:30:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.2054,
+    "sh": 0.0409
+   }
+  },
+  {
+   "away": "PIT",
+   "away_name": "Pittsburgh Penguins",
+   "date": "2026-11-27",
+   "game_id": "2026020413",
+   "home": "BUF",
+   "home_name": "Buffalo Sabres",
+   "home_wp": 0.5865,
+   "kickoff": "2026-11-28T01:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.5838,
+    "sh": -0.0389
+   }
+  },
+  {
+   "away": "SEA",
+   "away_name": "Seattle Kraken",
+   "date": "2026-11-27",
+   "game_id": "2026020414",
+   "home": "EDM",
+   "home_name": "Edmonton Oilers",
+   "home_wp": 0.6012,
+   "kickoff": "2026-11-28T01:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": 0.773,
+    "sh": -0.1326
+   }
   }
  ],
- "generated_at": "2026-11-24T23:05:49Z",
+ "generated_at": "2026-11-25T05:29:35Z",
  "model": {
   "elo": {
    "carry": 0.85,
