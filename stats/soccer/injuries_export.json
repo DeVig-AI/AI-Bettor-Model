@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Wed Nov 25 \u00b7 7:40 AM ET",
+    "as_of": "Wed Nov 25 \u00b7 5:26 PM ET",
     "date": "2026-11-25",
     "sport": "EPL"
    },
@@ -382,6 +382,28 @@
     "tip_sort": "1128-1000"
    },
    "doc_id": "epl-bre-kaye-furo"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NEW",
+    "home": "BHA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Started 11 of BHA's 11 league matches \u00b7 a goal or assist on 1 of their 26 goals (4%)"
+    },
+    "player": "Olivier Boscagli",
+    "reason": "Illness - 75% chance of playing",
+    "sport": "EPL",
+    "starter": true,
+    "status": "75% to play",
+    "team": "BHA",
+    "tip": "Sun 9:05 AM",
+    "tip_sort": "1129-0905"
+   },
+   "doc_id": "epl-bha-olivier-boscagli"
   },
   {
    "collection": "injuries",
@@ -1426,50 +1448,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Started 0 of MAN's 11 league matches"
-    },
-    "player": "Karl Darlow",
-    "reason": "Unspecified injury - 75% chance of playing",
-    "sport": "EPL",
-    "starter": false,
-    "status": "75% to play",
-    "team": "MAN",
-    "tip": "Sat 10:00 AM",
-    "tip_sort": "1128-1000"
-   },
-   "doc_id": "epl-man-karl-darlow"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BRE",
-    "home": "MAN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Started 5 of MAN's 11 league matches \u00b7 a goal or assist on 1 of their 14 goals (7%)"
-    },
-    "player": "Luke Shaw",
-    "reason": "Unspecified injury - 75% chance of playing",
-    "sport": "EPL",
-    "starter": false,
-    "status": "75% to play",
-    "team": "MAN",
-    "tip": "Sat 10:00 AM",
-    "tip_sort": "1128-1000"
-   },
-   "doc_id": "epl-man-luke-shaw"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BRE",
-    "home": "MAN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Started 4 of MAN's 11 league matches"
     },
     "player": "Marcus Rashford",
@@ -1614,28 +1592,6 @@
     "tip_sort": "1127-1500"
    },
    "doc_id": "epl-nfo-nicolo-savona"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHE",
-    "home": "NFO",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Started 0 of NFO's 11 league matches"
-    },
-    "player": "Callum Hudson-Odoi",
-    "reason": "Unspecified injury - Unknown return date",
-    "sport": "EPL",
-    "starter": false,
-    "status": "Out",
-    "team": "NFO",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
-   },
-   "doc_id": "epl-nfo-callum-hudson-odoi"
   },
   {
    "collection": "injuries",
@@ -1902,6 +1858,6 @@
    "doc_id": "epl-sun-brian-brobbey"
   }
  ],
- "generated_at": "2026-11-25T12:40:54Z",
+ "generated_at": "2026-11-25T22:26:41Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }
