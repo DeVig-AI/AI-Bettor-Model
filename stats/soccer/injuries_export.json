@@ -3,7 +3,7 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Thu Nov 26 \u00b7 10:01 AM ET",
+    "as_of": "Thu Nov 26 \u00b7 6:46 PM ET",
     "date": "2026-11-26",
     "sport": "EPL"
    },
@@ -206,6 +206,28 @@
     "tip_sort": "1129-0905"
    },
    "doc_id": "epl-bou-alex-toth"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BOU",
+    "home": "FUL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 0 of BOU's 11 league matches \u00b7 a goal or assist on 1 of their 18 goals (6%)"
+    },
+    "player": "Junior Kroupi",
+    "reason": "Illness - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "BOU",
+    "tip": "Sun 9:05 AM",
+    "tip_sort": "1129-0905"
+   },
+   "doc_id": "epl-bou-junior-kroupi"
   },
   {
    "collection": "injuries",
@@ -844,28 +866,6 @@
     "tip_sort": "1129-0905"
    },
    "doc_id": "epl-cry-chadi-riad-dnanou"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "HUL",
-    "home": "CRY",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Started 2 of CRY's 11 league matches"
-    },
-    "player": "Oscar Mingueza",
-    "reason": "Thigh injury - 75% chance of playing",
-    "sport": "EPL",
-    "starter": false,
-    "status": "75% to play",
-    "team": "CRY",
-    "tip": "Sun 9:05 AM",
-    "tip_sort": "1129-0905"
-   },
-   "doc_id": "epl-cry-oscar-mingueza"
   },
   {
    "collection": "injuries",
@@ -1856,8 +1856,30 @@
     "tip_sort": "1129-0905"
    },
    "doc_id": "epl-sun-brian-brobbey"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TOT",
+    "home": "SUN",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Started 1 of SUN's 11 league matches"
+    },
+    "player": "Dayann M\u00e9thalie",
+    "reason": "Illness - 75% chance of playing",
+    "sport": "EPL",
+    "starter": false,
+    "status": "75% to play",
+    "team": "SUN",
+    "tip": "Sun 9:05 AM",
+    "tip_sort": "1129-0905"
+   },
+   "doc_id": "epl-sun-dayann-methalie"
   }
  ],
- "generated_at": "2026-11-26T15:01:47Z",
+ "generated_at": "2026-11-26T23:46:09Z",
  "source": "Fantasy Premier League player status; role scale from its starts and goals (tools/injuries_export.py)"
 }

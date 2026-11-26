@@ -3,11 +3,59 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Thu Nov 26 \u00b7 10:01 AM ET \u00b7 Week 12",
+    "as_of": "Thu Nov 26 \u00b7 6:46 PM ET \u00b7 Week 12",
     "date": "2026-11-26",
     "sport": "NFL"
    },
    "doc_id": "nfl-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "WAS",
+    "confirmed": false,
+    "home": "ARI",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (0% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Karson Sharar",
+    "reason": "LB \u00b7 Groin",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ARI",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
+   },
+   "doc_id": "nfl-ari-karson-sharar"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "WAS",
+    "confirmed": false,
+    "home": "ARI",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (38% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Hunter Long",
+    "reason": "TE \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ARI",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
+   },
+   "doc_id": "nfl-ari-hunter-long"
   },
   {
    "collection": "injuries",
@@ -88,46 +136,22 @@
     "confirmed": false,
     "home": "MIN",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (26% of snaps)"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (72% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
-    "player": "James Pearce Jr.",
-    "reason": "LB \u00b7 Back",
+    "player": "Kendal Daniels",
+    "reason": "LB \u00b7 Achilles",
     "sport": "NFL",
-    "starter": false,
+    "starter": true,
     "status": "Questionable",
     "team": "ATL",
     "tip": "Sun 1:00 PM",
     "tip_sort": "1129-1300"
    },
-   "doc_id": "nfl-atl-james-pearce"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATL",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (24% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Zachariah Branch",
-    "reason": "WR \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "ATL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-atl-zachariah-branch"
+   "doc_id": "nfl-atl-kendal-daniels"
   },
   {
    "collection": "injuries",
@@ -152,6 +176,78 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-atl-jahan-dotson"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (24% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Za'Darius Smith",
+    "reason": "DE \u00b7 Knee",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ATL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-atl-zadarius-smith"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (64% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Cameron Thomas",
+    "reason": "DE \u00b7 Groin",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "ATL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-atl-cameron-thomas"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (24% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Zachariah Branch",
+    "reason": "WR \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "ATL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-atl-zachariah-branch"
   },
   {
    "collection": "injuries",
@@ -235,30 +331,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (55% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Mike Green",
-    "reason": "LB \u00b7 Knee",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-mike-green"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (81% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -283,126 +355,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (70% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Nnamdi Madubuike",
-    "reason": "DT \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-nnamdi-madubuike"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (74% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Rashod Bateman",
-    "reason": "WR \u00b7 Groin",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-rashod-bateman"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (71% of snaps): about 0.5 points each in DeVig's injury study \u00b7 14% of BAL's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Zay Flowers",
-    "reason": "WR \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-zay-flowers"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (15% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Aeneas Peebles",
-    "reason": "DT \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-aeneas-peebles"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (100% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "John Simpson",
-    "reason": "G \u00b7 Groin",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "BAL",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-bal-john-simpson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (54% of snaps): about 0.5 points each in DeVig's injury study \u00b7 34% of BAL's targets and carries"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -416,6 +368,78 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-bal-derrick-henry"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BAL",
+    "confirmed": false,
+    "home": "HOU",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (88% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Olaivavega Ioane",
+    "reason": "G \u00b7 Hand",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "BAL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-bal-olaivavega-ioane"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BAL",
+    "confirmed": false,
+    "home": "HOU",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (30% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Chidobe Awuzie",
+    "reason": "CB \u00b7 Back",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "BAL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-bal-chidobe-awuzie"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BAL",
+    "confirmed": false,
+    "home": "HOU",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (70% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Nnamdi Madubuike",
+    "reason": "DT \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "BAL",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-bal-nnamdi-madubuike"
   },
   {
    "collection": "injuries",
@@ -539,6 +563,174 @@
     "confirmed": false,
     "home": "TB",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (46% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Mitchell Evans",
+    "reason": "TE \u00b7 Achilles",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-mitchell-evans"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (61% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Tommy Tremble",
+    "reason": "TE \u00b7 Knee",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-tommy-tremble"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (50% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Darren Waller",
+    "reason": "TE \u00b7 Knee",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-darren-waller"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (70% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Jaelan Phillips",
+    "reason": "LB \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-jaelan-phillips"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (4% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Feleipe Franks",
+    "reason": "TE \u00b7 Wrist",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-feleipe-franks"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (4% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Jackson Kuwatch",
+    "reason": "LB \u00b7 Illness",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-jackson-kuwatch"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (69% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Patrick Jones II",
+    "reason": "LB \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CAR",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-car-patrick-jones"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -629,123 +821,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (39% of snaps)"
-    },
-    "player": "D'Marco Jackson",
-    "reason": "LB \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CHI",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-chi-dmarco-jackson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (70% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Tyrique Stevenson Sr.",
-    "reason": "CB \u00b7 Groin",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "CHI",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-chi-tyrique-stevenson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Kyler Gordon",
-    "reason": "CB \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-chi-kyler-gordon"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (12% of snaps)"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Roschon Johnson",
-    "reason": "RB \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-chi-roschon-johnson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (12% of snaps)"
-    },
-    "player": "Elijah Hicks",
-    "reason": "S \u00b7 Concussion",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "CHI",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-chi-elijah-hicks"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "NO",
     "confirmed": false,
     "home": "CIN",
@@ -823,6 +898,30 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "Regular (90% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of CLE's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Denzel Boston",
+    "reason": "WR \u00b7 Quadriceps",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "CLE",
+    "tip": "Sun 8:20 PM",
+    "tip_sort": "1129-2020"
+   },
+   "doc_id": "nfl-cle-denzel-boston"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LV",
+    "confirmed": false,
+    "home": "CLE",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "Regular (96% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -836,30 +935,6 @@
     "tip_sort": "1129-2020"
    },
    "doc_id": "nfl-cle-quincy-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LV",
-    "confirmed": false,
-    "home": "CLE",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (34% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Blake Whiteheart",
-    "reason": "TE \u00b7 Hip",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "CLE",
-    "tip": "Sun 8:20 PM",
-    "tip_sort": "1129-2020"
-   },
-   "doc_id": "nfl-cle-blake-whiteheart"
   },
   {
    "collection": "injuries",
@@ -984,50 +1059,95 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "LV",
-    "confirmed": false,
-    "home": "CLE",
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (86% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of CLE's targets and carries"
+     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Harold Fannin Jr.",
-    "reason": "TE \u00b7 Groin",
+    "note": "Downgraded from doubtful",
+    "player": "Jake Ferguson",
+    "reason": "TE \u00b7 Knee",
     "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "CLE",
-    "tip": "Sun 8:20 PM",
-    "tip_sort": "1129-2020"
+    "starter": false,
+    "status": "Out",
+    "team": "DAL",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
    },
-   "doc_id": "nfl-cle-harold-fannin"
+   "doc_id": "nfl-dal-jake-ferguson"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "LV",
-    "confirmed": false,
-    "home": "CLE",
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (90% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of CLE's targets and carries"
+     "why": "Regular (94% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Denzel Boston",
-    "reason": "WR \u00b7 Quadriceps",
+    "player": "Tyler Booker",
+    "reason": "G \u00b7 Ankle",
     "sport": "NFL",
     "starter": true,
-    "status": "Questionable",
-    "team": "CLE",
-    "tip": "Sun 8:20 PM",
-    "tip_sort": "1129-2020"
+    "status": "Out",
+    "team": "DAL",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
    },
-   "doc_id": "nfl-cle-denzel-boston"
+   "doc_id": "nfl-dal-tyler-booker"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (31% of snaps)"
+    },
+    "player": "Jonathan Bullard",
+    "reason": "DT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "DAL",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-dal-jonathan-bullard"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (51% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Jaishawn Barham",
+    "reason": "LB \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "DAL",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-dal-jaishawn-barham"
   },
   {
    "collection": "injuries",
@@ -1087,53 +1207,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (81% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Jalen Thompson",
-    "reason": "S \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "DAL",
-    "tip": "Thu 4:30 PM",
-    "tip_sort": "1126-1630"
-   },
-   "doc_id": "nfl-dal-jalen-thompson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "confirmed": true,
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Downgraded from doubtful",
-    "player": "Jake Ferguson",
-    "reason": "TE \u00b7 Knee",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "DAL",
-    "tip": "Thu 4:30 PM",
-    "tip_sort": "1126-1630"
-   },
-   "doc_id": "nfl-dal-jake-ferguson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "PHI",
-    "confirmed": true,
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (89% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "player": "DaRon Bland",
@@ -1150,29 +1223,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "PHI",
-    "confirmed": true,
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (94% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Tyler Booker",
-    "reason": "G \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Out",
-    "team": "DAL",
-    "tip": "Thu 4:30 PM",
-    "tip_sort": "1126-1630"
-   },
-   "doc_id": "nfl-dal-tyler-booker"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "DEN",
     "confirmed": true,
     "home": "PIT",
@@ -1180,19 +1230,18 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Part-time (26% of snaps)"
+     "why": "Part-time (16% of snaps)"
     },
-    "note": "Downgraded from questionable",
-    "player": "Sai'vion Jones",
-    "reason": "DE \u00b7 Hamstring",
+    "player": "Tyler Badie",
+    "reason": "RB \u00b7 Thumb",
     "sport": "NFL",
     "starter": false,
-    "status": "Out",
+    "status": "Questionable",
     "team": "DEN",
     "tip": "Fri 3:00 PM",
     "tip_sort": "1127-1500"
    },
-   "doc_id": "nfl-den-saivion-jones"
+   "doc_id": "nfl-den-tyler-badie"
   },
   {
    "collection": "injuries",
@@ -1244,95 +1293,50 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (29% of snaps)"
-    },
-    "note": "Downgraded from questionable",
-    "player": "Ennis Rakestraw Jr.",
-    "reason": "CB \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Out",
-    "team": "DET",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-det-ennis-rakestraw"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
+    "away": "BAL",
+    "confirmed": false,
+    "home": "HOU",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (91% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (57% of snaps): about 0.5 points each in DeVig's injury study \u00b7 8% of HOU's targets and carries"
     },
-    "player": "Chuck Clark",
-    "reason": "S \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "DET",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
-   },
-   "doc_id": "nfl-det-chuck-clark"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (58% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "DJ Wonnum",
-    "reason": "LB \u00b7 Back",
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Dalton Schultz",
+    "reason": "TE \u00b7 Illness",
     "sport": "NFL",
     "starter": false,
     "status": "Questionable",
-    "team": "DET",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
+    "team": "HOU",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
    },
-   "doc_id": "nfl-det-dj-wonnum"
+   "doc_id": "nfl-hou-dalton-schultz"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "CHI",
-    "confirmed": true,
-    "home": "DET",
+    "away": "BAL",
+    "confirmed": false,
+    "home": "HOU",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (66% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "player": "Cade Mays",
-    "reason": "C \u00b7 Ankle",
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Kayshon Boutte",
+    "reason": "WR \u00b7 Hip",
     "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "DET",
-    "tip": "Thu 1:00 PM",
-    "tip_sort": "1126-1300"
+    "starter": false,
+    "status": "Questionable",
+    "team": "HOU",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
    },
-   "doc_id": "nfl-det-cade-mays"
+   "doc_id": "nfl-hou-kayshon-boutte"
   },
   {
    "collection": "injuries",
@@ -1392,54 +1396,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Kayshon Boutte",
-    "reason": "WR \u00b7 Hip",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "HOU",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-hou-kayshon-boutte"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (29% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Marvin Harrison Jr.",
-    "reason": "WR \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "HOU",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-hou-marvin-harrison"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (60% of snaps): about 0.5 points each in DeVig's injury study \u00b7 22% of HOU's targets and carries"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -1453,54 +1409,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-hou-woody-marks"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (37% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Logan Hall",
-    "reason": "DE \u00b7 Hip",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Doubtful",
-    "team": "HOU",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-hou-logan-hall"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BAL",
-    "confirmed": false,
-    "home": "HOU",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (0% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Jake Hummel",
-    "reason": "LB \u00b7 Abdomen",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "HOU",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-hou-jake-hummel"
   },
   {
    "collection": "injuries",
@@ -1597,30 +1505,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-ind-charvarius-ward"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYG",
-    "confirmed": false,
-    "home": "IND",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "No snaps this season"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Drew Ogletree",
-    "reason": "TE \u00b7 Knee",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "IND",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-ind-drew-ogletree"
   },
   {
    "collection": "injuries",
@@ -1752,29 +1636,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (91% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Patrick Mekari",
-    "reason": "G \u00b7 Back",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "JAX",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-jax-patrick-mekari"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TEN",
-    "confirmed": false,
-    "home": "JAX",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study \u00b7 32% of JAX's targets and carries"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -1788,6 +1649,53 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-jax-bhayshul-tuten"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TEN",
+    "confirmed": false,
+    "home": "JAX",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (75% of snaps): about 0.5 points each in DeVig's injury study \u00b7 15% of JAX's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Parker Washington",
+    "reason": "WR \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "JAX",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-jax-parker-washington"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TEN",
+    "confirmed": false,
+    "home": "JAX",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (91% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Patrick Mekari",
+    "reason": "G \u00b7 Back",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Injured Reserve",
+    "team": "JAX",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-jax-patrick-mekari"
   },
   {
    "collection": "injuries",
@@ -1851,7 +1759,7 @@
     },
     "note": "Practice-week status; the official game status comes out Friday",
     "player": "Jonah Monheim",
-    "reason": "C",
+    "reason": "C \u00b7 Ankle",
     "sport": "NFL",
     "starter": false,
     "status": "Questionable",
@@ -1884,30 +1792,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-jax-dennis-gardeck"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TEN",
-    "confirmed": false,
-    "home": "JAX",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (25% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Danny Striggow",
-    "reason": "DE \u00b7 Concussion",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "JAX",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-jax-danny-striggow"
   },
   {
    "collection": "injuries",
@@ -2082,6 +1966,30 @@
     "confirmed": false,
     "home": "CLE",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (77% of snaps): about 0.5 points each in DeVig's injury study \u00b7 12% of LV's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Brock Bowers",
+    "reason": "TE \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "LV",
+    "tip": "Sun 8:20 PM",
+    "tip_sort": "1129-2020"
+   },
+   "doc_id": "nfl-lv-brock-bowers"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LV",
+    "confirmed": false,
+    "home": "CLE",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2130,30 +2038,6 @@
     "confirmed": false,
     "home": "CLE",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (77% of snaps): about 0.5 points each in DeVig's injury study \u00b7 12% of LV's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Brock Bowers",
-    "reason": "TE \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "LV",
-    "tip": "Sun 8:20 PM",
-    "tip_sort": "1129-2020"
-   },
-   "doc_id": "nfl-lv-brock-bowers"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LV",
-    "confirmed": false,
-    "home": "CLE",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2170,6 +2054,54 @@
     "tip_sort": "1129-2020"
    },
    "doc_id": "nfl-lv-tim-keenan"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NE",
+    "confirmed": false,
+    "home": "LAC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (36% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "David Njoku",
+    "reason": "TE \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "LAC",
+    "tip": "Sun 4:05 PM",
+    "tip_sort": "1129-1605"
+   },
+   "doc_id": "nfl-lac-david-njoku"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NE",
+    "confirmed": false,
+    "home": "LAC",
+    "impact": {
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (98% of snaps): about 3.8 points of final margin in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Justin Herbert",
+    "reason": "QB \u00b7 Concussion",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "LAC",
+    "tip": "Sun 4:05 PM",
+    "tip_sort": "1129-1605"
+   },
+   "doc_id": "nfl-lac-justin-herbert"
   },
   {
    "collection": "injuries",
@@ -2325,54 +2257,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Part-time (32% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Deane Leonard",
-    "reason": "CB \u00b7 Groin",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "LAC",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1129-1605"
-   },
-   "doc_id": "nfl-lac-deane-leonard"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NE",
-    "confirmed": false,
-    "home": "LAC",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (36% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "David Njoku",
-    "reason": "TE \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "LAC",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1129-1605"
-   },
-   "doc_id": "nfl-lac-david-njoku"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NE",
-    "confirmed": false,
-    "home": "LAC",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Part-time (27% of snaps) \u00b7 13% of LAC's targets and carries"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -2386,30 +2270,6 @@
     "tip_sort": "1129-1605"
    },
    "doc_id": "nfl-lac-keaton-mitchell"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NE",
-    "confirmed": false,
-    "home": "LAC",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (98% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Justin Herbert",
-    "reason": "QB \u00b7 Concussion",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "LAC",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1129-1605"
-   },
-   "doc_id": "nfl-lac-justin-herbert"
   },
   {
    "collection": "injuries",
@@ -2636,30 +2496,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (83% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Isaiah Rodgers",
-    "reason": "CB \u00b7 Quadriceps",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-min-isaiah-rodgers"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATL",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (55% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -2673,54 +2509,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-min-harrison-smith"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATL",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (81% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Jalen Redmond",
-    "reason": "DT \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-min-jalen-redmond"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATL",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (91% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Christian Darrisaw",
-    "reason": "OT \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-min-christian-darrisaw"
   },
   {
    "collection": "injuries",
@@ -2777,30 +2565,6 @@
     "confirmed": false,
     "home": "MIN",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (37% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Tai Felton",
-    "reason": "WR \u00b7 Hip",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "MIN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-min-tai-felton"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATL",
-    "confirmed": false,
-    "home": "MIN",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -2817,6 +2581,125 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-min-jordan-addison"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (83% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Isaiah Rodgers",
+    "reason": "CB \u00b7 Quadriceps",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "MIN",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-min-isaiah-rodgers"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (81% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Jalen Redmond",
+    "reason": "DT \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "MIN",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-min-jalen-redmond"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATL",
+    "confirmed": false,
+    "home": "MIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (91% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Christian Darrisaw",
+    "reason": "OT \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "MIN",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-min-christian-darrisaw"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NE",
+    "confirmed": false,
+    "home": "LAC",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (58% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Romeo Doubs",
+    "reason": "WR \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Injured Reserve",
+    "team": "NE",
+    "tip": "Sun 4:05 PM",
+    "tip_sort": "1129-1605"
+   },
+   "doc_id": "nfl-ne-romeo-doubs"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NE",
+    "confirmed": false,
+    "home": "LAC",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (64% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "A.J. Brown",
+    "reason": "WR \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Doubtful",
+    "team": "NE",
+    "tip": "Sun 4:05 PM",
+    "tip_sort": "1129-1605"
+   },
+   "doc_id": "nfl-ne-aj-brown"
   },
   {
    "collection": "injuries",
@@ -2900,53 +2783,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (58% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Romeo Doubs",
-    "reason": "WR \u00b7 Shoulder",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Injured Reserve",
-    "team": "NE",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1129-1605"
-   },
-   "doc_id": "nfl-ne-romeo-doubs"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NE",
-    "confirmed": false,
-    "home": "LAC",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (64% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "A.J. Brown",
-    "reason": "WR \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Doubtful",
-    "team": "NE",
-    "tip": "Sun 4:05 PM",
-    "tip_sort": "1129-1605"
-   },
-   "doc_id": "nfl-ne-aj-brown"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NE",
-    "confirmed": false,
-    "home": "LAC",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (89% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "player": "Alijah Vera-Tucker",
@@ -3007,6 +2843,30 @@
     "tip_sort": "1129-1605"
    },
    "doc_id": "nfl-ne-dremont-jones"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NO",
+    "confirmed": false,
+    "home": "CIN",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (61% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Juwan Johnson",
+    "reason": "TE \u00b7 Hamstring",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "NO",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-no-juwan-johnson"
   },
   {
    "collection": "injuries",
@@ -3114,54 +2974,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (61% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Juwan Johnson",
-    "reason": "TE \u00b7 Hamstring",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "NO",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-no-juwan-johnson"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NO",
-    "confirmed": false,
-    "home": "CIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (96% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Erik McCoy",
-    "reason": "C \u00b7 Biceps",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "NO",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-no-erik-mccoy"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NO",
-    "confirmed": false,
-    "home": "CIN",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (100% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -3175,6 +2987,54 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-no-taliese-fuaga"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYG",
+    "confirmed": false,
+    "home": "IND",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (86% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Abdul Carter",
+    "reason": "LB \u00b7 Calf",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "NYG",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-nyg-abdul-carter"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYG",
+    "confirmed": false,
+    "home": "IND",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (76% of snaps): about 0.5 points each in DeVig's injury study \u00b7 13% of NYG's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Isaiah Likely",
+    "reason": "TE \u00b7 Groin",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "NYG",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-nyg-isaiah-likely"
   },
   {
    "collection": "injuries",
@@ -3210,30 +3070,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (86% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Abdul Carter",
-    "reason": "LB \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "NYG",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-nyg-abdul-carter"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYG",
-    "confirmed": false,
-    "home": "IND",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (99% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -3247,30 +3083,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-nyg-arvell-reese"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYG",
-    "confirmed": false,
-    "home": "IND",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (76% of snaps): about 0.5 points each in DeVig's injury study \u00b7 13% of NYG's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Isaiah Likely",
-    "reason": "TE \u00b7 Groin",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "NYG",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-nyg-isaiah-likely"
   },
   {
    "collection": "injuries",
@@ -3329,6 +3141,30 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
+     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Omar Cooper Jr.",
+    "reason": "WR \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "NYJ",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-nyj-omar-cooper"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NYJ",
+    "confirmed": false,
+    "home": "MIA",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
      "why": "Regular (55% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -3342,30 +3178,6 @@
     "tip_sort": "1129-1300"
    },
    "doc_id": "nfl-nyj-harrison-phillips"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NYJ",
-    "confirmed": false,
-    "home": "MIA",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (57% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Isaiah Williams",
-    "reason": "WR \u00b7 Ribs",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "NYJ",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-nyj-isaiah-williams"
   },
   {
    "collection": "injuries",
@@ -3418,26 +3230,163 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "NYJ",
-    "confirmed": false,
-    "home": "MIA",
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (53% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (74% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Omar Cooper Jr.",
-    "reason": "WR \u00b7 Ankle",
+    "player": "Dallas Goedert",
+    "reason": "TE \u00b7 Shoulder",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-dallas-goedert"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (42% of snaps) \u00b7 18% of PHI's targets and carries"
+    },
+    "player": "Saquon Barkley",
+    "reason": "RB \u00b7 Neck",
     "sport": "NFL",
     "starter": false,
     "status": "Questionable",
-    "team": "NYJ",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
    },
-   "doc_id": "nfl-nyj-omar-cooper"
+   "doc_id": "nfl-phi-saquon-barkley"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (99% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "player": "Cooper DeJean",
+    "reason": "CB \u00b7 Concussion",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-cooper-dejean"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (0% of snaps)"
+    },
+    "player": "Cole Payton",
+    "reason": "QB \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-cole-payton"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (10% of snaps)"
+    },
+    "player": "Grant Calcaterra",
+    "reason": "TE \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-grant-calcaterra"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (0% of snaps)"
+    },
+    "player": "Ajani Cornelius",
+    "reason": "OT \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-ajani-cornelius"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PHI",
+    "confirmed": true,
+    "home": "DAL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (12% of snaps)"
+    },
+    "player": "AJ Epenesa",
+    "reason": "DE \u00b7 Coach's Decision",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Out",
+    "team": "PHI",
+    "tip": "Thu 4:30 PM",
+    "tip_sort": "1126-1630"
+   },
+   "doc_id": "nfl-phi-aj-epenesa"
   },
   {
    "collection": "injuries",
@@ -3513,52 +3462,6 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "PHI",
-    "confirmed": true,
-    "home": "DAL",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (80% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Dontayvion Wicks",
-    "reason": "WR \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Injured Reserve",
-    "team": "PHI",
-    "tip": "Thu 4:30 PM",
-    "tip_sort": "1126-1630"
-   },
-   "doc_id": "nfl-phi-dontayvion-wicks"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "confirmed": true,
-    "home": "PIT",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (31% of snaps)"
-    },
-    "player": "DeShon Elliott",
-    "reason": "S \u00b7 Knee",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "PIT",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
-   },
-   "doc_id": "nfl-pit-deshon-elliott"
-  },
-  {
-   "collection": "injuries",
-   "data": {
     "away": "DEN",
     "confirmed": true,
     "home": "PIT",
@@ -3566,18 +3469,19 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (78% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (60% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "player": "Michael Pittman Jr.",
-    "reason": "WR \u00b7 Foot",
+    "note": "Downgraded from doubtful",
+    "player": "Alex Highsmith",
+    "reason": "LB \u00b7 Ankle",
     "sport": "NFL",
     "starter": true,
-    "status": "Injured Reserve",
+    "status": "Out",
     "team": "PIT",
     "tip": "Fri 3:00 PM",
     "tip_sort": "1127-1500"
    },
-   "doc_id": "nfl-pit-michael-pittman"
+   "doc_id": "nfl-pit-alex-highsmith"
   },
   {
    "collection": "injuries",
@@ -3605,71 +3509,74 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "DEN",
-    "confirmed": true,
-    "home": "PIT",
+    "away": "SEA",
+    "confirmed": false,
+    "home": "SF",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Jordan Watkins",
+    "reason": "WR \u00b7 Groin",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "SF",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
+   },
+   "doc_id": "nfl-sf-jordan-watkins"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SEA",
+    "confirmed": false,
+    "home": "SF",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
      "why": "Regular (52% of snaps): about 0.5 points each in DeVig's injury study"
     },
-    "player": "Nick Herbig",
-    "reason": "LB \u00b7 Hip",
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Mike Evans",
+    "reason": "WR \u00b7 Achilles",
     "sport": "NFL",
     "starter": false,
     "status": "Questionable",
-    "team": "PIT",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
+    "team": "SF",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
    },
-   "doc_id": "nfl-pit-nick-herbig"
+   "doc_id": "nfl-sf-mike-evans"
   },
   {
    "collection": "injuries",
    "data": {
-    "away": "DEN",
-    "confirmed": true,
-    "home": "PIT",
+    "away": "SEA",
+    "confirmed": false,
+    "home": "SF",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (14% of snaps)"
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (97% of snaps): about 3.8 points of final margin in DeVig's injury study"
     },
-    "player": "Ben Skowronek",
-    "reason": "WR \u00b7 Calf",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "PIT",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
-   },
-   "doc_id": "nfl-pit-ben-skowronek"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "DEN",
-    "confirmed": true,
-    "home": "PIT",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (60% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "player": "Alex Highsmith",
-    "reason": "LB \u00b7 Ankle",
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Brock Purdy",
+    "reason": "QB \u00b7 Ankle",
     "sport": "NFL",
     "starter": true,
-    "status": "Doubtful",
-    "team": "PIT",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
+    "status": "Questionable",
+    "team": "SF",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
    },
-   "doc_id": "nfl-pit-alex-highsmith"
+   "doc_id": "nfl-sf-brock-purdy"
   },
   {
    "collection": "injuries",
@@ -3693,30 +3600,6 @@
     "tip_sort": "1129-1625"
    },
    "doc_id": "nfl-sf-colton-mckivitz"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SEA",
-    "confirmed": false,
-    "home": "SF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (56% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Jordan Watkins",
-    "reason": "WR \u00b7 Groin",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SF",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-sf-jordan-watkins"
   },
   {
    "collection": "injuries",
@@ -3868,22 +3751,22 @@
     "confirmed": false,
     "home": "SF",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (52% of snaps): about 0.5 points each in DeVig's injury study"
+     "bars": 4,
+     "label": "Game changer",
+     "level": "gamechanger",
+     "why": "Starting QB (98% of snaps): about 3.8 points of final margin in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Mike Evans",
-    "reason": "WR \u00b7 Achilles",
+    "player": "Drew Lock",
+    "reason": "QB \u00b7 Elbow",
     "sport": "NFL",
-    "starter": false,
+    "starter": true,
     "status": "Questionable",
-    "team": "SF",
+    "team": "SEA",
     "tip": "Sun 4:25 PM",
     "tip_sort": "1129-1625"
    },
-   "doc_id": "nfl-sf-mike-evans"
+   "doc_id": "nfl-sea-drew-lock"
   },
   {
    "collection": "injuries",
@@ -3892,22 +3775,70 @@
     "confirmed": false,
     "home": "SF",
     "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (97% of snaps): about 3.8 points of final margin in DeVig's injury study"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (50% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Brock Purdy",
-    "reason": "QB \u00b7 Ankle",
+    "player": "Uchenna Nwosu",
+    "reason": "LB \u00b7 Ankle",
     "sport": "NFL",
-    "starter": true,
+    "starter": false,
     "status": "Questionable",
-    "team": "SF",
+    "team": "SEA",
     "tip": "Sun 4:25 PM",
     "tip_sort": "1129-1625"
    },
-   "doc_id": "nfl-sf-brock-purdy"
+   "doc_id": "nfl-sea-uchenna-nwosu"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SEA",
+    "confirmed": false,
+    "home": "SF",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (1% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Patrick O'Connell",
+    "reason": "LB \u00b7 Toe",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "SEA",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
+   },
+   "doc_id": "nfl-sea-patrick-oconnell"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SEA",
+    "confirmed": false,
+    "home": "SF",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (83% of snaps): about 0.5 points each in DeVig's injury study \u00b7 19% of SEA's targets and carries"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Jaxon Smith-Njigba",
+    "reason": "WR \u00b7 Ankle",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "SEA",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
+   },
+   "doc_id": "nfl-sea-jaxon-smith-njigba"
   },
   {
    "collection": "injuries",
@@ -3980,54 +3911,6 @@
     "tip_sort": "1129-1625"
    },
    "doc_id": "nfl-sea-abraham-lucas"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SEA",
-    "confirmed": false,
-    "home": "SF",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Part-time (26% of snaps)"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Nick Kallerup",
-    "reason": "TE \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-sea-nick-kallerup"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SEA",
-    "confirmed": false,
-    "home": "SF",
-    "impact": {
-     "bars": 4,
-     "label": "Game changer",
-     "level": "gamechanger",
-     "why": "Starting QB (98% of snaps): about 3.8 points of final margin in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Drew Lock",
-    "reason": "QB \u00b7 Elbow",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-sea-drew-lock"
   },
   {
    "collection": "injuries",
@@ -4111,30 +3994,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (83% of snaps): about 0.5 points each in DeVig's injury study \u00b7 19% of SEA's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Jaxon Smith-Njigba",
-    "reason": "WR \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-sea-jaxon-smith-njigba"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SEA",
-    "confirmed": false,
-    "home": "SF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (72% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
@@ -4148,30 +4007,6 @@
     "tip_sort": "1129-1625"
    },
    "doc_id": "nfl-sea-leonard-williams"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "SEA",
-    "confirmed": false,
-    "home": "SF",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (98% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Charles Cross",
-    "reason": "OT \u00b7 Ankle",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "SEA",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-sea-charles-cross"
   },
   {
    "collection": "injuries",
@@ -4196,6 +4031,30 @@
     "tip_sort": "1129-1625"
    },
    "doc_id": "nfl-sea-jarran-reed"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "CAR",
+    "confirmed": false,
+    "home": "TB",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Regular (93% of snaps): about 0.5 points each in DeVig's injury study"
+    },
+    "note": "Practice-week status; the official game status comes out Saturday",
+    "player": "Josiah Trotter",
+    "reason": "LB \u00b7 Oblique",
+    "sport": "NFL",
+    "starter": true,
+    "status": "Questionable",
+    "team": "TB",
+    "tip": "Mon 8:15 PM",
+    "tip_sort": "1130-2015"
+   },
+   "doc_id": "nfl-tb-josiah-trotter"
   },
   {
    "collection": "injuries",
@@ -4300,6 +4159,30 @@
     "confirmed": false,
     "home": "JAX",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Part-time (44% of snaps)"
+    },
+    "note": "Practice-week status; the official game status comes out Friday",
+    "player": "Dorian Mausi",
+    "reason": "LB \u00b7 Knee",
+    "sport": "NFL",
+    "starter": false,
+    "status": "Questionable",
+    "team": "TEN",
+    "tip": "Sun 1:00 PM",
+    "tip_sort": "1129-1300"
+   },
+   "doc_id": "nfl-ten-dorian-mausi"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "TEN",
+    "confirmed": false,
+    "home": "JAX",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -4320,50 +4203,26 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "TEN",
+    "away": "WAS",
     "confirmed": false,
-    "home": "JAX",
+    "home": "ARI",
     "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (51% of snaps): about 0.5 points each in DeVig's injury study"
+     "why": "Regular (57% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "note": "Practice-week status; the official game status comes out Friday",
-    "player": "John Franklin-Myers",
-    "reason": "DE \u00b7 Back",
+    "player": "Treylon Burks",
+    "reason": "WR \u00b7 Foot",
     "sport": "NFL",
     "starter": false,
     "status": "Questionable",
-    "team": "TEN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
+    "team": "WAS",
+    "tip": "Sun 4:25 PM",
+    "tip_sort": "1129-1625"
    },
-   "doc_id": "nfl-ten-john-franklin-myers"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "TEN",
-    "confirmed": false,
-    "home": "JAX",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (96% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Dan Moore Jr.",
-    "reason": "OT \u00b7 Knee",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "TEN",
-    "tip": "Sun 1:00 PM",
-    "tip_sort": "1129-1300"
-   },
-   "doc_id": "nfl-ten-dan-moore"
+   "doc_id": "nfl-was-treylon-burks"
   },
   {
    "collection": "injuries",
@@ -4423,54 +4282,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Regular (57% of snaps): about 0.5 points each in DeVig's injury study"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Treylon Burks",
-    "reason": "WR \u00b7 Foot",
-    "sport": "NFL",
-    "starter": false,
-    "status": "Questionable",
-    "team": "WAS",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-was-treylon-burks"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "confirmed": false,
-    "home": "ARI",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Regular (62% of snaps): about 0.5 points each in DeVig's injury study \u00b7 11% of WAS's targets and carries"
-    },
-    "note": "Practice-week status; the official game status comes out Friday",
-    "player": "Stefon Diggs",
-    "reason": "WR \u00b7 Personal",
-    "sport": "NFL",
-    "starter": true,
-    "status": "Questionable",
-    "team": "WAS",
-    "tip": "Sun 4:25 PM",
-    "tip_sort": "1129-1625"
-   },
-   "doc_id": "nfl-was-stefon-diggs"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "WAS",
-    "confirmed": false,
-    "home": "ARI",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Regular (89% of snaps): about 0.5 points each in DeVig's injury study"
     },
     "player": "Laremy Tunsil",
@@ -4485,6 +4296,6 @@
    "doc_id": "nfl-was-laremy-tunsil"
   }
  ],
- "generated_at": "2026-11-26T15:01:46Z",
+ "generated_at": "2026-11-26T23:46:08Z",
  "source": "ESPN injury feed + nflverse snap counts; game changer scale from DeVig's injury study (tools/injuries_export.py)"
 }
