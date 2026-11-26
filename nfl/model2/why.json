@@ -2776,16 +2776,16 @@
   "2026_12_CHI_DET": {
    "away": "CHI",
    "home": "DET",
-   "home_wp": 0.6636,
+   "home_wp": 0.6705,
    "injuries": {
-    "d_out": 0.0,
-    "d_q": 0.0,
+    "d_out": -1.0,
+    "d_q": 1.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6639,
     "home_field": 0.5484,
-    "who_is_out": 0.6636
+    "who_is_out": 0.6705
    },
    "teams": {
     "away": {
@@ -2823,16 +2823,16 @@
   "2026_12_DEN_PIT": {
    "away": "DEN",
    "home": "PIT",
-   "home_wp": 0.487,
+   "home_wp": 0.3583,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": -1.0,
     "d_q": 0.0,
-    "d_qb": 0.0
+    "d_qb": 1.0
    },
    "steps": {
     "form": 0.4874,
     "home_field": 0.5484,
-    "who_is_out": 0.487
+    "who_is_out": 0.3583
    },
    "teams": {
     "away": {
@@ -2917,16 +2917,16 @@
   "2026_12_KC_BUF": {
    "away": "KC",
    "home": "BUF",
-   "home_wp": 0.6439,
+   "home_wp": 0.6347,
    "injuries": {
     "d_out": 0.0,
-    "d_q": 0.0,
+    "d_q": 1.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6443,
     "home_field": 0.5484,
-    "who_is_out": 0.6439
+    "who_is_out": 0.6347
    },
    "teams": {
     "away": {
@@ -3246,16 +3246,16 @@
   "2026_12_SEA_SF": {
    "away": "SEA",
    "home": "SF",
-   "home_wp": 0.6475,
+   "home_wp": 0.6311,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.6478,
     "home_field": 0.5484,
-    "who_is_out": 0.6475
+    "who_is_out": 0.6311
    },
    "teams": {
     "away": {
@@ -3385,7 +3385,7 @@
    }
   }
  },
- "generated_at": "2026-11-26T03:45:43Z",
+ "generated_at": "2026-11-26T17:17:46Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
  "max_gap_vs_upcoming": 0.0,
  "model": "NFL_MODEL_2_0",
