@@ -12,30 +12,30 @@
    {
     "hi": 0.5,
     "lo": 0.4,
-    "n": 964,
+    "n": 962,
     "said": 0.464,
     "won": 0.439
    },
    {
     "hi": 0.6,
     "lo": 0.5,
-    "n": 2217,
-    "said": 0.549,
+    "n": 2226,
+    "said": 0.55,
     "won": 0.532
    },
    {
     "hi": 0.7,
     "lo": 0.6,
-    "n": 982,
+    "n": 978,
     "said": 0.635,
-    "won": 0.659
+    "won": 0.661
    },
    {
     "hi": 1,
     "lo": 0.7,
-    "n": 68,
-    "said": 0.721,
-    "won": 0.882
+    "n": 65,
+    "said": 0.722,
+    "won": 0.877
    }
   ],
   "games": 4335,
@@ -144,12 +144,12 @@
    "game_id": "2026020406",
    "home": "WSH",
    "home_name": "Washington Capitals",
-   "home_wp": 0.5343,
+   "home_wp": 0.5352,
    "kickoff": "2026-11-27T20:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.1835,
-    "sh": 0.0
+    "sh": 0.0065
    }
   },
   {
@@ -174,12 +174,12 @@
    "game_id": "2026020408",
    "home": "MIN",
    "home_name": "Minnesota Wild",
-   "home_wp": 0.5293,
+   "home_wp": 0.5319,
    "kickoff": "2026-11-27T21:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.161,
-    "sh": -0.0133
+    "sh": 0.0065
    }
   },
   {
@@ -384,12 +384,12 @@
    "game_id": "2026020422",
    "home": "STL",
    "home_name": "St. Louis Blues",
-   "home_wp": 0.5487,
+   "home_wp": 0.5479,
    "kickoff": "2026-11-29T00:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 0.2731,
-    "sh": 0.011
+    "sh": 0.0045
    }
   },
   {
@@ -429,12 +429,12 @@
    "game_id": "2026020425",
    "home": "COL",
    "home_name": "Colorado Avalanche",
-   "home_wp": 0.7011,
+   "home_wp": 0.6996,
    "kickoff": "2026-11-29T02:00:00Z",
    "parts": {
     "b2b": 0,
     "elo": 1.4077,
-    "sh": 0.0067
+    "sh": -0.0065
    }
   },
   {
@@ -466,9 +466,24 @@
     "elo": -0.2873,
     "sh": 0.1326
    }
+  },
+  {
+   "away": "MIN",
+   "away_name": "Minnesota Wild",
+   "date": "2026-11-29",
+   "game_id": "2026020428",
+   "home": "CHI",
+   "home_name": "Chicago Blackhawks",
+   "home_wp": 0.3874,
+   "kickoff": "2026-11-29T19:00:00Z",
+   "parts": {
+    "b2b": 0,
+    "elo": -0.8424,
+    "sh": 0.0
+   }
   }
  ],
- "generated_at": "2026-11-26T11:03:53Z",
+ "generated_at": "2026-11-26T20:15:51Z",
  "model": {
   "elo": {
    "carry": 0.85,
