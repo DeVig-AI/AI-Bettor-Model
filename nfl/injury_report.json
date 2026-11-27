@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T01:15:35.696001Z",
+ "generated_at": "2026-11-27T15:46:53.009696Z",
  "rule": "key = avg snap share >= 60% (QB >= 50%) in games played; every status except Active",
  "source": "ESPN injury feed + nflverse snap counts",
  "teams": {
@@ -181,7 +181,7 @@
     "pos": "TE",
     "return_date": "2026-12-06",
     "share_basis": "this season",
-    "snap_share": 0.87,
+    "snap_share": 0.8,
     "status": "Questionable"
    }
   ],
@@ -289,6 +289,16 @@
     "share_basis": "this season",
     "snap_share": 0.89,
     "status": "Injured Reserve"
+   },
+   {
+    "espn_updated": "2026-11-27T03:11Z",
+    "injury": "Back",
+    "name": "Quinnen Williams",
+    "pos": "DT",
+    "return_date": "2026-12-07",
+    "share_basis": "this season",
+    "snap_share": 0.64,
+    "status": "Questionable"
    }
   ],
   "DEN": [
@@ -483,6 +493,16 @@
     "share_basis": "this season",
     "snap_share": 0.74,
     "status": "Out"
+   },
+   {
+    "espn_updated": "2026-11-27T05:22Z",
+    "injury": "Ankle",
+    "name": "Trey Smith",
+    "pos": "G",
+    "return_date": "2026-12-03",
+    "share_basis": "this season",
+    "snap_share": 0.89,
+    "status": "Questionable"
    }
   ],
   "LA": [
@@ -825,23 +845,33 @@
   ],
   "PHI": [
    {
-    "espn_updated": "2026-11-26T23:03Z",
-    "injury": "Shoulder",
-    "name": "Dallas Goedert",
-    "pos": "TE",
-    "return_date": "2026-12-06",
-    "share_basis": "this season",
-    "snap_share": 0.74,
-    "status": "Out"
-   },
-   {
     "espn_updated": "2026-11-26T22:08Z",
     "injury": "Concussion",
     "name": "Cooper DeJean",
     "pos": "CB",
     "return_date": "2026-12-06",
     "share_basis": "this season",
-    "snap_share": 0.99,
+    "snap_share": 0.91,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-27T02:39Z",
+    "injury": "Back",
+    "name": "DeVonta Smith",
+    "pos": "WR",
+    "return_date": "2026-12-06",
+    "share_basis": "this season",
+    "snap_share": 0.84,
+    "status": "Questionable"
+   },
+   {
+    "espn_updated": "2026-11-27T02:30Z",
+    "injury": "Shoulder",
+    "name": "Dallas Goedert",
+    "pos": "TE",
+    "return_date": "2026-12-06",
+    "share_basis": "this season",
+    "snap_share": 0.68,
     "status": "Questionable"
    }
   ],
@@ -909,7 +939,7 @@
     "status": "Questionable"
    },
    {
-    "espn_updated": "2026-11-26T00:27Z",
+    "espn_updated": "2026-11-27T02:20Z",
     "injury": "Knee",
     "name": "Anthony Bradford",
     "pos": "G",
