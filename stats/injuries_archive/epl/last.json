@@ -13,8 +13,8 @@
 "away": "MNC",
 "home": "ARS",
 "player": "David Raya Mart\u00edn",
-"reason": "Shoulder injury - 50% chance of playing",
-"status": "50% to play",
+"reason": "Shoulder injury - 75% chance of playing",
+"status": "75% to play",
 "team": "ARS",
 "tip": "Sun 11:30 AM",
 "tip_sort": "1129-1130"
@@ -45,16 +45,6 @@
 "player": "Matteo Ruggeri",
 "reason": "Hamstring injury - Expected back 2 Jan",
 "status": "Out",
-"team": "AVL",
-"tip": "Sat 12:30 PM",
-"tip_sort": "1128-1230"
-},
-"epl-avl-matty-cash": {
-"away": "AVL",
-"home": "IPS",
-"player": "Matty Cash",
-"reason": "Concussion - 75% chance of playing",
-"status": "75% to play",
 "team": "AVL",
 "tip": "Sat 12:30 PM",
 "tip_sort": "1128-1230"
@@ -95,6 +85,16 @@
 "player": "Malick Yalcouy\u00e9",
 "reason": "Unspecified injury - Unknown return date",
 "status": "Out",
+"team": "BHA",
+"tip": "Sun 9:05 AM",
+"tip_sort": "1129-0905"
+},
+"epl-bha-matt-oriley": {
+"away": "NEW",
+"home": "BHA",
+"player": "Matt O'Riley",
+"reason": "Ankle injury - 75% chance of playing",
+"status": "75% to play",
 "team": "BHA",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
@@ -149,6 +149,16 @@
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
 },
+"epl-bou-ben-gannon-doak": {
+"away": "BOU",
+"home": "FUL",
+"player": "Ben Gannon-Doak",
+"reason": "Illness - 75% chance of playing",
+"status": "75% to play",
+"team": "BOU",
+"tip": "Sun 9:05 AM",
+"tip_sort": "1129-0905"
+},
 "epl-bou-juanlu-sanchez": {
 "away": "BOU",
 "home": "FUL",
@@ -179,16 +189,6 @@
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
 },
-"epl-bou-veljko-milosavljevic": {
-"away": "BOU",
-"home": "FUL",
-"player": "Veljko Milosavljevic",
-"reason": "Thigh injury - Unknown return date",
-"status": "Out",
-"team": "BOU",
-"tip": "Sun 9:05 AM",
-"tip_sort": "1129-0905"
-},
 "epl-bre-aaron-hickey": {
 "away": "BRE",
 "home": "MAN",
@@ -203,7 +203,7 @@
 "away": "BRE",
 "home": "MAN",
 "player": "Antoni Milambo",
-"reason": "Knee injury - Unknown return date",
+"reason": "Lack of match fitness - Expected back 5 Dec",
 "status": "Out",
 "team": "BRE",
 "tip": "Sat 10:00 AM",
@@ -223,7 +223,7 @@
 "away": "BRE",
 "home": "MAN",
 "player": "Josh Dasilva",
-"reason": "Hamstring injury - Unknown return date",
+"reason": "Lack of match fitness - Expected back 5 Dec",
 "status": "Out",
 "team": "BRE",
 "tip": "Sat 10:00 AM",
@@ -459,12 +459,22 @@
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
 },
+"epl-ful-joachim-andersen": {
+"away": "BOU",
+"home": "FUL",
+"player": "Joachim Andersen",
+"reason": "Unspecified injury - Unknown return date",
+"status": "Out",
+"team": "FUL",
+"tip": "Sun 9:05 AM",
+"tip_sort": "1129-0905"
+},
 "epl-hul-charlie-hughes": {
 "away": "HUL",
 "home": "CRY",
 "player": "Charlie Hughes",
-"reason": "Groin injury - Unknown return date",
-"status": "Out",
+"reason": "Groin injury - 50% chance of playing",
+"status": "50% to play",
 "team": "HUL",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
@@ -503,8 +513,8 @@
 "away": "HUL",
 "home": "CRY",
 "player": "Ilyas Ansah",
-"reason": "Back injury - Unknown return date",
-"status": "Out",
+"reason": "Back injury - 50% chance of playing",
+"status": "50% to play",
 "team": "HUL",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
@@ -538,16 +548,6 @@
 "team": "HUL",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
-},
-"epl-ips-leif-davis": {
-"away": "AVL",
-"home": "IPS",
-"player": "Leif Davis",
-"reason": "Calf injury - 75% chance of playing",
-"status": "75% to play",
-"team": "IPS",
-"tip": "Sat 12:30 PM",
-"tip_sort": "1128-1230"
 },
 "epl-lee-mateo-joseph-fernandez-regatillo": {
 "away": "COV",
@@ -603,8 +603,8 @@
 "away": "LIV",
 "home": "EVE",
 "player": "Ryan Gravenberch",
-"reason": "Foot injury - Unknown return date",
-"status": "Out",
+"reason": "Foot injury - 25% chance of playing",
+"status": "Doubtful",
 "team": "LIV",
 "tip": "Sun 7:00 AM",
 "tip_sort": "1129-0700"
@@ -639,11 +639,21 @@
 "tip": "Sat 10:00 AM",
 "tip_sort": "1128-1000"
 },
+"epl-man-bruno-fernandes": {
+"away": "BRE",
+"home": "MAN",
+"player": "Bruno Fernandes",
+"reason": "Illness - 75% chance of playing",
+"status": "75% to play",
+"team": "MAN",
+"tip": "Sat 10:00 AM",
+"tip_sort": "1128-1000"
+},
 "epl-man-carlos-baleba": {
 "away": "BRE",
 "home": "MAN",
 "player": "Carlos Baleba",
-"reason": "Hamstring injury - Unknown return date",
+"reason": "Hamstring injury - Expected back 1 Feb",
 "status": "Out",
 "team": "MAN",
 "tip": "Sat 10:00 AM",
@@ -673,7 +683,7 @@
 "away": "MNC",
 "home": "ARS",
 "player": "Antoine Semenyo",
-"reason": "Knee injury - Unknown return date",
+"reason": "Knee injury - Expected back 2 Dec",
 "status": "Out",
 "team": "MNC",
 "tip": "Sun 11:30 AM",
@@ -789,6 +799,16 @@
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
 },
+"epl-tot-lucas-bergvall": {
+"away": "TOT",
+"home": "SUN",
+"player": "Lucas Bergvall",
+"reason": "Illness - 75% chance of playing",
+"status": "75% to play",
+"team": "TOT",
+"tip": "Sun 9:05 AM",
+"tip_sort": "1129-0905"
+},
 "epl-tot-mathys-tel": {
 "away": "TOT",
 "home": "SUN",
@@ -813,8 +833,8 @@
 "away": "TOT",
 "home": "SUN",
 "player": "S\u00e1vio",
-"reason": "Hamstring injury - 75% chance of playing",
-"status": "75% to play",
+"reason": "Hamstring injury - Unknown return date",
+"status": "Out",
 "team": "TOT",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"
@@ -823,8 +843,8 @@
 "away": "TOT",
 "home": "SUN",
 "player": "Tosin Adarabioyo",
-"reason": "Calf injury - Expected back 29 Nov",
-"status": "Out",
+"reason": "Calf injury - 75% chance of playing",
+"status": "75% to play",
 "team": "TOT",
 "tip": "Sun 9:05 AM",
 "tip_sort": "1129-0905"

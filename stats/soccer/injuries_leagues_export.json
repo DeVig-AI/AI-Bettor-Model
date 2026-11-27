@@ -3,11 +3,33 @@
   {
    "collection": "injury_meta",
    "data": {
-    "as_of": "Fri Nov 27 \u00b7 3:12 AM ET",
+    "as_of": "Fri Nov 27 \u00b7 1:52 PM ET",
     "date": "2026-11-27",
     "sport": "SOCCER"
    },
    "doc_id": "soccer-meta"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BMG",
+    "home": "SVW",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 3 of SVW's last 10 matches \u00b7 a goal or assist on 2 of their 21 goals (10%)"
+    },
+    "player": "Justin Njinmah",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "BUND",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "SVW",
+    "tip": "Fri 2:30 PM",
+    "tip_sort": "1127-1430"
+   },
+   "doc_id": "soccer-svw-justin-njinmah"
   },
   {
    "collection": "injuries",
@@ -20,11 +42,12 @@
      "level": "big",
      "why": "Played in 9 of SVW's last 10 matches \u00b7 a goal or assist on 8 of their 21 goals (38%)"
     },
+    "note": "Downgraded from doubtful",
     "player": "Marco Gr\u00fcll",
-    "reason": "Injury \u00b7 Doubtful",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
     "sport": "BUND",
     "starter": true,
-    "status": "Doubtful",
+    "status": "Out",
     "team": "SVW",
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
@@ -37,21 +60,43 @@
     "away": "BMG",
     "home": "SVW",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Played in 6 of SVW's last 10 matches \u00b7 a goal or assist on 1 of their 21 goals (5%)"
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of SVW's last 10 matches"
     },
-    "player": "Mitchell Weiser",
-    "reason": "Injury \u00b7 expected return: late November 2026",
+    "player": "Skelly Alvero",
+    "reason": "Injury \u00b7 expected return: early December 2026",
     "sport": "BUND",
-    "starter": true,
+    "starter": false,
     "status": "Out",
     "team": "SVW",
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
    },
-   "doc_id": "soccer-svw-mitchell-weiser"
+   "doc_id": "soccer-svw-skelly-alvero"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BMG",
+    "home": "SVW",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 3 of SVW's last 10 matches"
+    },
+    "player": "Salim Musah",
+    "reason": "Injury \u00b7 expected return: early January 2027",
+    "sport": "BUND",
+    "starter": false,
+    "status": "Out",
+    "team": "SVW",
+    "tip": "Fri 2:30 PM",
+    "tip_sort": "1127-1430"
+   },
+   "doc_id": "soccer-svw-salim-musah"
   },
   {
    "collection": "injuries",
@@ -86,28 +131,6 @@
      "level": "minor",
      "why": "Played in 0 of SVW's last 10 matches"
     },
-    "player": "Felix Agu",
-    "reason": "Injury \u00b7 expected return: early December 2026",
-    "sport": "BUND",
-    "starter": false,
-    "status": "Out",
-    "team": "SVW",
-    "tip": "Fri 2:30 PM",
-    "tip_sort": "1127-1430"
-   },
-   "doc_id": "soccer-svw-felix-agu"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BMG",
-    "home": "SVW",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Played in 0 of SVW's last 10 matches"
-    },
     "player": "Jens Stage",
     "reason": "Injury \u00b7 expected return: early December 2026",
     "sport": "BUND",
@@ -130,7 +153,7 @@
      "level": "minor",
      "why": "Played in 0 of SVW's last 10 matches"
     },
-    "player": "Skelly Alvero",
+    "player": "Felix Agu",
     "reason": "Injury \u00b7 expected return: early December 2026",
     "sport": "BUND",
     "starter": false,
@@ -139,7 +162,7 @@
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
    },
-   "doc_id": "soccer-svw-skelly-alvero"
+   "doc_id": "soccer-svw-felix-agu"
   },
   {
    "collection": "injuries",
@@ -169,34 +192,12 @@
     "away": "BMG",
     "home": "SVW",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Played in 3 of SVW's last 10 matches"
-    },
-    "player": "Salim Musah",
-    "reason": "Injury \u00b7 expected return: early January 2027",
-    "sport": "BUND",
-    "starter": false,
-    "status": "Out",
-    "team": "SVW",
-    "tip": "Fri 2:30 PM",
-    "tip_sort": "1127-1430"
-   },
-   "doc_id": "soccer-svw-salim-musah"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BMG",
-    "home": "SVW",
-    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Played in 6 of BMG's last 10 matches"
+     "why": "Played in 10 of BMG's last 10 matches \u00b7 a goal or assist on 1 of their 12 goals (8%)"
     },
-    "player": "Daiki Hashioka",
+    "player": "Robin Hack",
     "reason": "Injury \u00b7 Doubtful",
     "sport": "BUND",
     "starter": true,
@@ -205,29 +206,7 @@
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
    },
-   "doc_id": "soccer-bmg-daiki-hashioka"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BMG",
-    "home": "SVW",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Played in 3 of BMG's last 10 matches"
-    },
-    "player": "Jan Leszczy\u0144ski",
-    "reason": "Injury \u00b7 expected return: early December 2026",
-    "sport": "BUND",
-    "starter": false,
-    "status": "Out",
-    "team": "BMG",
-    "tip": "Fri 2:30 PM",
-    "tip_sort": "1127-1430"
-   },
-   "doc_id": "soccer-bmg-jan-leszczynski"
+   "doc_id": "soccer-bmg-robin-hack"
   },
   {
    "collection": "injuries",
@@ -257,21 +236,22 @@
     "away": "BMG",
     "home": "SVW",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Not in DeVig's box scores for this club's recent matches"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 6 of BMG's last 10 matches"
     },
-    "player": "Enzo Leopold",
-    "reason": "Injury \u00b7 expected return: late May 2027",
+    "note": "Downgraded from doubtful",
+    "player": "Daiki Hashioka",
+    "reason": "Injury \u00b7 expected return: a few weeks",
     "sport": "BUND",
-    "starter": false,
+    "starter": true,
     "status": "Out",
     "team": "BMG",
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
    },
-   "doc_id": "soccer-bmg-enzo-leopold"
+   "doc_id": "soccer-bmg-daiki-hashioka"
   },
   {
    "collection": "injuries",
@@ -306,8 +286,8 @@
      "level": "minor",
      "why": "Played in 3 of BMG's last 10 matches"
     },
-    "player": "Tim Kleindienst",
-    "reason": "Injury \u00b7 expected return: late November 2026",
+    "player": "Jan Leszczy\u0144ski",
+    "reason": "Injury \u00b7 expected return: early December 2026",
     "sport": "BUND",
     "starter": false,
     "status": "Out",
@@ -315,7 +295,29 @@
     "tip": "Fri 2:30 PM",
     "tip_sort": "1127-1430"
    },
-   "doc_id": "soccer-bmg-tim-kleindienst"
+   "doc_id": "soccer-bmg-jan-leszczynski"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BMG",
+    "home": "SVW",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in DeVig's box scores for this club's recent matches"
+    },
+    "player": "Enzo Leopold",
+    "reason": "Injury \u00b7 expected return: late May 2027",
+    "sport": "BUND",
+    "starter": false,
+    "status": "Out",
+    "team": "BMG",
+    "tip": "Fri 2:30 PM",
+    "tip_sort": "1127-1430"
+   },
+   "doc_id": "soccer-bmg-enzo-leopold"
   },
   {
    "collection": "injuries",
@@ -502,6 +504,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Played in 1 of BOL's last 10 matches"
+    },
+    "player": "Lorenzo De Silvestri",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Out",
+    "team": "BOL",
+    "tip": "Fri 2:45 PM",
+    "tip_sort": "1127-1445"
+   },
+   "doc_id": "soccer-bol-lorenzo-de-silvestri"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "BOL",
+    "home": "VEN",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Not in DeVig's box scores for this club's recent matches"
     },
     "player": "Ukko Happonen",
@@ -568,28 +592,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Played in 1 of BOL's last 10 matches"
-    },
-    "player": "Lorenzo De Silvestri",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "SERIEA",
-    "starter": false,
-    "status": "Out",
-    "team": "BOL",
-    "tip": "Fri 2:45 PM",
-    "tip_sort": "1127-1445"
-   },
-   "doc_id": "soccer-bol-lorenzo-de-silvestri"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "BOL",
-    "home": "VEN",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Played in 2 of BOL's last 10 matches"
     },
     "player": "Oussama El Azzouzi",
@@ -634,28 +636,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Played in 8 of LEV's last 10 matches \u00b7 a goal or assist on 1 of their 12 goals (8%)"
-    },
-    "player": "Petar Ratkov",
-    "reason": "Injury \u00b7 Doubtful",
-    "sport": "LALIGA",
-    "starter": true,
-    "status": "Doubtful",
-    "team": "LEV",
-    "tip": "Fri 3:00 PM",
-    "tip_sort": "1127-1500"
-   },
-   "doc_id": "soccer-lev-petar-ratkov"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "RAC",
-    "home": "LEV",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Played in 9 of LEV's last 10 matches \u00b7 a goal or assist on 1 of their 12 goals (8%)"
     },
     "player": "Jeremy Toljan",
@@ -690,6 +670,28 @@
     "tip_sort": "1127-1500"
    },
    "doc_id": "soccer-lev-manuel-sanchez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "RAC",
+    "home": "LEV",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of LEV's last 10 matches \u00b7 a goal or assist on 1 of their 12 goals (8%)"
+    },
+    "player": "Petar Ratkov",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LALIGA",
+    "starter": true,
+    "status": "Doubtful",
+    "team": "LEV",
+    "tip": "Fri 3:00 PM",
+    "tip_sort": "1127-1500"
+   },
+   "doc_id": "soccer-lev-petar-ratkov"
   },
   {
    "collection": "injuries",
@@ -983,22 +985,22 @@
     "away": "RAY",
     "home": "BET",
     "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Played in 8 of BET's last 10 matches \u00b7 a goal or assist on 1 of their 18 goals (6%)"
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 3 of BET's last 10 matches \u00b7 a goal or assist on 1 of their 18 goals (6%)"
     },
-    "note": "Upgraded from out",
-    "player": "Dani Ceballos",
-    "reason": "Injury \u00b7 Doubtful",
+    "note": "Downgraded from doubtful",
+    "player": "Giovani Lo Celso",
+    "reason": "Injury \u00b7 expected return: mid December 2026",
     "sport": "LALIGA",
-    "starter": true,
-    "status": "Doubtful",
+    "starter": false,
+    "status": "Out",
     "team": "BET",
     "tip": "Sat 8:00 AM",
     "tip_sort": "1128-0800"
    },
-   "doc_id": "soccer-bet-dani-ceballos"
+   "doc_id": "soccer-bet-giovani-lo-celso"
   },
   {
    "collection": "injuries",
@@ -1006,21 +1008,22 @@
     "away": "RAY",
     "home": "BET",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Played in 3 of BET's last 10 matches \u00b7 a goal or assist on 1 of their 18 goals (6%)"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of BET's last 10 matches \u00b7 a goal or assist on 1 of their 18 goals (6%)"
     },
-    "player": "Giovani Lo Celso",
-    "reason": "Injury \u00b7 Doubtful",
+    "note": "Downgraded from doubtful",
+    "player": "Dani Ceballos",
+    "reason": "Injury \u00b7 expected return: early December 2026",
     "sport": "LALIGA",
-    "starter": false,
-    "status": "Doubtful",
+    "starter": true,
+    "status": "Out",
     "team": "BET",
     "tip": "Sat 8:00 AM",
     "tip_sort": "1128-0800"
    },
-   "doc_id": "soccer-bet-giovani-lo-celso"
+   "doc_id": "soccer-bet-dani-ceballos"
   },
   {
    "collection": "injuries",
@@ -1330,6 +1333,28 @@
     "tip_sort": "1128-0930"
    },
    "doc_id": "soccer-hsv-yussuf-poulsen"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "MUN",
+    "home": "HSV",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of MUN's last 10 matches \u00b7 a goal or assist on 4 of their 24 goals (17%)"
+    },
+    "player": "Michael Olise",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "BUND",
+    "starter": true,
+    "status": "Out",
+    "team": "MUN",
+    "tip": "Sat 9:30 AM",
+    "tip_sort": "1128-0930"
+   },
+   "doc_id": "soccer-mun-michael-olise"
   },
   {
    "collection": "injuries",
@@ -2089,28 +2114,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Not in DeVig's box scores for this club's recent matches"
-    },
-    "player": "Rafita",
-    "reason": "Injury \u00b7 expected return: early December 2026",
-    "sport": "LALIGA",
-    "starter": false,
-    "status": "Out",
-    "team": "MCF",
-    "tip": "Sat 10:15 AM",
-    "tip_sort": "1128-1015"
-   },
-   "doc_id": "soccer-mcf-rafita"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATH",
-    "home": "MCF",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Played in 4 of MCF's last 10 matches"
     },
     "player": "Fernando Calero",
@@ -2123,6 +2126,28 @@
     "tip_sort": "1128-1015"
    },
    "doc_id": "soccer-mcf-fernando-calero"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATH",
+    "home": "MCF",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in DeVig's box scores for this club's recent matches"
+    },
+    "player": "Rafita",
+    "reason": "Injury \u00b7 expected return: early December 2026",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "MCF",
+    "tip": "Sat 10:15 AM",
+    "tip_sort": "1128-1015"
+   },
+   "doc_id": "soccer-mcf-rafita"
   },
   {
    "collection": "injuries",
@@ -2372,29 +2397,6 @@
     "away": "LAZ",
     "home": "TOR",
     "impact": {
-     "bars": 3,
-     "label": "Big",
-     "level": "big",
-     "why": "Played in 10 of TOR's last 10 matches \u00b7 a goal or assist on 4 of their 13 goals (31%)"
-    },
-    "note": "Upgraded from out",
-    "player": "Rafik Belghali",
-    "reason": "Injury \u00b7 Doubtful",
-    "sport": "SERIEA",
-    "starter": true,
-    "status": "Doubtful",
-    "team": "TOR",
-    "tip": "Sat 12:00 PM",
-    "tip_sort": "1128-1200"
-   },
-   "doc_id": "soccer-tor-rafik-belghali"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "LAZ",
-    "home": "TOR",
-    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -2458,6 +2460,28 @@
   {
    "collection": "injuries",
    "data": {
+    "away": "LAZ",
+    "home": "TOR",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 10 of LAZ's last 10 matches \u00b7 a goal or assist on 4 of their 25 goals (16%)"
+    },
+    "player": "Kenneth Taylor",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Out",
+    "team": "LAZ",
+    "tip": "Sat 12:00 PM",
+    "tip_sort": "1128-1200"
+   },
+   "doc_id": "soccer-laz-kenneth-taylor"
+  },
+  {
+   "collection": "injuries",
+   "data": {
     "away": "SGE",
     "home": "VFB",
     "impact": {
@@ -2508,18 +2532,63 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Played in 1 of ELC's last 10 matches"
+     "why": "Played in 0 of ELC's last 10 matches"
     },
-    "player": "Ali Houary",
-    "reason": "Injury \u00b7 expected return: early December 2026",
+    "player": "Adam Boayar",
+    "reason": "Injury \u00b7 Doubtful",
     "sport": "LALIGA",
     "starter": false,
-    "status": "Out",
+    "status": "Doubtful",
+    "team": "ELC",
+    "tip": "Sat 12:30 PM",
+    "tip_sort": "1128-1230"
+   },
+   "doc_id": "soccer-elc-adam-boayar"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATM",
+    "home": "ELC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 1 of ELC's last 10 matches"
+    },
+    "note": "Upgraded from out",
+    "player": "Ali Houary",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Doubtful",
     "team": "ELC",
     "tip": "Sat 12:30 PM",
     "tip_sort": "1128-1230"
    },
    "doc_id": "soccer-elc-ali-houary"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATM",
+    "home": "ELC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in DeVig's box scores for this club's recent matches"
+    },
+    "player": "Yago Santiago",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "ELC",
+    "tip": "Sat 12:30 PM",
+    "tip_sort": "1128-1230"
+   },
+   "doc_id": "soccer-elc-yago-santiago"
   },
   {
    "collection": "injuries",
@@ -2574,28 +2643,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Not in DeVig's box scores for this club's recent matches"
-    },
-    "player": "Yago Santiago",
-    "reason": "Injury \u00b7 Doubtful",
-    "sport": "LALIGA",
-    "starter": false,
-    "status": "Doubtful",
-    "team": "ELC",
-    "tip": "Sat 12:30 PM",
-    "tip_sort": "1128-1230"
-   },
-   "doc_id": "soccer-elc-yago-santiago"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATM",
-    "home": "ELC",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Played in 0 of ATM's last 10 matches"
     },
     "player": "Jorge Dom\u00ednguez",
@@ -2618,28 +2665,6 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Played in 8 of ATM's last 10 matches \u00b7 a goal or assist on 1 of their 15 goals (7%)"
-    },
-    "player": "Alexander S\u00f8rloth",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "LALIGA",
-    "starter": true,
-    "status": "Out",
-    "team": "ATM",
-    "tip": "Sat 12:30 PM",
-    "tip_sort": "1128-1230"
-   },
-   "doc_id": "soccer-atm-alexander-srloth"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ATM",
-    "home": "ELC",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Played in 7 of ATM's last 10 matches \u00b7 a goal or assist on 2 of their 15 goals (13%)"
     },
     "player": "Ademola Lookman",
@@ -2652,6 +2677,28 @@
     "tip_sort": "1128-1230"
    },
    "doc_id": "soccer-atm-ademola-lookman"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATM",
+    "home": "ELC",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of ATM's last 10 matches \u00b7 a goal or assist on 1 of their 15 goals (7%)"
+    },
+    "player": "Alexander S\u00f8rloth",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "LALIGA",
+    "starter": true,
+    "status": "Out",
+    "team": "ATM",
+    "tip": "Sat 12:30 PM",
+    "tip_sort": "1128-1230"
+   },
+   "doc_id": "soccer-atm-alexander-srloth"
   },
   {
    "collection": "injuries",
@@ -3322,6 +3369,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Played in 0 of LOR's last 10 matches"
+    },
+    "player": "Mohamed Bamba",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "LIGUE1",
+    "starter": false,
+    "status": "Out",
+    "team": "LOR",
+    "tip": "Sat 2:45 PM",
+    "tip_sort": "1128-1445"
+   },
+   "doc_id": "soccer-lor-mohamed-bamba"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LOR",
+    "home": "PSG",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Played in 4 of LOR's last 10 matches \u00b7 a goal or assist on 3 of their 10 goals (30%)"
     },
     "player": "Panos Katseris",
@@ -3338,24 +3407,47 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "LOR",
-    "home": "PSG",
+    "away": "GEN",
+    "home": "INT",
     "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
-     "why": "Played in 0 of LOR's last 10 matches"
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of INT's last 10 matches \u00b7 a goal or assist on 3 of their 21 goals (14%)"
     },
-    "player": "Mohamed Bamba",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "LIGUE1",
-    "starter": false,
-    "status": "Out",
-    "team": "LOR",
+    "note": "Upgraded from out",
+    "player": "Piotr Zieli\u0144ski",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Doubtful",
+    "team": "INT",
     "tip": "Sat 2:45 PM",
     "tip_sort": "1128-1445"
    },
-   "doc_id": "soccer-lor-mohamed-bamba"
+   "doc_id": "soccer-int-piotr-zielinski"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "GEN",
+    "home": "INT",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 9 of INT's last 10 matches \u00b7 a goal or assist on 1 of their 21 goals (5%)"
+    },
+    "player": "Alessandro Bastoni",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Out",
+    "team": "INT",
+    "tip": "Sat 2:45 PM",
+    "tip_sort": "1128-1445"
+   },
+   "doc_id": "soccer-int-alessandro-bastoni"
   },
   {
    "collection": "injuries",
@@ -3388,35 +3480,14 @@
      "bars": 2,
      "label": "Some",
      "level": "some",
-     "why": "Played in 8 of INT's last 10 matches \u00b7 a goal or assist on 3 of their 21 goals (14%)"
-    },
-    "player": "Piotr Zieli\u0144ski",
-    "reason": "Injury \u00b7 expected return: early December 2026",
-    "sport": "SERIEA",
-    "starter": true,
-    "status": "Out",
-    "team": "INT",
-    "tip": "Sat 2:45 PM",
-    "tip_sort": "1128-1445"
-   },
-   "doc_id": "soccer-int-piotr-zielinski"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "GEN",
-    "home": "INT",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
      "why": "Played in 8 of INT's last 10 matches \u00b7 a goal or assist on 2 of their 21 goals (10%)"
     },
+    "note": "Upgraded from out",
     "player": "Ange-Yoan Bonny",
-    "reason": "Injury \u00b7 expected return: early December 2026",
+    "reason": "Injury \u00b7 Doubtful",
     "sport": "SERIEA",
     "starter": true,
-    "status": "Out",
+    "status": "Doubtful",
     "team": "INT",
     "tip": "Sat 2:45 PM",
     "tip_sort": "1128-1445"
@@ -3498,6 +3569,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Played in 4 of RMA's last 10 matches"
+    },
+    "player": "Trent Alexander-Arnold",
+    "reason": "Injury \u00b7 expected return: a few days",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "RMA",
+    "tip": "Sat 3:00 PM",
+    "tip_sort": "1128-1500"
+   },
+   "doc_id": "soccer-rma-trent-alexander-arnold"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ALA",
+    "home": "RMA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Played in 0 of RMA's last 10 matches"
     },
     "player": "Rodrygo",
@@ -3542,28 +3635,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Played in 5 of ALA's last 10 matches"
-    },
-    "player": "Carlos Protesoni",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "LALIGA",
-    "starter": false,
-    "status": "Out",
-    "team": "ALA",
-    "tip": "Sat 3:00 PM",
-    "tip_sort": "1128-1500"
-   },
-   "doc_id": "soccer-ala-carlos-protesoni"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "ALA",
-    "home": "RMA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Played in 0 of ALA's last 10 matches"
     },
     "player": "Lander Pinillos",
@@ -3576,6 +3647,28 @@
     "tip_sort": "1128-1500"
    },
    "doc_id": "soccer-ala-lander-pinillos"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ALA",
+    "home": "RMA",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 5 of ALA's last 10 matches"
+    },
+    "player": "Carlos Protesoni",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "ALA",
+    "tip": "Sat 3:00 PM",
+    "tip_sort": "1128-1500"
+   },
+   "doc_id": "soccer-ala-carlos-protesoni"
   },
   {
    "collection": "injuries",
@@ -4227,7 +4320,7 @@
      "why": "Played in 10 of FIO's last 10 matches"
     },
     "player": "Viery",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "reason": "Injury \u00b7 expected return: late December 2026",
     "sport": "SERIEA",
     "starter": true,
     "status": "Out",
@@ -4705,6 +4798,28 @@
     "away": "NAP",
     "home": "SAS",
     "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 6 of NAP's last 10 matches \u00b7 a goal or assist on 1 of their 15 goals (7%)"
+    },
+    "player": "Giovanni Di Lorenzo",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Out",
+    "team": "NAP",
+    "tip": "Sun 9:00 AM",
+    "tip_sort": "1129-0900"
+   },
+   "doc_id": "soccer-nap-giovanni-di-lorenzo"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "NAP",
+    "home": "SAS",
+    "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
@@ -4764,28 +4879,6 @@
     "tip_sort": "1129-0900"
    },
    "doc_id": "soccer-nap-alessandro-buongiorno"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "NAP",
-    "home": "SAS",
-    "impact": {
-     "bars": 2,
-     "label": "Some",
-     "level": "some",
-     "why": "Played in 6 of NAP's last 10 matches \u00b7 a goal or assist on 1 of their 15 goals (7%)"
-    },
-    "player": "Giovanni Di Lorenzo",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "SERIEA",
-    "starter": true,
-    "status": "Out",
-    "team": "NAP",
-    "tip": "Sun 9:00 AM",
-    "tip_sort": "1129-0900"
-   },
-   "doc_id": "soccer-nap-giovanni-di-lorenzo"
   },
   {
    "collection": "injuries",
@@ -5544,28 +5637,6 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Played in 4 of MON's last 10 matches"
-    },
-    "player": "Cyril Ngonge",
-    "reason": "Injury \u00b7 Doubtful",
-    "sport": "SERIEA",
-    "starter": false,
-    "status": "Doubtful",
-    "team": "MON",
-    "tip": "Sun 12:00 PM",
-    "tip_sort": "1129-1200"
-   },
-   "doc_id": "soccer-mon-cyril-ngonge"
-  },
-  {
-   "collection": "injuries",
-   "data": {
-    "away": "MON",
-    "home": "ROMA",
-    "impact": {
-     "bars": 1,
-     "label": "Minor",
-     "level": "minor",
      "why": "Played in 3 of MON's last 10 matches"
     },
     "player": "Yvan Kouadio Maye",
@@ -5604,24 +5675,24 @@
   {
    "collection": "injuries",
    "data": {
-    "away": "VIL",
-    "home": "CEL",
+    "away": "MON",
+    "home": "ROMA",
     "impact": {
      "bars": 1,
      "label": "Minor",
      "level": "minor",
-     "why": "Played in 4 of CEL's last 10 matches"
+     "why": "Played in 4 of MON's last 10 matches"
     },
-    "player": "Hugo Gonz\u00e1lez",
-    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
-    "sport": "LALIGA",
+    "player": "Cyril Ngonge",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
     "starter": false,
-    "status": "Out",
-    "team": "CEL",
-    "tip": "Sun 12:30 PM",
-    "tip_sort": "1129-1230"
+    "status": "Doubtful",
+    "team": "MON",
+    "tip": "Sun 12:00 PM",
+    "tip_sort": "1129-1200"
    },
-   "doc_id": "soccer-cel-hugo-gonzalez"
+   "doc_id": "soccer-mon-cyril-ngonge"
   },
   {
    "collection": "injuries",
@@ -5710,6 +5781,28 @@
     "tip_sort": "1129-1230"
    },
    "doc_id": "soccer-cel-borja-iglesias"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "VIL",
+    "home": "CEL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 4 of CEL's last 10 matches"
+    },
+    "player": "Hugo Gonz\u00e1lez",
+    "reason": "Injury \u00b7 expected return: about 1-2 weeks",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Out",
+    "team": "CEL",
+    "tip": "Sun 12:30 PM",
+    "tip_sort": "1129-1230"
+   },
+   "doc_id": "soccer-cel-hugo-gonzalez"
   },
   {
    "collection": "injuries",
@@ -6223,6 +6316,28 @@
     "away": "JUV",
     "home": "COMO",
     "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 2 of COMO's last 10 matches"
+    },
+    "player": "Willy Kambwala",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "COMO",
+    "tip": "Sun 2:45 PM",
+    "tip_sort": "1129-1445"
+   },
+   "doc_id": "soccer-como-willy-kambwala"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "JUV",
+    "home": "COMO",
+    "impact": {
      "bars": 2,
      "label": "Some",
      "level": "some",
@@ -6336,6 +6451,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Played in 2 of JUV's last 10 matches"
+    },
+    "player": "Jeff Ekhator",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "JUV",
+    "tip": "Sun 2:45 PM",
+    "tip_sort": "1129-1445"
+   },
+   "doc_id": "soccer-juv-jeff-ekhator"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "JUV",
+    "home": "COMO",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Played in 0 of JUV's last 10 matches"
     },
     "player": "Kamil Grabara",
@@ -6361,7 +6498,7 @@
      "why": "Played in 9 of JUV's last 10 matches"
     },
     "player": "Pierre Kalulu",
-    "reason": "Injury \u00b7 Back in training",
+    "reason": "Injury \u00b7 Doubtful",
     "sport": "SERIEA",
     "starter": true,
     "status": "Doubtful",
@@ -6427,7 +6564,7 @@
      "why": "Played in 4 of JUV's last 10 matches"
     },
     "player": "Nicol\u00e1s Gonz\u00e1lez",
-    "reason": "Injury \u00b7 Back in training",
+    "reason": "Injury \u00b7 Doubtful",
     "sport": "SERIEA",
     "starter": false,
     "status": "Doubtful",
@@ -6600,6 +6737,28 @@
      "bars": 1,
      "label": "Minor",
      "level": "minor",
+     "why": "Played in 0 of SEV's last 10 matches"
+    },
+    "player": "Marc\u00e3o",
+    "reason": "Injury \u00b7 Back in training",
+    "sport": "LALIGA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "SEV",
+    "tip": "Sun 3:00 PM",
+    "tip_sort": "1129-1500"
+   },
+   "doc_id": "soccer-sev-marcao"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "SEV",
+    "home": "RSO",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
      "why": "Played in 4 of SEV's last 10 matches"
     },
     "player": "Alfon Gonz\u00e1lez",
@@ -6612,8 +6771,250 @@
     "tip_sort": "1129-1500"
    },
    "doc_id": "soccer-sev-alfon-gonzalez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PAC",
+    "home": "GDL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 3 of PAC's last 10 matches"
+    },
+    "player": "Carlos S\u00e1nchez",
+    "reason": "Injury \u00b7 expected return: early January 2027",
+    "sport": "LIGAMX",
+    "starter": false,
+    "status": "Out",
+    "team": "PAC",
+    "tip": "Sun 8:07 PM",
+    "tip_sort": "1129-2007"
+   },
+   "doc_id": "soccer-pac-carlos-sanchez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "PAC",
+    "home": "GDL",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of PAC's last 10 matches"
+    },
+    "player": "Alex\u00e9i Dom\u00ednguez",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LIGAMX",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "PAC",
+    "tip": "Sun 8:07 PM",
+    "tip_sort": "1129-2007"
+   },
+   "doc_id": "soccer-pac-alexei-dominguez"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LEO",
+    "home": "CAZ",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of CAZ's last 10 matches"
+    },
+    "player": "Amaury Morales",
+    "reason": "Injury \u00b7 expected return: early January 2027",
+    "sport": "LIGAMX",
+    "starter": false,
+    "status": "Out",
+    "team": "CAZ",
+    "tip": "Sun 10:00 PM",
+    "tip_sort": "1129-2200"
+   },
+   "doc_id": "soccer-caz-amaury-morales"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "LEO",
+    "home": "CAZ",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of LEO's last 10 matches"
+    },
+    "player": "\u00c1ngel Estrada",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "LIGAMX",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "LEO",
+    "tip": "Sun 10:00 PM",
+    "tip_sort": "1129-2200"
+   },
+   "doc_id": "soccer-leo-angel-estrada"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 4 of LEC's last 10 matches \u00b7 a goal or assist on 2 of their 10 goals (20%)"
+    },
+    "player": "Ivan Ili\u0107",
+    "reason": "Injury \u00b7 expected return: early December 2026",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Out",
+    "team": "LEC",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-lec-ivan-ilic"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 8 of LEC's last 10 matches"
+    },
+    "player": "Mohamed Kaba",
+    "reason": "Injury \u00b7 expected return: mid December 2026",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Out",
+    "team": "LEC",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-lec-mohamed-kaba"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 5 of LEC's last 10 matches"
+    },
+    "player": "Santiago Pierotti",
+    "reason": "Injury \u00b7 expected return: early December 2026",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Out",
+    "team": "LEC",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-lec-santiago-pierotti"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 2,
+     "label": "Some",
+     "level": "some",
+     "why": "Played in 9 of ATA's last 10 matches"
+    },
+    "player": "Marco Carnesecchi",
+    "reason": "Injury \u00b7 expected return: late January 2027",
+    "sport": "SERIEA",
+    "starter": true,
+    "status": "Out",
+    "team": "ATA",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-ata-marco-carnesecchi"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Not in DeVig's box scores for this club's recent matches"
+    },
+    "player": "Thomas Pompei",
+    "reason": "Injury \u00b7 Back in training",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "ATA",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-ata-thomas-pompei"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of ATA's last 10 matches"
+    },
+    "player": "Isak Hien",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "ATA",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-ata-isak-hien"
+  },
+  {
+   "collection": "injuries",
+   "data": {
+    "away": "ATA",
+    "home": "LEC",
+    "impact": {
+     "bars": 1,
+     "label": "Minor",
+     "level": "minor",
+     "why": "Played in 0 of ATA's last 10 matches"
+    },
+    "player": "Odilon Kossounou",
+    "reason": "Injury \u00b7 Doubtful",
+    "sport": "SERIEA",
+    "starter": false,
+    "status": "Doubtful",
+    "team": "ATA",
+    "tip": "Mon 12:30 PM",
+    "tip_sort": "1130-1230"
+   },
+   "doc_id": "soccer-ata-odilon-kossounou"
   }
  ],
- "generated_at": "2026-11-27T08:12:37Z",
+ "generated_at": "2026-11-27T18:52:46Z",
  "source": "FotMob match pages (unavailable players); role scale from stats/soccer (tools/injuries_export.py)"
 }
