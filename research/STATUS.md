@@ -1,6 +1,6 @@
 # Research Lab -- status (NFL)
 
-_Generated 2026-11-27T13:09:29Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
+_Generated 2026-11-27T22:24:47Z by research/lab/report.py. Constitution v16 (`b3333c768d79`). Do not edit by hand._
 
 **Expected result: most likely nothing passes the sealed exam.** Effect = cover points per game beyond the line-only baseline (Constitution A5); break-even at Kalshi pricing 51.75%.
 
@@ -78,10 +78,10 @@ Verdicts (Inspector General):
 
 ## Recent runs
 
+- **Search round 995** 2026-11-27T22:24:17Z: 2,000 models scored → 507 consistent → 12 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 994** 2026-11-27T13:09:01Z: 2,000 models scored → 482 consistent → 24 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 993** 2026-11-27T03:19:26Z: 2,000 models scored → 460 consistent → 24 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 992** 2026-11-26T19:52:53Z: 1,999 models scored → 487 consistent → 23 strong (t ≥ 2.5) → 0 sent to confirmation
 - **Search round 991** 2026-11-26T10:05:18Z: 2,000 models scored → 513 consistent → 13 strong (t ≥ 2.5) → 0 sent to confirmation
-- **Search round 990** 2026-11-26T01:13:47Z: 1,998 models scored → 499 consistent → 19 strong (t ≥ 2.5) → 0 sent to confirmation
 
 Files: `research/results/<id>.json` (every number), `research/LEDGER.csv` (every attempt), `research/LESSONS.md` (exploratory).
