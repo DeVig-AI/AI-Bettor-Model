@@ -2682,16 +2682,16 @@
   "2026_12_BAL_HOU": {
    "away": "BAL",
    "home": "HOU",
-   "home_wp": 0.7175,
+   "home_wp": 0.7028,
    "injuries": {
-    "d_out": 0.0,
+    "d_out": 1.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.7178,
     "home_field": 0.5484,
-    "who_is_out": 0.7175
+    "who_is_out": 0.7028
    },
    "teams": {
     "away": {
@@ -2964,16 +2964,16 @@
   "2026_12_LV_CLE": {
    "away": "LV",
    "home": "CLE",
-   "home_wp": 0.72,
+   "home_wp": 0.7182,
    "injuries": {
-    "d_out": 0.0,
-    "d_q": 0.0,
+    "d_out": -1.0,
+    "d_q": 2.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.7203,
     "home_field": 0.5484,
-    "who_is_out": 0.72
+    "who_is_out": 0.7182
    },
    "teams": {
     "away": {
@@ -3011,16 +3011,16 @@
   "2026_12_NE_LAC": {
    "away": "NE",
    "home": "LAC",
-   "home_wp": 0.3637,
+   "home_wp": 0.2173,
    "injuries": {
     "d_out": 0.0,
-    "d_q": 0.0,
-    "d_qb": 0.0
+    "d_q": 3.0,
+    "d_qb": 1.0
    },
    "steps": {
     "form": 0.3641,
     "home_field": 0.5484,
-    "who_is_out": 0.3637
+    "who_is_out": 0.2173
    },
    "teams": {
     "away": {
@@ -3058,16 +3058,16 @@
   "2026_12_NO_CIN": {
    "away": "NO",
    "home": "CIN",
-   "home_wp": 0.7896,
+   "home_wp": 0.7948,
    "injuries": {
-    "d_out": -1.0,
-    "d_q": 0.0,
+    "d_out": -2.0,
+    "d_q": 1.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.7778,
     "home_field": 0.5484,
-    "who_is_out": 0.7896
+    "who_is_out": 0.7948
    },
    "teams": {
     "away": {
@@ -3152,16 +3152,16 @@
   "2026_12_NYJ_MIA": {
    "away": "NYJ",
    "home": "MIA",
-   "home_wp": 0.345,
+   "home_wp": 0.3291,
    "injuries": {
-    "d_out": 1.0,
+    "d_out": 2.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.3616,
     "home_field": 0.5484,
-    "who_is_out": 0.345
+    "who_is_out": 0.3291
    },
    "teams": {
     "away": {
@@ -3246,16 +3246,16 @@
   "2026_12_SEA_SF": {
    "away": "SEA",
    "home": "SF",
-   "home_wp": 0.6311,
+   "home_wp": 0.4637,
    "injuries": {
     "d_out": 1.0,
-    "d_q": 0.0,
-    "d_qb": 0.0
+    "d_q": 2.0,
+    "d_qb": 1.0
    },
    "steps": {
     "form": 0.6478,
     "home_field": 0.5484,
-    "who_is_out": 0.6311
+    "who_is_out": 0.4637
    },
    "teams": {
     "away": {
@@ -3340,16 +3340,16 @@
   "2026_12_WAS_ARI": {
    "away": "WAS",
    "home": "ARI",
-   "home_wp": 0.342,
+   "home_wp": 0.3582,
    "injuries": {
-    "d_out": 1.0,
+    "d_out": 0.0,
     "d_q": 0.0,
     "d_qb": 0.0
    },
    "steps": {
     "form": 0.3586,
     "home_field": 0.5484,
-    "who_is_out": 0.342
+    "who_is_out": 0.3582
    },
    "teams": {
     "away": {
@@ -3385,7 +3385,7 @@
    }
   }
  },
- "generated_at": "2026-11-27T23:44:07Z",
+ "generated_at": "2026-11-28T08:25:56Z",
  "how": "steps: the home team's chance from home field alone, then with both teams' form (last 6 and 12 games, rest), then with who is out (= home_wp). Exact for the model's logistic regression.",
  "max_gap_vs_upcoming": 0.0139,
  "model": "NFL_MODEL_2_0",
